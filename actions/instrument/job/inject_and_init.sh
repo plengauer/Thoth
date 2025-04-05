@@ -218,7 +218,7 @@ root4job_end() {
   otel_observation_attribute_typed "$observation_handle" string github.actions.job.conclusion="$conclusion"
   otel_counter_observe "$counter_handle" "$observation_handle"
   otel_shutdown
-  while [ "$(pgrep -f /opt/opentelemetry_shell/ | wc -l)" -gt 0 ]; then sleep 1; fi
+  while [ "$(pgrep -f /opt/opentelemetry_shell/ | wc -l)" -gt 0 ]; do sleep 1; done
   if [ -n "${OTEL_SHELL_COLLECTOR_CONTAINER:-}" ]; then
     sudo docker stop "$OTEL_SHELL_COLLECTOR_CONTAINER"
     if [ -n "$INPUT_DEBUG" ]; then
