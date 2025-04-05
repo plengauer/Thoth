@@ -480,13 +480,17 @@ def observable_counter_callback(counter_id, _):
 def parse_time(time_string):
     if time_string == 'auto':
         return int(time.time() * 1e9)
-    time_string = time_string.rstrip('Z')
-    try:
-        time_part, fractional_seconds_part = time_string.split('.')
-    except ValueError:
-        time_part = time_string
-        fractional_seconds_part = '0'
-    return int(datetime.strptime(time_part, "%Y-%m-%dT%H:%M:%S").replace(tzinfo=timezone.utc).timestamp() * 1e9) + int(fractional_seconds_part.ljust(9, '0')[:9])
+    elif '-' in time_string and ':' in time_string and 'T' in time_string:
+        time_string = time_string.rstrip('Z')
+        try:
+            time_part, fractional_seconds_part = time_string.split('.')
+        except ValueError:
+            time_part = time_string
+            fractional_seconds_part = '0'
+        return int(datetime.strptime(time_part, "%Y-%m-%dT%H:%M:%S").replace(tzinfo=timezone.utc).timestamp() * 1e9) + int(fractional_seconds_part.ljust(9, '0')[:9])
+    else:
+        seconds_part, fractional_seconds_part = time_string.split('.')
+        return int(seconds_part) * 1e9 + int(fractional_seconds_part.ljust(9, '0')[:9])
 
 def convert_type(type, value, base=None):
     if type == 'string':
