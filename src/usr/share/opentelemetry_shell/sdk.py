@@ -487,10 +487,10 @@ def parse_time(time_string):
         except ValueError:
             time_part = time_string
             fractional_seconds_part = '0'
-        return int(datetime.strptime(time_part, "%Y-%m-%dT%H:%M:%S").replace(tzinfo=timezone.utc).timestamp() * 1e9) + int(fractional_seconds_part.ljust(9, '0')[:9])
+        return int(datetime.strptime(time_part, "%Y-%m-%dT%H:%M:%S").replace(tzinfo=timezone.utc).timestamp() * int(1e9)) + int(fractional_seconds_part.ljust(9, '0')[:9])
     elif '.' in time_string:
         seconds_part, fractional_seconds_part = time_string.split('.')
-        return int(seconds_part) * 1e9 + int(fractional_seconds_part.ljust(9, '0')[:9])
+        return int(seconds_part) * int(1e9) + int(fractional_seconds_part.ljust(9, '0')[:9])
     else:
         return int(time_string)
 
