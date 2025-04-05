@@ -13,7 +13,7 @@ _otel_call_and_record_subprocesses() {
   _otel_record_subprocesses "$span_handle" < "$strace" &
   local parse_pid="$!"
   local exit_code=0
-  $call_command '\strace' -D -f -e trace=process -o "$strace" -s 8192 "${command#\\}" "$@" || local exit_code="$?"
+  $call_command '\strace' -D -ttt -f -e trace=process -o "$strace" -s 8192 "${command#\\}" "$@" || local exit_code="$?"
   \wait "$parse_pid"
   \rm "$strace" 2> /dev/null
   if \[ "$job_control" = 1 ]; then \set -m; fi
