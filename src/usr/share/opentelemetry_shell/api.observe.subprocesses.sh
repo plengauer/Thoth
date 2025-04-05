@@ -52,6 +52,8 @@ _otel_record_subprocesses() {
       *) ;;
     esac
     local pid="${line%% *}"
+    local time="${line#* }"
+    local time="${time%% *}"
     \eval "local parent_pid=\$parent_pid_$pid"
     \eval "local span_handle=\$span_handle_$pid"
     case "$operation" in
@@ -64,7 +66,7 @@ _otel_record_subprocesses() {
         if \[ -z "${span_name:-}" ]; then \eval "local span_name=\"\$span_name_$parent_pid\""; fi
         local span_name="${span_name:-<unknown>}"
         otel_span_activate "${span_handle:-$root_span_handle}"
-        local span_handle="$(otel_span_start INTERNAL "$span_name")"
+        local span_handle="$(otel_span_start "@$time" INTERNAL "$span_name")"
         otel_span_deactivate
         \eval "local span_handle_$new_pid=$span_handle"
         \eval "local span_name_$new_pid=\"\$span_name\""
@@ -96,7 +98,7 @@ _otel_record_subprocesses() {
         if _otel_string_contains "$line" " +++ killed by " || (_otel_string_contains "$line" " +++ exited with " && ! _otel_string_contains "$line" " +++ exited with 0 +++"); then
           otel_span_error "$span_handle"
         fi
-        otel_span_end "$span_handle"
+        otel_span_end "$span_handle" "@$time"
         ;;
       signal)
         if \[ "${OTEL_SHELL_CONFIG_OBSERVE_SIGNALS:-FALSE}" != TRUE ]; then continue; fi
