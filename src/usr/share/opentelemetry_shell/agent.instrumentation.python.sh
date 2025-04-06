@@ -37,6 +37,7 @@ _otel_can_inject_python_otel() {
     file) ! _otel_string_ends_with "$_otel_python_file" /pip && ! _otel_string_ends_with "$_otel_python_file" /pip3 ;;
     module) \[ "$_otel_python_module" != pip ] && \[ "$_otel_python_module" != ensurepip ] ;;
     cmdline) ! \printf '%s' "$_otel_python_command" | grep -q 'runpy.run_module("pip"' ;;
+    none) \false ;;
     *) \true ;;
   esac
   return "$?"
@@ -68,6 +69,9 @@ _otel_python_inject_args() {
     \echo -n ' '
     local arg="$1"; shift
     if \[ -n "${_otel_python_code_source:-}" ]; then
+      _otel_escape_arg "$arg"
+    elif \[ "$arg" = -V ] || \[ "$arg" = --version ] || _otel_string_starts_with "$arg" --help; then
+      _otel_python_code_source=none
       _otel_escape_arg "$arg"
     elif \[ "$arg" = -c ]; then
       _otel_escape_arg "$arg"
