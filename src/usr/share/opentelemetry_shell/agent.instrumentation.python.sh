@@ -92,6 +92,8 @@ with open('$arg', 'r') as file: # SKIP_DEPENDENCY_CHECK
   exec(file.read())"
       _otel_python_file="$arg"
       _otel_python_code_source=file
+    else
+      _otel_escape_arg "$arg"
     fi
   done
   _otel_python_code_source="${_otel_python_code_source:-stdin}"
