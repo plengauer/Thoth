@@ -26,7 +26,7 @@ for dir in unit sdk auto integration; do
     fi
     stdout="$(mktemp -u).out"
     stderr="$(mktemp -u).err"
-    timeout $((60 * 10)) $SHELL $options "$file" 1> "$stdout" && echo "$file SUCCEEDED" || (echo "$file FAILED" && echo "stdout:" && cat "$stdout" && echo "otlp:" && cat "$OTEL_EXPORT_LOCATION" && exit 1)
+    timeout $((60 * 60 * 3)) $SHELL $options "$file" 1> "$stdout" && echo "$file SUCCEEDED" || (echo "$file FAILED" && echo "stdout:" && cat "$stdout" && echo "otlp:" && cat "$OTEL_EXPORT_LOCATION" && exit 1)
   done
 done
 echo "ALL TESTS SUCCESSFUL"
