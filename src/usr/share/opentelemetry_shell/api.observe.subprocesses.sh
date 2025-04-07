@@ -105,7 +105,7 @@ _otel_record_subprocesses() {
           local name=SIG"${name#--- SIG}"
           local name="${name%% *}"
         else
-          local name="$(\printf '%s' "$line" | \awk '{ print $3 }')"
+          local name="$(\printf '%s' "$line" | \awk '{ print $2 }')"
         fi
         local event_handle="$(otel_event_create "$name")"
         local kvps="$line"
