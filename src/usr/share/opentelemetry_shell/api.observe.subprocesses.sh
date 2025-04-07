@@ -35,26 +35,23 @@ _otel_call_and_record_subprocesses() {
 # 582400 +++ killed by SIGINT +++
 _otel_record_subprocesses() {
   local root_span_handle="$1"
-  while \read -r line; do
+  while \read -r pid time line; do
     \echo "$line" >&2
     local operation=""
     case "$line" in
-      *' '*' (To be restarted)') ;;
+      *' (To be restarted)') ;;
       *' (Function not implemented)') ;;
-      *' clone'*'('*' <unfinished ...>') ;;
-      *' '*'fork('*' <unfinished ...>') ;;
-      *' clone'*'('*) local operation=fork;;
-      *' '*'fork('*) local operation=fork;;
-      *' <... clone'*' resumed>'*) local operation=fork;;
-      *' <... '*'fork resumed>'*) local operation=fork;;
-      *' execve('*) local operation=exec;;
-      *' +++ '*) local operation=exit;;
-      *' --- '*) local operation=signal;;
+      'clone'*'('*' <unfinished ...>') ;;
+      *'fork('*' <unfinished ...>') ;;
+      'clone'*'('*) local operation=fork;;
+      *'fork('*) local operation=fork;;
+      '<... clone'*' resumed>'*) local operation=fork;;
+      '<... '*'fork resumed>'*) local operation=fork;;
+      'execve('*) local operation=exec;;
+      '+++ '*) local operation=exit;;
+      '--- '*) local operation=signal;;
       *) ;;
     esac
-    local pid="${line%% *}"
-    local time="${line#* }"
-    local time="${time%% *}"
     \eval "local parent_pid=\$parent_pid_$pid"
     \eval "local span_handle=\$span_handle_$pid"
     case "$operation" in
@@ -96,7 +93,7 @@ _otel_record_subprocesses() {
         ;;
       exit)
         if \[ -z "${span_handle:-}" ]; then continue; fi
-        if _otel_string_contains "$line" " +++ killed by " || (_otel_string_contains "$line" " +++ exited with " && ! _otel_string_contains "$line" " +++ exited with 0 +++"); then
+        if _otel_string_starts_with "$line" "+++ killed by " || (_otel_string_starts_with "$line" "+++ exited with " && ! _otel_string_starts_with "$line" "+++ exited with 0 +++"); then
           otel_span_error "$span_handle"
         fi
         otel_span_end "$span_handle" @"$time"
@@ -105,7 +102,7 @@ _otel_record_subprocesses() {
         if \[ "${OTEL_SHELL_CONFIG_OBSERVE_SIGNALS:-FALSE}" != TRUE ]; then continue; fi
         if \[ "$_otel_shell" = bash ]; then
           local name="$line"
-          local name=SIG"${name#* --- SIG}"
+          local name=SIG"${name#--- SIG}"
           local name="${name%% *}"
         else
           local name="$(\printf '%s' "$line" | \awk '{ print $3 }')"
