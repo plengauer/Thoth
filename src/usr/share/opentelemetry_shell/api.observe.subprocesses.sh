@@ -36,6 +36,7 @@ _otel_call_and_record_subprocesses() {
 _otel_record_subprocesses() {
   local root_span_handle="$1"
   while \read -r pid time line; do
+    \echo "$line" >&2
     local operation=""
     case "$line" in
       *' (To be restarted)') ;;
