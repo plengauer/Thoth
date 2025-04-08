@@ -18,7 +18,7 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "5.10.2"
+              "stringValue": "5.11.0"
             }
           },
           {
@@ -54,13 +54,13 @@
           {
             "key": "github.actions.workflow.ref",
             "value": {
-              "stringValue": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.10.2"
+              "stringValue": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.11.0"
             }
           },
           {
             "key": "github.actions.workflow.sha",
             "value": {
-              "stringValue": "ece2d22803f94573699149cdfadb5990a66f1458"
+              "stringValue": "f2e20c5c38a282e758483642f79836db2c7203de"
             }
           },
           {
@@ -84,13 +84,13 @@
           {
             "key": "process.pid",
             "value": {
-              "intValue": "2296"
+              "intValue": "2290"
             }
           },
           {
             "key": "process.parent_pid",
             "value": {
-              "intValue": "2207"
+              "intValue": "2202"
             }
           },
           {
@@ -171,580 +171,591 @@
         {
           "scope": {
             "name": "shell",
-            "version": "5.10.2"
+            "version": "5.11.0"
           },
           "logRecords": [
             {
-              "timeUnixNano": "1743514089668424192",
-              "observedTimeUnixNano": "1743514089668470196",
+              "timeUnixNano": "1744144474820898304",
+              "observedTimeUnixNano": "1744144474820929031",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "Unable to find image 'renovate/renovate:latest' locally"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514089829798912",
-              "observedTimeUnixNano": "1743514089829828181",
+              "timeUnixNano": "1744144475027032320",
+              "observedTimeUnixNano": "1744144475027055638",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "latest: Pulling from renovate/renovate"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514089901565696",
-              "observedTimeUnixNano": "1743514089901593404",
+              "timeUnixNano": "1744144475100931840",
+              "observedTimeUnixNano": "1744144475100950288",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "5a7813e071bf: Pulling fs layer"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514089902750464",
-              "observedTimeUnixNano": "1743514089902763818",
+              "timeUnixNano": "1744144475101796608",
+              "observedTimeUnixNano": "1744144475101808318",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "338505504b78: Pulling fs layer"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514089903907584",
-              "observedTimeUnixNano": "1743514089903926212",
+              "timeUnixNano": "1744144475102904064",
+              "observedTimeUnixNano": "1744144475102913372",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "a0440292ab39: Pulling fs layer"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514089906559744",
-              "observedTimeUnixNano": "1743514089906570514",
+              "timeUnixNano": "1744144475103924736",
+              "observedTimeUnixNano": "1744144475103935438",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "f4e675a8ed62: Pulling fs layer"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514089907573504",
-              "observedTimeUnixNano": "1743514089907584403",
+              "timeUnixNano": "1744144475105371904",
+              "observedTimeUnixNano": "1744144475105381812",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "dbf0f55401a2: Pulling fs layer"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514089908499200",
-              "observedTimeUnixNano": "1743514089908511262",
+              "timeUnixNano": "1744144475106163200",
+              "observedTimeUnixNano": "1744144475106173298",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "7fcd31c3da62: Pulling fs layer"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514089909373440",
-              "observedTimeUnixNano": "1743514089909384662",
+              "timeUnixNano": "1744144475107772928",
+              "observedTimeUnixNano": "1744144475107784273",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "83b5cb0dd387: Pulling fs layer"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514089910276864",
-              "observedTimeUnixNano": "1743514089910287908",
+              "timeUnixNano": "1744144475108914944",
+              "observedTimeUnixNano": "1744144475108925365",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "0d3da5253b52: Pulling fs layer"
+                "stringValue": "7b81ba022cdf: Pulling fs layer"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514089911183360",
-              "observedTimeUnixNano": "1743514089911194250",
+              "timeUnixNano": "1744144475109817088",
+              "observedTimeUnixNano": "1744144475109827275",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "dcfc674a40e4: Pulling fs layer"
+                "stringValue": "9e85b6dbe6d6: Pulling fs layer"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514089912071680",
-              "observedTimeUnixNano": "1743514089912082258",
+              "timeUnixNano": "1744144475110775296",
+              "observedTimeUnixNano": "1744144475110785887",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "deab69056b43: Pulling fs layer"
+                "stringValue": "bd944e9feb18: Pulling fs layer"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514089912964864",
-              "observedTimeUnixNano": "1743514089912975856",
+              "timeUnixNano": "1744144475111672832",
+              "observedTimeUnixNano": "1744144475111683080",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "b38722e61238: Pulling fs layer"
+                "stringValue": "6c504f9ed6d5: Pulling fs layer"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514089913839104",
-              "observedTimeUnixNano": "1743514089913849968",
+              "timeUnixNano": "1744144475112560128",
+              "observedTimeUnixNano": "1744144475112570606",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "f4e675a8ed62: Waiting"
+                "stringValue": "86c412f91f8b: Pulling fs layer"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514089914772224",
-              "observedTimeUnixNano": "1743514089914782689",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "982392d0879b: Pulling fs layer"
-              },
-              "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
-            },
-            {
-              "timeUnixNano": "1743514089915903488",
-              "observedTimeUnixNano": "1743514089915914835",
+              "timeUnixNano": "1744144475113434624",
+              "observedTimeUnixNano": "1744144475113445197",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "4f4fb700ef54: Pulling fs layer"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514089916809472",
-              "observedTimeUnixNano": "1743514089916820976",
+              "timeUnixNano": "1744144475114387200",
+              "observedTimeUnixNano": "1744144475114400290",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "f4e675a8ed62: Waiting"
+              },
+              "flags": 1,
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
+            },
+            {
+              "timeUnixNano": "1744144475115240448",
+              "observedTimeUnixNano": "1744144475115249964",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "dbf0f55401a2: Waiting"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514089918074112",
-              "observedTimeUnixNano": "1743514089918084921",
+              "timeUnixNano": "1744144475116027136",
+              "observedTimeUnixNano": "1744144475116037523",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "9e85b6dbe6d6: Waiting"
+              },
+              "flags": 1,
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
+            },
+            {
+              "timeUnixNano": "1744144475116877568",
+              "observedTimeUnixNano": "1744144475116888980",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "7fcd31c3da62: Waiting"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514089919106560",
-              "observedTimeUnixNano": "1743514089919115445",
+              "timeUnixNano": "1744144475117728768",
+              "observedTimeUnixNano": "1744144475117738845",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "bd944e9feb18: Waiting"
+              },
+              "flags": 1,
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
+            },
+            {
+              "timeUnixNano": "1744144475118582784",
+              "observedTimeUnixNano": "1744144475118593389",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "6c504f9ed6d5: Waiting"
+              },
+              "flags": 1,
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
+            },
+            {
+              "timeUnixNano": "1744144475119469568",
+              "observedTimeUnixNano": "1744144475119480464",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "83b5cb0dd387: Waiting"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514089920078080",
-              "observedTimeUnixNano": "1743514089920088762",
+              "timeUnixNano": "1744144475120301568",
+              "observedTimeUnixNano": "1744144475120309410",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "0d3da5253b52: Waiting"
+                "stringValue": "86c412f91f8b: Waiting"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514089920966912",
-              "observedTimeUnixNano": "1743514089920977682",
+              "timeUnixNano": "1744144475121074432",
+              "observedTimeUnixNano": "1744144475121081939",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "dcfc674a40e4: Waiting"
+                "stringValue": "7b81ba022cdf: Waiting"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514089922047744",
-              "observedTimeUnixNano": "1743514089922057851",
+              "timeUnixNano": "1744144475186422272",
+              "observedTimeUnixNano": "1744144475186435724",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "deab69056b43: Waiting"
+                "stringValue": "338505504b78: Verifying Checksum"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514089922970368",
-              "observedTimeUnixNano": "1743514089922979331",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "b38722e61238: Waiting"
-              },
-              "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
-            },
-            {
-              "timeUnixNano": "1743514089924307712",
-              "observedTimeUnixNano": "1743514089924320124",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "982392d0879b: Waiting"
-              },
-              "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
-            },
-            {
-              "timeUnixNano": "1743514089925066752",
-              "observedTimeUnixNano": "1743514089925078106",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "4f4fb700ef54: Waiting"
-              },
-              "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
-            },
-            {
-              "timeUnixNano": "1743514089968099072",
-              "observedTimeUnixNano": "1743514089968125566",
+              "timeUnixNano": "1744144475187256320",
+              "observedTimeUnixNano": "1744144475187267786",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "338505504b78: Download complete"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514090180944384",
-              "observedTimeUnixNano": "1743514090180966072",
+              "timeUnixNano": "1744144475445178880",
+              "observedTimeUnixNano": "1744144475445203588",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "a0440292ab39: Verifying Checksum"
+              },
+              "flags": 1,
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
+            },
+            {
+              "timeUnixNano": "1744144475446367744",
+              "observedTimeUnixNano": "1744144475446377151",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "a0440292ab39: Download complete"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514090234989568",
-              "observedTimeUnixNano": "1743514090235013011",
+              "timeUnixNano": "1744144475457037824",
+              "observedTimeUnixNano": "1744144475457050024",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "5a7813e071bf: Verifying Checksum"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514090235829760",
-              "observedTimeUnixNano": "1743514090235841314",
+              "timeUnixNano": "1744144475458043648",
+              "observedTimeUnixNano": "1744144475458055338",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "5a7813e071bf: Download complete"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514090307114752",
-              "observedTimeUnixNano": "1743514090307138836",
+              "timeUnixNano": "1744144475517043200",
+              "observedTimeUnixNano": "1744144475517077821",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "f4e675a8ed62: Verifying Checksum"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514090308222464",
-              "observedTimeUnixNano": "1743514090308235574",
+              "timeUnixNano": "1744144475518252544",
+              "observedTimeUnixNano": "1744144475518264421",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "f4e675a8ed62: Download complete"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514090481549056",
-              "observedTimeUnixNano": "1743514090481575157",
+              "timeUnixNano": "1744144475711440896",
+              "observedTimeUnixNano": "1744144475711466448",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "83b5cb0dd387: Verifying Checksum"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514090482763008",
-              "observedTimeUnixNano": "1743514090482774085",
+              "timeUnixNano": "1744144475713039872",
+              "observedTimeUnixNano": "1744144475713051977",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "83b5cb0dd387: Download complete"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514090537460992",
-              "observedTimeUnixNano": "1743514090537482618",
+              "timeUnixNano": "1744144475760761344",
+              "observedTimeUnixNano": "1744144475760781733",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "0d3da5253b52: Verifying Checksum"
+                "stringValue": "7b81ba022cdf: Verifying Checksum"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514090538381568",
-              "observedTimeUnixNano": "1743514090538399377",
+              "timeUnixNano": "1744144475762000640",
+              "observedTimeUnixNano": "1744144475762013102",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "0d3da5253b52: Download complete"
+                "stringValue": "7b81ba022cdf: Download complete"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514090601358080",
-              "observedTimeUnixNano": "1743514090601383329",
+              "timeUnixNano": "1744144475804809216",
+              "observedTimeUnixNano": "1744144475804821585",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "dbf0f55401a2: Verifying Checksum"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514090602298624",
-              "observedTimeUnixNano": "1743514090602308616",
+              "timeUnixNano": "1744144475805770752",
+              "observedTimeUnixNano": "1744144475805780024",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "dbf0f55401a2: Download complete"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514090619623424",
-              "observedTimeUnixNano": "1743514090619635217",
+              "timeUnixNano": "1744144475823927552",
+              "observedTimeUnixNano": "1744144475823940940",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "dcfc674a40e4: Verifying Checksum"
+                "stringValue": "9e85b6dbe6d6: Verifying Checksum"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514090620495360",
-              "observedTimeUnixNano": "1743514090620505993",
+              "timeUnixNano": "1744144475824978176",
+              "observedTimeUnixNano": "1744144475824990731",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "dcfc674a40e4: Download complete"
+                "stringValue": "9e85b6dbe6d6: Download complete"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514090669724416",
-              "observedTimeUnixNano": "1743514090669773950",
+              "timeUnixNano": "1744144475888280320",
+              "observedTimeUnixNano": "1744144475888303565",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "b38722e61238: Verifying Checksum"
+                "stringValue": "6c504f9ed6d5: Verifying Checksum"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514090670936064",
-              "observedTimeUnixNano": "1743514090670948029",
+              "timeUnixNano": "1744144475889074944",
+              "observedTimeUnixNano": "1744144475889086087",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "b38722e61238: Download complete"
+                "stringValue": "6c504f9ed6d5: Download complete"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514090733112320",
-              "observedTimeUnixNano": "1743514090733138161",
+              "timeUnixNano": "1744144475954333696",
+              "observedTimeUnixNano": "1744144475954381039",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "982392d0879b: Verifying Checksum"
+                "stringValue": "86c412f91f8b: Verifying Checksum"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514090733794048",
-              "observedTimeUnixNano": "1743514090733805230",
+              "timeUnixNano": "1744144475955628544",
+              "observedTimeUnixNano": "1744144475955641144",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "982392d0879b: Download complete"
+                "stringValue": "86c412f91f8b: Download complete"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514090791996928",
-              "observedTimeUnixNano": "1743514090792021794",
+              "timeUnixNano": "1744144476004721664",
+              "observedTimeUnixNano": "1744144476004743352",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "4f4fb700ef54: Verifying Checksum"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514090793115136",
-              "observedTimeUnixNano": "1743514090793126667",
+              "timeUnixNano": "1744144476005922048",
+              "observedTimeUnixNano": "1744144476005933896",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "4f4fb700ef54: Download complete"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514091377748992",
-              "observedTimeUnixNano": "1743514091377780270",
+              "timeUnixNano": "1744144476526984448",
+              "observedTimeUnixNano": "1744144476527008080",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "bd944e9feb18: Download complete"
+              },
+              "flags": 1,
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
+            },
+            {
+              "timeUnixNano": "1744144476569105408",
+              "observedTimeUnixNano": "1744144476569147111",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "5a7813e071bf: Pull complete"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514091472446720",
-              "observedTimeUnixNano": "1743514091472476614",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "deab69056b43: Download complete"
-              },
-              "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
-            },
-            {
-              "timeUnixNano": "1743514092018248960",
-              "observedTimeUnixNano": "1743514092018271097",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "7fcd31c3da62: Verifying Checksum"
-              },
-              "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
-            },
-            {
-              "timeUnixNano": "1743514092019061248",
-              "observedTimeUnixNano": "1743514092019069938",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "7fcd31c3da62: Download complete"
-              },
-              "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
-            },
-            {
-              "timeUnixNano": "1743514092306208000",
-              "observedTimeUnixNano": "1743514092306240842",
+              "timeUnixNano": "1744144477368838912",
+              "observedTimeUnixNano": "1744144477368865045",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "338505504b78: Pull complete"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514092704292608",
-              "observedTimeUnixNano": "1743514092704321293",
+              "timeUnixNano": "1744144477802573824",
+              "observedTimeUnixNano": "1744144477802594359",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "7fcd31c3da62: Verifying Checksum"
+              },
+              "flags": 1,
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
+            },
+            {
+              "timeUnixNano": "1744144477803441920",
+              "observedTimeUnixNano": "1744144477803450736",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "7fcd31c3da62: Download complete"
+              },
+              "flags": 1,
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
+            },
+            {
+              "timeUnixNano": "1744144477817790720",
+              "observedTimeUnixNano": "1744144477817803889",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "a0440292ab39: Pull complete"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514093780513024",
-              "observedTimeUnixNano": "1743514093780539074",
+              "timeUnixNano": "1744144478874801152",
+              "observedTimeUnixNano": "1744144478874822257",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "f4e675a8ed62: Pull complete"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             }
           ]
         }
@@ -772,7 +783,7 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "5.10.2"
+              "stringValue": "5.11.0"
             }
           },
           {
@@ -808,13 +819,13 @@
           {
             "key": "github.actions.workflow.ref",
             "value": {
-              "stringValue": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.10.2"
+              "stringValue": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.11.0"
             }
           },
           {
             "key": "github.actions.workflow.sha",
             "value": {
-              "stringValue": "ece2d22803f94573699149cdfadb5990a66f1458"
+              "stringValue": "f2e20c5c38a282e758483642f79836db2c7203de"
             }
           },
           {
@@ -838,13 +849,13 @@
           {
             "key": "process.pid",
             "value": {
-              "intValue": "3109"
+              "intValue": "3102"
             }
           },
           {
             "key": "process.parent_pid",
             "value": {
-              "intValue": "3108"
+              "intValue": "3101"
             }
           },
           {
@@ -925,580 +936,602 @@
         {
           "scope": {
             "name": "shell",
-            "version": "5.10.2"
+            "version": "5.11.0"
           },
           "logRecords": [
             {
-              "timeUnixNano": "1743514089667048448",
-              "observedTimeUnixNano": "1743514089667077997",
+              "timeUnixNano": "1744144474819650560",
+              "observedTimeUnixNano": "1744144474819676345",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "Unable to find image 'renovate/renovate:latest' locally"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514089828567552",
-              "observedTimeUnixNano": "1743514089828596832",
+              "timeUnixNano": "1744144475025938176",
+              "observedTimeUnixNano": "1744144475025963563",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "latest: Pulling from renovate/renovate"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514089900277760",
-              "observedTimeUnixNano": "1743514089900301478",
+              "timeUnixNano": "1744144475099996672",
+              "observedTimeUnixNano": "1744144475100015306",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "5a7813e071bf: Pulling fs layer"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514089901250048",
-              "observedTimeUnixNano": "1743514089901262562",
+              "timeUnixNano": "1744144475100853760",
+              "observedTimeUnixNano": "1744144475100865201",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "338505504b78: Pulling fs layer"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514089902472448",
-              "observedTimeUnixNano": "1743514089902485124",
+              "timeUnixNano": "1744144475101706240",
+              "observedTimeUnixNano": "1744144475101717100",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "a0440292ab39: Pulling fs layer"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514089903313408",
-              "observedTimeUnixNano": "1743514089903325689",
+              "timeUnixNano": "1744144475103152640",
+              "observedTimeUnixNano": "1744144475103164423",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "f4e675a8ed62: Pulling fs layer"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514089904394752",
-              "observedTimeUnixNano": "1743514089904405815",
+              "timeUnixNano": "1744144475103757056",
+              "observedTimeUnixNano": "1744144475103768455",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "dbf0f55401a2: Pulling fs layer"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514089905873664",
-              "observedTimeUnixNano": "1743514089905884736",
+              "timeUnixNano": "1744144475105199616",
+              "observedTimeUnixNano": "1744144475105211325",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "7fcd31c3da62: Pulling fs layer"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514089906665472",
-              "observedTimeUnixNano": "1743514089906673834",
+              "timeUnixNano": "1744144475106322432",
+              "observedTimeUnixNano": "1744144475106333631",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "83b5cb0dd387: Pulling fs layer"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514089907688960",
-              "observedTimeUnixNano": "1743514089907699678",
+              "timeUnixNano": "1744144475107734784",
+              "observedTimeUnixNano": "1744144475107747244",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "0d3da5253b52: Pulling fs layer"
+                "stringValue": "7b81ba022cdf: Pulling fs layer"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514089908691456",
-              "observedTimeUnixNano": "1743514089908702761",
+              "timeUnixNano": "1744144475108543744",
+              "observedTimeUnixNano": "1744144475108552615",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "dcfc674a40e4: Pulling fs layer"
+                "stringValue": "9e85b6dbe6d6: Pulling fs layer"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514089909571072",
-              "observedTimeUnixNano": "1743514089909582573",
+              "timeUnixNano": "1744144475109439488",
+              "observedTimeUnixNano": "1744144475109450639",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "deab69056b43: Pulling fs layer"
+                "stringValue": "bd944e9feb18: Pulling fs layer"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514089910471936",
-              "observedTimeUnixNano": "1743514089910482624",
+              "timeUnixNano": "1744144475110325760",
+              "observedTimeUnixNano": "1744144475110333385",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "b38722e61238: Pulling fs layer"
+                "stringValue": "6c504f9ed6d5: Pulling fs layer"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514089911350784",
-              "observedTimeUnixNano": "1743514089911361174",
+              "timeUnixNano": "1744144475111267840",
+              "observedTimeUnixNano": "1744144475111277918",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "f4e675a8ed62: Waiting"
+                "stringValue": "86c412f91f8b: Pulling fs layer"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514089912226560",
-              "observedTimeUnixNano": "1743514089912237420",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "982392d0879b: Pulling fs layer"
-              },
-              "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
-            },
-            {
-              "timeUnixNano": "1743514089913102592",
-              "observedTimeUnixNano": "1743514089913113555",
+              "timeUnixNano": "1744144475112056576",
+              "observedTimeUnixNano": "1744144475112066909",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "4f4fb700ef54: Pulling fs layer"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514089913966080",
-              "observedTimeUnixNano": "1743514089913976716",
+              "timeUnixNano": "1744144475112864000",
+              "observedTimeUnixNano": "1744144475112873402",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "f4e675a8ed62: Waiting"
+              },
+              "flags": 1,
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
+            },
+            {
+              "timeUnixNano": "1744144475113686528",
+              "observedTimeUnixNano": "1744144475113696549",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "dbf0f55401a2: Waiting"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514089914908416",
-              "observedTimeUnixNano": "1743514089915120510",
+              "timeUnixNano": "1744144475114694656",
+              "observedTimeUnixNano": "1744144475114705104",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "9e85b6dbe6d6: Waiting"
+              },
+              "flags": 1,
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
+            },
+            {
+              "timeUnixNano": "1744144475115550720",
+              "observedTimeUnixNano": "1744144475115560340",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "7fcd31c3da62: Waiting"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514089916076544",
-              "observedTimeUnixNano": "1743514089916087285",
+              "timeUnixNano": "1744144475116425472",
+              "observedTimeUnixNano": "1744144475116436141",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "bd944e9feb18: Waiting"
+              },
+              "flags": 1,
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
+            },
+            {
+              "timeUnixNano": "1744144475117324032",
+              "observedTimeUnixNano": "1744144475117334467",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "6c504f9ed6d5: Waiting"
+              },
+              "flags": 1,
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
+            },
+            {
+              "timeUnixNano": "1744144475118200832",
+              "observedTimeUnixNano": "1744144475118211793",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "83b5cb0dd387: Waiting"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514089917084160",
-              "observedTimeUnixNano": "1743514089917095336",
+              "timeUnixNano": "1744144475118998784",
+              "observedTimeUnixNano": "1744144475119008989",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "0d3da5253b52: Waiting"
+                "stringValue": "86c412f91f8b: Waiting"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514089918146304",
-              "observedTimeUnixNano": "1743514089918156615",
+              "timeUnixNano": "1744144475119855872",
+              "observedTimeUnixNano": "1744144475119867050",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "dcfc674a40e4: Waiting"
+                "stringValue": "7b81ba022cdf: Waiting"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514089919298816",
-              "observedTimeUnixNano": "1743514089919306221",
+              "timeUnixNano": "1744144475185499648",
+              "observedTimeUnixNano": "1744144475185513403",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "deab69056b43: Waiting"
+                "stringValue": "338505504b78: Verifying Checksum"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514089920201216",
-              "observedTimeUnixNano": "1743514089920211220",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "b38722e61238: Waiting"
-              },
-              "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
-            },
-            {
-              "timeUnixNano": "1743514089921078784",
-              "observedTimeUnixNano": "1743514089921092143",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "982392d0879b: Waiting"
-              },
-              "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
-            },
-            {
-              "timeUnixNano": "1743514089922116096",
-              "observedTimeUnixNano": "1743514089922126168",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "4f4fb700ef54: Waiting"
-              },
-              "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
-            },
-            {
-              "timeUnixNano": "1743514089966420992",
-              "observedTimeUnixNano": "1743514089966475396",
+              "timeUnixNano": "1744144475186371584",
+              "observedTimeUnixNano": "1744144475186394316",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "338505504b78: Download complete"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514090179944448",
-              "observedTimeUnixNano": "1743514090179973569",
+              "timeUnixNano": "1744144475443624448",
+              "observedTimeUnixNano": "1744144475443653228",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "a0440292ab39: Verifying Checksum"
+              },
+              "flags": 1,
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
+            },
+            {
+              "timeUnixNano": "1744144475444682240",
+              "observedTimeUnixNano": "1744144475444694110",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "a0440292ab39: Download complete"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514090233520896",
-              "observedTimeUnixNano": "1743514090233547132",
+              "timeUnixNano": "1744144475455777536",
+              "observedTimeUnixNano": "1744144475455790199",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "5a7813e071bf: Verifying Checksum"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514090234594304",
-              "observedTimeUnixNano": "1743514090234607220",
+              "timeUnixNano": "1744144475457082624",
+              "observedTimeUnixNano": "1744144475457092882",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "5a7813e071bf: Download complete"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514090305738240",
-              "observedTimeUnixNano": "1743514090305766900",
+              "timeUnixNano": "1744144475515365888",
+              "observedTimeUnixNano": "1744144475515394505",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "f4e675a8ed62: Verifying Checksum"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514090306883072",
-              "observedTimeUnixNano": "1743514090306894516",
+              "timeUnixNano": "1744144475516340480",
+              "observedTimeUnixNano": "1744144475516352329",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "f4e675a8ed62: Download complete"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514090479762176",
-              "observedTimeUnixNano": "1743514090479791930",
+              "timeUnixNano": "1744144475710007296",
+              "observedTimeUnixNano": "1744144475710038692",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "83b5cb0dd387: Verifying Checksum"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514090480810752",
-              "observedTimeUnixNano": "1743514090480822279",
+              "timeUnixNano": "1744144475711695872",
+              "observedTimeUnixNano": "1744144475711710056",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "83b5cb0dd387: Download complete"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514090535835904",
-              "observedTimeUnixNano": "1743514090535860365",
+              "timeUnixNano": "1744144475759420416",
+              "observedTimeUnixNano": "1744144475759572416",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "0d3da5253b52: Verifying Checksum"
+                "stringValue": "7b81ba022cdf: Verifying Checksum"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514090536959488",
-              "observedTimeUnixNano": "1743514090536977796",
+              "timeUnixNano": "1744144475760673280",
+              "observedTimeUnixNano": "1744144475760682670",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "0d3da5253b52: Download complete"
+                "stringValue": "7b81ba022cdf: Download complete"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514090599765760",
-              "observedTimeUnixNano": "1743514090599794919",
+              "timeUnixNano": "1744144475803572224",
+              "observedTimeUnixNano": "1744144475803585748",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "dbf0f55401a2: Verifying Checksum"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514090600603136",
-              "observedTimeUnixNano": "1743514090600615471",
+              "timeUnixNano": "1744144475804736000",
+              "observedTimeUnixNano": "1744144475804748528",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "dbf0f55401a2: Download complete"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514090617554176",
-              "observedTimeUnixNano": "1743514090617567189",
+              "timeUnixNano": "1744144475822723584",
+              "observedTimeUnixNano": "1744144475822736242",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "dcfc674a40e4: Verifying Checksum"
+                "stringValue": "9e85b6dbe6d6: Verifying Checksum"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514090618981120",
-              "observedTimeUnixNano": "1743514090618994173",
+              "timeUnixNano": "1744144475823770112",
+              "observedTimeUnixNano": "1744144475823781734",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "dcfc674a40e4: Download complete"
+                "stringValue": "9e85b6dbe6d6: Download complete"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514090668818432",
-              "observedTimeUnixNano": "1743514090668841426",
+              "timeUnixNano": "1744144475886548224",
+              "observedTimeUnixNano": "1744144475886568890",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "b38722e61238: Verifying Checksum"
+                "stringValue": "6c504f9ed6d5: Verifying Checksum"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514090669537536",
-              "observedTimeUnixNano": "1743514090669549463",
+              "timeUnixNano": "1744144475887495936",
+              "observedTimeUnixNano": "1744144475887508904",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "b38722e61238: Download complete"
+                "stringValue": "6c504f9ed6d5: Download complete"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514090731137792",
-              "observedTimeUnixNano": "1743514090731162057",
+              "timeUnixNano": "1744144475952744960",
+              "observedTimeUnixNano": "1744144475952916368",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "982392d0879b: Verifying Checksum"
+                "stringValue": "86c412f91f8b: Verifying Checksum"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514090732540672",
-              "observedTimeUnixNano": "1743514090732552932",
+              "timeUnixNano": "1744144475954396416",
+              "observedTimeUnixNano": "1744144475954407597",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "982392d0879b: Download complete"
+                "stringValue": "86c412f91f8b: Download complete"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514090789893888",
-              "observedTimeUnixNano": "1743514090789921931",
+              "timeUnixNano": "1744144476003575808",
+              "observedTimeUnixNano": "1744144476003595282",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "4f4fb700ef54: Verifying Checksum"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514090791140096",
-              "observedTimeUnixNano": "1743514090791160117",
+              "timeUnixNano": "1744144476004904192",
+              "observedTimeUnixNano": "1744144476004916762",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "4f4fb700ef54: Download complete"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514091376663808",
-              "observedTimeUnixNano": "1743514091376713594",
+              "timeUnixNano": "1744144476525543936",
+              "observedTimeUnixNano": "1744144476525572917",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "bd944e9feb18: Download complete"
+              },
+              "flags": 1,
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
+            },
+            {
+              "timeUnixNano": "1744144476568008704",
+              "observedTimeUnixNano": "1744144476568033649",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "5a7813e071bf: Pull complete"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514091471146752",
-              "observedTimeUnixNano": "1743514091471172351",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "deab69056b43: Download complete"
-              },
-              "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
-            },
-            {
-              "timeUnixNano": "1743514092017120512",
-              "observedTimeUnixNano": "1743514092017151574",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "7fcd31c3da62: Verifying Checksum"
-              },
-              "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
-            },
-            {
-              "timeUnixNano": "1743514092018025984",
-              "observedTimeUnixNano": "1743514092018037368",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "7fcd31c3da62: Download complete"
-              },
-              "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
-            },
-            {
-              "timeUnixNano": "1743514092305098752",
-              "observedTimeUnixNano": "1743514092305130216",
+              "timeUnixNano": "1744144477367727616",
+              "observedTimeUnixNano": "1744144477367758999",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "338505504b78: Pull complete"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514092703102976",
-              "observedTimeUnixNano": "1743514092703132460",
+              "timeUnixNano": "1744144477801493760",
+              "observedTimeUnixNano": "1744144477801528494",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "7fcd31c3da62: Verifying Checksum"
+              },
+              "flags": 1,
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
+            },
+            {
+              "timeUnixNano": "1744144477802464256",
+              "observedTimeUnixNano": "1744144477802477419",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "7fcd31c3da62: Download complete"
+              },
+              "flags": 1,
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
+            },
+            {
+              "timeUnixNano": "1744144477816789504",
+              "observedTimeUnixNano": "1744144477816801923",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "a0440292ab39: Pull complete"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514093779166208",
-              "observedTimeUnixNano": "1743514093779196089",
+              "timeUnixNano": "1744144478873488640",
+              "observedTimeUnixNano": "1744144478873514010",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "f4e675a8ed62: Pull complete"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
+            },
+            {
+              "timeUnixNano": "1744144479714782976",
+              "observedTimeUnixNano": "1744144479714813288",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "dbf0f55401a2: Pull complete"
+              },
+              "flags": 1,
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             }
           ]
         }
@@ -1526,7 +1559,7 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "5.10.2"
+              "stringValue": "5.11.0"
             }
           },
           {
@@ -1562,13 +1595,13 @@
           {
             "key": "github.actions.workflow.ref",
             "value": {
-              "stringValue": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.10.2"
+              "stringValue": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.11.0"
             }
           },
           {
             "key": "github.actions.workflow.sha",
             "value": {
-              "stringValue": "ece2d22803f94573699149cdfadb5990a66f1458"
+              "stringValue": "f2e20c5c38a282e758483642f79836db2c7203de"
             }
           },
           {
@@ -1592,13 +1625,13 @@
           {
             "key": "process.pid",
             "value": {
-              "intValue": "2296"
+              "intValue": "2290"
             }
           },
           {
             "key": "process.parent_pid",
             "value": {
-              "intValue": "2207"
+              "intValue": "2202"
             }
           },
           {
@@ -1679,19 +1712,19 @@
         {
           "scope": {
             "name": "shell",
-            "version": "5.10.2"
+            "version": "5.11.0"
           },
           "logRecords": [
             {
-              "timeUnixNano": "1743514094640875776",
-              "observedTimeUnixNano": "1743514094640899872",
+              "timeUnixNano": "1744144479716037120",
+              "observedTimeUnixNano": "1744144479716061018",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "dbf0f55401a2: Pull complete"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             }
           ]
         }
@@ -1719,7 +1752,7 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "5.10.2"
+              "stringValue": "5.11.0"
             }
           },
           {
@@ -1755,13 +1788,13 @@
           {
             "key": "github.actions.workflow.ref",
             "value": {
-              "stringValue": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.10.2"
+              "stringValue": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.11.0"
             }
           },
           {
             "key": "github.actions.workflow.sha",
             "value": {
-              "stringValue": "ece2d22803f94573699149cdfadb5990a66f1458"
+              "stringValue": "f2e20c5c38a282e758483642f79836db2c7203de"
             }
           },
           {
@@ -1785,13 +1818,239 @@
           {
             "key": "process.pid",
             "value": {
-              "intValue": "3109"
+              "intValue": "2290"
             }
           },
           {
             "key": "process.parent_pid",
             "value": {
-              "intValue": "3108"
+              "intValue": "2202"
+            }
+          },
+          {
+            "key": "process.executable.name",
+            "value": {
+              "stringValue": "bash"
+            }
+          },
+          {
+            "key": "process.executable.path",
+            "value": {
+              "stringValue": "/usr/bin/bash"
+            }
+          },
+          {
+            "key": "process.command_line",
+            "value": {
+              "stringValue": "bash -e demo.sh"
+            }
+          },
+          {
+            "key": "process.command",
+            "value": {
+              "stringValue": "bash"
+            }
+          },
+          {
+            "key": "process.owner",
+            "value": {
+              "stringValue": "runner"
+            }
+          },
+          {
+            "key": "process.runtime.name",
+            "value": {
+              "stringValue": "bash"
+            }
+          },
+          {
+            "key": "process.runtime.description",
+            "value": {
+              "stringValue": "Bourne Again Shell"
+            }
+          },
+          {
+            "key": "process.runtime.version",
+            "value": {
+              "stringValue": "5.2.21-2ubuntu4"
+            }
+          },
+          {
+            "key": "process.runtime.options",
+            "value": {
+              "stringValue": "ehB"
+            }
+          },
+          {
+            "key": "service.version",
+            "value": {
+              "stringValue": ""
+            }
+          },
+          {
+            "key": "service.namespace",
+            "value": {
+              "stringValue": ""
+            }
+          },
+          {
+            "key": "service.instance.id",
+            "value": {
+              "stringValue": ""
+            }
+          }
+        ]
+      },
+      "scopeLogs": [
+        {
+          "scope": {
+            "name": "shell",
+            "version": "5.11.0"
+          },
+          "logRecords": [
+            {
+              "timeUnixNano": "1744144485969063168",
+              "observedTimeUnixNano": "1744144485969088674",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "7fcd31c3da62: Pull complete"
+              },
+              "flags": 1,
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
+            },
+            {
+              "timeUnixNano": "1744144486185089792",
+              "observedTimeUnixNano": "1744144486185131786",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "83b5cb0dd387: Pull complete"
+              },
+              "flags": 1,
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
+            },
+            {
+              "timeUnixNano": "1744144486195164160",
+              "observedTimeUnixNano": "1744144486195181258",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "7b81ba022cdf: Pull complete"
+              },
+              "flags": 1,
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
+            },
+            {
+              "timeUnixNano": "1744144486206270720",
+              "observedTimeUnixNano": "1744144486206287338",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "9e85b6dbe6d6: Pull complete"
+              },
+              "flags": 1,
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+{
+  "resourceLogs": [
+    {
+      "resource": {
+        "attributes": [
+          {
+            "key": "telemetry.sdk.language",
+            "value": {
+              "stringValue": "shell"
+            }
+          },
+          {
+            "key": "telemetry.sdk.name",
+            "value": {
+              "stringValue": "opentelemetry"
+            }
+          },
+          {
+            "key": "telemetry.sdk.version",
+            "value": {
+              "stringValue": "5.11.0"
+            }
+          },
+          {
+            "key": "service.name",
+            "value": {
+              "stringValue": "unknown_service"
+            }
+          },
+          {
+            "key": "github.repository.id",
+            "value": {
+              "stringValue": "692042935"
+            }
+          },
+          {
+            "key": "github.repository.name",
+            "value": {
+              "stringValue": "Thoth"
+            }
+          },
+          {
+            "key": "github.repository.owner.id",
+            "value": {
+              "stringValue": "100447901"
+            }
+          },
+          {
+            "key": "github.repository.owner.name",
+            "value": {
+              "stringValue": "plengauer"
+            }
+          },
+          {
+            "key": "github.actions.workflow.ref",
+            "value": {
+              "stringValue": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.11.0"
+            }
+          },
+          {
+            "key": "github.actions.workflow.sha",
+            "value": {
+              "stringValue": "f2e20c5c38a282e758483642f79836db2c7203de"
+            }
+          },
+          {
+            "key": "github.actions.workflow.name",
+            "value": {
+              "stringValue": "Refresh Demos"
+            }
+          },
+          {
+            "key": "os.type",
+            "value": {
+              "stringValue": "linux"
+            }
+          },
+          {
+            "key": "os.version",
+            "value": {
+              "stringValue": "6.8.0-1021-azure"
+            }
+          },
+          {
+            "key": "process.pid",
+            "value": {
+              "intValue": "3102"
+            }
+          },
+          {
+            "key": "process.parent_pid",
+            "value": {
+              "intValue": "3101"
             }
           },
           {
@@ -1872,19 +2131,52 @@
         {
           "scope": {
             "name": "shell",
-            "version": "5.10.2"
+            "version": "5.11.0"
           },
           "logRecords": [
             {
-              "timeUnixNano": "1743514094639595776",
-              "observedTimeUnixNano": "1743514094639617553",
+              "timeUnixNano": "1744144485967885824",
+              "observedTimeUnixNano": "1744144485967914864",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "dbf0f55401a2: Pull complete"
+                "stringValue": "7fcd31c3da62: Pull complete"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
+            },
+            {
+              "timeUnixNano": "1744144486183885568",
+              "observedTimeUnixNano": "1744144486183916185",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "83b5cb0dd387: Pull complete"
+              },
+              "flags": 1,
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
+            },
+            {
+              "timeUnixNano": "1744144486194026240",
+              "observedTimeUnixNano": "1744144486194042998",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "7b81ba022cdf: Pull complete"
+              },
+              "flags": 1,
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
+            },
+            {
+              "timeUnixNano": "1744144486204956928",
+              "observedTimeUnixNano": "1744144486204974585",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "9e85b6dbe6d6: Pull complete"
+              },
+              "flags": 1,
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             }
           ]
         }
@@ -1912,7 +2204,7 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "5.10.2"
+              "stringValue": "5.11.0"
             }
           },
           {
@@ -1948,13 +2240,13 @@
           {
             "key": "github.actions.workflow.ref",
             "value": {
-              "stringValue": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.10.2"
+              "stringValue": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.11.0"
             }
           },
           {
             "key": "github.actions.workflow.sha",
             "value": {
-              "stringValue": "ece2d22803f94573699149cdfadb5990a66f1458"
+              "stringValue": "f2e20c5c38a282e758483642f79836db2c7203de"
             }
           },
           {
@@ -1978,13 +2270,13 @@
           {
             "key": "process.pid",
             "value": {
-              "intValue": "2296"
+              "intValue": "2290"
             }
           },
           {
             "key": "process.parent_pid",
             "value": {
-              "intValue": "2207"
+              "intValue": "2202"
             }
           },
           {
@@ -2065,526 +2357,74 @@
         {
           "scope": {
             "name": "shell",
-            "version": "5.10.2"
+            "version": "5.11.0"
           },
           "logRecords": [
             {
-              "timeUnixNano": "1743514100962910976",
-              "observedTimeUnixNano": "1743514100962938663",
+              "timeUnixNano": "1744144496867666432",
+              "observedTimeUnixNano": "1744144496867688780",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "7fcd31c3da62: Pull complete"
+                "stringValue": "bd944e9feb18: Pull complete"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514101178584832",
-              "observedTimeUnixNano": "1743514101178613022",
+              "timeUnixNano": "1744144496877328896",
+              "observedTimeUnixNano": "1744144496877347018",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "83b5cb0dd387: Pull complete"
+                "stringValue": "6c504f9ed6d5: Pull complete"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514101188226816",
-              "observedTimeUnixNano": "1743514101188248382",
+              "timeUnixNano": "1744144496891181312",
+              "observedTimeUnixNano": "1744144496891202027",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "0d3da5253b52: Pull complete"
+                "stringValue": "86c412f91f8b: Pull complete"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514101204278016",
-              "observedTimeUnixNano": "1743514101204300087",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "dcfc674a40e4: Pull complete"
-              },
-              "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
-            }
-          ]
-        }
-      ]
-    }
-  ]
-}
-{
-  "resourceLogs": [
-    {
-      "resource": {
-        "attributes": [
-          {
-            "key": "telemetry.sdk.language",
-            "value": {
-              "stringValue": "shell"
-            }
-          },
-          {
-            "key": "telemetry.sdk.name",
-            "value": {
-              "stringValue": "opentelemetry"
-            }
-          },
-          {
-            "key": "telemetry.sdk.version",
-            "value": {
-              "stringValue": "5.10.2"
-            }
-          },
-          {
-            "key": "service.name",
-            "value": {
-              "stringValue": "unknown_service"
-            }
-          },
-          {
-            "key": "github.repository.id",
-            "value": {
-              "stringValue": "692042935"
-            }
-          },
-          {
-            "key": "github.repository.name",
-            "value": {
-              "stringValue": "Thoth"
-            }
-          },
-          {
-            "key": "github.repository.owner.id",
-            "value": {
-              "stringValue": "100447901"
-            }
-          },
-          {
-            "key": "github.repository.owner.name",
-            "value": {
-              "stringValue": "plengauer"
-            }
-          },
-          {
-            "key": "github.actions.workflow.ref",
-            "value": {
-              "stringValue": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.10.2"
-            }
-          },
-          {
-            "key": "github.actions.workflow.sha",
-            "value": {
-              "stringValue": "ece2d22803f94573699149cdfadb5990a66f1458"
-            }
-          },
-          {
-            "key": "github.actions.workflow.name",
-            "value": {
-              "stringValue": "Refresh Demos"
-            }
-          },
-          {
-            "key": "os.type",
-            "value": {
-              "stringValue": "linux"
-            }
-          },
-          {
-            "key": "os.version",
-            "value": {
-              "stringValue": "6.8.0-1021-azure"
-            }
-          },
-          {
-            "key": "process.pid",
-            "value": {
-              "intValue": "3109"
-            }
-          },
-          {
-            "key": "process.parent_pid",
-            "value": {
-              "intValue": "3108"
-            }
-          },
-          {
-            "key": "process.executable.name",
-            "value": {
-              "stringValue": "bash"
-            }
-          },
-          {
-            "key": "process.executable.path",
-            "value": {
-              "stringValue": "/usr/bin/bash"
-            }
-          },
-          {
-            "key": "process.command_line",
-            "value": {
-              "stringValue": "sudo -E docker run --rm --network host --env RENOVATE_TOKEN renovate/renovate --dry-run plengauer/opentelemetry-bash"
-            }
-          },
-          {
-            "key": "process.command",
-            "value": {
-              "stringValue": "sudo"
-            }
-          },
-          {
-            "key": "process.owner",
-            "value": {
-              "stringValue": "root"
-            }
-          },
-          {
-            "key": "process.runtime.name",
-            "value": {
-              "stringValue": "bash"
-            }
-          },
-          {
-            "key": "process.runtime.description",
-            "value": {
-              "stringValue": "Bourne Again Shell"
-            }
-          },
-          {
-            "key": "process.runtime.version",
-            "value": {
-              "stringValue": "5.2.21-2ubuntu4"
-            }
-          },
-          {
-            "key": "process.runtime.options",
-            "value": {
-              "stringValue": "hBc"
-            }
-          },
-          {
-            "key": "service.version",
-            "value": {
-              "stringValue": ""
-            }
-          },
-          {
-            "key": "service.namespace",
-            "value": {
-              "stringValue": ""
-            }
-          },
-          {
-            "key": "service.instance.id",
-            "value": {
-              "stringValue": ""
-            }
-          }
-        ]
-      },
-      "scopeLogs": [
-        {
-          "scope": {
-            "name": "shell",
-            "version": "5.10.2"
-          },
-          "logRecords": [
-            {
-              "timeUnixNano": "1743514100961760512",
-              "observedTimeUnixNano": "1743514100961784383",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "7fcd31c3da62: Pull complete"
-              },
-              "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
-            },
-            {
-              "timeUnixNano": "1743514101177309696",
-              "observedTimeUnixNano": "1743514101177342103",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "83b5cb0dd387: Pull complete"
-              },
-              "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
-            },
-            {
-              "timeUnixNano": "1743514101187266304",
-              "observedTimeUnixNano": "1743514101187291152",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "0d3da5253b52: Pull complete"
-              },
-              "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
-            },
-            {
-              "timeUnixNano": "1743514101203301376",
-              "observedTimeUnixNano": "1743514101203327205",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "dcfc674a40e4: Pull complete"
-              },
-              "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
-            }
-          ]
-        }
-      ]
-    }
-  ]
-}
-{
-  "resourceLogs": [
-    {
-      "resource": {
-        "attributes": [
-          {
-            "key": "telemetry.sdk.language",
-            "value": {
-              "stringValue": "shell"
-            }
-          },
-          {
-            "key": "telemetry.sdk.name",
-            "value": {
-              "stringValue": "opentelemetry"
-            }
-          },
-          {
-            "key": "telemetry.sdk.version",
-            "value": {
-              "stringValue": "5.10.2"
-            }
-          },
-          {
-            "key": "service.name",
-            "value": {
-              "stringValue": "unknown_service"
-            }
-          },
-          {
-            "key": "github.repository.id",
-            "value": {
-              "stringValue": "692042935"
-            }
-          },
-          {
-            "key": "github.repository.name",
-            "value": {
-              "stringValue": "Thoth"
-            }
-          },
-          {
-            "key": "github.repository.owner.id",
-            "value": {
-              "stringValue": "100447901"
-            }
-          },
-          {
-            "key": "github.repository.owner.name",
-            "value": {
-              "stringValue": "plengauer"
-            }
-          },
-          {
-            "key": "github.actions.workflow.ref",
-            "value": {
-              "stringValue": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.10.2"
-            }
-          },
-          {
-            "key": "github.actions.workflow.sha",
-            "value": {
-              "stringValue": "ece2d22803f94573699149cdfadb5990a66f1458"
-            }
-          },
-          {
-            "key": "github.actions.workflow.name",
-            "value": {
-              "stringValue": "Refresh Demos"
-            }
-          },
-          {
-            "key": "os.type",
-            "value": {
-              "stringValue": "linux"
-            }
-          },
-          {
-            "key": "os.version",
-            "value": {
-              "stringValue": "6.8.0-1021-azure"
-            }
-          },
-          {
-            "key": "process.pid",
-            "value": {
-              "intValue": "2296"
-            }
-          },
-          {
-            "key": "process.parent_pid",
-            "value": {
-              "intValue": "2207"
-            }
-          },
-          {
-            "key": "process.executable.name",
-            "value": {
-              "stringValue": "bash"
-            }
-          },
-          {
-            "key": "process.executable.path",
-            "value": {
-              "stringValue": "/usr/bin/bash"
-            }
-          },
-          {
-            "key": "process.command_line",
-            "value": {
-              "stringValue": "bash -e demo.sh"
-            }
-          },
-          {
-            "key": "process.command",
-            "value": {
-              "stringValue": "bash"
-            }
-          },
-          {
-            "key": "process.owner",
-            "value": {
-              "stringValue": "runner"
-            }
-          },
-          {
-            "key": "process.runtime.name",
-            "value": {
-              "stringValue": "bash"
-            }
-          },
-          {
-            "key": "process.runtime.description",
-            "value": {
-              "stringValue": "Bourne Again Shell"
-            }
-          },
-          {
-            "key": "process.runtime.version",
-            "value": {
-              "stringValue": "5.2.21-2ubuntu4"
-            }
-          },
-          {
-            "key": "process.runtime.options",
-            "value": {
-              "stringValue": "ehB"
-            }
-          },
-          {
-            "key": "service.version",
-            "value": {
-              "stringValue": ""
-            }
-          },
-          {
-            "key": "service.namespace",
-            "value": {
-              "stringValue": ""
-            }
-          },
-          {
-            "key": "service.instance.id",
-            "value": {
-              "stringValue": ""
-            }
-          }
-        ]
-      },
-      "scopeLogs": [
-        {
-          "scope": {
-            "name": "shell",
-            "version": "5.10.2"
-          },
-          "logRecords": [
-            {
-              "timeUnixNano": "1743514112119716352",
-              "observedTimeUnixNano": "1743514112119742168",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "deab69056b43: Pull complete"
-              },
-              "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
-            },
-            {
-              "timeUnixNano": "1743514112130178816",
-              "observedTimeUnixNano": "1743514112130197055",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "b38722e61238: Pull complete"
-              },
-              "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
-            },
-            {
-              "timeUnixNano": "1743514112141627136",
-              "observedTimeUnixNano": "1743514112141640885",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "982392d0879b: Pull complete"
-              },
-              "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
-            },
-            {
-              "timeUnixNano": "1743514112152356608",
-              "observedTimeUnixNano": "1743514112152373996",
+              "timeUnixNano": "1744144496900096000",
+              "observedTimeUnixNano": "1744144496900110438",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "4f4fb700ef54: Pull complete"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514112157314048",
-              "observedTimeUnixNano": "1743514112157330120",
+              "timeUnixNano": "1744144496904254976",
+              "observedTimeUnixNano": "1744144496904267667",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "Digest: sha256:bfdeb26c306f5d11888baf5c83820e322047e9e00caac588786373b50f113916"
+                "stringValue": "Digest: sha256:543c8f75aba57d682ec51bc9abe02a184410c8ea6321e427a090477aa61488d8"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             },
             {
-              "timeUnixNano": "1743514112158466816",
-              "observedTimeUnixNano": "1743514112158478732",
+              "timeUnixNano": "1744144496905401088",
+              "observedTimeUnixNano": "1744144496905412934",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "Status: Downloaded newer image for renovate/renovate:latest"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2bfbeb2ebe824eb4"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "858e1609f0cadad3"
             }
           ]
         }
@@ -2612,7 +2452,7 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "5.10.2"
+              "stringValue": "5.11.0"
             }
           },
           {
@@ -2648,13 +2488,13 @@
           {
             "key": "github.actions.workflow.ref",
             "value": {
-              "stringValue": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.10.2"
+              "stringValue": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.11.0"
             }
           },
           {
             "key": "github.actions.workflow.sha",
             "value": {
-              "stringValue": "ece2d22803f94573699149cdfadb5990a66f1458"
+              "stringValue": "f2e20c5c38a282e758483642f79836db2c7203de"
             }
           },
           {
@@ -2678,13 +2518,13 @@
           {
             "key": "process.pid",
             "value": {
-              "intValue": "3109"
+              "intValue": "3102"
             }
           },
           {
             "key": "process.parent_pid",
             "value": {
-              "intValue": "3108"
+              "intValue": "3101"
             }
           },
           {
@@ -2765,29 +2605,29 @@
         {
           "scope": {
             "name": "shell",
-            "version": "5.10.2"
+            "version": "5.11.0"
           },
           "spans": [
             {
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "0da3cc63bc1897c7",
-              "parentSpanId": "43b9b4c43733fc2c",
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "bade1201d9754622",
+              "parentSpanId": "7b62cb55fd1206d0",
               "flags": 768,
               "name": "exec",
               "kind": 1,
-              "startTimeUnixNano": "1743514113656771328",
-              "endTimeUnixNano": "1743514113665778432",
+              "startTimeUnixNano": "1744144498357845504",
+              "endTimeUnixNano": "1744144498366388480",
               "status": {}
             },
             {
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "d8b8bec73087b152",
-              "parentSpanId": "88818ac4c43814cd",
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "36d360e81afec2a6",
+              "parentSpanId": "16116e324141bf6a",
               "flags": 768,
               "name": "exec",
               "kind": 1,
-              "startTimeUnixNano": "1743514114539405824",
-              "endTimeUnixNano": "1743514114548164608",
+              "startTimeUnixNano": "1744144499209843456",
+              "endTimeUnixNano": "1744144499218361600",
               "status": {}
             }
           ]
@@ -2816,7 +2656,7 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "5.10.2"
+              "stringValue": "5.11.0"
             }
           },
           {
@@ -2852,13 +2692,13 @@
           {
             "key": "github.actions.workflow.ref",
             "value": {
-              "stringValue": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.10.2"
+              "stringValue": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.11.0"
             }
           },
           {
             "key": "github.actions.workflow.sha",
             "value": {
-              "stringValue": "ece2d22803f94573699149cdfadb5990a66f1458"
+              "stringValue": "f2e20c5c38a282e758483642f79836db2c7203de"
             }
           },
           {
@@ -2882,13 +2722,13 @@
           {
             "key": "process.pid",
             "value": {
-              "intValue": "3109"
+              "intValue": "3102"
             }
           },
           {
             "key": "process.parent_pid",
             "value": {
-              "intValue": "3108"
+              "intValue": "3101"
             }
           },
           {
@@ -2969,74 +2809,74 @@
         {
           "scope": {
             "name": "shell",
-            "version": "5.10.2"
+            "version": "5.11.0"
           },
           "logRecords": [
             {
-              "timeUnixNano": "1743514112118378240",
-              "observedTimeUnixNano": "1743514112118401568",
+              "timeUnixNano": "1744144496866437376",
+              "observedTimeUnixNano": "1744144496866460674",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "deab69056b43: Pull complete"
+                "stringValue": "bd944e9feb18: Pull complete"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514112129066496",
-              "observedTimeUnixNano": "1743514112129083994",
+              "timeUnixNano": "1744144496876246528",
+              "observedTimeUnixNano": "1744144496876266050",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "b38722e61238: Pull complete"
+                "stringValue": "6c504f9ed6d5: Pull complete"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514112140561152",
-              "observedTimeUnixNano": "1743514112140575368",
+              "timeUnixNano": "1744144496890005504",
+              "observedTimeUnixNano": "1744144496890026386",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "982392d0879b: Pull complete"
+                "stringValue": "86c412f91f8b: Pull complete"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514112151306496",
-              "observedTimeUnixNano": "1743514112151323059",
+              "timeUnixNano": "1744144496899198976",
+              "observedTimeUnixNano": "1744144496899214386",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "4f4fb700ef54: Pull complete"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514112155927040",
-              "observedTimeUnixNano": "1743514112155942860",
+              "timeUnixNano": "1744144496903035904",
+              "observedTimeUnixNano": "1744144496903046175",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "Digest: sha256:bfdeb26c306f5d11888baf5c83820e322047e9e00caac588786373b50f113916"
+                "stringValue": "Digest: sha256:543c8f75aba57d682ec51bc9abe02a184410c8ea6321e427a090477aa61488d8"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             },
             {
-              "timeUnixNano": "1743514112157521152",
-              "observedTimeUnixNano": "1743514112157545457",
+              "timeUnixNano": "1744144496904465664",
+              "observedTimeUnixNano": "1744144496904478515",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "Status: Downloaded newer image for renovate/renovate:latest"
               },
               "flags": 1,
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "8188b71cd80d3e14"
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "da8d214e5315a766"
             }
           ]
         }
@@ -3136,7 +2976,7 @@
           {
             "key": "container.id",
             "value": {
-              "stringValue": "1e3b68da65365ad950670d6016eb046d7993fa02c690c48d0641e92a99e2595b"
+              "stringValue": "5b9dddf4afceb789703a5ccc69011d7e9230c99f0a5008568c5fd17412b93791"
             }
           },
           {
@@ -3173,18 +3013,18 @@
           },
           "spans": [
             {
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "f3d754cfc4d4d02c",
-              "parentSpanId": "0029c73fcfbe1b7d",
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "99d47bdbacf0fa64",
+              "parentSpanId": "2cad570336b1a1dd",
               "name": "dns.lookup",
               "kind": 3,
-              "startTimeUnixNano": "1743514119936000000",
-              "endTimeUnixNano": "1743514119952091064",
+              "startTimeUnixNano": "1744144504526000000",
+              "endTimeUnixNano": "1744144504531434534",
               "attributes": [
                 {
                   "key": "peer.ipv4",
                   "value": {
-                    "stringValue": "140.82.113.6"
+                    "stringValue": "140.82.112.6"
                   }
                 }
               ],
@@ -3284,7 +3124,7 @@
           {
             "key": "container.id",
             "value": {
-              "stringValue": "1e3b68da65365ad950670d6016eb046d7993fa02c690c48d0641e92a99e2595b"
+              "stringValue": "5b9dddf4afceb789703a5ccc69011d7e9230c99f0a5008568c5fd17412b93791"
             }
           },
           {
@@ -3321,13 +3161,13 @@
           },
           "spans": [
             {
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "b51084db213f62b4",
-              "parentSpanId": "16fefbb2ce510a2e",
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "7353b2d6072e9db1",
+              "parentSpanId": "b4e5d55dacc9fe5d",
               "name": "tcp.connect",
               "kind": 1,
-              "startTimeUnixNano": "1743514119935000000",
-              "endTimeUnixNano": "1743514119960238457",
+              "startTimeUnixNano": "1744144504525000000",
+              "endTimeUnixNano": "1744144504538978821",
               "attributes": [
                 {
                   "key": "net.transport",
@@ -3350,19 +3190,19 @@
                 {
                   "key": "net.peer.ip",
                   "value": {
-                    "stringValue": "140.82.113.6"
+                    "stringValue": "140.82.112.6"
                   }
                 },
                 {
                   "key": "net.host.ip",
                   "value": {
-                    "stringValue": "10.1.0.26"
+                    "stringValue": "10.1.0.79"
                   }
                 },
                 {
                   "key": "net.host.port",
                   "value": {
-                    "intValue": "42450"
+                    "intValue": "37932"
                   }
                 }
               ],
@@ -3462,7 +3302,7 @@
           {
             "key": "container.id",
             "value": {
-              "stringValue": "1e3b68da65365ad950670d6016eb046d7993fa02c690c48d0641e92a99e2595b"
+              "stringValue": "5b9dddf4afceb789703a5ccc69011d7e9230c99f0a5008568c5fd17412b93791"
             }
           },
           {
@@ -3499,13 +3339,13 @@
           },
           "spans": [
             {
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "16fefbb2ce510a2e",
-              "parentSpanId": "0029c73fcfbe1b7d",
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "b4e5d55dacc9fe5d",
+              "parentSpanId": "2cad570336b1a1dd",
               "name": "tls.connect",
               "kind": 1,
-              "startTimeUnixNano": "1743514119934000000",
-              "endTimeUnixNano": "1743514119969377481",
+              "startTimeUnixNano": "1744144504525000000",
+              "endTimeUnixNano": "1744144504549060362",
               "attributes": [
                 {
                   "key": "tls.protocol",
@@ -3658,7 +3498,7 @@
           {
             "key": "container.id",
             "value": {
-              "stringValue": "1e3b68da65365ad950670d6016eb046d7993fa02c690c48d0641e92a99e2595b"
+              "stringValue": "5b9dddf4afceb789703a5ccc69011d7e9230c99f0a5008568c5fd17412b93791"
             }
           },
           {
@@ -3695,13 +3535,13 @@
           },
           "spans": [
             {
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "0029c73fcfbe1b7d",
-              "parentSpanId": "69e2ab83cfd9dd7c",
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "2cad570336b1a1dd",
+              "parentSpanId": "276bca098e996104",
               "name": "GET",
               "kind": 3,
-              "startTimeUnixNano": "1743514119929000000",
-              "endTimeUnixNano": "1743514120037744330",
+              "startTimeUnixNano": "1744144504519000000",
+              "endTimeUnixNano": "1744144504602846039",
               "attributes": [
                 {
                   "key": "http.url",
@@ -3736,13 +3576,13 @@
                 {
                   "key": "http.user_agent",
                   "value": {
-                    "stringValue": "RenovateBot/39.229.0 (https://github.com/renovatebot/renovate)"
+                    "stringValue": "RenovateBot/39.236.0 (https://github.com/renovatebot/renovate)"
                   }
                 },
                 {
                   "key": "net.peer.ip",
                   "value": {
-                    "stringValue": "140.82.113.6"
+                    "stringValue": "140.82.112.6"
                   }
                 },
                 {
@@ -3781,11 +3621,7 @@
           ]
         }
       ]
-    }
-  ]
-}
-{
-  "resourceSpans": [
+    },
     {
       "resource": {
         "attributes": [
@@ -3876,7 +3712,7 @@
           {
             "key": "container.id",
             "value": {
-              "stringValue": "1e3b68da65365ad950670d6016eb046d7993fa02c690c48d0641e92a99e2595b"
+              "stringValue": "5b9dddf4afceb789703a5ccc69011d7e9230c99f0a5008568c5fd17412b93791"
             }
           },
           {
@@ -3913,13 +3749,13 @@
           },
           "spans": [
             {
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "2211262a8244ccc9",
-              "parentSpanId": "69e2ab83cfd9dd7c",
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "3dc37811292aed70",
+              "parentSpanId": "276bca098e996104",
               "name": "GET",
               "kind": 3,
-              "startTimeUnixNano": "1743514120042000000",
-              "endTimeUnixNano": "1743514120074705074",
+              "startTimeUnixNano": "1744144504607000000",
+              "endTimeUnixNano": "1744144504638259712",
               "attributes": [
                 {
                   "key": "http.url",
@@ -3954,13 +3790,13 @@
                 {
                   "key": "http.user_agent",
                   "value": {
-                    "stringValue": "RenovateBot/39.229.0 (https://github.com/renovatebot/renovate)"
+                    "stringValue": "RenovateBot/39.236.0 (https://github.com/renovatebot/renovate)"
                   }
                 },
                 {
                   "key": "net.peer.ip",
                   "value": {
-                    "stringValue": "140.82.113.6"
+                    "stringValue": "140.82.112.6"
                   }
                 },
                 {
@@ -4092,7 +3928,7 @@
           {
             "key": "container.id",
             "value": {
-              "stringValue": "1e3b68da65365ad950670d6016eb046d7993fa02c690c48d0641e92a99e2595b"
+              "stringValue": "5b9dddf4afceb789703a5ccc69011d7e9230c99f0a5008568c5fd17412b93791"
             }
           },
           {
@@ -4128,13 +3964,13 @@
           },
           "spans": [
             {
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "69e2ab83cfd9dd7c",
-              "parentSpanId": "b07b1d151829d281",
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "276bca098e996104",
+              "parentSpanId": "085518402bfddf40",
               "name": "config",
               "kind": 1,
-              "startTimeUnixNano": "1743514119511000000",
-              "endTimeUnixNano": "1743514120093838306",
+              "startTimeUnixNano": "1744144504095000000",
+              "endTimeUnixNano": "1744144504662993641",
               "status": {}
             }
           ]
@@ -4231,7 +4067,7 @@
           {
             "key": "container.id",
             "value": {
-              "stringValue": "1e3b68da65365ad950670d6016eb046d7993fa02c690c48d0641e92a99e2595b"
+              "stringValue": "5b9dddf4afceb789703a5ccc69011d7e9230c99f0a5008568c5fd17412b93791"
             }
           },
           {
@@ -4267,13 +4103,13 @@
           },
           "spans": [
             {
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "5b2329f68a4190a6",
-              "parentSpanId": "b07b1d151829d281",
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "e10301ebd2b0bc35",
+              "parentSpanId": "085518402bfddf40",
               "name": "discover",
               "kind": 1,
-              "startTimeUnixNano": "1743514120095000000",
-              "endTimeUnixNano": "1743514120095186167",
+              "startTimeUnixNano": "1744144504664000000",
+              "endTimeUnixNano": "1744144504664194314",
               "status": {}
             }
           ]
@@ -4284,6 +4120,245 @@
 }
 {
   "resourceSpans": [
+    {
+      "resource": {
+        "attributes": [
+          {
+            "key": "telemetry.sdk.language",
+            "value": {
+              "stringValue": "shell"
+            }
+          },
+          {
+            "key": "telemetry.sdk.name",
+            "value": {
+              "stringValue": "opentelemetry"
+            }
+          },
+          {
+            "key": "telemetry.sdk.version",
+            "value": {
+              "stringValue": "5.11.0"
+            }
+          },
+          {
+            "key": "service.name",
+            "value": {
+              "stringValue": "unknown_service"
+            }
+          },
+          {
+            "key": "github.repository.id",
+            "value": {
+              "stringValue": "692042935"
+            }
+          },
+          {
+            "key": "github.repository.name",
+            "value": {
+              "stringValue": "Thoth"
+            }
+          },
+          {
+            "key": "github.repository.owner.id",
+            "value": {
+              "stringValue": "100447901"
+            }
+          },
+          {
+            "key": "github.repository.owner.name",
+            "value": {
+              "stringValue": "plengauer"
+            }
+          },
+          {
+            "key": "github.actions.workflow.ref",
+            "value": {
+              "stringValue": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.11.0"
+            }
+          },
+          {
+            "key": "github.actions.workflow.sha",
+            "value": {
+              "stringValue": "f2e20c5c38a282e758483642f79836db2c7203de"
+            }
+          },
+          {
+            "key": "github.actions.workflow.name",
+            "value": {
+              "stringValue": "Refresh Demos"
+            }
+          },
+          {
+            "key": "os.type",
+            "value": {
+              "stringValue": "linux"
+            }
+          },
+          {
+            "key": "os.version",
+            "value": {
+              "stringValue": "6.8.0-1021-azure"
+            }
+          },
+          {
+            "key": "process.pid",
+            "value": {
+              "intValue": "3102"
+            }
+          },
+          {
+            "key": "process.parent_pid",
+            "value": {
+              "intValue": "3101"
+            }
+          },
+          {
+            "key": "process.executable.name",
+            "value": {
+              "stringValue": "bash"
+            }
+          },
+          {
+            "key": "process.executable.path",
+            "value": {
+              "stringValue": "/usr/bin/bash"
+            }
+          },
+          {
+            "key": "process.command_line",
+            "value": {
+              "stringValue": "sudo -E docker run --rm --network host --env RENOVATE_TOKEN renovate/renovate --dry-run plengauer/opentelemetry-bash"
+            }
+          },
+          {
+            "key": "process.command",
+            "value": {
+              "stringValue": "sudo"
+            }
+          },
+          {
+            "key": "process.owner",
+            "value": {
+              "stringValue": "root"
+            }
+          },
+          {
+            "key": "process.runtime.name",
+            "value": {
+              "stringValue": "bash"
+            }
+          },
+          {
+            "key": "process.runtime.description",
+            "value": {
+              "stringValue": "Bourne Again Shell"
+            }
+          },
+          {
+            "key": "process.runtime.version",
+            "value": {
+              "stringValue": "5.2.21-2ubuntu4"
+            }
+          },
+          {
+            "key": "process.runtime.options",
+            "value": {
+              "stringValue": "hBc"
+            }
+          },
+          {
+            "key": "service.version",
+            "value": {
+              "stringValue": ""
+            }
+          },
+          {
+            "key": "service.namespace",
+            "value": {
+              "stringValue": ""
+            }
+          },
+          {
+            "key": "service.instance.id",
+            "value": {
+              "stringValue": ""
+            }
+          }
+        ]
+      },
+      "scopeSpans": [
+        {
+          "scope": {
+            "name": "shell",
+            "version": "5.11.0"
+          },
+          "spans": [
+            {
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "bf3298552408e7de",
+              "parentSpanId": "276bca098e996104",
+              "flags": 768,
+              "name": "git --version",
+              "kind": 1,
+              "startTimeUnixNano": "1744144504481065216",
+              "endTimeUnixNano": "1744144504507910656",
+              "attributes": [
+                {
+                  "key": "shell.command_line",
+                  "value": {
+                    "stringValue": "git --version"
+                  }
+                },
+                {
+                  "key": "shell.command",
+                  "value": {
+                    "stringValue": "git"
+                  }
+                },
+                {
+                  "key": "shell.command.type",
+                  "value": {
+                    "stringValue": "file"
+                  }
+                },
+                {
+                  "key": "shell.command.name",
+                  "value": {
+                    "stringValue": "git"
+                  }
+                },
+                {
+                  "key": "subprocess.executable.path",
+                  "value": {
+                    "stringValue": "/usr/bin/git"
+                  }
+                },
+                {
+                  "key": "subprocess.executable.name",
+                  "value": {
+                    "stringValue": "git"
+                  }
+                },
+                {
+                  "key": "shell.command.exit_code",
+                  "value": {
+                    "intValue": "0"
+                  }
+                },
+                {
+                  "key": "code.filepath",
+                  "value": {
+                    "stringValue": "node"
+                  }
+                }
+              ],
+              "status": {}
+            }
+          ]
+        }
+      ]
+    },
     {
       "resource": {
         "attributes": [
@@ -4374,7 +4449,7 @@
           {
             "key": "container.id",
             "value": {
-              "stringValue": "1e3b68da65365ad950670d6016eb046d7993fa02c690c48d0641e92a99e2595b"
+              "stringValue": "5b9dddf4afceb789703a5ccc69011d7e9230c99f0a5008568c5fd17412b93791"
             }
           },
           {
@@ -4411,13 +4486,13 @@
           },
           "spans": [
             {
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "7087db2f13684d89",
-              "parentSpanId": "400c5922a75a5ada",
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "9166368f89c000de",
+              "parentSpanId": "a17e552577bfe808",
               "name": "POST",
               "kind": 3,
-              "startTimeUnixNano": "1743514120106000000",
-              "endTimeUnixNano": "1743514120338427970",
+              "startTimeUnixNano": "1744144504675000000",
+              "endTimeUnixNano": "1744144504808485440",
               "attributes": [
                 {
                   "key": "http.url",
@@ -4452,13 +4527,13 @@
                 {
                   "key": "http.user_agent",
                   "value": {
-                    "stringValue": "RenovateBot/39.229.0 (https://github.com/renovatebot/renovate)"
+                    "stringValue": "RenovateBot/39.236.0 (https://github.com/renovatebot/renovate)"
                   }
                 },
                 {
                   "key": "net.peer.ip",
                   "value": {
-                    "stringValue": "140.82.113.6"
+                    "stringValue": "140.82.112.6"
                   }
                 },
                 {
@@ -4588,7 +4663,7 @@
           {
             "key": "container.id",
             "value": {
-              "stringValue": "1e3b68da65365ad950670d6016eb046d7993fa02c690c48d0641e92a99e2595b"
+              "stringValue": "5b9dddf4afceb789703a5ccc69011d7e9230c99f0a5008568c5fd17412b93791"
             }
           },
           {
@@ -4624,13 +4699,13 @@
           },
           "spans": [
             {
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "400c5922a75a5ada",
-              "parentSpanId": "b07b1d151829d281",
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "a17e552577bfe808",
+              "parentSpanId": "085518402bfddf40",
               "name": "repository",
               "kind": 1,
-              "startTimeUnixNano": "1743514120095000000",
-              "endTimeUnixNano": "1743514120343340628",
+              "startTimeUnixNano": "1744144504664000000",
+              "endTimeUnixNano": "1744144504813299524",
               "attributes": [
                 {
                   "key": "repository",
@@ -4735,7 +4810,7 @@
           {
             "key": "container.id",
             "value": {
-              "stringValue": "1e3b68da65365ad950670d6016eb046d7993fa02c690c48d0641e92a99e2595b"
+              "stringValue": "5b9dddf4afceb789703a5ccc69011d7e9230c99f0a5008568c5fd17412b93791"
             }
           },
           {
@@ -4771,13 +4846,13 @@
           },
           "spans": [
             {
-              "traceId": "c7eaf3732f3fc5bcad6b23cf054d988e",
-              "spanId": "b07b1d151829d281",
-              "parentSpanId": "6b2da51090aa1f4b",
+              "traceId": "e661c1eb15a6363c23039b8c881020bd",
+              "spanId": "085518402bfddf40",
+              "parentSpanId": "688e6d0f1e59e716",
               "name": "run",
               "kind": 1,
-              "startTimeUnixNano": "1743514119510000000",
-              "endTimeUnixNano": "1743514120351001646",
+              "startTimeUnixNano": "1744144504094000000",
+              "endTimeUnixNano": "1744144504821327798",
               "status": {}
             }
           ]
