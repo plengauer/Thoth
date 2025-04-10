@@ -336,6 +336,12 @@ otel_observation_attribute() {
   otel_observation_attribute_typed "$observation_handle" auto "$kvp"
 }
 
+_otel_real_pid() {
+  read -r _otel_pid _otel_rest < /proc/self/stat
+  \echo "$_otel_pid" # TODO does this really work? beause one would use it like "$(_otel_real_pid)" but that defeats the purpose because that will be a subshell!
+  unset _otel_pid _otel_rest
+}
+
 otel_observe() {
   local IFS=' 
 '
