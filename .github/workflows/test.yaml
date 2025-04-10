@@ -231,7 +231,7 @@ jobs:
             value="$(echo "$kvp" | cut -sd '=' -f 2)"
             if [ -z "$value" ]; then continue; fi
             echo '((apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install python3) || dnf -y install python3 || yum -y install python3 || zypper --non-interactive install python3) > /dev/null && python3 --version' \
-              | sudo docker run --rm --network=host -i "$value" \
+              | \sudo docker run --rm --network=host -i "$value" \
               | cut -d ' ' -f 2 | cut -d . -f 2 | while read -r version; do [ "$version" -ge "$min_version" ] && echo "{\"image\":\"$value\",\"os\":\"$(echo "$key" | cut -d _ -f 2)\",\"type\":\"$(echo "$key" | cut -d _ -f 3)\"}" || true; done
           done | jq -s > images.json
       - run: |
