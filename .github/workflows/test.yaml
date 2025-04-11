@@ -421,18 +421,20 @@ jobs:
         shell: ${{ fromJSON(needs.prepare-shells.outputs.shells) }}
       fail-fast: false
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
       - uses: Vampire/setup-wsl@v5.0.0
         with:
           wsl-version: ${{ matrix.version }}
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages
       - shell: wsl-bash {0}
         run: |
           retry() {
             while ! "$@"; do sleep 60; done
           }
           retry sudo apt-get update
-          retry sudo -E apt-get -y install ./packages/package.deb dos2unix jq psmisc wget curl time sudo
+          retry sudo -E apt-get -y install ./package.deb dos2unix jq psmisc wget curl time sudo
           for package in parallel moreutils ncat wget2 python3 python3-pip gcc docker default-jdk; do # TODO nodejs npm
             sudo -E apt-get -y install "$package" || true
           done
