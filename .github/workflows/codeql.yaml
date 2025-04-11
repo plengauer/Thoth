@@ -1,4 +1,4 @@
-name: "CodeQL"
+name: "Analyze"
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
     - cron: '0 0 * * *'
 
 jobs:
-  analyze:
+  codeql:
     runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
     permissions:
       security-events: write
