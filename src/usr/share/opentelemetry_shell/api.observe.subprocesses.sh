@@ -13,7 +13,7 @@ _otel_call_and_record_subprocesses() {
   _otel_record_subprocesses "$span_handle" < "$strace" &
   local parse_pid="$!"
   local exit_code=0
-  $call_command '\strace' -D -f -e trace=process -o "$strace" -s 8192 "${command#\\}" "$@" || local exit_code="$?"
+  $call_command '\strace' -D -ttt -f -e trace=process -o "$strace" -s 8192 "${command#\\}" "$@" || local exit_code="$?"
   \wait "$parse_pid"
   \rm "$strace" 2> /dev/null
   if \[ "$job_control" = 1 ]; then \set -m; fi
@@ -35,23 +35,22 @@ _otel_call_and_record_subprocesses() {
 # 582400 +++ killed by SIGINT +++
 _otel_record_subprocesses() {
   local root_span_handle="$1"
-  while \read -r line; do
+  while \read -r pid time line; do
     local operation=""
     case "$line" in
-      *' '*' (To be restarted)') ;;
+      *' (To be restarted)') ;;
       *' (Function not implemented)') ;;
-      *' clone'*'('*' <unfinished ...>') ;;
-      *' '*'fork('*' <unfinished ...>') ;;
-      *' clone'*'('*) local operation=fork;;
-      *' '*'fork('*) local operation=fork;;
-      *' <... clone'*' resumed>'*) local operation=fork;;
-      *' <... '*'fork resumed>'*) local operation=fork;;
-      *' execve('*) local operation=exec;;
-      *' +++ '*) local operation=exit;;
-      *' --- '*) local operation=signal;;
+      'clone'*'('*' <unfinished ...>') ;;
+      *'fork('*' <unfinished ...>') ;;
+      'clone'*'('*) local operation=fork;;
+      *'fork('*) local operation=fork;;
+      '<... clone'*' resumed>'*) local operation=fork;;
+      '<... '*'fork resumed>'*) local operation=fork;;
+      'execve('*) local operation=exec;;
+      '+++ '*) local operation=exit;;
+      '--- '*) local operation=signal;;
       *) ;;
     esac
-    local pid="${line%% *}"
     \eval "local parent_pid=\$parent_pid_$pid"
     \eval "local span_handle=\$span_handle_$pid"
     case "$operation" in
@@ -64,7 +63,7 @@ _otel_record_subprocesses() {
         if \[ -z "${span_name:-}" ]; then \eval "local span_name=\"\$span_name_$parent_pid\""; fi
         local span_name="${span_name:-<unknown>}"
         otel_span_activate "${span_handle:-$root_span_handle}"
-        local span_handle="$(otel_span_start INTERNAL "$span_name")"
+        local span_handle="$(otel_span_start @"$time" INTERNAL "$span_name")"
         otel_span_deactivate
         \eval "local span_handle_$new_pid=$span_handle"
         \eval "local span_name_$new_pid=\"\$span_name\""
@@ -93,19 +92,19 @@ _otel_record_subprocesses() {
         ;;
       exit)
         if \[ -z "${span_handle:-}" ]; then continue; fi
-        if _otel_string_contains "$line" " +++ killed by " || (_otel_string_contains "$line" " +++ exited with " && ! _otel_string_contains "$line" " +++ exited with 0 +++"); then
+        if _otel_string_starts_with "$line" "+++ killed by " || (_otel_string_starts_with "$line" "+++ exited with " && ! _otel_string_starts_with "$line" "+++ exited with 0 +++"); then
           otel_span_error "$span_handle"
         fi
-        otel_span_end "$span_handle"
+        otel_span_end "$span_handle" @"$time"
         ;;
       signal)
         if \[ "${OTEL_SHELL_CONFIG_OBSERVE_SIGNALS:-FALSE}" != TRUE ]; then continue; fi
         if \[ "$_otel_shell" = bash ]; then
           local name="$line"
-          local name=SIG"${name#* --- SIG}"
+          local name=SIG"${name#--- SIG}"
           local name="${name%% *}"
         else
-          local name="$(\printf '%s' "$line" | \awk '{ print $3 }')"
+          local name="$(\printf '%s' "$line" | \awk '{ print $2 }')"
         fi
         local event_handle="$(otel_event_create "$name")"
         local kvps="$line"
