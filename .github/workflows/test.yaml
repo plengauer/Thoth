@@ -188,7 +188,7 @@ jobs:
       IMAGE_DEBIAN_SLIM_STABLE: 'debian:stable-slim'
       IMAGE_DEBIAN_SLIM_LATEST: 'debian:testing-slim'
       IMAGE_DEBIAN_SLIM_DEV: 'debian:unstable-slim'
-      IMAGE_UBUNTU_OLDEST: 'ubuntu:focal' # needs manual maintenance on April 2025 (https://ubuntu.com/about/release-cycle)
+      IMAGE_UBUNTU_OLDEST: 'ubuntu:jammy' # needs manual maintenance on April 2027 (https://ubuntu.com/about/release-cycle)
       IMAGE_UBUNTU_STABLE: 'ubuntu:latest'
       IMAGE_UBUNTU_LATEST: 'ubuntu:rolling'
       IMAGE_UBUNTU_DEV: 'ubuntu:devel'
