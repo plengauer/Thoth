@@ -1,4 +1,4 @@
-name: "CodeQL"
+name: "Analyze"
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
     - cron: '0 0 * * *'
 
 jobs:
-  analyze:
+  codeql:
     runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
     permissions:
       security-events: write
@@ -24,8 +24,10 @@ jobs:
             build-mode: none
           - language: python
             build-mode: none
+          - language: java
+            build-mode: none
     steps:
-      - uses: plengauer/thoth/actions/instrument/job@v5.10.2
+      - uses: plengauer/thoth/actions/instrument/job@v5.11.0
         with:
           secrets_to_redact: '${{ toJSON(secrets) }}'
         env:

@@ -163,6 +163,28 @@ The workflow-level instrumentation is a good starting point to get an overview o
 
 Both methods of instrumentation can be combined arbitrarily. Deploying them both at the same time, will combine their advantages without any double recording of any log, metric, trace or span.
 
+### Automatical Deployment of Workflow-level and Job-level Instrumentations
+To automatically deploy workflow-level and job-level instrumentations to all your GitHub actions, copy the following workflow into your `.github/workflows` directory. Make sure, the GitHub token has permissions to open pull requests (configurable in the repository settings) or specify a token with the correct permissions explicitly with the `github_token` parameter. This workflow will also update instrumentations when a new workflow is created. The configuration in the `env` section will be deployed to all instrumentations.
+```yaml
+name: 'Deploy OpenTelemetry'
+
+on:
+  push:
+    branches: main
+    paths:
+      - .github/workflows/**
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/deploy@main
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
+          OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
+```
+
+### Manual Deployment of Workflow-level and Job-level Instrumentations
 To deploy workflow-level instrumentation, use the code snippet below in a dedicated workflow to run after any other explicitly configured workflow. You can configure the SDK as described <a href="https://opentelemetry.io/docs/languages/sdk-configuration/">here</a> by adding according environment variables. Workflow-level instrumentation can be combined arbitrarily with job-level instrumentation.
 ```yaml
 name: OpenTelemetry
