@@ -8,6 +8,9 @@ on:
   schedule:
     - cron: '0 0 * * *'
 
+env:
+  CODEQL_EXTRACTOR_CPP_BUILD_MODE_NONE: 'true' # scanning c/c++ without building it is an experimental feature and needs to be enabled like this until released
+
 jobs:
   codeql:
     runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
@@ -18,8 +21,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # - language: c-cpp
-          #   build-mode: manual
+          - language: c-cpp
+            build-mode: none
           - language: javascript-typescript
             build-mode: none
           - language: python
@@ -40,9 +43,6 @@ jobs:
         with:
           languages: ${{ matrix.language }}
           build-mode: ${{ matrix.build-mode }}
-      - if: matrix.build-mode == 'manual'
-        shell: bash
-        run: exit 1
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
         with:
