@@ -1,5 +1,5 @@
 import javassist.*;
-import java.lang.instrument.Instrumentation;
+import java.lang.instrument.*;
 
 public class SubprocessInjectionAgent {
     public static void premain(String args, Instrumentation instrumentation) throws Exception {
