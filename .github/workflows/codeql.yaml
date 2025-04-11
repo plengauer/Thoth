@@ -24,6 +24,8 @@ jobs:
             build-mode: none
           - language: python
             build-mode: none
+          - language: java
+            build-mode: none
     steps:
       - uses: plengauer/thoth/actions/instrument/job@v5.11.0
         with:
