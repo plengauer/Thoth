@@ -10,13 +10,17 @@ public class SubprocessInjectionAgent {
            try {
                CtClass ctClass = pool.get("java.lang.ProcessBuilder");
                CtMethod method = ctClass.getDeclaredMethod("start");
-               method.insertBefore("{ "
+               method.insertBefore(
+                  "{"
                    + "java.util.List command = $0.command();"
                    + "command.add(0, \"sh\");"
                    + "command.add(1, \"-c\");"
-                   + "command.add(2, String.join(\" \", command.subList(3, command.size())));"
-                   + "command.subList(3, command.size()).clear();"
-                   + "}");
+                   + "command.add(2, \".otel.sh\\n\" + command.remove(2));"
+                   + "command.add(3, \"java\");"
+                   + "}"
+                  // TODO modify env
+                  // optionally add otel_inject
+               );
                return ctClass.toBytecode();
            } catch (Exception e) {
                e.printStackTrace();
