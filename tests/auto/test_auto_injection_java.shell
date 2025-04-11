@@ -30,3 +30,29 @@ public class Main {
 ' > "$dir"/Main.java
 javac "$dir"/Main.java
 (cd "$dir" && java Main)
+
+dir=$(mktemp -d)
+echo '
+public class Main {
+    public static void main(String[] args) throws InterruptedException {
+        new ProcessBuilder("echo", "hello", "world", "0").start().waitFor();
+        new ProcessBuilder("echo", "hello world", "1").start().waitFor();
+        Runtime.getRuntime.exec(["echo", "hello", "world", "2"]).waitFor();
+        Runtime.getRuntime.exec(["echo", "hello", "world", "3"], null, null).waitFor();
+    }
+}
+' > "$dir"/Main.java
+javac "$dir"/Main.java
+(cd "$dir" && java Main)
+span="$(resolve_span '.name == "echo hello world 0"')"
+assert_equals "SpanKind.INTERNAL" $(\echo "$span" | jq -r '.kind')
+assert_not_equals null $(\echo "$span" | jq -r '.parent_id')
+span="$(resolve_span '.name == "echo hello world 1"')"
+assert_equals "SpanKind.INTERNAL" $(\echo "$span" | jq -r '.kind')
+assert_not_equals null $(\echo "$span" | jq -r '.parent_id')
+span="$(resolve_span '.name == "echo hello world 2"')"
+assert_equals "SpanKind.INTERNAL" $(\echo "$span" | jq -r '.kind')
+assert_not_equals null $(\echo "$span" | jq -r '.parent_id')
+span="$(resolve_span '.name == "echo hello world 3"')"
+assert_equals "SpanKind.INTERNAL" $(\echo "$span" | jq -r '.kind')
+assert_not_equals null $(\echo "$span" | jq -r '.parent_id')
