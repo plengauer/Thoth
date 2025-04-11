@@ -19,7 +19,7 @@ if ! type otel.sh 2> /dev/null; then
   if [ -n "$action_tag_name" ]; then
     if [ "$INPUT_CACHE" = "true" ]; then
       cache_key="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} $({ cat /etc/os-release; python3 --version; node --version; printenv | grep -E '^OTEL_SHELL_CONFIG_INSTALL_'; } | md5sum | cut -d ' ' -f 1)"
-      sudo -E -H node -e "require('@actions/cache').restoreCache(['/var/cache/apt/archives/*.deb', '/opt/opentelemetry_shell/sdk/venv', '/opt/opentelemetry_shell/venv', '/opt/opentelemetry_shell/node_modules', '/opt/opentelemetry_shell/collector.image'], '$cache_key');"
+      sudo -E -H node -e "require('@actions/cache').restoreCache(['/var/cache/apt/archives/*.deb', '/opt/opentelemetry_shell/sdk/venv', '/opt/opentelemetry_shell/venv', '/opt/opentelemetry_shell/node_modules', '/opt/opentelemetry_shell/opentelemetry-javaagent.jar', '/opt/opentelemetry_shell/rootcontextagent.jar', '/opt/opentelemetry_shell/collector.image'], '$cache_key');"
     fi
     debian_file=/var/cache/apt/archives/opentelemetry-shell_$(cat ../../../VERSION)_all.deb
     if ! [ -f "$debian_file" ]; then
@@ -43,7 +43,7 @@ if ! type otel.sh 2> /dev/null; then
       fi
     fi
     if [ "${write_back_cache:-FALSE}" = TRUE ] && [ -n "${cache_key:-}" ]; then
-      sudo -E -H node -e "require('@actions/cache').saveCache(['/var/cache/apt/archives/*.deb', '/opt/opentelemetry_shell/sdk/venv', '/opt/opentelemetry_shell/venv', '/opt/opentelemetry_shell/node_modules', '/opt/opentelemetry_shell/collector.image'], '$cache_key');"
+      sudo -E -H node -e "require('@actions/cache').saveCache(['/var/cache/apt/archives/*.deb', '/opt/opentelemetry_shell/sdk/venv', '/opt/opentelemetry_shell/venv', '/opt/opentelemetry_shell/node_modules', '/opt/opentelemetry_shell/opentelemetry-javaagent.jar', '/opt/opentelemetry_shell/rootcontextagent.jar', '/opt/opentelemetry_shell/collector.image'], '$cache_key');"
     fi
     sudo rm "$debian_file"
   else
