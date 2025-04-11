@@ -7,8 +7,8 @@ public class SubprocessInjectionAgent {
             public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, java.security.ProtectionDomain protectionDomain, byte[] classfileBuffer) {
                 if (!"java/lang/ProcessBuilder".equals(className)) return null;
                 try {
-                    ClassPool pool = ClassPool.getDefault();
-                    CtClass ctClass = pool.get("java.lang.ProcessBuilder");
+                    ClassPool pool = ClassPool.getDefault();                    
+                    CtClass ctClass = pool.makeClass(new ByteArrayInputStream(classfileBuffer));
                     CtMethod method = ctClass.getDeclaredMethod("start");
                     method.insertBefore(
                       "{"
@@ -24,6 +24,7 @@ public class SubprocessInjectionAgent {
                     return ctClass.toBytecode();
                 } catch (Exception e) {
                     e.printStackTrace();
+                    return classfileBuffer;
                 }
             }
         });
