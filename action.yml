@@ -1,0 +1,10 @@
+name: 'OpenTelemetry (Stub)'
+description: "Stub: Don't use this action directly. Read [the documentation](https://github.com/plengauer/Thoth/blob/main/README.md) instead."
+runs:
+  using: 'composite'
+  steps:
+    - name: 'Stub'
+      run: |
+        echo 'This is a stub. Read [the documentation](https://github.com/plengauer/Thoth/blob/main/README.md) instead.'
+        exit 1
+      shell: bash
