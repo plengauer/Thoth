@@ -44,7 +44,7 @@ jobs:
           languages: ${{ matrix.language }}
           build-mode: ${{ matrix.build-mode }}
       - run: cat /opt/hostedtoolcache/CodeQL/2.21.0/x64/codeql/codeql
-      - run: sed -i 's~/bin/sh~/bin/bash~g' /opt/hostedtoolcache/CodeQL/2.21.0/x64/codeql/codeql
+      - run: sed -i 's~/bin/sh~/bin/bash -x~g' /opt/hostedtoolcache/CodeQL/2.21.0/x64/codeql/codeql
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
         with:
