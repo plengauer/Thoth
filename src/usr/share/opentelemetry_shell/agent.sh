@@ -371,10 +371,10 @@ _otel_export_PATH_and_reinstrument() {
 _otel_instrument_and_source() {
   local n="$1"
   shift
-  local command="$(eval '\echo $'"$(($n+1))")"
-  local file="$(eval '\echo $'"$(($n+2))")"
+  local command="$(eval '\echo ${'"$(($n+1))"'}')"
+  local file="$(eval '\echo ${'"$(($n+2))"'}')"
   if \[ -f "$file" ]; then _otel_auto_instrument "$file"; fi
-  \eval "'$command' '$file' $(if \[ $# -gt $(($n + 2)) ]; then \seq $(($n + 2 + 1)) $#; else \seq 1 $n; fi | while \read i; do \echo '"$'"$i"'"'; done | _otel_line_join)"
+  \eval "'$command' '$file' $(if \[ $# -gt $(($n + 2)) ]; then \seq $(($n + 2 + 1)) $#; else \seq 1 $n; fi | while \read i; do \echo '"${'"$i"'}"'; done | _otel_line_join)"
 }
 
 _otel_inject_and_exec_directly() { # this function assumes there is no fd fuckery
