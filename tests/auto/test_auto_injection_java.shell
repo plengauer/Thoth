@@ -30,7 +30,7 @@ javac "$dir"/Main.java
 dir=$(mktemp -d)
 echo '
 public class Main {
-    public static void main(String[] args) throws InterruptedException, IOException {
+    public static void main(String[] args) throws InterruptedException, java.io.IOException {
         new ProcessBuilder("echo", "hello", "world", "0").start().waitFor();
         new ProcessBuilder("echo", "hello world", "1").start().waitFor();
         Runtime.getRuntime().exec(new String[]{"echo", "hello", "world", "2"}).waitFor();
