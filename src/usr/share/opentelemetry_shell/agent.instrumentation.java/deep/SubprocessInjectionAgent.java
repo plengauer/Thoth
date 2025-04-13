@@ -6,6 +6,7 @@ public class SubprocessInjectionAgent {
     public static void premain(String args, Instrumentation instrumentation) throws Exception {
         instrumentation.addTransformer(new ClassFileTransformer() {
             public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, java.security.ProtectionDomain protectionDomain, byte[] classfileBuffer) {
+                System.err.println("DEBUG checking " + className);
                 if (!"java/lang/ProcessBuilder".equals(className)) return null;
                 try {
                     ClassPool pool = ClassPool.getDefault();                    
@@ -26,6 +27,8 @@ public class SubprocessInjectionAgent {
                 } catch (Exception e) {
                     e.printStackTrace();
                     return classfileBuffer;
+                } finally {
+                    System.err.println("DEBUG instrumented " + className);
                 }
             }
         });
