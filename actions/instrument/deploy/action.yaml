@@ -133,7 +133,7 @@ inputs:
         export:
           runs-on: ubuntu-latest
           steps:
-            - uses: plengauer/opentelemetry-github/actions/instrument/workflow@v5.12.1
+            - uses: plengauer/opentelemetry-github/actions/instrument/workflow@v5.12.3
   action_repository:
     default: plengauer/opentelemetry-github
   action_version:
