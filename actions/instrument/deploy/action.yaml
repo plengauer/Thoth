@@ -84,7 +84,6 @@ runs:
           done
         done
     - name: "Open Pull Request"
-      if: false
       id: open-pr
       uses: peter-evans/create-pull-request@v7
       with:
