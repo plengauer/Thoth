@@ -84,7 +84,6 @@ runs:
           done
         done
     - name: "Open Pull Request"
-      if: false
       id: open-pr
       uses: peter-evans/create-pull-request@v7
       with:
@@ -138,7 +137,7 @@ inputs:
   action_repository:
     default: plengauer/opentelemetry-github
   action_version:
-    default: v5.10.1
+    default: v5.12.2
   debug:
     description: 'Enable debug logging'
     default: ${{ runner.debug }}
