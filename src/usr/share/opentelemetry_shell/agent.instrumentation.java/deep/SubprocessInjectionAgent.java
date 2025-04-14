@@ -31,6 +31,7 @@ public class SubprocessInjectionAgent {
                     System.err.println("DEBUG instrumented " + className);
                 }
             }
-        });
+        }, true);
+        instrumentation.retransformClasses(ProcessBuilder.class);
     }
 }
