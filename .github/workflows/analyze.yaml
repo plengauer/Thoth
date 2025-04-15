@@ -2,8 +2,8 @@ name: "Analyze"
 
 on:
   push:
-    branches: "main"
-  pull_request_target:
+    # branches: "main"
+  pull_request:
     branches: "main"
   schedule:
     - cron: '0 0 * * *'
