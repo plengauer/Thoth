@@ -30,7 +30,7 @@ jobs:
           - language: java
             build-mode: none
     steps:
-      - uses: plengauer/thoth/actions/instrument/job@v5.10.0
+      - uses: plengauer/thoth/actions/instrument/job@v5.12.3
         with:
           secrets_to_redact: '${{ toJSON(secrets) }}'
         env:
@@ -43,6 +43,7 @@ jobs:
         with:
           languages: ${{ matrix.language }}
           build-mode: ${{ matrix.build-mode }}
+      - run: cat /opt/hostedtoolcache/CodeQL/2.21.0/x64/codeql/codeql
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
         with:
