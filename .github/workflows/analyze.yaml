@@ -2,7 +2,7 @@ name: "Analyze"
 
 on:
   push:
-    # branches: "main"
+    branches: "main"
   pull_request:
     branches: "main"
   schedule:
@@ -30,7 +30,7 @@ jobs:
           - language: java
             build-mode: none
     steps:
-      - uses: plengauer/thoth/actions/instrument/job@v5.12.3
+      - uses: plengauer/thoth/actions/instrument/job@v5.10.0
         with:
           secrets_to_redact: '${{ toJSON(secrets) }}'
         env:
@@ -43,11 +43,6 @@ jobs:
         with:
           languages: ${{ matrix.language }}
           build-mode: ${{ matrix.build-mode }}
-      - run: sudo sed -i 's~"$CODEQL_DIST/codeql"~_otel_inject "$CODEQL_DIST/codeql"~g' /opt/hostedtoolcache/CodeQL/2.21.0/x64/codeql/python/tools/pre-finalize.sh
-      - run: sudo sed -i 's~"${CODEQL_JAVA_HOME}/bin/java"~_otel_inject "${CODEQL_JAVA_HOME}/bin/java"~g' /opt/hostedtoolcache/CodeQL/2.21.0/x64/codeql/codeql
-      - run: sudo sed -i 's~\. "$chainfile"~\\. "$chainfile"~g' /opt/hostedtoolcache/CodeQL/2.21.0/x64/codeql/codeql
-      - run: cat /opt/hostedtoolcache/CodeQL/2.21.0/x64/codeql/codeql
-      - run: cat /opt/hostedtoolcache/CodeQL/2.21.0/x64/codeql/python/tools/pre-finalize.sh
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
         with:
