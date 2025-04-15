@@ -3,7 +3,7 @@ name: "Analyze"
 on:
   push:
     branches: "main"
-  pull_request:
+  pull_request_target:
     branches: "main"
   schedule:
     - cron: '0 0 * * *'
