@@ -44,7 +44,7 @@ jobs:
           languages: ${{ matrix.language }}
           build-mode: ${{ matrix.build-mode }}
 #      - run: sudo sed -i 's~"${CODEQL_JAVA_HOME}/bin/java"~_otel_inject "${CODEQL_JAVA_HOME}/bin/java"~g' /opt/hostedtoolcache/CodeQL/2.21.0/x64/codeql/codeql
-      - run: sudo sed -i 's~#!/bin/sh~#!/bin/sh\n\\unalias -a\~g' /opt/hostedtoolcache/CodeQL/2.21.0/x64/codeql/codeql
+      - run: sudo sed -i 's~#!/bin/sh~#!/bin/sh\n\\unalias -a~g' /opt/hostedtoolcache/CodeQL/2.21.0/x64/codeql/codeql
       - run: cat /opt/hostedtoolcache/CodeQL/2.21.0/x64/codeql/codeql
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
