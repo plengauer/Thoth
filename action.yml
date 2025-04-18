@@ -1,10 +1,13 @@
-name: 'OpenTelemetry (Stub)'
-description: "Stub: Don't use this action directly. Read [the documentation](https://github.com/plengauer/Thoth/blob/main/README.md) instead."
+name: 'OpenTelemetry for GitHub Workflows, Jobs and Steps'
+description: "Export traces, metrics, and logs by injecting deeply into node, docker, javascript and composite actions."
+branding:
+  icon: 'activity'
+  color: 'blue'
 runs:
   using: 'composite'
   steps:
     - name: 'Stub'
       run: |
-        echo 'This is a stub. Read [the documentation](https://github.com/plengauer/Thoth/blob/main/README.md) instead.'
+        echo 'This is a stub for the marketplace. Read [the documentation](https://github.com/plengauer/Thoth/blob/main/README.md) on how to deploy OpenTelemetry in your GitHub actions.'
         exit 1
       shell: bash
