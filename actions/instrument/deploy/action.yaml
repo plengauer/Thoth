@@ -135,11 +135,11 @@ inputs:
         export:
           runs-on: ubuntu-latest
           steps:
-            - uses: plengauer/opentelemetry-github/actions/instrument/workflow@v5.12.3
+            - uses: plengauer/opentelemetry-github/actions/instrument/workflow@v5.12.5
   action_repository:
     default: plengauer/opentelemetry-github
   action_version:
-    default: v5.12.3
+    default: v5.12.5
   debug:
     description: 'Enable debug logging'
     default: ${{ runner.debug }}
