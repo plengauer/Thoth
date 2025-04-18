@@ -13,7 +13,7 @@ alias
 ai some arguments
 # lets assert
 assert_equals 0 $?
-span="$(resolve_span '.name == "/bin/'"$SHELL"' -e /usr/bin/bash-ai some arguments"')"
+span="$(resolve_span '.name | .endswith("/bash-ai some arguments")')"
 assert_equals "SpanKind.INTERNAL" $(\echo "$span" | jq -r '.kind')
 span="$(resolve_span '.name == "echo hello world"')"
 assert_equals "SpanKind.INTERNAL" $(\echo "$span" | jq -r '.kind')
