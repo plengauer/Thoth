@@ -52,9 +52,9 @@ runs:
           yq -i '.jobs[].steps[0].env.'"$key"' = "'"$value"'"' "${{ inputs.workflows_directory }}/${{ inputs.workflow_level_instrumentation_file_name }}"
         done
     - name: "Update workflow-level observability triggers"
-      if: steps.find-workflow-level-instrumentation.outputs.path != null
       shell: bash
       run: |
+        if [ -w "${{ steps.find-workflow-level-instrumentation.outputs.path }}" ]; then path="${{ steps.find-workflow-level-instrumentation.outputs.path }}"; else path="${{ inputs.workflows_directory }}/${{ inputs.workflow_level_instrumentation_file_name }}"; fi
         names_file="$(mktemp)"
         (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
           cat "$workflow_file" | yq .name || true
@@ -66,7 +66,7 @@ runs:
           line="\"${line%$'\r'}\""
           [ -n "$names" ] && names="${names}, ${line}" || names="$line"
         done < "$names_file"
-        yq -i ".on.workflow_run.workflows = [${names}]" "${{ steps.find-workflow-level-instrumentation.outputs.path }}"
+        yq -i ".on.workflow_run.workflows = [${names}]" "$path"
     - name: "Deploy job-level observability"
       shell: bash
       run: |
