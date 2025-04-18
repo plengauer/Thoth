@@ -8,7 +8,7 @@ runs:
   steps:
     - name: "Install dependencies"
       shell: bash
-      run: type yq || (sudo apt-get update && sudo apt-get install yq)
+      run: type yq && sudo apt-get -y dist-upgrade || (sudo apt-get update && sudo apt-get -y install yq)
     - name: "Checkout"
       uses: actions/checkout@v4
       with:
