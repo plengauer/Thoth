@@ -30,7 +30,7 @@ jobs:
           - language: java
             build-mode: none
     steps:
-      - uses: plengauer/thoth/actions/instrument/job@v5.10.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.12.5
         with:
           secrets_to_redact: '${{ toJSON(secrets) }}'
         env:

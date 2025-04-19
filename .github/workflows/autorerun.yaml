@@ -14,12 +14,12 @@ jobs:
   rerun:
     runs-on: ubuntu-latest
     steps:
-      - uses: plengauer/thoth/actions/instrument/job@v5.11.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.12.5
         with:
           secrets_to_redact: '${{ toJSON(secrets) }}'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - uses: plengauer/autorerun@v0.22.0
+      - uses: plengauer/autorerun@v0.23.0
         with:
           github_token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
