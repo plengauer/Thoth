@@ -10,7 +10,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/deploy@v5.12.3
+      - uses: plengauer/opentelemetry-github/actions/instrument/deploy@v5.12.5
         with:
           github_token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           job_level_instrumentation_exclude: 'Test,Refresh Demos,GitHub,Workflow Example,Experiment'
