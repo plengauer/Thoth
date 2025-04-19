@@ -16,7 +16,7 @@ jobs:
   verify-python-dependency:
     runs-on: ubuntu-latest
     steps:
-      - uses: plengauer/thoth/actions/instrument/job@v5.12.5
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.12.5
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -30,7 +30,7 @@ jobs:
   verify-debian-dependencies:
     runs-on: ubuntu-latest
     steps:
-      - uses: plengauer/thoth/actions/instrument/job@v5.12.5
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.12.5
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -58,7 +58,7 @@ jobs:
   verify-triggers:
     runs-on: ubuntu-latest
     steps:
-      - uses: plengauer/thoth/actions/instrument/job@v5.12.5
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.12.5
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -77,7 +77,7 @@ jobs:
       run:
         working-directory: ./src
     steps:
-      - uses: plengauer/thoth/actions/instrument/job@v5.12.5
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.12.5
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -142,7 +142,7 @@ jobs:
     outputs:
       matrix: ${{ steps.dynamic-matrix.outputs.matrix }}
     steps:
-      - uses: plengauer/thoth/actions/instrument/job@v5.12.5
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.12.5
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -209,7 +209,7 @@ jobs:
       IMAGE_OPENSUSE_LATEST: 'opensuse/tumbleweed:latest'
       IMAGE_OPENSUSE_DEV: '' # not public
     steps:
-      - uses: plengauer/thoth/actions/instrument/job@v5.12.5
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.12.5
         with:
           secrets_to_redact: '${{ toJSON(secrets) }}'
         env:
@@ -245,7 +245,7 @@ jobs:
     outputs:
       shells: ${{ steps.dynamic.outputs.shells }}
     steps:
-      - uses: plengauer/thoth/actions/instrument/job@v5.12.5
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.12.5
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -298,7 +298,7 @@ jobs:
     outputs:
       dependencies: ${{ steps.dynamic.outputs.dependencies }}
     steps:
-      - uses: plengauer/thoth/actions/instrument/job@v5.12.5
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.12.5
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -455,7 +455,7 @@ jobs:
     outputs:
       matrix: ${{ steps.dynamic-matrix.outputs.matrix }}
     steps:
-      - uses: plengauer/thoth/actions/instrument/job@v5.12.5
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.12.5
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -502,7 +502,7 @@ jobs:
     needs: performance
     runs-on: ubuntu-latest
     steps:
-      - uses: plengauer/thoth/actions/instrument/job@v5.12.5
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.12.5
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
