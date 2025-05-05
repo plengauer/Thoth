@@ -421,7 +421,7 @@ jobs:
         shell: ${{ fromJSON(needs.prepare-shells.outputs.shells) }}
       fail-fast: false
     steps:
-      - uses: Vampire/setup-wsl@v5.0.0
+      - uses: Vampire/setup-wsl@v5.0.1
         with:
           wsl-version: ${{ matrix.version }}
       - uses: actions/checkout@v4
