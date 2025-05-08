@@ -163,6 +163,13 @@ The workflow-level instrumentation is a good starting point to get an overview o
 
 Both methods of instrumentation can be combined arbitrarily. Deploying them both at the same time, will combine their advantages without any double recording of any log, metric, trace or span.
 
+To grant the neccessary permissions to implicit GitHub token for the job-level instrumentation and workflow-level instrumentation, one either must set the implicit GitHub token to permissive (via Settings -> Actions -> General -> Workflow Permissions -> Read and Write Permissions) or grant the necessary scopes explicitly in every workflow with the following snippet:
+```yaml
+permissions:
+  actions: write
+  id-token: write
+```
+
 ### Automatical Deployment of Workflow-level and Job-level Instrumentations
 To automatically deploy workflow-level and job-level instrumentations to all your GitHub actions, copy the following workflow into your `.github/workflows` directory. Make sure, the GitHub token has permissions to open pull requests (configurable in the repository settings) or specify a token with the correct permissions explicitly with the `github_token` parameter. This workflow will also update instrumentations when a new workflow is created. The configuration in the `env` section will be deployed to all instrumentations.
 ```yaml
