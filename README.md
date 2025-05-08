@@ -163,7 +163,7 @@ The workflow-level instrumentation is a good starting point to get an overview o
 
 Both methods of instrumentation can be combined arbitrarily. Deploying them both at the same time, will combine their advantages without any double recording of any log, metric, trace or span.
 
-To grant the neccessary permissions to implicit GitHub token for the job-level instrumentation and workflow-level instrumentation, one either must set the implicit GitHub token to permissive (via Settings -> Actions -> General -> Workflow Permissions -> Read and Write Permissions) or grant the necessary scopes explicitly in every workflow with the following snippet:
+To grant the necessary permissions to implicit GitHub token for the job-level instrumentation and workflow-level instrumentation, one either must set the implicit GitHub token to permissive (via Settings -> Actions -> General -> Workflow Permissions -> Read and Write Permissions) or grant the necessary scopes explicitly in every workflow with the following snippet:
 ```yaml
 permissions:
   actions: write
