@@ -62,7 +62,7 @@ gh_artifact_download() {
 export -f gh_artifact_download
 
 gh_artifact_upload() {
-  node -e '
+  GITHUB_TOKEN="$INPUT_GITHUB_TOKEN" node -e '
     const path = require("path");
     const { DefaultArtifactClient } = require("@actions/artifact");
     new DefaultArtifactClient().uploadArtifact("'"$3"'", [ "'"$4"'" ], path.dirname("'"$4"'"));
@@ -71,7 +71,7 @@ gh_artifact_upload() {
 export -f gh_artifact_upload
 
 gh_artifact_delete() {
-  node -e '
+  GITHUB_TOKEN="$INPUT_GITHUB_TOKEN" node -e '
     const { DefaultArtifactClient } = require("@actions/artifact");
     new DefaultArtifactClient().deleteArtifact("'"$3"'");
   '
