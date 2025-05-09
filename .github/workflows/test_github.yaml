@@ -229,6 +229,10 @@ jobs:
           collector: ${{ matrix.collector }}
           secrets_to_redact: '{"github.token": "${{ github.token }}", "url": "https://example.com/foo/bar", "regex": "[a-zA-Z]*"}'
         env:
+          OTEL_LOGS_EXPORTER: ${{ matrix.exporter_logs }}
+          OTEL_METRICS_EXPORTER: ${{ matrix.exporter_metrics }}
+          OTEL_TRACES_EXPORTER: ${{ matrix.exporter_traces }}
+          OTEL_EXPORTER_OTLP_ENDPOINT: http://localhost:8080
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
       - run: echo hello world >&2
