@@ -19,6 +19,8 @@ jobs:
       - run: |
           curl -sS -f -I -H "Authorization: token ${{ github.token }}" https://api.github.com
       - run: |
+          curl -sS -f -I -H "Authorization: Bearer ${{ github.token }}" https://api.github.com
+      - run: |
           GITHUB_TOKEN="${{ github.token }}" gh auth status
 
   verify-python-dependency:
