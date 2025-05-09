@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          curl -sS -f -I -H "Authorization: token ${{ github.token }}" "$GITHUB_URL" | grep scopes
+          curl -sS -f -I -H "Authorization: token ${{ github.token }}" https://api.github.com | grep scopes
 
   verify-python-dependency:
     runs-on: ubuntu-latest
