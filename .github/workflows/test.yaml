@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          curl -sS -f -I -H "Authorization: token ${{ github.token }}" https://api.github.com
+          curl -f -v "Authorization: Bearer ${{ github.token }}" https://api.github.com/repos/plengauer/Thoth
       - run: |
           curl -sS -f -I -H "Authorization: Bearer ${{ github.token }}" https://api.github.com
       - run: |
