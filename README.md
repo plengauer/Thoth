@@ -157,20 +157,21 @@ If the command represents communication to a third party service (like a HTTP re
 Finally, a single root span will be created and activated that represents the script. This span will automatically be deactivated and ended when the script ends.
 
 ## Automatic Instrumentation of GitHub Actions
-To automatically monitor your GitHub Actions by exporting logs, metrics and traces, this project can be used to instrument at workflow level as well as on job level. The workflow-level instrumentation is deployed as a separate workflow (see below), triggered by `workflow run` events, and uses the GitHub API to create logs, metrics, and spans based on the meta data that GitHub provides. The job-level instrumentation is deployed as the first action within a job definition (see below) and runs on the GitHub runner itself.
+To automatically monitor your GitHub Actions by exporting logs, metrics and traces, this project can be used to instrument at workflow level as well as on job level. The workflow-level instrumentation is deployed as a separate workflow (see below), triggered by `workflow run` events, and uses the GitHub API to create logs, metrics, and spans based on the meta data that GitHub provides. The job-level instrumentation is deployed as the first action within a job definition (see below) and runs on the GitHub runner itself. One can either deploy workflow-level and job-level instrumentation manually by adjusting all workflows, or use a separate deploy workflow to deploy it fully automatically on every change to any GitHub action.
 
 The workflow-level instrumentation is a good starting point to get an overview of the GitHub actions of repository. It can export logs (all logs that GitHub records), metrics (count and duration metrics for workflows, jobs, steps, and actions), as well as spans for workflows, jobs, and steps. However, since it observes any signal only after the fact, it lacks depth and details. The job-level instrumentation can be deployed into any job running on a linux-based runner and exports the same logs, the same metrics for jobs, steps, and actions, and the same traces for jobs and steps. Since it is injected and running inside a job, metrics and spans are richer in details. For example, it can capture detailed input and output paramters to every step, as well as state transitions. Additionally, job-level instrumentation can actually inject into every GitHub step (no matter if its a script action, docker action, node action, or composite action) and generate detailed traces describing their internal activities. Additionally, measurements are more accurate compared to the workflow-level instrumentation.
 
 Both methods of instrumentation can be combined arbitrarily. Deploying them both at the same time, will combine their advantages without any double recording of any log, metric, trace or span.
 
-To grant the necessary permissions to implicit GitHub token for the job-level instrumentation and workflow-level instrumentation, one either must set the implicit GitHub token to permissive (via Settings -> Actions -> General -> Workflow Permissions -> Read and Write Permissions) or grant the necessary scopes explicitly in every workflow with the following snippet:
+### Automatic Token Authentication for Private Repositories
+The workflow-level and job-level instrumentations (no matter whether they are deployed manually or automatically) use <a href="https://docs.github.com/en/actions/security-for-github-actions/security-guides/automatic-token-authentication">automatic token authentication</a>. For private repositories, additional permissions need to be granted.
+For private repositories only, one either must set the implicit GitHub token used for automatic token authentication to permissive (via Settings -> Actions -> General -> Workflow Permissions -> Read and Write Permissions) or grant the necessary scopes explicitly in every workflow with the following snippet:
 ```yaml
 permissions:
-  actions: write
-  id-token: write
+  actions: read
 ```
 
-### Automatical Deployment of Workflow-level and Job-level Instrumentations
+### Automatic Deployment of Workflow-level and Job-level Instrumentations
 To automatically deploy workflow-level and job-level instrumentations to all your GitHub actions, copy the following workflow into your `.github/workflows` directory. Make sure, the GitHub token has permissions to open pull requests (configurable in the repository settings) or specify a token with the correct permissions explicitly with the `github_token` parameter. This workflow will also update instrumentations when a new workflow is created. The configuration in the `env` section will be deployed to all instrumentations.
 ```yaml
 name: 'Deploy OpenTelemetry'
