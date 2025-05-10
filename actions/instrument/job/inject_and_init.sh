@@ -162,6 +162,7 @@ while [ "$count" -lt 60 ] && ! gh_artifact_download "$GITHUB_RUN_ID" "$GITHUB_RU
   otel_shutdown
   count=$((count + 1))
 done
+[ -r "$opentelemetry_root_dir"/traceparent ] || (echo "::error ::Cannot sync trace id via artifacts. This is most likely a token permission issue, please consult the README." && false)
 export TRACEPARENT="$(cat "$opentelemetry_root_dir"/traceparent)"
 rm -rf "$opentelemetry_root_dir"
 
