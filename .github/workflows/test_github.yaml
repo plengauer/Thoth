@@ -277,6 +277,7 @@ jobs:
           OTEL_LOGS_EXPORTER: console
           OTEL_TRACES_EXPORTER: console
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: '${{ steps.filename.outputs.otlp }}'
+      - run: cat '${{ steps.filename.outputs.otlp }}'
       - run: |
           . ./actions/instrument/shared/github.sh
           INPUT_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} gh_artifact_download '${{ steps.workflow_run.outputs.id }}' '${{ steps.workflow_run.outputs.run_attempt }}' 'opentelemetry_workflow_run_${{ steps.workflow_run.outputs.run_attempt }}' .
