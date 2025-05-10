@@ -10,7 +10,7 @@ runs:
   post: 'shutdown.js'
 inputs:
   github_token:
-    description: 'A GitHub token for API access, needs read access to the scopes repo and actions.'
+    description: 'A GitHub token for API access, needs read access to the scopes repo and actions. Do not set manually unless you know exactly what you are doing, the default token should always be enough.'
     default: '${{ github.token }}'
   cache:
     description: 'Whether to use GitHub Actions Cache to cache dependencies'
