@@ -13,16 +13,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  experiment:
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          curl -f -v "Authorization: Bearer ${{ github.token }}" https://api.github.com/user
-      - run: |
-          curl -sS -f -I -H "Authorization: Bearer ${{ github.token }}" https://api.github.com
-      - run: |
-          GITHUB_TOKEN="${{ github.token }}" gh auth status
-
   verify-python-dependency:
     runs-on: ubuntu-latest
     steps:
