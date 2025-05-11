@@ -57,12 +57,12 @@ export -f gh_artifacts
 
 gh_artifact_download() {
   local artifact_filename="$(mktemp)"
-  gh_curl /actions/runs/"$1"/artifacts'?per_page=1&'name="$3" | jq '.artifacts[0].id' | grep -v '^null$' | xargs -r -I '{}' bash -c 'gh_curl "$@"' bash /actions/artifacts/'{}'/zip --head | tr -d '\r' | grep '^location:' | cut -d ' ' -f 2- | xargs -r wget -O "$artifact_filename" && [ -r "$artifact_filename" ] && unzip "$artifact_filename" -d "$4"
+  gh_curl /actions/runs/"$1"/artifacts'?per_page=1&'name="$3" | jq '.artifacts[0].id' | grep -v '^null$' | xargs -r -I '{}' bash -c 'gh_curl "$@"' bash /actions/artifacts/'{}'/zip --head | tr -d '\r' | grep '^location:' | cut -d ' ' -f 2- | xargs -r wget -O "$artifact_filename" && [ -r "$artifact_filename" ] && unzip "$artifact_filename" -d "$4" && rm "$artifact_filename"
 }
 export -f gh_artifact_download
 
 gh_artifact_upload() {
-  node -e '
+  GITHUB_TOKEN="$INPUT_GITHUB_TOKEN" node -e '
     const path = require("path");
     const { DefaultArtifactClient } = require("@actions/artifact");
     new DefaultArtifactClient().uploadArtifact("'"$3"'", [ "'"$4"'" ], path.dirname("'"$4"'"));
@@ -71,7 +71,7 @@ gh_artifact_upload() {
 export -f gh_artifact_upload
 
 gh_artifact_delete() {
-  node -e '
+  GITHUB_TOKEN="$INPUT_GITHUB_TOKEN" node -e '
     const { DefaultArtifactClient } = require("@actions/artifact");
     new DefaultArtifactClient().deleteArtifact("'"$3"'");
   '
