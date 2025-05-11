@@ -171,6 +171,8 @@ done | sed 's/\t/ /g' | while read -r TRACEPARENT job_id step_number step_conclu
   if [ -r "$step_log_file" ]; then
     last_log_timestamp="$(tail < "$step_log_file" -n 1 | cut -d ' ' -f 1)"
     if [ -n "$last_log_timestamp" ] && [ "$last_log_timestamp" > "$step_completed_at" ]; then step_completed_at="$last_log_timestamp"; fi
+  else
+    echo "::warning ::Cannot resolve log for $job_name."
   fi
 
   action_name="$step_name"
@@ -294,6 +296,7 @@ done | sed 's/\t/ /g' | while read -r TRACEPARENT job_id step_number step_conclu
       error) severity=17;;
       *) severity=0;;
     esac
+    [ -z "${INPUT_DEBUG}" ] || echo "log $TRACEPARENT $job_name $timestamp $severity $line" >&2
     _otel_log_record "$TRACEPARENT" "$timestamp" "$severity" "$line"
   done || true
   [ -z "${INPUT_DEBUG}" ] || echo "span step $TRACEPARENT $step_name" >&2
