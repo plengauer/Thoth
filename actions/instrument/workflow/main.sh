@@ -19,7 +19,7 @@ gh_artifacts "$INPUT_WORKFLOW_RUN_ID" | jq -r .artifacts[] > "$artifacts_json"
 
 logs_dir="$(mktemp -d)"
 logs_zip="$(mktemp)"
-gh_workflow_run_logs "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" "$logs_zip" && unzip "$logs_zip" -d "$logs_dir" && rm "$logs_zip" || true
+gh_workflow_run_logs "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" "$logs_zip" && unzip "$logs_zip" -d "$logs_dir" && rm "$logs_zip" && find "$logs_dir" -iname '*.txt' | xargs sed -i '1s/^\xEF\xBB\xBF//' || true
 
 times_dir="$(mktemp -d)"
 
