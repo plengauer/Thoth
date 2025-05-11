@@ -62,7 +62,7 @@ link="${GITHUB_SERVER_URL:-https://github.com}"/"$(jq < "$workflow_json" -r .rep
 workflow_started_at="$(jq < "$workflow_json" -r .run_started_at)"
 workflow_ended_at="$(jq < "$jobs_json" -r .completed_at | sort -r | head -n 1)"
 if [ "$(ls "$logs_dir"/*/*.txt | wc -l)" -gt 0 ]; then
-  last_log_timestamp="$(tail -q -n 1 "$logs_dir"/*/*.txt | cut -d ' ' -f 1 | sort | tail -n 1)"
+  last_log_timestamp="$(tail -q -n 1 "$logs_dir"/*.txt "$logs_dir"/*/*.txt | cut -d ' ' -f 1 | sort | tail -n 1)"
   if [ "$last_log_timestamp" > "$workflow_ended_at" ]; then workflow_ended_at="$last_log_timestamp"; fi
 fi
 
@@ -168,11 +168,15 @@ done | sed 's/\t/ /g' | while read -r TRACEPARENT job_id step_number step_conclu
     if [ "$step_started_at" > "$step_completed_at" ]; then step_completed_at="$step_started_at"; fi
   fi
   step_log_file="$(printf '%s' "$logs_dir"/"${job_name//\//}"/"$step_number"_*.txt | tr -d ':')"
+  if ! [ -r "$step_log_file" ]; then
+    job_log_file="$(printf '%s' "$logs_dir"/*_"${job_name//\//}".txt | tr -d ':')"
+    cat "$job_log_file" |  > "$step_log_file"
+  fi
   if [ -r "$step_log_file" ]; then
     last_log_timestamp="$(tail < "$step_log_file" -n 1 | cut -d ' ' -f 1)"
     if [ -n "$last_log_timestamp" ] && [ "$last_log_timestamp" > "$step_completed_at" ]; then step_completed_at="$last_log_timestamp"; fi
   else
-    echo "::warning ::Cannot resolve log for $job_name."
+    echo "::warning ::Cannot resolve log for job $job_name step $step_number."
   fi
 
   action_name="$step_name"
