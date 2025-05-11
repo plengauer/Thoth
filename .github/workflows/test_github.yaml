@@ -245,6 +245,35 @@ jobs:
       - run: cat /tmp/http.log | grep -q '^POST /v1/traces$'
         if: ${{ matrix.exporter_traces == 'otlp' }}
 
+  job-permissions-restricted:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions: # according to https://docs.github.com/en/actions/security-for-github-actions/security-guides/automatic-token-authentication
+      actions: none
+      attestations: none
+      checks: none
+      contents: read
+      deployments: none
+      discussions: none
+      id-token: none
+      issues: none
+      models: none
+      packages: read
+      pages: none
+      pull-requests: none
+      security-events: none
+      statuses: none
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages
+      - uses: ./actions/instrument/job
+        env:
+          OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
+          OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
+      - run: echo hello world >&2
+
   workflow:
     runs-on: ubuntu-latest
     timeout-minutes: 180
@@ -290,4 +319,4 @@ jobs:
           cat "$OTLP_JSON" | jq -r .name | grep -v '^null$' | sort -u | grep 'publish'
           cat "$OTLP_JSON" | jq -r .name | grep -v '^null$' | sort -u | grep 'Set up job'
           cat "$OTLP_JSON" | jq -r .name | grep -v '^null$' | sort -u | grep 'Complete job'
-          cat "$OTLP_JSON" | jq -r .body | grep -v '^null$' | sort -u | grep 'Cleaning up orphan processes'
+          # cat "$OTLP_JSON" | jq -r .body | grep -v '^null$' | sort -u | grep 'Cleaning up orphan processes'
