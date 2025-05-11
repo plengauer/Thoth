@@ -446,7 +446,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   github:
-    needs: smoke
+    needs: build # smoke
     uses: ./.github/workflows/test_github.yaml
     secrets: inherit
 
