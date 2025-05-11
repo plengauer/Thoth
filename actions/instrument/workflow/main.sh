@@ -168,10 +168,6 @@ done | sed 's/\t/ /g' | while read -r TRACEPARENT job_id step_number step_conclu
     if [ "$step_started_at" > "$step_completed_at" ]; then step_completed_at="$step_started_at"; fi
   fi
   step_log_file="$(printf '%s' "$logs_dir"/"${job_name//\//}"/"$step_number"_*.txt | tr -d ':')"
-  if ! [ -r "$step_log_file" ]; then
-    job_log_file="$(printf '%s' "$logs_dir"/*_"${job_name//\//}".txt | tr -d ':')"
-    cat "$job_log_file" |  > "$step_log_file"
-  fi
   if [ -r "$step_log_file" ]; then
     last_log_timestamp="$(tail < "$step_log_file" -n 1 | cut -d ' ' -f 1)"
     if [ -n "$last_log_timestamp" ] && [ "$last_log_timestamp" > "$step_completed_at" ]; then step_completed_at="$last_log_timestamp"; fi
