@@ -1,0 +1,13 @@
+name: 'OpenTelemetry for GitHub Workflows, Jobs and Steps'
+description: "Export traces, metrics, and logs by injecting deeply into javascript, docker, shell and composite actions."
+branding:
+  icon: 'activity'
+  color: 'blue'
+runs:
+  using: 'composite'
+  steps:
+    - name: 'Stub'
+      run: |
+        echo 'This is a stub for the marketplace. Read [the documentation](https://github.com/plengauer/Thoth/blob/main/README.md) on how to deploy OpenTelemetry in your GitHub actions.'
+        exit 1
+      shell: bash

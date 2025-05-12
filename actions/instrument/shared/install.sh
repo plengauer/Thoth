@@ -47,6 +47,6 @@ if ! type otel.sh 2> /dev/null; then
     fi
     sudo rm "$debian_file"
   else
-    wget -O - https://raw.githubusercontent.com/"$GITHUB_ACTION_REPOSITORY"/main/INSTALL.sh | sh
-  fi
+    false
+  fi || wget -O - https://raw.githubusercontent.com/"$GITHUB_ACTION_REPOSITORY"/main/INSTALL.sh | sh
 fi

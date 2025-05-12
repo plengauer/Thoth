@@ -9,7 +9,7 @@ jobs:
   bump:
     runs-on: ubuntu-latest
     steps:
-      - uses: plengauer/thoth/actions/instrument/job@v5.11.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.13.0
         with:
           secrets_to_redact: '${{ toJSON(secrets) }}'
         env:
