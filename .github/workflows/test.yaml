@@ -13,6 +13,11 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  experiment:
+    runs-on: ubuntu-latest
+    steps:
+      - run: printenv
+
   verify-python-dependency:
     runs-on: ubuntu-latest
     steps:
