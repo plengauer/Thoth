@@ -1,5 +1,5 @@
 . otel.sh
-repository=plengauer/opentelemetry-bash
+repository=plengauer/Thoth
 per_page=100
 host=api.github.com
 path="/repos/$repository/releases?per_page=$per_page"

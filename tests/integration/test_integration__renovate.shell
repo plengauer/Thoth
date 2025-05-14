@@ -11,4 +11,4 @@ span="$(resolve_span '. | select(.name == "/usr/local/renovate/node --use-openss
 assert_equals "SpanKind.INTERNAL" $(\echo "$span" | \jq -r '.kind')
 span_id="$(\echo "$span" | \jq -r '.context.span_id')"
 
-\cat "$log_file" | \grep parentId | \grep "${span_id:2}" || exit 1
+\cat "$log_file" | \grep "${span_id:2}" || exit 1

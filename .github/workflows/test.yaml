@@ -16,7 +16,7 @@ jobs:
   verify-python-dependency:
     runs-on: ubuntu-latest
     steps:
-      - uses: plengauer/thoth/actions/instrument/job@v5.8.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.14.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -30,7 +30,7 @@ jobs:
   verify-debian-dependencies:
     runs-on: ubuntu-latest
     steps:
-      - uses: plengauer/thoth/actions/instrument/job@v5.8.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.14.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -58,7 +58,7 @@ jobs:
   verify-triggers:
     runs-on: ubuntu-latest
     steps:
-      - uses: plengauer/thoth/actions/instrument/job@v5.8.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.14.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -66,7 +66,8 @@ jobs:
       - run: |
           set -o pipefail
           cat src/DEBIAN/postinst | grep 'if type ' | awk '{for(i=1;i<NF;i++){if($i=="type"){print $(i+1)}}}' | while read -r command; do
-            cat src/DEBIAN/triggers | grep -qE /"$command"
+            printf '%s' "$command ... "
+            cat src/DEBIAN/triggers | grep -qE /"$command" && echo OK || (echo UNAVAILABLE && false)
           done
 
   build:
@@ -76,7 +77,7 @@ jobs:
       run:
         working-directory: ./src
     steps:
-      - uses: plengauer/thoth/actions/instrument/job@v5.8.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.14.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -141,7 +142,7 @@ jobs:
     outputs:
       matrix: ${{ steps.dynamic-matrix.outputs.matrix }}
     steps:
-      - uses: plengauer/thoth/actions/instrument/job@v5.8.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.14.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -187,7 +188,7 @@ jobs:
       IMAGE_DEBIAN_SLIM_STABLE: 'debian:stable-slim'
       IMAGE_DEBIAN_SLIM_LATEST: 'debian:testing-slim'
       IMAGE_DEBIAN_SLIM_DEV: 'debian:unstable-slim'
-      IMAGE_UBUNTU_OLDEST: 'ubuntu:focal' # needs manual maintenance on April 2025 (https://ubuntu.com/about/release-cycle)
+      IMAGE_UBUNTU_OLDEST: 'ubuntu:jammy' # needs manual maintenance on April 2027 (https://ubuntu.com/about/release-cycle)
       IMAGE_UBUNTU_STABLE: 'ubuntu:latest'
       IMAGE_UBUNTU_LATEST: 'ubuntu:rolling'
       IMAGE_UBUNTU_DEV: 'ubuntu:devel'
@@ -208,7 +209,7 @@ jobs:
       IMAGE_OPENSUSE_LATEST: 'opensuse/tumbleweed:latest'
       IMAGE_OPENSUSE_DEV: '' # not public
     steps:
-      - uses: plengauer/thoth/actions/instrument/job@v5.8.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.14.0
         with:
           secrets_to_redact: '${{ toJSON(secrets) }}'
         env:
@@ -244,7 +245,7 @@ jobs:
     outputs:
       shells: ${{ steps.dynamic.outputs.shells }}
     steps:
-      - uses: plengauer/thoth/actions/instrument/job@v5.8.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.14.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -297,7 +298,7 @@ jobs:
     outputs:
       dependencies: ${{ steps.dynamic.outputs.dependencies }}
     steps:
-      - uses: plengauer/thoth/actions/instrument/job@v5.8.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.14.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -321,35 +322,42 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: packages
-      - run: |
+      - env:
+          DEPENDENCY: ${{ matrix.dependency }}
+        run: |
           echo '
             if type apt-get; then
+              if [ "$DEPENDENCY" = javac ] || [ "$DEPENDENCY" = jar ]; then DEPENDENCY=default-jdk; fi
               apt-get update
-              apt-get -y remove ${{ matrix.dependency }}
+              apt-get -y remove $DEPENDENCY
               DEBIAN_FRONTEND=noninteractive apt-get -y install /root/package.deb
-              DEBIAN_FRONTEND=noninteractive apt-get -y install ${{ matrix.dependency }}
-              apt-get -y remove ${{ matrix.dependency }}
+              DEBIAN_FRONTEND=noninteractive apt-get -y install $DEPENDENCY
+              apt-get -y remove $DEPENDENCY
             elif type dnf; then
+              if [ "$DEPENDENCY" = javac ] || [ "$DEPENDENCY" = jar ]; then DEPENDENCY=java-21-openjdk.x86_64; fi
               dnf -y upgrade --refresh
-              dnf -y remove ${{ matrix.dependency }}
+              dnf -y remove $DEPENDENCY
               dnf -y install /root/package.rpm
-              dnf -y install ${{ matrix.dependency }}
-              dnf -y remove ${{ matrix.dependency }}
+              dnf -y install $DEPENDENCY
+              dnf -y remove $DEPENDENCY || ((dnf -y remove $DEPENDENCY 2>&1 || true) | grep -F "The operation would result in removing the following protected packages")
             elif type yum; then
+              if [ "$DEPENDENCY" = javac ] || [ "$DEPENDENCY" = jar ]; then DEPENDENCY=java-21-openjdk.x86_64; fi
               yum -y update
-              yum -y remove ${{ matrix.dependency }}
+              yum -y remove $DEPENDENCY
               yum -y install /root/package.rpm
-              yum -y install ${{ matrix.dependency }}
-              yum -y remove ${{ matrix.dependency }}
+              yum -y install $DEPENDENCY
+              yum -y remove $DEPENDENCY
             elif type zypper; then
-              zypper --non-interactive remove ${{ matrix.dependency }} || true
+              if [ "$DEPENDENCY" = javac ] || [ "$DEPENDENCY" = jar ]; then DEPENDENCY=java-21-openjdk; fi
+              zypper --non-interactive remove $DEPENDENCY || true
               zypper --non-interactive install --allow-unsigned-rpm /root/package.rpm
-              zypper --non-interactive install ${{ matrix.dependency }}
-              zypper --non-interactive remove ${{ matrix.dependency }}
+              zypper --non-interactive install $DEPENDENCY
+              zypper --non-interactive remove $DEPENDENCY
             else
               exit 1
             fi
-          ' | sudo docker run -v $(pwd)/package.deb:/root/package.deb -v $(pwd)/package.rpm:/root/package.rpm --rm --network=host -i --entrypoint=/bin/sh ${{ matrix.image }} -e
+          ' | sudo -E docker run -v $(pwd)/package.deb:/root/package.deb -v $(pwd)/package.rpm:/root/package.rpm --rm --network=host -e DEPENDENCY -i --entrypoint=/bin/sh ${{ matrix.image }} -e
+        
 
   install-manual-user:
     needs: [ smoke ]
@@ -371,10 +379,10 @@ jobs:
       - run: |
           {
             echo '
-              if type apt-get; then apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install wget curl jq gawk sudo
-              elif type dnf; then dnf -y install wget jq gawk sudo
-              elif type yum; then yum -y install wget jq gawk sudo
-              elif type zypper; then zypper --non-interactive install wget jq gawk sudo
+              if type apt-get; then apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install wget curl jq gawk sudo findutils
+              elif type dnf; then dnf -y install wget jq gawk sudo findutils
+              elif type yum; then yum -y install wget jq gawk sudo findutils
+              elif type zypper; then zypper --non-interactive install wget jq gawk sudo findutils
               else exit 1
               fi
             '
@@ -413,19 +421,21 @@ jobs:
         shell: ${{ fromJSON(needs.prepare-shells.outputs.shells) }}
       fail-fast: false
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
-      - uses: Vampire/setup-wsl@v5.0.0
+      - uses: Vampire/setup-wsl@v5.0.1
         with:
           wsl-version: ${{ matrix.version }}
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages
       - shell: wsl-bash {0}
         run: |
           retry() {
             while ! "$@"; do sleep 60; done
           }
           retry sudo apt-get update
-          retry sudo -E apt-get -y install ./packages/package.deb dos2unix jq psmisc wget curl time sudo 
-          for package in parallel moreutils ncat wget2 python3 python3-pip gcc docker; do # TODO nodejs npm
+          retry sudo -E apt-get -y install ./package.deb dos2unix jq psmisc wget curl time sudo
+          for package in parallel moreutils ncat wget2 python3 python3-pip gcc docker default-jdk; do # TODO nodejs npm
             sudo -E apt-get -y install "$package" || true
           done
           [ ${{ matrix.shell }} = sh ] || retry sudo -E apt-get -y install ${{ matrix.shell }} || exit 0
@@ -445,7 +455,7 @@ jobs:
     outputs:
       matrix: ${{ steps.dynamic-matrix.outputs.matrix }}
     steps:
-      - uses: plengauer/thoth/actions/instrument/job@v5.8.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.14.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -492,7 +502,7 @@ jobs:
     needs: performance
     runs-on: ubuntu-latest
     steps:
-      - uses: plengauer/thoth/actions/instrument/job@v5.8.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.14.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'

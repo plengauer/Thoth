@@ -4,6 +4,10 @@
 
 _otel_is_boolean_docker_option() {
   case "$1" in
+    -i) return 0;;
+    -it) return 0;;
+    --interactive) return 0;;
+    --init) return 0;;
     -d) return 0;;
     --detach) return 0;;
     -t) return 0;;

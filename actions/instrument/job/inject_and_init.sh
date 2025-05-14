@@ -151,14 +151,18 @@ sudo gcc -o "$docker_path" forward.c -DEXECUTABLE=/bin/bash -DARG1="$GITHUB_ACTI
 
 # resolve parent (does not exist yet - see workflow action) and make sure all jobs are of the same trace and have the same deferred parent 
 opentelemetry_root_dir="$(mktemp -d)"
-while ! gh_artifact_download "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_workflow_run_"$GITHUB_RUN_ATTEMPT" "$opentelemetry_root_dir" || ! [ -r "$opentelemetry_root_dir"/traceparent ]; do
+count=0
+while [ "$count" -lt 60 ] && ! gh_artifact_download "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_workflow_run_"$GITHUB_RUN_ATTEMPT" "$opentelemetry_root_dir" || ! [ -r "$opentelemetry_root_dir"/traceparent ]; do
+  if [ "$count" -gt 0 ]; then sleep $count; fi
   . otelapi.sh
   otel_init
   otel_span_traceparent "$(otel_span_start INTERNAL dummy)" > "$opentelemetry_root_dir"/traceparent
   gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_workflow_run_"$GITHUB_RUN_ATTEMPT" "$opentelemetry_root_dir"/traceparent || true
   rm "$opentelemetry_root_dir"/traceparent
   otel_shutdown
+  count=$((count + 1))
 done
+[ -r "$opentelemetry_root_dir"/traceparent ] || (echo "::error ::Cannot sync trace id via artifacts. This is most likely a token permission issue, please consult the README." && false)
 export TRACEPARENT="$(cat "$opentelemetry_root_dir"/traceparent)"
 rm -rf "$opentelemetry_root_dir"
 
@@ -218,6 +222,7 @@ root4job_end() {
   otel_observation_attribute_typed "$observation_handle" string github.actions.job.conclusion="$conclusion"
   otel_counter_observe "$counter_handle" "$observation_handle"
   otel_shutdown
+  while [ "$(pgrep -cf /opt/opentelemetry_shell/)" -gt 0 ]; do sleep 1; done
   if [ -n "${OTEL_SHELL_COLLECTOR_CONTAINER:-}" ]; then
     sudo docker stop "$OTEL_SHELL_COLLECTOR_CONTAINER"
     if [ -n "$INPUT_DEBUG" ]; then

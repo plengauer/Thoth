@@ -79,8 +79,8 @@ req.end();
 span="$(node "$directory"/index.js 2>&1)"
 assert_equals 0 $?
 \echo "$span"
-assert_equals "GET" $(\echo "$span" | grep -E '^  name:' | cut -d ':' -f 2- | tr -d \''" ,')
-assert_not_equals undefined $(\echo "$span" | grep parentId | cut -d ':' -f 2- | tr -d \''" ,')
+assert_equals "GET" "$(\echo "$span" | grep -E '^  name:' | cut -d ':' -f 2- | tr -d \''" ,')"
+assert_not_equals undefined "$(\echo "$span" | grep parentId | cut -d ':' -f 2- | tr -d \''" ,')"
 
 directory="$(mktemp -d)"
 echo "
@@ -111,8 +111,8 @@ req.end();
 span="$(node "$directory"/index.js 2>&1)"
 assert_equals 0 $?
 \echo "$span"
-assert_equals "GET" $(\echo "$span" | grep -E '^  name:' | cut -d ':' -f 2- | tr -d \''" ,')
-assert_not_equals undefined $(\echo "$span" | grep parentId | cut -d ':' -f 2- | tr -d \''" ,')
+assert_equals "GET" "$(\echo "$span" | grep -E '^  name:' | cut -d ':' -f 2- | tr -d \''" ,')"
+assert_not_equals undefined "$(\echo "$span" | grep parentId | cut -d ':' -f 2- | tr -d \''" ,')"
 
 directory="$(mktemp -d)"
 echo "
@@ -137,4 +137,4 @@ opentelemetry_api.trace.getTracerProvider().getTracer('my-tracer').startActiveSp
 span="$(node "$directory"/index.js 2>&1)"
 assert_equals 0 $?
 \echo "$span"
-assert_equals $(resolve_span '.name == "echo hello world 7"' | jq -r .parent_id) 0x$(\echo "$span" | grep -E '^  id:' | cut -d ':' -f 2- | tr -d \''" ,')
+assert_equals "$(resolve_span '.name == "echo hello world 7"' | jq -r .parent_id)" 0x"$(\echo "$span" | grep -E '^  id:' | cut -d ':' -f 2- | tr -d \''" ,')"

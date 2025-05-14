@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 
 // forward [ forward arg1 arg2 NULL ] => EXECUTABLE [ EXECUTABLE ARG1 ARG2 arg1 arg2 NULL ]

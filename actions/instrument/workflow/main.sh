@@ -19,7 +19,11 @@ gh_artifacts "$INPUT_WORKFLOW_RUN_ID" | jq -r .artifacts[] > "$artifacts_json"
 
 logs_dir="$(mktemp -d)"
 logs_zip="$(mktemp)"
-gh_workflow_run_logs "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" "$logs_zip" && unzip "$logs_zip" -d "$logs_dir" && rm "$logs_zip" || true
+count=1
+while [ "$count" -lt 60 ] && !(gh_workflow_run_logs "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" "$logs_zip" && unzip "$logs_zip" -d "$logs_dir" && rm "$logs_zip" && find "$logs_dir" -iname '*.txt' | xargs sed -i '1s/^\xEF\xBB\xBF//'); do # sometimes download fail
+  sleep "$count"
+  count=$((count * 2))
+done
 
 times_dir="$(mktemp -d)"
 
@@ -58,7 +62,7 @@ link="${GITHUB_SERVER_URL:-https://github.com}"/"$(jq < "$workflow_json" -r .rep
 workflow_started_at="$(jq < "$workflow_json" -r .run_started_at)"
 workflow_ended_at="$(jq < "$jobs_json" -r .completed_at | sort -r | head -n 1)"
 if [ "$(ls "$logs_dir"/*/*.txt | wc -l)" -gt 0 ]; then
-  last_log_timestamp="$(tail -q -n 1 "$logs_dir"/*/*.txt | cut -d ' ' -f 1 | sort | tail -n 1)"
+  last_log_timestamp="$(tail -q -n 1 "$logs_dir"/*.txt "$logs_dir"/*/*.txt | cut -d ' ' -f 1 | sort | tail -n 1)"
   if [ "$last_log_timestamp" > "$workflow_ended_at" ]; then workflow_ended_at="$last_log_timestamp"; fi
 fi
 
@@ -167,6 +171,8 @@ done | sed 's/\t/ /g' | while read -r TRACEPARENT job_id step_number step_conclu
   if [ -r "$step_log_file" ]; then
     last_log_timestamp="$(tail < "$step_log_file" -n 1 | cut -d ' ' -f 1)"
     if [ -n "$last_log_timestamp" ] && [ "$last_log_timestamp" > "$step_completed_at" ]; then step_completed_at="$last_log_timestamp"; fi
+  else
+    echo "::warning ::Cannot resolve log for job $job_name step $step_number."
   fi
 
   action_name="$step_name"
@@ -260,6 +266,7 @@ done | sed 's/\t/ /g' | while read -r TRACEPARENT job_id step_number step_conclu
   otel_span_activate "$step_span_handle"
   [ -r "$step_log_file" ] && cat "$step_log_file" | while read -r line; do
     timestamp="${line%% *}"
+    if ! [[ "$timestamp" =~ ^[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]\.[0-9]{7}Z$ ]]; then continue; fi
     line="${line#* }"
     case "$line" in
       '[command]'*)
@@ -289,6 +296,7 @@ done | sed 's/\t/ /g' | while read -r TRACEPARENT job_id step_number step_conclu
       error) severity=17;;
       *) severity=0;;
     esac
+    [ -z "${INPUT_DEBUG}" ] || echo "log $TRACEPARENT $job_name $timestamp $severity $line" >&2
     _otel_log_record "$TRACEPARENT" "$timestamp" "$severity" "$line"
   done || true
   [ -z "${INPUT_DEBUG}" ] || echo "span step $TRACEPARENT $step_name" >&2
@@ -300,3 +308,4 @@ done | sed 's/\t/ /g' | while read -r TRACEPARENT job_id step_number step_conclu
 done
 
 otel_shutdown
+while [ "$(pgrep -cf /opt/opentelemetry_shell/)" -gt 0 ]; do sleep 1; done

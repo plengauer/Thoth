@@ -1,16 +1,14 @@
 name: OpenTelemetry
-
 on:
   workflow_run:
-    workflows: ['Test', 'Publish', 'Refresh Demos', 'Renovate', 'Autoversion', 'Autoapprove', 'Autorerun', 'CodeQL', 'Greetings', 'Workflow Example' ]
+    workflows: [Analyze, Autoapprove, Autorerun, Autoversion, Experiment, Greetings, Publish, Refresh Demos, Renovate, Test, GitHub, Workflow Example]
     types:
       - completed
-
 jobs:
   export:
     runs-on: ubuntu-latest
     steps:
-      - uses: plengauer/thoth/actions/instrument/workflow@v5.8.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/workflow@v5.14.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'

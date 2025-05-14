@@ -77,7 +77,10 @@ def observed_subprocess_Popen___init__(self, *args, **kwargs):
         args = args[0]
     if len(args) > 0 and type(args[0]) is tuple:
         args = list(args[0])
-    kwargs['env'] = inject_env(kwargs.get('env', os.environ.copy()), args)
+    kwargs['env'] = kwargs.get('env', None)
+    if not kwargs['env']:
+       kwargs['env'] = os.environ.copy()
+    kwargs['env'] = inject_env(kwargs['env'], args)
     args = ([ inject_file(kwargs.get('executable', args[0])) ] + inject_arguments(kwargs.get('executable', args[0]), args[1:], not kwargs.get('shell', False)))
     if kwargs.get('executable'):
         kwargs['executable'] = inject_file(kwargs['executable'])
