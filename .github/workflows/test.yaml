@@ -13,14 +13,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  experiment:
-    runs-on: ubuntu-latest
-    steps:
-      - run: printenv
-      - run: ps -ef | grep $PPID
-      - run: ls -la /home/runner/runners/2.323.0/bin/Runner.Worker
-      - run: readlink -f /proc/*/exe | grep '/Runner.Worker$' | rev | cut -d / -f 4- | rev
-
   verify-python-dependency:
     runs-on: ubuntu-latest
     steps:
