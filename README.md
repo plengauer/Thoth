@@ -195,6 +195,7 @@ jobs:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
 ```
+This workflow only deploys workflow-level and job-level instrumentations. It does not keep them up to date, for that we recommend to use <a href="https://docs.renovatebot.com/">renovate</a>.
 
 ### Manual Deployment of Workflow-level and Job-level Instrumentations
 To deploy workflow-level instrumentation, use the code snippet below in a dedicated workflow to run after any other explicitly configured workflow. You can configure the SDK as described <a href="https://opentelemetry.io/docs/languages/sdk-configuration/">here</a> by adding according environment variables. Workflow-level instrumentation can be combined arbitrarily with job-level instrumentation.
