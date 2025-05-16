@@ -3,6 +3,7 @@ if ! which java; then exit 0; fi
 
 [ "$(java --version | head -n 1 | cut -d ' ' -f 2 | cut -d . -f 1)" -ge 8 ] || exit 0
 
+export OTEL_SHELL_CONFIG_INJECT_DEEP=TRUE
 . otel.sh
 
 dir=$(mktemp -d)
