@@ -32,6 +32,6 @@ public class SubprocessInjectionAgent {
                 }
             }
         }, true);
-        instrumentation.retransformClasses(ProcessBuilder.class);
+        //instrumentation.retransformClasses(ProcessBuilder.class);
     }
 }
