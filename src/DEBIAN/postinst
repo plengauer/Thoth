@@ -46,7 +46,7 @@ print(*map(lambda element: element["instrumentation"], libraries), sep="\n") # S
       artifactId="$(cat /usr/share/opentelemetry_shell/agent.instrumentation.java/deep/pom.xml | grep artifactId | cut -d '>' -f 2- | cut -d '<' -f 1)"
       version="$(cat /usr/share/opentelemetry_shell/agent.instrumentation.java/deep/pom.xml | grep version | cut -d '>' -f 2- | cut -d '<' -f 1)"
       wget https://repo1.maven.org/maven2/"$(echo "$groupId" | tr '.' '/')"/"$artifactId"/"$version"/"$artifactId"-"$version".jar -O /opt/opentelemetry_shell/javassist.jar # SKIP_DEPENDENCY_CHECK
-      (cd /usr/share/opentelemetry_shell/agent.instrumentation.java/deep && javac --release 8 --class-path=/opt/opentelemetry_shell/javassist.jar SubprocessInjectionAgent.java && jar cmf manifest.txt /opt/opentelemetry_shell/subprocessinjectionagent.jar SubprocessInjectionAgent.class) # SKIP_DEPENDENCY_CHECK
+      (cd /usr/share/opentelemetry_shell/agent.instrumentation.java/deep && javac --release 8 --class-path=/opt/opentelemetry_shell/javassist.jar SubprocessInjectionAgent.java && jar cmf manifest.txt /opt/opentelemetry_shell/subprocessinjectionagent.jar SubprocessInjectionAgent*.class) # SKIP_DEPENDENCY_CHECK
       rm -rf /usr/share/opentelemetry_shell/agent.instrumentation.java/*.class /usr/share/opentelemetry_shell/agent.instrumentation.java/*/*.class
     fi
   fi
