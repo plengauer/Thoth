@@ -14,8 +14,7 @@ jobs:
   rerun:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      actions: write
+      contents: none
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.14.0
         with:
