@@ -163,14 +163,6 @@ The workflow-level instrumentation is a good starting point to get an overview o
 
 Both methods of instrumentation can be combined arbitrarily. Deploying them both at the same time, will combine their advantages without any double recording of any log, metric, trace or span.
 
-### Automatic Token Authentication for Private Repositories
-The workflow-level and job-level instrumentations (no matter whether they are deployed manually or automatically) use <a href="https://docs.github.com/en/actions/security-for-github-actions/security-guides/automatic-token-authentication">automatic token authentication</a>. For private repositories, additional permissions need to be granted.
-For private repositories only, one either must set the implicit GitHub token used for automatic token authentication to permissive (via Settings -> Actions -> General -> Workflow Permissions -> Read and Write Permissions) or grant the necessary scopes explicitly in every workflow with the following snippet:
-```yaml
-permissions:
-  actions: read
-```
-
 ### Automatic Deployment of Workflow-level and Job-level Instrumentations
 To automatically deploy workflow-level and job-level instrumentations to all your GitHub actions, copy the following workflow into your `.github/workflows` directory. Make sure, the GitHub token has permissions to open pull requests (configurable in the repository settings) or specify a token with the correct permissions explicitly with the `github_token` parameter. This workflow will also update instrumentations when a new workflow is created. The configuration in the `env` section will be deployed to all instrumentations.
 ```yaml
@@ -216,7 +208,7 @@ jobs:
           # ...
 ```
 
-To deploy job-level instrumetnation, add the following step as first in every job you want to observe. You can configure the SDK as described <a href="https://opentelemetry.io/docs/languages/sdk-configuration/">here</a> by adding according environment variables to the setup step. Job-level instrumentation can be combined arbitrarily with workflow-level instrumentation.
+To deploy job-level instrumentation, add the following step as first in every job you want to observe. You can configure the SDK as described <a href="https://opentelemetry.io/docs/languages/sdk-configuration/">here</a> by adding according environment variables to the setup step. Job-level instrumentation can be combined arbitrarily with workflow-level instrumentation.
 ```yaml
 - uses: plengauer/opentelemetry-github/actions/instrument/job@main
   env:
@@ -230,6 +222,14 @@ Depending on the actions in use, GitHub `secrets` or other sensitive information
   with:
     secrets_to_redact: '${{ toJSON(secrets) }}' # Redact all secrets from any attribute, span name, or log body.
 ```
+
+The workflow-level and job-level instrumentations use <a href="https://docs.github.com/en/actions/security-for-github-actions/security-guides/automatic-token-authentication">automatic token authentication</a>. For private repositories and manual deployment, additional permissions need to be granted.
+For private repositories only, one either must set the implicit GitHub token used for automatic token authentication to permissive (via Settings -> Actions -> General -> Workflow Permissions -> Read and Write Permissions) or grant the necessary scopes explicitly in every workflow with the following snippet:
+```yaml
+permissions:
+  actions: read
+```
+When using automatic deployment, permissions are adjusted automatically.
 
 ## Manual Instrumentation
 Import the API by referencing the `otelapi.sh` file. This is only necessary if you do not choose a fully automatic approach described above. In case you use automatic instrumentation, the API will be imported automatically for you.
