@@ -483,6 +483,9 @@ jobs:
 
   github:
     needs: smoke
+    permissions:
+      contents: read
+      actions: read
     uses: ./.github/workflows/test_github.yaml
     secrets: inherit
 
