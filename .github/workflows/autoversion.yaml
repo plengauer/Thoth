@@ -8,6 +8,8 @@ on:
 jobs:
   bump:
     runs-on: ubuntu-latest
+    permissions:
+      actions: read
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.14.0
         with:
