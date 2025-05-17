@@ -8,7 +8,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     permissions:
-      actions: read
+      actions: none
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.14.0
         with:
