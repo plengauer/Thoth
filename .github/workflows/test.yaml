@@ -484,8 +484,20 @@ jobs:
   github:
     needs: smoke
     permissions:
-      contents: read
       actions: read
+      attestations: none
+      checks: none
+      contents: read
+      deployments: none
+      discussions: none
+      id-token: none
+      issues: none
+      models: none
+      packages: read
+      pages: none
+      pull-requests: none
+      security-events: none
+      statuses: none
     uses: ./.github/workflows/test_github.yaml
     secrets: inherit
 
