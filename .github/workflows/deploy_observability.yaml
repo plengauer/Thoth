@@ -8,13 +8,13 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.14.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.15.0
         with:
           secrets_to_redact: ${{ toJSON(secrets) }}
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
-      - uses: plengauer/opentelemetry-github/actions/instrument/deploy@v5.14.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/deploy@v5.15.0
         with:
           github_token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           job_level_instrumentation_exclude: 'Test,Refresh Demos,GitHub,Workflow Example,Experiment'
