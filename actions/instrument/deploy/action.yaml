@@ -95,6 +95,8 @@ runs:
               yq -i ".jobs.$job_name.permissions.actions = \"read\"" "$workflow_file"
             elif [ cat "$workflow_file" | yq ".permissions" != null ] && [ "$(cat "$workflow_file" | yq ".permissions.actions")" != read ] && [ "$(cat "$workflow_file" | yq ".permissions.actions")" != write ]; then
               yq -i ".permissions.actions = \"read\"" "$workflow_file"
+            else
+              yq -i ".jobs.$job_name.permissions.actions = \"read\"" "$workflow_file"
             fi
           done
         done
