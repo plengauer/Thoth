@@ -8,7 +8,7 @@ on:
 jobs:
   test:
     permissions:
-      actions: read
+      actions: write
       attestations: none
       checks: none
       contents: read
