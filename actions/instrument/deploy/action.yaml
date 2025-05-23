@@ -47,7 +47,7 @@ runs:
       shell: bash
       run: |
         echo '
-        name: OpenTelemetry
+        name: ${{ workflow_level_instrumentation_workflow_name }}
         on:
           workflow_run:
             workflows: []
@@ -129,6 +129,8 @@ inputs:
     default: '.github/workflows'
   workflow_level_instrumentation_file_name:
     default: 'observability.yaml'
+  workflow_level_instrumentation_workflow_name:
+    default: 'OpenTelemetry'
   workflow_level_instrumentation_exclude:
     description: 'Comma-separated list of workflow names to exclude from workflow-level instrumentation.'
     default: ''
