@@ -13,7 +13,7 @@ jobs:
     permissions:
       contents: none
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.14.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.15.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
