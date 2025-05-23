@@ -46,7 +46,19 @@ runs:
       if: steps.find-workflow-level-instrumentation.outputs.path == null
       shell: bash
       run: |
-        echo "${{ inputs.workflow_level_instrumentation_template }}" > "${{ inputs.workflows_directory }}/${{ inputs.workflow_level_instrumentation_file_name }}"
+        echo '
+        name: OpenTelemetry
+        on:
+          workflow_run:
+            workflows: []
+            types:
+              - completed
+        jobs:
+          export:
+            runs-on: ubuntu-latest
+            steps:
+              - uses: {{ inputs.action_repository }}/actions/instrument/workflow@${{ inputs.action_version }}
+        ' > "${{ inputs.workflows_directory }}/${{ inputs.workflow_level_instrumentation_file_name }}"
         cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "${{ inputs.action_repository }}/actions/instrument/deploy@*") | .env | keys[]' | grep '^OTEL_' | while read -r key; do
           value="$(cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "${{ inputs.action_repository }}/actions/instrument/deploy@*") | .env.'"$key")"
           yq -i '.jobs[].steps[0].env.'"$key"' = "'"$value"'"' "${{ inputs.workflows_directory }}/${{ inputs.workflow_level_instrumentation_file_name }}"
@@ -123,23 +135,10 @@ inputs:
   job_level_instrumentation_exclude:
     description: 'Comma-separated list of workflow names to exclude from job-level instrumentation.'
     default: ''
-  workflow_level_instrumentation_template:
-    default: |
-      name: OpenTelemetry
-      on:
-        workflow_run:
-          workflows: []
-          types:
-            - completed
-      jobs:
-        export:
-          runs-on: ubuntu-latest
-          steps:
-            - uses: plengauer/opentelemetry-github/actions/instrument/workflow@v5.15.0
   action_repository:
     default: plengauer/opentelemetry-github
   action_version:
-    default: v5.12.5
+    default: v5.16.0
   debug:
     description: 'Enable debug logging'
     default: ${{ runner.debug }}
