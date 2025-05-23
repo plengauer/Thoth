@@ -13,9 +13,7 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     permissions:
-      contents: write
-      id-token: write
-      attestations: write
+      contents: read
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.15.0
         with:
@@ -33,10 +31,12 @@ jobs:
         with:
           subject-path: ./package.deb
           subject-name: opentelemetry-shell_${{ steps.version.outputs.version }}.deb
+          github-token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
       - uses: actions/attest-build-provenance@v2
         with:
           subject-path: ./package.rpm
           subject-name: opentelemetry-shell_${{ steps.version.outputs.version }}.rpm
+          github-token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
       - uses: actions/create-release@v1
         id: create_release
         env:

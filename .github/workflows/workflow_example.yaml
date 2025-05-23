@@ -10,6 +10,8 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: none
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.15.0
         env:
@@ -25,11 +27,15 @@ jobs:
       matrix:
         name: ['foo', 'bar', 'baz']
     runs-on: ubuntu-latest
+    permissions:
+      contents: none
     steps:
       - run: echo 'hello world, im a test (not injected)'
 
   publish:
     needs: test
     runs-on: ubuntu-latest
+    permissions:
+      contents: none
     steps:
       - run: echo 'hello world, im a publisher (not injected)'

@@ -15,6 +15,8 @@ concurrency:
 jobs:
   verify-python-dependency:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.15.0
         env:
@@ -29,6 +31,8 @@ jobs:
 
   verify-debian-dependencies:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.15.0
         env:
@@ -57,6 +61,8 @@ jobs:
 
   verify-triggers:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.15.0
         env:
@@ -73,6 +79,8 @@ jobs:
   build:
     needs: [verify-python-dependency, verify-debian-dependencies, verify-triggers]
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     defaults:
       run:
         working-directory: ./src
@@ -128,6 +136,8 @@ jobs:
       fail-fast: false
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 20
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
@@ -141,6 +151,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.dynamic-matrix.outputs.matrix }}
+    permissions:
+      actions: read
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.15.0
         env:
@@ -163,6 +175,8 @@ jobs:
     strategy:
       matrix: ${{ fromJSON(needs.prepare-upgrade.outputs.matrix) }}
       fail-fast: false
+    permissions:
+      actions: read
     steps:
       - run: |
           curl --no-progress-meter --fail --header "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/repos/"$GITHUB_REPOSITORY"/releases/tags/${{ matrix.tag_name }} | jq -r '.assets[].browser_download_url' | xargs wget --header "Authorization: Bearer $GITHUB_TOKEN"
@@ -179,6 +193,8 @@ jobs:
     outputs:
       images: ${{ steps.dynamic.outputs.images }}
       images_upgradeable: ${{ steps.dynamic.outputs.images_upgradeable }}
+    permissions:
+      actions: read
     env:
       IMAGE_DEBIAN_OLDEST: 'debian:oldstable'
       IMAGE_DEBIAN_STABLE: 'debian:stable'
@@ -244,6 +260,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       shells: ${{ steps.dynamic.outputs.shells }}
+    permissions:
+      contents: read
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.15.0
         env:
@@ -265,6 +283,8 @@ jobs:
       matrix:
         image: ${{ fromJSON(needs.prepare-images.outputs.images_upgradeable) }}
       fail-fast: false
+    permissions:
+      actions: read
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -297,6 +317,9 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       dependencies: ${{ steps.dynamic.outputs.dependencies }}
+    permissions:
+      contents: read
+      actions: read
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.15.0
         env:
@@ -318,6 +341,9 @@ jobs:
         image: ${{ fromJSON(needs.prepare-images.outputs.images) }}
         dependency: ${{ fromJSON(needs.prepare-dependency.outputs.dependencies) }}
       fail-fast: false
+    permissions:
+      contents: read
+      actions: read
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -362,6 +388,8 @@ jobs:
   install-manual-user:
     needs: [ smoke ]
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - run: cat INSTALL.sh | sh -e
@@ -374,6 +402,8 @@ jobs:
       matrix:
         image: ${{ fromJSON(needs.prepare-images.outputs.images) }}
       fail-fast: false
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - run: |
@@ -400,6 +430,9 @@ jobs:
         update: ['FALSE', 'TRUE']
         shell: ${{ fromJSON(needs.prepare-shells.outputs.shells) }}
       fail-fast: false
+    permissions:
+      contents: read
+      actions: read
     steps:
       # - run: sudo docker login -u '${{ secrets.DOCKERHUB_USERNAME }}' -p '${{ secrets.DOCKERHUB_TOKEN }}'
       - uses: actions/checkout@v4
@@ -420,6 +453,9 @@ jobs:
         version: [1, 2]
         shell: ${{ fromJSON(needs.prepare-shells.outputs.shells) }}
       fail-fast: false
+    permissions:
+      contents: read
+      actions: read
     steps:
       - uses: Vampire/setup-wsl@v5.0.1
         with:
@@ -447,6 +483,21 @@ jobs:
 
   github:
     needs: smoke
+    permissions:
+      actions: read
+      attestations: none
+      checks: none
+      contents: read
+      deployments: none
+      discussions: none
+      id-token: none
+      issues: none
+      models: none
+      packages: read
+      pages: none
+      pull-requests: none
+      security-events: none
+      statuses: none
     uses: ./.github/workflows/test_github.yaml
     secrets: inherit
 
@@ -454,6 +505,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.dynamic-matrix.outputs.matrix }}
+    permissions:
+      contents: read
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.15.0
         env:
@@ -472,6 +525,9 @@ jobs:
     strategy: 
       matrix: ${{ fromJSON(needs.prepare-performance.outputs.matrix) }}
       fail-fast: false
+    permissions:
+      contents: read
+      actions: write
     steps:
       - if: matrix.tag_name == '~local'
         uses: actions/download-artifact@v4
@@ -501,6 +557,8 @@ jobs:
   performance-summary:
     needs: performance
     runs-on: ubuntu-latest
+    permissions:
+      actions: write
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.15.0
         env:
@@ -540,6 +598,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       success: ${{ steps.tests.outputs.success }}
+    permissions:
+      contents: none
     steps:
       - id: tests
         run: echo "success=true" >> "$GITHUB_OUTPUT"
@@ -548,6 +608,8 @@ jobs:
     if: ${{ always() }} # this is because we need this to fail and not skipped to avoid PRs getting merged without this passing
     needs: join
     runs-on: ubuntu-latest
+    permissions:
+      contents: none
     steps:
       - env:
           SUCCESS: ${{ needs.join.outputs.success }}

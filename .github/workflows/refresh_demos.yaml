@@ -7,6 +7,8 @@ on:
 jobs:
   prepare:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       matrix: ${{ steps.demos.outputs.matrix }}
     steps:
@@ -22,6 +24,9 @@ jobs:
   generate:
     needs: prepare
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
     strategy: 
       fail-fast: false
       matrix: ${{ fromJSON(needs.prepare.outputs.matrix) }}

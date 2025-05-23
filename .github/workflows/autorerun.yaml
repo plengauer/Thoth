@@ -13,6 +13,8 @@ concurrency:
 jobs:
   rerun:
     runs-on: ubuntu-latest
+    permissions:
+      contents: none
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.15.0
         with:

@@ -7,6 +7,8 @@ on:
 jobs:
   export:
     runs-on: ubuntu-latest
+    permissions:
+      actions: read
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/workflow@v5.15.0
         env:
