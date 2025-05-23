@@ -190,7 +190,7 @@ jobs:
       actions: write
       pull-requests: write
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/deploy@v5.14.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/deploy@v5.16.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
