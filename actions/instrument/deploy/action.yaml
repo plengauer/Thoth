@@ -23,6 +23,7 @@ runs:
           sed -i 's~plengauer/opentelemetry-thoth~${{ inputs.action_repository }}~g' "$workflow_file"
           sed -i 's~plengauer/Thoth~${{ inputs.action_repository }}~g' "$workflow_file"
           sed -i 's~plengauer/thoth~${{ inputs.action_repository }}~g' "$workflow_file"
+          sed -i 's/^[[:blank:]]*$/#__BLANK_LINE__#/g' "$workflow_file"
         done
     - name: "Find self"
       id: find-self
@@ -111,6 +112,12 @@ runs:
               yq -i ".jobs.$job_name.permissions.actions = \"read\"" "$workflow_file"
             fi
           done
+        done
+    - name: Decanonicalize
+      shell: bash
+      run: |
+        (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
+          sed -i 's/#__BLANK_LINE__#//' $workflow_file"
         done
     - name: "Open Pull Request"
       id: open-pr
