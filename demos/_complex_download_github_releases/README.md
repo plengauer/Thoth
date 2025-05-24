@@ -39,11 +39,11 @@ bash -e demo.sh
   head --lines=3
   xargs parallel -q curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={} :::
     /usr/bin/perl /usr/bin/parallel -q curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={} ::: 1 2 3
-      curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=1
-        GET
       curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=3
         GET
       curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=2
+        GET
+      curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=1
         GET
   jq .[].assets[].browser_download_url -r
   grep .deb$
@@ -60,14 +60,14 @@ bash -e demo.sh
 ## Full Trace
 ```
 {
-  "trace_id": "97ecdd9e0743ccc170109dd5c0084135",
-  "span_id": "0472b6309ca540e1",
-  "parent_span_id": "392c3620a6e39dc3",
+  "trace_id": "46daa45a879ff37ab226b625040c9aa5",
+  "span_id": "bcfd3aa5283d3ad1",
+  "parent_span_id": "c166fc8b614c4666",
   "name": "/usr/bin/perl /usr/bin/parallel -q curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={} ::: 1 2 3",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1748042506735222528,
-  "time_end": 1748042508874724864,
+  "time_start": 1748114833203908608,
+  "time_end": 1748114835409499392,
   "attributes": {
     "shell.command_line": "/usr/bin/perl /usr/bin/parallel -q curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={} ::: 1 2 3",
     "shell.command": "/usr/bin/perl",
@@ -81,19 +81,19 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.16.1",
+    "telemetry.sdk.version": "5.16.2",
     "service.name": "unknown_service",
     "github.repository.id": "692042935",
     "github.repository.name": "Thoth",
     "github.repository.owner.id": "100447901",
     "github.repository.owner.name": "plengauer",
-    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.1",
-    "github.actions.workflow.sha": "8aa542eed8ba06854eb0af96608661507c0a7c7a",
+    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.2",
+    "github.actions.workflow.sha": "7b94531e1eda5216da67ef63da5a37e9b2645444",
     "github.actions.workflow.name": "Refresh Demos",
     "os.type": "linux",
     "os.version": "6.11.0-1014-azure",
-    "process.pid": 5972,
-    "process.parent_pid": 4661,
+    "process.pid": 5911,
+    "process.parent_pid": 4578,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs parallel -q curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={} :::",
@@ -111,19 +111,160 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "97ecdd9e0743ccc170109dd5c0084135",
-  "span_id": "e3abc83b2fbcfe26",
-  "parent_span_id": "ab44653c18136210",
+  "trace_id": "46daa45a879ff37ab226b625040c9aa5",
+  "span_id": "d2d16c8551a3e67b",
+  "parent_span_id": "050f595c91eeeb95",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1748042508142504704,
-  "time_end": 1748042508767425024,
+  "time_start": 1748114834548899072,
+  "time_end": 1748114835173188352,
   "attributes": {
     "network.transport": "tcp",
     "network.protocol.name": "https",
     "network.protocol.version": "2",
-    "network.peer.address": "140.82.113.6",
+    "network.peer.address": "140.82.114.5",
+    "network.peer.port": 443,
+    "server.address": "api.github.com",
+    "server.port": 443,
+    "url.full": "https://api.github.com:443/repos/plengauer/Thoth/releases?per_page=100&page=3",
+    "url.path": "/repos/plengauer/Thoth/releases",
+    "url.query": "per_page=100&page=3",
+    "url.scheme": "https",
+    "http.request.method": "GET",
+    "http.request.header.host": [
+      "api.github.com"
+    ],
+    "user_agent.original": "curl/8.5.0",
+    "http.request.header.user-agent": [
+      "curl/8.5.0"
+    ],
+    "http.request.header.accept": [
+      "*/*"
+    ],
+    "http.request.header.traceparent": [
+      "00-46daa45a879ff37ab226b625040c9aa5-050f595c91eeeb95-01"
+    ],
+    "http.response.status_code": 200,
+    "http.response.header.date": [
+      "Sat, 24 May 2025 19:27:14 GMT"
+    ],
+    "http.response.header.content-type": [
+      "application/json; charset=utf-8"
+    ],
+    "http.response.header.cache-control": [
+      "public, max-age=60, s-maxage=60"
+    ],
+    "http.response.header.vary": [
+      "Accept,Accept-Encoding, Accept, X-Requested-With"
+    ],
+    "http.response.header.etag": [
+      "W/\"6880b9bd15b7bb2ac94555f521c679e9be58b45db1f3e56daaf923d1169c77c4\""
+    ],
+    "http.response.header.x-github-media-type": [
+      "github.v3; format=json"
+    ],
+    "http.response.header.link": [
+      "<https://api.github.com/repositories/692042935/releases?per_page=100&page=2>; rel=\"prev\", <https://api.github.com/repositories/692042935/releases?per_page=100&page=1>; rel=\"first\""
+    ],
+    "http.response.header.x-github-api-version-selected": [
+      "2022-11-28"
+    ],
+    "http.response.header.access-control-expose-headers": [
+      "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset"
+    ],
+    "http.response.header.access-control-allow-origin": [
+      "*"
+    ],
+    "http.response.header.strict-transport-security": [
+      "max-age=31536000; includeSubdomains; preload"
+    ],
+    "http.response.header.x-frame-options": [
+      "deny"
+    ],
+    "http.response.header.x-content-type-options": [
+      "nosniff"
+    ],
+    "http.response.header.x-xss-protection": [
+      "0"
+    ],
+    "http.response.header.referrer-policy": [
+      "origin-when-cross-origin, strict-origin-when-cross-origin"
+    ],
+    "http.response.header.content-security-policy": [
+      "default-src 'none'"
+    ],
+    "http.response.header.server": [
+      "github.com"
+    ],
+    "http.response.header.accept-ranges": [
+      "bytes"
+    ],
+    "http.response.header.x-ratelimit-limit": [
+      "60"
+    ],
+    "http.response.header.x-ratelimit-remaining": [
+      "58"
+    ],
+    "http.response.header.x-ratelimit-reset": [
+      "1748118428"
+    ],
+    "http.response.header.x-ratelimit-resource": [
+      "core"
+    ],
+    "http.response.header.x-ratelimit-used": [
+      "2"
+    ],
+    "http.response.header.x-github-request-id": [
+      "8881:4E957:1F92A04:3E752C8:68321D92"
+    ]
+  },
+  "resource_attributes": {
+    "telemetry.sdk.language": "shell",
+    "telemetry.sdk.name": "opentelemetry",
+    "telemetry.sdk.version": "5.16.2",
+    "service.name": "unknown_service",
+    "github.repository.id": "692042935",
+    "github.repository.name": "Thoth",
+    "github.repository.owner.id": "100447901",
+    "github.repository.owner.name": "plengauer",
+    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.2",
+    "github.actions.workflow.sha": "7b94531e1eda5216da67ef63da5a37e9b2645444",
+    "github.actions.workflow.name": "Refresh Demos",
+    "os.type": "linux",
+    "os.version": "6.11.0-1014-azure",
+    "process.pid": 6713,
+    "process.parent_pid": 6669,
+    "process.executable.name": "bash",
+    "process.executable.path": "/usr/bin/bash",
+    "process.command_line": "/usr/bin/perl /usr/bin/parallel -q curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={} ::: 1 2 3",
+    "process.command": "/usr/bin/perl",
+    "process.owner": "runner",
+    "process.runtime.name": "bash",
+    "process.runtime.description": "Bourne Again Shell",
+    "process.runtime.version": "5.2.21-2ubuntu4",
+    "process.runtime.options": "hBc",
+    "service.version": "",
+    "service.namespace": "",
+    "service.instance.id": ""
+  },
+  "links": [],
+  "events": []
+}
+{
+  "trace_id": "46daa45a879ff37ab226b625040c9aa5",
+  "span_id": "df5f071994a52574",
+  "parent_span_id": "58f9c8ede561ca8d",
+  "name": "GET",
+  "kind": "CLIENT",
+  "status": "UNSET",
+  "time_start": 1748114834626212608,
+  "time_end": 1748114835379521792,
+  "attributes": {
+    "network.transport": "tcp",
+    "network.protocol.name": "https",
+    "network.protocol.version": "2",
+    "network.peer.address": "140.82.114.5",
     "network.peer.port": 443,
     "server.address": "api.github.com",
     "server.port": 443,
@@ -143,11 +284,11 @@ bash -e demo.sh
       "*/*"
     ],
     "http.request.header.traceparent": [
-      "00-97ecdd9e0743ccc170109dd5c0084135-ab44653c18136210-01"
+      "00-46daa45a879ff37ab226b625040c9aa5-58f9c8ede561ca8d-01"
     ],
     "http.response.status_code": 200,
     "http.response.header.date": [
-      "Fri, 23 May 2025 23:21:48 GMT"
+      "Sat, 24 May 2025 19:27:15 GMT"
     ],
     "http.response.header.content-type": [
       "application/json; charset=utf-8"
@@ -159,7 +300,7 @@ bash -e demo.sh
       "Accept,Accept-Encoding, Accept, X-Requested-With"
     ],
     "http.response.header.etag": [
-      "W/\"d05280279bf243fd4027f07f1d1d39fdecd556c95469d9d4074a83ad49659c30\""
+      "W/\"b747379f0cf52e10085cfc0f721d4c59e19ff4a9032d0708d620a311724ba2d7\""
     ],
     "http.response.header.x-github-media-type": [
       "github.v3; format=json"
@@ -207,7 +348,7 @@ bash -e demo.sh
       "57"
     ],
     "http.response.header.x-ratelimit-reset": [
-      "1748043400"
+      "1748118428"
     ],
     "http.response.header.x-ratelimit-resource": [
       "core"
@@ -216,25 +357,25 @@ bash -e demo.sh
       "3"
     ],
     "http.response.header.x-github-request-id": [
-      "E818:373583:166E6:2C662:6831030C"
+      "8882:2E66C3:1D299AD:39B6D41:68321D92"
     ]
   },
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.16.1",
+    "telemetry.sdk.version": "5.16.2",
     "service.name": "unknown_service",
     "github.repository.id": "692042935",
     "github.repository.name": "Thoth",
     "github.repository.owner.id": "100447901",
     "github.repository.owner.name": "plengauer",
-    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.1",
-    "github.actions.workflow.sha": "8aa542eed8ba06854eb0af96608661507c0a7c7a",
+    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.2",
+    "github.actions.workflow.sha": "7b94531e1eda5216da67ef63da5a37e9b2645444",
     "github.actions.workflow.name": "Refresh Demos",
     "os.type": "linux",
     "os.version": "6.11.0-1014-azure",
-    "process.pid": 6771,
-    "process.parent_pid": 6730,
+    "process.pid": 6710,
+    "process.parent_pid": 6669,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "/usr/bin/perl /usr/bin/parallel -q curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={} ::: 1 2 3",
@@ -252,19 +393,19 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "97ecdd9e0743ccc170109dd5c0084135",
-  "span_id": "4f8ac64092cd8ad4",
-  "parent_span_id": "81066e3ef7f22eb0",
+  "trace_id": "46daa45a879ff37ab226b625040c9aa5",
+  "span_id": "f660e8182f900c90",
+  "parent_span_id": "3d86594e7e78d558",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1748042508174266368,
-  "time_end": 1748042508855260928,
+  "time_start": 1748114834639077120,
+  "time_end": 1748114835354770432,
   "attributes": {
     "network.transport": "tcp",
     "network.protocol.name": "https",
     "network.protocol.version": "2",
-    "network.peer.address": "140.82.113.6",
+    "network.peer.address": "140.82.114.5",
     "network.peer.port": 443,
     "server.address": "api.github.com",
     "server.port": 443,
@@ -284,11 +425,11 @@ bash -e demo.sh
       "*/*"
     ],
     "http.request.header.traceparent": [
-      "00-97ecdd9e0743ccc170109dd5c0084135-81066e3ef7f22eb0-01"
+      "00-46daa45a879ff37ab226b625040c9aa5-3d86594e7e78d558-01"
     ],
     "http.response.status_code": 200,
     "http.response.header.date": [
-      "Fri, 23 May 2025 23:21:48 GMT"
+      "Sat, 24 May 2025 19:27:14 GMT"
     ],
     "http.response.header.content-type": [
       "application/json; charset=utf-8"
@@ -300,7 +441,7 @@ bash -e demo.sh
       "Accept,Accept-Encoding, Accept, X-Requested-With"
     ],
     "http.response.header.etag": [
-      "W/\"fafcfe29ac1352aeff74a5e1b733b7719357416c4eaeae69cb4fc5d824520066\""
+      "W/\"4c1f7aeca27955a654e5b67eeff14b536ab33cc680a1cb021ca66af080ade46e\""
     ],
     "http.response.header.x-github-media-type": [
       "github.v3; format=json"
@@ -348,7 +489,7 @@ bash -e demo.sh
       "56"
     ],
     "http.response.header.x-ratelimit-reset": [
-      "1748043400"
+      "1748118428"
     ],
     "http.response.header.x-ratelimit-resource": [
       "core"
@@ -357,25 +498,25 @@ bash -e demo.sh
       "4"
     ],
     "http.response.header.x-github-request-id": [
-      "E819:3720AD:2689F:4C749:6831030C"
+      "8883:1A7516:1D7CF77:3A603F9:68321D92"
     ]
   },
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.16.1",
+    "telemetry.sdk.version": "5.16.2",
     "service.name": "unknown_service",
     "github.repository.id": "692042935",
     "github.repository.name": "Thoth",
     "github.repository.owner.id": "100447901",
     "github.repository.owner.name": "plengauer",
-    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.1",
-    "github.actions.workflow.sha": "8aa542eed8ba06854eb0af96608661507c0a7c7a",
+    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.2",
+    "github.actions.workflow.sha": "7b94531e1eda5216da67ef63da5a37e9b2645444",
     "github.actions.workflow.name": "Refresh Demos",
     "os.type": "linux",
     "os.version": "6.11.0-1014-azure",
-    "process.pid": 6772,
-    "process.parent_pid": 6730,
+    "process.pid": 6711,
+    "process.parent_pid": 6669,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "/usr/bin/perl /usr/bin/parallel -q curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={} ::: 1 2 3",
@@ -393,159 +534,18 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "97ecdd9e0743ccc170109dd5c0084135",
-  "span_id": "93ce3c11f9811488",
-  "parent_span_id": "54ffc1b0890fa21a",
+  "trace_id": "46daa45a879ff37ab226b625040c9aa5",
+  "span_id": "585e8b49d5e24232",
+  "parent_span_id": "41648b8bb5467416",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1748042508185694464,
-  "time_end": 1748042508827279104,
-  "attributes": {
-    "network.transport": "tcp",
-    "network.protocol.name": "https",
-    "network.protocol.version": "2",
-    "network.peer.address": "140.82.113.6",
-    "network.peer.port": 443,
-    "server.address": "api.github.com",
-    "server.port": 443,
-    "url.full": "https://api.github.com:443/repos/plengauer/Thoth/releases?per_page=100&page=3",
-    "url.path": "/repos/plengauer/Thoth/releases",
-    "url.query": "per_page=100&page=3",
-    "url.scheme": "https",
-    "http.request.method": "GET",
-    "http.request.header.host": [
-      "api.github.com"
-    ],
-    "user_agent.original": "curl/8.5.0",
-    "http.request.header.user-agent": [
-      "curl/8.5.0"
-    ],
-    "http.request.header.accept": [
-      "*/*"
-    ],
-    "http.request.header.traceparent": [
-      "00-97ecdd9e0743ccc170109dd5c0084135-54ffc1b0890fa21a-01"
-    ],
-    "http.response.status_code": 200,
-    "http.response.header.date": [
-      "Fri, 23 May 2025 23:21:48 GMT"
-    ],
-    "http.response.header.content-type": [
-      "application/json; charset=utf-8"
-    ],
-    "http.response.header.cache-control": [
-      "public, max-age=60, s-maxage=60"
-    ],
-    "http.response.header.vary": [
-      "Accept,Accept-Encoding, Accept, X-Requested-With"
-    ],
-    "http.response.header.etag": [
-      "W/\"fa3df9de7bbfc30099c4473e1708dba5e5ed17cd385cac5e9a2943a6643d59c5\""
-    ],
-    "http.response.header.x-github-media-type": [
-      "github.v3; format=json"
-    ],
-    "http.response.header.link": [
-      "<https://api.github.com/repositories/692042935/releases?per_page=100&page=2>; rel=\"prev\", <https://api.github.com/repositories/692042935/releases?per_page=100&page=1>; rel=\"first\""
-    ],
-    "http.response.header.x-github-api-version-selected": [
-      "2022-11-28"
-    ],
-    "http.response.header.access-control-expose-headers": [
-      "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset"
-    ],
-    "http.response.header.access-control-allow-origin": [
-      "*"
-    ],
-    "http.response.header.strict-transport-security": [
-      "max-age=31536000; includeSubdomains; preload"
-    ],
-    "http.response.header.x-frame-options": [
-      "deny"
-    ],
-    "http.response.header.x-content-type-options": [
-      "nosniff"
-    ],
-    "http.response.header.x-xss-protection": [
-      "0"
-    ],
-    "http.response.header.referrer-policy": [
-      "origin-when-cross-origin, strict-origin-when-cross-origin"
-    ],
-    "http.response.header.content-security-policy": [
-      "default-src 'none'"
-    ],
-    "http.response.header.server": [
-      "github.com"
-    ],
-    "http.response.header.accept-ranges": [
-      "bytes"
-    ],
-    "http.response.header.x-ratelimit-limit": [
-      "60"
-    ],
-    "http.response.header.x-ratelimit-remaining": [
-      "55"
-    ],
-    "http.response.header.x-ratelimit-reset": [
-      "1748043400"
-    ],
-    "http.response.header.x-ratelimit-resource": [
-      "core"
-    ],
-    "http.response.header.x-ratelimit-used": [
-      "5"
-    ],
-    "http.response.header.x-github-request-id": [
-      "E81A:373583:1670A:2C69B:6831030C"
-    ]
-  },
-  "resource_attributes": {
-    "telemetry.sdk.language": "shell",
-    "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.16.1",
-    "service.name": "unknown_service",
-    "github.repository.id": "692042935",
-    "github.repository.name": "Thoth",
-    "github.repository.owner.id": "100447901",
-    "github.repository.owner.name": "plengauer",
-    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.1",
-    "github.actions.workflow.sha": "8aa542eed8ba06854eb0af96608661507c0a7c7a",
-    "github.actions.workflow.name": "Refresh Demos",
-    "os.type": "linux",
-    "os.version": "6.11.0-1014-azure",
-    "process.pid": 6774,
-    "process.parent_pid": 6730,
-    "process.executable.name": "bash",
-    "process.executable.path": "/usr/bin/bash",
-    "process.command_line": "/usr/bin/perl /usr/bin/parallel -q curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={} ::: 1 2 3",
-    "process.command": "/usr/bin/perl",
-    "process.owner": "runner",
-    "process.runtime.name": "bash",
-    "process.runtime.description": "Bourne Again Shell",
-    "process.runtime.version": "5.2.21-2ubuntu4",
-    "process.runtime.options": "hBc",
-    "service.version": "",
-    "service.namespace": "",
-    "service.instance.id": ""
-  },
-  "links": [],
-  "events": []
-}
-{
-  "trace_id": "97ecdd9e0743ccc170109dd5c0084135",
-  "span_id": "54656e86404a05ce",
-  "parent_span_id": "cd81905c0777f4a0",
-  "name": "GET",
-  "kind": "CLIENT",
-  "status": "UNSET",
-  "time_start": 1748042509585676800,
-  "time_end": 1748042510600589312,
+  "time_start": 1748114836087252224,
+  "time_end": 1748114837106125824,
   "attributes": {
     "network.protocol.name": "https",
     "network.transport": "tcp",
-    "network.peer.address": "140.82.113.3",
+    "network.peer.address": "140.82.112.3",
     "network.peer.port": 443,
     "server.address": "github.com",
     "server.port": 443,
@@ -559,19 +559,19 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.16.1",
+    "telemetry.sdk.version": "5.16.2",
     "service.name": "unknown_service",
     "github.repository.id": "692042935",
     "github.repository.name": "Thoth",
     "github.repository.owner.id": "100447901",
     "github.repository.owner.name": "plengauer",
-    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.1",
-    "github.actions.workflow.sha": "8aa542eed8ba06854eb0af96608661507c0a7c7a",
+    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.2",
+    "github.actions.workflow.sha": "7b94531e1eda5216da67ef63da5a37e9b2645444",
     "github.actions.workflow.name": "Refresh Demos",
     "os.type": "linux",
     "os.version": "6.11.0-1014-azure",
-    "process.pid": 11327,
-    "process.parent_pid": 4591,
+    "process.pid": 11255,
+    "process.parent_pid": 4516,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs wget",
@@ -589,24 +589,24 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "97ecdd9e0743ccc170109dd5c0084135",
-  "span_id": "59625c6743899d75",
-  "parent_span_id": "cd81905c0777f4a0",
+  "trace_id": "46daa45a879ff37ab226b625040c9aa5",
+  "span_id": "e114e7c7ecf9231d",
+  "parent_span_id": "41648b8bb5467416",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1748042509689925376,
-  "time_end": 1748042510718717440,
+  "time_start": 1748114836188004864,
+  "time_end": 1748114837227773952,
   "attributes": {
     "network.protocol.name": "https",
     "network.transport": "tcp",
-    "network.peer.address": "185.199.111.133",
+    "network.peer.address": "185.199.108.133",
     "network.peer.port": 443,
     "server.address": "objects.githubusercontent.com",
     "server.port": 443,
-    "url.full": "https://objects.githubusercontent.com/github-production-release-asset-2e65be/692042935/5544a935-3cf9-4f9b-b6ed-d668fd012e99?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=releaseassetproduction%2F20250523%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250523T232149Z&X-Amz-Expires=300&X-Amz-Signature=ec0770d6d6768741f535343e64c930669ef66414027cb16509b75e7b14df978d&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.7.deb&response-content-type=application%2Foctet-stream",
+    "url.full": "https://objects.githubusercontent.com/github-production-release-asset-2e65be/692042935/5544a935-3cf9-4f9b-b6ed-d668fd012e99?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=releaseassetproduction%2F20250524%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250524T192716Z&X-Amz-Expires=300&X-Amz-Signature=bea23dc74e1b130a4752258901d9395b63afefbf79ebbeb572ca5dac112a7667&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.7.deb&response-content-type=application%2Foctet-stream",
     "url.path": "/github-production-release-asset-2e65be/692042935/5544a935-3cf9-4f9b-b6ed-d668fd012e99",
-    "url.query": "X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=releaseassetproduction%2F20250523%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250523T232149Z&X-Amz-Expires=300&X-Amz-Signature=ec0770d6d6768741f535343e64c930669ef66414027cb16509b75e7b14df978d&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.7.deb&response-content-type=application%2Foctet-stream",
+    "url.query": "X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=releaseassetproduction%2F20250524%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250524T192716Z&X-Amz-Expires=300&X-Amz-Signature=bea23dc74e1b130a4752258901d9395b63afefbf79ebbeb572ca5dac112a7667&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.7.deb&response-content-type=application%2Foctet-stream",
     "url.scheme": "https",
     "user_agent.original": "wget",
     "http.request.method": "GET",
@@ -621,19 +621,19 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.16.1",
+    "telemetry.sdk.version": "5.16.2",
     "service.name": "unknown_service",
     "github.repository.id": "692042935",
     "github.repository.name": "Thoth",
     "github.repository.owner.id": "100447901",
     "github.repository.owner.name": "plengauer",
-    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.1",
-    "github.actions.workflow.sha": "8aa542eed8ba06854eb0af96608661507c0a7c7a",
+    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.2",
+    "github.actions.workflow.sha": "7b94531e1eda5216da67ef63da5a37e9b2645444",
     "github.actions.workflow.name": "Refresh Demos",
     "os.type": "linux",
     "os.version": "6.11.0-1014-azure",
-    "process.pid": 11327,
-    "process.parent_pid": 4591,
+    "process.pid": 11255,
+    "process.parent_pid": 4516,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs wget",
@@ -651,18 +651,18 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "97ecdd9e0743ccc170109dd5c0084135",
-  "span_id": "67a4954a4cd47398",
-  "parent_span_id": "cd81905c0777f4a0",
+  "trace_id": "46daa45a879ff37ab226b625040c9aa5",
+  "span_id": "f095b13b2e4c7eb2",
+  "parent_span_id": "41648b8bb5467416",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1748042510731121664,
-  "time_end": 1748042511746787328,
+  "time_start": 1748114837234934016,
+  "time_end": 1748114838255763456,
   "attributes": {
     "network.protocol.name": "https",
     "network.transport": "tcp",
-    "network.peer.address": "140.82.113.3",
+    "network.peer.address": "140.82.112.3",
     "network.peer.port": 443,
     "server.address": "github.com",
     "server.port": 443,
@@ -676,19 +676,19 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.16.1",
+    "telemetry.sdk.version": "5.16.2",
     "service.name": "unknown_service",
     "github.repository.id": "692042935",
     "github.repository.name": "Thoth",
     "github.repository.owner.id": "100447901",
     "github.repository.owner.name": "plengauer",
-    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.1",
-    "github.actions.workflow.sha": "8aa542eed8ba06854eb0af96608661507c0a7c7a",
+    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.2",
+    "github.actions.workflow.sha": "7b94531e1eda5216da67ef63da5a37e9b2645444",
     "github.actions.workflow.name": "Refresh Demos",
     "os.type": "linux",
     "os.version": "6.11.0-1014-azure",
-    "process.pid": 11327,
-    "process.parent_pid": 4591,
+    "process.pid": 11255,
+    "process.parent_pid": 4516,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs wget",
@@ -706,24 +706,24 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "97ecdd9e0743ccc170109dd5c0084135",
-  "span_id": "f86c84876ec4f441",
-  "parent_span_id": "cd81905c0777f4a0",
+  "trace_id": "46daa45a879ff37ab226b625040c9aa5",
+  "span_id": "0e40fae92cccdf08",
+  "parent_span_id": "41648b8bb5467416",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1748042510835962624,
-  "time_end": 1748042511877737216,
+  "time_start": 1748114837360046848,
+  "time_end": 1748114838375455232,
   "attributes": {
     "network.protocol.name": "https",
     "network.transport": "tcp",
-    "network.peer.address": "185.199.111.133",
+    "network.peer.address": "185.199.108.133",
     "network.peer.port": 443,
     "server.address": "objects.githubusercontent.com",
     "server.port": 443,
-    "url.full": "https://objects.githubusercontent.com/github-production-release-asset-2e65be/692042935/e8091cbc-915a-4ba7-bca7-308817fe26c4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=releaseassetproduction%2F20250523%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250523T232150Z&X-Amz-Expires=300&X-Amz-Signature=759e429daea5814455a037ff37e2ef49d061195c49310396dfdb00b4211f53a9&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.6.deb&response-content-type=application%2Foctet-stream",
+    "url.full": "https://objects.githubusercontent.com/github-production-release-asset-2e65be/692042935/e8091cbc-915a-4ba7-bca7-308817fe26c4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=releaseassetproduction%2F20250524%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250524T192717Z&X-Amz-Expires=300&X-Amz-Signature=c2b10d0990e312c4d8e82e1efcad3bd38e4fec78dcb0d9eb9d864e3b1e8c166f&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.6.deb&response-content-type=application%2Foctet-stream",
     "url.path": "/github-production-release-asset-2e65be/692042935/e8091cbc-915a-4ba7-bca7-308817fe26c4",
-    "url.query": "X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=releaseassetproduction%2F20250523%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250523T232150Z&X-Amz-Expires=300&X-Amz-Signature=759e429daea5814455a037ff37e2ef49d061195c49310396dfdb00b4211f53a9&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.6.deb&response-content-type=application%2Foctet-stream",
+    "url.query": "X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=releaseassetproduction%2F20250524%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250524T192717Z&X-Amz-Expires=300&X-Amz-Signature=c2b10d0990e312c4d8e82e1efcad3bd38e4fec78dcb0d9eb9d864e3b1e8c166f&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.6.deb&response-content-type=application%2Foctet-stream",
     "url.scheme": "https",
     "user_agent.original": "wget",
     "http.request.method": "GET",
@@ -738,19 +738,19 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.16.1",
+    "telemetry.sdk.version": "5.16.2",
     "service.name": "unknown_service",
     "github.repository.id": "692042935",
     "github.repository.name": "Thoth",
     "github.repository.owner.id": "100447901",
     "github.repository.owner.name": "plengauer",
-    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.1",
-    "github.actions.workflow.sha": "8aa542eed8ba06854eb0af96608661507c0a7c7a",
+    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.2",
+    "github.actions.workflow.sha": "7b94531e1eda5216da67ef63da5a37e9b2645444",
     "github.actions.workflow.name": "Refresh Demos",
     "os.type": "linux",
     "os.version": "6.11.0-1014-azure",
-    "process.pid": 11327,
-    "process.parent_pid": 4591,
+    "process.pid": 11255,
+    "process.parent_pid": 4516,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs wget",
@@ -768,18 +768,18 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "97ecdd9e0743ccc170109dd5c0084135",
-  "span_id": "5eb322ecef64ea23",
-  "parent_span_id": "cd81905c0777f4a0",
+  "trace_id": "46daa45a879ff37ab226b625040c9aa5",
+  "span_id": "c2316f3c2e3562e4",
+  "parent_span_id": "41648b8bb5467416",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1748042511890082816,
-  "time_end": 1748042512905375232,
+  "time_start": 1748114838382790656,
+  "time_end": 1748114839403990272,
   "attributes": {
     "network.protocol.name": "https",
     "network.transport": "tcp",
-    "network.peer.address": "140.82.113.3",
+    "network.peer.address": "140.82.112.3",
     "network.peer.port": 443,
     "server.address": "github.com",
     "server.port": 443,
@@ -793,19 +793,19 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.16.1",
+    "telemetry.sdk.version": "5.16.2",
     "service.name": "unknown_service",
     "github.repository.id": "692042935",
     "github.repository.name": "Thoth",
     "github.repository.owner.id": "100447901",
     "github.repository.owner.name": "plengauer",
-    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.1",
-    "github.actions.workflow.sha": "8aa542eed8ba06854eb0af96608661507c0a7c7a",
+    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.2",
+    "github.actions.workflow.sha": "7b94531e1eda5216da67ef63da5a37e9b2645444",
     "github.actions.workflow.name": "Refresh Demos",
     "os.type": "linux",
     "os.version": "6.11.0-1014-azure",
-    "process.pid": 11327,
-    "process.parent_pid": 4591,
+    "process.pid": 11255,
+    "process.parent_pid": 4516,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs wget",
@@ -823,24 +823,24 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "97ecdd9e0743ccc170109dd5c0084135",
-  "span_id": "27937ac7ede44743",
-  "parent_span_id": "cd81905c0777f4a0",
+  "trace_id": "46daa45a879ff37ab226b625040c9aa5",
+  "span_id": "23e758c012e17f3d",
+  "parent_span_id": "41648b8bb5467416",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1748042512004261120,
-  "time_end": 1748042513061264640,
+  "time_start": 1748114838490961408,
+  "time_end": 1748114839525320192,
   "attributes": {
     "network.protocol.name": "https",
     "network.transport": "tcp",
-    "network.peer.address": "185.199.111.133",
+    "network.peer.address": "185.199.108.133",
     "network.peer.port": 443,
     "server.address": "objects.githubusercontent.com",
     "server.port": 443,
-    "url.full": "https://objects.githubusercontent.com/github-production-release-asset-2e65be/692042935/25d95ab9-56aa-4a77-8e84-d4947ecef0fc?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=releaseassetproduction%2F20250523%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250523T232151Z&X-Amz-Expires=300&X-Amz-Signature=e4a9e3237749c855fa667f55febbb79eeef270f25069703439bd2bcdc837b6ae&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.5.deb&response-content-type=application%2Foctet-stream",
+    "url.full": "https://objects.githubusercontent.com/github-production-release-asset-2e65be/692042935/25d95ab9-56aa-4a77-8e84-d4947ecef0fc?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=releaseassetproduction%2F20250524%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250524T192718Z&X-Amz-Expires=300&X-Amz-Signature=760a340b0d3c33a495bd5393caa4d32d272e2bf96ae737e540f090535dd5eb91&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.5.deb&response-content-type=application%2Foctet-stream",
     "url.path": "/github-production-release-asset-2e65be/692042935/25d95ab9-56aa-4a77-8e84-d4947ecef0fc",
-    "url.query": "X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=releaseassetproduction%2F20250523%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250523T232151Z&X-Amz-Expires=300&X-Amz-Signature=e4a9e3237749c855fa667f55febbb79eeef270f25069703439bd2bcdc837b6ae&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.5.deb&response-content-type=application%2Foctet-stream",
+    "url.query": "X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=releaseassetproduction%2F20250524%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250524T192718Z&X-Amz-Expires=300&X-Amz-Signature=760a340b0d3c33a495bd5393caa4d32d272e2bf96ae737e540f090535dd5eb91&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.5.deb&response-content-type=application%2Foctet-stream",
     "url.scheme": "https",
     "user_agent.original": "wget",
     "http.request.method": "GET",
@@ -855,19 +855,19 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.16.1",
+    "telemetry.sdk.version": "5.16.2",
     "service.name": "unknown_service",
     "github.repository.id": "692042935",
     "github.repository.name": "Thoth",
     "github.repository.owner.id": "100447901",
     "github.repository.owner.name": "plengauer",
-    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.1",
-    "github.actions.workflow.sha": "8aa542eed8ba06854eb0af96608661507c0a7c7a",
+    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.2",
+    "github.actions.workflow.sha": "7b94531e1eda5216da67ef63da5a37e9b2645444",
     "github.actions.workflow.name": "Refresh Demos",
     "os.type": "linux",
     "os.version": "6.11.0-1014-azure",
-    "process.pid": 11327,
-    "process.parent_pid": 4591,
+    "process.pid": 11255,
+    "process.parent_pid": 4516,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs wget",
@@ -885,14 +885,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "97ecdd9e0743ccc170109dd5c0084135",
-  "span_id": "d02d96a79ca4f4f7",
-  "parent_span_id": "70ac08dffb1895ee",
+  "trace_id": "46daa45a879ff37ab226b625040c9aa5",
+  "span_id": "4eed567265968cd6",
+  "parent_span_id": "86b55889db6db617",
   "name": "HEAD",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1748042501949404672,
-  "time_end": 1748042505424821760,
+  "time_start": 1748114828358127872,
+  "time_end": 1748114831894256128,
   "attributes": {
     "network.transport": "tcp",
     "network.peer.port": 443,
@@ -918,7 +918,7 @@ bash -e demo.sh
     ],
     "http.response.status_code": 200,
     "http.response.header.date": [
-      "Fri, 23 May 2025 23:21:42 GMT"
+      "Sat, 24 May 2025 19:27:08 GMT"
     ],
     "http.response.header.content-type": [
       "application/json; charset=utf-8"
@@ -930,7 +930,7 @@ bash -e demo.sh
       "Accept,Accept-Encoding, Accept, X-Requested-With"
     ],
     "http.response.header.etag": [
-      "W/\"4aca9e5ef0ee91814091c05b954c2af7d8df520d4f34bfc1ea00c67150c4964e\""
+      "W/\"8fa95c6fdd1dd67c2000a42fc4fd38b0b4156d4359840b67562d97bb96491b41\""
     ],
     "http.response.header.x-github-media-type": [
       "github.v3; format=json"
@@ -978,7 +978,7 @@ bash -e demo.sh
       "59"
     ],
     "http.response.header.x-ratelimit-reset": [
-      "1748046102"
+      "1748118428"
     ],
     "http.response.header.x-ratelimit-resource": [
       "core"
@@ -987,7 +987,7 @@ bash -e demo.sh
       "1"
     ],
     "http.response.header.x-github-request-id": [
-      "E818:D2FD3:29A258E:507D310:68310306"
+      "8880:11B97A:22F4214:453F4BD:68321D8C"
     ],
     "http.response.header.connection": [
       "close"
@@ -997,19 +997,19 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.16.1",
+    "telemetry.sdk.version": "5.16.2",
     "service.name": "unknown_service",
     "github.repository.id": "692042935",
     "github.repository.name": "Thoth",
     "github.repository.owner.id": "100447901",
     "github.repository.owner.name": "plengauer",
-    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.1",
-    "github.actions.workflow.sha": "8aa542eed8ba06854eb0af96608661507c0a7c7a",
+    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.2",
+    "github.actions.workflow.sha": "7b94531e1eda5216da67ef63da5a37e9b2645444",
     "github.actions.workflow.name": "Refresh Demos",
     "os.type": "linux",
     "os.version": "6.11.0-1014-azure",
-    "process.pid": 3146,
-    "process.parent_pid": 2340,
+    "process.pid": 3084,
+    "process.parent_pid": 2348,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1027,31 +1027,31 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "97ecdd9e0743ccc170109dd5c0084135",
-  "span_id": "fb7d73bc10850bce",
+  "trace_id": "46daa45a879ff37ab226b625040c9aa5",
+  "span_id": "48040fbe75f30f0e",
   "parent_span_id": "",
   "name": "bash -e demo.sh",
   "kind": "SERVER",
   "status": "UNSET",
-  "time_start": 1748042501601239040,
-  "time_end": 1748042513101709312,
+  "time_start": 1748114827992855808,
+  "time_end": 1748114839567088384,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.16.1",
+    "telemetry.sdk.version": "5.16.2",
     "service.name": "unknown_service",
     "github.repository.id": "692042935",
     "github.repository.name": "Thoth",
     "github.repository.owner.id": "100447901",
     "github.repository.owner.name": "plengauer",
-    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.1",
-    "github.actions.workflow.sha": "8aa542eed8ba06854eb0af96608661507c0a7c7a",
+    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.2",
+    "github.actions.workflow.sha": "7b94531e1eda5216da67ef63da5a37e9b2645444",
     "github.actions.workflow.name": "Refresh Demos",
     "os.type": "linux",
     "os.version": "6.11.0-1014-azure",
-    "process.pid": 3146,
-    "process.parent_pid": 2340,
+    "process.pid": 3084,
+    "process.parent_pid": 2348,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1069,14 +1069,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "97ecdd9e0743ccc170109dd5c0084135",
-  "span_id": "ab44653c18136210",
-  "parent_span_id": "0472b6309ca540e1",
+  "trace_id": "46daa45a879ff37ab226b625040c9aa5",
+  "span_id": "58f9c8ede561ca8d",
+  "parent_span_id": "bcfd3aa5283d3ad1",
   "name": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=1",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1748042507993990656,
-  "time_end": 1748042508771985152,
+  "time_start": 1748114834523648512,
+  "time_end": 1748114835383301632,
   "attributes": {
     "shell.command_line": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=1",
     "shell.command": "curl",
@@ -1090,19 +1090,19 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.16.1",
+    "telemetry.sdk.version": "5.16.2",
     "service.name": "unknown_service",
     "github.repository.id": "692042935",
     "github.repository.name": "Thoth",
     "github.repository.owner.id": "100447901",
     "github.repository.owner.name": "plengauer",
-    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.1",
-    "github.actions.workflow.sha": "8aa542eed8ba06854eb0af96608661507c0a7c7a",
+    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.2",
+    "github.actions.workflow.sha": "7b94531e1eda5216da67ef63da5a37e9b2645444",
     "github.actions.workflow.name": "Refresh Demos",
     "os.type": "linux",
     "os.version": "6.11.0-1014-azure",
-    "process.pid": 6771,
-    "process.parent_pid": 6730,
+    "process.pid": 6710,
+    "process.parent_pid": 6669,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "/usr/bin/perl /usr/bin/parallel -q curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={} ::: 1 2 3",
@@ -1120,14 +1120,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "97ecdd9e0743ccc170109dd5c0084135",
-  "span_id": "81066e3ef7f22eb0",
-  "parent_span_id": "0472b6309ca540e1",
+  "trace_id": "46daa45a879ff37ab226b625040c9aa5",
+  "span_id": "3d86594e7e78d558",
+  "parent_span_id": "bcfd3aa5283d3ad1",
   "name": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=2",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1748042508075571200,
-  "time_end": 1748042508859029504,
+  "time_start": 1748114834532993024,
+  "time_end": 1748114835358868992,
   "attributes": {
     "shell.command_line": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=2",
     "shell.command": "curl",
@@ -1141,19 +1141,19 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.16.1",
+    "telemetry.sdk.version": "5.16.2",
     "service.name": "unknown_service",
     "github.repository.id": "692042935",
     "github.repository.name": "Thoth",
     "github.repository.owner.id": "100447901",
     "github.repository.owner.name": "plengauer",
-    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.1",
-    "github.actions.workflow.sha": "8aa542eed8ba06854eb0af96608661507c0a7c7a",
+    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.2",
+    "github.actions.workflow.sha": "7b94531e1eda5216da67ef63da5a37e9b2645444",
     "github.actions.workflow.name": "Refresh Demos",
     "os.type": "linux",
     "os.version": "6.11.0-1014-azure",
-    "process.pid": 6772,
-    "process.parent_pid": 6730,
+    "process.pid": 6711,
+    "process.parent_pid": 6669,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "/usr/bin/perl /usr/bin/parallel -q curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={} ::: 1 2 3",
@@ -1171,14 +1171,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "97ecdd9e0743ccc170109dd5c0084135",
-  "span_id": "54ffc1b0890fa21a",
-  "parent_span_id": "0472b6309ca540e1",
+  "trace_id": "46daa45a879ff37ab226b625040c9aa5",
+  "span_id": "050f595c91eeeb95",
+  "parent_span_id": "bcfd3aa5283d3ad1",
   "name": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=3",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1748042508083076352,
-  "time_end": 1748042508831473664,
+  "time_start": 1748114834449659648,
+  "time_end": 1748114835177843968,
   "attributes": {
     "shell.command_line": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=3",
     "shell.command": "curl",
@@ -1192,19 +1192,19 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.16.1",
+    "telemetry.sdk.version": "5.16.2",
     "service.name": "unknown_service",
     "github.repository.id": "692042935",
     "github.repository.name": "Thoth",
     "github.repository.owner.id": "100447901",
     "github.repository.owner.name": "plengauer",
-    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.1",
-    "github.actions.workflow.sha": "8aa542eed8ba06854eb0af96608661507c0a7c7a",
+    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.2",
+    "github.actions.workflow.sha": "7b94531e1eda5216da67ef63da5a37e9b2645444",
     "github.actions.workflow.name": "Refresh Demos",
     "os.type": "linux",
     "os.version": "6.11.0-1014-azure",
-    "process.pid": 6774,
-    "process.parent_pid": 6730,
+    "process.pid": 6713,
+    "process.parent_pid": 6669,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "/usr/bin/perl /usr/bin/parallel -q curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={} ::: 1 2 3",
@@ -1222,14 +1222,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "97ecdd9e0743ccc170109dd5c0084135",
-  "span_id": "5fdc3bf8b546c54f",
-  "parent_span_id": "fb7d73bc10850bce",
+  "trace_id": "46daa45a879ff37ab226b625040c9aa5",
+  "span_id": "1b8fa9aff87f3442",
+  "parent_span_id": "48040fbe75f30f0e",
   "name": "cut -d   -f 2-",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1748042501632498688,
-  "time_end": 1748042505436692736,
+  "time_start": 1748114828032036096,
+  "time_end": 1748114831906355456,
   "attributes": {
     "shell.command_line": "cut -d   -f 2-",
     "shell.command": "cut",
@@ -1244,19 +1244,19 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.16.1",
+    "telemetry.sdk.version": "5.16.2",
     "service.name": "unknown_service",
     "github.repository.id": "692042935",
     "github.repository.name": "Thoth",
     "github.repository.owner.id": "100447901",
     "github.repository.owner.name": "plengauer",
-    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.1",
-    "github.actions.workflow.sha": "8aa542eed8ba06854eb0af96608661507c0a7c7a",
+    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.2",
+    "github.actions.workflow.sha": "7b94531e1eda5216da67ef63da5a37e9b2645444",
     "github.actions.workflow.name": "Refresh Demos",
     "os.type": "linux",
     "os.version": "6.11.0-1014-azure",
-    "process.pid": 3146,
-    "process.parent_pid": 2340,
+    "process.pid": 3084,
+    "process.parent_pid": 2348,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1274,14 +1274,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "97ecdd9e0743ccc170109dd5c0084135",
-  "span_id": "85d8b165948c927d",
-  "parent_span_id": "fb7d73bc10850bce",
+  "trace_id": "46daa45a879ff37ab226b625040c9aa5",
+  "span_id": "5724729f543a3251",
+  "parent_span_id": "48040fbe75f30f0e",
   "name": "cut -d ; -f1",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1748042501641706496,
-  "time_end": 1748042505446488064,
+  "time_start": 1748114828027991552,
+  "time_end": 1748114831915838208,
   "attributes": {
     "shell.command_line": "cut -d ; -f1",
     "shell.command": "cut",
@@ -1296,19 +1296,19 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.16.1",
+    "telemetry.sdk.version": "5.16.2",
     "service.name": "unknown_service",
     "github.repository.id": "692042935",
     "github.repository.name": "Thoth",
     "github.repository.owner.id": "100447901",
     "github.repository.owner.name": "plengauer",
-    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.1",
-    "github.actions.workflow.sha": "8aa542eed8ba06854eb0af96608661507c0a7c7a",
+    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.2",
+    "github.actions.workflow.sha": "7b94531e1eda5216da67ef63da5a37e9b2645444",
     "github.actions.workflow.name": "Refresh Demos",
     "os.type": "linux",
     "os.version": "6.11.0-1014-azure",
-    "process.pid": 3146,
-    "process.parent_pid": 2340,
+    "process.pid": 3084,
+    "process.parent_pid": 2348,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1326,14 +1326,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "97ecdd9e0743ccc170109dd5c0084135",
-  "span_id": "a8a78abfbe465577",
-  "parent_span_id": "fb7d73bc10850bce",
+  "trace_id": "46daa45a879ff37ab226b625040c9aa5",
+  "span_id": "7fe4c32806dd1b6b",
+  "parent_span_id": "48040fbe75f30f0e",
   "name": "cut -d = -f 2",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1748042501651545344,
-  "time_end": 1748042505455873280,
+  "time_start": 1748114828047728640,
+  "time_end": 1748114831925255936,
   "attributes": {
     "shell.command_line": "cut -d = -f 2",
     "shell.command": "cut",
@@ -1348,19 +1348,19 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.16.1",
+    "telemetry.sdk.version": "5.16.2",
     "service.name": "unknown_service",
     "github.repository.id": "692042935",
     "github.repository.name": "Thoth",
     "github.repository.owner.id": "100447901",
     "github.repository.owner.name": "plengauer",
-    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.1",
-    "github.actions.workflow.sha": "8aa542eed8ba06854eb0af96608661507c0a7c7a",
+    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.2",
+    "github.actions.workflow.sha": "7b94531e1eda5216da67ef63da5a37e9b2645444",
     "github.actions.workflow.name": "Refresh Demos",
     "os.type": "linux",
     "os.version": "6.11.0-1014-azure",
-    "process.pid": 3146,
-    "process.parent_pid": 2340,
+    "process.pid": 3084,
+    "process.parent_pid": 2348,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1378,14 +1378,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "97ecdd9e0743ccc170109dd5c0084135",
-  "span_id": "a68851dfb6a0c675",
-  "parent_span_id": "fb7d73bc10850bce",
+  "trace_id": "46daa45a879ff37ab226b625040c9aa5",
+  "span_id": "b8c217c6810f1cde",
+  "parent_span_id": "48040fbe75f30f0e",
   "name": "cut -d ? -f 2-",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1748042501657022464,
-  "time_end": 1748042505448941312,
+  "time_start": 1748114828031890432,
+  "time_end": 1748114831918265344,
   "attributes": {
     "shell.command_line": "cut -d ? -f 2-",
     "shell.command": "cut",
@@ -1400,19 +1400,19 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.16.1",
+    "telemetry.sdk.version": "5.16.2",
     "service.name": "unknown_service",
     "github.repository.id": "692042935",
     "github.repository.name": "Thoth",
     "github.repository.owner.id": "100447901",
     "github.repository.owner.name": "plengauer",
-    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.1",
-    "github.actions.workflow.sha": "8aa542eed8ba06854eb0af96608661507c0a7c7a",
+    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.2",
+    "github.actions.workflow.sha": "7b94531e1eda5216da67ef63da5a37e9b2645444",
     "github.actions.workflow.name": "Refresh Demos",
     "os.type": "linux",
     "os.version": "6.11.0-1014-azure",
-    "process.pid": 3146,
-    "process.parent_pid": 2340,
+    "process.pid": 3084,
+    "process.parent_pid": 2348,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1430,14 +1430,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "97ecdd9e0743ccc170109dd5c0084135",
-  "span_id": "f82bfa87088caf4d",
-  "parent_span_id": "fb7d73bc10850bce",
+  "trace_id": "46daa45a879ff37ab226b625040c9aa5",
+  "span_id": "4a53027b00819046",
+  "parent_span_id": "48040fbe75f30f0e",
   "name": "grep .deb$",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1748042501651398656,
-  "time_end": 1748042508924426752,
+  "time_start": 1748114828041319168,
+  "time_end": 1748114835457986560,
   "attributes": {
     "shell.command_line": "grep .deb$",
     "shell.command": "grep",
@@ -1452,19 +1452,19 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.16.1",
+    "telemetry.sdk.version": "5.16.2",
     "service.name": "unknown_service",
     "github.repository.id": "692042935",
     "github.repository.name": "Thoth",
     "github.repository.owner.id": "100447901",
     "github.repository.owner.name": "plengauer",
-    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.1",
-    "github.actions.workflow.sha": "8aa542eed8ba06854eb0af96608661507c0a7c7a",
+    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.2",
+    "github.actions.workflow.sha": "7b94531e1eda5216da67ef63da5a37e9b2645444",
     "github.actions.workflow.name": "Refresh Demos",
     "os.type": "linux",
     "os.version": "6.11.0-1014-azure",
-    "process.pid": 3146,
-    "process.parent_pid": 2340,
+    "process.pid": 3084,
+    "process.parent_pid": 2348,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1482,14 +1482,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "97ecdd9e0743ccc170109dd5c0084135",
-  "span_id": "251c1a8103ea68ca",
-  "parent_span_id": "fb7d73bc10850bce",
+  "trace_id": "46daa45a879ff37ab226b625040c9aa5",
+  "span_id": "18a01f2a625c560e",
+  "parent_span_id": "48040fbe75f30f0e",
   "name": "grep ^link:",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1748042501657402880,
-  "time_end": 1748042505434357504,
+  "time_start": 1748114828041721344,
+  "time_end": 1748114831904000000,
   "attributes": {
     "shell.command_line": "grep ^link:",
     "shell.command": "grep",
@@ -1504,19 +1504,19 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.16.1",
+    "telemetry.sdk.version": "5.16.2",
     "service.name": "unknown_service",
     "github.repository.id": "692042935",
     "github.repository.name": "Thoth",
     "github.repository.owner.id": "100447901",
     "github.repository.owner.name": "plengauer",
-    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.1",
-    "github.actions.workflow.sha": "8aa542eed8ba06854eb0af96608661507c0a7c7a",
+    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.2",
+    "github.actions.workflow.sha": "7b94531e1eda5216da67ef63da5a37e9b2645444",
     "github.actions.workflow.name": "Refresh Demos",
     "os.type": "linux",
     "os.version": "6.11.0-1014-azure",
-    "process.pid": 3146,
-    "process.parent_pid": 2340,
+    "process.pid": 3084,
+    "process.parent_pid": 2348,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1534,14 +1534,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "97ecdd9e0743ccc170109dd5c0084135",
-  "span_id": "19a67bf6806e4878",
-  "parent_span_id": "fb7d73bc10850bce",
+  "trace_id": "46daa45a879ff37ab226b625040c9aa5",
+  "span_id": "c1860907c4ec27bf",
+  "parent_span_id": "48040fbe75f30f0e",
   "name": "grep ^page=",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1748042501637597184,
-  "time_end": 1748042505453578240,
+  "time_start": 1748114828041468416,
+  "time_end": 1748114831922953216,
   "attributes": {
     "shell.command_line": "grep ^page=",
     "shell.command": "grep",
@@ -1556,19 +1556,19 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.16.1",
+    "telemetry.sdk.version": "5.16.2",
     "service.name": "unknown_service",
     "github.repository.id": "692042935",
     "github.repository.name": "Thoth",
     "github.repository.owner.id": "100447901",
     "github.repository.owner.name": "plengauer",
-    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.1",
-    "github.actions.workflow.sha": "8aa542eed8ba06854eb0af96608661507c0a7c7a",
+    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.2",
+    "github.actions.workflow.sha": "7b94531e1eda5216da67ef63da5a37e9b2645444",
     "github.actions.workflow.name": "Refresh Demos",
     "os.type": "linux",
     "os.version": "6.11.0-1014-azure",
-    "process.pid": 3146,
-    "process.parent_pid": 2340,
+    "process.pid": 3084,
+    "process.parent_pid": 2348,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1586,14 +1586,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "97ecdd9e0743ccc170109dd5c0084135",
-  "span_id": "c423d3a3d0dea9ff",
-  "parent_span_id": "fb7d73bc10850bce",
+  "trace_id": "46daa45a879ff37ab226b625040c9aa5",
+  "span_id": "3722ca62e1f9e164",
+  "parent_span_id": "48040fbe75f30f0e",
   "name": "grep _1.",
   "kind": "INTERNAL",
   "status": "ERROR",
-  "time_start": 1748042501651262464,
-  "time_end": 1748042508928201728,
+  "time_start": 1748114828042141184,
+  "time_end": 1748114835461611008,
   "attributes": {
     "shell.command_line": "grep _1.",
     "shell.command": "grep",
@@ -1608,19 +1608,19 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.16.1",
+    "telemetry.sdk.version": "5.16.2",
     "service.name": "unknown_service",
     "github.repository.id": "692042935",
     "github.repository.name": "Thoth",
     "github.repository.owner.id": "100447901",
     "github.repository.owner.name": "plengauer",
-    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.1",
-    "github.actions.workflow.sha": "8aa542eed8ba06854eb0af96608661507c0a7c7a",
+    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.2",
+    "github.actions.workflow.sha": "7b94531e1eda5216da67ef63da5a37e9b2645444",
     "github.actions.workflow.name": "Refresh Demos",
     "os.type": "linux",
     "os.version": "6.11.0-1014-azure",
-    "process.pid": 3146,
-    "process.parent_pid": 2340,
+    "process.pid": 3084,
+    "process.parent_pid": 2348,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1638,14 +1638,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "97ecdd9e0743ccc170109dd5c0084135",
-  "span_id": "1093c63a9856b72a",
-  "parent_span_id": "fb7d73bc10850bce",
+  "trace_id": "46daa45a879ff37ab226b625040c9aa5",
+  "span_id": "a463bcbc5f95921f",
+  "parent_span_id": "48040fbe75f30f0e",
   "name": "grep rel=\"last\"",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1748042501634415872,
-  "time_end": 1748042505444025344,
+  "time_start": 1748114828014952192,
+  "time_end": 1748114831913504000,
   "attributes": {
     "shell.command_line": "grep rel=\"last\"",
     "shell.command": "grep",
@@ -1660,19 +1660,19 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.16.1",
+    "telemetry.sdk.version": "5.16.2",
     "service.name": "unknown_service",
     "github.repository.id": "692042935",
     "github.repository.name": "Thoth",
     "github.repository.owner.id": "100447901",
     "github.repository.owner.name": "plengauer",
-    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.1",
-    "github.actions.workflow.sha": "8aa542eed8ba06854eb0af96608661507c0a7c7a",
+    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.2",
+    "github.actions.workflow.sha": "7b94531e1eda5216da67ef63da5a37e9b2645444",
     "github.actions.workflow.name": "Refresh Demos",
     "os.type": "linux",
     "os.version": "6.11.0-1014-azure",
-    "process.pid": 3146,
-    "process.parent_pid": 2340,
+    "process.pid": 3084,
+    "process.parent_pid": 2348,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1690,14 +1690,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "97ecdd9e0743ccc170109dd5c0084135",
-  "span_id": "a1ffccc0f8777f1f",
-  "parent_span_id": "fb7d73bc10850bce",
+  "trace_id": "46daa45a879ff37ab226b625040c9aa5",
+  "span_id": "3ec69528896878b8",
+  "parent_span_id": "48040fbe75f30f0e",
   "name": "head --lines=3",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1748042501640729088,
-  "time_end": 1748042508872920832,
+  "time_start": 1748114828041106176,
+  "time_end": 1748114835372563456,
   "attributes": {
     "shell.command_line": "head --lines=3",
     "shell.command": "head",
@@ -1712,19 +1712,19 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.16.1",
+    "telemetry.sdk.version": "5.16.2",
     "service.name": "unknown_service",
     "github.repository.id": "692042935",
     "github.repository.name": "Thoth",
     "github.repository.owner.id": "100447901",
     "github.repository.owner.name": "plengauer",
-    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.1",
-    "github.actions.workflow.sha": "8aa542eed8ba06854eb0af96608661507c0a7c7a",
+    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.2",
+    "github.actions.workflow.sha": "7b94531e1eda5216da67ef63da5a37e9b2645444",
     "github.actions.workflow.name": "Refresh Demos",
     "os.type": "linux",
     "os.version": "6.11.0-1014-azure",
-    "process.pid": 3146,
-    "process.parent_pid": 2340,
+    "process.pid": 3084,
+    "process.parent_pid": 2348,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1742,14 +1742,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "97ecdd9e0743ccc170109dd5c0084135",
-  "span_id": "08142862b4d52e74",
-  "parent_span_id": "fb7d73bc10850bce",
+  "trace_id": "46daa45a879ff37ab226b625040c9aa5",
+  "span_id": "b1fed2452608c5f3",
+  "parent_span_id": "48040fbe75f30f0e",
   "name": "jq .[].assets[].browser_download_url -r",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1748042501651050752,
-  "time_end": 1748042508921628416,
+  "time_start": 1748114828027857408,
+  "time_end": 1748114835455209984,
   "attributes": {
     "shell.command_line": "jq .[].assets[].browser_download_url -r",
     "shell.command": "jq",
@@ -1764,19 +1764,19 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.16.1",
+    "telemetry.sdk.version": "5.16.2",
     "service.name": "unknown_service",
     "github.repository.id": "692042935",
     "github.repository.name": "Thoth",
     "github.repository.owner.id": "100447901",
     "github.repository.owner.name": "plengauer",
-    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.1",
-    "github.actions.workflow.sha": "8aa542eed8ba06854eb0af96608661507c0a7c7a",
+    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.2",
+    "github.actions.workflow.sha": "7b94531e1eda5216da67ef63da5a37e9b2645444",
     "github.actions.workflow.name": "Refresh Demos",
     "os.type": "linux",
     "os.version": "6.11.0-1014-azure",
-    "process.pid": 3146,
-    "process.parent_pid": 2340,
+    "process.pid": 3084,
+    "process.parent_pid": 2348,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1794,14 +1794,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "97ecdd9e0743ccc170109dd5c0084135",
-  "span_id": "a4bc98d47f4f799c",
-  "parent_span_id": "fb7d73bc10850bce",
+  "trace_id": "46daa45a879ff37ab226b625040c9aa5",
+  "span_id": "291d633727ea2bdc",
+  "parent_span_id": "48040fbe75f30f0e",
   "name": "ncat --ssl -i 3 --no-shutdown api.github.com 443",
   "kind": "INTERNAL",
   "status": "ERROR",
-  "time_start": 1748042501632647168,
-  "time_end": 1748042505429609984,
+  "time_start": 1748114828026719744,
+  "time_end": 1748114831899143424,
   "attributes": {
     "shell.command_line": "ncat --ssl -i 3 --no-shutdown api.github.com 443",
     "shell.command": "ncat",
@@ -1816,19 +1816,19 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.16.1",
+    "telemetry.sdk.version": "5.16.2",
     "service.name": "unknown_service",
     "github.repository.id": "692042935",
     "github.repository.name": "Thoth",
     "github.repository.owner.id": "100447901",
     "github.repository.owner.name": "plengauer",
-    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.1",
-    "github.actions.workflow.sha": "8aa542eed8ba06854eb0af96608661507c0a7c7a",
+    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.2",
+    "github.actions.workflow.sha": "7b94531e1eda5216da67ef63da5a37e9b2645444",
     "github.actions.workflow.name": "Refresh Demos",
     "os.type": "linux",
     "os.version": "6.11.0-1014-azure",
-    "process.pid": 3146,
-    "process.parent_pid": 2340,
+    "process.pid": 3084,
+    "process.parent_pid": 2348,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1846,14 +1846,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "97ecdd9e0743ccc170109dd5c0084135",
-  "span_id": "2f984b0f2aa13181",
-  "parent_span_id": "fb7d73bc10850bce",
+  "trace_id": "46daa45a879ff37ab226b625040c9aa5",
+  "span_id": "914a56227be9dab4",
+  "parent_span_id": "48040fbe75f30f0e",
   "name": "printf HEAD /repos/plengauer/Thoth/releases?per_page=100 HTTP/1.1\\r\\nConnection: close\\r\\nUser-Agent: ncat\\r\\nHost: api.github.com\\r\\n\\r\\n",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1748042501632802048,
-  "time_end": 1748042501738021888,
+  "time_start": 1748114828031732992,
+  "time_end": 1748114828109926912,
   "attributes": {
     "shell.command_line": "printf HEAD /repos/plengauer/Thoth/releases?per_page=100 HTTP/1.1\\r\\nConnection: close\\r\\nUser-Agent: ncat\\r\\nHost: api.github.com\\r\\n\\r\\n",
     "shell.command": "printf",
@@ -1866,19 +1866,19 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.16.1",
+    "telemetry.sdk.version": "5.16.2",
     "service.name": "unknown_service",
     "github.repository.id": "692042935",
     "github.repository.name": "Thoth",
     "github.repository.owner.id": "100447901",
     "github.repository.owner.name": "plengauer",
-    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.1",
-    "github.actions.workflow.sha": "8aa542eed8ba06854eb0af96608661507c0a7c7a",
+    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.2",
+    "github.actions.workflow.sha": "7b94531e1eda5216da67ef63da5a37e9b2645444",
     "github.actions.workflow.name": "Refresh Demos",
     "os.type": "linux",
     "os.version": "6.11.0-1014-azure",
-    "process.pid": 3146,
-    "process.parent_pid": 2340,
+    "process.pid": 3084,
+    "process.parent_pid": 2348,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1896,14 +1896,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "97ecdd9e0743ccc170109dd5c0084135",
-  "span_id": "70ac08dffb1895ee",
-  "parent_span_id": "a4bc98d47f4f799c",
+  "trace_id": "46daa45a879ff37ab226b625040c9aa5",
+  "span_id": "86b55889db6db617",
+  "parent_span_id": "291d633727ea2bdc",
   "name": "send/receive",
   "kind": "PRODUCER",
   "status": "UNSET",
-  "time_start": 1748042501747983104,
-  "time_end": 1748042505425356032,
+  "time_start": 1748114828142988032,
+  "time_end": 1748114831894758912,
   "attributes": {
     "network.transport": "tcp",
     "network.peer.port": 443,
@@ -1913,19 +1913,19 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.16.1",
+    "telemetry.sdk.version": "5.16.2",
     "service.name": "unknown_service",
     "github.repository.id": "692042935",
     "github.repository.name": "Thoth",
     "github.repository.owner.id": "100447901",
     "github.repository.owner.name": "plengauer",
-    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.1",
-    "github.actions.workflow.sha": "8aa542eed8ba06854eb0af96608661507c0a7c7a",
+    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.2",
+    "github.actions.workflow.sha": "7b94531e1eda5216da67ef63da5a37e9b2645444",
     "github.actions.workflow.name": "Refresh Demos",
     "os.type": "linux",
     "os.version": "6.11.0-1014-azure",
-    "process.pid": 3146,
-    "process.parent_pid": 2340,
+    "process.pid": 3084,
+    "process.parent_pid": 2348,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1943,14 +1943,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "97ecdd9e0743ccc170109dd5c0084135",
-  "span_id": "bd79ab9a7ba53615",
-  "parent_span_id": "ed44bbe323fc13f4",
+  "trace_id": "46daa45a879ff37ab226b625040c9aa5",
+  "span_id": "701589ec67fa2fc6",
+  "parent_span_id": "4499decbb16c1e1f",
   "name": "seq 1 3",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1748042506055826432,
-  "time_end": 1748042506073356288,
+  "time_start": 1748114832523046144,
+  "time_end": 1748114832540564224,
   "attributes": {
     "shell.command_line": "seq 1 3",
     "shell.command": "seq",
@@ -1964,19 +1964,19 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.16.1",
+    "telemetry.sdk.version": "5.16.2",
     "service.name": "unknown_service",
     "github.repository.id": "692042935",
     "github.repository.name": "Thoth",
     "github.repository.owner.id": "100447901",
     "github.repository.owner.name": "plengauer",
-    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.1",
-    "github.actions.workflow.sha": "8aa542eed8ba06854eb0af96608661507c0a7c7a",
+    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.2",
+    "github.actions.workflow.sha": "7b94531e1eda5216da67ef63da5a37e9b2645444",
     "github.actions.workflow.name": "Refresh Demos",
     "os.type": "linux",
     "os.version": "6.11.0-1014-azure",
-    "process.pid": 5349,
-    "process.parent_pid": 4607,
+    "process.pid": 5287,
+    "process.parent_pid": 4512,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs seq 1",
@@ -1994,14 +1994,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "97ecdd9e0743ccc170109dd5c0084135",
-  "span_id": "4cb70ade209c2e4f",
-  "parent_span_id": "fb7d73bc10850bce",
+  "trace_id": "46daa45a879ff37ab226b625040c9aa5",
+  "span_id": "3824f7fff3cc482c",
+  "parent_span_id": "48040fbe75f30f0e",
   "name": "tr & \\n",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1748042501634258944,
-  "time_end": 1748042505451252992,
+  "time_start": 1748114828047527168,
+  "time_end": 1748114831920616960,
   "attributes": {
     "shell.command_line": "tr & \\n",
     "shell.command": "tr",
@@ -2016,19 +2016,19 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.16.1",
+    "telemetry.sdk.version": "5.16.2",
     "service.name": "unknown_service",
     "github.repository.id": "692042935",
     "github.repository.name": "Thoth",
     "github.repository.owner.id": "100447901",
     "github.repository.owner.name": "plengauer",
-    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.1",
-    "github.actions.workflow.sha": "8aa542eed8ba06854eb0af96608661507c0a7c7a",
+    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.2",
+    "github.actions.workflow.sha": "7b94531e1eda5216da67ef63da5a37e9b2645444",
     "github.actions.workflow.name": "Refresh Demos",
     "os.type": "linux",
     "os.version": "6.11.0-1014-azure",
-    "process.pid": 3146,
-    "process.parent_pid": 2340,
+    "process.pid": 3084,
+    "process.parent_pid": 2348,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2046,14 +2046,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "97ecdd9e0743ccc170109dd5c0084135",
-  "span_id": "df596976d636254d",
-  "parent_span_id": "fb7d73bc10850bce",
+  "trace_id": "46daa45a879ff37ab226b625040c9aa5",
+  "span_id": "cbd55161cb825f87",
+  "parent_span_id": "48040fbe75f30f0e",
   "name": "tr , \\n",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1748042501635677440,
-  "time_end": 1748042505441521920,
+  "time_start": 1748114828041882368,
+  "time_end": 1748114831911123200,
   "attributes": {
     "shell.command_line": "tr , \\n",
     "shell.command": "tr",
@@ -2068,19 +2068,19 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.16.1",
+    "telemetry.sdk.version": "5.16.2",
     "service.name": "unknown_service",
     "github.repository.id": "692042935",
     "github.repository.name": "Thoth",
     "github.repository.owner.id": "100447901",
     "github.repository.owner.name": "plengauer",
-    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.1",
-    "github.actions.workflow.sha": "8aa542eed8ba06854eb0af96608661507c0a7c7a",
+    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.2",
+    "github.actions.workflow.sha": "7b94531e1eda5216da67ef63da5a37e9b2645444",
     "github.actions.workflow.name": "Refresh Demos",
     "os.type": "linux",
     "os.version": "6.11.0-1014-azure",
-    "process.pid": 3146,
-    "process.parent_pid": 2340,
+    "process.pid": 3084,
+    "process.parent_pid": 2348,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2098,14 +2098,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "97ecdd9e0743ccc170109dd5c0084135",
-  "span_id": "6d9de40b74fbc4c3",
-  "parent_span_id": "fb7d73bc10850bce",
+  "trace_id": "46daa45a879ff37ab226b625040c9aa5",
+  "span_id": "e92c8e609778907c",
+  "parent_span_id": "48040fbe75f30f0e",
   "name": "tr -d  <>",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1748042501657722368,
-  "time_end": 1748042505439070208,
+  "time_start": 1748114828041598464,
+  "time_end": 1748114831908684800,
   "attributes": {
     "shell.command_line": "tr -d  <>",
     "shell.command": "tr",
@@ -2120,19 +2120,19 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.16.1",
+    "telemetry.sdk.version": "5.16.2",
     "service.name": "unknown_service",
     "github.repository.id": "692042935",
     "github.repository.name": "Thoth",
     "github.repository.owner.id": "100447901",
     "github.repository.owner.name": "plengauer",
-    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.1",
-    "github.actions.workflow.sha": "8aa542eed8ba06854eb0af96608661507c0a7c7a",
+    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.2",
+    "github.actions.workflow.sha": "7b94531e1eda5216da67ef63da5a37e9b2645444",
     "github.actions.workflow.name": "Refresh Demos",
     "os.type": "linux",
     "os.version": "6.11.0-1014-azure",
-    "process.pid": 3146,
-    "process.parent_pid": 2340,
+    "process.pid": 3084,
+    "process.parent_pid": 2348,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2150,14 +2150,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "97ecdd9e0743ccc170109dd5c0084135",
-  "span_id": "114b3232f098f960",
-  "parent_span_id": "fb7d73bc10850bce",
+  "trace_id": "46daa45a879ff37ab226b625040c9aa5",
+  "span_id": "51a57ff75480d562",
+  "parent_span_id": "48040fbe75f30f0e",
   "name": "tr [:upper:] [:lower:]",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1748042501626236672,
-  "time_end": 1748042505431993600,
+  "time_start": 1748114828022854656,
+  "time_end": 1748114831901588480,
   "attributes": {
     "shell.command_line": "tr [:upper:] [:lower:]",
     "shell.command": "tr",
@@ -2172,19 +2172,19 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.16.1",
+    "telemetry.sdk.version": "5.16.2",
     "service.name": "unknown_service",
     "github.repository.id": "692042935",
     "github.repository.name": "Thoth",
     "github.repository.owner.id": "100447901",
     "github.repository.owner.name": "plengauer",
-    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.1",
-    "github.actions.workflow.sha": "8aa542eed8ba06854eb0af96608661507c0a7c7a",
+    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.2",
+    "github.actions.workflow.sha": "7b94531e1eda5216da67ef63da5a37e9b2645444",
     "github.actions.workflow.name": "Refresh Demos",
     "os.type": "linux",
     "os.version": "6.11.0-1014-azure",
-    "process.pid": 3146,
-    "process.parent_pid": 2340,
+    "process.pid": 3084,
+    "process.parent_pid": 2348,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2202,14 +2202,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "97ecdd9e0743ccc170109dd5c0084135",
-  "span_id": "cd81905c0777f4a0",
-  "parent_span_id": "37becb484efa5ff6",
+  "trace_id": "46daa45a879ff37ab226b625040c9aa5",
+  "span_id": "41648b8bb5467416",
+  "parent_span_id": "efc18f36daf858e4",
   "name": "wget https://github.com/plengauer/Thoth/releases/download/v1.13.7/opentelemetry-shell_1.13.7.deb https://github.com/plengauer/Thoth/releases/download/v1.13.6/opentelemetry-shell_1.13.6.deb https://github.com/plengauer/Thoth/releases/download/v1.13.5/opentelemetry-shell_1.13.5.deb",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1748042509490135296,
-  "time_end": 1748042513066490880,
+  "time_start": 1748114835998164992,
+  "time_end": 1748114839530332416,
   "attributes": {
     "shell.command_line": "wget https://github.com/plengauer/Thoth/releases/download/v1.13.7/opentelemetry-shell_1.13.7.deb https://github.com/plengauer/Thoth/releases/download/v1.13.6/opentelemetry-shell_1.13.6.deb https://github.com/plengauer/Thoth/releases/download/v1.13.5/opentelemetry-shell_1.13.5.deb",
     "shell.command": "wget",
@@ -2223,19 +2223,19 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.16.1",
+    "telemetry.sdk.version": "5.16.2",
     "service.name": "unknown_service",
     "github.repository.id": "692042935",
     "github.repository.name": "Thoth",
     "github.repository.owner.id": "100447901",
     "github.repository.owner.name": "plengauer",
-    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.1",
-    "github.actions.workflow.sha": "8aa542eed8ba06854eb0af96608661507c0a7c7a",
+    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.2",
+    "github.actions.workflow.sha": "7b94531e1eda5216da67ef63da5a37e9b2645444",
     "github.actions.workflow.name": "Refresh Demos",
     "os.type": "linux",
     "os.version": "6.11.0-1014-azure",
-    "process.pid": 11327,
-    "process.parent_pid": 4591,
+    "process.pid": 11255,
+    "process.parent_pid": 4516,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs wget",
@@ -2253,14 +2253,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "97ecdd9e0743ccc170109dd5c0084135",
-  "span_id": "392c3620a6e39dc3",
-  "parent_span_id": "fb7d73bc10850bce",
+  "trace_id": "46daa45a879ff37ab226b625040c9aa5",
+  "span_id": "c166fc8b614c4666",
+  "parent_span_id": "48040fbe75f30f0e",
   "name": "xargs parallel -q curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={} :::",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1748042501657268992,
-  "time_end": 1748042508918681344,
+  "time_start": 1748114828020160256,
+  "time_end": 1748114835452542208,
   "attributes": {
     "shell.command_line": "xargs parallel -q curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={} :::",
     "shell.command": "xargs",
@@ -2275,19 +2275,19 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.16.1",
+    "telemetry.sdk.version": "5.16.2",
     "service.name": "unknown_service",
     "github.repository.id": "692042935",
     "github.repository.name": "Thoth",
     "github.repository.owner.id": "100447901",
     "github.repository.owner.name": "plengauer",
-    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.1",
-    "github.actions.workflow.sha": "8aa542eed8ba06854eb0af96608661507c0a7c7a",
+    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.2",
+    "github.actions.workflow.sha": "7b94531e1eda5216da67ef63da5a37e9b2645444",
     "github.actions.workflow.name": "Refresh Demos",
     "os.type": "linux",
     "os.version": "6.11.0-1014-azure",
-    "process.pid": 3146,
-    "process.parent_pid": 2340,
+    "process.pid": 3084,
+    "process.parent_pid": 2348,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2305,14 +2305,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "97ecdd9e0743ccc170109dd5c0084135",
-  "span_id": "ed44bbe323fc13f4",
-  "parent_span_id": "fb7d73bc10850bce",
+  "trace_id": "46daa45a879ff37ab226b625040c9aa5",
+  "span_id": "4499decbb16c1e1f",
+  "parent_span_id": "48040fbe75f30f0e",
   "name": "xargs seq 1",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1748042501657574656,
-  "time_end": 1748042506103313152,
+  "time_start": 1748114828026563584,
+  "time_end": 1748114832570926848,
   "attributes": {
     "shell.command_line": "xargs seq 1",
     "shell.command": "xargs",
@@ -2327,19 +2327,19 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.16.1",
+    "telemetry.sdk.version": "5.16.2",
     "service.name": "unknown_service",
     "github.repository.id": "692042935",
     "github.repository.name": "Thoth",
     "github.repository.owner.id": "100447901",
     "github.repository.owner.name": "plengauer",
-    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.1",
-    "github.actions.workflow.sha": "8aa542eed8ba06854eb0af96608661507c0a7c7a",
+    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.2",
+    "github.actions.workflow.sha": "7b94531e1eda5216da67ef63da5a37e9b2645444",
     "github.actions.workflow.name": "Refresh Demos",
     "os.type": "linux",
     "os.version": "6.11.0-1014-azure",
-    "process.pid": 3146,
-    "process.parent_pid": 2340,
+    "process.pid": 3084,
+    "process.parent_pid": 2348,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2357,14 +2357,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "97ecdd9e0743ccc170109dd5c0084135",
-  "span_id": "37becb484efa5ff6",
-  "parent_span_id": "fb7d73bc10850bce",
+  "trace_id": "46daa45a879ff37ab226b625040c9aa5",
+  "span_id": "efc18f36daf858e4",
+  "parent_span_id": "48040fbe75f30f0e",
   "name": "xargs wget",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1748042501642928640,
-  "time_end": 1748042513101064448,
+  "time_start": 1748114828042005248,
+  "time_end": 1748114839566448384,
   "attributes": {
     "shell.command_line": "xargs wget",
     "shell.command": "xargs",
@@ -2379,19 +2379,19 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.16.1",
+    "telemetry.sdk.version": "5.16.2",
     "service.name": "unknown_service",
     "github.repository.id": "692042935",
     "github.repository.name": "Thoth",
     "github.repository.owner.id": "100447901",
     "github.repository.owner.name": "plengauer",
-    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.1",
-    "github.actions.workflow.sha": "8aa542eed8ba06854eb0af96608661507c0a7c7a",
+    "github.actions.workflow.ref": "plengauer/Thoth/.github/workflows/refresh_demos.yaml@refs/tags/v5.16.2",
+    "github.actions.workflow.sha": "7b94531e1eda5216da67ef63da5a37e9b2645444",
     "github.actions.workflow.name": "Refresh Demos",
     "os.type": "linux",
     "os.version": "6.11.0-1014-azure",
-    "process.pid": 3146,
-    "process.parent_pid": 2340,
+    "process.pid": 3084,
+    "process.parent_pid": 2348,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
