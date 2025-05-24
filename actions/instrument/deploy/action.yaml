@@ -13,6 +13,12 @@ runs:
       uses: actions/checkout@v4
       with:
         token: ${{ inputs.github_token }}
+    - name: "Save blank lines"
+      shell: bash
+      run: |
+        (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
+          sed -i 's/^[[:blank:]]*$/#__BLANK_LINE__#/g' "$workflow_file"
+        done
     - name: Canonicalize
       shell: bash
       run: |
@@ -111,6 +117,12 @@ runs:
               yq -i ".jobs.$job_name.permissions.actions = \"read\"" "$workflow_file"
             fi
           done
+        done
+    - name: "Restore blank lines"
+      shell: bash
+      run: |
+        (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
+          sed -i 's/#__BLANK_LINE__#//' $workflow_file"
         done
     - name: "Open Pull Request"
       id: open-pr
