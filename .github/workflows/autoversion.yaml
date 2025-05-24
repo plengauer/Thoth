@@ -1,15 +1,14 @@
 name: Autoversion
-
 on:
   schedule:
     - cron: '0 0 * * 2'
   workflow_dispatch:
-
 jobs:
   bump:
     runs-on: ubuntu-latest
     permissions:
       contents: none
+      actions: read
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.1
         with:

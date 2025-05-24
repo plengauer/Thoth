@@ -1,9 +1,7 @@
 name: Experiment
-
 on:
   workflow_dispatch:
   # push:
-
 jobs:
   experiment:
     runs-on: ubuntu-latest

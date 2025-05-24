@@ -1,18 +1,16 @@
 name: Renovate
-
 on:
   schedule:
     - cron: '0 * * * *'
   workflow_dispatch:
-
 concurrency:
   group: renovate
-
 jobs:
   renovate:
     runs-on: ubuntu-latest
     permissions:
       contents: none
+      actions: read
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.1
         with:

@@ -1,10 +1,7 @@
 name: 'GitHub'
-
 on:
   workflow_call:
-
 jobs:
-
   job-node:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -25,7 +22,6 @@ jobs:
       - uses: actions/download-artifact@v4 # check if node action works
         with:
           name: packages
-
   job-docker:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -61,10 +57,9 @@ jobs:
           tags: test
           push: false
           build-args: |
-           image=ubuntu:latest
-           update=TRUE
-           shell=bash
-
+            image=ubuntu:latest
+            update=TRUE
+            shell=bash
   job-run:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -89,7 +84,6 @@ jobs:
           [ "$(alias | grep '_otel_observe' | wc -l)" -gt 0 ]
       - run: | # check if traceparent is injected
           [ -n "$TRACEPARENT" ]
-
   job-composite:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -110,7 +104,6 @@ jobs:
       - uses: plengauer/autorerun@v0.23.0
         with:
           github_token: ${{ github.token }}
-
   job-integration:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -134,7 +127,6 @@ jobs:
           RENOVATE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RENOVATE_REPOSITORIES: ${{ github.repository }}
           LOG_LEVEL: debug
-
   job-io-1:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -156,7 +148,6 @@ jobs:
         id: my-step
       - run: |
           [ ${{ steps.my-step.outputs.foo }} = bar ]
-
   job-io-2:
     needs: job-io-1
     runs-on: ubuntu-latest
@@ -175,7 +166,6 @@ jobs:
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
       - run: |
           [ ${{ needs.job-io-1.outputs.foo }} = bar ]
-
   job-cache:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -198,7 +188,6 @@ jobs:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
       - run: echo hello world
-
   job-exporter-local:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -232,7 +221,6 @@ jobs:
       - run: cat /tmp/http.log | grep -q '^POST /v1/logs$'
       - run: cat /tmp/http.log | grep -q '^POST /v1/metrics$'
       - run: cat /tmp/http.log | grep -q '^POST /v1/traces$'
-
   job-exporter-global:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -274,12 +262,11 @@ jobs:
         if: ${{ matrix.exporter_metrics == 'otlp' }}
       - run: cat /tmp/http.log | grep -q '^POST /v1/traces$'
         if: ${{ matrix.exporter_traces == 'otlp' }}
-
   job-permissions-restricted:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     permissions: # according to https://docs.github.com/en/actions/security-for-github-actions/security-guides/automatic-token-authentication
-      actions: none
+      actions: read
       attestations: none
       checks: none
       contents: read
@@ -303,7 +290,6 @@ jobs:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
       - run: echo hello world >&2
-
   workflow:
     runs-on: ubuntu-latest
     timeout-minutes: 180

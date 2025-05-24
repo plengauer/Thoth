@@ -1,10 +1,8 @@
 name: Publish
-
 on:
   push:
     paths: VERSION
     branches: main
-
 jobs:
   test:
     permissions:
@@ -24,7 +22,6 @@ jobs:
       statuses: none
     secrets: inherit
     uses: ./.github/workflows/test.yaml
-
   publish:
     needs: test
     runs-on: ubuntu-latest
