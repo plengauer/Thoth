@@ -34,7 +34,7 @@ jobs:
       id-token: write
       attestations: write
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.1
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.2
         with:
           secrets_to_redact: '${{ toJSON(secrets) }}'
         env:
