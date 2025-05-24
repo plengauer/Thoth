@@ -13,6 +13,12 @@ runs:
       uses: actions/checkout@v4
       with:
         token: ${{ inputs.github_token }}
+    - name: "Save blank lines"
+      shell: bash
+      run: |
+        (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
+          sed -i 's/^[[:blank:]]*$/#__BLANK_LINE__#/g' "$workflow_file"
+        done
     - name: Canonicalize
       shell: bash
       run: |
@@ -23,7 +29,6 @@ runs:
           sed -i 's~plengauer/opentelemetry-thoth~${{ inputs.action_repository }}~g' "$workflow_file"
           sed -i 's~plengauer/Thoth~${{ inputs.action_repository }}~g' "$workflow_file"
           sed -i 's~plengauer/thoth~${{ inputs.action_repository }}~g' "$workflow_file"
-          sed -i 's/^[[:blank:]]*$/#__BLANK_LINE__#/g' "$workflow_file"
         done
     - name: "Find self"
       id: find-self
@@ -113,7 +118,7 @@ runs:
             fi
           done
         done
-    - name: Decanonicalize
+    - name: "Restore blank lines"
       shell: bash
       run: |
         (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
