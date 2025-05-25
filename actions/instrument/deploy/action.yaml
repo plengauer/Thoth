@@ -14,6 +14,7 @@ runs:
       with:
         token: ${{ inputs.github_token }}
     - name: "Save blank lines"
+      if: false
       shell: bash
       run: |
         (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
@@ -119,12 +120,19 @@ runs:
           done
         done
     - name: "Restore blank lines"
+      if: false
       shell: bash
       run: |
         (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
-          sed -i 's/#__BLANK_LINE__#//' $workflow_file"
+          sed -i 's/#__BLANK_LINE__#//g' $workflow_file"
         done
+    - name: Log
+      if: ${{ inputs.dry_run }}
+      shell: bash
+      run: |
+        git diff
     - name: "Open Pull Request"
+      if: ! ${{ inputs.dry_run }}
       id: open-pr
       uses: peter-evans/create-pull-request@v7
       with:
@@ -168,6 +176,8 @@ inputs:
     default: plengauer/opentelemetry-github
   action_version:
     default: v5.16.0
+  dry_run:
+    default: false
   debug:
     description: 'Enable debug logging'
     default: ${{ runner.debug }}
