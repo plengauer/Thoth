@@ -361,7 +361,7 @@ jobs:
       actions: read
     steps:
       - uses: actions/checkout@v4
-      - uses: ./actions/instrument/workflow
+      - uses: ./actions/instrument/deploy
         with:
           debug: 1
           dry_run: true
