@@ -99,7 +99,7 @@ runs:
             if [ -n "$(cat "$workflow_file" | yq ".jobs.$job_name.steps[] | select(.uses == \"${{ inputs.action_repository }}/actions/instrument/job@*\") | .uses")" ]; then continue; fi
             yq -i ".jobs.$job_name.steps |= ([{ \"uses\": \"${{ inputs.action_repository }}/actions/instrument/job@${{ inputs.action_version }}\" }] + .)" "$workflow_file"
             yq -i ".jobs.$job_name.steps[0].with.secrets_to_redact = \"$(echo JHt7IHRvSlNPTihzZWNyZXRzKSB9fQo= | base64 -d)\"" "$workflow_file"
-            cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "${{ inputs.action_repository }}/actions/instrument/deploy@*") | .env | keys[]' | grep '^OTEL_' | while read -r key; do
+            cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "${{ inputs.action_repository }}/actions/instrument/deploy*") | .env | keys[]' | grep '^OTEL_' | while read -r key; do
               yq -i ".jobs.$job_name.steps[0].env.$key = \"$(cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "${{ inputs.action_repository }}/actions/instrument/deploy@*") | .env.'"$key")\"" "$workflow_file"
             done
           done
