@@ -1,5 +1,4 @@
 name: Test
-
 on:
   push:
     branches:
@@ -7,16 +6,15 @@ on:
   schedule:
     - cron: "0 0 * * *"
   workflow_call:
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
 jobs:
   verify-python-dependency:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      actions: read
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.3
         env:
@@ -28,11 +26,11 @@ jobs:
           min_version_otel="${min_version_otel:-8}"
           min_version_shell="$(cat src/DEBIAN/control | grep '^Pre-Depends:' | tr ',' '\n' | grep -F -- 'python3 (>=' | cut -d '(' -f 2- | cut -d ')' -f 1 | cut -d ' ' -f 2 | cut -d . -f 2)"
           [ "$min_version_shell" -ge "$min_version_otel" ]
-
   verify-debian-dependencies:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      actions: read
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.3
         env:
@@ -58,11 +56,11 @@ jobs:
               done | tee /dev/stderr | grep -q 'UNAVAILABLE' && return 1 || return 0
           }
           find src/DEBIAN | grep -vE '^src/DEBIAN$|^src/DEBIAN/control$|^src/DEBIAN/triggers$' | verify '^Pre-Depends:' && find src -iname '*.sh' | grep -vE '^src/DEBIAN/' | verify '^Pre-Depends:|^Depends:|^Recommends:|^Suggests:'
-
   verify-triggers:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      actions: read
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.3
         env:
@@ -75,12 +73,12 @@ jobs:
             printf '%s' "$command ... "
             cat src/DEBIAN/triggers | grep -qE /"$command" && echo OK || (echo UNAVAILABLE && false)
           done
-
   build:
     needs: [verify-python-dependency, verify-debian-dependencies, verify-triggers]
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      actions: read
     defaults:
       run:
         working-directory: ./src
@@ -104,7 +102,7 @@ jobs:
             dependencies_content_deb_to_rpm() {
               grep -v 'python3-venv' | sed 's/^awk$/gawk | mawk/g' | sed 's/^dpkg$/rpm/g' | sed 's/^xxd$/xxd | vim-common | vim/g'
             }
-          
+
             echo -n 'Requires: ' && cat DEBIAN/control | grep -E '^Pre-Depends:|^Depends:|^Recommends:' | cut -d ' ' -f 2- | tr ',' '\n' | tr -d ' ' | grep -v '^$' | dependencies_content_deb_to_rpm | dependencies_format_deb_to_rpm | tr '\n' ' ' && echo
             echo "AutoReq: no"
             echo "BuildArch: noarch"
@@ -127,7 +125,6 @@ jobs:
         with:
           name: packages
           path: package.*
-
   smoke:
     needs: build
     strategy:
@@ -138,6 +135,7 @@ jobs:
     timeout-minutes: 20
     permissions:
       contents: read
+      actions: read
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
@@ -146,7 +144,6 @@ jobs:
       - run: sudo apt-get -y install ./package.deb
       - run: bash -c "cd tests && bash run_tests.sh bash"
       - run: sudo apt-get -y remove opentelemetry-shell
-
   prepare-upgrade:
     runs-on: ubuntu-latest
     outputs:
@@ -167,7 +164,6 @@ jobs:
         id: dynamic-matrix
         env:
           GITHUB_TOKEN: ${{ github.token }}
-
   upgrade:
     needs: [prepare-upgrade, smoke]
     runs-on: ubuntu-latest
@@ -187,7 +183,6 @@ jobs:
         with:
           name: packages
       - run: sudo apt-get -y install ./package.deb
-
   prepare-images:
     runs-on: ubuntu-latest
     outputs:
@@ -255,13 +250,13 @@ jobs:
           cat images.json | jq '.[] | select(.type != "dev")'                                                       | jq .image | sort -u | jq -s tostring | xargs -0 -I {} echo 'images={}' >> "$GITHUB_OUTPUT"
           cat images.json | jq '.[] | select(.type != "dev") | select(.type != "latest") | select(.os == "ubuntu")' | jq .image | sort -u | jq -s tostring | xargs -0 -I {} echo 'images_upgradeable={}' >> "$GITHUB_OUTPUT"
         id: dynamic
-
   prepare-shells:
     runs-on: ubuntu-latest
     outputs:
       shells: ${{ steps.dynamic.outputs.shells }}
     permissions:
       contents: read
+      actions: read
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.3
         env:
@@ -274,9 +269,8 @@ jobs:
             cat src/DEBIAN/control | grep '^Enhances: ' | tr ' ' '\n' | tr ',' '\n' | grep -v -F 'Enhances:' | grep -v '^$'
           } | sort -u | while read -r shell; do echo "\"$shell\""; done | jq -s tostring | xargs -0 -I {} echo 'shells={}' >> "$GITHUB_OUTPUT"
         id: dynamic
-
   system-upgrade:
-    needs: [ prepare-images, smoke ]
+    needs: [prepare-images, smoke]
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
@@ -289,30 +283,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: packages
-      - run: |
-          echo '
-            apt-get update
-            apt-get -y install /root/package.deb 
-            apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y dist-upgrade && apt-get -y autoremove && apt-get -y autoclean
-            case "$(cat /etc/os-release | grep '^NAME=' | cut -d = -f 2 | tr -d "\"")" in
-              Ubuntu)
-                DEBIAN_FRONTEND=noninteractive apt-get -y install sed systemctl update-manager-core
-                sed -i "/Prompt/d" /etc/update-manager/release-upgrades && echo "Prompt=normal" >> /etc/update-manager/release-upgrades
-                do-release-upgrade -c || exit 0 && RELEASE_UPGRADER_ALLOW_THIRD_PARTY=1 do-release-upgrade -f DistUpgradeViewNonInteractive
-                ;;
-              Debian*)
-                DEBIAN_FRONTEND=noninteractive apt-get -y install curl sed
-                version_destination="$(curl -sL https://deb.debian.org/debian/dists/testing/InRelease | grep "^Codename:" | cut -d " " -f 2)"
-                version_source="$(cat /etc/os-release | grep '^VERSION_CODENAME' | cut -d = -f 2)"
-                sed -i "s/$version_source/$version_destination/g" /etc/apt/sources.list /etc/apt/sources.list.d/*
-                sed -i "s/oldstable/testing/g" /etc/apt/sources.list /etc/apt/sources.list.d/*
-                sed -i "s/stable/testing/g" /etc/apt/sources.list /etc/apt/sources.list.d/*
-                ;;
-              *) exit 1;;
-            esac
-            apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y dist-upgrade && apt-get -y autoremove && apt-get -y autoclean
-          ' | sudo docker run -v $(pwd)/package.deb:/root/package.deb --rm --network=host -i --entrypoint=/bin/sh ${{ matrix.image }} -e
-
+      - run: "echo '\n  apt-get update\n  apt-get -y install /root/package.deb \n  apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y dist-upgrade && apt-get -y autoremove && apt-get -y autoclean\n  case \"$(cat /etc/os-release | grep '^NAME=' | cut -d = -f 2 | tr -d \"\\\"\")\" in\n    Ubuntu)\n      DEBIAN_FRONTEND=noninteractive apt-get -y install sed systemctl update-manager-core\n      sed -i \"/Prompt/d\" /etc/update-manager/release-upgrades && echo \"Prompt=normal\" >> /etc/update-manager/release-upgrades\n      do-release-upgrade -c || exit 0 && RELEASE_UPGRADER_ALLOW_THIRD_PARTY=1 do-release-upgrade -f DistUpgradeViewNonInteractive\n      ;;\n    Debian*)\n      DEBIAN_FRONTEND=noninteractive apt-get -y install curl sed\n      version_destination=\"$(curl -sL https://deb.debian.org/debian/dists/testing/InRelease | grep \"^Codename:\" | cut -d \" \" -f 2)\"\n      version_source=\"$(cat /etc/os-release | grep '^VERSION_CODENAME' | cut -d = -f 2)\"\n      sed -i \"s/$version_source/$version_destination/g\" /etc/apt/sources.list /etc/apt/sources.list.d/*\n      sed -i \"s/oldstable/testing/g\" /etc/apt/sources.list /etc/apt/sources.list.d/*\n      sed -i \"s/stable/testing/g\" /etc/apt/sources.list /etc/apt/sources.list.d/*\n      ;;\n    *) exit 1;;\n  esac\n  apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y dist-upgrade && apt-get -y autoremove && apt-get -y autoclean\n' | sudo docker run -v $(pwd)/package.deb:/root/package.deb --rm --network=host -i --entrypoint=/bin/sh ${{ matrix.image }} -e\n"
   prepare-dependency:
     runs-on: ubuntu-latest
     outputs:
@@ -331,9 +302,8 @@ jobs:
            | grep -vF "$(cat src/DEBIAN/control | grep '^Pre-Depends:' | cut -d : -f 2- | tr '|' ',' | tr , '\n' | tr -d ' ' | cut -d '(' -f 1 | sed 's/python3-pip/pip3/g')" \
            | sort -u | while read -r dependency; do echo "\"$dependency\""; done | jq -s tostring | xargs -0 -I {} echo 'dependencies={}' >> "$GITHUB_OUTPUT"
         id: dynamic
-
   dependency:
-    needs: [ prepare-dependency, prepare-images, smoke ]
+    needs: [prepare-dependency, prepare-images, smoke]
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
@@ -383,20 +353,18 @@ jobs:
               exit 1
             fi
           ' | sudo -E docker run -v $(pwd)/package.deb:/root/package.deb -v $(pwd)/package.rpm:/root/package.rpm --rm --network=host -e DEPENDENCY -i --entrypoint=/bin/sh ${{ matrix.image }} -e
-        
-
   install-manual-user:
-    needs: [ smoke ]
+    needs: [smoke]
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      actions: read
     steps:
       - uses: actions/checkout@v4
       - run: cat INSTALL.sh | sh -e
       - run: type otel.sh
-
   install-manual-os:
-    needs: [ prepare-images, smoke ]
+    needs: [prepare-images, smoke]
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -404,6 +372,7 @@ jobs:
       fail-fast: false
     permissions:
       contents: read
+      actions: read
     steps:
       - uses: actions/checkout@v4
       - run: |
@@ -419,9 +388,8 @@ jobs:
             cat INSTALL.sh
             echo type otel.sh
           } | sudo docker run --rm --network=host -i --entrypoint=/bin/sh ${{ matrix.image }} -e
-
   linux-shell:
-    needs: [ prepare-images, prepare-shells, smoke ]
+    needs: [prepare-images, prepare-shells, smoke]
     runs-on: ubuntu-latest
     timeout-minutes: 60
     strategy:
@@ -443,9 +411,8 @@ jobs:
       - run: bash -c 'cd tests && bash run_tests_containerized.sh "${{ matrix.os }}" "${{ matrix.update }}" "${{ matrix.shell }}"'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   windows-shell:
-    needs: [ prepare-shells, smoke ]
+    needs: [prepare-shells, smoke]
     runs-on: windows-latest
     timeout-minutes: 120
     strategy:
@@ -480,7 +447,6 @@ jobs:
           sudo apt-get -y remove opentelemetry-shell
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   github:
     needs: smoke
     permissions:
@@ -500,13 +466,13 @@ jobs:
       statuses: none
     uses: ./.github/workflows/test_github.yaml
     secrets: inherit
-
   prepare-performance:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.dynamic-matrix.outputs.matrix }}
     permissions:
       contents: read
+      actions: read
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.3
         env:
@@ -517,17 +483,16 @@ jobs:
         id: dynamic-matrix
         env:
           GITHUB_TOKEN: ${{ github.token }}
-  
   performance:
     needs: [prepare-performance, smoke]
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    strategy: 
+    strategy:
       matrix: ${{ fromJSON(needs.prepare-performance.outputs.matrix) }}
       fail-fast: false
     permissions:
       contents: read
-      actions: write
+      actions: read
     steps:
       - if: matrix.tag_name == '~local'
         uses: actions/download-artifact@v4
@@ -553,12 +518,11 @@ jobs:
           name: performance.${{ matrix.tag_name }}.warmstart.list
           path: performance.${{ matrix.tag_name }}.warmstart.list
           retention-days: 1
-
   performance-summary:
     needs: performance
     runs-on: ubuntu-latest
     permissions:
-      actions: write
+      actions: read
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.3
         env:
@@ -592,7 +556,6 @@ jobs:
           name: performance.png
           path: performance.png
           retention-days: 90
-
   join:
     needs: [upgrade, system-upgrade, dependency, linux-shell, windows-shell, github, install-manual-user, install-manual-os]
     runs-on: ubuntu-latest
@@ -600,16 +563,17 @@ jobs:
       success: ${{ steps.tests.outputs.success }}
     permissions:
       contents: none
+      actions: read
     steps:
       - id: tests
         run: echo "success=true" >> "$GITHUB_OUTPUT"
-
   all:
     if: ${{ always() }} # this is because we need this to fail and not skipped to avoid PRs getting merged without this passing
     needs: join
     runs-on: ubuntu-latest
     permissions:
       contents: none
+      actions: read
     steps:
       - env:
           SUCCESS: ${{ needs.join.outputs.success }}
