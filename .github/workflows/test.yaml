@@ -482,7 +482,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   github:
-    needs: smoke
+    needs: build
     permissions:
       actions: read
       attestations: none
