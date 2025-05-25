@@ -18,7 +18,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.3
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -34,7 +34,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.3
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -64,7 +64,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.3
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -85,7 +85,7 @@ jobs:
       run:
         working-directory: ./src
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.3
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -154,7 +154,7 @@ jobs:
     permissions:
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.3
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -225,7 +225,7 @@ jobs:
       IMAGE_OPENSUSE_LATEST: 'opensuse/tumbleweed:latest'
       IMAGE_OPENSUSE_DEV: '' # not public
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.3
         with:
           secrets_to_redact: '${{ toJSON(secrets) }}'
         env:
@@ -263,7 +263,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.3
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -321,7 +321,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.3
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -508,7 +508,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.3
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -560,7 +560,7 @@ jobs:
     permissions:
       actions: write
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.3
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
