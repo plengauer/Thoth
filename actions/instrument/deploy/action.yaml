@@ -132,7 +132,7 @@ runs:
       run: |
         git diff
     - name: "Open Pull Request"
-      if: ! ${{ inputs.dry_run }}
+      if: ${{ ! inputs.dry_run }}
       id: open-pr
       uses: peter-evans/create-pull-request@v7
       with:
