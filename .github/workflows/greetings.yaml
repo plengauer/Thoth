@@ -8,7 +8,7 @@ jobs:
       pull-requests: write
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.3
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.4
         with:
           secrets_to_redact: '${{ toJSON(secrets) }}'
         env:
