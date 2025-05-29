@@ -25,8 +25,8 @@ inputs:
     description: 'Enable debug logging'
     default: '${{ runner.debug }}'
   __kill_switch:
-    description: 'Set OTEL_GITHUB_KILL_SWITCH variable for the repository or organization to any non-empty value to disable all monitoring in case of an emergency. DO NOT SET MANUALLY.'
-    default: '${{ vars.OTEL_GITHUB_KILL_SWITCH }}'
+    description: 'INTERNAL ONLY - DO NOT SET MANUALLY' # 'Set OTEL_GITHUB_KILL_SWITCH variable for the repository or organization to any non-empty value to disable all monitoring in case of an emergency. DO NOT SET MANUALLY.'
+    default: '' # '${{ vars.OTEL_GITHUB_KILL_SWITCH }}'
   __job_status:
     description: 'INTERNAL ONLY - DO NOT SET MANUALLY'
     default: '${{ job.status }}'
