@@ -17,7 +17,7 @@ public class SubprocessInjectionAgent {
                       + "command.add(0, \"sh\");" // sh echo hello world
                       + "command.add(1, \"-c\");" // sh -c echo hello world
                       + "command.add(2, \". otel.sh\\n\" + command.remove(2) + \" \\\"$@\\\"\");" // sh -c '. otel.sh \n echo "$@"' hello world
-                      + "command.add(3, \"java\");" // sh -c ". otel.sh \n echo" java hello world
+                      + "command.add(3, \"java\");" // sh -c '. otel.sh \n echo "$@"' java hello world
                       + "}"
                       // TODO modify env
                       // optionally add otel_inject
