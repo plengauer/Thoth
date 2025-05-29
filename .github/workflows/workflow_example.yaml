@@ -1,35 +1,39 @@
 name: 'Workflow Example'
-
 on:
   schedule:
     - cron: '0 0 * * *'
   push:
     paths: .github/workflows/workflow_example.yaml
-
 jobs:
-
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: none
+      actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.13.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.5
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
       - run: echo 'hello world, im a compiler (deeply injected), i sometimes fail'
       - run: |
           [ "$GITHUB_RUN_ATTEMPT" != 1 ] || (echo "::error ::rate limit exceeded" && false)
-
   test:
     needs: build
     strategy:
       matrix:
         name: ['foo', 'bar', 'baz']
     runs-on: ubuntu-latest
+    permissions:
+      contents: none
+      actions: read
     steps:
       - run: echo 'hello world, im a test (not injected)'
-
   publish:
     needs: test
     runs-on: ubuntu-latest
+    permissions:
+      contents: none
+      actions: read
     steps:
       - run: echo 'hello world, im a publisher (not injected)'

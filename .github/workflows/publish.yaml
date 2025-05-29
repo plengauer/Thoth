@@ -1,23 +1,37 @@
 name: Publish
-
 on:
   push:
     paths: VERSION
     branches: main
-
 jobs:
   test:
+    permissions:
+      actions: write
+      attestations: none
+      checks: none
+      contents: read
+      deployments: none
+      discussions: none
+      id-token: none
+      issues: none
+      models: none
+      packages: read
+      pages: none
+      pull-requests: none
+      security-events: none
+      statuses: none
+    secrets: inherit
     uses: ./.github/workflows/test.yaml
-
   publish:
     needs: test
     runs-on: ubuntu-latest
     permissions:
+      actions: read
       contents: write
       id-token: write
       attestations: write
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.13.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.5
         with:
           secrets_to_redact: '${{ toJSON(secrets) }}'
         env:

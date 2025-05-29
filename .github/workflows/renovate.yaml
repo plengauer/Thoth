@@ -1,24 +1,24 @@
 name: Renovate
-
 on:
   schedule:
     - cron: '0 * * * *'
   workflow_dispatch:
-
 concurrency:
   group: renovate
-
 jobs:
   renovate:
     runs-on: ubuntu-latest
+    permissions:
+      contents: none
+      actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.13.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.5
         with:
           secrets_to_redact: '${{ toJSON(secrets) }}'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - uses: renovatebot/github-action@v42.0.2
+      - uses: renovatebot/github-action@v42.0.4
         env:
           RENOVATE_REPOSITORIES: ${{ github.repository }}
         with:

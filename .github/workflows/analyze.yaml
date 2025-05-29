@@ -1,5 +1,4 @@
 name: "Analyze"
-
 on:
   push:
     branches: "main"
@@ -7,16 +6,15 @@ on:
     branches: "main"
   schedule:
     - cron: '0 0 * * *'
-
 env:
   CODEQL_EXTRACTOR_CPP_BUILD_MODE_NONE: 'true' # scanning c/c++ without building it is an experimental feature and needs to be enabled like this until released
-
 jobs:
   codeql:
     runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
     permissions:
       security-events: write
       packages: read
+      actions: read
     strategy:
       fail-fast: false
       matrix:
@@ -32,7 +30,7 @@ jobs:
           - language: actions
             build-mode: none
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.13.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.5
         with:
           secrets_to_redact: '${{ toJSON(secrets) }}'
         env:
