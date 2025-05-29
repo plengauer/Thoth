@@ -16,7 +16,7 @@ public class SubprocessInjectionAgent {
                       + "java.util.List command = $0.command();"
                       + "command.add(0, \"sh\");"
                       + "command.add(1, \"-c\");"
-                      + "command.add(2, \".otel.sh\\n\" + command.remove(2));"
+                      + "command.add(2, \". otel.sh\\n\" + command.remove(2));"
                       + "command.add(3, \"java\");"
                       + "}"
                       // TODO modify env
