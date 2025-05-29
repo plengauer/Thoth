@@ -1,20 +1,20 @@
 name: Autorerun
-
 on:
   workflow_run:
-    workflows: [ 'Test', 'Publish', 'Refresh Demos', 'Workflow Example' ]
+    workflows: ['Test', 'Publish', 'Refresh Demos', 'Workflow Example']
     types: completed
   schedule:
     - cron: '0 0 * * *'
-
 concurrency:
   group: rerun-${{ github.event.workflow_run.id }}
-
 jobs:
   rerun:
     runs-on: ubuntu-latest
+    permissions:
+      contents: none
+      actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.14.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.5
         with:
           secrets_to_redact: '${{ toJSON(secrets) }}'
         env:

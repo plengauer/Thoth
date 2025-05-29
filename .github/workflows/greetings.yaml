@@ -1,15 +1,14 @@
 name: Greetings
-
 on: [pull_request_target, issues]
-
 jobs:
   greeting:
     runs-on: ubuntu-latest
     permissions:
       issues: write
       pull-requests: write
+      actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.14.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.5
         with:
           secrets_to_redact: '${{ toJSON(secrets) }}'
         env:

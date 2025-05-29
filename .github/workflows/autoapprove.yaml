@@ -1,18 +1,16 @@
 name: Autoapprove
-
 on:
   pull_request:
-
 concurrency:
   group: approve-${{ github.event.pull_request.number }}
-
 jobs:
   approve:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
+      actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.14.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.5
         with:
           secrets_to_redact: '${{ toJSON(secrets) }}'
         env:

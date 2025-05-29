@@ -13,6 +13,13 @@ runs:
       uses: actions/checkout@v4
       with:
         token: ${{ inputs.github_token }}
+    - name: "Save blank lines"
+      if: false
+      shell: bash
+      run: |
+        (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
+          sed -i 's/^[[:blank:]]*$/#__BLANK_LINE__#/g' "$workflow_file"
+        done
     - name: Canonicalize
       shell: bash
       run: |
@@ -46,7 +53,19 @@ runs:
       if: steps.find-workflow-level-instrumentation.outputs.path == null
       shell: bash
       run: |
-        echo "${{ inputs.workflow_level_instrumentation_template }}" > "${{ inputs.workflows_directory }}/${{ inputs.workflow_level_instrumentation_file_name }}"
+        echo '
+        name: ${{ inputs.workflow_level_instrumentation_workflow_name }}
+        on:
+          workflow_run:
+            workflows: []
+            types:
+              - completed
+        jobs:
+          export:
+            runs-on: ubuntu-latest
+            steps:
+              - uses: ${{ inputs.action_repository }}/actions/instrument/workflow@${{ inputs.action_version }}
+        ' > "${{ inputs.workflows_directory }}/${{ inputs.workflow_level_instrumentation_file_name }}"
         cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "${{ inputs.action_repository }}/actions/instrument/deploy@*") | .env | keys[]' | grep '^OTEL_' | while read -r key; do
           value="$(cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "${{ inputs.action_repository }}/actions/instrument/deploy@*") | .env.'"$key")"
           yq -i '.jobs[].steps[0].env.'"$key"' = "'"$value"'"' "${{ inputs.workflows_directory }}/${{ inputs.workflow_level_instrumentation_file_name }}"
@@ -85,7 +104,35 @@ runs:
             done
           done
         done
+    - name: "Adjust Permissions"
+      shell: bash
+      run: |
+        (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
+          cat "$workflow_file" | yq '.jobs | keys[]' | while read -r job_name; do
+            cat "$workflow_file" | yq ".jobs.$job_name.steps" | grep -qvF null || continue
+            if [ "$(cat "$workflow_file" | yq ".jobs.$job_name.permissions")" != null ] && [ "$(cat "$workflow_file" | yq ".jobs.$job_name.permissions.actions")" != read ] && [ "$(cat "$workflow_file" | yq ".jobs.$job_name.permissions.actions")" != write ]; then
+              yq -i ".jobs.$job_name.permissions.actions = \"read\"" "$workflow_file"
+            elif [ "$(cat "$workflow_file" | yq ".permissions")" != null ] && [ "$(cat "$workflow_file" | yq ".permissions.actions")" != read ] && [ "$(cat "$workflow_file" | yq ".permissions.actions")" != write ]; then
+              yq -i ".permissions.actions = \"read\"" "$workflow_file"
+            else
+              yq -i ".jobs.$job_name.permissions.actions = \"read\"" "$workflow_file"
+            fi
+          done
+        done
+    - name: "Restore blank lines"
+      if: false
+      shell: bash
+      run: |
+        (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
+          sed -i 's/#__BLANK_LINE__#//g' $workflow_file"
+        done
+    - name: Log
+      if: ${{ inputs.dry_run }}
+      shell: bash
+      run: |
+        git diff
     - name: "Open Pull Request"
+      if: ${{ ! inputs.dry_run }}
       id: open-pr
       uses: peter-evans/create-pull-request@v7
       with:
@@ -117,29 +164,20 @@ inputs:
     default: '.github/workflows'
   workflow_level_instrumentation_file_name:
     default: 'observability.yaml'
+  workflow_level_instrumentation_workflow_name:
+    default: 'OpenTelemetry'
   workflow_level_instrumentation_exclude:
     description: 'Comma-separated list of workflow names to exclude from workflow-level instrumentation.'
     default: ''
   job_level_instrumentation_exclude:
     description: 'Comma-separated list of workflow names to exclude from job-level instrumentation.'
     default: ''
-  workflow_level_instrumentation_template:
-    default: |
-      name: OpenTelemetry
-      on:
-        workflow_run:
-          workflows: []
-          types:
-            - completed
-      jobs:
-        export:
-          runs-on: ubuntu-latest
-          steps:
-            - uses: plengauer/opentelemetry-github/actions/instrument/workflow@v5.14.0
   action_repository:
     default: plengauer/opentelemetry-github
   action_version:
-    default: v5.12.5
+    default: v5.16.0
+  dry_run:
+    default: false
   debug:
     description: 'Enable debug logging'
     default: ${{ runner.debug }}
