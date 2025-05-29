@@ -13,11 +13,11 @@ public class SubprocessInjectionAgent {
                     CtMethod method = ctClass.getDeclaredMethod("start");
                     method.insertBefore(
                       "{"
-                      + "java.util.List command = $0.command();"
-                      + "command.add(0, \"sh\");"
-                      + "command.add(1, \"-c\");"
-                      + "command.add(2, \". otel.sh\\n\" + command.remove(2));"
-                      + "command.add(3, \"java\");"
+                      + "java.util.List command = $0.command();" // echo hello world
+                      + "command.add(0, \"sh\");" // sh echo hello world
+                      + "command.add(1, \"-c\");" // sh -c echo hello world
+                      + "command.add(2, \". otel.sh\\n\" + command.remove(2) + \" \\\"$@\\\"\");" // sh -c '. otel.sh \n echo "$@"' hello world
+                      + "command.add(3, \"java\");" // sh -c ". otel.sh \n echo" java hello world
                       + "}"
                       // TODO modify env
                       // optionally add otel_inject
