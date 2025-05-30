@@ -18,6 +18,12 @@ inputs:
   collector:
     description: 'Whether to use a collector to process data before leaving a job runner. It is used to buffer data and to redact GitHub secrets. Disabling the collector will disable these features.'
     default: auto
+  self_monitoring:
+    description: 'Whether to send usage statistics (invocation counts, feature usages) to the maintainer. No data of the workflow itself will be collected.'
+    default: false
+  self_monitoring_anonymous:
+    description: 'Whether to strip self monitoring data of any identifiable information.'
+    default: true
   debug:
     description: 'Enable debug logging'
     default: ${{ runner.debug }}
