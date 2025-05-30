@@ -17,6 +17,8 @@ jobs:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.5
         with:
           secrets_to_redact: '${{ toJSON(secrets) }}'
+          self_monitoring: true
+          self_monitoring_anonymize: false
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
