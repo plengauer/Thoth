@@ -25,6 +25,38 @@ echo "log_file=$log_file" >> "$GITHUB_STATE"
 . ../shared/github.sh
 . ../shared/install.sh
 
+# selfmonitoring
+if [ "$INPUT_SELF_MONITORING" = true ]; then
+  (
+    export OTEL_SHELL_SDK_OUTPUT_REDIRECT=/dev/null
+    export OTEL_SERVICE_NAME="OpenTelemetry GitHub Selfmonitoring"
+    export OTEL_TRACES_EXPORTER=none
+    export OTEL_LOGS_EXPORTER=none
+    export OTEL_METRICS_EXPORTER=otlp
+    export OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
+    export OTEL_EXPORTER_OTLP_ENDPOINT=TODO
+    export OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE=delta
+    . otelapi.sh
+    _otel_resource_attributes_process() {
+      :
+    }
+    _otel_resource_attributes_custom() {
+      _otel_resource_attribute string telemetry.sdk.language=github
+    }
+    if [ "$INPUT_SELF_MONITORING_ANONYMOUS" = true ]; then
+      unset GITHUB_REPOSITORY_ID GITHUB_REPOSITORY GITHUB_REPOSITORY_OWNER_ID GITHUB_REPOSITORY_OWNER
+    fi
+    unset GITHUB_WORKFLOW_REF GITHUB_WORKFLOW_SHA GITHUB_WORKFLOW
+    otel_init
+    counter_handle="$(otel_counter_create counter selfmonitoring.opentelemetry.github.job.invocations 1 'Invocations of job-level instrumentations')"
+    observation_handle="$(otel_observation_create 1)"
+    otel_observation_attribute "$observation_handle" instrumentation.version=TODO
+    otel_observation_attribute_typed "$observation_handle" string foo=bar
+    otel_counter_observe "$counter_handle" "$observation_handle"
+    otel_shutdown
+  ) &
+fi
+
 # configure collector if required
 if [ "$INPUT_COLLECTOR" = true ] || ([ "$INPUT_COLLECTOR" = auto ] && ([ -n "${OTEL_EXPORTER_OTLP_HEADERS:-}" ] || [ -n "${OTEL_EXPORTER_OTLP_LOGS_HEADERS:-}" ] || [ -n "${OTEL_EXPORTER_OTLP_METRICS_HEADERS:-}" ] || [ -n "${OTEL_EXPORTER_OTLP_TRACES_HEADERS:-}" ] || [ "$INPUT_SECRETS_TO_REDACT" != '{}' ])); then
   if ! type docker; then echo "::error ::Cannot use collector because docker is unavailable." && false; fi
