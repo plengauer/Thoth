@@ -18,6 +18,9 @@ inputs:
   collector:
     description: 'Whether to use a collector to process data before leaving a job runner. It is used to buffer data and to redact GitHub secrets. Disabling the collector will disable these features.'
     default: auto
+  secrets_to_redact:
+    description: 'A JSON object containing all secrets to redact from any attribute.'
+    default: '{ "github_token": "${{ github.token }}" }'
   self_monitoring:
     description: 'Whether to send usage statistics (invocation counts, feature usages) to the maintainer. No data of the workflow itself will be collected.'
     default: false
@@ -27,9 +30,6 @@ inputs:
   debug:
     description: 'Enable debug logging'
     default: ${{ runner.debug }}
-  secrets_to_redact:
-    description: 'A JSON object containing all secrets to redact from any attribute.'
-    default: '{ "github_token": "${{ github.token }}" }'
   __job_status:
     description: 'INTERNAL ONLY - DO NOT SET MANUALLY'
     default: '${{ job.status }}'
