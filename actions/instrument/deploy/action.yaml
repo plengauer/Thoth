@@ -35,8 +35,10 @@ runs:
       id: find-self
       shell: bash
       run: |
-        if [ -r "${{ github.workflow }}" ]; then
-           echo path="${{ github.workflow }}" >> "$GITHUB_OUTPUT"
+        if [ -r '${{ inputs.__repository_level_instrumentation_file_name_override }}' ]; then
+          echo path="${{ inputs.__repository_level_instrumentation_file_name_override }}" >> "$GITHUB_OUTPUT"
+        elif [ -r "${{ github.workflow }}" ]; then
+          echo path="${{ github.workflow }}" >> "$GITHUB_OUTPUT"
         else
           (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
             [ "$(cat "$workflow_file" | yq .name)" = "${{ github.workflow }}" ] && echo path="$workflow_file" >> "$GITHUB_OUTPUT" && break || true
@@ -181,3 +183,6 @@ inputs:
   debug:
     description: 'Enable debug logging'
     default: ${{ runner.debug }}
+  __repository_level_instrumentation_file_name_override:
+    description: 'INTERNAL ONLY - DO NOT SET MANUALLY'
+    default: ''
