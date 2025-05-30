@@ -26,7 +26,7 @@ echo "log_file=$log_file" >> "$GITHUB_STATE"
 . ../shared/install.sh
 
 # selfmonitoring
-if [ "$INPUT_SELF_MONITORING" = true ]; then
+if [ "$INPUT_SELF_MONITORING" = true ] && [ "${OTEL_SHELL_CONFIG_GITHUB_IS_TEST:-FALSE}" = FALSE ]; then
   (
     export OTEL_SHELL_SDK_OUTPUT_REDIRECT=/dev/null
     export OTEL_SERVICE_NAME="OpenTelemetry GitHub Selfmonitoring"
