@@ -352,6 +352,7 @@ jobs:
           debug: 1
           dry_run: true
           action_repository: '.'
+          __repository_level_instrumentation_file_name_override: '.github/workflows/test_github.yaml'
         env:
           OTEL_METRICS_EXPORTER: console
           OTEL_LOGS_EXPORTER: console
