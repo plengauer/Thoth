@@ -22,7 +22,7 @@ if [ "$INPUT_SELF_MONITORING" = true ] && [ "${OTEL_SHELL_CONFIG_GITHUB_IS_TEST:
     _otel_resource_attributes_custom() {
       _otel_resource_attribute string telemetry.sdk.language=github
     }
-    if [ "$INPUT_SELF_MONITORING_ANONYMOUS" = true ]; then
+    if [ "$INPUT_SELF_MONITORING_ANONYMIZE" = true ]; then
       unset GITHUB_REPOSITORY_ID GITHUB_REPOSITORY GITHUB_REPOSITORY_OWNER_ID GITHUB_REPOSITORY_OWNER
     fi
     unset GITHUB_WORKFLOW_REF GITHUB_WORKFLOW_SHA GITHUB_WORKFLOW
