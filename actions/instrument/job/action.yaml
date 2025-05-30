@@ -24,7 +24,7 @@ inputs:
   self_monitoring:
     description: 'Whether to send usage statistics (invocation counts, feature usages) to the maintainer. No data of the workflow itself will be collected.'
     default: false
-  self_monitoring_anonymous:
+  self_monitoring_anonymize:
     description: 'Whether to strip self monitoring data of any identifiable information.'
     default: true
   debug:
