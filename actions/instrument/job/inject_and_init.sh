@@ -50,8 +50,6 @@ if [ "$INPUT_SELF_MONITORING" = true ]; then
     otel_init
     counter_handle="$(otel_counter_create counter selfmonitoring.opentelemetry.github.job.invocations 1 'Invocations of job-level instrumentations')"
     observation_handle="$(otel_observation_create 1)"
-    otel_observation_attribute "$observation_handle" instrumentation.version=TODO
-    otel_observation_attribute_typed "$observation_handle" string foo=bar
     otel_counter_observe "$counter_handle" "$observation_handle"
     otel_shutdown
   ) &
