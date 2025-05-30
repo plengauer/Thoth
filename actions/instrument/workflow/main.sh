@@ -13,7 +13,7 @@ if [ "$INPUT_SELF_MONITORING" = true ]; then
     export OTEL_LOGS_EXPORTER=none
     export OTEL_METRICS_EXPORTER=otlp
     export OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
-    export OTEL_EXPORTER_OTLP_ENDPOINT=TODO
+    export OTEL_EXPORTER_OTLP_ENDPOINT=http://3.73.14.87:4318
     export OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE=delta
     . otelapi.sh
     _otel_resource_attributes_process() {
