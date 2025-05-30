@@ -4,6 +4,36 @@ set -e
 . ../shared/github.sh
 OTEL_SHELL_CONFIG_INSTALL_DEEP=FALSE bash -e ../shared/install.sh
 
+# selfmonitoring
+if [ "$INPUT_SELF_MONITORING" = true ]; then
+  (
+    export OTEL_SHELL_SDK_OUTPUT_REDIRECT=/dev/null
+    export OTEL_SERVICE_NAME="OpenTelemetry GitHub Selfmonitoring"
+    export OTEL_TRACES_EXPORTER=none
+    export OTEL_LOGS_EXPORTER=none
+    export OTEL_METRICS_EXPORTER=otlp
+    export OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
+    export OTEL_EXPORTER_OTLP_ENDPOINT=TODO
+    export OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE=delta
+    . otelapi.sh
+    _otel_resource_attributes_process() {
+      :
+    }
+    _otel_resource_attributes_custom() {
+      _otel_resource_attribute string telemetry.sdk.language=github
+    }
+    if [ "$INPUT_SELF_MONITORING_ANONYMOUS" = true ]; then
+      unset GITHUB_REPOSITORY_ID GITHUB_REPOSITORY GITHUB_REPOSITORY_OWNER_ID GITHUB_REPOSITORY_OWNER
+    fi
+    unset GITHUB_WORKFLOW_REF GITHUB_WORKFLOW_SHA GITHUB_WORKFLOW
+    otel_init
+    counter_handle="$(otel_counter_create counter selfmonitoring.opentelemetry.github.workflow.invocations 1 'Invocations of workflow-level instrumentations')"
+    observation_handle="$(otel_observation_create 1)"
+    otel_counter_observe "$counter_handle" "$observation_handle"
+    otel_shutdown
+  ) &
+fi
+
 export OTEL_SERVICE_NAME="${OTEL_SERVICE_NAME:-"$(echo "$GITHUB_REPOSITORY" | cut -d / -f 2-) CI"}"
 
 workflow_json="$(mktemp)"
