@@ -14,8 +14,6 @@ jobs:
         with:
           # secrets_to_redact: '{"foo":"*"}'        
           secrets_to_redact: '${{ toJSON(secrets) }}'
-          self_monitoring: true
-          self_monitoring_anonymize: false
           debug: 1
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
