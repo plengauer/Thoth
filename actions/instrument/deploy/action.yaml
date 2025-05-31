@@ -100,13 +100,27 @@ runs:
             if [ -n "$(cat "$workflow_file" | yq ".jobs.$job_name.steps[] | select(.uses == \"${{ inputs.action_repository }}/actions/instrument/workflow@*\") | .uses")" ]; then continue; fi
             if [ -n "$(cat "$workflow_file" | yq ".jobs.$job_name.steps[] | select(.uses == \"${{ inputs.action_repository }}/actions/instrument/job@*\") | .uses")" ]; then continue; fi
             yq -i ".jobs.$job_name.steps |= ([{ \"uses\": \"${{ inputs.action_repository }}/actions/instrument/job@${{ inputs.action_version }}\" }] + .)" "$workflow_file"
-            yq -i ".jobs.$job_name.steps[0].with.secrets_to_redact = \"$(echo JHt7IHRvSlNPTihzZWNyZXRzKSB9fQo= | base64 -d)\"" "$workflow_file"
             cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "${{ inputs.action_repository }}/actions/instrument/deploy*") | .env | keys[]' | grep '^OTEL_' | while read -r key; do
               yq -i ".jobs.$job_name.steps[0].env.$key = \"$(cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "${{ inputs.action_repository }}/actions/instrument/deploy*") | .env.'"$key")\"" "$workflow_file"
             done
           done
         done
-    - name: "Adjust Permissions"
+    - name: "Configure Secret Redaction"
+      shell: bash
+      run: |
+        (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
+          cat "$workflow_file" | yq '.jobs | keys[]' | while read -r job_name; do
+            cat "$workflow_file" | yq ".jobs.$job_name.steps" | grep -qvF null || continue
+            if [ -z "$(cat "$workflow_file" | yq ".jobs.$job_name.steps[] | select(.uses == \"${{ inputs.action_repository }}/actions/instrument/job@*\") | .uses")" ]; then continue; fi
+            case "${{ inputs.job_level_instrumentation_secret_redaction_strategy }}" in
+              case none) [ "$(cat "$workflow_file" | yq '.jobs.$job_name.steps[] | select(.uses == "${{ inputs.action_repository }}/actions/instrument/job@*") | .with.secrets_to_redact')" = null ] || yq -i "del(.jobs.prepare-images.steps[] | select(.uses == "${{ inputs.action_repository }}/actions/instrument/job@*").with.secrets_to_redact)" "$workflow_file";;
+              case list) [ "$(cat "$workflow_file" | yq '.jobs.$job_name.steps[] | select(.uses == "${{ inputs.action_repository }}/actions/instrument/job@*") | .with.secrets_to_redact') = "$(cat "$workflow_file" | { echo JHt7IGdpdGh1Yi50b2tlbiB9fQo= | base64 -d; grep -oE '\${{[[:blank:]]*secrets\.[a-zA-Z0-9_.-]+[[:blank:]]*}}' || true; } | sort -u | jq --raw-input --slurp 'split("\n") | .[0:-1]' -c)" ] || yq -i "(.jobs.prepare-images.steps[] | select(.uses == "${{ inputs.action_repository }}/actions/instrument/job@*")).with.secrets_to_redact = '$(cat "$workflow_file" | { echo JHt7IGdpdGh1Yi50b2tlbiB9fQo= | base64 -d; grep -oE '\${{[[:blank:]]*secrets\.[a-zA-Z0-9_.-]+[[:blank:]]*}}' || true; } | sort -u | jq --raw-input --slurp 'split("\n") | .[0:-1]' -c)'" "$workflow_file";;
+              case  all) [ "$(cat "$workflow_file" | yq '.jobs.$job_name.steps[] | select(.uses == "${{ inputs.action_repository }}/actions/instrument/job@*") | .with.secrets_to_redact')" = "$(echo JHt7IHRvSlNPTihzZWNyZXRzKSB9fQo= | base64 -d)" ] || yq -i "(.jobs.prepare-images.steps[] | select(.uses == "${{ inputs.action_repository }}/actions/instrument/job@*")).with.secrets_to_redact = '$(echo JHt7IHRvSlNPTihzZWNyZXRzKSB9fQo= | base64 -d)'" "$workflow_file";;
+              case    *) echo '::error ::Illegal secret redaction strategy "${{ inputs.job_level_instrumentation_secret_redaction_strategy }}"!' && exit 1;;
+            esac
+          done
+        done
+    - name: "Modify Permissions"
       shell: bash
       run: |
         (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
@@ -174,6 +188,9 @@ inputs:
   job_level_instrumentation_exclude:
     description: 'Comma-separated list of workflow names to exclude from job-level instrumentation.'
     default: ''
+  job_level_instrumentation_secret_redaction_strategy:
+    description: 'Whether to (1) redact no secrets at all, to (2) list them explicitly based on content of the workflow, or to (3) proactively redact all secrets (one of "none", "list", "all").'
+    default: 'all'
   action_repository:
     default: plengauer/opentelemetry-github
   action_version:
