@@ -19,6 +19,12 @@ inputs:
   workflow_run_attempt:
     description: 'The workflow run to observe (attempt)'
     default: ${{ github.event.workflow_run.run_attempt }}
+  self_monitoring:
+    description: 'Whether to send usage statistics (invocation counts, feature usages) to the maintainer. No data of the workflow itself will be collected.'
+    default: false
+  self_monitoring_anonymize:
+    description: 'Whether to strip self monitoring data of any identifiable information.'
+    default: true
   debug:
     description: 'Enable debug logging'
     default: '${{ runner.debug }}'
