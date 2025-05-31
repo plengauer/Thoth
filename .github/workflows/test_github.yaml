@@ -343,7 +343,6 @@ jobs:
           # cat "$OTLP_JSON" | jq -r .body | grep -v '^null$' | sort -u | grep 'Cleaning up orphan processes'
 
   deploy:
-    if: false # this test doesnt work as intended because we cannot find the deploy step (because its not qualified properly with a version) and because its in a subworkflow and cannot be found
     runs-on: ubuntu-latest
     timeout-minutes: 60
     permissions:
@@ -355,6 +354,7 @@ jobs:
           debug: 1
           dry_run: true
           action_repository: '.'
+          __repository_level_instrumentation_file_name_override: '.github/workflows/test_github.yaml'
         env:
           OTEL_METRICS_EXPORTER: console
           OTEL_LOGS_EXPORTER: console
