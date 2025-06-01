@@ -18,7 +18,7 @@ _otel_inject_node_args() {
   local command="$1"
   _otel_escape_arg "$1"
   shift
-  \echo -n ' '; _otel_escape_args --require /usr/share/opentelemetry_shell/agent.instrumentation.node/deep.inject.js
+  \echo -n ' '; _otel_escape_args --require /usr/share/opentelemetry_shell/agent.instrumentation.node/deep.inject.js # make sure we use only the correct node module version
   while \[ "$#" -gt 0 ]; do
     \echo -n ' '
     if \[ "$1" = -e ] || \[ "$1" = --eval ] || \[ "$1" = -p ] || \[ "$1" = --print ]; then
