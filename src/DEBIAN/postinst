@@ -29,13 +29,6 @@ print(*map(lambda element: element["instrumentation"], libraries), sep="\n") # S
       deactivate # SKIP_DEPENDENCY_CHECK
     fi
     export PATH="$PATH":/usr/local/bin
-    if type npm 2> /dev/null && [ "$(node --version | cut -d v -f 2 | cut -d . -f 1)" -ge 14 ] && (! [ -d /opt/opentelemetry_shell/node_modules ] || [ "${OTEL_SHELL_CONFIG_INSTALL_ASSUME:-FALSE}" = FALSE ]); then # SKIP_DEPENDENCY_CHECK
-      rm -rf /opt/opentelemetry_shell/node_modules # LEGACY this is necessary for RHEL npms
-      (cd /opt/opentelemetry_shell && npm install --package-lock=false)
-    fi
-    if [ -d /opt/opentelemetry_shell/node_modules ]; then
-      (cd /usr/share/opentelemetry_shell/ && ln --symbolic ../../../opt/opentelemetry_shell/node_modules node_modules 2> /dev/null || true)
-    fi
     if type javac 2> /dev/null && type jar 2> /dev/null && [ "$(java --version | head -n 1 | cut -d ' ' -f 2 | cut -d . -f 1)" -ge 8 ] && (! [ -r /opt/opentelemetry_shell/opentelemetry-javaagent.jar ] || [ "${OTEL_SHELL_CONFIG_INSTALL_ASSUME:-FALSE}" = FALSE ]) && (! [ -r /opt/opentelemetry_shell/rootcontextagent.jar ] || [ "${OTEL_SHELL_CONFIG_INSTALL_ASSUME:-FALSE}" = FALSE ]); then # SKIP_DEPENDENCY_CHECK
       groupId="$(cat /opt/opentelemetry_shell/pom.xml | grep groupId | cut -d '>' -f 2- | cut -d '<' -f 1)" 
       artifactId="$(cat /opt/opentelemetry_shell/pom.xml | grep artifactId | cut -d '>' -f 2- | cut -d '<' -f 1)"
