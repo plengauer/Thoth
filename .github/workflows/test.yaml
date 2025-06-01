@@ -102,6 +102,7 @@ jobs:
       - uses: actions/checkout@v4.2.2
       - run: sudo apt-get update && sudo apt-get install devscripts debhelper alien
       - run: sed -i "s/__VERSION__/$(cat ../VERSION)/g" DEBIAN/control
+      - run: cd src/usr/share/opentelemetry_shell/agent.instrumentation/node && npm install # TODO do we have to do this per version?
       - run: dpkg-deb --root-owner-group -Zgzip --build . ../package.deb
       - run: |
           alien --to-rpm --scripts --keep-version --generate ../package.deb
