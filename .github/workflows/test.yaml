@@ -83,8 +83,24 @@ jobs:
             printf '%s' "$command ... "
             cat src/DEBIAN/triggers | grep -qE /"$command" && echo OK || (echo UNAVAILABLE && false)
           done
+  build-node:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: ['14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24']
+      fail-fast: true
+    steps:
+      - uses: actions/setup-node@v4.4.0
+        with:
+          node-version: ${{ strategy.matrix.version }}
+      - uses: actions/checkout@v4
+      - run: cd src/usr/share/opentelemetry_shell/agent.instrumentation/node && npm install
+      - uses: actions/upload-artifact@v4
+        with:
+          name: node_modules_${{ ${{ strategy.matrix.version }} }}
+          path: src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules
   build:
-    needs: [verify-python-dependency, verify-debian-dependencies, verify-triggers]
+    needs: [verify-python-dependency, verify-debian-dependencies, verify-triggers, build-node]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -102,7 +118,7 @@ jobs:
       - uses: actions/checkout@v4.2.2
       - run: sudo apt-get update && sudo apt-get install devscripts debhelper alien
       - run: sed -i "s/__VERSION__/$(cat ../VERSION)/g" DEBIAN/control
-      - run: cd src/usr/share/opentelemetry_shell/agent.instrumentation/node && npm install # TODO do we have to do this per version?
+      - run: exit 1 # TODO download all node modules and put them into the right location
       - run: dpkg-deb --root-owner-group -Zgzip --build . ../package.deb
       - run: |
           alien --to-rpm --scripts --keep-version --generate ../package.deb
