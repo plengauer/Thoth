@@ -11,7 +11,7 @@ jobs:
       contents: none
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.5
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.17.0
         with:
           self_monitoring: true
           self_monitoring_anonymize: false
