@@ -1,7 +1,8 @@
 #!/bin/sh -e
 export GITHUB_ACTION_REPOSITORY="${GITHUB_ACTION_REPOSITORY:-"$GITHUB_REPOSITORY"}"
 
-ensure_installed() { type "$1" 2> /dev/null || sudo apt-get install "${2:-$1}"; }
+ensure_installed() { type "$1" 2> /dev/null || type eatmydata 1> /dev/null 2> /dev/null && sudo eatmydata apt-get install "${2:-$1}" || sudo apt-get install "${2:-$1}"; }
+ensure_installed eatmydata
 ensure_installed curl
 ensure_installed wget
 ensure_installed jq
@@ -19,7 +20,7 @@ if ! type otel.sh 2> /dev/null; then
   if [ -n "$action_tag_name" ]; then
     if [ "$INPUT_CACHE" = "true" ]; then
       cache_key="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} $({ cat /etc/os-release; python3 --version; node --version; printenv | grep -E '^OTEL_SHELL_CONFIG_INSTALL_'; } | md5sum | cut -d ' ' -f 1)"
-      sudo -E -H node -e "require('@actions/cache').restoreCache(['/var/cache/apt/archives/*.deb', '/opt/opentelemetry_shell/sdk/venv', '/opt/opentelemetry_shell/venv', '/opt/opentelemetry_shell/node_modules', '/opt/opentelemetry_shell/opentelemetry-javaagent.jar', '/opt/opentelemetry_shell/rootcontextagent.jar', '/opt/opentelemetry_shell/collector.image'], '$cache_key');"
+      sudo -E -H eatmydata node -e "require('@actions/cache').restoreCache(['/var/cache/apt/archives/*.deb', '/opt/opentelemetry_shell/sdk/venv', '/opt/opentelemetry_shell/venv', '/opt/opentelemetry_shell/node_modules', '/opt/opentelemetry_shell/opentelemetry-javaagent.jar', '/opt/opentelemetry_shell/rootcontextagent.jar', '/opt/opentelemetry_shell/collector.image'], '$cache_key');"
     fi
     debian_file=/var/cache/apt/archives/opentelemetry-shell_$(cat ../../../VERSION)_all.deb
     if ! [ -f "$debian_file" ]; then
@@ -31,7 +32,7 @@ if ! type otel.sh 2> /dev/null; then
       fi
       write_back_cache=TRUE
     fi
-    OTEL_SHELL_CONFIG_INSTALL_ASSUME=TRUE sudo -E -H apt-get -o Binary::apt::APT::Keep-Downloaded-Packages=true install -y "$debian_file"
+    OTEL_SHELL_CONFIG_INSTALL_ASSUME=TRUE sudo -E -H eatmydata apt-get -o Binary::apt::APT::Keep-Downloaded-Packages=true install -y "$debian_file"
     if ! [ "${OTEL_SHELL_CONFIG_INSTALL_DEEP:-FALSE}" = TRUE ] && type docker 1> /dev/null 2> /dev/null && [ -r Dockerfile ]; then
       export OTEL_SHELL_COLLECTOR_IMAGE="$(cat Dockerfile | grep '^FROM ' | cut -d ' ' -f 2-)"
       if [ -r /opt/opentelemetry_shell/collector.image ]; then
