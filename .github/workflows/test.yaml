@@ -97,7 +97,7 @@ jobs:
       - run: cd src/usr/share/opentelemetry_shell/agent.instrumentation/node && npm install
       - uses: actions/upload-artifact@v4
         with:
-          name: node_modules_${{ ${{ strategy.matrix.version }} }}
+          name: node_modules_${{ strategy.matrix.version }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules
   build:
     needs: [verify-python-dependency, verify-debian-dependencies, verify-triggers, build-node]
