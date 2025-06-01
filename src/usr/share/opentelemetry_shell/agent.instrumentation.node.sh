@@ -15,6 +15,7 @@ _otel_is_node_injected() {
 
 _otel_inject_node_args() {
   while ! \[ "$1" = node ] && ! \[ "$1" = "\\node" ] && ! _otel_string_ends_with "$1" /node; do _otel_escape_arg "$1"; shift; \echo -n ' '; done # SKIP_DEPENDENCY_CHECK
+  local command="$1"
   _otel_escape_arg "$1"
   shift
   \echo -n ' '; _otel_escape_args --require /usr/share/opentelemetry_shell/agent.instrumentation.node/deep.inject.js
@@ -27,7 +28,7 @@ _otel_inject_node_args() {
     elif _otel_string_starts_with "$1" -; then
       _otel_escape_arg "$1"; shift
     else
-      if \[ "${OTEL_SHELL_CONFIG_INJECT_DEEP:-FALSE}" = TRUE ] && \[ -d "$(\readlink -f /usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules)" ]; then
+      if \[ "${OTEL_SHELL_CONFIG_INJECT_DEEP:-FALSE}" = TRUE ] && \[ "$("$command" --version | \cut -d v -f 2 | \cut -d . -f 1)" -ge 14 ]; then
         if \[ "${next_is_code:-FALSE}" = TRUE ]; then
           _otel_escape_arg "$1"; \echo -n ' '
           local base_dir="$(\echo "$1" | \rev | \cut -d / -f 2- | \rev)"
