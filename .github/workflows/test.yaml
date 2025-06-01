@@ -124,8 +124,8 @@ jobs:
           deactivate
       - uses: actions/upload-artifact@v4
         with:
-          name: python_venv_${{ strategy.matrix.version }}
-          path: src/usr/share/opentelemetry_shell/agent.instrumentation.python/venv
+          name: python_site_packages_${{ strategy.matrix.version }}
+          path: src/usr/share/opentelemetry_shell/agent.instrumentation.python/venv/lib/python${{ strategy.matrix.version }}/site-packages
   build:
     needs: [verify-python-dependency, verify-debian-dependencies, verify-triggers, build-node]
     runs-on: ubuntu-latest
