@@ -87,18 +87,45 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: ['14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24']
+        version: ['14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24'] # TODO make this dynamic
       fail-fast: true
     steps:
       - uses: actions/setup-node@v4.4.0
         with:
           node-version: ${{ strategy.matrix.version }}
       - uses: actions/checkout@v4
-      - run: cd src/usr/share/opentelemetry_shell/agent.instrumentation/node && npm install
+      - run: cd src/usr/share/opentelemetry_shell/agent.instrumentation.node && npm install
       - uses: actions/upload-artifact@v4
         with:
           name: node_modules_${{ strategy.matrix.version }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules
+  build-python:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: ['3.8', '3.9', '3.10', '3.11', '3.12', '3.13'] # TODO make this dynamic
+      fail-fast: true
+    steps:
+      - uses: actions/setup-python@v4.4.0
+        with:
+          python-version: ${{ strategy.matrix.version }}
+      - uses: actions/checkout@v4
+      - run: |
+          cd src/usr/share/opentelemetry_shell/agent.instrumentation.python
+          python3 -m venv venv
+          . venv/bin/activate
+          pip3 install -r requirements.txt
+          printf '%s' '
+          from opentelemetry.instrumentation.bootstrap_gen import (default_instrumentations, libraries)
+          print(*default_instrumentations, sep="\n")
+          print(*map(lambda element: element["instrumentation"], libraries), sep="\n")
+          ' | python3 | grep "==$(pip3 show opentelemetry-distro | grep Version | cut -d ':' -f 2- | tr -d ' ')"'$' | xargs pip3 install
+          pip3 check
+          deactivate
+      - uses: actions/upload-artifact@v4
+        with:
+          name: python_venv_${{ strategy.matrix.version }}
+          path: src/usr/share/opentelemetry_shell/agent.instrumentation.python/venv
   build:
     needs: [verify-python-dependency, verify-debian-dependencies, verify-triggers, build-node]
     runs-on: ubuntu-latest
