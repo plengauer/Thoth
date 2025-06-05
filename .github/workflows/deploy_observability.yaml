@@ -10,7 +10,7 @@ jobs:
     permissions:
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.18.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.18.1
         with:
           secrets_to_redact: ${{ toJSON(secrets) }}
           self_monitoring: true
@@ -18,7 +18,7 @@ jobs:
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
-      - uses: plengauer/opentelemetry-github/actions/instrument/deploy@v5.18.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/deploy@v5.18.1
         with:
           github_token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           job_level_instrumentation_exclude: 'Test,Refresh Demos,GitHub,Workflow Example,Experiment'
