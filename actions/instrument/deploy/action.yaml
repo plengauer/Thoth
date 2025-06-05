@@ -143,12 +143,12 @@ runs:
           sed -i 's/#__BLANK_LINE__#//g' "$workflow_file"
         done
     - name: Log
-      if: ${{ inputs.dry_run }}
+      if: ${{ inputs.dry_run == 'true' }}
       shell: bash
       run: |
         git diff
     - name: "Open Pull Request"
-      if: ${{ ! inputs.dry_run }}
+      if: ${{ inputs.dry_run != 'true' }}
       id: open-pr
       uses: peter-evans/create-pull-request@v7
       with:
