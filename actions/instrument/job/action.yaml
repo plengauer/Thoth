@@ -22,11 +22,11 @@ inputs:
     description: 'A JSON object containing all secrets to redact from any attribute.'
     default: '{ "github_token": "${{ github.token }}" }'
   self_monitoring:
-    description: 'Whether to send usage statistics (invocation counts, feature usages) to the maintainer. No data of the workflow itself will be collected.'
-    default: false
+    description: 'Whether to send usage statistics (invocation counts, feature usages) to the maintainer to inform roadmap and maintenance efforts. No data of the workflow itself will be collected. Possible values are true, false, and auto (true for repositories on GitHub SaaS, false for private GitHub servers and private repositories).'
+    default: auto
   self_monitoring_anonymize:
-    description: 'Whether to strip self monitoring data of any identifiable information.'
-    default: true
+    description: 'Whether to strip self monitoring data of any identifiable information. Possible values are true, false, and auto (false for public repository on GitHub SaaS, true for private GitHub servers and private repositories).'
+    default: auto
   debug:
     description: 'Enable debug logging'
     default: '${{ runner.debug }}'
