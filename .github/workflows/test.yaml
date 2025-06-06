@@ -127,7 +127,7 @@ jobs:
           name: python_site_packages_${{ matrix.version }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.python/venv/lib/python${{ matrix.version }}/site-packages
   build:
-    needs: [verify-python-dependency, verify-debian-dependencies, verify-triggers, build-node]
+    needs: [build-node, build-python] # [verify-python-dependency, verify-debian-dependencies, verify-triggers, build-node, build-python] # TODO
     runs-on: ubuntu-latest
     permissions:
       contents: read
