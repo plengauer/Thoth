@@ -16,7 +16,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.18.1
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.18.2
         with:
           self_monitoring: true
           self_monitoring_anonymize: false
@@ -35,7 +35,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.18.1
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.18.2
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -65,7 +65,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.18.1
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.18.2
         with:
           self_monitoring: true
           self_monitoring_anonymize: false
@@ -89,7 +89,7 @@ jobs:
       run:
         working-directory: ./src
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.18.1
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.18.2
         with:
           self_monitoring: true
           self_monitoring_anonymize: false
@@ -160,7 +160,7 @@ jobs:
     permissions:
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.18.1
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.18.2
         with:
           self_monitoring: true
           self_monitoring_anonymize: false
@@ -232,7 +232,7 @@ jobs:
       IMAGE_OPENSUSE_LATEST: 'opensuse/tumbleweed:latest'
       IMAGE_OPENSUSE_DEV: '' # not public
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.18.1
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.18.2
         with:
           secrets_to_redact: '${{ toJSON(secrets) }}'
           self_monitoring: true
@@ -272,7 +272,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.18.1
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.18.2
         with:
           self_monitoring: true
           self_monitoring_anonymize: false
@@ -309,7 +309,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.18.1
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.18.2
         with:
           self_monitoring: true
           self_monitoring_anonymize: false
@@ -494,7 +494,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.18.1
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.18.2
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -544,7 +544,7 @@ jobs:
     permissions:
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.18.1
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.18.2
         with:
           self_monitoring: true
           self_monitoring_anonymize: false
