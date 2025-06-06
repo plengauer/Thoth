@@ -92,12 +92,12 @@ jobs:
     steps:
       - uses: actions/setup-node@v4.4.0
         with:
-          node-version: ${{ strategy.matrix.version }}
+          node-version: ${{ matrix.version }}
       - uses: actions/checkout@v4
       - run: cd src/usr/share/opentelemetry_shell/agent.instrumentation.node && npm install
       - uses: actions/upload-artifact@v4
         with:
-          name: node_modules_${{ strategy.matrix.version }}
+          name: node_modules_${{ matrix.version }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules
   build-python:
     runs-on: ubuntu-latest
@@ -108,7 +108,7 @@ jobs:
     steps:
       - uses: actions/setup-python@v4.4.0
         with:
-          python-version: ${{ strategy.matrix.version }}
+          python-version: ${{ matrix.version }}
       - uses: actions/checkout@v4
       - run: |
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.python
@@ -124,8 +124,8 @@ jobs:
           deactivate
       - uses: actions/upload-artifact@v4
         with:
-          name: python_site_packages_${{ strategy.matrix.version }}
-          path: src/usr/share/opentelemetry_shell/agent.instrumentation.python/venv/lib/python${{ strategy.matrix.version }}/site-packages
+          name: python_site_packages_${{ matrix.version }}
+          path: src/usr/share/opentelemetry_shell/agent.instrumentation.python/venv/lib/python${{ matrix.version }}/site-packages
   build:
     needs: [verify-python-dependency, verify-debian-dependencies, verify-triggers, build-node]
     runs-on: ubuntu-latest
