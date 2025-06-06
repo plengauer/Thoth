@@ -20,6 +20,7 @@ jobs:
         with:
           self_monitoring: true
           self_monitoring_anonymize: false
+          secrets_to_redact: '["${{ github.token }}","${{ secrets.DOCKERHUB_TOKEN }}","${{ secrets.DOCKERHUB_USERNAME }}","${{ secrets.GITHUB_TOKEN }}","${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}","${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}"]'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -39,6 +40,8 @@ jobs:
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
+        with:
+          secrets_to_redact: '["${{ github.token }}","${{ secrets.DOCKERHUB_TOKEN }}","${{ secrets.DOCKERHUB_USERNAME }}","${{ secrets.GITHUB_TOKEN }}","${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}","${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}"]'
       - uses: actions/checkout@v4
       - run: sudo apt-get update && sudo apt-get -y install apt-file
       - run: sudo apt-file update
@@ -69,6 +72,7 @@ jobs:
         with:
           self_monitoring: true
           self_monitoring_anonymize: false
+          secrets_to_redact: '["${{ github.token }}","${{ secrets.DOCKERHUB_TOKEN }}","${{ secrets.DOCKERHUB_USERNAME }}","${{ secrets.GITHUB_TOKEN }}","${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}","${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}"]'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -93,6 +97,7 @@ jobs:
         with:
           self_monitoring: true
           self_monitoring_anonymize: false
+          secrets_to_redact: '["${{ github.token }}","${{ secrets.DOCKERHUB_TOKEN }}","${{ secrets.DOCKERHUB_USERNAME }}","${{ secrets.GITHUB_TOKEN }}","${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}","${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}"]'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -164,6 +169,7 @@ jobs:
         with:
           self_monitoring: true
           self_monitoring_anonymize: false
+          secrets_to_redact: '["${{ github.token }}","${{ secrets.DOCKERHUB_TOKEN }}","${{ secrets.DOCKERHUB_USERNAME }}","${{ secrets.GITHUB_TOKEN }}","${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}","${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}"]'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -234,7 +240,7 @@ jobs:
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.18.2
         with:
-          secrets_to_redact: '${{ toJSON(secrets) }}'
+          secrets_to_redact: '["${{ github.token }}","${{ secrets.DOCKERHUB_TOKEN }}","${{ secrets.DOCKERHUB_USERNAME }}","${{ secrets.GITHUB_TOKEN }}","${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}","${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}"]'
           self_monitoring: true
           self_monitoring_anonymize: false
         env:
@@ -276,6 +282,7 @@ jobs:
         with:
           self_monitoring: true
           self_monitoring_anonymize: false
+          secrets_to_redact: '["${{ github.token }}","${{ secrets.DOCKERHUB_TOKEN }}","${{ secrets.DOCKERHUB_USERNAME }}","${{ secrets.GITHUB_TOKEN }}","${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}","${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}"]'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -313,6 +320,7 @@ jobs:
         with:
           self_monitoring: true
           self_monitoring_anonymize: false
+          secrets_to_redact: '["${{ github.token }}","${{ secrets.DOCKERHUB_TOKEN }}","${{ secrets.DOCKERHUB_USERNAME }}","${{ secrets.GITHUB_TOKEN }}","${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}","${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}"]'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -498,6 +506,8 @@ jobs:
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
+        with:
+          secrets_to_redact: '["${{ github.token }}","${{ secrets.DOCKERHUB_TOKEN }}","${{ secrets.DOCKERHUB_USERNAME }}","${{ secrets.GITHUB_TOKEN }}","${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}","${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}"]'
       - run: |
           { echo '~local'; curl --no-progress-meter --fail --header "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/repos/"$GITHUB_REPOSITORY"/releases | jq -r .[].tag_name | head --lines=10; } | while read -r version; do echo \""$version"\"; done | jq -nR '{"include": [inputs | select(length > 0) | {tag_name: .}]}' | tr -d '\n' | xargs -0 -I {} echo 'matrix={}' >> "$GITHUB_OUTPUT"
         id: dynamic-matrix
@@ -548,6 +558,7 @@ jobs:
         with:
           self_monitoring: true
           self_monitoring_anonymize: false
+          secrets_to_redact: '["${{ github.token }}","${{ secrets.DOCKERHUB_TOKEN }}","${{ secrets.DOCKERHUB_USERNAME }}","${{ secrets.GITHUB_TOKEN }}","${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}","${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}"]'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
