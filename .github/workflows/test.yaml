@@ -88,7 +88,7 @@ jobs:
     strategy:
       matrix:
         version: ['14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24'] # TODO make this dynamic
-      fail-fast: true
+      fail-fast: false
     steps:
       - uses: actions/setup-node@v4.4.0
         with:
@@ -104,7 +104,7 @@ jobs:
     strategy:
       matrix:
         version: ['3.8', '3.9', '3.10', '3.11', '3.12', '3.13'] # TODO make this dynamic
-      fail-fast: true
+      fail-fast: false
     steps:
       - uses: actions/setup-python@v4.4.0
         with:
