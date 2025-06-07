@@ -16,19 +16,6 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
     if type gcc 2> /dev/null; then # SKIP_DEPENDENCY_CHECK
       gcc -shared -fPIC -o /opt/opentelemetry_shell/libinjecthttpheader.so /usr/share/opentelemetry_shell/agent.injection.http_header.c -ldl # SKIP_DEPENDENCY_CHECK
     fi
-    if type pip3 2> /dev/null && [ "$(pip3 --version | cut -d ' ' -f 2 | cut -d . -f 1)" -gt 21 ] && (! [ -d /opt/opentelemetry_shell/venv ] || [ "${OTEL_SHELL_CONFIG_INSTALL_ASSUME:-FALSE}" = FALSE ]); then
-      python3 -m venv /opt/opentelemetry_shell/venv
-      . /opt/opentelemetry_shell/venv/bin/activate
-      pip3 install -r /opt/opentelemetry_shell/requirements.txt
-      printf '%s' '
-from opentelemetry.instrumentation.bootstrap_gen import (default_instrumentations, libraries) # SKIP_DEPENDENCY_CHECK
-print(*default_instrumentations, sep="\n") # SKIP_DEPENDENCY_CHECK
-print(*map(lambda element: element["instrumentation"], libraries), sep="\n") # SKIP_DEPENDENCY_CHECK
-' | python3 | grep "==$(pip3 show opentelemetry-distro | grep Version | cut -d ':' -f 2- | tr -d ' ')"'$' | xargs pip3 install
-      pip3 check
-      deactivate # SKIP_DEPENDENCY_CHECK
-    fi
-    export PATH="$PATH":/usr/local/bin
     if type javac 2> /dev/null && type jar 2> /dev/null && [ "$(java --version | head -n 1 | cut -d ' ' -f 2 | cut -d . -f 1)" -ge 8 ] && (! [ -r /opt/opentelemetry_shell/opentelemetry-javaagent.jar ] || [ "${OTEL_SHELL_CONFIG_INSTALL_ASSUME:-FALSE}" = FALSE ]) && (! [ -r /opt/opentelemetry_shell/rootcontextagent.jar ] || [ "${OTEL_SHELL_CONFIG_INSTALL_ASSUME:-FALSE}" = FALSE ]); then # SKIP_DEPENDENCY_CHECK
       groupId="$(cat /opt/opentelemetry_shell/pom.xml | grep groupId | cut -d '>' -f 2- | cut -d '<' -f 1)" 
       artifactId="$(cat /opt/opentelemetry_shell/pom.xml | grep artifactId | cut -d '>' -f 2- | cut -d '<' -f 1)"
