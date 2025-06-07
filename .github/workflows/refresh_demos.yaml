@@ -13,8 +13,6 @@ jobs:
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.18.2
         with:
-          self_monitoring: true
-          self_monitoring_anonymize: false
           secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}","${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}","${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}"]'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
