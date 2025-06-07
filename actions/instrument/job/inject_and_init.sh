@@ -25,36 +25,6 @@ echo "log_file=$log_file" >> "$GITHUB_STATE"
 . ../shared/github.sh
 . ../shared/install.sh
 
-# selfmonitoring
-if ([ "$INPUT_SELF_MONITORING" = true ] || ([ "$INPUT_SELF_MONITORING" = auto ] && [ "$GITHUB_API_URL" = 'https://api.github.com' ])) && [ "${OTEL_SHELL_CONFIG_GITHUB_IS_TEST:-FALSE}" = FALSE ]; then
-  (
-    export OTEL_SHELL_SDK_OUTPUT_REDIRECT=/dev/null
-    export OTEL_SERVICE_NAME="OpenTelemetry GitHub Selfmonitoring"
-    export OTEL_TRACES_EXPORTER=none
-    export OTEL_LOGS_EXPORTER=none
-    export OTEL_METRICS_EXPORTER=otlp
-    export OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
-    export OTEL_EXPORTER_OTLP_ENDPOINT=http://3.73.14.87:4318
-    export OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE=delta
-    . otelapi.sh
-    _otel_resource_attributes_process() {
-      :
-    }
-    _otel_resource_attributes_custom() {
-      _otel_resource_attribute string telemetry.sdk.language=github
-    }
-    if [ "$INPUT_SELF_MONITORING_ANONYMIZE" = true ] || ([ "$INPUT_SELF_MONITORING_ANONYMIZE" = auto ] && ([ "$GITHUB_API_URL" != 'https://api.github.com' ] || [ "$(gh_curl | jq -r .private)" = true ])); then
-      unset GITHUB_REPOSITORY_ID GITHUB_REPOSITORY GITHUB_REPOSITORY_OWNER_ID GITHUB_REPOSITORY_OWNER
-    fi
-    unset GITHUB_WORKFLOW_REF GITHUB_WORKFLOW_SHA GITHUB_WORKFLOW
-    otel_init
-    counter_handle="$(otel_counter_create counter selfmonitoring.opentelemetry.github.job.invocations 1 'Invocations of job-level instrumentations')"
-    observation_handle="$(otel_observation_create 1)"
-    otel_counter_observe "$counter_handle" "$observation_handle"
-    otel_shutdown
-  ) &
-fi
-
 # configure collector if required
 if [ "$INPUT_COLLECTOR" = true ] || ([ "$INPUT_COLLECTOR" = auto ] && ([ -n "${OTEL_EXPORTER_OTLP_HEADERS:-}" ] || [ -n "${OTEL_EXPORTER_OTLP_LOGS_HEADERS:-}" ] || [ -n "${OTEL_EXPORTER_OTLP_METRICS_HEADERS:-}" ] || [ -n "${OTEL_EXPORTER_OTLP_TRACES_HEADERS:-}" ] || [ "$INPUT_SECRETS_TO_REDACT" != '{}' ])); then
   if ! type docker; then echo "::error ::Cannot use collector because docker is unavailable." && false; fi
@@ -143,7 +113,7 @@ $(echo "$INPUT_SECRETS_TO_REDACT" | jq '. | to_entries[].value' | sed 's/[.[\(*^
 service:
   telemetry:
     metrics:
-      level: none
+      address: "localhost:4319"
   pipelines:
 $(cat $section_pipeline_logs)
 $(cat $section_pipeline_metrics)
@@ -252,6 +222,47 @@ root4job_end() {
   otel_observation_attribute_typed "$observation_handle" string github.actions.job.conclusion="$conclusion"
   otel_counter_observe "$counter_handle" "$observation_handle"
   otel_shutdown
+
+  if ([ "$INPUT_SELF_MONITORING" = true ] || ([ "$INPUT_SELF_MONITORING" = auto ] && [ "$GITHUB_API_URL" = 'https://api.github.com' ])) && [ "${OTEL_SHELL_CONFIG_GITHUB_IS_TEST:-FALSE}" = FALSE ]; then
+    (
+      export OTEL_SHELL_SDK_OUTPUT_REDIRECT=/dev/null
+      export OTEL_SERVICE_NAME="OpenTelemetry GitHub Selfmonitoring"
+      export OTEL_TRACES_EXPORTER=none
+      export OTEL_LOGS_EXPORTER=none
+      export OTEL_METRICS_EXPORTER=otlp
+      export OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
+      export OTEL_EXPORTER_OTLP_ENDPOINT=http://3.73.14.87:4318
+      export OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE=delta
+      . otelapi.sh
+      _otel_resource_attributes_process() {
+        :
+      }
+      _otel_resource_attributes_custom() {
+        _otel_resource_attribute string telemetry.sdk.language=github
+      }
+      if [ "$INPUT_SELF_MONITORING_ANONYMIZE" = true ] || ([ "$INPUT_SELF_MONITORING_ANONYMIZE" = auto ] && ([ "$GITHUB_API_URL" != 'https://api.github.com' ] || [ "$(gh_curl | jq -r .private)" = true ])); then
+        unset GITHUB_REPOSITORY_ID GITHUB_REPOSITORY GITHUB_REPOSITORY_OWNER_ID GITHUB_REPOSITORY_OWNER
+      fi
+      unset GITHUB_WORKFLOW_REF GITHUB_WORKFLOW_SHA GITHUB_WORKFLOW
+      otel_init
+      otel_counter_observe "$(otel_counter_create counter selfmonitoring.opentelemetry.github.job.invocations 1 'Invocations of job-level instrumentation')" "$(otel_observation_create 1)"
+      self_monitoring_metrics_file="$(mktemp)"
+      curl -s http://localhost:4319/metrics > "$self_monitoring_metrics_file"
+      otel_counter_observe "$(otel_counter_create counter selfmonitoring.opentelemetry.github.job.metric_points 1 'Metric Datapoints created by job-level instrumentation')" "$(otel_observation_create "$(cat "$self_monitoring_metrics_file" | grep '^otelcol_receiver_accepted_metric_points' | cut -d ' ' -f 2 | paste -sd+ | bc)")"
+      otel_counter_observe "$(otel_counter_create counter selfmonitoring.opentelemetry.github.job.logs 1 'Logs created by job-level instrumentation')" "$(otel_observation_create "$(cat "$self_monitoring_metrics_file" | grep '^otelcol_receiver_accepted_logs' | cut -d ' ' -f 2 | paste -sd+ | bc)")"
+      otel_counter_observe "$(otel_counter_create counter selfmonitoring.opentelemetry.github.job.spans 1 'Spans created by job-level instrumentation')" "$(otel_observation_create "$(cat "$self_monitoring_metrics_file" | grep '^otelcol_receiver_accepted_spans' | cut -d ' ' -f 2 | paste -sd+ | bc)")"
+      rm "$self_monitoring_metrics_file"
+      step_counter_handle="$(otel_counter_create counter selfmonitoring.opentelemetry.github.job.steps 1 'Steps observed by job-level instrumentation')"
+      cat /tmp/opentelemetry_shell.github.step.log | while read -r action_type action_name; do
+        observation_handle="$(otel_observation_create 1)"
+        otel_observation_attribute_typed "$observation_handle" string github.actions.action.type="$action_type"
+        otel_observation_attribute_typed "$observation_handle" string github.actions.action.name="$action_name"
+        otel_counter_observe "$step_counter_handle" "$observation_handle"
+      done
+      otel_shutdown
+    )
+  fi
+  
   while [ "$(pgrep -cf /opt/opentelemetry_shell/)" -gt 0 ]; do sleep 1; done
   if [ -n "${OTEL_SHELL_COLLECTOR_CONTAINER:-}" ]; then
     sudo docker stop "$OTEL_SHELL_COLLECTOR_CONTAINER"
