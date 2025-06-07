@@ -2,7 +2,7 @@
 set -e
 . ../shared/config_validation.sh
 . ../shared/github.sh
-OTEL_SHELL_CONFIG_INSTALL_DEEP=FALSE bash -e ../shared/install.sh
+bash -e ../shared/install.sh
 
 export OTEL_SERVICE_NAME="${OTEL_SERVICE_NAME:-"$(echo "$GITHUB_REPOSITORY" | cut -d / -f 2-) CI"}"
 
