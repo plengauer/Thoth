@@ -5,10 +5,10 @@ if [ "$1" = 'abort-configure' ] || [ "$1" = 'abort-upgrade' ] || [ "$1" = 'abort
   true
 elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' ]; then
   export HOME="$(eval "echo ~$(whoami)")"
-  if ! [ -d /opt/opentelemetry_shell/sdk/venv ] || [ "${OTEL_SHELL_CONFIG_INSTALL_ASSUME:-FALSE}" = FALSE ]; then
-    python3 -m venv /opt/opentelemetry_shell/sdk/venv
-    . /opt/opentelemetry_shell/sdk/venv/bin/activate
-    pip3 install -r /opt/opentelemetry_shell/sdk/requirements.txt
+  if ! [ -d /opt/opentelemetry_shell/venv ] || [ "${OTEL_SHELL_CONFIG_INSTALL_ASSUME:-FALSE}" = FALSE ]; then
+    python3 -m venv /opt/opentelemetry_shell/venv
+    . /opt/opentelemetry_shell/venv/bin/activate
+    pip3 install -r /opt/opentelemetry_shell/requirements.txt
     pip3 check
     deactivate # SKIP_DEPENDENCY_CHECK
   fi
