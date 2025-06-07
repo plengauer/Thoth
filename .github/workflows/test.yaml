@@ -192,6 +192,7 @@ jobs:
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.python/
       - run: find src -iname '*.java' | xargs -r rm
       - run: find src -iname 'manifest.txt' | xargs -r rm
+      - run: find src -iname 'pom.xml' | xargs -r rm
       - uses: actions/download-artifact@v4
         with:
           name: java
