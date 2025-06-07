@@ -27,7 +27,7 @@ if ([ "$INPUT_SELF_MONITORING" = true ] || ([ "$INPUT_SELF_MONITORING" = auto ] 
     fi
     unset GITHUB_WORKFLOW_REF GITHUB_WORKFLOW_SHA GITHUB_WORKFLOW
     otel_init
-    counter_handle="$(otel_counter_create counter selfmonitoring.opentelemetry.github.workflow.invocations 1 'Invocations of workflow-level instrumentations')"
+    counter_handle="$(otel_counter_create counter selfmonitoring.opentelemetry.github.workflow.invocations 1 'Invocations of workflow-level instrumentation')"
     observation_handle="$(otel_observation_create 1)"
     otel_counter_observe "$counter_handle" "$observation_handle"
     otel_shutdown
