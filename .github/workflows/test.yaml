@@ -138,8 +138,21 @@ jobs:
         with:
           name: python_site_packages_${{ matrix.version }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.python/venv/lib/python${{ matrix.version }}/site-packages
+  build-java:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-java@v4.7.1
+        with:
+          java-version: 8 # TODO make this dynamic based on minimum
+      - uses: actions/checkout@v4
+      - run: |
+          exit 1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: java
+          path: src/usr/share/opentelemetry_shell/agent.instrumentation.java/*.jar
   build:
-    needs: [build-node, build-python] # [verify-python-dependency, verify-debian-dependencies, verify-triggers, build-node, build-python] # TODO
+    needs: [build-httpheader, build-node, build-python, build-java] # [verify-python-dependency, verify-debian-dependencies, verify-triggers, build-httpheader, build-node, build-python, build-java] # TODO
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -156,6 +169,7 @@ jobs:
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
       - run: sudo apt-get update && sudo apt-get install devscripts debhelper alien
       - uses: actions/checkout@v4.2.2
+      - run: find src -iname '*.c' | xargs -r rm
       - uses: actions/download-artifact@v4
         with:
           pattern: bin_*
@@ -168,6 +182,12 @@ jobs:
         with:
           pattern: python_site_packages_*
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.python/
+      - run: find src -iname '*.java' | xargs -r rm
+      - run: find src -iname 'manifest.txt' | xargs -r rm
+      - uses: actions/download-artifact@v4
+        with:
+          name: java
+          path: src/usr/share/opentelemetry_shell/agent.instrumentation.java/
       - run: sed -i "s/__VERSION__/$(cat ../VERSION)/g" DEBIAN/control
       - run: dpkg-deb --root-owner-group -Zgzip --build . ../package.deb
       - run: |
