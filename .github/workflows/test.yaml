@@ -144,8 +144,17 @@ jobs:
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
       - uses: actions/checkout@v4.2.2
       - run: sudo apt-get update && sudo apt-get install devscripts debhelper alien
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: node_modules_*
+          path: src/usr/share/opentelemetry_shell/agent.instrumentation.node/
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: python_site_packages_*
+          path: src/usr/share/opentelemetry_shell/agent.instrumentation.python/
+      - run: find
+      - run: exit 1
       - run: sed -i "s/__VERSION__/$(cat ../VERSION)/g" DEBIAN/control
-      - run: exit 1 # TODO download all node modules and put them into the right location
       - run: dpkg-deb --root-owner-group -Zgzip --build . ../package.deb
       - run: |
           alien --to-rpm --scripts --keep-version --generate ../package.deb
