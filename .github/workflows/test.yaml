@@ -132,11 +132,11 @@ jobs:
           groupId="$(cat pom.xml | grep groupId | cut -d '>' -f 2- | cut -d '<' -f 1)" 
           artifactId="$(cat pom.xml | grep artifactId | cut -d '>' -f 2- | cut -d '<' -f 1)"
           version="$(cat pom.xml | grep version | cut -d '>' -f 2- | cut -d '<' -f 1)"
-          wget https://repo1.maven.org/maven2/"$(echo "$groupId" | tr '.' '/')"/"$artifactId"/"$version"/"$artifactId"-"$version".jar -O /usr/share/opentelemetry_shell/agent.instrumentation.java/opentelemetry-javaagent.jar
+          wget https://repo1.maven.org/maven2/"$(echo "$groupId" | tr '.' '/')"/"$artifactId"/"$version"/"$artifactId"-"$version".jar -O opentelemetry-javaagent.jar
       - run: |
           cd /usr/share/opentelemetry_shell/agent.instrumentation.java
-          javac --class-path=/usr/share/opentelemetry_shell/agent.instrumentation.java/opentelemetry-javaagent.jar RootContextAgent.java
-          jar cmf manifest.txt /usr/share/opentelemetry_shell/agent.instrumentation.java/rootcontextagent.jar RootContextAgent.class
+          javac --class-path=./opentelemetry-javaagent.jar RootContextAgent.java
+          jar cmf manifest.txt rootcontextagent.jar RootContextAgent.class
       - uses: actions/upload-artifact@v4
         with:
           name: java
