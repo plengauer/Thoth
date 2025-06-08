@@ -127,6 +127,7 @@ jobs:
         with:
           java-version: 8 # TODO make this dynamic based on minimum
           distribution: adopt
+      - run: javac -help
       - uses: actions/checkout@v4
       - run: |
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.java
