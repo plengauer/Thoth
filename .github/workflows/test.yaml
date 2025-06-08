@@ -90,7 +90,7 @@ jobs:
         architecture: [ 'x64' ]
     steps:
       - uses: actions/checkout@v4
-      - run: gcc -shared -fPIC -o /usr/share/opentelemetry_shell/${{ matrix.architecture }}/libinjecthttpheader.so /usr/share/opentelemetry_shell/agent.injection.http_header.c -ldl
+      - run: gcc -shared -fPIC -o src/usr/share/opentelemetry_shell/${{ matrix.architecture }}/libinjecthttpheader.so src/usr/share/opentelemetry_shell/agent.injection.http_header.c -ldl
       - uses: actions/upload-artifact@v4
         with:
           name: bin_${{ matrix.architecture }}
@@ -144,6 +144,7 @@ jobs:
       - uses: actions/setup-java@v4.7.1
         with:
           java-version: 8 # TODO make this dynamic based on minimum
+          distribution: adopt
       - uses: actions/checkout@v4
       - run: |
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.java
