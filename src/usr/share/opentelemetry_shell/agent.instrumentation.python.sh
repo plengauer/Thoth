@@ -1,7 +1,8 @@
 #!/bin/false
 
 _otel_inject_python() {
-  if _otel_string_starts_with "$(\eval "$1 -V" | \cut -d ' ' -f 2)" "3."; then
+  local version="$(\eval "$1 -V" | \cut -d ' ' -f 2 | \cut -d . -f -2)"
+  if _otel_string_starts_with "$version" 3.; then
     local cmdline="$(_otel_dollar_star "$@")"
     local cmdline="${cmdline#\\}"
     _otel_python_inject_args "$@" > /dev/null
@@ -10,10 +11,17 @@ _otel_inject_python() {
     if _otel_can_inject_python_otel; then
       unset _otel_python_code_source _otel_python_file _otel_python_module _otel_python_command
       \eval "set -- $(_otel_python_inject_args "$@")"
-      local python_path=/usr/share/opentelemetry_shell/agent.instrumentation.python/site-packages/:"$python_path" # TODO select correct one
+      local python_path=/usr/share/opentelemetry_shell/agent.instrumentation.python/python_site_packages_"$version"/:"$python_path"
       if \[ "${OTEL_SHELL_CONFIG_INJECT_DEEP:-FALSE}" = TRUE ]; then
         local command="$1"; shift
-        set -- "$command" /opt/opentelemetry_shell/venv/bin/opentelemetry-instrument "${command#\\}" "$@"
+        set -- "$command" -c '
+import re
+import sys
+from opentelemetry.instrumentation.auto_instrumentation import run
+if __name__ == '__main__':
+    sys.argv[0] = re.sub(r'(-script\.pyw|\.exe)?$', '', sys.argv[0])
+    sys.exit(run())
+' "${command#\\}" "$@"
       fi
     else
       unset _otel_python_code_source _otel_python_file _otel_python_module _otel_python_command
