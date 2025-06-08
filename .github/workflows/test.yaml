@@ -157,7 +157,7 @@ jobs:
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
       - run: sudo apt-get update && sudo apt-get install devscripts debhelper alien
       - uses: actions/checkout@v4.2.2
-      - run: find src -iname '*.c' | xargs -r rm
+      - run: find src -iname '*.c' -type f | xargs -r rm
       - uses: actions/download-artifact@v4
         with:
           pattern: bin_*
@@ -170,9 +170,9 @@ jobs:
         with:
           pattern: python_site_packages_*
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.python/
-      - run: find src -iname '*.java' | xargs -r rm
-      - run: find src -iname 'manifest.txt' | xargs -r rm
-      - run: find src -iname 'pom.xml' | xargs -r rm
+      - run: find src -iname '*.java' -type f | xargs -r rm
+      - run: find src -iname 'manifest.txt' -type f | xargs -r rm
+      - run: find src -iname 'pom.xml' -type f | xargs -r rm
       - uses: actions/download-artifact@v4
         with:
           name: java
