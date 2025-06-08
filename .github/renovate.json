@@ -22,8 +22,13 @@
   ],
   "customManagers": [
     {
-      "fileMatch": ["^README\\.md$"],
-      "matchStrings": ["plengauer/opentelemetry-github/actions/instrument/deploy@(?<currentValue>[\\w.-]+)"],
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^README\\.md$/"
+      ],
+      "matchStrings": [
+        "plengauer/opentelemetry-github/actions/instrument/deploy@(?<currentValue>[\\w.-]+)"
+      ],
       "depNameTemplate": "plengauer/opentelemetry-github/actions/instrument/deploy",
       "datasourceTemplate": "github-tags"
     }
