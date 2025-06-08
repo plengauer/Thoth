@@ -76,7 +76,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: bin_${{ matrix.architecture }}
-          path: /usr/share/opentelemetry_shell/${{ matrix.architecture }}
+          path: src/usr/share/opentelemetry_shell/${{ matrix.architecture }}
   build-node:
     runs-on: ubuntu-latest
     strategy:
@@ -135,7 +135,7 @@ jobs:
           version="$(cat pom.xml | grep version | cut -d '>' -f 2- | cut -d '<' -f 1)"
           wget https://repo1.maven.org/maven2/"$(echo "$groupId" | tr '.' '/')"/"$artifactId"/"$version"/"$artifactId"-"$version".jar -O opentelemetry-javaagent.jar
       - run: |
-          cd /usr/share/opentelemetry_shell/agent.instrumentation.java
+          cd src/usr/share/opentelemetry_shell/agent.instrumentation.java
           javac --class-path=./opentelemetry-javaagent.jar RootContextAgent.java
           jar cmf manifest.txt rootcontextagent.jar RootContextAgent.class
       - uses: actions/upload-artifact@v4
