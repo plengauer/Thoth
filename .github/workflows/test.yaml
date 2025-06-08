@@ -127,7 +127,6 @@ jobs:
         with:
           java-version: 8 # TODO make this dynamic based on minimum
           distribution: adopt
-      - run: javac -help
       - uses: actions/checkout@v4
       - run: |
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.java
@@ -149,9 +148,6 @@ jobs:
     permissions:
       contents: read
       actions: read
-    defaults:
-      run:
-        working-directory: ./src
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.20.0
         with:
@@ -181,9 +177,10 @@ jobs:
         with:
           name: java
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.java/
-      - run: sed -i "s/__VERSION__/$(cat ../VERSION)/g" DEBIAN/control
-      - run: dpkg-deb --root-owner-group -Zgzip --build . ../package.deb
+      - run: sed -i "s/__VERSION__/$(cat ../VERSION)/g" src/DEBIAN/control
+      - run: cd src && dpkg-deb --root-owner-group -Zgzip --build . ../package.deb
       - run: |
+          cd src
           alien --to-rpm --scripts --keep-version --generate ../package.deb
           rpm_dir=$(echo */*.spec | rev | cut -d / -f 2- | rev)
           {
