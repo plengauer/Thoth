@@ -26,7 +26,7 @@ inputs:
     default: auto
   self_monitoring_anonymize:
     description: 'Whether to strip self monitoring data of any identifiable information. Possible values are true, false, and auto (false for public repository on GitHub SaaS, true for private GitHub servers and private repositories).'
-    default: auto
+    default: true
   debug:
     description: 'Enable debug logging'
     default: '${{ runner.debug }}'
