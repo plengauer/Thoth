@@ -26,7 +26,7 @@ jobs:
       - run: |
           python3 -m venv venv
           . venv/bin/activate
-          pip3 install opentelemetery-api
+          pip3 install opentelemetry-api
           deactivate
           min_version_otel="$(cat venv/lib/python*/site-packages/opentelemetry_api-*.dist-info/METADATA | grep '^Requires-Python: ' | cut -d ' ' -f 2 | cut -d . -f 2-)"
           min_version_otel="${min_version_otel:-9}"
