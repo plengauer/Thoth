@@ -86,7 +86,7 @@ jobs:
       - run: cd src/usr/share/opentelemetry_shell/agent.instrumentation.node && npm install
       - id: dynamic
         run: |
-          seq "$(cat ./node_modules/@opentelemetry/*/package.json | jq -r .engines.node | grep -v null | sed 's/ || /\n/g' | grep  '^>=' | cut -d = -f 2- | cut -d . -f 1 | sort -n -u | tail -n 1)" "$(node --version | cut -d . -f 1 | cut -d v -f 2)" \
+          seq "$(cat src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules/@opentelemetry/*/package.json | jq -r .engines.node | grep -v null | sed 's/ || /\n/g' | grep  '^>=' | cut -d = -f 2- | cut -d . -f 1 | sort -n -u | tail -n 1)" "$(node --version | cut -d . -f 1 | cut -d v -f 2)" | tee /dev/stderr \
             | while read -r version; do echo "\"$version\""; done | jq -s tostring | xargs -0 -I {} echo 'versions={}' >> "$GITHUB_OUTPUT"
   build-node:
     needs: prepare-node
@@ -114,7 +114,7 @@ jobs:
       - run: python3 -m venv venv && . venv/bin/activate && pip3 install -r src/usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.txt
       - id: dynamic
         run: |
-          seq "$(cat venv/lib/python*/site-packages/opentelemetry_*.dist-info/METADATA | grep '^Requires-Python: >=' | cut -d . -f 2 | sort -n -u | tail -n 1)" "$(python3 -V | cut -d ' ' -f 2 | cut -d . -f 2)" \
+          seq "$(cat venv/lib/python*/site-packages/opentelemetry_*.dist-info/METADATA | grep '^Requires-Python: >=' | cut -d . -f 2 | sort -n -u | tail -n 1)" "$(python3 -V | cut -d ' ' -f 2 | cut -d . -f 2)" | tee /dev/stderr \
             | while read -r version; do echo "\"3.$version\""; done | jq -s tostring | xargs -0 -I {} echo 'versions={}' >> "$GITHUB_OUTPUT"
   build-python:
     needs: prepare-python
