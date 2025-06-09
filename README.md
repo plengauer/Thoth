@@ -245,6 +245,9 @@ otel_init
 otel_shutdown
 ```
 
+### Self Monitoring of GitHub Instrumentations and Data Collection
+To steer roadmap and maintenance efforts, job-level and workflow-level instrumentations report high-level usage metrics to the maintainers. This data includes invocation counts of the individual instrumentations and features therein, as well as resuable action names (e.g., `actions/checkout`), runner operating systems (e.g., `ubuntu`), architectures (e.g., `x64`) and types (e.g., `self-hosted`). The data is automatically collected for all repositories that are hosted on GitHub SaaS. For self-hosted GitHub servers, no data at all is collected. In all cases, no workflow data, code, secrets, artifacts, dynamic data or any personal data is collected. This default behavior can be overwritten on job-level and workflow-level instrumentations with the `self_monitoring` and `self_monitoring_anonymize` parameters.
+
 ## Configuration
 You can configure the underlying SDK with the same variables as any other OpenTelemetry SDK as described <a href="https://opentelemetry.io/docs/languages/sdk-configuration/">here</a>. Currently only the `otlp`, `console`, and `none` exporters are supported. In addition to that, use the following environment variables to further configure behavior of this project:
 | Variable                                    | Values          | Default                                      | Description                                                                                 | State        |

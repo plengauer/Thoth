@@ -189,4 +189,5 @@ if [ -n "${GITHUB_ACTION_REPOSITORY:-}" ]; then
 fi
 
 otel_shutdown
+echo "$_OTEL_GITHUB_STEP_ACTION_TYPE" "$GITHUB_ACTION_REPOSITORY" >> /tmp/opentelemetry_shell.github.step.log
 exit "$exit_code"

@@ -5,7 +5,7 @@ set -e
 OTEL_SHELL_CONFIG_INSTALL_DEEP=FALSE bash -e ../shared/install.sh
 
 # selfmonitoring
-if [ "$INPUT_SELF_MONITORING" = true ] && [ "${OTEL_SHELL_CONFIG_GITHUB_IS_TEST:-FALSE}" = FALSE ]; then
+if ([ "$INPUT_SELF_MONITORING" = true ] || ([ "$INPUT_SELF_MONITORING" = auto ] && [ "$GITHUB_API_URL" = 'https://api.github.com' ])) && [ "${OTEL_SHELL_CONFIG_GITHUB_IS_TEST:-FALSE}" = FALSE ]; then
   (
     export OTEL_SHELL_SDK_OUTPUT_REDIRECT=/dev/null
     export OTEL_SERVICE_NAME="OpenTelemetry GitHub Selfmonitoring"
@@ -22,12 +22,12 @@ if [ "$INPUT_SELF_MONITORING" = true ] && [ "${OTEL_SHELL_CONFIG_GITHUB_IS_TEST:
     _otel_resource_attributes_custom() {
       _otel_resource_attribute string telemetry.sdk.language=github
     }
-    if [ "$INPUT_SELF_MONITORING_ANONYMIZE" = true ]; then
+    if [ "$INPUT_SELF_MONITORING_ANONYMIZE" = true ] || ([ "$INPUT_SELF_MONITORING_ANONYMIZE" = auto ] && ([ "$GITHUB_API_URL" != 'https://api.github.com' ] || [ "$(gh_curl | jq -r .visibility)" != public ])); then
       unset GITHUB_REPOSITORY_ID GITHUB_REPOSITORY GITHUB_REPOSITORY_OWNER_ID GITHUB_REPOSITORY_OWNER
     fi
     unset GITHUB_WORKFLOW_REF GITHUB_WORKFLOW_SHA GITHUB_WORKFLOW
     otel_init
-    counter_handle="$(otel_counter_create counter selfmonitoring.opentelemetry.github.workflow.invocations 1 'Invocations of workflow-level instrumentations')"
+    counter_handle="$(otel_counter_create counter selfmonitoring.opentelemetry.github.workflow.invocations 1 'Invocations of workflow-level instrumentation')"
     observation_handle="$(otel_observation_create 1)"
     otel_counter_observe "$counter_handle" "$observation_handle"
     otel_shutdown
