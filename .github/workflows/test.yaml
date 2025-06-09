@@ -81,8 +81,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - run: cd src/usr/share/opentelemetry_shell/agent.instrumentation.node && npm install
       - run: |
-          npm install src/usr/share/opentelemetry_shell/agent.instrumentation.node
           seq "$(cat ./node_modules/@opentelemetry/*/package.json | jq -r .engines.node | grep -v null | sed 's/ || /\n/g' | grep  '^>=' | cut -d = -f 2- | cut -d . -f 1 | sort -n -u | tail -n 1)" "$(node --version | cut -d . -f 1 | cut -d v -f 2)" \
             | while read -r version; do echo "\"$version\""; done | jq -s tostring | xargs -0 -I {} echo 'versions={}' >> "$GITHUB_OUTPUT"
   build-node:
@@ -106,8 +106,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - run: python3 -m venv venv && . venv/bin/activate && pip3 install -r src/usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.txt
       - run: |
-          python3 -m venv venv && . venv/bin/activate && pip3 install -r src/usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.txt
           seq "$(cat venv/lib/python*/site-packages/opentelemetry_*.dist-info/METADATA | grep '^Requires-Python: >=' | cut -d . -f 2 | sort -n -u | tail -n 1)" "$(python3 -V | cut -d ' ' -f 2 | cut -d . -f 2)" \
             | while read -r version; do echo "\"3.$version\""; done | jq -s tostring | xargs -0 -I {} echo 'versions={}' >> "$GITHUB_OUTPUT"
   build-python:
@@ -116,7 +116,6 @@ jobs:
     strategy:
       matrix:
         version: ${{ fromJSON(needs.prepare-python.outputs.versions) }}
-        # ['3.9', '3.10', '3.11', '3.12', '3.13'] # TODO make this dynamic
       fail-fast: false
     steps:
       - uses: actions/setup-python@v4.4.0
