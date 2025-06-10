@@ -111,9 +111,6 @@ $(echo "$INPUT_SECRETS_TO_REDACT" | jq '. | to_entries[].value' | sed 's/[.[\(*^
 $(echo "$INPUT_SECRETS_TO_REDACT" | jq '. | to_entries[].value' | sed 's/[.[\(*^$+?{|]/\\\\&/g' | xargs -I '{}' printf '%s\n' 'replace_all_patterns(span.attributes, "value", "{}", "***")' | sed 's/^/      - /g')
 $(echo "$INPUT_SECRETS_TO_REDACT" | jq '. | to_entries[].value' | sed 's/[.[\(*^$+?{|]/\\\\&/g' | xargs -I '{}' printf '%s\n' 'replace_pattern(span.name, "{}", "***")' | sed 's/^/      - /g')
 service:
-  telemetry:
-    metrics:
-      address: "localhost:4319"
   pipelines:
 $(cat $section_pipeline_logs)
 $(cat $section_pipeline_metrics)
@@ -253,7 +250,7 @@ root4job_end() {
       otel_observation_attribute_typed "$invocation_observation_handle" string github.actions.runner.environment="$RUNNER_ENVIRONMENT"
       otel_counter_observe "$(otel_counter_create counter selfmonitoring.opentelemetry.github.job.invocations 1 'Invocations of job-level instrumentation')" "$invocation_observation_handle"
       self_monitoring_metrics_file="$(mktemp)"
-      curl -s http://localhost:4319/metrics > "$self_monitoring_metrics_file"
+      curl -s http://localhost:8888/metrics > "$self_monitoring_metrics_file"
       metrics_observation_handle="$(otel_observation_create "$(cat "$self_monitoring_metrics_file" | grep '^otelcol_receiver_accepted_metric_points' | cut -d ' ' -f 2 | paste -sd+ | bc)")"
       otel_observation_attribute_typed "$metrics_observation_handle" string github.actions.runner.os="$RUNNER_OS"
       otel_observation_attribute_typed "$metrics_observation_handle" string github.actions.runner.arch="$RUNNER_ARCH"
