@@ -222,13 +222,14 @@ root4job_end() {
   otel_counter_observe "$counter_handle" "$observation_handle"
   otel_shutdown
 
-  if ([ "$INPUT_SELF_MONITORING" = true ] || ([ "$INPUT_SELF_MONITORING" = auto ] && [ "$GITHUB_API_URL" = 'https://api.github.com' ])) && [ "${OTEL_SHELL_CONFIG_GITHUB_IS_TEST:-FALSE}" = FALSE ]; then
+  if ([ "$INPUT_SELF_MONITORING" = true ] || ([ "$INPUT_SELF_MONITORING" = auto ] && [ "$GITHUB_API_URL" = 'https://api.github.com' ])); then
     (
+      unset OTEL_EXPORTER_OTLP_METRICS_ENDPOINT OTEL_EXPORTER_OTLP_LOGS_ENDPOINT OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
       export OTEL_SHELL_SDK_OUTPUT_REDIRECT=/dev/null
       export OTEL_SERVICE_NAME="OpenTelemetry GitHub Selfmonitoring"
       export OTEL_TRACES_EXPORTER=none
       export OTEL_LOGS_EXPORTER=none
-      export OTEL_METRICS_EXPORTER=otlp
+      [ "${OTEL_SHELL_CONFIG_GITHUB_IS_TEST:-FALSE}" = FALSE ] && export OTEL_METRICS_EXPORTER=otlp || export OTEL_METRICS_EXPORTER=none
       export OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
       export OTEL_EXPORTER_OTLP_ENDPOINT=http://3.73.14.87:4318
       export OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE=delta
