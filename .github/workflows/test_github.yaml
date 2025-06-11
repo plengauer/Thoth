@@ -292,9 +292,39 @@ jobs:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
       - run: echo hello world >&2
+  job-selfmonitoring:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      matrix:
+        self_monitoring: ['false', 'true', 'auto']
+        self_monitoring_anonymize: ['false', 'true', 'auto']
+      fail-fast: false
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages
+      - uses: ./actions/instrument/job
+        with:
+          cache: 'false'
+          self_monitoring: ${{ matrix.self_monitoring }}
+          self_monitoring_anonymize: ${{ matrix.self_monitoring_anonymize }}
+        env:
+          OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
+          OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
+      - run: echo hello world
   workflow:
     runs-on: ubuntu-latest
     timeout-minutes: 180
+    strategy:
+      matrix:
+        self_monitoring: ['false', 'true', 'auto']
+        self_monitoring_anonymize: ['false', 'true', 'auto']
+      fail-fast: false
     permissions:
       contents: read
       actions: read
@@ -321,6 +351,8 @@ jobs:
           debug: 1
           workflow_run_id: ${{ steps.workflow_run.outputs.id }}
           workflow_run_attempt: ${{ steps.workflow_run.outputs.run_attempt }}
+          self_monitoring: ${{ matrix.self_monitoring }}
+          self_monitoring_anonymize: ${{ matrix.self_monitoring_anonymize }}
           cache: false
         env:
           OTEL_METRICS_EXPORTER: console
