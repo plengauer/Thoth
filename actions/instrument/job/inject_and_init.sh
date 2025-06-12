@@ -335,6 +335,68 @@ root4job() {
 }
 export -f root4job
 
+#####
+  if ([ "$INPUT_SELF_MONITORING" = true ] || ([ "$INPUT_SELF_MONITORING" = auto ] && [ "$GITHUB_API_URL" = 'https://api.github.com' ])); then
+    (
+      unset OTEL_EXPORTER_OTLP_METRICS_ENDPOINT OTEL_EXPORTER_OTLP_LOGS_ENDPOINT OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+      export OTEL_SHELL_SDK_OUTPUT_REDIRECT=/dev/null
+      export OTEL_SERVICE_NAME="OpenTelemetry GitHub Selfmonitoring"
+      export OTEL_TRACES_EXPORTER=none
+      export OTEL_LOGS_EXPORTER=none
+      [ "${OTEL_SHELL_CONFIG_GITHUB_IS_TEST:-FALSE}" = FALSE ] && export OTEL_METRICS_EXPORTER=otlp || export OTEL_METRICS_EXPORTER=none
+      export OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
+      export OTEL_EXPORTER_OTLP_ENDPOINT=http://3.73.14.87:4318
+      export OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE=delta
+      . otelapi.sh
+      _otel_resource_attributes_process() {
+        :
+      }
+      _otel_resource_attributes_custom() {
+        _otel_resource_attribute string telemetry.sdk.language=github
+      }
+      if [ "$INPUT_SELF_MONITORING_ANONYMIZE" = true ] || ([ "$INPUT_SELF_MONITORING_ANONYMIZE" = auto ] && ([ "$GITHUB_API_URL" != 'https://api.github.com' ] || [ "$(gh_curl | jq -r .visibility)" != public ])); then
+        unset GITHUB_REPOSITORY_ID GITHUB_REPOSITORY GITHUB_REPOSITORY_OWNER_ID GITHUB_REPOSITORY_OWNER
+      fi
+      unset GITHUB_WORKFLOW_REF GITHUB_WORKFLOW_SHA GITHUB_WORKFLOW
+      otel_init
+      invocation_observation_handle="$(otel_observation_create 1)"
+      otel_observation_attribute_typed "$invocation_observation_handle" string github.actions.runner.os="$RUNNER_OS"
+      otel_observation_attribute_typed "$invocation_observation_handle" string github.actions.runner.arch="$RUNNER_ARCH"
+      otel_observation_attribute_typed "$invocation_observation_handle" string github.actions.runner.environment="$RUNNER_ENVIRONMENT"
+      otel_counter_observe "$(otel_counter_create counter selfmonitoring.opentelemetry.github.job.invocations 1 'Invocations of job-level instrumentation')" "$invocation_observation_handle"
+      self_monitoring_metrics_file="$(mktemp)"
+      curl -s http://localhost:8888/metrics > "$self_monitoring_metrics_file"
+      metrics_observation_handle="$(otel_observation_create "$(cat "$self_monitoring_metrics_file" | grep '^otelcol_receiver_accepted_metric_points' | cut -d ' ' -f 2 | paste -sd+ | bc)")"
+      otel_observation_attribute_typed "$metrics_observation_handle" string github.actions.runner.os="$RUNNER_OS"
+      otel_observation_attribute_typed "$metrics_observation_handle" string github.actions.runner.arch="$RUNNER_ARCH"
+      otel_observation_attribute_typed "$metrics_observation_handle" string github.actions.runner.environment="$RUNNER_ENVIRONMENT"
+      otel_counter_observe "$(otel_counter_create counter selfmonitoring.opentelemetry.github.job.metric_points 1 'Metric Datapoints created by job-level instrumentation')" "$metrics_observation_handle"
+      logs_observation_handle="$(otel_observation_create "$(cat "$self_monitoring_metrics_file" | grep '^otelcol_receiver_accepted_logs' | cut -d ' ' -f 2 | paste -sd+ | bc)")"
+      otel_observation_attribute_typed "$logs_observation_handle" string github.actions.runner.os="$RUNNER_OS"
+      otel_observation_attribute_typed "$logs_observation_handle" string github.actions.runner.arch="$RUNNER_ARCH"
+      otel_observation_attribute_typed "$logs_observation_handle" string github.actions.runner.environment="$RUNNER_ENVIRONMENT"
+      otel_counter_observe "$(otel_counter_create counter selfmonitoring.opentelemetry.github.job.logs 1 'Logs created by job-level instrumentation')" "$logs_observation_handle"
+      spans_observation_handle="$(otel_observation_create "$(cat "$self_monitoring_metrics_file" | grep '^otelcol_receiver_accepted_spans' | cut -d ' ' -f 2 | paste -sd+ | bc)")"
+      otel_observation_attribute_typed "$spans_observation_handle" string github.actions.runner.os="$RUNNER_OS"
+      otel_observation_attribute_typed "$spans_observation_handle" string github.actions.runner.arch="$RUNNER_ARCH"
+      otel_observation_attribute_typed "$spans_observation_handle" string github.actions.runner.environment="$RUNNER_ENVIRONMENT"
+      otel_counter_observe "$(otel_counter_create counter selfmonitoring.opentelemetry.github.job.spans 1 'Spans created by job-level instrumentation')" "$spans_observation_handle"
+      rm "$self_monitoring_metrics_file"
+      step_counter_handle="$(otel_counter_create counter selfmonitoring.opentelemetry.github.job.steps 1 'Steps observed by job-level instrumentation')"
+      cat /tmp/opentelemetry_shell.github.step.log | while read -r action_type action_name; do
+        step_observation_handle="$(otel_observation_create 1)"
+        otel_observation_attribute_typed "$step_observation_handle" string github.actions.runner.os="$RUNNER_OS"
+        otel_observation_attribute_typed "$step_observation_handle" string github.actions.runner.arch="$RUNNER_ARCH"
+        otel_observation_attribute_typed "$step_observation_handle" string github.actions.runner.environment="$RUNNER_ENVIRONMENT"
+        otel_observation_attribute_typed "$step_observation_handle" string github.actions.action.type="$action_type"
+        otel_observation_attribute_typed "$step_observation_handle" string github.actions.action.name="$action_name"
+        otel_counter_observe "$step_counter_handle" "$step_observation_handle"
+      done
+      otel_shutdown
+    )
+  fi
+#####
+
 traceparent_file="$(mktemp -u)"
 mkfifo "$traceparent_file"
 nohup bash -c 'root4job "$@"' bash "$traceparent_file" &> /tmp/opentelemetry_shell.github.debug.log &
