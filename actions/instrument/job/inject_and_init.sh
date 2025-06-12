@@ -337,7 +337,7 @@ export -f root4job
 
 traceparent_file="$(mktemp -u)"
 mkfifo "$traceparent_file"
-nohup bash -c 'root4job "$@"' bash "$traceparent_file" &> /dev/null &
+nohup bash -c 'root4job "$@"' bash "$traceparent_file" &> /tmp/opentelemetry_shell.github.debug.log &
 echo "pid=$!" >> "$GITHUB_STATE"
 
 # propagate context to the steps
