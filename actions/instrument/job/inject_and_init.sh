@@ -336,6 +336,7 @@ root4job() {
 export -f root4job
 
 #####
+  set -x
   if ([ "$INPUT_SELF_MONITORING" = true ] || ([ "$INPUT_SELF_MONITORING" = auto ] && [ "$GITHUB_API_URL" = 'https://api.github.com' ])); then
     (
       unset OTEL_EXPORTER_OTLP_METRICS_ENDPOINT OTEL_EXPORTER_OTLP_LOGS_ENDPOINT OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
@@ -395,6 +396,7 @@ export -f root4job
       otel_shutdown
     )
   fi
+  set +x
 #####
 
 traceparent_file="$(mktemp -u)"
