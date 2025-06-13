@@ -3,6 +3,7 @@ on:
   workflow_call:
 env:
   OTEL_SHELL_CONFIG_GITHUB_IS_TEST: 'TRUE'
+  
 jobs:
   job-node:
     runs-on: ubuntu-latest
@@ -292,9 +293,42 @@ jobs:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
       - run: echo hello world >&2
+  job-selfmonitoring:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      matrix:
+        self_monitoring: ['false', 'true', 'auto']
+        self_monitoring_anonymize: ['false', 'true', 'auto']
+      fail-fast: false
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages
+      - run: |
+          nohup node -e "require('http').createServer(function (req, res) { console.log(req.method, req.url); res.writeHead(200); res.end(); }).listen(8080);" > /tmp/http.log &
+      - uses: ./actions/instrument/job
+        with:
+          cache: 'false'
+          self_monitoring: ${{ matrix.self_monitoring }}
+          self_monitoring_anonymize: ${{ matrix.self_monitoring_anonymize }}
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: http://localhost:8080
+          OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
+          OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
+      - run: echo hello world
   workflow:
     runs-on: ubuntu-latest
     timeout-minutes: 180
+    strategy:
+      matrix:
+        self_monitoring: ['false', 'true', 'auto']
+        self_monitoring_anonymize: ['false', 'true', 'auto']
+      fail-fast: false
     permissions:
       contents: read
       actions: read
@@ -307,12 +341,13 @@ jobs:
           name: packages
       - id: workflow_run
         run: |
-          . ./actions/instrument/shared/github.sh
-          INPUT_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} gh_workflow_runs | jq --unbuffered -r '.workflow_runs[] | select(.status == "completed") | select(.conclusion == "success") | select(.name == "Workflow Example") | [ .id, .run_attempt ] | @tsv' | sed 's/\t/ /g' | {
-            read -r id run_attempt
-            echo "id=$id" >> "$GITHUB_OUTPUT"
-            echo "run_attempt=$run_attempt" >> "$GITHUB_OUTPUT"
-          }
+          curl -L --no-progress-meter --fail --retry 16 -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_REPOSITORY"/actions/workflows'?per_page=100&page=1' | jq --unbuffered -r '.workflows[] | select(.name == "Workflow Example") | .id' \
+            | xargs -I {} curl -L --no-progress-meter --fail --retry 16 -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_REPOSITORY"/actions/workflows/'{}'/runs'?status=success&branch=main&per_page=1&page=1' \
+            | jq --unbuffered -r '.workflow_runs[] | [ .id, .run_attempt ] | @tsv' | sed 's/\t/ /g' | {
+              read -r id run_attempt
+              echo "id=$id" >> "$GITHUB_OUTPUT"
+              echo "run_attempt=$run_attempt" >> "$GITHUB_OUTPUT"
+            }
       - run: |
           [ -n "${{ steps.workflow_run.outputs.id }}" ]
           [ -n "${{ steps.workflow_run.outputs.run_attempt }}" ]
@@ -321,6 +356,8 @@ jobs:
           debug: 1
           workflow_run_id: ${{ steps.workflow_run.outputs.id }}
           workflow_run_attempt: ${{ steps.workflow_run.outputs.run_attempt }}
+          self_monitoring: ${{ matrix.self_monitoring }}
+          self_monitoring_anonymize: ${{ matrix.self_monitoring_anonymize }}
           cache: false
         env:
           OTEL_METRICS_EXPORTER: console
