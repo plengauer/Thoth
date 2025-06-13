@@ -466,7 +466,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   github:
-    needs: build # smoke
+    needs: smoke
     permissions:
       actions: read
       attestations: none
