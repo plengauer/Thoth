@@ -340,12 +340,13 @@ jobs:
           name: packages
       - id: workflow_run
         run: |
-          . ./actions/instrument/shared/github.sh
-          INPUT_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} gh_workflow_runs | jq --unbuffered -r '.workflow_runs[] | select(.status == "completed") | select(.conclusion == "success") | select(.name == "Workflow Example") | [ .id, .run_attempt ] | @tsv' | sed 's/\t/ /g' | {
-            read -r id run_attempt
-            echo "id=$id" >> "$GITHUB_OUTPUT"
-            echo "run_attempt=$run_attempt" >> "$GITHUB_OUTPUT"
-          }
+          curl -L --no-progress-meter --fail --retry 16 -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_REPOSITORY"/actions/workflows'?per_page=100&page=1' | jq --unbuffered -r '.workflows[] | select(.name == "Workflow Example") | .id' \
+            | xargs -I {} curl -L --no-progress-meter --fail --retry 16 -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_REPOSITORY"/actions/workflows/'{}'/runs'?status=success&branch=main&per_page=1&page=1' \
+            | jq --unbuffered -r '.workflow_runs[] | [ .id, .run_attempt ] | @tsv' | sed 's/\t/ /g' | {
+              read -r id run_attempt
+              echo "id=$id" >> "$GITHUB_OUTPUT"
+              echo "run_attempt=$run_attempt" >> "$GITHUB_OUTPUT"
+            }
       - run: |
           [ -n "${{ steps.workflow_run.outputs.id }}" ]
           [ -n "${{ steps.workflow_run.outputs.run_attempt }}" ]
