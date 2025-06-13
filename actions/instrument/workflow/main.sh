@@ -6,7 +6,6 @@ OTEL_SHELL_CONFIG_INSTALL_DEEP=FALSE bash -e ../shared/install.sh
 
 # selfmonitoring
 if ([ "$INPUT_SELF_MONITORING" = true ] || ([ "$INPUT_SELF_MONITORING" = auto ] && [ "$GITHUB_API_URL" = 'https://api.github.com' ])); then
-  set -x
   (
     unset OTEL_EXPORTER_OTLP_METRICS_ENDPOINT OTEL_EXPORTER_OTLP_LOGS_ENDPOINT OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
     export OTEL_SHELL_SDK_OUTPUT_REDIRECT=/dev/null
@@ -33,8 +32,7 @@ if ([ "$INPUT_SELF_MONITORING" = true ] || ([ "$INPUT_SELF_MONITORING" = auto ] 
     observation_handle="$(otel_observation_create 1)"
     otel_counter_observe "$counter_handle" "$observation_handle"
     otel_shutdown
-  )
-  # ) &
+  ) &
 fi
 
 export OTEL_SERVICE_NAME="${OTEL_SERVICE_NAME:-"$(echo "$GITHUB_REPOSITORY" | cut -d / -f 2-) CI"}"
