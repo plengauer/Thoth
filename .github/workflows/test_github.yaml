@@ -308,13 +308,15 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: packages
+      - run: |
+          nohup node -e "require('http').createServer(function (req, res) { console.log(req.method, req.url); res.writeHead(200); res.end(); }).listen(8080);" > /tmp/http.log &
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
-          collector: 'true'
           self_monitoring: ${{ matrix.self_monitoring }}
           self_monitoring_anonymize: ${{ matrix.self_monitoring_anonymize }}
         env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: http://localhost:8080
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
       - run: echo hello world
