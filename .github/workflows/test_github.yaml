@@ -311,6 +311,7 @@ jobs:
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
+          collector: 'true'
           self_monitoring: ${{ matrix.self_monitoring }}
           self_monitoring_anonymize: ${{ matrix.self_monitoring_anonymize }}
         env:
