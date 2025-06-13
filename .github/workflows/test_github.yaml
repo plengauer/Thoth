@@ -3,6 +3,7 @@ on:
   workflow_call:
 env:
   OTEL_SHELL_CONFIG_GITHUB_IS_TEST: 'TRUE'
+  
 jobs:
   job-node:
     runs-on: ubuntu-latest
