@@ -20,9 +20,13 @@
       ]
     },
     {
-      "packagePatterns": [".*"],
-      "managers": ["github-actions"],
-      "rangeStrategy": "pin"
+      "matchManagers": [
+        "github-actions"
+      ],
+      "rangeStrategy": "pin",
+      "matchPackageNames": [
+        "/.*/"
+      ]
     }
   ],
   "customManagers": [
