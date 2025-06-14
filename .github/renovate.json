@@ -18,6 +18,11 @@
       "matchPackageNames": [
         "/^opentelemetry-/"
       ]
+    },
+    {
+      "packagePatterns": [".*"],
+      "managers": ["github-actions"],
+      "rangeStrategy": "pin"
     }
   ],
   "customManagers": [
