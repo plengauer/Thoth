@@ -133,7 +133,7 @@ jobs:
           } > rpm.spec && rm "$rpm_dir"/*.spec
           rpmbuild -bb --buildroot="$(cat rpm.spec | grep '^Buildroot: ' | cut -d ' ' -f 2)" rpm.spec
           mv ../*.rpm ../package.rpm
-      - uses: actions/upload-artifact@v4.0.0
+      - uses: actions/upload-artifact@v4.6.2
         with:
           name: packages
           path: package.*
@@ -528,12 +528,12 @@ jobs:
           export OTEL_SHELL_SDK_OUTPUT_REDIRECT=/dev/null
           command time -f '%U' bash -c '. /usr/bin/opentelemetry_shell.sh' 2>> performance.${{ matrix.tag_name }}.coldstart.list
           for i in $(seq 1 100); do command time -f '%U' bash -c '. /usr/bin/opentelemetry_shell.sh' 2>> performance.${{ matrix.tag_name }}.warmstart.list; done
-      - uses: actions/upload-artifact@v4.0.0
+      - uses: actions/upload-artifact@v4.6.2
         with:
           name: performance.${{ matrix.tag_name }}.coldstart.list
           path: performance.${{ matrix.tag_name }}.coldstart.list
           retention-days: 1
-      - uses: actions/upload-artifact@v4.0.0
+      - uses: actions/upload-artifact@v4.6.2
         with:
           name: performance.${{ matrix.tag_name }}.warmstart.list
           path: performance.${{ matrix.tag_name }}.warmstart.list
@@ -573,7 +573,7 @@ jobs:
             plot "coldstart.list" using 0:2:xticlabels(1) with linespoints title "Cold Start" lt rgb "blue", "warmstart.list" using 0:2:xticlabels(1) with linespoints title "Warm Start" lt rgb "red"
           ' > plot.gp
           gnuplot plot.gp
-      - uses: actions/upload-artifact@v4.0.0
+      - uses: actions/upload-artifact@v4.6.2
         with:
           name: performance.png
           path: performance.png
