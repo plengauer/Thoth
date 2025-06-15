@@ -12,8 +12,8 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v4.0.0
+      - uses: actions/download-artifact@v4.0.0
         with:
           name: packages
       - uses: ./actions/instrument/job
@@ -32,8 +32,8 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v4.0.0
+      - uses: actions/download-artifact@v4.0.0
         with:
           name: packages
       - uses: ./actions/instrument/job
@@ -43,18 +43,18 @@ jobs:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
       - uses: actions/hello-world-docker-action@main # check if docker action works
-      - uses: actions/first-interaction@v1 # docker action with - in env vars
+      - uses: actions/first-interaction@v1.0.0 # docker action with - in env vars
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           issue-message: "Hello, thanks for adding an issue for the first time!"
           pr-message: "Hello, thanks for contributing for the first time!"
-      - uses: docker/setup-qemu-action@v3 # some docker actions have otel built-in
-      - uses: docker/setup-buildx-action@v3 # some docker actions have otel built-in
-      - uses: actions/download-artifact@v4
+      - uses: docker/setup-qemu-action@v3.0.0 # some docker actions have otel built-in
+      - uses: docker/setup-buildx-action@v3.0.0 # some docker actions have otel built-in
+      - uses: actions/download-artifact@v4.0.0
         with:
           name: packages
       - run: cp package.deb tests/package.deb
-      - uses: docker/build-push-action@v6 # some docker actions have otel built-in
+      - uses: docker/build-push-action@v6.0.0 # some docker actions have otel built-in
         with:
           context: ./tests/
           tags: test
@@ -70,8 +70,8 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v4.0.0
+      - uses: actions/download-artifact@v4.0.0
         with:
           name: packages
       - uses: ./actions/instrument/job
@@ -94,8 +94,8 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v4.0.0
+      - uses: actions/download-artifact@v4.0.0
         with:
           name: packages
       - uses: ./actions/instrument/job
@@ -114,8 +114,8 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v4.0.0
+      - uses: actions/download-artifact@v4.0.0
         with:
           name: packages
       - uses: ./actions/instrument/job
@@ -139,8 +139,8 @@ jobs:
     outputs:
       foo: ${{ steps.my-step.outputs.foo }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v4.0.0
+      - uses: actions/download-artifact@v4.0.0
         with:
           name: packages
       - uses: ./actions/instrument/job
@@ -159,8 +159,8 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v4.0.0
+      - uses: actions/download-artifact@v4.0.0
         with:
           name: packages
       - uses: ./actions/instrument/job
@@ -180,8 +180,8 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v4.0.0
+      - uses: actions/download-artifact@v4.0.0
         with:
           name: packages
       - uses: ./actions/instrument/job
@@ -198,8 +198,8 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v4.0.0
+      - uses: actions/download-artifact@v4.0.0
         with:
           name: packages
       - run: |
@@ -284,8 +284,8 @@ jobs:
       security-events: none
       statuses: none
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v4.0.0
+      - uses: actions/download-artifact@v4.0.0
         with:
           name: packages
       - uses: ./actions/instrument/job
@@ -305,8 +305,8 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v4.0.0
+      - uses: actions/download-artifact@v4.0.0
         with:
           name: packages
       - run: |
@@ -335,8 +335,8 @@ jobs:
     steps:
       - id: filename
         run: echo "otlp=$(mktemp)" >> "$GITHUB_OUTPUT"
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v4.0.0
+      - uses: actions/download-artifact@v4.0.0
         with:
           name: packages
       - id: workflow_run
@@ -388,7 +388,7 @@ jobs:
         secret_redaction_strategy: ['none', 'list', 'all']
       fail-fast: false
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.0.0
       - uses: ./actions/instrument/deploy
         with:
           debug: 1
