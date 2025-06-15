@@ -22,7 +22,7 @@ jobs:
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - uses: actions/checkout@v4.0.0
+      - uses: actions/checkout@v4.2.2
       - run: |
           python3 -m venv venv
           . venv/bin/activate
@@ -44,7 +44,7 @@ jobs:
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
         with:
           secrets_to_redact: '["${{ github.token }}"]'
-      - uses: actions/checkout@v4.0.0
+      - uses: actions/checkout@v4.2.2
       - run: sudo apt-get update && sudo apt-get -y install apt-file
       - run: sudo apt-file update
       - run: |
@@ -76,7 +76,7 @@ jobs:
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - uses: actions/checkout@v4.0.0
+      - uses: actions/checkout@v4.2.2
       - run: |
           set -o pipefail
           cat src/DEBIAN/postinst | grep 'if type ' | awk '{for(i=1;i<NF;i++){if($i=="type"){print $(i+1)}}}' | while read -r command; do
@@ -99,7 +99,7 @@ jobs:
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - uses: actions/checkout@v4.0.0
+      - uses: actions/checkout@v4.2.2
       - run: sudo apt-get update && sudo apt-get install devscripts debhelper alien
       - run: sed -i "s/__VERSION__/$(cat ../VERSION)/g" DEBIAN/control
       - run: dpkg-deb --root-owner-group -Zgzip --build . ../package.deb
@@ -149,7 +149,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v4.0.0
+      - uses: actions/checkout@v4.2.2
       - uses: actions/download-artifact@v4.1.3
         with:
           name: packages
@@ -240,7 +240,7 @@ jobs:
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - uses: actions/checkout@v4.0.0
+      - uses: actions/checkout@v4.2.2
       - id: key
         run: printenv | grep -E '^IMAGE_' | md5sum | cut -d ' ' -f 1 | xargs -I '{}' echo "key={}" >> "$GITHUB_OUTPUT"
       - uses: actions/cache@v4.2.3
@@ -278,7 +278,7 @@ jobs:
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - uses: actions/checkout@v4.0.0
+      - uses: actions/checkout@v4.2.2
       - run: |
           {
             echo sh
@@ -314,7 +314,7 @@ jobs:
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - uses: actions/checkout@v4.0.0
+      - uses: actions/checkout@v4.2.2
       - run: |
           cat src/DEBIAN/triggers | cut -sd ' ' -f 2- | rev | cut -sd / -f 1 | rev | grep -v '^$' \
            | grep -vF "$(cat src/DEBIAN/control | grep '^Pre-Depends:' | cut -d : -f 2- | tr '|' ',' | tr , '\n' | tr -d ' ' | cut -d '(' -f 1 | sed 's/python3-pip/pip3/g')" \
@@ -378,7 +378,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v4.0.0
+      - uses: actions/checkout@v4.2.2
       - run: cat INSTALL.sh | sh -e
       - run: type otel.sh
   install-manual-os:
@@ -392,7 +392,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v4.0.0
+      - uses: actions/checkout@v4.2.2
       - run: |
           {
             echo '
@@ -421,7 +421,7 @@ jobs:
       actions: read
     steps:
       # - run: sudo docker login -u '${{ secrets.DOCKERHUB_USERNAME }}' -p '${{ secrets.DOCKERHUB_TOKEN }}'
-      - uses: actions/checkout@v4.0.0
+      - uses: actions/checkout@v4.2.2
       - uses: actions/download-artifact@v4.1.3
         with:
           name: packages
@@ -445,7 +445,7 @@ jobs:
       - uses: Vampire/setup-wsl@v5.0.1
         with:
           wsl-version: ${{ matrix.version }}
-      - uses: actions/checkout@v4.0.0
+      - uses: actions/checkout@v4.2.2
       - uses: actions/download-artifact@v4.1.3
         with:
           name: packages
