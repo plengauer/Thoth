@@ -76,7 +76,7 @@ jobs:
           asset_path: ./package.rpm
           asset_name: opentelemetry-shell_${{ steps.version.outputs.version }}.rpm
           asset_content_type: application/octet-stream
-      - uses: eregon/publish-release@v1.0.0
+      - uses: eregon/publish-release@v1.0.6
         env:
           GITHUB_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         with:
