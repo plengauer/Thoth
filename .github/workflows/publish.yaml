@@ -40,18 +40,18 @@ jobs:
       - uses: actions/checkout@v4
       - run: echo "version=$(cat VERSION)" >> "$GITHUB_OUTPUT"
         id: version
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4.0.0
         with:
           name: packages
-      - uses: actions/attest-build-provenance@v2
+      - uses: actions/attest-build-provenance@v2.0.0
         with:
           subject-path: ./package.deb
           subject-name: opentelemetry-shell_${{ steps.version.outputs.version }}.deb
-      - uses: actions/attest-build-provenance@v2
+      - uses: actions/attest-build-provenance@v2.0.0
         with:
           subject-path: ./package.rpm
           subject-name: opentelemetry-shell_${{ steps.version.outputs.version }}.rpm
-      - uses: actions/create-release@v1
+      - uses: actions/create-release@v1.0.0
         id: create_release
         env:
           GITHUB_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
@@ -60,7 +60,7 @@ jobs:
           release_name: Release v${{ steps.version.outputs.version }}
           draft: true
           prerelease: false
-      - uses: actions/upload-release-asset@v1
+      - uses: actions/upload-release-asset@v1.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         with:
@@ -68,7 +68,7 @@ jobs:
           asset_path: ./package.deb
           asset_name: opentelemetry-shell_${{ steps.version.outputs.version }}.deb
           asset_content_type: application/octet-stream
-      - uses: actions/upload-release-asset@v1
+      - uses: actions/upload-release-asset@v1.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         with:
@@ -76,7 +76,7 @@ jobs:
           asset_path: ./package.rpm
           asset_name: opentelemetry-shell_${{ steps.version.outputs.version }}.rpm
           asset_content_type: application/octet-stream
-      - uses: eregon/publish-release@v1
+      - uses: eregon/publish-release@v1.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         with:
