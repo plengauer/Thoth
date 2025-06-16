@@ -6,6 +6,16 @@ branding:
 runs:
   using: composite
   steps:
+    - name: "Determine repository"
+      id: determine-repository
+      shell: bash
+      run: |
+        if [ "$GITHUB_API_URL" = 'https://api.github.com' ]; then
+          echo '${{ inputs.action_repository }}'
+        else
+          echo "::notice::On private GitHub servers, action runners are not following redirects. Therefore the repository configuration is ignored." >&2
+          echo plengauer/Thoth
+        fi | xargs -I '{}' echo repository='{}' >> "$GITHUB_OUTPUT"
     - name: "Install dependencies"
       shell: bash
       run: type yq || (sudo apt-get update && sudo apt-get -y install yq)
@@ -24,12 +34,12 @@ runs:
       shell: bash
       run: |
         (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
-          sed -i 's~plengauer/opentelemetry-github~${{ inputs.action_repository }}~g' "$workflow_file"
-          sed -i 's~plengauer/opentelemetry-bash~${{ inputs.action_repository }}~g' "$workflow_file"
-          sed -i 's~plengauer/opentelemetry-shell~${{ inputs.action_repository }}~g' "$workflow_file"
-          sed -i 's~plengauer/opentelemetry-thoth~${{ inputs.action_repository }}~g' "$workflow_file"
-          sed -i 's~plengauer/Thoth~${{ inputs.action_repository }}~g' "$workflow_file"
-          sed -i 's~plengauer/thoth~${{ inputs.action_repository }}~g' "$workflow_file"
+          sed -i 's~plengauer/opentelemetry-github~${{ steps.determine-repository.outputs.repository }}~g' "$workflow_file"
+          sed -i 's~plengauer/opentelemetry-bash~${{ steps.determine-repository.outputs.repository }}~g' "$workflow_file"
+          sed -i 's~plengauer/opentelemetry-shell~${{ steps.determine-repository.outputs.repository }}~g' "$workflow_file"
+          sed -i 's~plengauer/opentelemetry-thoth~${{ steps.determine-repository.outputs.repository }}~g' "$workflow_file"
+          sed -i 's~plengauer/Thoth~${{ steps.determine-repository.outputs.repository }}~g' "$workflow_file"
+          sed -i 's~plengauer/thoth~${{ steps.determine-repository.outputs.repository }}~g' "$workflow_file"
         done
     - name: "Find self"
       id: find-self
@@ -56,7 +66,7 @@ runs:
       shell: bash
       run: |
         if [ ${{ inputs.action_version }} = same ]; then
-          cat "${{ steps.find-self.outputs.path }}" | yq -r '.jobs[].steps[] | select(.uses == "${{ inputs.action_repository }}/actions/instrument/deploy*") | .uses' | cut -d @ -f 2
+          cat "${{ steps.find-self.outputs.path }}" | yq -r '.jobs[].steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/deploy*") | .uses' | cut -d @ -f 2
         else
           echo '${{ inputs.action_version }}'
         fi | xargs -I '{}' echo version='{}' >> "$GITHUB_OUTPUT"
@@ -75,10 +85,10 @@ runs:
           export:
             runs-on: ubuntu-latest
             steps:
-              - uses: ${{ inputs.action_repository }}/actions/instrument/workflow@${{ steps.determine-instrumentation-version.outputs.version }}
+              - uses: ${{ steps.determine-repository.outputs.repository }}/actions/instrument/workflow@${{ steps.determine-instrumentation-version.outputs.version }}
         ' > "${{ inputs.workflows_directory }}/${{ inputs.workflow_level_instrumentation_file_name }}"
-        cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "${{ inputs.action_repository }}/actions/instrument/deploy*") | .env | keys[]' | grep '^OTEL_' | while read -r key; do
-          value="$(cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "${{ inputs.action_repository }}/actions/instrument/deploy*") | .env.'"$key")"
+        cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/deploy*") | .env | keys[]' | grep '^OTEL_' | while read -r key; do
+          value="$(cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/deploy*") | .env.'"$key")"
           yq -i '.jobs[].steps[0].env.'"$key"' = "'"$value"'"' "${{ inputs.workflows_directory }}/${{ inputs.workflow_level_instrumentation_file_name }}"
         done
     - name: "Update workflow-level observability triggers"
@@ -106,11 +116,11 @@ runs:
           [ "$workflow_file" != "${{ inputs.workflows_directory }}/${{ inputs.workflow_level_instrumentation_file_name }}" ] || continue
           cat "$workflow_file" | yq '.jobs | keys[]' | while read -r job_name; do
             cat "$workflow_file" | yq ".jobs.$job_name.steps" | grep -qvF null || continue
-            if [ -n "$(cat "$workflow_file" | yq ".jobs.$job_name.steps[] | select(.uses == \"${{ inputs.action_repository }}/actions/instrument/workflow@*\") | .uses")" ]; then continue; fi
-            if [ -n "$(cat "$workflow_file" | yq ".jobs.$job_name.steps[] | select(.uses == \"${{ inputs.action_repository }}/actions/instrument/job@*\") | .uses")" ]; then continue; fi
-            yq -i ".jobs.$job_name.steps |= ([{ \"uses\": \"${{ inputs.action_repository }}/actions/instrument/job@${{ steps.determine-instrumentation-version.outputs.version }}\" }] + .)" "$workflow_file"
-            cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "${{ inputs.action_repository }}/actions/instrument/deploy*") | .env | keys[]' | grep '^OTEL_' | while read -r key; do
-              yq -i ".jobs.$job_name.steps[0].env.$key = \"$(cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "${{ inputs.action_repository }}/actions/instrument/deploy*") | .env.'"$key")\"" "$workflow_file"
+            if [ -n "$(cat "$workflow_file" | yq ".jobs.$job_name.steps[] | select(.uses == \"${{ steps.determine-repository.outputs.repository }}/actions/instrument/workflow@*\") | .uses")" ]; then continue; fi
+            if [ -n "$(cat "$workflow_file" | yq ".jobs.$job_name.steps[] | select(.uses == \"${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*\") | .uses")" ]; then continue; fi
+            yq -i ".jobs.$job_name.steps |= ([{ \"uses\": \"${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@${{ steps.determine-instrumentation-version.outputs.version }}\" }] + .)" "$workflow_file"
+            cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/deploy*") | .env | keys[]' | grep '^OTEL_' | while read -r key; do
+              yq -i ".jobs.$job_name.steps[0].env.$key = \"$(cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/deploy*") | .env.'"$key")\"" "$workflow_file"
             done
           done
         done
@@ -120,11 +130,11 @@ runs:
         (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
           cat "$workflow_file" | yq '.jobs | keys[]' | while read -r job_name; do
             cat "$workflow_file" | yq ".jobs.$job_name.steps" | grep -qvF null || continue
-            if [ -z "$(cat "$workflow_file" | yq '.jobs.'"$job_name"'.steps[] | select(.uses == "${{ inputs.action_repository }}/actions/instrument/job@*") | .uses')" ]; then continue; fi
+            if [ -z "$(cat "$workflow_file" | yq '.jobs.'"$job_name"'.steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*") | .uses')" ]; then continue; fi
             case "${{ inputs.job_level_instrumentation_secret_redaction_strategy }}" in
-              none) [ "$(cat "$workflow_file" | yq '.jobs.'"$job_name"'.steps[] | select(.uses == "${{ inputs.action_repository }}/actions/instrument/job@*") | .with.secrets_to_redact')" = null ] || yq -i 'del(.jobs.'"$job_name"'.steps[] | select(.uses == "${{ inputs.action_repository }}/actions/instrument/job@*").with.secrets_to_redact)' "$workflow_file";;
-              list) [ "$(cat "$workflow_file" | yq '.jobs.'"$job_name"'.steps[] | select(.uses == "${{ inputs.action_repository }}/actions/instrument/job@*") | .with.secrets_to_redact')" = "$(cat "$workflow_file" | yq '.jobs.'"$job_name"'.steps[] | select(.uses != "${{ inputs.action_repository }}/actions/instrument/job@*")' | { echo JHt7IGdpdGh1Yi50b2tlbiB9fQo= | base64 -d; grep -oE "$(echo XCR7e1tbOmJsYW5rOl1dKnNlY3JldHNcLlthLXpBLVowLTlfLi1dK1tbOmJsYW5rOl1dKn19Cg== | base64 -d)" || true; } | sort -u | jq --raw-input --slurp 'split("\n") | .[0:-1]' -c)" ] || yq -i '(.jobs.'"$job_name"'.steps[] | select(.uses == "${{ inputs.action_repository }}/actions/instrument/job@*")).with.secrets_to_redact = "'"$(cat "$workflow_file" | yq '.jobs.'"$job_name"'.steps[] | select(.uses != "${{ inputs.action_repository }}/actions/instrument/job@*")' | { echo JHt7IGdpdGh1Yi50b2tlbiB9fQo= | base64 -d; grep -oE "$(echo XCR7e1tbOmJsYW5rOl1dKnNlY3JldHNcLlthLXpBLVowLTlfLi1dK1tbOmJsYW5rOl1dKn19Cg== | base64 -d)" || true; } | sort -u | jq --raw-input --slurp 'split("\n") | .[0:-1]' -c | sed 's/"/\\"/g')"'"' "$workflow_file";;
-               all) [ "$(cat "$workflow_file" | yq '.jobs.'"$job_name"'.steps[] | select(.uses == "${{ inputs.action_repository }}/actions/instrument/job@*") | .with.secrets_to_redact')" = "$(echo JHt7IHRvSlNPTihzZWNyZXRzKSB9fQo= | base64 -d)" ] || yq -i '(.jobs.'"$job_name"'.steps[] | select(.uses == "${{ inputs.action_repository }}/actions/instrument/job@*")).with.secrets_to_redact = "'"$(echo JHt7IHRvSlNPTihzZWNyZXRzKSB9fQo= | base64 -d)"'"' "$workflow_file";;
+              none) [ "$(cat "$workflow_file" | yq '.jobs.'"$job_name"'.steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*") | .with.secrets_to_redact')" = null ] || yq -i 'del(.jobs.'"$job_name"'.steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*").with.secrets_to_redact)' "$workflow_file";;
+              list) [ "$(cat "$workflow_file" | yq '.jobs.'"$job_name"'.steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*") | .with.secrets_to_redact')" = "$(cat "$workflow_file" | yq '.jobs.'"$job_name"'.steps[] | select(.uses != "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*")' | { echo JHt7IGdpdGh1Yi50b2tlbiB9fQo= | base64 -d; grep -oE "$(echo XCR7e1tbOmJsYW5rOl1dKnNlY3JldHNcLlthLXpBLVowLTlfLi1dK1tbOmJsYW5rOl1dKn19Cg== | base64 -d)" || true; } | sort -u | jq --raw-input --slurp 'split("\n") | .[0:-1]' -c)" ] || yq -i '(.jobs.'"$job_name"'.steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*")).with.secrets_to_redact = "'"$(cat "$workflow_file" | yq '.jobs.'"$job_name"'.steps[] | select(.uses != "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*")' | { echo JHt7IGdpdGh1Yi50b2tlbiB9fQo= | base64 -d; grep -oE "$(echo XCR7e1tbOmJsYW5rOl1dKnNlY3JldHNcLlthLXpBLVowLTlfLi1dK1tbOmJsYW5rOl1dKn19Cg== | base64 -d)" || true; } | sort -u | jq --raw-input --slurp 'split("\n") | .[0:-1]' -c | sed 's/"/\\"/g')"'"' "$workflow_file";;
+               all) [ "$(cat "$workflow_file" | yq '.jobs.'"$job_name"'.steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*") | .with.secrets_to_redact')" = "$(echo JHt7IHRvSlNPTihzZWNyZXRzKSB9fQo= | base64 -d)" ] || yq -i '(.jobs.'"$job_name"'.steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*")).with.secrets_to_redact = "'"$(echo JHt7IHRvSlNPTihzZWNyZXRzKSB9fQo= | base64 -d)"'"' "$workflow_file";;
                  *) echo '::error ::Illegal secret redaction strategy "${{ inputs.job_level_instrumentation_secret_redaction_strategy }}"!' && exit 1;;
             esac
           done
