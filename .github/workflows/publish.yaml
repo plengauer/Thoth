@@ -51,7 +51,7 @@ jobs:
         with:
           subject-path: ./package.rpm
           subject-name: opentelemetry-shell_${{ steps.version.outputs.version }}.rpm
-      - uses: actions/create-release@v1.0.0
+      - uses: actions/create-release@v1.1.4
         id: create_release
         env:
           GITHUB_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
