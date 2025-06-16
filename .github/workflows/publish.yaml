@@ -60,7 +60,7 @@ jobs:
           release_name: Release v${{ steps.version.outputs.version }}
           draft: true
           prerelease: false
-      - uses: actions/upload-release-asset@v1.0.0
+      - uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         with:
@@ -68,7 +68,7 @@ jobs:
           asset_path: ./package.deb
           asset_name: opentelemetry-shell_${{ steps.version.outputs.version }}.deb
           asset_content_type: application/octet-stream
-      - uses: actions/upload-release-asset@v1.0.0
+      - uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         with:
