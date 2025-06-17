@@ -231,6 +231,9 @@ permissions:
 ```
 When using automatic deployment, permissions are adjusted automatically.
 
+### Self Monitoring of GitHub Instrumentations and Data Collection
+To steer roadmap and maintenance efforts, job-level and workflow-level instrumentations report high-level usage metrics to the maintainers. This data includes invocation counts of the individual instrumentations and features therein, as well as resuable action names (e.g., `actions/checkout`), runner operating systems (e.g., `ubuntu`), architectures (e.g., `x64`) and types (e.g., `self-hosted`). The data is automatically collected for all repositories that are hosted on GitHub SaaS. For self-hosted GitHub servers, no data at all is collected. In all cases, no workflow data, code, secrets, artifacts, dynamic data or any personal data is collected. This default behavior can be overwritten on job-level and workflow-level instrumentations with the `self_monitoring` and `self_monitoring_anonymize` parameters.
+
 ## Manual Instrumentation
 Import the API by referencing the `otelapi.sh` file. This is only necessary if you do not choose a fully automatic approach described above. In case you use automatic instrumentation, the API will be imported automatically for you.
 The SDK needs to be initialized and shut down manually at the start and at the end of your script respectively. All config must be set before the call to `otel_init`. You can configure the underlying SDK with the same variables as any other OpenTelemetry SDK as described <a href="https://opentelemetry.io/docs/languages/sdk-configuration/">here</a>. We recommend not just setting the environment variables, but also exporting them so that automatically injected children inherit the same configuration.
@@ -244,9 +247,6 @@ otel_init
 # ... 
 otel_shutdown
 ```
-
-### Self Monitoring of GitHub Instrumentations and Data Collection
-To steer roadmap and maintenance efforts, job-level and workflow-level instrumentations report high-level usage metrics to the maintainers. This data includes invocation counts of the individual instrumentations and features therein, as well as resuable action names (e.g., `actions/checkout`), runner operating systems (e.g., `ubuntu`), architectures (e.g., `x64`) and types (e.g., `self-hosted`). The data is automatically collected for all repositories that are hosted on GitHub SaaS. For self-hosted GitHub servers, no data at all is collected. In all cases, no workflow data, code, secrets, artifacts, dynamic data or any personal data is collected. This default behavior can be overwritten on job-level and workflow-level instrumentations with the `self_monitoring` and `self_monitoring_anonymize` parameters.
 
 ## Configuration
 You can configure the underlying SDK with the same variables as any other OpenTelemetry SDK as described <a href="https://opentelemetry.io/docs/languages/sdk-configuration/">here</a>. Currently only the `otlp`, `console`, and `none` exporters are supported. In addition to that, use the following environment variables to further configure behavior of this project:
