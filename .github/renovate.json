@@ -36,7 +36,30 @@
         "/^README\\.md$/"
       ],
       "matchStrings": [
-        "plengauer/Thoth/actions/instrument/deploy@(?<currentValue>[\\w.-]+)"
+        "plengauer/Thoth/actions/instrument/deploy@(?<currentValue>[\\w.-]+)",
+        "plengauer/opentelemetry-github/actions/instrument/deploy@(?<currentValue>[\\w.-]+)"
+      ],
+      "depNameTemplate": "plengauer/Thoth/actions/instrument/deploy",
+      "datasourceTemplate": "github-tags"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^README\\.md$/"
+      ],
+      "matchStrings": [
+        "plengauer/opentelemetry-github/actions/instrument/workflow@(?<currentValue>[\\w.-]+)"
+      ],
+      "depNameTemplate": "plengauer/Thoth/actions/instrument/deploy",
+      "datasourceTemplate": "github-tags"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^README\\.md$/"
+      ],
+      "matchStrings": [
+        "plengauer/opentelemetry-github/actions/instrument/job@(?<currentValue>[\\w.-]+)"
       ],
       "depNameTemplate": "plengauer/Thoth/actions/instrument/deploy",
       "datasourceTemplate": "github-tags"
