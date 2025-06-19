@@ -15,9 +15,9 @@ _otel_inject_python() {
       if \[ "${OTEL_SHELL_CONFIG_INJECT_DEEP:-FALSE}" = TRUE ]; then
         local command="$1"; shift
         set -- "$command" -c "
-import re
-import sys
-from opentelemetry.instrumentation.auto_instrumentation import run
+import re # SKIP_DEPENDENCY_CHECK
+import sys # SKIP_DEPENDENCY_CHECK
+from opentelemetry.instrumentation.auto_instrumentation import run # SKIP_DEPENDENCY_CHECK
 if __name__ == '__main__':
     sys.argv[0] = re.sub(r'(-script\.pyw|\.exe)?$', '', sys.argv[0])
     sys.exit(run())
