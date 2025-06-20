@@ -69,6 +69,8 @@ jobs:
     strategy:
       matrix:
         architecture: [ 'amd64', 'arm64' ]
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - run: mkdir src/usr/share/opentelemetry_shell/${{ matrix.architecture }}
@@ -77,10 +79,12 @@ jobs:
         with:
           name: bin_${{ matrix.architecture }}
           path: src/usr/share/opentelemetry_shell/${{ matrix.architecture }}
-  prepare-node:
+  list-node-versions:
     runs-on: ubuntu-latest
     outputs:
       versions: ${{ steps.dynamic.outputs.versions }}
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - run: cd src/usr/share/opentelemetry_shell/agent.instrumentation.node && npm install      
@@ -88,13 +92,15 @@ jobs:
         run: |
           seq "$(cat src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules/@opentelemetry/*/package.json | jq -r .engines.node | grep -v null | cut -d ' ' -f 1 | tr -d ^ | cut -d = -f 2 | cut -d . -f 1 | sort -n -u | tail -n 1)" "$(cat src/usr/share/opentelemetry_shell/agent.instrumentation.node/Dockerfile | grep '^FROM ' | cut -d ' ' -f 2 | cut -d : -f 2)" \
             | jq -s -c | xargs -0 -I {} echo 'versions={}' | tee /dev/stderr >> "$GITHUB_OUTPUT"
-  build-node:
-    needs: prepare-node
+  build-node-modules:
+    needs: list-node-versions
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: ${{ fromJSON(needs.prepare-node.outputs.versions) }}
+        version: ${{ fromJSON(needs.list-node-versions.outputs.versions) }}
       fail-fast: false
+    permissions:
+      contents: read
     steps:
       - uses: actions/setup-node@v4.4.0
         with:
@@ -105,10 +111,12 @@ jobs:
         with:
           name: node_modules_${{ matrix.version }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules
-  prepare-python:
+  list-python-versions:
     runs-on: ubuntu-latest
     outputs:
       versions: ${{ steps.dynamic.outputs.versions }}
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - run: python3 -m venv venv && . venv/bin/activate && pip3 install -r src/usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.txt
@@ -116,13 +124,15 @@ jobs:
         run: |
           seq "$(cat venv/lib/python*/site-packages/opentelemetry_*.dist-info/METADATA | grep '^Requires-Python: >=' | cut -d . -f 2 | sort -n -u | tail -n 1)" "$(cat src/usr/share/opentelemetry_shell/agent.instrumentation.python/Dockerfile | grep '^FROM ' | cut -d ' ' -f 2 | cut -d : -f 2 | cut -d . -f 2)" \
             | while read -r version; do echo '"'3."$version"'"'; done | jq -s -c | xargs -0 -I {} echo 'versions={}' | tee /dev/stderr >> "$GITHUB_OUTPUT"
-  build-python:
-    needs: prepare-python
+  build-python-site-packages:
+    needs: list-python-versions
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: ${{ fromJSON(needs.prepare-python.outputs.versions) }}
+        version: ${{ fromJSON(needs.list-python-versions.outputs.versions) }}
       fail-fast: false
+    permissions:
+      contents: read
     steps:
       - uses: actions/setup-python@v4.4.0
         with:
@@ -144,7 +154,7 @@ jobs:
         with:
           name: python_site_packages_${{ matrix.version }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.python/venv/lib/python${{ matrix.version }}/site-packages
-  build-java:
+  build-java-agents:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/setup-java@v4.7.1
@@ -167,7 +177,7 @@ jobs:
           name: java
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.java/*.jar
   build:
-    needs: [build-httpheader, build-node, build-python, build-java] # [verify-python-dependency, verify-debian-dependencies, verify-triggers, build-httpheader, build-node, build-python, build-java] # TODO
+    needs: [build-httpheader, build-node-modules, build-python-site-packages, build-java-agents] # [verify-python-dependency, verify-debian-dependencies, verify-triggers, build-httpheader, build-node-modules, build-python-site-packages, build-java-agents] # TODO
     runs-on: ubuntu-latest
     permissions:
       contents: read
