@@ -68,17 +68,17 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        architecture: [ 'amd64', 'arm64' ]
+        architecture: [ 'x86_64', 'arm64' ]
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@v4
-      - run: mkdir src/usr/share/opentelemetry_shell/${{ matrix.architecture }}
-      - run: gcc -shared -fPIC -o src/usr/share/opentelemetry_shell/${{ matrix.architecture }}/libinjecthttpheader.so src/usr/share/opentelemetry_shell/agent.injection.http_header.c -ldl
+      - run: mkdir -p src/usr/share/opentelemetry_shell/bin/${{ matrix.architecture }}
+      - run: gcc -shared -fPIC -o src/usr/share/opentelemetry_shell/bin/${{ matrix.architecture }}/libinjecthttpheader.so src/usr/share/opentelemetry_shell/agent.injection.http_header.c -ldl
       - uses: actions/upload-artifact@v4
         with:
           name: bin_${{ matrix.architecture }}
-          path: src/usr/share/opentelemetry_shell/${{ matrix.architecture }}
+          path: src/usr/share/opentelemetry_shell/bin/${{ matrix.architecture }}
   list-node-versions:
     runs-on: ubuntu-latest
     outputs:
@@ -193,6 +193,7 @@ jobs:
       - uses: actions/checkout@v4.2.2
       - run: find src -iname 'Dockerfile' -type f | xargs -r rm
       - run: find src -iname '*.c' -type f | xargs -r rm
+      - run: mkdir -p src/usr/share/opentelemetry_shell/bin
       - uses: actions/download-artifact@v4
         with:
           pattern: bin_*
