@@ -182,6 +182,7 @@ jobs:
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
       - run: sudo apt-get update && sudo apt-get install devscripts debhelper alien
       - uses: actions/checkout@v4.2.2
+      - run: find src -iname 'Dockerfile' -type f | xargs -r rm
       - run: find src -iname '*.c' -type f | xargs -r rm
       - uses: actions/download-artifact@v4
         with:
