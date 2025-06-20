@@ -198,6 +198,12 @@ jobs:
         with:
           pattern: bin_*
           path: src/usr/share/opentelemetry_shell/
+      - run: |
+          ls src/usr/share/opentelemetry_shell/ | grep '^bin_' | while read -r directory_name; do echo "${directory#*_}"; done | while read -r architecture; do
+            mkdir -p src/usr/share/opentelemetry_shell/bin/"$architecture"
+            mv src/usr/share/opentelemetry_shell/bin_"$architecture"/* src/usr/share/opentelemetry_shell/bin/"$architecture"/
+            rm -rf src/usr/share/opentelemetry_shell/bin_"$architecture"
+          done
       - uses: actions/download-artifact@v4
         with:
           pattern: node_modules_*
