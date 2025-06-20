@@ -87,7 +87,7 @@ jobs:
       - id: dynamic
         run: |
           seq "$(cat src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules/@opentelemetry/*/package.json | jq -r .engines.node | grep -v null | cut -d ' ' -f 1 | tr -d ^ | cut -d = -f 2 | cut -d . -f 1 | sort -n -u | tail -n 1)" "$(cat src/usr/share/opentelemetry_shell/agent.instrumentation.node/Dockerfile | grep '^FROM ' | cut -d ' ' -f 2 | cut -d : -f 2)" \
-            | while read -r version; do echo "\"$version\""; done | jq -s tostring | xargs -0 -I {} echo 'versions={}' | tee /dev/stderr >> "$GITHUB_OUTPUT"
+            | jq -s -c | xargs -0 -I {} echo 'versions={}' | tee /dev/stderr >> "$GITHUB_OUTPUT"
   build-node:
     needs: prepare-node
     runs-on: ubuntu-latest
@@ -115,7 +115,7 @@ jobs:
       - id: dynamic
         run: |
           seq "$(cat venv/lib/python*/site-packages/opentelemetry_*.dist-info/METADATA | grep '^Requires-Python: >=' | cut -d . -f 2 | sort -n -u | tail -n 1)" "$(cat src/usr/share/opentelemetry_shell/agent.instrumentation.python/Dockerfile | grep '^FROM ' | cut -d ' ' -f 2 | cut -d : -f 2 | cut -d . -f 2)" \
-            | while read -r version; do echo "\"3.$version\""; done | jq -s tostring | xargs -0 -I {} echo 'versions={}' | tee /dev/stderr >> "$GITHUB_OUTPUT"
+            | while read -r version; do echo 3."$version"; done | jq -s -c | xargs -0 -I {} echo 'versions={}' | tee /dev/stderr >> "$GITHUB_OUTPUT"
   build-python:
     needs: prepare-python
     runs-on: ubuntu-latest
