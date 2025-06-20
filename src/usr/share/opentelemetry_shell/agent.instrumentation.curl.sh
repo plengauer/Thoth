@@ -19,7 +19,7 @@ _otel_propagate_curl() {
   if _otel_string_contains "$(_otel_dollar_star "$@")" " -v "; then local is_verbose=1; else local is_verbose=0; fi
   local stderr_pipe="$(\mktemp -u)_opentelemetry_shell_$$.stderr.curl.pipe"
   \mkfifo "$stderr_pipe"
-  _otel_pipe_curl_stderr "$is_verbose" "$OTEL_SHELL_INJECT_HTTP_HANDLE_FILE" < "$stderr_pipe" >&2 &
+  _otel_pipe_curl_stderr "$is_verbose" "${OTEL_SHELL_INJECT_HTTP_HANDLE_FILE:-}" < "$stderr_pipe" >&2 &
   local stderr_pid="$!"
   local exit_code=0
   _otel_call "$@" -H "traceparent: $TRACEPARENT" -H "tracestate: $TRACESTATE" -v --no-progress-meter 2> "$stderr_pipe" || exit_code="$?"
