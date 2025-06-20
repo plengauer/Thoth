@@ -200,7 +200,6 @@ jobs:
           path: src/usr/share/opentelemetry_shell/
       - run: |
           ls src/usr/share/opentelemetry_shell/ | grep '^bin_' | while read -r directory_name; do echo "${directory_name#bin_}"; done | while read -r architecture; do
-            set -x
             mkdir -p src/usr/share/opentelemetry_shell/bin/"$architecture"
             mv src/usr/share/opentelemetry_shell/bin_"$architecture"/* src/usr/share/opentelemetry_shell/bin/"$architecture"/
             rm -rf src/usr/share/opentelemetry_shell/bin_"$architecture"
@@ -220,7 +219,6 @@ jobs:
         with:
           name: java
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.java/
-      - run: ls src/usr/share/opentelemetry_shell/bin/* src/usr/share/opentelemetry_shell/bin_*
       - run: sed -i "s/__VERSION__/$(cat VERSION)/g" src/DEBIAN/control
       - run: cd src && dpkg-deb --root-owner-group -Zgzip --build . ../package.deb
       - run: |
