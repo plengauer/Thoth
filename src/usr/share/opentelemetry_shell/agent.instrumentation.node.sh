@@ -18,7 +18,12 @@ _otel_inject_node_args() {
   local command="$1"
   _otel_escape_arg "$1"
   shift
-  \echo -n ' '; _otel_escape_args --require /usr/share/opentelemetry_shell/agent.instrumentation.node/deep.inject.js # make sure we use only the correct node module version
+  local version="$("$command" --version)"
+  local version="${version#v}"
+  local version="${version%%.*}"
+  if \[ -d /usr/share/opentelemetry_shell/agent.instrumentation.node/"$version" ]; then
+    \echo -n ' '; _otel_escape_args --require /usr/share/opentelemetry_shell/agent.instrumentation.node/"$version"/deep.inject.js
+  fi
   while \[ "$#" -gt 0 ]; do
     \echo -n ' '
     if \[ "$1" = -e ] || \[ "$1" = --eval ] || \[ "$1" = -p ] || \[ "$1" = --print ]; then
@@ -28,7 +33,7 @@ _otel_inject_node_args() {
     elif _otel_string_starts_with "$1" -; then
       _otel_escape_arg "$1"; shift
     else
-      if \[ "${OTEL_SHELL_CONFIG_INJECT_DEEP:-FALSE}" = TRUE ] && \[ "$("$command" --version | \cut -d v -f 2 | \cut -d . -f 1)" -ge 14 ]; then
+      if \[ "${OTEL_SHELL_CONFIG_INJECT_DEEP:-FALSE}" = TRUE ] && \[ -d /usr/share/opentelemetry_shell/agent.instrumentation.node/"$version" ]; then
         if \[ "${next_is_code:-FALSE}" = TRUE ]; then
           _otel_escape_arg "$1"; \echo -n ' '
           local base_dir="$(\echo "$1" | \rev | \cut -d / -f 2- | \rev)"
