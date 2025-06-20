@@ -106,11 +106,18 @@ jobs:
         with:
           node-version: ${{ matrix.version }}
       - uses: actions/checkout@v4
-      - run: cd src/usr/share/opentelemetry_shell/agent.instrumentation.node && npm install && npm prune
+      - run: |
+          cd src/usr/share/opentelemetry_shell/agent.instrumentation.node
+          npm install
+          npm prune
+          mkdir ${{ matrix.version }}
+          mv node_modules ${{ matrix.version }}/
+          cd ${{ matrix.version }}
+          ls .. | grep '.js$' | while read -r file; do ln --symbolic ../"$file" "$file"; done
       - uses: actions/upload-artifact@v4
         with:
           name: node_modules_${{ matrix.version }}
-          path: src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules
+          path: src/usr/share/opentelemetry_shell/agent.instrumentation.node/${{ matrix.version }}
   list-python-versions:
     runs-on: ubuntu-latest
     outputs:
