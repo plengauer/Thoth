@@ -18,7 +18,7 @@ _otel_inject_node_args() {
   local command="$1"
   _otel_escape_arg "$1"
   shift
-  local version="$("$command" --version)"
+  local version="$("${command#\\}" --version)"
   local version="${version#v}"
   local version="${version%%.*}"
   if \[ -d /usr/share/opentelemetry_shell/agent.instrumentation.node/"$version" ]; then
