@@ -110,14 +110,30 @@ jobs:
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.node
           npm install
           npm prune
-          mkdir ${{ matrix.version }}
-          mv node_modules ${{ matrix.version }}/
-          cd ${{ matrix.version }}
-          ls .. | grep '.js$' | while read -r file; do ln --symbolic ../"$file" "$file"; done
       - uses: actions/upload-artifact@v4
         with:
           name: node_modules_${{ matrix.version }}
-          path: src/usr/share/opentelemetry_shell/agent.instrumentation.node/${{ matrix.version }}
+          path: src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules
+  merge-node-modules:
+    needs: build-node-modules
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: node_modules_*
+      - run: |
+          ls | grep '^node_modules_' | while read -r directory_name; do echo "${directory_name#node_modules_}"; done | while read -r version; do
+            mkdir "$version"
+            mv node_modules_"$version" "$version"/node_modules
+          done
+      - run: echo hello world # TODO flatten
+      - run: zip -9 node_modules.zip *
+      - uses: actions/upload-artifact@v4
+        with:
+          name: node_modules
+          path: node_modules.zip
   list-python-versions:
     runs-on: ubuntu-latest
     outputs:
@@ -161,6 +177,26 @@ jobs:
         with:
           name: python_site_packages_${{ matrix.version }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.python/venv/lib/python${{ matrix.version }}/site-packages
+  merge-python-site-packages:
+    needs: build-node-modules
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: python_site_packages_*
+      - run: |
+          ls | grep '^python_site_packages' | while read -r directory_name; do echo "${directory_name#python_site_packages_}"; done | while read -r version; do
+            mkdir "$version"
+            mv python_site_packages_"$version" "$version"/site-packages
+          done
+      - run: echo hello world # TODO flatten
+      - run: zip -9 python_site_packages.zip *
+      - uses: actions/upload-artifact@v4
+        with:
+          name: python_site_packages
+          path: python_site_packages.zip
   build-java-agents:
     runs-on: ubuntu-latest
     steps:
@@ -184,7 +220,7 @@ jobs:
           name: java
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.java/*.jar
   build:
-    needs: [build-httpheader, build-node-modules, build-python-site-packages, build-java-agents] # [verify-python-dependency, verify-debian-dependencies, verify-triggers, build-httpheader, build-node-modules, build-python-site-packages, build-java-agents] # TODO
+    needs: [build-httpheader, merge-node-modules, merge-python-site-packages, build-java-agents] # [verify-python-dependency, verify-debian-dependencies, verify-triggers, build-httpheader, merge-node-modules, merge-python-site-packages, build-java-agents] # TODO
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -213,25 +249,19 @@ jobs:
           done
       - uses: actions/download-artifact@v4
         with:
-          pattern: node_modules_*
-          path: src/usr/share/opentelemetry_shell/agent.instrumentation.node/
-      - run: |
-          ls src/usr/share/opentelemetry_shell/agent.instrumentation.node/ | grep '^node_modules_' | while read -r directory_name; do echo "${directory_name#node_modules_}"; done | while read -r version; do
-            mv src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules_"$version" src/usr/share/opentelemetry_shell/agent.instrumentation.node/"$version"
-          done
+          pattern: node_modules
+          path: src/usr/share/opentelemetry_shell/agent.instrumentation.node
       - uses: actions/download-artifact@v4
         with:
-          pattern: python_site_packages_*
-          path: src/usr/share/opentelemetry_shell/agent.instrumentation.python/
+          pattern: python_site_packages
+          path: src/usr/share/opentelemetry_shell/agent.instrumentation.python
       - run: find src -iname '*.java' -type f | xargs -r rm
       - run: find src -iname 'manifest.txt' -type f | xargs -r rm
       - run: find src -iname 'pom.xml' -type f | xargs -r rm
       - uses: actions/download-artifact@v4
         with:
           name: java
-          path: src/usr/share/opentelemetry_shell/agent.instrumentation.java/
-      - run: ls src/usr/share/opentelemetry_shell/agent.instrumentation.node
-      - run: ls src/usr/share/opentelemetry_shell/agent.instrumentation.node/*
+          path: src/usr/share/opentelemetry_shell/agent.instrumentation.java
       - run: sed -i "s/__VERSION__/$(cat VERSION)/g" src/DEBIAN/control
       - run: cd src && dpkg-deb --root-owner-group -Zgzip --build . ../package.deb
       - run: |
