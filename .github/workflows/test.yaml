@@ -215,6 +215,10 @@ jobs:
         with:
           pattern: node_modules_*
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.node/
+      - run: |
+          ls src/usr/share/opentelemetry_shell/agent.instrumentation.node/ | grep '^node_modules_' | while read -r directory_name; do echo "${directory_name#node_modules_}"; done | while read -r version; do
+            mv src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules_"$version" src/usr/share/opentelemetry_shell/agent.instrumentation.node/"$version"
+          done
       - uses: actions/download-artifact@v4
         with:
           pattern: python_site_packages_*
