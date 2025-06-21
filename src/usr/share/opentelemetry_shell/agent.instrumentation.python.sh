@@ -11,7 +11,7 @@ _otel_inject_python() {
     if _otel_can_inject_python_otel; then
       unset _otel_python_code_source _otel_python_file _otel_python_module _otel_python_command
       \eval "set -- $(_otel_python_inject_args "$@")"
-      local python_path=/usr/share/opentelemetry_shell/agent.instrumentation.python/python_site_packages_"$version"/:"$python_path"
+      local python_path=/usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"/site-packages/:"$python_path"
       if \[ "${OTEL_SHELL_CONFIG_INJECT_DEEP:-FALSE}" = TRUE ]; then
         local command="$1"; shift
         set -- "$command" -c "
