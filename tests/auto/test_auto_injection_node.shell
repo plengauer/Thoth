@@ -60,6 +60,7 @@ assert_not_equals null $(\echo "$span" | jq -r '.parent_id')
 # lets check with the above test if it works on any node version, but lets not rely on instrumentations actually working
 
 [ "$(node -v | tr -d v | cut -d . -f 1)" -ge 14 ] || exit 0
+exit 1
 
 directory="$(mktemp -d)"
 echo "
