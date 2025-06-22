@@ -90,7 +90,7 @@ jobs:
       - run: |
           mkdir bin
           ls | grep '^http_' | while read -r directory_name; do echo "${directory_name#http_}"; done | while read -r architecture; do
-            mv httpheader_"$architecture" bin/"$architecture"
+            mv http_"$architecture" bin/"$architecture"
           done
       - uses: actions/upload-artifact@v4.0.0
         with:
