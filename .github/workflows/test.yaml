@@ -195,7 +195,7 @@ jobs:
           name: python_site_packages_${{ matrix.version }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.python/venv/lib/python${{ matrix.version }}/site-packages
   merge-python-site-packages:
-    needs: build-node-modules
+    needs: build-python-site-packages
     runs-on: ubuntu-latest
     permissions:
       contents: read
