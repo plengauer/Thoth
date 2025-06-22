@@ -307,9 +307,8 @@ jobs:
   shell:
     needs: build
     permissions:
-      actions: read
       contents: read
-    uses: ./.github/workflows/test_github.yaml
+    uses: ./.github/workflows/test_shell.yaml
     secrets: inherit
   github:
     needs: build
@@ -328,7 +327,7 @@ jobs:
       pull-requests: none
       security-events: none
       statuses: none
-    uses: ./.github/workflows/test_shell.yaml
+    uses: ./.github/workflows/test_github.yaml
     secrets: inherit
   join:
     needs: [shell, github]
