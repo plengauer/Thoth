@@ -4,7 +4,26 @@ on:
 env:
   OTEL_SHELL_CONFIG_GITHUB_IS_TEST: 'TRUE'
 jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/download-artifact@v4.3.0
+        with:
+          name: packages
+      - uses: ./actions/instrument/job
+        with:
+          cache: 'false'
+        env:
+          OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
+          OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
+      - run: echo hello world
   job-node:
+    needs: smoke
     runs-on: ubuntu-latest
     timeout-minutes: 60
     permissions:
@@ -25,6 +44,7 @@ jobs:
         with:
           name: packages
   job-docker:
+    needs: smoke
     runs-on: ubuntu-latest
     timeout-minutes: 60
     permissions:
@@ -63,6 +83,7 @@ jobs:
             update=TRUE
             shell=bash
   job-run:
+    needs: smoke
     runs-on: ubuntu-latest
     timeout-minutes: 60
     permissions:
@@ -87,6 +108,7 @@ jobs:
       - run: | # check if traceparent is injected
           [ -n "$TRACEPARENT" ]
   job-composite:
+    needs: smoke
     runs-on: ubuntu-latest
     timeout-minutes: 60
     permissions:
@@ -107,6 +129,7 @@ jobs:
         with:
           github_token: ${{ github.token }}
   job-integration:
+    needs: smoke
     runs-on: ubuntu-latest
     timeout-minutes: 60
     permissions:
@@ -130,6 +153,7 @@ jobs:
           RENOVATE_REPOSITORIES: ${{ github.repository }}
           LOG_LEVEL: debug
   job-io-1:
+    needs: smoke
     runs-on: ubuntu-latest
     timeout-minutes: 60
     permissions:
@@ -169,6 +193,7 @@ jobs:
       - run: |
           [ ${{ needs.job-io-1.outputs.foo }} = bar ]
   job-cache:
+    needs: smoke
     runs-on: ubuntu-latest
     timeout-minutes: 60
     strategy:
@@ -191,6 +216,7 @@ jobs:
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
       - run: echo hello world
   job-exporter-local:
+    needs: smoke
     runs-on: ubuntu-latest
     timeout-minutes: 60
     permissions:
@@ -224,6 +250,7 @@ jobs:
       - run: cat /tmp/http.log | grep -q '^POST /v1/metrics$'
       - run: cat /tmp/http.log | grep -q '^POST /v1/traces$'
   job-exporter-global:
+    needs: smoke
     runs-on: ubuntu-latest
     timeout-minutes: 60
     strategy:
@@ -265,6 +292,7 @@ jobs:
       - run: cat /tmp/http.log | grep -q '^POST /v1/traces$'
         if: ${{ matrix.exporter_traces == 'otlp' }}
   job-permissions-restricted:
+    needs: smoke
     runs-on: ubuntu-latest
     timeout-minutes: 60
     permissions: # according to https://docs.github.com/en/actions/security-for-github-actions/security-guides/automatic-token-authentication
@@ -293,6 +321,7 @@ jobs:
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
       - run: echo hello world >&2
   job-selfmonitoring:
+    needs: smoke
     runs-on: ubuntu-latest
     timeout-minutes: 60
     strategy:
@@ -321,6 +350,7 @@ jobs:
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
       - run: echo hello world
   workflow:
+    needs: smoke
     runs-on: ubuntu-latest
     timeout-minutes: 180
     strategy:
@@ -378,6 +408,7 @@ jobs:
           cat "$OTLP_JSON" | jq -r .name | grep -v '^null$' | sort -u | grep 'Complete job'
           # cat "$OTLP_JSON" | jq -r .body | grep -v '^null$' | sort -u | grep 'Cleaning up orphan processes'
   deploy:
+    needs: smoke
     runs-on: ubuntu-latest
     timeout-minutes: 60
     permissions:
