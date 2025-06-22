@@ -251,10 +251,12 @@ jobs:
         with:
           pattern: node_modules
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.node
+      - run: mv src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules/* src/usr/share/opentelemetry_shell/agent.instrumentation.node && rm -rf src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules
       - uses: actions/download-artifact@v4
         with:
           pattern: python_site_packages
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.python
+      - run: mv src/usr/share/opentelemetry_shell/agent.instrumentation.python/python_site_packages/* src/usr/share/opentelemetry_shell/agent.instrumentation.python && rm -rf src/usr/share/opentelemetry_shell/agent.instrumentation.python/python_site_packages
       - run: find src -iname '*.java' -type f | xargs -r rm
       - run: find src -iname 'manifest.txt' -type f | xargs -r rm
       - run: find src -iname 'pom.xml' -type f | xargs -r rm
