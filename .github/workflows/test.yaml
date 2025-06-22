@@ -87,7 +87,7 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
-      - run: cd src/usr/share/opentelemetry_shell/agent.instrumentation.node && npm install      
+      - run: cd src/usr/share/opentelemetry_shell/agent.instrumentation.node && npm install
       - id: dynamic
         run: |
           seq "$(cat src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules/@opentelemetry/*/package.json | jq -r .engines.node | grep -v null | cut -d ' ' -f 1 | tr -d ^ | cut -d = -f 2 | cut -d . -f 1 | sort -n -u | tail -n 1)" "$(cat src/usr/share/opentelemetry_shell/agent.instrumentation.node/Dockerfile | grep '^FROM ' | cut -d ' ' -f 2 | cut -d : -f 2)" \
@@ -207,7 +207,7 @@ jobs:
       - uses: actions/checkout@v4
       - run: |
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.java
-          groupId="$(cat pom.xml | grep groupId | cut -d '>' -f 2- | cut -d '<' -f 1)" 
+          groupId="$(cat pom.xml | grep groupId | cut -d '>' -f 2- | cut -d '<' -f 1)"
           artifactId="$(cat pom.xml | grep artifactId | cut -d '>' -f 2- | cut -d '<' -f 1)"
           version="$(cat pom.xml | grep version | cut -d '>' -f 2- | cut -d '<' -f 1)"
           wget https://repo1.maven.org/maven2/"$(echo "$groupId" | tr '.' '/')"/"$artifactId"/"$version"/"$artifactId"-"$version".jar -O opentelemetry-javaagent.jar
@@ -234,8 +234,14 @@ jobs:
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
       - run: sudo apt-get update && sudo apt-get install devscripts debhelper alien
       - uses: actions/checkout@v4.2.2
-      - run: find src -iname 'Dockerfile' -type f | xargs -r rm
-      - run: find src -iname '*.c' -type f | xargs -r rm
+      - run: |
+          {
+            find src -iname 'Dockerfile' -type f
+            find src -iname '*.c' -type f
+            find src -iname '*.java' -type f
+            find src -iname 'manifest.txt' -type f
+            find src -iname 'pom.xml' -type f
+          } | xargs -r rm
       - run: mkdir -p src/usr/share/opentelemetry_shell/bin
       - uses: actions/download-artifact@v4
         with:
@@ -257,9 +263,6 @@ jobs:
           pattern: python_site_packages
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.python
       - run: mv src/usr/share/opentelemetry_shell/agent.instrumentation.python/python_site_packages/* src/usr/share/opentelemetry_shell/agent.instrumentation.python && rm -rf src/usr/share/opentelemetry_shell/agent.instrumentation.python/python_site_packages
-      - run: find src -iname '*.java' -type f | xargs -r rm
-      - run: find src -iname 'manifest.txt' -type f | xargs -r rm
-      - run: find src -iname 'pom.xml' -type f | xargs -r rm
       - uses: actions/download-artifact@v4
         with:
           name: java
