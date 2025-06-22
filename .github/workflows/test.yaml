@@ -28,6 +28,7 @@ jobs:
           . venv/bin/activate
           pip3 install -r src/opt/opentelemetry_shell/requirements.txt
           deactivate
+          set -x
           min_version_otel="$(cat venv/lib/python*/site-packages/opentelemetry_api-*.dist-info/METADATA | grep '^Requires-Python: ' | cut -d ' ' -f 2 | cut -d . -f 2-)"
           min_version_otel="${min_version_otel:-9}"
           min_version_shell="$(cat src/DEBIAN/control | grep '^Pre-Depends:' | tr ',' '\n' | grep -F -- 'python3 (>=' | cut -d '(' -f 2- | cut -d ')' -f 1 | cut -d ' ' -f 2 | cut -d . -f 2)"
