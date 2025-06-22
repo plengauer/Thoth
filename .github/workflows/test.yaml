@@ -307,6 +307,7 @@ jobs:
   shell:
     needs: build
     permissions:
+      actions: read
       contents: read
     uses: ./.github/workflows/test_github.yaml
     secrets: inherit
