@@ -21,7 +21,6 @@ jobs:
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
-      - run: echo hello world
   job-node:
     needs: smoke
     runs-on: ubuntu-latest
