@@ -656,6 +656,7 @@ jobs:
     uses: ./.github/workflows/test_github.yaml
     secrets: inherit
   prepare-performance:
+    needs: smoke
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.dynamic-matrix.outputs.matrix }}
