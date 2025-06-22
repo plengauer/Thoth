@@ -194,8 +194,8 @@ jobs:
     timeout-minutes: 15
     strategy:
       matrix:
-        image: ${{ fromJSON(needs.list-dependencies.outputs.images) }}
-        dependency: ${{ fromJSON(needs.prepare-dependency.outputs.dependencies) }}
+        image: ${{ fromJSON(needs.list-images.outputs.images) }}
+        dependency: ${{ fromJSON(needs.list-dependencies.outputs.dependencies) }}
       fail-fast: false
     permissions:
       contents: read
