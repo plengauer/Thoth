@@ -12,6 +12,8 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
     pip3 check
     deactivate # SKIP_DEPENDENCY_CHECK
   fi
+  unzip /usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules.zip -d /usr/share/opentelemetry_shell/agent.instrumentation.node/
+  unzip /usr/share/opentelemetry_shell/agent.instrumentation.node/python_site_packages.zip -d /usr/share/opentelemetry_shell/agent.instrumentation.python/
 else
   exit 1
 fi
