@@ -237,7 +237,7 @@ jobs:
           name: java
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.java/*.jar
   build:
-    needs: [verify-python-dependency, verify-debian-dependencies, build-httpheader, merge-node-modules, merge-python-site-packages, build-java-agents]
+    needs: [verify-python-dependency, verify-debian-dependencies, merge-http, merge-node-modules, merge-python-site-packages, build-java-agents]
     runs-on: ubuntu-latest
     permissions:
       contents: read
