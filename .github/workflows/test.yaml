@@ -128,9 +128,8 @@ jobs:
             mkdir "$version"
             mv node_modules_"$version" "$version"/node_modules
           done
-      - run: find .
       - run: echo hello world # TODO flatten
-      - run: zip -9 node_modules.zip *
+      - run: zip -r9 node_modules.zip *
       - uses: actions/upload-artifact@v4
         with:
           name: node_modules
@@ -193,7 +192,7 @@ jobs:
             mv python_site_packages_"$version" "$version"/site-packages
           done
       - run: echo hello world # TODO flatten
-      - run: zip -9 python_site_packages.zip *
+      - run: zip -r9 python_site_packages.zip *
       - uses: actions/upload-artifact@v4
         with:
           name: python_site_packages
