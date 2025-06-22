@@ -15,7 +15,7 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
   export PATH=/usr/local/bin:"$PATH"
   if type node; then
     tar -xJf /usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules.tar.xz -C /usr/share/opentelemetry_shell/agent.instrumentation.node/
-    ls /usr/share/opentelemetry_shell/agent.instrumentation.node | grep -v '.json$' | grep -v '.js$' | grep -v '.zip$' | while read -r directory; do
+    ls /usr/share/opentelemetry_shell/agent.instrumentation.node | grep -v '.json$' | grep -v '.js$' | grep -v '.tar$' | while read -r directory; do
       ls /usr/share/opentelemetry_shell/agent.instrumentation.node | grep '.js$' | while read -r file; do
         cp /usr/share/opentelemetry_shell/agent.instrumentation.node/"$file" /usr/share/opentelemetry_shell/agent.instrumentation.node/"$directory"/"$file"
       done
