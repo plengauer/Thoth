@@ -254,7 +254,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        image: ${{ fromJSON(needs.prepare-images.outputs.images) }}
+        image: ${{ fromJSON(needs.list-images.outputs.images) }}
       fail-fast: false
     permissions:
       contents: read
