@@ -73,9 +73,9 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4.2.2
-      - if: ${{ matrix.architecture }} == 'x86_64' 
+      - if: ${{ matrix.architecture == 'x86_64' }} 
         run: gcc -shared -fPIC -o src/usr/share/opentelemetry_shell/agent.instrumentation.http/libinjecthttpheader.so src/usr/share/opentelemetry_shell/agent.instrumentation.http/agent.injection.http_header.c -ldl
-      - if: ${{ matrix.architecture }} == 'arm64'
+      - if: ${{ matrix.architecture == 'arm64' }}
         run: |
           sudo apt install gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
           aarch64-linux-gnu-gcc -shared -fPIC -o src/usr/share/opentelemetry_shell/agent.instrumentation.http/libinjecthttpheader.so src/usr/share/opentelemetry_shell/agent.instrumentation.http/agent.injection.http_header.c -ldl
