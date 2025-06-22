@@ -26,7 +26,7 @@ jobs:
       - run: |
           python3 -m venv venv
           . venv/bin/activate
-          pip3 install -r src/opt/opentelemetry_shell/sdk/requirements.txt
+          pip3 install -r src/opt/opentelemetry_shell/requirements.txt
           deactivate
           min_version_otel="$(cat venv/lib/python*/site-packages/opentelemetry_api-*.dist-info/METADATA | grep '^Requires-Python: ' | cut -d ' ' -f 2 | cut -d . -f 2-)"
           min_version_otel="${min_version_otel:-9}"
@@ -220,7 +220,7 @@ jobs:
           name: java
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.java/*.jar
   build:
-    needs: [build-httpheader, merge-node-modules, merge-python-site-packages, build-java-agents] # [verify-python-dependency, verify-debian-dependencies, verify-triggers, build-httpheader, merge-node-modules, merge-python-site-packages, build-java-agents] # TODO
+    needs: [verify-python-dependency, verify-debian-dependencies, build-httpheader, merge-node-modules, merge-python-site-packages, build-java-agents]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -323,7 +323,8 @@ jobs:
       - run: sudo apt-get -y install ./package.deb
       - run: bash -c "cd tests && bash run_tests.sh bash"
       - run: sudo apt-get -y remove opentelemetry-shell
-  prepare-upgrade:
+  list-released-versions:
+    needs: smoke
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.dynamic-matrix.outputs.matrix }}
@@ -346,11 +347,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
   upgrade:
-    needs: [prepare-upgrade, smoke]
+    needs: [list-released-versions, smoke]
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
-      matrix: ${{ fromJSON(needs.prepare-upgrade.outputs.matrix) }}
+      matrix: ${{ fromJSON(needs.list-released-versions.outputs.matrix) }}
       fail-fast: false
     permissions:
       actions: read
@@ -364,7 +365,8 @@ jobs:
         with:
           name: packages
       - run: sudo apt-get -y install ./package.deb
-  prepare-images:
+  list-images:
+    needs: smoke
     runs-on: ubuntu-latest
     outputs:
       images: ${{ steps.dynamic.outputs.images }}
@@ -431,7 +433,8 @@ jobs:
           cat images.json | jq '.[] | select(.type != "dev")'                                                       | jq .image | sort -u | jq -s tostring | xargs -0 -I {} echo 'images={}' >> "$GITHUB_OUTPUT"
           cat images.json | jq '.[] | select(.type != "dev") | select(.type != "latest") | select(.os == "ubuntu")' | jq .image | sort -u | jq -s tostring | xargs -0 -I {} echo 'images_upgradeable={}' >> "$GITHUB_OUTPUT"
         id: dynamic
-  prepare-shells:
+  list-shells:
+    needs: smoke
     runs-on: ubuntu-latest
     outputs:
       shells: ${{ steps.dynamic.outputs.shells }}
@@ -453,12 +456,12 @@ jobs:
           } | sort -u | while read -r shell; do echo "\"$shell\""; done | jq -s tostring | xargs -0 -I {} echo 'shells={}' >> "$GITHUB_OUTPUT"
         id: dynamic
   system-upgrade:
-    needs: [prepare-images, smoke]
+    needs: [list-images, smoke]
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
       matrix:
-        image: ${{ fromJSON(needs.prepare-images.outputs.images_upgradeable) }}
+        image: ${{ fromJSON(needs.list-images.outputs.images_upgradeable) }}
       fail-fast: false
     permissions:
       actions: read
@@ -467,7 +470,8 @@ jobs:
         with:
           name: packages
       - run: "echo '\n  apt-get update\n  apt-get -y install /root/package.deb \n  apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y dist-upgrade && apt-get -y autoremove && apt-get -y autoclean\n  case \"$(cat /etc/os-release | grep '^NAME=' | cut -d = -f 2 | tr -d \"\\\"\")\" in\n    Ubuntu)\n      DEBIAN_FRONTEND=noninteractive apt-get -y install sed systemctl update-manager-core\n      sed -i \"/Prompt/d\" /etc/update-manager/release-upgrades && echo \"Prompt=normal\" >> /etc/update-manager/release-upgrades\n      do-release-upgrade -c || exit 0 && RELEASE_UPGRADER_ALLOW_THIRD_PARTY=1 do-release-upgrade -f DistUpgradeViewNonInteractive\n      ;;\n    Debian*)\n      DEBIAN_FRONTEND=noninteractive apt-get -y install curl sed\n      version_destination=\"$(curl -sL https://deb.debian.org/debian/dists/testing/InRelease | grep \"^Codename:\" | cut -d \" \" -f 2)\"\n      version_source=\"$(cat /etc/os-release | grep '^VERSION_CODENAME' | cut -d = -f 2)\"\n      sed -i \"s/$version_source/$version_destination/g\" /etc/apt/sources.list /etc/apt/sources.list.d/*\n      sed -i \"s/oldstable/testing/g\" /etc/apt/sources.list /etc/apt/sources.list.d/*\n      sed -i \"s/stable/testing/g\" /etc/apt/sources.list /etc/apt/sources.list.d/*\n      ;;\n    *) exit 1;;\n  esac\n  apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y dist-upgrade && apt-get -y autoremove && apt-get -y autoclean\n' | sudo docker run -v $(pwd)/package.deb:/root/package.deb --rm --network=host -i --entrypoint=/bin/sh ${{ matrix.image }} -e\n"
-  prepare-dependency:
+  list-dependencies:
+    needs: smoke
     runs-on: ubuntu-latest
     outputs:
       dependencies: ${{ steps.dynamic.outputs.dependencies }}
@@ -488,7 +492,7 @@ jobs:
            | sort -u | while read -r dependency; do echo "\"$dependency\""; done | jq -s tostring | xargs -0 -I {} echo 'dependencies={}' >> "$GITHUB_OUTPUT"
         id: dynamic
   dependency:
-    needs: [prepare-dependency, prepare-images, smoke]
+    needs: [list-dependencies, list-images, smoke]
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
@@ -549,7 +553,7 @@ jobs:
       - run: cat INSTALL.sh | sh -e
       - run: type otel.sh
   install-manual-os:
-    needs: [prepare-images, smoke]
+    needs: [list-images, smoke]
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -574,7 +578,7 @@ jobs:
             echo type otel.sh
           } | sudo docker run --rm --network=host -i --entrypoint=/bin/sh ${{ matrix.image }} -e
   linux-shell:
-    needs: [prepare-images, prepare-shells, smoke]
+    needs: [list-images, list-shells, smoke]
     runs-on: ubuntu-latest
     timeout-minutes: 60
     strategy:
@@ -597,7 +601,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   windows-shell:
-    needs: [prepare-shells, smoke]
+    needs: [list-shells, smoke]
     runs-on: windows-latest
     timeout-minutes: 120
     strategy:
