@@ -20,9 +20,11 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
         ln --symbolic ../"$file" /usr/share/opentelemetry_shell/agent.instrumentation.node/"$directory"/"$file"
       done
     done
+    ls /usr/share/opentelemetry_shell/agent.instrumentation.node/*/
   fi
   if type python3; then
     unzip /usr/share/opentelemetry_shell/agent.instrumentation.python/python_site_packages.zip -d /usr/share/opentelemetry_shell/agent.instrumentation.python/
+    ls /usr/share/opentelemetry_shell/agent.instrumentation.python/*/
   fi
 else
   exit 1
