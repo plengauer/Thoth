@@ -20,7 +20,6 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
         cp /usr/share/opentelemetry_shell/agent.instrumentation.node/"$file" /usr/share/opentelemetry_shell/agent.instrumentation.node/"$directory"/"$file"
       done
     done
-    ls /usr/share/opentelemetry_shell/agent.instrumentation.node/*/
   fi
   if type python3; then
     tar -xJf /usr/share/opentelemetry_shell/agent.instrumentation.python/python_site_packages.tar.xz -C /usr/share/opentelemetry_shell/agent.instrumentation.python/
