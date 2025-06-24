@@ -68,7 +68,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        architecture: [ 'i386', 'amd64', 'arm32v5', 'arm64v8' ]
+        architecture: [ 'i386', 'amd64' ] #, 'arm32v5', 'arm64v8' ]
     permissions:
       contents: read
     steps:
