@@ -69,13 +69,13 @@ jobs:
     strategy:
       matrix:
         # architecture: [ 'i386', 'amd64', 'arm32v5', 'arm64v8' ]
-        architecture: [ 'amd64' ]
+        architecture: [ 'amd64', 'arm64v8' ]
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@v4.2.2
-      # - if: ${{ matrix.architecture != 'amd64' }}
-      #   run: sudo apt-get update && sudo apt-get install qemu binfmt-support qemu-user-static && sudo docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+      - if: ${{ matrix.architecture != 'amd64' }}
+        run: sudo apt-get update && sudo apt-get install qemu binfmt-support qemu-user-static && sudo docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
       - id: build
         run: |
           echo 'cd src/usr/share/opentelemetry_shell/agent.instrumentation.http/ && apt-get update 1>&2 && yes | apt-get install build-essential 1>&2 && gcc -shared -fPIC -o libinjecthttpheader.so agent.injection.http_header.c -ldl 1>&2 && arch' \
