@@ -77,7 +77,7 @@ jobs:
       #   run: sudo apt-get update && sudo apt-get install qemu binfmt-support qemu-user-static && sudo docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
       - id: build
         run: |
-          echo 'cd src/usr/share/opentelemetry_shell/agent.instrumentation.http/ && apt-get install build-essential && gcc -shared -fPIC -o libinjecthttpheader.so agent.injection.http_header.c -ldl && arch' \
+          echo 'cd src/usr/share/opentelemetry_shell/agent.instrumentation.http/ && gcc -shared -fPIC -o libinjecthttpheader.so agent.injection.http_header.c -ldl && arch' \
            | sudo docker run -i --rm --network host --platform linux/${{ matrix.architecture }} -v "$(pwd)"/src:/home/root/src -w /home/root ${{ matrix.architecture }}/debian:oldstable | xargs -0 -I {} echo 'architecture={}' >> "$GITHUB_OUTPUT"
       # - if: ${{ matrix.architecture == 'x86_64' }} 
       #   run: gcc -shared -fPIC -o src/usr/share/opentelemetry_shell/agent.instrumentation.http/libinjecthttpheader.so src/usr/share/opentelemetry_shell/agent.instrumentation.http/agent.injection.http_header.c -ldl
