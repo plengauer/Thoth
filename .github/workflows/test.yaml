@@ -68,20 +68,26 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        architecture: [ 'x86_64', 'arm64' ]
+        architecture: [ 'i386', 'amd64', 'arm32v5', 'arm64v8' ]
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@v4.2.2
-      - if: ${{ matrix.architecture == 'x86_64' }} 
-        run: gcc -shared -fPIC -o src/usr/share/opentelemetry_shell/agent.instrumentation.http/libinjecthttpheader.so src/usr/share/opentelemetry_shell/agent.instrumentation.http/agent.injection.http_header.c -ldl
-      - if: ${{ matrix.architecture == 'arm64' }}
+      - if: ${{ matrix.architecture != 'amd64' }}
+        run: sudo apt-get install qemu binfmt-support qemu-user-static && sudo docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+      - id: build
         run: |
-          sudo apt install gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
-          aarch64-linux-gnu-gcc -shared -fPIC -o src/usr/share/opentelemetry_shell/agent.instrumentation.http/libinjecthttpheader.so src/usr/share/opentelemetry_shell/agent.instrumentation.http/agent.injection.http_header.c -ldl
+          echo 'cd src/usr/share/opentelemetry_shell/agent.instrumentation.http/ && apt-get install build-essential && gcc -shared -fPIC -o libinjecthttpheader.so agent.injection.http_header.c -ldl && arch' \
+           | sudo docker run -i --rm --network host --platform linux/${{ matrix.architecture }} -v "$(pwd)/src:/home/root/src -w /home/root debian:oldstable | xargs -0 -I {} echo 'architecture={}' >> "$GITHUB_OUTPUT"
+      # - if: ${{ matrix.architecture == 'x86_64' }} 
+      #   run: gcc -shared -fPIC -o src/usr/share/opentelemetry_shell/agent.instrumentation.http/libinjecthttpheader.so src/usr/share/opentelemetry_shell/agent.instrumentation.http/agent.injection.http_header.c -ldl
+      # - if: ${{ matrix.architecture == 'arm64' }}
+      #   run: |
+      #     sudo apt install gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+      #     aarch64-linux-gnu-gcc -shared -fPIC -o src/usr/share/opentelemetry_shell/agent.instrumentation.http/libinjecthttpheader.so src/usr/share/opentelemetry_shell/agent.instrumentation.http/agent.injection.http_header.c -ldl
       - uses: actions/upload-artifact@v4.0.0
         with:
-          name: http_${{ matrix.architecture }}
+          name: http_${{ steps.build.outputs.architecture }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.http/libinjecthttpheader.so
   merge-http:
     needs: build-http
@@ -113,7 +119,7 @@ jobs:
       - id: dynamic
         run: |
           seq "$(cat src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules/@opentelemetry/*/package.json | jq -r .engines.node | grep -v null | cut -d ' ' -f 1 | tr -d ^ | cut -d = -f 2 | cut -d . -f 1 | sort -n -u | tail -n 1)" "$(cat src/usr/share/opentelemetry_shell/agent.instrumentation.node/Dockerfile | grep '^FROM ' | cut -d ' ' -f 2 | cut -d : -f 2)" \
-            | jq -s -c | xargs -0 -I {} echo 'versions={}' | tee /dev/stderr >> "$GITHUB_OUTPUT"
+            | jq -s -c | xargs -0 -I {} echo 'versions={}' >> "$GITHUB_OUTPUT"
   build-node-modules:
     needs: list-node-versions
     runs-on: ubuntu-latest
@@ -150,7 +156,6 @@ jobs:
             mkdir "$version"
             mv node_modules_"$version" "$version"/node_modules
           done
-      - run: echo hello world # TODO flatten
       - run: find . -type f -print0 | xargs -0 sha256sum | sort | cut -d ' ' -f 3- | tar -cf node_modules.tar -T - && xz -9 node_modules.tar
       - uses: actions/upload-artifact@v4.0.0
         with:
@@ -168,7 +173,7 @@ jobs:
       - id: dynamic
         run: |
           seq "$(cat venv/lib/python*/site-packages/opentelemetry_*.dist-info/METADATA | grep '^Requires-Python: >=' | cut -d . -f 2 | sort -n -u | tail -n 1)" "$(cat src/usr/share/opentelemetry_shell/agent.instrumentation.python/Dockerfile | grep '^FROM ' | cut -d ' ' -f 2 | cut -d : -f 2 | cut -d . -f 2)" \
-            | while read -r version; do echo '"'3."$version"'"'; done | jq -s -c | xargs -0 -I {} echo 'versions={}' | tee /dev/stderr >> "$GITHUB_OUTPUT"
+            | while read -r version; do echo '"'3."$version"'"'; done | jq -s -c | xargs -0 -I {} echo 'versions={}' >> "$GITHUB_OUTPUT"
   build-python-site-packages:
     needs: list-python-versions
     runs-on: ubuntu-latest
@@ -213,7 +218,6 @@ jobs:
             mkdir "$version"
             mv python_site_packages_"$version" "$version"/site-packages
           done
-      - run: echo hello world # TODO flatten
       - run: find . -type f -print0 | xargs -0 sha256sum | sort | cut -d ' ' -f 3- | tar -cf python_site_packages.tar -T - && xz -9 python_site_packages.tar
       - uses: actions/upload-artifact@v4.0.0
         with:
