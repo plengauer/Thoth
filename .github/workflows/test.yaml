@@ -75,7 +75,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4.2.2
       - if: ${{ matrix.architecture != 'amd64' }}
-        run: sudo apt-get update && sudo apt-get install qemu binfmt-support qemu-user-static && sudo docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+        run: sudo apt-get update && sudo apt-get install qemu-system-arm binfmt-support qemu-user-static && sudo docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
       - id: build
         run: |
           echo 'cd src/usr/share/opentelemetry_shell/agent.instrumentation.http/ && apt-get update 1>&2 && yes | apt-get install build-essential 1>&2 && gcc -shared -fPIC -o libinjecthttpheader.so agent.injection.http_header.c -ldl 1>&2 && arch' \
