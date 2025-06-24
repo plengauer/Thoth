@@ -7,11 +7,12 @@ _otel_propagate_curl() {
     *m*) local job_control=1; \set +m;;
     *) local job_control=0;;
   esac
-  if \[ -f /usr/share/opentelemetry_shell/agent.instrumentation.http/"$(\arch)"/libinjecthttpheader.so ] && ! ( \[ "$_otel_shell" = 'busybox sh' ] && \help | \tail -n +3 | \grep -q curl ); then
+  local file=/usr/share/opentelemetry_shell/agent.instrumentation.http/"$(\arch)"/libinjecthttpheader.so
+  if \[ -f "$file" ] && ! \ldd "$file" | \grep -q 'not found' && ! ( \[ "$_otel_shell" = 'busybox sh' ] && \help | \tail -n +3 | \grep -q curl ); then
     export OTEL_SHELL_INJECT_HTTP_SDK_PIPE="$_otel_remote_sdk_pipe"
     export OTEL_SHELL_INJECT_HTTP_HANDLE_FILE="$(\mktemp -u)_opentelemetry_shell_$$.curl.handle)"
     local OLD_LD_PRELOAD="${LD_PRELOAD:-}"
-    export LD_PRELOAD=/usr/share/opentelemetry_shell/agent.instrumentation.http/"$(\arch)"/libinjecthttpheader.so
+    export LD_PRELOAD="$file"
     if \[ -n "$OLD_LD_PRELOAD" ]; then
       export LD_PRELOAD="$LD_PRELOAD:$OLD_LD_PRELOAD"
     fi
