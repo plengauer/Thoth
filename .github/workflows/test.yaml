@@ -80,7 +80,7 @@ jobs:
         run: |
           sudo docker login -u '${{ secrets.DOCKERHUB_USERNAME }}' -p '${{ secrets.DOCKERHUB_TOKEN }}'
           echo 'cd src/usr/share/opentelemetry_shell/agent.instrumentation.http/ && apt-get update 1>&2 && yes | apt-get install build-essential 1>&2 && gcc -shared -fPIC -o libinjecthttpheader.so agent.injection.http_header.c -ldl 1>&2 && arch' \
-           | sudo docker run -i --rm --network host -v "$(pwd)"/src:/home/root/src -w /home/root ${{ matrix.architecture }}/debian:oldstable | xargs -0 -I {} echo 'architecture={}' >> "$GITHUB_OUTPUT"
+           | sudo docker run -i --rm --network host -v "$(pwd)"/src:/home/root/src -w /home/root docker.io/${{ matrix.architecture }}/debian:oldstable | xargs -0 -I {} echo 'architecture={}' >> "$GITHUB_OUTPUT"
       # - if: ${{ matrix.architecture == 'x86_64' }} 
       #   run: gcc -shared -fPIC -o src/usr/share/opentelemetry_shell/agent.instrumentation.http/libinjecthttpheader.so src/usr/share/opentelemetry_shell/agent.instrumentation.http/agent.injection.http_header.c -ldl
       # - if: ${{ matrix.architecture == 'arm64' }}
