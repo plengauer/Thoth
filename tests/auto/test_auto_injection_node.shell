@@ -1,4 +1,5 @@
 if ! type node; then exit 0; fi
+if ! [ -d /usr/share/opentelemetry_shell/agent.instrumentation.node/"$(node -v | tr -d v | cut -d . -f 1)"/node_modules ]; then exit 0; fi
 . ./assert.sh
 
 . otel.sh
@@ -57,9 +58,6 @@ assert_not_equals null $(\echo "$span" | jq -r '.parent_id')
 # assert_equals $(resolve_span '.name == "echo hello world 6"' | jq -r .parent_id) $(resolve_span '.name == "TODO"' | jq -r .id)
 
 # lets check with the above test if it works on any node version, but lets not rely on instrumentations actually working
-
-if ! [ -d /opt/opentelemetry_shell/"$(node -v | tr -d v | cut -d . -f 1)"/node_modules ]; then exit 0; fi
-exit 1
 
 directory="$(mktemp -d)"
 echo "
