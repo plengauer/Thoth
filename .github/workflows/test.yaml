@@ -182,7 +182,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/setup-python@v4.4.0
+      - uses: actions/setup-python@v4.9.1
         with:
           python-version: ${{ matrix.version }}
       - uses: actions/checkout@v4.2.2
