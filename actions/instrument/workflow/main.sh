@@ -2,7 +2,7 @@
 set -e
 . ../shared/config_validation.sh
 . ../shared/github.sh
-OTEL_SHELL_CONFIG_INSTALL_DEEP=FALSE bash -e ../shared/install.sh
+bash -e ../shared/install.sh
 
 # selfmonitoring
 if ([ "$INPUT_SELF_MONITORING" = true ] || ([ "$INPUT_SELF_MONITORING" = auto ] && [ "$GITHUB_API_URL" = 'https://api.github.com' ])); then
