@@ -228,7 +228,7 @@ jobs:
         with:
           java-version: 8 # TODO make this dynamic based on minimum
           distribution: adopt
-      - uses: actions/checkout@v4.0.0
+      - uses: actions/checkout@v4.2.2
       - run: |
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.java
           groupId="$(cat pom.xml | grep groupId | cut -d '>' -f 2- | cut -d '<' -f 1)"
