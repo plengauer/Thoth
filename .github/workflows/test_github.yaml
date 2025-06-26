@@ -385,8 +385,27 @@ jobs:
     strategy:
       matrix:
         secret_redaction_strategy: ['none', 'list', 'all']
+        private: [ 'true', 'false' ]
       fail-fast: false
+    concurrency: test/github/deploy
     steps:
+      # make sure repo doesnt exist
+      # checkout
+      # get deploy sample from readme
+      # create repository
+      # checkout
+      # fill repo
+      # commit and push
+      # start collector
+      # add deploy sample
+      # add secret redaction strategy
+      # commit and push
+      # wait and update and see if its deployed
+      # commit new workflow
+      # wait and update and see if its deployed
+      # change secrets and see if redaction strategy changed
+      # verify data
+      # delete repo
       - uses: actions/checkout@v4.2.2
       - uses: ./actions/instrument/deploy
         with:
