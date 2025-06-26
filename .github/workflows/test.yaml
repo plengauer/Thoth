@@ -70,6 +70,7 @@ jobs:
       matrix:
         # architecture: [ 'i386', 'amd64', 'arm32v5', 'arm64v8' ]
         architecture: [ 'amd64', 'arm64/v8' ]
+      fail-fast: false
     permissions:
       contents: read
     steps:
