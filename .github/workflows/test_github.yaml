@@ -388,12 +388,21 @@ jobs:
         private: [ 'true', 'false' ]
       fail-fast: false
     concurrency: test/github/deploy
+    env:
+      REPOSITORY_NAME: thoth-deploy-test-repository
     steps:
-      # make sure repo doesnt exist
+      - id: resolve-user
+        run: |
+          curl -L -H "Authorization: Bearer ${{ github.token }}" "${GITHUB_API_URL:-https://api.github.com}"/user | jq .login | xargs -I '{}' echo "user={}" >> "$GITHUB_OUTPUT"
+      - run: |
+          curl -L -H "Authorization: Bearer ${{ github.token }}" -X DELETE "${GITHUB_API_URL:-https://api.github.com}"/repos/${{ steps.resolve-user.outputs.user }}/${{ env.REPOSITORY_NAME }} || true
       # checkout
       # get deploy sample from readme
-      # create repository
-      # checkout
+      - run: |
+          curl -L -H "Authorization: Bearer ${{ github.token }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/ -d '{"name":"${{ env.REPOSITORY_NAME }}"}'
+      - uses: actions/checkout@v4.2.2
+        with:
+          repository: "${{ steps.resolve-user.outputs.user }}/${{ env.REPOSITORY_NAME }}"
       # fill repo
       # commit and push
       # start collector
@@ -405,7 +414,10 @@ jobs:
       # wait and update and see if its deployed
       # change secrets and see if redaction strategy changed
       # verify data
-      # delete repo
+      - run: |
+          curl -L -H "Authorization: Bearer ${{ github.token }}" -X DELETE "${GITHUB_API_URL:-https://api.github.com}"/repos/${{ steps.resolve-user.outputs.user }}/"$REPOSITORY_NAME" || true
+
+          
       - uses: actions/checkout@v4.2.2
       - uses: ./actions/instrument/deploy
         with:
