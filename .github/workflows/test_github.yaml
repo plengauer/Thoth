@@ -348,6 +348,28 @@ jobs:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
       - run: echo hello world
+  job-windows:
+    needs: job-smoke
+    runs-on: windows-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: ./actions/instrument/job
+      - run: echo hello world
+  job-macos:
+    needs: job-smoke
+    runs-on: macos-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: ./actions/instrument/job
+      - run: echo hello world
   workflow:
     runs-on: ubuntu-latest
     timeout-minutes: 180
