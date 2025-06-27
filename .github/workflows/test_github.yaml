@@ -429,6 +429,7 @@ jobs:
           OTEL_TRACES_EXPORTER: console
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: '${{ steps.filename.outputs.otlp }}'
   deploy:
+    needs: smoke-deploy
     runs-on: ubuntu-latest
     permissions:
       actions: read
