@@ -83,7 +83,7 @@ jobs:
            | sudo docker run -i --rm --network host -v "$(pwd)"/src:/home/root/src -w /home/root --platform linux/${{ matrix.architecture }} docker.io/"$(echo ${{ matrix.architecture }} | tr -d /)"/debian:oldstable | xargs -0 -I {} echo 'architecture={}' >> "$GITHUB_OUTPUT"
       - run: |
           [ -r src/usr/share/opentelemetry_shell/agent.instrumentation.http/libinjecthttpheader.so ]
-      - uses: actions/upload-artifact@v4.0.0
+      - uses: actions/upload-artifact@v4.6.2
         with:
           name: http_${{ steps.build.outputs.architecture }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.http/libinjecthttpheader.so
@@ -101,7 +101,7 @@ jobs:
           ls | grep '^http_' | while read -r directory_name; do echo "${directory_name#http_}"; done | while read -r architecture; do
             mv http_"$architecture" bin/"$architecture"
           done
-      - uses: actions/upload-artifact@v4.0.0
+      - uses: actions/upload-artifact@v4.6.2
         with:
           name: http
           path: bin/
@@ -155,7 +155,7 @@ jobs:
             mv node_modules_"$version" "$version"/node_modules
           done
       - run: find . -type f -print0 | xargs -0 sha256sum | sort | cut -d ' ' -f 3- | tar -cf node_modules.tar -T - && xz -9 node_modules.tar
-      - uses: actions/upload-artifact@v4.0.0
+      - uses: actions/upload-artifact@v4.6.2
         with:
           name: node_modules
           path: node_modules.tar.xz
@@ -198,7 +198,7 @@ jobs:
           ' | python3 | grep "==$(pip3 show opentelemetry-distro | grep Version | cut -d ':' -f 2- | tr -d ' ')"'$' | grep -v opentelemetry-instrumentation-system-metrics | xargs pip3 install
           pip3 check
           deactivate
-      - uses: actions/upload-artifact@v4.0.0
+      - uses: actions/upload-artifact@v4.6.2
         with:
           name: python_site_packages_${{ matrix.version }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.python/venv/lib/python${{ matrix.version }}/site-packages
@@ -217,7 +217,7 @@ jobs:
             mv python_site_packages_"$version" "$version"/site-packages
           done
       - run: find . -type f -print0 | xargs -0 sha256sum | sort | cut -d ' ' -f 3- | tar -cf python_site_packages.tar -T - && xz -9 python_site_packages.tar
-      - uses: actions/upload-artifact@v4.0.0
+      - uses: actions/upload-artifact@v4.6.2
         with:
           name: python_site_packages
           path: python_site_packages.tar.xz
@@ -239,7 +239,7 @@ jobs:
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.java
           javac -classpath ./opentelemetry-javaagent.jar RootContextAgent.java
           jar cmf manifest.txt rootcontextagent.jar RootContextAgent.class
-      - uses: actions/upload-artifact@v4.0.0
+      - uses: actions/upload-artifact@v4.6.2
         with:
           name: java
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.java/*.jar
