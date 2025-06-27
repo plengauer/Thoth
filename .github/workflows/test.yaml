@@ -232,7 +232,7 @@ jobs:
       - run: |
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.java
           mvn dependency:resolve
-          find .m2 -iname 'opentelemetry-javaagent-*.jar' | xargs -I '{}' cp '{}' opentelemetry-javaagent.jar
+          find ~/.m2 -iname 'opentelemetry-javaagent-*.jar' | xargs -I '{}' cp '{}' opentelemetry-javaagent.jar
       - run: |
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.java
           javac -classpath ./opentelemetry-javaagent.jar RootContextAgent.java
