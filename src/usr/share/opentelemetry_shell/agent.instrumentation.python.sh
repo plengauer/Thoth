@@ -68,6 +68,7 @@ _otel_inject_opentelemetry_instrument() {
 }
 
 _otel_python_inject_args() {
+  unset _otel_python_code_source _otel_python_command _otel_python_module _otel_python_file
   if \[ "${1#\\}" = opentelemetry-instrument ] || _otel_string_ends_with "$1" /opentelemetry-instrument; then
     _otel_escape_arg "$1"; shift
     \echo -n ' '
