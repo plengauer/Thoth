@@ -231,10 +231,8 @@ jobs:
       - uses: actions/checkout@v4.2.2
       - run: |
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.java
-          groupId="$(cat pom.xml | grep groupId | cut -d '>' -f 2- | cut -d '<' -f 1)"
-          artifactId="$(cat pom.xml | grep artifactId | cut -d '>' -f 2- | cut -d '<' -f 1)"
-          version="$(cat pom.xml | grep version | cut -d '>' -f 2- | cut -d '<' -f 1)"
-          wget https://repo1.maven.org/maven2/"$(echo "$groupId" | tr '.' '/')"/"$artifactId"/"$version"/"$artifactId"-"$version".jar -O opentelemetry-javaagent.jar
+          mvn dependency:resolve
+          find ~/.m2 -iname 'opentelemetry-javaagent-*.jar' | xargs -I '{}' cp '{}' opentelemetry-javaagent.jar
       - run: |
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.java
           javac -classpath ./opentelemetry-javaagent.jar RootContextAgent.java
