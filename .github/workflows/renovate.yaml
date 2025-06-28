@@ -23,3 +23,37 @@ jobs:
           RENOVATE_REPOSITORIES: ${{ github.repository }}
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+  renovate-python-dependency:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - run: |
+          python3 -m venv venv
+          . venv/bin/activate
+          pip3 install -r src/opt/opentelemetry_shell/requirements.txt
+          deactivate
+          min_version_otel="$(cat venv/lib/python*/site-packages/opentelemetry_api-*.dist-info/METADATA | grep '^Requires-Python: ' | cut -d ' ' -f 2 | cut -d . -f 2-)"
+          min_version_shell="$(cat src/DEBIAN/control | grep '^Pre-Depends:' | tr ',' '\n' | grep -F -- 'python3 (>=' | cut -d '(' -f 2- | cut -d ')' -f 1 | cut -d ' ' -f 2 | cut -d . -f 2)"
+          [ "$min_version_shell" -ge "$min_version_otel" ] || sed "s/python3 (>= $min_version_shell/python3 (>= $min_version_otel/g"
+      - id: open-pr
+        uses: peter-evans/create-pull-request@v7.0.8
+        with:
+          token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          commit-message: "Renove python dependency"
+          base: main
+          branch: "renovate/debian-python"
+          title: "Renovate Debian Python"
+          body: |
+            (this PR is automatically generated)
+          delete-branch: true
+      - run: sleep 60 # make sure PR state is updated and API can catch up
+        if: steps.open-pr.outputs.pull-request-number != null
+      - uses: peter-evans/enable-pull-request-automerge@v3.0.0
+        if: steps.open-pr.outputs.pull-request-number != null
+        with:
+          token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          pull-request-number: ${{ steps.open-pr.outputs.pull-request-number }}
+          merge-method: squash
