@@ -28,7 +28,7 @@ if __name__ == '__main__':
       \eval "set -- $(_otel_python_inject_args "$@")"
       local python_path="$(\printf '%s' "$python_path" | \tr ':' '\n' | \grep -vE '^/usr/share/opentelemetry_shell/agent.instrumentation.python/' | \tr '\n' ':')"
     fi
-    \echo "DEBUG DEBUG DEBUG PYTHONPYTH=$pythonpath $*" >&2
+    \echo "DEBUG DEBUG DEBUG PYTHONPATH=$python_path $*" >&2
     if \[ "${my_code_source:-}" = stdin ]; then
       { \cat /usr/share/opentelemetry_shell/agent.instrumentation.python/deep.py; \cat; } | OTEL_SHELL_COMMANDLINE_OVERRIDE="$cmdline" OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE="0" OTEL_SHELL_AUTO_INJECTED=TRUE PYTHONPATH="$python_path" OTEL_BSP_MAX_EXPORT_BATCH_SIZE=1 _otel_call "$@" || local exit_code="$?"
     else
