@@ -36,7 +36,7 @@ jobs:
           deactivate
           min_version_otel="$(cat venv/lib/python*/site-packages/opentelemetry_api-*.dist-info/METADATA | grep '^Requires-Python: ' | cut -d ' ' -f 2 | cut -d . -f 2-)"
           min_version_shell="$(cat src/DEBIAN/control | grep '^Pre-Depends:' | tr ',' '\n' | grep -F -- 'python3 (>=' | cut -d '(' -f 2- | cut -d ')' -f 1 | cut -d ' ' -f 2 | cut -d . -f 2)"
-          [ "$min_version_shell" -ge "$min_version_otel" ] || sed "s/python3 (>= $min_version_shell/python3 (>= $min_version_otel/g"
+          [ "$min_version_shell" -ge "$min_version_otel" ] || sed -i "s/python3 (>= $min_version_shell/python3 (>= $min_version_otel/g" src/DEBIAN/control
       - id: open-pr
         uses: peter-evans/create-pull-request@v7.0.8
         with:
