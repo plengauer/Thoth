@@ -26,8 +26,7 @@ jobs:
   renovate-python-dependency:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
-      pull-requests: write
+      contents: read
     steps:
       - uses: actions/checkout@v4.2.2
       - run: |
