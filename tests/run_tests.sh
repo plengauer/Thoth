@@ -9,7 +9,7 @@ if [ "$SHELL" = busybox ]; then
   export SHELL="busybox sh";
 fi
 
-for dir in unit sdk auto integration; do
+for dir in integration unit sdk auto integration; do
   for file in $(find $dir -iname 'test_*.shell') $(find $dir -iname 'test_*.'"$SHELL"); do
     rm /tmp/opentelemetry_shell_*_instrumentation_cache_*.aliases 2> /dev/null || true
     export OTEL_EXPORT_LOCATION="$(mktemp -u)".sdk.out
