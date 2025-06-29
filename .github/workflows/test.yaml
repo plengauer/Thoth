@@ -38,12 +38,12 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.20.0
-        env:
-          OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
-          OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-        with:
-          secrets_to_redact: '["${{ github.token }}"]'
+      # - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.20.0
+      #   env:
+      #     OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
+      #     OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
+      #   with:
+      #     secrets_to_redact: '["${{ github.token }}"]'
       - uses: actions/checkout@v4.2.2
       - run: sudo apt-get update && sudo apt-get -y install apt-file
       - run: sudo apt-file update
@@ -64,7 +64,7 @@ jobs:
               | grep -oP '(^[[:space:]]*|\$\()\\?[a-zA-Z/][a-zA-Z0-9/_.-]*($|[[:space:]])' \
               | while read -r command; do command="${command% }"; command="${command# }"; command="${command#\$\(}"; command="${command#\\}"; [ "${#command}" -gt 1 ] && printf '%s\n' "$command" || true; done \
               | grep -vE '^_otel|^otel_|^OTEL_' | grep -vE "$(compgen -b | patternify)" | grep -vE "$(compgen -k | patternify)" | process_commands \
-              | sort -u | \xargs -r parallel check_command "$dependencies" ::: | tee /dev/stderr | grep -q 'UNAVAILABLE' && return 1 || return 0
+              | sort -u | xargs -r parallel check_command "$dependencies" ::: | tee /dev/stderr | grep -q 'UNAVAILABLE' && return 1 || return 0
           }
           find src/DEBIAN | grep -vE '^src/DEBIAN$|^src/DEBIAN/control$|^src/DEBIAN/triggers$' | verify '^Pre-Depends:' && find src -iname '*.sh' | grep -vE '^src/DEBIAN/' | verify '^Pre-Depends:|^Depends:|^Recommends:|^Suggests:'
   build-http:
