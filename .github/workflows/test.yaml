@@ -54,7 +54,9 @@ jobs:
           check_command() {
             local dependencies="$1"
             local command="$2"
-            apt-file search /"$command" | grep -E "/$command\$" | grep -E ': /bin/|: /sbin/|: /usr/bin/|: /usr/sbin/|: /usr/local/bin/|: /usr/local/sbin/' | cut -d : -f 1 | grep -q "$dependencies" && echo "$command OK" || echo "$command UNAVAILABLE"
+            # apt-file search /"$command" | grep -E "/$command\$" | grep -E ': /bin/|: /sbin/|: /usr/bin/|: /usr/sbin/|: /usr/local/bin/|: /usr/local/sbin/' | cut -d : -f 1 | grep -q "$dependencies" && echo "$command OK" || echo "$command UNAVAILABLE"
+            echo "($dependencies) => $command" >&2
+            echo UNAVAILABLE
           }
           export -f check_command
           verify() {
