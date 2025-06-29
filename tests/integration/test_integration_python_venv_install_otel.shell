@@ -4,5 +4,5 @@ python3 -m venv venv
 . venv/bin/activate
 pip3 install opentelemetry-distro==0.55b1 opentelemetry-exporter-otlp==1.34.1
 
-ls venv/lib/python*/site-packages/
+find venv
 cat venv/lib/python*/site-packages/opentelemetry_*.dist-info/METADATA | grep '^Requires-Python: >=' | cut -d . -f 2
