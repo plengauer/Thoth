@@ -58,7 +58,6 @@ jobs:
             apt-file search /"$command" | grep -E "/$command\$" | grep -E ': /bin/|: /sbin/|: /usr/bin/|: /usr/sbin/|: /usr/local/bin/|: /usr/local/sbin/' | cut -d : -f 1 | grep -q "$dependencies" && echo "$command OK" || echo "$command UNAVAILABLE"
           }
           export -f check_command
-          parallel --help
           verify() {
             local dependencies="$(cat src/DEBIAN/control | grep -E "$1" | cut -d : -f 2- | tr '|' ',' | tr ',' '\n' | cut -d '(' -f 1 | tr -d ' ' | process_packages | patternify)"
             cat | while read -r file; do echo "Verifying $file" >&2; echo "$file"; done | xargs cat \
