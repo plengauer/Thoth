@@ -8,7 +8,7 @@ _otel_inject_python() {
     _otel_python_inject_args "$@" > /dev/null
     local my_code_source="$_otel_python_code_source"
     local python_path="${PYTHONPATH:-}"
-    if _otel_can_inject_python_otel; then
+    if _otel_can_inject_python_otel && \[ -d /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"/site-packages ]; then
       unset _otel_python_code_source _otel_python_file _otel_python_module _otel_python_command
       \eval "set -- $(_otel_python_inject_args "$@")"
       local python_path=/usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"/site-packages/:"$python_path"
@@ -68,6 +68,7 @@ _otel_inject_opentelemetry_instrument() {
 }
 
 _otel_python_inject_args() {
+  unset _otel_python_code_source _otel_python_command _otel_python_module _otel_python_file
   if \[ "${1#\\}" = opentelemetry-instrument ] || _otel_string_ends_with "$1" /opentelemetry-instrument; then
     _otel_escape_arg "$1"; shift
     \echo -n ' '
