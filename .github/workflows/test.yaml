@@ -68,7 +68,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        architecture: [ 'i386', 'amd64', 'arm32/7', 'arm64/8', 'ppc64le', 's390' ]
+        architecture: [ 'i386', 'amd64', 'arm32/v7', 'arm64/v8', 'ppc64le', 's390' ]
       fail-fast: false
     permissions:
       contents: read
