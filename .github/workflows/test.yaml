@@ -283,7 +283,7 @@ jobs:
       - run: find src
       - run: sed -i "s/__VERSION__/$(cat VERSION)/g" src/DEBIAN/control
       - run: |
-          printf '%s' "${{ needs.list-python-versions.outputs.versions }}" | while read -r version; do
+          printf '%s' "${{ needs.list-python-versions.outputs.versions }}" | jq -r '.[]' | while read -r version; do
             cat src/DEBIAN/triggers | grep 'python3$' | sed "s~/python3~/python$version~g" >> src/DEBIAN/triggers
           done
       - run: cd src && dpkg-deb --root-owner-group -Zgzip --build . ../package.deb
