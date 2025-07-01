@@ -242,7 +242,7 @@ jobs:
           name: java
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.java/*.jar
   build:
-    needs: [verify-python-dependency, verify-debian-dependencies, merge-http, merge-node-modules, merge-python-site-packages, build-java-agents]
+    needs: [verify-python-dependency, verify-debian-dependencies, merge-http, merge-node-modules, merge-python-site-packages, build-java-agents, list-python-versions]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -282,6 +282,10 @@ jobs:
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.java
       - run: find src
       - run: sed -i "s/__VERSION__/$(cat VERSION)/g" src/DEBIAN/control
+      - run: |
+          printf '%s' "${{ needs.list-python-versions.outputs.versions }}" | while read -r version; do
+            cat src/DEBIAN/triggers | grep 'python3$' | sed "s~/python3~/python$version~g" >> src/DEBIAN/triggers
+          done
       - run: cd src && dpkg-deb --root-owner-group -Zgzip --build . ../package.deb
       - run: |
           cd src
