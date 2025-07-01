@@ -87,6 +87,7 @@ jobs:
         with:
           name: http_${{ steps.build.outputs.architecture }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.http/libinjecthttpheader.so
+          if-no-files-found: error
   merge-http:
     needs: build-http
     runs-on: ubuntu-latest
