@@ -180,6 +180,8 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    concurrency:
+      group: otel-deploy
     permissions:
       contents: write
       actions: write
