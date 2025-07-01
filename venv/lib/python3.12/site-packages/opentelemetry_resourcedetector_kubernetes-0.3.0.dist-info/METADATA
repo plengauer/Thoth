@@ -1,0 +1,219 @@
+Metadata-Version: 2.1
+Name: opentelemetry-resourcedetector-kubernetes
+Version: 0.3.0
+Summary: An OpenTelemetry package to populates Resource attributes for Kubernetes pods
+Home-page: https://github.com/chrisguidry/opentelemetry-resourcedetector-kubernetes
+Author: Chris Guidry
+Author-email: chris@theguidrys.us
+Project-URL: Bug Tracker, https://github.com/chrisguidry/opentelemetry-resourcedetector-kubernetes/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: opentelemetry-sdk
+Requires-Dist: opentelemetry-semantic-conventions
+Provides-Extra: dev
+Requires-Dist: black ; extra == 'dev'
+Requires-Dist: build ; extra == 'dev'
+Requires-Dist: flake8 ; extra == 'dev'
+Requires-Dist: flake8-black ; extra == 'dev'
+Requires-Dist: isort ; extra == 'dev'
+Requires-Dist: mypy ; extra == 'dev'
+Requires-Dist: pre-commit ; extra == 'dev'
+Requires-Dist: pytest ; extra == 'dev'
+Requires-Dist: pytest-cov ; extra == 'dev'
+Requires-Dist: pytest-xdist ; extra == 'dev'
+Requires-Dist: twine ; extra == 'dev'
+Requires-Dist: types-psutil ; extra == 'dev'
+
+# opentelemetry-resourcedetector-kubernetes
+
+An OpenTelemetry package to populates Resource attributes for Kubernetes pods.
+
+## Usage
+
+```python
+from opentelemetry.sdk.resources import get_aggregated_resources
+from opentelemetry_resourcedetector_kubernetes import KubernetesResourceDetector
+
+...
+
+resource = get_aggregated_resources([
+    KubernetesResourceDetector(),
+    SomeOtherResourceDetector()
+])
+
+... pass the returned `resource` to a TracerProvder, for example ...
+```
+
+The `KubernetesResourceDetector` is able to detect the basic identifying information
+for a `Pod`, returning as `Resource` with these attributes populated:
+
+* `container.runtime` - always the string `"kubernetes"`
+* `container.id` - the unique ID of the container (a string of hexadecimal characters)
+* `k8s.pod.uid` - the UUID of the pod where your container and code is running
+
+This resource detector is the base class for the others in this package, and so you
+will always get these three attributes in your traces, using any of the more detailed
+detectors below.
+
+## Detecting more attributes with The "Downward API"
+
+The Kubernetes "Downward API" is a safe way to to pass Kubernetes metadata about your
+pod to itself, as either:
+
+* [environment variables](https://kubernetes.io/docs/tasks/inject-data-application/environment-variable-expose-pod-information/),
+  implemented by `KubernetesDownwardAPIEnvironmentResourceDetector`, or
+* [files in a volume mounted to your pod](https://kubernetes.io/docs/tasks/inject-data-application/downward-api-volume-expose-pod-information/),
+  implemented by `KubernetesDownwardAPIVolumeResourceDetector`
+
+For either of these methods to work, you will need to add the appropriate configuration
+to your Kubernetes manifests, and you'll configure the detector accordingly.
+
+The `opentelemetry_resourcedetector_kubernetes` classes using the Downward API will only
+detect and populate attributes from the [standard OpenTelemetry Kubernetes Resource Attribute](https://github.com/open-telemetry/opentelemetry-python/blob/cdab6e174a1b9afc68aaf57ca04fc972a14281bc/opentelemetry-semantic-conventions/src/opentelemetry/semconv/resource/__init__.py#L239-L337)
+that you choose to provide by configuring them in your manifests.  These detectors will
+only report `k8s.*` and `container.*` OpenTelemetry attributes, and are not intended to
+be a general-purpose collection mechanism for other types of attributes.
+
+The Downward API only supports a
+[subset of all the possible attributes](https://kubernetes.io/docs/tasks/inject-data-application/downward-api-volume-expose-pod-information/#capabilities-of-the-downward-api) you could
+provide.  Depending on your needs, you can also provide hard-coded environment variables
+following the same naming conventino in your Kubernetes manifest, or mix the environment
+and volume approaches to paint a more complete picture.
+
+### KubernetesDownwardAPIEnvironmentResourceDetector
+
+For an example of using environment variables, you can pass a Pod's namespace and name:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  namespace: cool-app
+  name: example-pod
+spec:
+  containers:
+  - name: a-container
+    image: my-image:1.0.0
+    command: ["run-my-cool-app"]
+    env:
+    - name: OTEL_RD_K8S_NAMESPACE_NAME
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.namespace
+    - name: OTEL_RD_K8S_POD_NAME
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.name
+```
+
+Then, your running pod will see these environment variables populated:
+
+```bash
+OTEL_RD_K8S_NAMESPACE_NAME=cool-app
+OTEL_RD_K8S_POD_NAME=example-pod
+```
+
+When configuring your telemetry, you'll establish a "contract" for the names of the
+environment variables, indicating that they will be prefixed with `OTEL_RD`.  The
+prefix is up to you, but the default is `OTEL_RD`.  From there, the resource detector
+will look for each environment variables prefixed with `OTEL_RD_`, and if the rest of
+its name matches a
+[standard OpenTelemetry Kubernetes Resource Attribute](https://github.com/open-telemetry/opentelemetry-python/blob/cdab6e174a1b9afc68aaf57ca04fc972a14281bc/opentelemetry-semantic-conventions/src/opentelemetry/semconv/resource/__init__.py#L239-L337),
+it will be used during resource detection.
+
+```python
+from opentelemetry.sdk.resources import get_aggregated_resources
+from opentelemetry_resourcedetector_kubernetes import KubernetesDownwardAPIEnvironmentResourceDetector
+
+...
+
+resource = get_aggregated_resources([
+    KubernetesDownwardAPIEnvironmentResourceDetector(prefix='OTEL_RD'),
+    SomeOtherResourceDetector()
+])
+
+... pass the returned `resource` to a TracerProvder, for example ...
+```
+
+In this example, the `Resource` for all traces would include the attributes:
+
+```
+container.runtime = "kubernetes"
+k8s.pod.uid = "...the UUID of the pod..."
+container.id = "...the id of the container..."
+
+k8s.namespace.name = "cool-app"
+k8s.pod.name = "example-pod"
+```
+
+### KubernetesDownwardAPIVolumeResourceDetector
+
+For an example of using a Downward API volume, you can pass a Pod's namespace and name:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  namespace: cool-app
+  name: example-pod
+spec:
+  containers:
+  - name: a-container
+    image: my-image:1.0.0
+    command: ["run-my-cool-app"]
+    volumeMounts:  # this is at the *Container* level
+    - name: otelrd
+      mountPath: /etc/otelrd
+  volumes:  # this is at the *Pod* level
+    - name: otelrd
+      downwardAPI:
+        items:
+        - path: k8s.namespace.name
+          fieldRef:
+            fieldPath: metadata.namespace
+        - path: k8s.pod.name
+          fieldRef:
+            fieldPath: metadata.name
+```
+
+Then, your running pod will see these environment variables populated:
+
+```bash
+$ cat /etc/otelrd/k8s.namespace.name
+cool-app
+$ cat /etc/otelrd/k8s.pod.name
+example-pod
+```
+
+When configuring your telemetry, you'll establish a "contract" by indicating the
+directory into which you are mounting the Downward API metadata files (`/etc/otelrd`
+by default).  From there, the resource detector will look for files matching the names
+of [standard OpenTelemetry Kubernetes Resource Attributes](https://github.com/open-telemetry/opentelemetry-python/blob/cdab6e174a1b9afc68aaf57ca04fc972a14281bc/opentelemetry-semantic-conventions/src/opentelemetry/semconv/resource/__init__.py#L239-L337).
+
+```python
+from opentelemetry.sdk.resources import get_aggregated_resources
+from opentelemetry_resourcedetector_kubernetes import KubernetesDownwardAPIEnvironmentResourceDetector
+
+...
+
+resource = get_aggregated_resources([
+    KubernetesDownwardAPIVolumeResourceDetector(directory='/etc/otelrd'),
+    SomeOtherResourceDetector()
+])
+
+... pass the returned `resource` to a TracerProvder, for example ...
+```
+
+In this example, the `Resource` for all traces would include the attributes:
+
+```
+container.runtime = "kubernetes"
+k8s.pod.uid = "...the UUID of the pod..."
+container.id = "...the id of the container..."
+
+k8s.namespace.name = "cool-app"
+k8s.pod.name = "example-pod"
+```
