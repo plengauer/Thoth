@@ -154,7 +154,8 @@ jobs:
             mkdir "$version"
             mv node_modules_"$version" "$version"/node_modules
           done
-      - run: |
+      - if: false
+        run: |
           hash_folder() { find "$1" -name package.json | xargs cat | jq '. | [.name, .version] | @tsv' -r | tr '\t' ' ' | sha256sum | cut -d ' ' -f 1; }
           ls | sort --version-sort | while read -r version; do
             if [ -L __last ] && [ "$(hash_folder "$version")" = "$(hash_folder __last)" ]; then
@@ -228,7 +229,8 @@ jobs:
             mkdir "$version"
             mv python_site_packages_"$version" "$version"/site-packages
           done
-      - run: |
+      - if: false
+        run: |
           hash_folder() { find "$1" -name METADATA | grep -E '^Name:|^Version:' | sha256sum | cut -d ' ' -f 1; }
           ls | sort --version-sort | while read -r version; do
             if [ -L __last ] && [ "$(hash_folder "$version")" = "$(hash_folder __last)" ]; then
