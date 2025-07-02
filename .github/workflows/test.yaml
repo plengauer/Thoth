@@ -137,7 +137,7 @@ jobs:
           npm install
           npm prune
       - run: find src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules -iname '*.so' -exec false ';'
-      - run: set -x && find -L src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules -type l -exec readlink -f '{}' ';' | while read -r file; do realpath "$file"; done | grep -v '^'"$(pwd)"/src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules
+      - run: find -L src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules -type l -exec readlink -f '{}' ';' | { while read -r file; do realpath "$file"; done || true; } | grep -v '^'"$(pwd)"/src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules
       - uses: actions/upload-artifact@v4
         with:
           name: node_modules_${{ matrix.version }}
@@ -213,7 +213,7 @@ jobs:
           yes | pip3 uninstall setuptools pip
           deactivate
       - run: find src/usr/share/opentelemetry_shell/agent.instrumentation.python/venv/lib/python${{ matrix.version }}/site-packages -iname '*.so' -exec false ';'
-      - run: find -L src/usr/share/opentelemetry_shell/agent.instrumentation.python/venv/lib/python${{ matrix.version }}/site-packages -type l -exec readlink -f '{}' ';' | while read -r file; do realpath "$file"; done | grep -v '^'"$(pwd)"/src/usr/share/opentelemetry_shell/agent.instrumentation.python/
+      - run: find -L src/usr/share/opentelemetry_shell/agent.instrumentation.python/venv/lib/python${{ matrix.version }}/site-packages -type l -exec readlink -f '{}' ';' | { while read -r file; do realpath "$file"; done || true; } | grep -v '^'"$(pwd)"/src/usr/share/opentelemetry_shell/agent.instrumentation.python/
       - uses: actions/upload-artifact@v4.6.2
         with:
           name: python_site_packages_${{ matrix.version }}
