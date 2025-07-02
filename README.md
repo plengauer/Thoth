@@ -180,12 +180,14 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    concurrency:
+      group: otel-deploy-job
     permissions:
       contents: write
       actions: write
       pull-requests: write
     steps:
-      - uses: plengauer/Thoth/actions/instrument/deploy@v5.20.0
+      - uses: plengauer/Thoth/actions/instrument/deploy@v5.21.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -205,7 +207,7 @@ jobs:
   export:
     runs-on: ubuntu-latest
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/workflow@v5.20.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/workflow@v5.21.0
         env:
           OTEL_SERVICE_NAME: ${{ secrets.SERVICE_NAME }}
           # ...

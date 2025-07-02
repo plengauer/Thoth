@@ -16,7 +16,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.20.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.21.0
         with:
           secrets_to_redact: '["${{ github.token }}"]'
         env:
@@ -84,6 +84,7 @@ jobs:
         with:
           name: http_${{ steps.build.outputs.architecture }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.http/libinjecthttpheader.so
+          if-no-files-found: error
   merge-http:
     needs: build-http
     runs-on: ubuntu-latest
@@ -164,7 +165,11 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4.2.2
-      - run: python3 -m venv venv && . venv/bin/activate && pip3 install -r src/usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.txt
+      - run: |
+          python3 -m venv venv
+          . venv/bin/activate
+          pip3 install -r src/usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.txt
+          deactivate
       - id: dynamic
         run: |
           seq "$(cat venv/lib/python*/site-packages/opentelemetry_*.dist-info/METADATA | grep '^Requires-Python: >=' | cut -d . -f 2 | sort -n -u | tail -n 1)" "$(cat src/usr/share/opentelemetry_shell/agent.instrumentation.python/Dockerfile | grep '^FROM ' | cut -d ' ' -f 2 | cut -d : -f 2 | cut -d . -f 2)" \
@@ -245,7 +250,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.20.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.21.0
         with:
           secrets_to_redact: '["${{ github.token }}"]'
         env:
