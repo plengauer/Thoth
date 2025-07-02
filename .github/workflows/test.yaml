@@ -136,7 +136,7 @@ jobs:
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.node
           npm install
           npm prune
-      - run: echo hello world # TODO make sure there are no shared libraries
+      - run: find src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules -iname '*.so' -exec false ';'
       - run: echo hello world # TODO make sure there are no symbolic links
       - uses: actions/upload-artifact@v4
         with:
@@ -212,7 +212,7 @@ jobs:
           ' | python3 | grep "==$(pip3 show opentelemetry-distro | grep Version | cut -d ':' -f 2- | tr -d ' ')"'$' | grep -v opentelemetry-instrumentation-system-metrics | xargs pip3 install
           yes | pip3 uninstall setuptools pip
           deactivate
-      - run: echo hello world # TODO make sure there are no shared libraries
+      - run: find src/usr/share/opentelemetry_shell/agent.instrumentation.python/venv/lib/python${{ matrix.version }}/site-packages -iname '*.so' -exec false ';'
       - run: echo hello world # TODO make sure there are no symbolic links
       - uses: actions/upload-artifact@v4.6.2
         with:
