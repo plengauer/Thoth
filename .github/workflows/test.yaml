@@ -79,7 +79,6 @@ jobs:
           echo 'cd src/usr/share/opentelemetry_shell/agent.instrumentation.http/ && apt-get update 1>&2 && yes | apt-get install build-essential 1>&2 && gcc -shared -fPIC -o libinjecthttpheader.so agent.injection.http_header.c -ldl 1>&2 && arch' \
            | sudo docker run -i --rm --network host -v "$(pwd)"/src:/home/root/src -w /home/root --platform linux/${{ matrix.architecture }} docker.io/"$(echo ${{ matrix.architecture }} | tr -d /)"/debian:oldstable | xargs -0 -I {} echo 'architecture={}' >> "$GITHUB_OUTPUT"
       - run: |
-          ls -la src/usr/share/opentelemetry_shell/agent.instrumentation.http/libinjecthttpheader.so
           [ -r src/usr/share/opentelemetry_shell/agent.instrumentation.http/libinjecthttpheader.so ]
       - uses: actions/upload-artifact@v4.6.2
         with:
@@ -283,7 +282,7 @@ jobs:
         with:
           name: java
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.java
-      - run: find src
+      - run: ls -la src/usr/share/opentelemetry_shell/agent.instrumentation.http/*/
       - run: sed -i "s/__VERSION__/$(cat VERSION)/g" src/DEBIAN/control
       - run: cd src && dpkg-deb --root-owner-group -Zgzip --build . ../package.deb
       - run: |
