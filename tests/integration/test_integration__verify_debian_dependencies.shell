@@ -17,7 +17,9 @@ if type foo; then echo '\''$1'\''; fi'
 if ! type apt-get; then exit 0; fi
 
 . otel.sh
-sudo apt-get update && yes | sudo apt-get install apt-file && sudo apt-file update
+sudo apt-get update
+yes | sudo apt-get install apt-file
+sudo apt-file update
 process_packages() { sed 's/^awk$/gawk/g' | sed 's/^python3$/python3-minimal/g'; }
 process_commands() { sed 's/^awk$/gawk/g' | grep -vE '^which$' | grep -vE '^print$' | grep -vE '^rpm$';  }
 patternify() { grep -v '^$' | grep -P '^[a-zA-Z0-9/_.-]+$' | while read -r pattern; do echo '^'"$pattern"'$'; done }
