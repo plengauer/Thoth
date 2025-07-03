@@ -17,7 +17,7 @@ jobs:
       - uses: actions/download-artifact@v4.3.0
         with:
           name: packages
-      - run: sudo apt-get -y install ./package.deb
+      - run: sudo apt-get -y install ./package.deb apt-file
       - run: bash -c "cd tests && bash run_tests.sh bash"
       - run: sudo apt-get -y remove opentelemetry-shell
   list-released-versions:
