@@ -14,9 +14,7 @@ Description: Generate open telemetry traces, metrics, and logs from shell script
 SCRIPT_CONTENT='bash -c "echo hello world $@"
 if type foo; then echo '\''$1'\''; fi'
 
-if ! type apt-get; then exit 0; fi
-sudo apt-get update
-sudo apt-get install -y apt-file
+if ! type apt-file; then exit 0; fi
 sudo apt-file update
 
 . otel.sh
