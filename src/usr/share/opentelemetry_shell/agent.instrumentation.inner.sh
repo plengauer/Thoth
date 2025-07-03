@@ -16,8 +16,7 @@ _otel_inject_inner_command_args() {
   shift
   # options
   # -option or not executable file 
-  # while \[ "$#" -gt 0 ] && ( _otel_string_starts_with "$1" - || ! ( \[ -x "$1" ] || \[ -x "$(\which "$1" 2> /dev/null)" ] ) || ( \[ -x "$1" ] && _otel_string_starts_with "$(_otel_resolve_shebang "${1##*/}")" "$command " ) ); do \echo -n " "; _otel_escape_arg "$1"; shift; done
-  while \[ "$#" -gt 0 ] && ( _otel_string_starts_with "$1" - || ! ( \[ -x "$1" ] || \[ -x "$(\which "$1" 2> /dev/null)" ] ) ); do \echo -n " "; _otel_escape_arg "$1"; shift; done
+  while \[ "$#" -gt 0 ] && ( _otel_string_starts_with "$1" - || ! ( \[ -x "$1" ] || \[ -x "$(\which "$1" 2> /dev/null)" ] ) || ( \[ -x "$1" ] && _otel_string_starts_with "$(_otel_resolve_shebang "${1##*/}")" "$command " ) ); do \echo -n " "; _otel_escape_arg "$1"; shift; done
   # opt out if there is no command
   if \[ -z "$*" ]; then return 0; fi
   # more options
