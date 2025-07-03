@@ -282,7 +282,7 @@ jobs:
         with:
           name: java
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.java
-      - run: ls -la src/usr/share/opentelemetry_shell/agent.instrumentation.http/*/
+      - run: set +f && sudo chmod +x src/usr/share/opentelemetry_shell/agent.instrumentation.http/*/*.so
       - run: sed -i "s/__VERSION__/$(cat VERSION)/g" src/DEBIAN/control
       - run: cd src && dpkg-deb --root-owner-group -Zgzip --build . ../package.deb
       - run: |
