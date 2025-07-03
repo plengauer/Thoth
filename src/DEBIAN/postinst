@@ -15,7 +15,7 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
   export PATH=/usr/local/bin:"$PATH"
   if type node; then
     rm -rf /usr/share/opentelemetry_shell/agent.instrumentation.node/*/
-    echo "$PATH" | tr : '\n' | while read -r directory; do find "$directory" -name node; done | while read -r executable; do eval "$executable --version"; done | tr -d v | cut -d . -f 1 \
+    ( type docker 1>&2 || [ "$GITHUB_ACTIONS" = true ] || ( echo "$PATH" | tr : '\n' | while read -r directory; do find "$directory" -name node; done | while read -r executable; do eval "$executable --version"; done | tr -d v | cut -d . -f 1 ) ) \
       | while read -r version; do echo "./$version"; done | xargs tar -xJf /usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules.tar.xz -C /usr/share/opentelemetry_shell/agent.instrumentation.node/
     ls /usr/share/opentelemetry_shell/agent.instrumentation.node | grep -v '.json$' | grep -v '.js$' | grep -v '.xz$' | while read -r directory; do
       ls /usr/share/opentelemetry_shell/agent.instrumentation.node | grep '.js$' | while read -r file; do
@@ -25,7 +25,7 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
   fi
   if type python3; then
     rm -rf /usr/share/opentelemetry_shell/agent.instrumentation.python/*/
-    echo "$PATH" | tr : '\n' | while read -r directory; do find "$directory" -name 'python3.*'; done | grep -v -- - | while read -r executable; do eval "$executable -V"; done | cut -d ' ' -f 2 | cut -d . -f -2 \
+    ( type docker 1>&2 || ( echo "$PATH" | tr : '\n' | while read -r directory; do find "$directory" -name 'python3.*'; done | grep -v -- - | while read -r executable; do eval "$executable -V"; done | cut -d ' ' -f 2 | cut -d . -f -2 ) ) \
       | while read -r version; do echo "./$version"; done | xargs tar -xJf /usr/share/opentelemetry_shell/agent.instrumentation.python/python_site_packages.tar.xz -C /usr/share/opentelemetry_shell/agent.instrumentation.python/
   fi
 else
