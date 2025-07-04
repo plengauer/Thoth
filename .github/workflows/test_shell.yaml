@@ -310,7 +310,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: Vampire/setup-wsl@v5.0.1
+      - uses: Vampire/setup-wsl@v6.0.0
         with:
           wsl-version: ${{ matrix.version }}
       - uses: actions/checkout@v4.2.2
