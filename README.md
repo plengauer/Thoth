@@ -188,7 +188,7 @@ jobs:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
     	with:
-          github_token: '${{ secrets.ABC }}' # TODO configure a token that has permissions to push contents, modify workflows, open pull requests
+          github_token: '${{ secrets.ABC }}' # TODO configure a token that has permissions to push contents and open pull requests
 ```
 This workflow only deploys workflow-level and job-level instrumentations. It does not keep them up to date, for that we recommend to use <a href="https://docs.renovatebot.com/">renovate</a>.
 
