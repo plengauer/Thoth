@@ -505,7 +505,7 @@ jobs:
           curl -L -H "Authorization: Bearer ${{ secrets.TEST_GITHUB_TOKEN }}" -X DELETE "${GITHUB_API_URL:-https://api.github.com}"/repos/${{ steps.resolve-user.outputs.user }}/${{ env.REPOSITORY_NAME }} || true
       - run: |
           curl -L -H "Authorization: Bearer ${{ secrets.TEST_GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/user/repos -d '{"name":"${{ env.REPOSITORY_NAME }}","private":"${{ matrix.private }}","auto_init":"true"}'
-          printf '%s' '${{ secrets.TEST_GITHUB_TOKEN }}' | GH_TOKEN='${{ secrets.TEST_GITHUB_TOKEN }' gh secret set ACTIONS_GITHUB_TOKEN --repo ${{ steps.resolve-user.outputs.user }}/${{ env.REPOSITORY_NAME }}
+          printf '%s' '${{ secrets.TEST_GITHUB_TOKEN }}' | GH_TOKEN='${{ secrets.TEST_GITHUB_TOKEN }}' gh secret set ACTIONS_GITHUB_TOKEN --repo ${{ steps.resolve-user.outputs.user }}/${{ env.REPOSITORY_NAME }}
       - uses: actions/checkout@v4.2.2
         with:
           repository: "${{ steps.resolve-user.outputs.user }}/${{ env.REPOSITORY_NAME }}"
