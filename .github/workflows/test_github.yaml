@@ -529,10 +529,12 @@ jobs:
           nohup node -e "require('http').createServer(function (req, res) { console.log(req.method, req.url); res.writeHead(200); res.end(); }).listen(8080);" > /tmp/http.log &
       - run: |
           wget --header "Authorization: Bearer ${{ secrets.ACTIONS_GITHUB_TOKEN }}" https://raw.githubusercontent.com/plengauer/Thoth/${{ github.sha }}/README.md -O - | sed -n '/```yaml/,/```/p' | grep -v '```yaml' | sed '/```/,$d' > .github/workflows/deploy_otel.yaml
+          cat .github/workflows/deploy_otel.yaml
           yq -i '.jobs[0].steps[0].uses = "${{ github.repository }}/actions/instrument/deploy@${{ github.sha }}"' .github/workflows/deploy_otel.yaml
           yq -i '.jobs[0].steps[0].with.secret_redaction_strategy = "${{ matrix.secret_redaction_strategy }}"' .github/workflows/deploy_otel.yaml
           yq -i '.jobs[0].steps[0].env.OTEL_EXPORTER_OTLP_ENDPOINT = "http://'"$(curl 'https://api.ipify.org?format=json' | jq -r .ip)"':8080"' .github/workflows/deploy_otel.yaml
           yq -i 'del(.jobs[0].steps[0].env.OTEL_EXPORTER_OTLP_HEADERS)' .github/workflows/deploy_otel.yaml
+          cat .github/workflows/deploy_otel.yaml
           git add . && git commit --message "added deploy action" && git push
       - run: |
           while ! cat .github/workflows/test.yaml | yq .jobs[].steps[].uses | grep -q '/instrument/job@' || ! cat .github/workflows/test.yaml | yq .jobs[].steps[].uses | grep -q '/instrument/workflow@'; do
