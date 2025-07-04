@@ -482,6 +482,9 @@ jobs:
           repository: "${{ steps.resolve-user.outputs.user }}/${{ env.REPOSITORY_NAME }}"
           token: ${{ secrets.TEST_GITHUB_TOKEN }}
       - run: |
+          git config --global user.email "${{ steps.resolve-user.outputs.user }}@github.com"
+          git config --global user.name "${{ steps.resolve-user.outputs.user }}"
+      - run: |
           mkdir -p .github/workflows
           echo '
           name: Test
