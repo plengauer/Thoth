@@ -537,13 +537,13 @@ jobs:
           yq -i 'del(.jobs.deploy.steps[0].env.OTEL_EXPORTER_OTLP_HEADERS)' .github/workflows/deploy_otel.yaml
           git add . && git commit --message "added deploy action" && git push
       - run: |
-          while ! cat .github/workflows/test.yaml | yq .jobs.*.steps[].uses | grep -q '/instrument/job@' || ! cat .github/workflows/test.yaml | yq .jobs[].steps[].uses | grep -q '/instrument/workflow@'; do
+          while ! cat .github/workflows/test.yaml | yq '.jobs.*.steps[].uses' | grep -q '/instrument/job@' || ! cat .github/workflows/test.yaml | yq '.jobs.*.steps[].uses' | grep -q '/instrument/workflow@'; do
             sleep 10 && git pull
           done
       - run: |
           case "${{ matrix.secret_redaction_strategy }}" in
-            none) cat .github/workflows/test.yaml | yq '.jobs[].steps[] | select(.uses == */instrument/job@*) | .with.secret_redaction_strategy' | sort -u | grep -q null;;
-            list|all) ! cat .github/workflows/test.yaml | yq '.jobs[].steps[] | select(.uses == */instrument/job@*) | .with.secret_redaction_strategy' | sort -u | grep -q null;;
+            none) cat .github/workflows/test.yaml | yq '.jobs.*.steps[] | select(.uses == */instrument/job@*) | .with.secret_redaction_strategy' | sort -u | grep -q null;;
+            list|all) ! cat .github/workflows/test.yaml | yq '.jobs.*.steps[] | select(.uses == */instrument/job@*) | .with.secret_redaction_strategy' | sort -u | grep -q null;;
             *) exit 1;;
           esac
       - run: while ! cat /tmp/http.log | grep -q '^POST /v1/logs$'   ; do sleep 10; done
