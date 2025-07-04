@@ -460,9 +460,8 @@ jobs:
         secret_redaction_strategy: ['none', 'list', 'all']
         private: [ 'true', 'false' ]
       fail-fast: false
-    concurrency: test/github/deploy
     env:
-      REPOSITORY_NAME: thoth-deploy-test-repository
+      REPOSITORY_NAME: thoth-deploy-test-repository-${{ matrix.private  }}-${{ matrix.secret_redaction_strategy }}
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.20.0
         with:
