@@ -184,7 +184,7 @@ jobs:
       group: otel-deploy-job
     permissions:
       contents: write
-      actions: write
+      workflows: write
       pull-requests: write
     steps:
       - uses: plengauer/Thoth/actions/instrument/deploy@v5.21.0
