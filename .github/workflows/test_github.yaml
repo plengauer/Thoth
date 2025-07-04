@@ -370,7 +370,41 @@ jobs:
       - uses: actions/checkout@v4.2.2
       - uses: ./actions/instrument/job
       - run: echo hello world
+  workflow-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/download-artifact@v4.3.0
+        with:
+          name: packages
+      - id: workflow_run
+        run: |
+          curl -L --no-progress-meter --fail --retry 16 -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_REPOSITORY"/actions/workflows'?per_page=100&page=1' | jq --unbuffered -r '.workflows[] | select(.name == "Workflow Example") | .id' \
+            | xargs -I {} curl -L --no-progress-meter --fail --retry 16 -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_REPOSITORY"/actions/workflows/'{}'/runs'?status=success&branch=main&per_page=1&page=1' \
+            | jq --unbuffered -r '.workflow_runs[] | [ .id, .run_attempt ] | @tsv' | sed 's/\t/ /g' | {
+              read -r id run_attempt
+              echo "id=$id" >> "$GITHUB_OUTPUT"
+              echo "run_attempt=$run_attempt" >> "$GITHUB_OUTPUT"
+            }
+      - run: |
+          [ -n "${{ steps.workflow_run.outputs.id }}" ]
+          [ -n "${{ steps.workflow_run.outputs.run_attempt }}" ]
+      - uses: ./actions/instrument/workflow
+        with:
+          workflow_run_id: ${{ steps.workflow_run.outputs.id }}
+          workflow_run_attempt: ${{ steps.workflow_run.outputs.run_attempt }}
+          cache: false
+        env:
+          OTEL_METRICS_EXPORTER: console
+          OTEL_LOGS_EXPORTER: console
+          OTEL_TRACES_EXPORTER: console
+          OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
   workflow:
+    needs: workflow-smoke
     runs-on: ubuntu-latest
     timeout-minutes: 180
     strategy:
@@ -432,24 +466,19 @@ jobs:
     timeout-minutes: 60
     permissions:
       actions: read
-    strategy:
-      matrix:
-        secret_redaction_strategy: ['none', 'list', 'all']
-      fail-fast: false
     steps:
       - uses: actions/checkout@v4.2.2
       - uses: ./actions/instrument/deploy
         with:
           debug: 1
           dry_run: true
-          job_level_instrumentation_secret_redaction_strategy: ${{ matrix.secret_redaction_strategy }}
           action_repository: '.'
           __repository_level_instrumentation_file_name_override: '.github/workflows/test_github.yaml'
         env:
           OTEL_METRICS_EXPORTER: console
           OTEL_LOGS_EXPORTER: console
           OTEL_TRACES_EXPORTER: console
-          OTEL_SHELL_SDK_OUTPUT_REDIRECT: '${{ steps.filename.outputs.otlp }}'
+          OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
   deploy:
     needs: deploy-smoke
     runs-on: ubuntu-latest
@@ -500,10 +529,10 @@ jobs:
           nohup node -e "require('http').createServer(function (req, res) { console.log(req.method, req.url); res.writeHead(200); res.end(); }).listen(8080);" > /tmp/http.log &
       - run: |
           wget --header "Authorization: Bearer ${{ secrets.ACTIONS_GITHUB_TOKEN }}" https://raw.githubusercontent.com/plengauer/Thoth/${{ github.sha }}/README.md -O - | sed -n '/```yaml/,/```/p' | grep -v '```yaml' | sed '/```/,$d' > .github/workflows/deploy_otel.yaml
-          yq -i .github/workflows/deploy_otel.yaml '.jobs[0].steps[0].uses = ${{ github.repository }}/actions/instrument/deploy@${{ github.sha }}'
-          yq -i .github/workflows/deploy_otel.yaml '.jobs[0].steps[0].with.secret_redaction_strategy = ${{ matrix.secret_redaction_strategy }}'
-          yq -i .github/workflows/deploy_otel.yaml '.jobs[0].steps[0].env.OTEL_EXPORTER_OTLP_ENDPOINT = 'http://"$(curl 'https://api.ipify.org?format=json' | jq -r .ip)":8080
-          yq -i .github/workflows/deploy_otel.yaml 'del(.jobs[0].steps[0].env.OTEL_EXPORTER_OTLP_HEADERS)'
+          yq -i '.jobs[0].steps[0].uses = ${{ github.repository }}/actions/instrument/deploy@${{ github.sha }}' .github/workflows/deploy_otel.yaml
+          yq -i '.jobs[0].steps[0].with.secret_redaction_strategy = ${{ matrix.secret_redaction_strategy }}' .github/workflows/deploy_otel.yaml
+          yq -i '.jobs[0].steps[0].env.OTEL_EXPORTER_OTLP_ENDPOINT = 'http://"$(curl 'https://api.ipify.org?format=json' | jq -r .ip)":8080 .github/workflows/deploy_otel.yaml
+          yq -i 'del(.jobs[0].steps[0].env.OTEL_EXPORTER_OTLP_HEADERS)' .github/workflows/deploy_otel.yaml
           git add . && git commit --message "added deploy action" && git push
       - run: |
           while ! cat .github/workflows/test.yaml | yq .jobs[].steps[].uses | grep -q '/instrument/job@' || ! cat .github/workflows/test.yaml | yq .jobs[].steps[].uses | grep -q '/instrument/workflow@'; do
