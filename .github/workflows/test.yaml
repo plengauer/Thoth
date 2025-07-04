@@ -16,7 +16,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.20.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.21.0
         with:
           secrets_to_redact: '["${{ github.token }}"]'
         env:
@@ -38,12 +38,6 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.20.0
-        env:
-          OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
-          OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-        with:
-          secrets_to_redact: '["${{ github.token }}"]'
       - uses: actions/checkout@v4.2.2
       - run: sudo apt-get update && sudo apt-get -y install apt-file
       - run: sudo apt-file update
@@ -51,6 +45,12 @@ jobs:
           process_packages() { sed 's/^awk$/gawk/g' | sed 's/^python3$/python3-minimal/g'; }
           process_commands() { sed 's/^awk$/gawk/g' | grep -vE '^which$' | grep -vE '^print$' | grep -vE '^rpm$';  }
           patternify() { grep -v '^$' | grep -P '^[a-zA-Z0-9/_.-]+$' | while read -r pattern; do echo '^'"$pattern"'$'; done }
+          check_command() {
+            local dependencies="$1"
+            local command="$2"
+            apt-file search /"$command" | grep -E "/$command\$" | grep -E ': /bin/|: /sbin/|: /usr/bin/|: /usr/sbin/|: /usr/local/bin/|: /usr/local/sbin/' | cut -d : -f 1 | grep -q "$dependencies" && echo "$command OK" || echo "$command UNAVAILABLE"
+          }
+          export -f check_command
           verify() {
             local dependencies="$(cat src/DEBIAN/control | grep -E "$1" | cut -d : -f 2- | tr '|' ',' | tr ',' '\n' | cut -d '(' -f 1 | tr -d ' ' | process_packages | patternify)"
             cat | while read -r file; do echo "Verifying $file" >&2; echo "$file"; done | xargs cat \
@@ -58,10 +58,7 @@ jobs:
               | grep -oP '(^[[:space:]]*|\$\()\\?[a-zA-Z/][a-zA-Z0-9/_.-]*($|[[:space:]])' \
               | while read -r command; do command="${command% }"; command="${command# }"; command="${command#\$\(}"; command="${command#\\}"; [ "${#command}" -gt 1 ] && printf '%s\n' "$command" || true; done \
               | grep -vE '^_otel|^otel_|^OTEL_' | grep -vE "$(compgen -b | patternify)" | grep -vE "$(compgen -k | patternify)" | process_commands \
-              | sort -u | while read -r command; do
-                printf '%s' "$command ... "
-                apt-file search /"$command" | grep -E "/$command\$" | grep -E ': /bin/|: /sbin/|: /usr/bin/|: /usr/sbin/|: /usr/local/bin/|: /usr/local/sbin/' | cut -d : -f 1 | grep -q "$dependencies" && echo OK || echo UNAVAILABLE
-              done | tee /dev/stderr | grep -q 'UNAVAILABLE' && return 1 || return 0
+              | sort -u | xargs -d '\n' -r parallel -q check_command "$dependencies" ::: | tee /dev/stderr | grep -q 'UNAVAILABLE' && return 1 || return 0
           }
           find src/DEBIAN | grep -vE '^src/DEBIAN$|^src/DEBIAN/control$|^src/DEBIAN/triggers$' | verify '^Pre-Depends:' && find src -iname '*.sh' | grep -vE '^src/DEBIAN/' | verify '^Pre-Depends:|^Depends:|^Recommends:|^Suggests:'
   build-http:
@@ -88,6 +85,7 @@ jobs:
         with:
           name: http_${{ steps.build.outputs.architecture }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.http/libinjecthttpheader.so
+          if-no-files-found: error
   merge-http:
     needs: build-http
     runs-on: ubuntu-latest
@@ -168,7 +166,11 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4.2.2
-      - run: python3 -m venv venv && . venv/bin/activate && pip3 install -r src/usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.txt
+      - run: |
+          python3 -m venv venv
+          . venv/bin/activate
+          pip3 install -r src/usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.txt
+          deactivate
       - id: dynamic
         run: |
           seq "$(cat venv/lib/python*/site-packages/opentelemetry_*.dist-info/METADATA | grep '^Requires-Python: >=' | cut -d . -f 2 | sort -n -u | tail -n 1)" "$(cat src/usr/share/opentelemetry_shell/agent.instrumentation.python/Dockerfile | grep '^FROM ' | cut -d ' ' -f 2 | cut -d : -f 2 | cut -d . -f 2)" \
@@ -249,7 +251,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.20.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.21.0
         with:
           secrets_to_redact: '["${{ github.token }}"]'
         env:
