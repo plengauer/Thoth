@@ -531,9 +531,13 @@ jobs:
           wget --header "Authorization: Bearer ${{ secrets.ACTIONS_GITHUB_TOKEN }}" https://raw.githubusercontent.com/plengauer/Thoth/${{ github.sha }}/README.md -O - | sed -n '/```yaml/,/```/p' | grep -v '```yaml' | sed '/```/,$d' > .github/workflows/deploy_otel.yaml
           cat .github/workflows/deploy_otel.yaml
           yq -i '.jobs.deploy.steps[0].uses = "${{ github.repository }}/actions/instrument/deploy@${{ github.sha }}"' .github/workflows/deploy_otel.yaml
+          cat .github/workflows/deploy_otel.yaml
           sed -i 's/secrets\.ABC/secrets.ACTIONS_GITHUB_TOKEN/g' .github/workflows/deploy_otel.yaml
+          cat .github/workflows/deploy_otel.yaml
           yq -i '.jobs.deploy.steps[0].with.job_level_instrumentation_secret_redaction_strategy = "${{ matrix.secret_redaction_strategy }}"' .github/workflows/deploy_otel.yaml
+          cat .github/workflows/deploy_otel.yaml
           yq -i '.jobs.deploy.steps[0].env.OTEL_EXPORTER_OTLP_ENDPOINT = "http://'"$(curl 'https://api.ipify.org?format=json' | jq -r .ip)"':8080"' .github/workflows/deploy_otel.yaml
+          cat .github/workflows/deploy_otel.yaml
           yq -i 'del(.jobs.deploy.steps[0].env.OTEL_EXPORTER_OTLP_HEADERS)' .github/workflows/deploy_otel.yaml
           cat .github/workflows/deploy_otel.yaml
           git add . && git commit --message "added deploy action" && git push
