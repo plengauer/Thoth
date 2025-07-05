@@ -491,13 +491,14 @@ jobs:
       fail-fast: false
     env:
       REPOSITORY_TEMPLATE: thoth-deploy-test-repository-${{ matrix.private  }}-${{ matrix.secret_redaction_strategy }}
+      ASSERT_RECEIVING_DATA: 'false'
     steps:
-      # - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.20.0
-      #   with:
-      #     secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}","${{ secrets.TEST_GITHUB_TOKEN }}"]'
-      #   env:
-      #     OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
-      #     OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.20.0
+        with:
+          secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}","${{ secrets.TEST_GITHUB_TOKEN }}"]'
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
+          OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
       - id: config
         run: |
           curl -L -H "Authorization: Bearer ${{ secrets.TEST_GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/user | jq -r .login | xargs -I '{}' echo "user={}" >> "$GITHUB_OUTPUT"
@@ -526,7 +527,8 @@ jobs:
                 - run: echo hello world
           ' >> .github/workflows/test.yaml
           git add . && git commit --message "added workflow" && git push
-      - run: |
+      - if: ${{ env.ASSERT_RECEIVING_DATA == 'true' }}
+        run: |
           nohup node -e "require('http').createServer(function (req, res) { console.log(req.method, req.url); res.writeHead(200); res.end(); }).listen(8080);" > /tmp/http.log &
       - run: |
           printf '%s' '${{ secrets.TEST_GITHUB_TOKEN }}' | GH_TOKEN='${{ secrets.TEST_GITHUB_TOKEN }}' gh secret set DEPLOY_OBSERVABILITY_TOKEN --repo ${{ steps.config.outputs.user }}/${{ steps.config.outputs.name }}
@@ -548,5 +550,11 @@ jobs:
             list|all) ! cat .github/workflows/test.yaml | yq '.jobs.*.steps[] | select(.uses == "*/actions/instrument/job@*") | .with.secrets_to_redact' | sort -u | grep -q null;;
             *) false;;
           esac
+      - if: ${{ env.ASSERT_RECEIVING_DATA == 'true' }}
+        run: cat /tmp/http.log | grep -q '^POST /v1/logs$'
+      - if: ${{ env.ASSERT_RECEIVING_DATA == 'true' }}
+        run: cat /tmp/http.log | grep -q '^POST /v1/metrics$'
+      - if: ${{ env.ASSERT_RECEIVING_DATA == 'true' }}
+        run: cat /tmp/http.log | grep -q '^POST /v1/traces$'
       - run: |
           curl -L -H "Authorization: Bearer ${{ secrets.TEST_GITHUB_TOKEN }}" -X DELETE "${GITHUB_API_URL:-https://api.github.com}"/repos/${{ steps.config.outputs.user }}/"${{ steps.config.outputs.name }}" || true
