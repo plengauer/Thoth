@@ -502,7 +502,7 @@ jobs:
       - id: config
         run: |
           curl -L -H "Authorization: Bearer ${{ secrets.TEST_GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/user | jq -r .login | xargs -I '{}' echo "user={}" >> "$GITHUB_OUTPUT"
-          echo repository="${{ env.REPOSITORY_NAME_TEMPLATE }}"-"$(echo "${{ github.ref }}" | base64 | tr -d =)" >> "$GITHUB_OUTPUT"
+          echo repository="${{ env.REPOSITORY_TEMPLATE }}"-"$(echo "${{ github.ref }}" | base64 | tr -d =)" >> "$GITHUB_OUTPUT"
           cat "$GITHUB_OUTPUT"
       - run: |
           curl -L -H "Authorization: Bearer ${{ secrets.TEST_GITHUB_TOKEN }}" -X DELETE "${GITHUB_API_URL:-https://api.github.com}"/repos/${{ steps.config.outputs.user }}/${{ env.steps.config.outputs.repository }} || true
