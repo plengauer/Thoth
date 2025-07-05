@@ -490,7 +490,7 @@ jobs:
         private: [ 'true', 'false' ]
       fail-fast: false
     env:
-      REPOSITORY_NAME: thoth-deploy-test-repository-${{ matrix.private  }}-${{ matrix.secret_redaction_strategy }}
+      REPOSITORY_TEMPLATE: thoth-deploy-test-repository-${{ matrix.private  }}-${{ matrix.secret_redaction_strategy }}
     steps:
       # - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.20.0
       #   with:
@@ -498,20 +498,21 @@ jobs:
       #   env:
       #     OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
       #     OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - id: resolve-user
+      - id: config
         run: |
           curl -L -H "Authorization: Bearer ${{ secrets.TEST_GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/user | jq -r .login | xargs -I '{}' echo "user={}" >> "$GITHUB_OUTPUT"
+          echo repository="$REPOSITORY_NAME_TEMPLATE"-"${{ github.ref }}" >> "$GITHUB_OUTPUT"
       - run: |
-          curl -L -H "Authorization: Bearer ${{ secrets.TEST_GITHUB_TOKEN }}" -X DELETE "${GITHUB_API_URL:-https://api.github.com}"/repos/${{ steps.resolve-user.outputs.user }}/${{ env.REPOSITORY_NAME }} || true
+          curl -L -H "Authorization: Bearer ${{ secrets.TEST_GITHUB_TOKEN }}" -X DELETE "${GITHUB_API_URL:-https://api.github.com}"/repos/${{ steps.config.outputs.user }}/${{ env.steps.config.outputs.name }} || true
       - run: |
-          curl -L -H "Authorization: Bearer ${{ secrets.TEST_GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/user/repos -d '{"name":"${{ env.REPOSITORY_NAME }}","private":"${{ matrix.private }}","auto_init":"true"}'
+          curl -L -H "Authorization: Bearer ${{ secrets.TEST_GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/user/repos -d '{"name":"${{ steps.config.outputs.name }}","private":"${{ matrix.private }}","auto_init":"true"}'
       - uses: actions/checkout@v4.2.2
         with:
-          repository: "${{ steps.resolve-user.outputs.user }}/${{ env.REPOSITORY_NAME }}"
+          repository: "${{ steps.config.outputs.user }}/${{ steps.config.outputs.name }}"
           token: ${{ secrets.TEST_GITHUB_TOKEN }}
       - run: |
-          git config --global user.email ${{ steps.resolve-user.outputs.user }}@github.com
-          git config --global user.name ${{ steps.resolve-user.outputs.user }}
+          git config --global user.email ${{ steps.config.outputs.user }}@github.com
+          git config --global user.name ${{ steps.config.outputs.user }}
       - run: |
           mkdir -p .github/workflows
           echo '
@@ -528,7 +529,7 @@ jobs:
       - run: |
           nohup node -e "require('http').createServer(function (req, res) { console.log(req.method, req.url); res.writeHead(200); res.end(); }).listen(8080);" > /tmp/http.log &
       - run: |
-          printf '%s' '${{ secrets.TEST_GITHUB_TOKEN }}' | GH_TOKEN='${{ secrets.TEST_GITHUB_TOKEN }}' gh secret set DEPLOY_OBSERVABILITY_TOKEN --repo ${{ steps.resolve-user.outputs.user }}/${{ env.REPOSITORY_NAME }}
+          printf '%s' '${{ secrets.TEST_GITHUB_TOKEN }}' | GH_TOKEN='${{ secrets.TEST_GITHUB_TOKEN }}' gh secret set DEPLOY_OBSERVABILITY_TOKEN --repo ${{ steps.config.outputs.user }}/${{ steps.config.outputs.name }}
           wget --header "Authorization: Bearer ${{ secrets.ACTIONS_GITHUB_TOKEN }}" https://raw.githubusercontent.com/plengauer/Thoth/${{ github.sha }}/README.md -O - | sed -n '/```yaml/,/```/p' | grep -v '```yaml' | sed '/```/,$d' > .github/workflows/deploy_otel.yaml
           cat .github/workflows/deploy_otel.yaml | yq .jobs.deploy.steps[0].uses | grep -q '/actions/instrument/deploy@'
           cat .github/workflows/deploy_otel.yaml | yq .jobs.deploy.steps[0].with.github_token | grep -q secrets.DEPLOY_OBSERVABILITY_TOKEN
@@ -547,9 +548,5 @@ jobs:
             list|all) ! cat .github/workflows/test.yaml | yq '.jobs.*.steps[] | select(.uses == "*/actions/instrument/job@*") | .with.secrets_to_redact' | sort -u | grep -q null;;
             *) false;;
           esac
-      - run: ps -ef | grep node
-      - run: while ! cat /tmp/http.log | grep -q '^POST /v1/logs$'   ; do sleep 10; done
-      - run: while ! cat /tmp/http.log | grep -q '^POST /v1/metrics$'; do sleep 10; done
-      - run: while ! cat /tmp/http.log | grep -q '^POST /v1/traces$' ; do sleep 10; done
       - run: |
-          curl -L -H "Authorization: Bearer ${{ secrets.TEST_GITHUB_TOKEN }}" -X DELETE "${GITHUB_API_URL:-https://api.github.com}"/repos/${{ steps.resolve-user.outputs.user }}/"$REPOSITORY_NAME" || true
+          curl -L -H "Authorization: Bearer ${{ secrets.TEST_GITHUB_TOKEN }}" -X DELETE "${GITHUB_API_URL:-https://api.github.com}"/repos/${{ steps.config.outputs.user }}/"${{ steps.config.outputs.name }}" || true
