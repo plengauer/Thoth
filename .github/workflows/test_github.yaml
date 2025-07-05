@@ -547,6 +547,7 @@ jobs:
             list|all) ! cat .github/workflows/test.yaml | yq '.jobs.*.steps[] | select(.uses == "*/actions/instrument/job@*") | .with.secrets_to_redact' | sort -u | grep -q null;;
             *) false;;
           esac
+      - run: ps -ef | grep node
       - run: while ! cat /tmp/http.log | grep -q '^POST /v1/logs$'   ; do sleep 10; done
       - run: while ! cat /tmp/http.log | grep -q '^POST /v1/metrics$'; do sleep 10; done
       - run: while ! cat /tmp/http.log | grep -q '^POST /v1/traces$' ; do sleep 10; done
