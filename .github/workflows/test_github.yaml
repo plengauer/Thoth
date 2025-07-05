@@ -531,7 +531,7 @@ jobs:
           printf '%s' '${{ secrets.TEST_GITHUB_TOKEN }}' | GH_TOKEN='${{ secrets.TEST_GITHUB_TOKEN }}' gh secret set DEPLOY_OBSERVABILITY_TOKEN --repo ${{ steps.resolve-user.outputs.user }}/${{ env.REPOSITORY_NAME }}
           wget --header "Authorization: Bearer ${{ secrets.ACTIONS_GITHUB_TOKEN }}" https://raw.githubusercontent.com/plengauer/Thoth/${{ github.sha }}/README.md -O - | sed -n '/```yaml/,/```/p' | grep -v '```yaml' | sed '/```/,$d' > .github/workflows/deploy_otel.yaml
           cat .github/workflows/deploy_otel.yaml | yq .jobs.deploy.steps[0].uses | grep -q '/actions/instrument/deploy@'
-          cat .github/workflows/deploy_otel.yaml | yq .jobs.deploy.steps[0].with.github_token)" | grep -q secrets.DEPLOY_OBSERVABILITY_TOKEN
+          cat .github/workflows/deploy_otel.yaml | yq .jobs.deploy.steps[0].with.github_token | grep -q secrets.DEPLOY_OBSERVABILITY_TOKEN
           yq -i 'del(.jobs.deploy.steps[0].env)' .github/workflows/deploy_otel.yaml
           yq -i '.jobs.deploy.steps[0].uses = "${{ github.repository }}/actions/instrument/deploy@${{ github.sha }}"' .github/workflows/deploy_otel.yaml
           yq -i '.jobs.deploy.steps[0].with.job_level_instrumentation_secret_redaction_strategy = "${{ matrix.secret_redaction_strategy }}"' .github/workflows/deploy_otel.yaml
