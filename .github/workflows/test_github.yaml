@@ -492,12 +492,12 @@ jobs:
     env:
       REPOSITORY_NAME: thoth-deploy-test-repository-${{ matrix.private  }}-${{ matrix.secret_redaction_strategy }}
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.20.0
-        with:
-          secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}","${{ secrets.TEST_GITHUB_TOKEN }}"]'
-        env:
-          OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
-          OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
+      # - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.20.0
+      #   with:
+      #     secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}","${{ secrets.TEST_GITHUB_TOKEN }}"]'
+      #   env:
+      #     OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
+      #     OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
       - id: resolve-user
         run: |
           curl -L -H "Authorization: Bearer ${{ secrets.TEST_GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/user | jq -r .login | xargs -I '{}' echo "user={}" >> "$GITHUB_OUTPUT"
@@ -526,7 +526,7 @@ jobs:
           ' >> .github/workflows/test.yaml
           git add . && git commit --message "added workflow" && git push
       - run: |
-          \nohup node -e "require('http').createServer(function (req, res) { console.log(req.method, req.url); res.writeHead(200); res.end(); }).listen(8080);" > /tmp/http.log &
+          nohup node -e "require('http').createServer(function (req, res) { console.log(req.method, req.url); res.writeHead(200); res.end(); }).listen(8080);" > /tmp/http.log &
       - run: |
           printf '%s' '${{ secrets.TEST_GITHUB_TOKEN }}' | GH_TOKEN='${{ secrets.TEST_GITHUB_TOKEN }}' gh secret set DEPLOY_OBSERVABILITY_TOKEN --repo ${{ steps.resolve-user.outputs.user }}/${{ env.REPOSITORY_NAME }}
           wget --header "Authorization: Bearer ${{ secrets.ACTIONS_GITHUB_TOKEN }}" https://raw.githubusercontent.com/plengauer/Thoth/${{ github.sha }}/README.md -O - | sed -n '/```yaml/,/```/p' | grep -v '```yaml' | sed '/```/,$d' > .github/workflows/deploy_otel.yaml
