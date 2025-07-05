@@ -52,8 +52,7 @@ logs_zip="$(mktemp)"
 gh_workflow_run_logs "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" "$logs_zip"
 if [ -r "$logs_zip" ] && unzip -t "$logs_zip"; then
   read_log_file() {
-    # TODO patternify $1
-    unzip -Z1 "$logs_zip" | grep -E '*.txt' | grep -E "$1" | xargs -d '\n' -r unzip -p "$logs_zip" | sed '1s/^\xEF\xBB\xBF//' | sed '1s/^\xFE\xFF//' | sed '1s/^\x00\x00\xFE\xFF//'
+    unzip -Z1 "$logs_zip" | grep '.txt$' | grep -E "$(printf '%s' "$1" | sed 's/[.[\(*^$+?{|]/\\\\&/g')" | xargs -d '\n' -r unzip -p "$logs_zip" | sed '1s/^\xEF\xBB\xBF//' | sed '1s/^\xFE\xFF//' | sed '1s/^\x00\x00\xFE\xFF//'
   }
 else
   log_stream() { false; }
