@@ -195,6 +195,7 @@ inputs:
   github_token:
     description: 'A GitHub token for API access (read/write)'
     default: '${{ github.token }}'
+    required: true
   workflows_directory:
     default: '.github/workflows'
   workflow_level_instrumentation_file_name:
