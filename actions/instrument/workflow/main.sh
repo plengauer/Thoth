@@ -50,7 +50,7 @@ gh_artifacts "$INPUT_WORKFLOW_RUN_ID" | jq -r .artifacts[] > "$artifacts_json"
 
 logs_zip="$(mktemp)"
 count=1
-while [ "$count" -lt 60 ] && !(gh_workflow_run_logs "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" "$logs_zip" && ! unzip -t "$logs_zip"; do # sometimes downloads fail
+while [ "$count" -lt 60 ] && !(gh_workflow_run_logs "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" "$logs_zip" && unzip -t "$logs_zip"); do # sometimes downloads fail
   sleep "$count"
   count=$((count * 2))
 done
