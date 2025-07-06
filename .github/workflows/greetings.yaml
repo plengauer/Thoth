@@ -8,13 +8,13 @@ jobs:
       pull-requests: write
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.5
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.21.0
         with:
-          secrets_to_redact: '${{ toJSON(secrets) }}'
+          secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}"]'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - uses: actions/first-interaction@v1
+      - uses: actions/first-interaction@v1.3.0
         with:
           repo-token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           issue-message: "Hello, thanks for adding an issue for the first time!"

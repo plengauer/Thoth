@@ -11,11 +11,13 @@ jobs:
     outputs:
       matrix: ${{ steps.demos.outputs.matrix }}
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.5
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.21.0
+        with:
+          secrets_to_redact: '["${{ github.token }}"]'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.2.2
       - run: |
           cd demos && echo */ | tr ' ' '\n' | tr -d / | while read -r dir; do echo \""$dir"\"; done | jq -nR '{"include": [inputs | select(length > 0) | {demo_directory: .}]}' | tr -d '\n' | xargs -0 -I {} echo 'matrix={}' >> "$GITHUB_OUTPUT"
         id: demos
@@ -34,7 +36,7 @@ jobs:
         run: |
           cat "$GITHUB_EVENT_PATH" | jq -r .release.assets[].browser_download_url | grep '.deb$' | xargs wget --header="Authorization: Bearer $GITHUB_TOKEN"
           sudo apt-get -y install ./*.deb
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.2.2
       - id: demo
         env:
           GITHUB_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
@@ -225,7 +227,7 @@ jobs:
       - name: "Open Pull Request"
         if: steps.diff.outputs.dirty
         id: open-pr
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v7.0.8
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           commit-message: "Update demo"
@@ -237,7 +239,8 @@ jobs:
           reviewers: ${{ steps.reviewers.outputs.reviewers }}
           delete-branch: true
       - run: sleep 60 # make sure PR state is updated and API can catch up
-      - uses: peter-evans/enable-pull-request-automerge@v3
+        if: steps.open-pr.outputs.pull-request-number != null
+      - uses: peter-evans/enable-pull-request-automerge@v3.0.0
         if: steps.open-pr.outputs.pull-request-number != null
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}

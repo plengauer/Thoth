@@ -7,19 +7,22 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    concurrency:
+      group: deploy-otel-job
     permissions:
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.16.5
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.21.0
         with:
-          secrets_to_redact: ${{ toJSON(secrets) }}
+          secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}","${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}","${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}"]'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
-      - uses: plengauer/opentelemetry-github/actions/instrument/deploy@v5.16.5
+      - uses: plengauer/opentelemetry-github/actions/instrument/deploy@v5.21.0
         with:
           github_token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
-          job_level_instrumentation_exclude: 'Test,Refresh Demos,GitHub,Workflow Example,Experiment'
+          job_level_instrumentation_exclude: 'Refresh Demos,Shell,GitHub,Workflow Example,Experiment'
+          job_level_instrumentation_secret_redaction_strategy: list
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'

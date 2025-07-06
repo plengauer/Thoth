@@ -5,52 +5,25 @@ if [ "$1" = 'abort-configure' ] || [ "$1" = 'abort-upgrade' ] || [ "$1" = 'abort
   true
 elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' ]; then
   export HOME="$(eval "echo ~$(whoami)")"
-  if ! [ -d /opt/opentelemetry_shell/sdk/venv ] || [ "${OTEL_SHELL_CONFIG_INSTALL_ASSUME:-FALSE}" = FALSE ]; then
-    python3 -m venv /opt/opentelemetry_shell/sdk/venv
-    . /opt/opentelemetry_shell/sdk/venv/bin/activate
-    pip3 install -r /opt/opentelemetry_shell/sdk/requirements.txt
+  if ! [ -d /opt/opentelemetry_shell/venv ] || [ "${OTEL_SHELL_CONFIG_INSTALL_ASSUME:-FALSE}" = FALSE ]; then
+    python3 -m venv /opt/opentelemetry_shell/venv
+    . /opt/opentelemetry_shell/venv/bin/activate
+    pip3 install -r /opt/opentelemetry_shell/requirements.txt
     pip3 check
     deactivate # SKIP_DEPENDENCY_CHECK
   fi
-  if [ "${OTEL_SHELL_CONFIG_INSTALL_DEEP:-TRUE}" = TRUE ]; then
-    if type gcc 2> /dev/null; then # SKIP_DEPENDENCY_CHECK
-      gcc -shared -fPIC -o /opt/opentelemetry_shell/libinjecthttpheader.so /usr/share/opentelemetry_shell/agent.injection.http_header.c -ldl # SKIP_DEPENDENCY_CHECK
-    fi
-    if type pip3 2> /dev/null && [ "$(pip3 --version | cut -d ' ' -f 2 | cut -d . -f 1)" -gt 21 ] && (! [ -d /opt/opentelemetry_shell/venv ] || [ "${OTEL_SHELL_CONFIG_INSTALL_ASSUME:-FALSE}" = FALSE ]); then
-      python3 -m venv /opt/opentelemetry_shell/venv
-      . /opt/opentelemetry_shell/venv/bin/activate
-      pip3 install -r /opt/opentelemetry_shell/requirements.txt
-      printf '%s' '
-from opentelemetry.instrumentation.bootstrap_gen import (default_instrumentations, libraries) # SKIP_DEPENDENCY_CHECK
-print(*default_instrumentations, sep="\n") # SKIP_DEPENDENCY_CHECK
-print(*map(lambda element: element["instrumentation"], libraries), sep="\n") # SKIP_DEPENDENCY_CHECK
-' | python3 | grep "==$(pip3 show opentelemetry-distro | grep Version | cut -d ':' -f 2- | tr -d ' ')"'$' | xargs pip3 install
-      pip3 check
-      deactivate # SKIP_DEPENDENCY_CHECK
-    fi
-    export PATH="$PATH":/usr/local/bin
-    if type npm 2> /dev/null && [ "$(node --version | cut -d v -f 2 | cut -d . -f 1)" -ge 14 ] && (! [ -d /opt/opentelemetry_shell/node_modules ] || [ "${OTEL_SHELL_CONFIG_INSTALL_ASSUME:-FALSE}" = FALSE ]); then # SKIP_DEPENDENCY_CHECK
-      rm -rf /opt/opentelemetry_shell/node_modules # LEGACY this is necessary for RHEL npms
-      (cd /opt/opentelemetry_shell && npm install --package-lock=false)
-    fi
-    if [ -d /opt/opentelemetry_shell/node_modules ]; then
-      (cd /usr/share/opentelemetry_shell/ && ln --symbolic ../../../opt/opentelemetry_shell/node_modules node_modules 2> /dev/null || true)
-    fi
-    if type javac 2> /dev/null && type jar 2> /dev/null && [ "$(java --version | head -n 1 | cut -d ' ' -f 2 | cut -d . -f 1)" -ge 8 ] && (! [ -r /opt/opentelemetry_shell/opentelemetry-javaagent.jar ] || [ "${OTEL_SHELL_CONFIG_INSTALL_ASSUME:-FALSE}" = FALSE ]) && (! [ -r /opt/opentelemetry_shell/rootcontextagent.jar ] || [ "${OTEL_SHELL_CONFIG_INSTALL_ASSUME:-FALSE}" = FALSE ]); then # SKIP_DEPENDENCY_CHECK
-      groupId="$(cat /opt/opentelemetry_shell/pom.xml | grep groupId | cut -d '>' -f 2- | cut -d '<' -f 1)" 
-      artifactId="$(cat /opt/opentelemetry_shell/pom.xml | grep artifactId | cut -d '>' -f 2- | cut -d '<' -f 1)"
-      version="$(cat /opt/opentelemetry_shell/pom.xml | grep version | cut -d '>' -f 2- | cut -d '<' -f 1)"
-      wget https://repo1.maven.org/maven2/"$(echo "$groupId" | tr '.' '/')"/"$artifactId"/"$version"/"$artifactId"-"$version".jar -O /opt/opentelemetry_shell/opentelemetry-javaagent.jar # SKIP_DEPENDENCY_CHECK
-      (cd /usr/share/opentelemetry_shell/agent.instrumentation.java/link && javac --release 8 --class-path=/opt/opentelemetry_shell/opentelemetry-javaagent.jar RootContextAgent.java && jar cmf manifest.txt /opt/opentelemetry_shell/rootcontextagent.jar RootContextAgent.class) # SKIP_DEPENDENCY_CHECK
-      groupId="$(cat /usr/share/opentelemetry_shell/agent.instrumentation.java/deep/pom.xml | grep groupId | cut -d '>' -f 2- | cut -d '<' -f 1)" 
-      artifactId="$(cat /usr/share/opentelemetry_shell/agent.instrumentation.java/deep/pom.xml | grep artifactId | cut -d '>' -f 2- | cut -d '<' -f 1)"
-      version="$(cat /usr/share/opentelemetry_shell/agent.instrumentation.java/deep/pom.xml | grep version | cut -d '>' -f 2- | cut -d '<' -f 1)"
-      wget https://repo1.maven.org/maven2/"$(echo "$groupId" | tr '.' '/')"/"$artifactId"/"$version"/"$artifactId"-"$version".jar -O /opt/opentelemetry_shell/javassist.jar # SKIP_DEPENDENCY_CHECK
-      (cd /usr/share/opentelemetry_shell/agent.instrumentation.java/deep && javac --release 8 --class-path=/opt/opentelemetry_shell/javassist.jar SubprocessInjectionAgent.java && jar cmf manifest.txt /opt/opentelemetry_shell/subprocessinjectionagent.jar SubprocessInjectionAgent*.class) # SKIP_DEPENDENCY_CHECK
-      rm -rf /usr/share/opentelemetry_shell/agent.instrumentation.java/*.class /usr/share/opentelemetry_shell/agent.instrumentation.java/*/*.class
-    fi
+  export PATH=/usr/local/bin:"$PATH"
+  if type node; then
+    tar -xJf /usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules.tar.xz -C /usr/share/opentelemetry_shell/agent.instrumentation.node/
+    ls /usr/share/opentelemetry_shell/agent.instrumentation.node | grep -v '.json$' | grep -v '.js$' | grep -v '.xz$' | while read -r directory; do
+      ls /usr/share/opentelemetry_shell/agent.instrumentation.node | grep '.js$' | while read -r file; do
+        cp /usr/share/opentelemetry_shell/agent.instrumentation.node/"$file" /usr/share/opentelemetry_shell/agent.instrumentation.node/"$directory"/"$file"
+      done
+    done
   fi
-  true
+  if type python3; then
+    tar -xJf /usr/share/opentelemetry_shell/agent.instrumentation.python/python_site_packages.tar.xz -C /usr/share/opentelemetry_shell/agent.instrumentation.python/
+  fi
 else
   exit 1
 fi

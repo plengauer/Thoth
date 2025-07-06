@@ -1,4 +1,5 @@
-opentelemetry-distro==0.54b1
-opentelemetry-exporter-otlp==1.33.1
-opentelemetry-api==1.33.1 # this is just to fix a relaxed indirect dependency to help old package managers
-opentelemetry-sdk==1.33.1 # this is just to fix a relaxed indirect dependency to help old package managers
+requests==2.32.4
+opentelemetry-sdk==1.34.1
+opentelemetry-exporter-otlp-proto-http==1.34.1
+opentelemetry-resourcedetector-docker==0.4.0
+opentelemetry-resourcedetector-kubernetes==0.3.0

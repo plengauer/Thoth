@@ -2,7 +2,38 @@
 set -e
 . ../shared/config_validation.sh
 . ../shared/github.sh
-OTEL_SHELL_CONFIG_INSTALL_DEEP=FALSE bash -e ../shared/install.sh
+bash -e ../shared/install.sh
+
+# selfmonitoring
+if ([ "$INPUT_SELF_MONITORING" = true ] || ([ "$INPUT_SELF_MONITORING" = auto ] && [ "$GITHUB_API_URL" = 'https://api.github.com' ])); then
+  (
+    unset OTEL_EXPORTER_OTLP_METRICS_ENDPOINT OTEL_EXPORTER_OTLP_LOGS_ENDPOINT OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+    export OTEL_SHELL_SDK_OUTPUT_REDIRECT=/dev/null
+    export OTEL_SERVICE_NAME="OpenTelemetry GitHub Selfmonitoring"
+    export OTEL_TRACES_EXPORTER=none
+    export OTEL_LOGS_EXPORTER=none
+    [ "${OTEL_SHELL_CONFIG_GITHUB_IS_TEST:-FALSE}" = FALSE ] && export OTEL_METRICS_EXPORTER=otlp || export OTEL_METRICS_EXPORTER=none
+    export OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
+    export OTEL_EXPORTER_OTLP_ENDPOINT=http://3.73.14.87:4318
+    export OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE=delta
+    . otelapi.sh
+    _otel_resource_attributes_process() {
+      :
+    }
+    _otel_resource_attributes_custom() {
+      _otel_resource_attribute string telemetry.sdk.language=github
+    }
+    if [ "$INPUT_SELF_MONITORING_ANONYMIZE" = true ] || ([ "$INPUT_SELF_MONITORING_ANONYMIZE" = auto ] && ([ "$GITHUB_API_URL" != 'https://api.github.com' ] || [ "$(gh_curl | jq -r .visibility)" != public ])); then
+      unset GITHUB_REPOSITORY_ID GITHUB_REPOSITORY GITHUB_REPOSITORY_OWNER_ID GITHUB_REPOSITORY_OWNER
+    fi
+    unset GITHUB_WORKFLOW_REF GITHUB_WORKFLOW_SHA GITHUB_WORKFLOW
+    otel_init
+    counter_handle="$(otel_counter_create counter selfmonitoring.opentelemetry.github.workflow.invocations 1 'Invocations of workflow-level instrumentation')"
+    observation_handle="$(otel_observation_create 1)"
+    otel_counter_observe "$counter_handle" "$observation_handle"
+    otel_shutdown
+  ) &
+fi
 
 export OTEL_SERVICE_NAME="${OTEL_SERVICE_NAME:-"$(echo "$GITHUB_REPOSITORY" | cut -d / -f 2-) CI"}"
 

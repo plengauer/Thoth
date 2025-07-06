@@ -7,11 +7,12 @@ _otel_propagate_curl() {
     *m*) local job_control=1; \set +m;;
     *) local job_control=0;;
   esac
-  if \[ -f /opt/opentelemetry_shell/libinjecthttpheader.so ] && ! ( \[ "$_otel_shell" = 'busybox sh' ] && \help | \tail -n +3 | \grep -q curl ); then
+  local file=/usr/share/opentelemetry_shell/agent.instrumentation.http/"$(\arch)"/libinjecthttpheader.so
+  if \[ -f "$file" ] && ! \ldd "$file" | \grep -q 'not found' && ! ( \[ "$_otel_shell" = 'busybox sh' ] && \help | \tail -n +3 | \grep -q curl ); then
     export OTEL_SHELL_INJECT_HTTP_SDK_PIPE="$_otel_remote_sdk_pipe"
     export OTEL_SHELL_INJECT_HTTP_HANDLE_FILE="$(\mktemp -u)_opentelemetry_shell_$$.curl.handle)"
     local OLD_LD_PRELOAD="${LD_PRELOAD:-}"
-    export LD_PRELOAD=/opt/opentelemetry_shell/libinjecthttpheader.so
+    export LD_PRELOAD="$file"
     if \[ -n "$OLD_LD_PRELOAD" ]; then
       export LD_PRELOAD="$LD_PRELOAD:$OLD_LD_PRELOAD"
     fi
@@ -19,7 +20,7 @@ _otel_propagate_curl() {
   if _otel_string_contains "$(_otel_dollar_star "$@")" " -v "; then local is_verbose=1; else local is_verbose=0; fi
   local stderr_pipe="$(\mktemp -u)_opentelemetry_shell_$$.stderr.curl.pipe"
   \mkfifo "$stderr_pipe"
-  _otel_pipe_curl_stderr "$is_verbose" "$OTEL_SHELL_INJECT_HTTP_HANDLE_FILE" < "$stderr_pipe" >&2 &
+  _otel_pipe_curl_stderr "$is_verbose" "${OTEL_SHELL_INJECT_HTTP_HANDLE_FILE:-}" < "$stderr_pipe" >&2 &
   local stderr_pid="$!"
   local exit_code=0
   _otel_call "$@" -H "traceparent: $TRACEPARENT" -H "tracestate: $TRACESTATE" -v --no-progress-meter 2> "$stderr_pipe" || exit_code="$?"
