@@ -307,7 +307,7 @@ root4job() {
     _otel_resource_attribute string telemetry.sdk.language=github
   }
   otel_init
-  observe_rate_limit &
+  # observe_rate_limit &
   observe_rate_limit_pid="$!"
   time_start="$(date +%s.%N)"
   span_handle="$(otel_span_start CONSUMER "${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}")"
