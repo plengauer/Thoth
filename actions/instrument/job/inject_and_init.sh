@@ -176,7 +176,7 @@ if [ "$(printf '%s' "$GITHUB_JOB_ID" | wc -l)" -le 1 ]; then echo "Guessing GitH
 observe_rate_limit() {
   used_gauge_handle="$(otel_counter_create observable_gauge github.api.rate_limit.used 1 "The amount of rate limited requests used")"
   remaining_gauge_handle="$(otel_counter_create observable_gauge github.api.rate_limit.remaining 1 "The amount of rate limited requests remaining")"
-  while true; do
+  while [ -r /tmp/opentelemetry_shell.github.observe_rate_limits ]; do
     gh_rate_limit | jq --unbuffered -r '.resources | to_entries[] | [.key, .value.used, .value.remaining] | @tsv' | sed 's/\t/ /g' | while read -r resource used remaining; do
       observation_handle="$(otel_observation_create "$used")"
       otel_observation_attribute_typed "$observation_handle" string github.api.resource="$resource"
@@ -191,6 +191,7 @@ observe_rate_limit() {
 export -f observe_rate_limit
 
 root4job_end() {
+  rm /tmp/opentelemetry_shell.github.observe_rate_limits
   if [ -f /tmp/opentelemetry_shell.github.error ]; then local conclusion=failure; else local conclusion=success; fi
   otel_span_attribute_typed $span_handle string github.actions.job.conclusion="$conclusion"
   if [ "$conclusion" = failure ]; then otel_span_error "$span_handle"; fi
@@ -281,7 +282,8 @@ root4job_end() {
       otel_shutdown
     )
   fi
-  
+
+  while kill -0 "$observe_rate_limit_pid"; do sleep 1; done
   while [ "$(pgrep -cf /opt/opentelemetry_shell/)" -gt 0 ]; do sleep 1; done
   if [ -n "${OTEL_SHELL_COLLECTOR_CONTAINER:-}" ]; then
     sudo docker stop "$OTEL_SHELL_COLLECTOR_CONTAINER"
@@ -289,7 +291,6 @@ root4job_end() {
       sudo docker logs "$OTEL_SHELL_COLLECTOR_CONTAINER"
     fi
   fi
-  kill -9 "$observe_rate_limit_pid" || true
   exit 0
 }
 export -f root4job_end
@@ -307,7 +308,8 @@ root4job() {
     _otel_resource_attribute string telemetry.sdk.language=github
   }
   otel_init
-  # observe_rate_limit &
+  touch /tmp/opentelemetry_shell.github.observe_rate_limits
+  observe_rate_limit &
   observe_rate_limit_pid="$!"
   time_start="$(date +%s.%N)"
   span_handle="$(otel_span_start CONSUMER "${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}")"
