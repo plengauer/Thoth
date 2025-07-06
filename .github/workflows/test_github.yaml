@@ -405,7 +405,7 @@ jobs:
           cat "$OTLP_JSON" | jq -r .name | grep -v '^null$' | sort -u | grep 'publish'
           cat "$OTLP_JSON" | jq -r .name | grep -v '^null$' | sort -u | grep 'Set up job'
           cat "$OTLP_JSON" | jq -r .name | grep -v '^null$' | sort -u | grep 'Complete job'
-          # cat "$OTLP_JSON" | jq -r .body | grep -v '^null$' | sort -u | grep 'Cleaning up orphan processes'
+          cat "$OTLP_JSON" | jq -r .body | grep -v '^null$' | sort -u | grep 'Cleaning up orphan processes'
   deploy:
     needs: smoke
     runs-on: ubuntu-latest
