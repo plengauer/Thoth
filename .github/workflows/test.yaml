@@ -239,6 +239,10 @@ jobs:
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.java
           javac -classpath ./opentelemetry-javaagent.jar RootContextAgent.java
           jar cmf manifest.txt rootcontextagent.jar RootContextAgent.class
+      - run: |
+          cd src/usr/share/opentelemetry_shell/agent.instrumentation.java
+          javac -classpath ./opentelemetry-javaagent.jar SubprocessInjectionAgent.java
+          jar cmf manifest.txt subprocessinjectionagent.jar SubprocessInjectionAgent.class          
       - uses: actions/upload-artifact@v4.6.2
         with:
           name: java
