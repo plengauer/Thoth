@@ -101,6 +101,7 @@ jobs:
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
       - run: sudo apt-get update # check if command fails
       - run: |
+          set -x
           nohup sleep $((60 * 60 * 2)) &
       - run: | # check if install succeeded
           type otel.sh && type strace
