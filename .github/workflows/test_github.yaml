@@ -376,6 +376,7 @@ jobs:
               echo "id=$id" >> "$GITHUB_OUTPUT"
               echo "run_attempt=$run_attempt" >> "$GITHUB_OUTPUT"
             }
+            echo "run_attempt=1" >> "$GITHUB_OUTPUT"
       - run: |
           [ -n "${{ steps.workflow_run.outputs.id }}" ]
           [ -n "${{ steps.workflow_run.outputs.run_attempt }}" ]
