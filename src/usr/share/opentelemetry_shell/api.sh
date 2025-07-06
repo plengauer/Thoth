@@ -55,7 +55,7 @@ else
   }
 
   otel_shutdown() {
-    _otel_sdk_communicate "SHUTDOWN"
+    # _otel_sdk_communicate "SHUTDOWN"
     \eval "\\exec ${_otel_remote_sdk_fd}>&-"
     \rm "$_otel_remote_sdk_pipe"
   }
