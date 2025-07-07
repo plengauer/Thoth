@@ -346,3 +346,4 @@ echo "pid=$!" >> "$GITHUB_STATE"
 export TRACEPARENT="$(cat "$traceparent_file")"
 rm "$traceparent_file"
 printenv | grep -E '^OTEL_|^TRACEPARENT=|^TRACESTATE=' >> "$GITHUB_ENV"
+sleep 5 && ps -ef | grep /opt/opentelemetry_shell
