@@ -4,7 +4,7 @@ if [ "$INPUT___JOB_STATUS" = failure ]; then
   touch /tmp/opentelemetry_shell.github.error
 fi
 
-pgrep -f /opt/opentelemetry_shell/
+ps -ef | grep /opt/opentelemetry_shell
 
 root_pid="$STATE_pid"
 kill -USR1 "$root_pid"
