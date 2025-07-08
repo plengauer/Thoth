@@ -293,6 +293,9 @@ root4job_end() {
     fi
   fi
   lsof -p $$
+  ls -la /tmp/*_opentelemetry_shell_*.pipe || true 
+  fuser /tmp/*_opentelemetry_shell_*.pipe || true
+  ps -ef || true
   exit 0
 }
 export -f root4job_end
