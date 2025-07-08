@@ -401,7 +401,7 @@ _otel_inject_and_exec_directly() { # this function assumes there is no fd fucker
   \export OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE="$PPID"
   shift
   \exec sh -c '. otel.sh
-eval "$(_otel_escape_args "$@")"' sh "$@"
+eval _otel_inject "$(_otel_escape_args "$@")"' sh "$@"
 }
 
 _otel_inject_and_exec_by_location() {
@@ -424,7 +424,7 @@ _otel_inject_and_exec_by_location() {
   \printf '%s\n' "$(_otel_escape_args export OTEL_SHELL_COMMANDLINE_OVERRIDE="$(_otel_command_self)")"
   \printf '%s\n' "$(_otel_escape_args export OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE="$PPID")"
   \echo -n '"exec" '; _otel_escape_args sh -c '. otel.sh
-'"$command"; \echo -n ' "$0" "$@"'
+_otel_inject '"$command"; \echo -n ' "$0" "$@"'
 }
 
 _otel_record_exec() {
@@ -446,7 +446,7 @@ command() {
 }
 
 _otel_inject() {
-  if \[ -x "$1" ]; then
+  if _otel_string_contains "$1" / && \[ -x "$1" ]; then
     local path="$1"
     if ! \alias "${path##*/}" 1> /dev/null 2> /dev/null; then # in case its an absolute command that is not on the path at all, we need to make sure it is to have proper shebang resolution and the resulting instrumentation on hand
       local PATH="${path%/*}:$PATH"
