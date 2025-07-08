@@ -285,6 +285,11 @@ root4job_end() {
 
   while kill -0 "$observe_rate_limit_pid"; do sleep 1; done
   timeout 60s sh -c 'while [ "$(pgrep -cf /opt/opentelemetry_shell/)" -gt 0 ]; do sleep 1; done' || true
+  
+pgrep -f /opt/opentelemetry_shell/ || true
+fuser /tmp/*_opentelemetry_shell_*.pipe || true
+ps -ef || true
+
   if [ -n "${OTEL_SHELL_COLLECTOR_CONTAINER:-}" ]; then
     sudo docker stop "$OTEL_SHELL_COLLECTOR_CONTAINER"
     if [ -n "$INPUT_DEBUG" ]; then
