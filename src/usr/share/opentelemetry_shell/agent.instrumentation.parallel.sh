@@ -54,21 +54,21 @@ _otel_inject_parallel_gnu_arguments() {
   local in_exec=0
   for arg in "$@"; do
     \echo -n ' '
-    if \[ "$in_exec" -eq 0 ] && ! \[ "${arg%"${arg#?}"}" = "-" ] && \[ -x "$(\which "$arg")" ]; then
+    if \[ "$in_exec" -eq 0 ] && ! _otel_string_starts_with "$arg" - && \[ -x "$(\which "$arg")" ]; then
       local in_exec=1
       \echo -n "-q $_otel_shell -c '. otel.sh
 "
       no_quote=1 _otel_escape_arg "$arg"
-    elif \[ "$in_exec" -eq 0 ] && ! \[ "${arg%"${arg#?}"}" = "-" ] && \[ "$_otel_shell" = bash ] && \type "$arg" 2> /dev/null | \head -n1 | \grep -q ' function$'; then
+    elif \[ "$in_exec" -eq 0 ] && ! _otel_string_starts_with "$arg" - && \[ "$_otel_shell" = bash ] && \type "$arg" 2> /dev/null | \head -n1 | \grep -q ' function$'; then
       local in_exec=1
       \echo -n "-q $_otel_shell -c '. otel.sh
 "
       no_quote=1 _otel_escape_arg "$arg"
       # even if the command is an exported bash function, the instrumentation works properly because the function is exported with expanded aliases
       # so really the instrumentation hint is irrelevant as long as the necessary otel functions are declared
-    elif \[ "$in_exec" -eq 1 ] && \[ "$arg" = ":::${arg#":::"}" ]; then
-      local in_exec=0
-      \echo -n '"$@"'"' 'parallel' $arg"
+    elif \[ "$in_exec" -eq 1 ] && _otel_string_starts_with "$arg" ':::'; then
+      local in_exec=2
+      \echo -n '"$@"'"' 'parallel' '$arg'"
     else
       if \[ "$in_exec" = 1 ]; then
         no_quote=1 _otel_escape_arg "$(_otel_escape_arg "$arg")"
