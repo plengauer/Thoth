@@ -10,3 +10,4 @@ cat < "$STATE_log_file" > "$STATE_otel_shell_sdk_output_redirect"
 if [ -n "$INPUT_DEBUG" ]; then
   cat /tmp/opentelemetry_shell.github.debug.log
 fi
+fuser *_opentelemetry_shell_*.pipe
