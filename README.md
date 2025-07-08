@@ -182,15 +182,13 @@ jobs:
     runs-on: ubuntu-latest
     concurrency:
       group: otel-deploy-job
-    permissions:
-      contents: write
-      actions: write
-      pull-requests: write
     steps:
       - uses: plengauer/Thoth/actions/instrument/deploy@v5.21.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
+        with:
+          github_token: '${{ secrets.DEPLOY_OBSERVABILITY_TOKEN }}' # TODO configure a token that has permissions to push contents and open pull requests
 ```
 This workflow only deploys workflow-level and job-level instrumentations. It does not keep them up to date, for that we recommend to use <a href="https://docs.renovatebot.com/">renovate</a>.
 
