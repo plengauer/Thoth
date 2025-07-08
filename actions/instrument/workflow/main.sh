@@ -48,13 +48,20 @@ gh_jobs "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" | jq .jobs[] > "$
 artifacts_json="$(mktemp)"
 gh_artifacts "$INPUT_WORKFLOW_RUN_ID" | jq -r .artifacts[] > "$artifacts_json"
 
-logs_dir="$(mktemp -d)"
 logs_zip="$(mktemp)"
 count=1
-while [ "$count" -lt 60 ] && !(gh_workflow_run_logs "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" "$logs_zip" && unzip "$logs_zip" -d "$logs_dir" && rm "$logs_zip" && find "$logs_dir" -iname '*.txt' | xargs -d '\n' -I '{}' sed -i '1s/^\xEF\xBB\xBF//' '{}'); do # sometimes downloads fail
+while [ "$count" -lt 60 ] && !(gh_workflow_run_logs "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" "$logs_zip" && unzip -t "$logs_zip" 1> /dev/null 2> /dev/null); do # sometimes downloads fail
   sleep "$count"
   count=$((count * 2))
 done
+if [ -r "$logs_zip" ] && unzip -t "$logs_zip"; then
+  read_log_file() {
+    unzip -Z1 "$logs_zip" | grep '.txt$' | grep -E "$(printf '%s' "$1" | sed 's/[.[\(*^$+?{|]/\\\\&/g')" | xargs -d '\n' -r unzip -p "$logs_zip" | sed '1s/^\xEF\xBB\xBF//' | sed '1s/^\xFE\xFF//' | sed '1s/^\x00\x00\xFE\xFF//'
+  }
+else
+  log_stream() { false; }
+  rm -rf "$logs_zip"
+fi 
 
 times_dir="$(mktemp -d)"
 
@@ -92,10 +99,8 @@ action_duration_counter_handle="$(otel_counter_create counter github.actions.act
 link="${GITHUB_SERVER_URL:-https://github.com}"/"$(jq < "$workflow_json" -r .repository.owner.login)"/"$(jq < "$workflow_json" -r .repository.name)"/actions/runs/"$(jq < "$workflow_json" -r .id)"
 workflow_started_at="$(jq < "$workflow_json" -r .run_started_at)"
 workflow_ended_at="$(jq < "$jobs_json" -r .completed_at | sort -r | head -n 1)"
-if [ "$(ls "$logs_dir"/*/*.txt | wc -l)" -gt 0 ]; then
-  last_log_timestamp="$(tail -q -n 1 "$logs_dir"/*.txt "$logs_dir"/*/*.txt | cut -d ' ' -f 1 | sort | tail -n 1)"
-  if [ "$last_log_timestamp" > "$workflow_ended_at" ]; then workflow_ended_at="$last_log_timestamp"; fi
-fi
+last_log_timestamp="$(read_log_file '.txt' | cut -d ' ' -f 1 | sort | tail -n 1)"
+if [ "$last_log_timestamp" > "$workflow_ended_at" ]; then workflow_ended_at="$last_log_timestamp"; fi
 
 observation_handle="$(otel_observation_create 1)"
 otel_observation_attribute_typed "$observation_handle" string github.actions.workflow.id="$(jq < "$workflow_json" -r .workflow_id)"
@@ -146,11 +151,9 @@ otel_span_end "$workflow_span_handle" @"$workflow_ended_at"
 
 jq < "$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .started_at, .completed_at, .name] | @tsv' | sed 's/\t/ /g' | while read -r TRACEPARENT job_id job_conclusion job_started_at job_completed_at job_name; do
   if [[ "$job_started_at" < "$workflow_started_at" ]] || jq < "$artifacts_json" -r .name | grep -q '^opentelemetry_job_'"$job_id"'$'; then continue; fi
-  job_log_file="$(printf '%s' "$logs_dir"/*_"${job_name//\//}".txt | tr -d ':')"
-  if [ -r "$job_log_file" ]; then
-    last_log_timestamp="$(tail < "$job_log_file" -n 1 | cut -d ' ' -f 1)"
-    if [ -n "$last_log_timestamp" ] && [ "$last_log_timestamp" > "$job_completed_at" ]; then job_completed_at="$last_log_timestamp"; fi
-  fi
+  job_log_file="$(printf '%s' "${job_name//\//}" | tr -d ':')"
+  last_log_timestamp="$(read_log_file "$job_log_file" | tail -n 1 | cut -d ' ' -f 1)"
+  if [ -n "$last_log_timestamp" ] && [ "$last_log_timestamp" > "$job_completed_at" ]; then job_completed_at="$last_log_timestamp"; fi
   
   observation_handle="$(otel_observation_create 1)"
   otel_observation_attribute_typed "$observation_handle" string github.actions.workflow.name="$(jq < "$workflow_json" -r .name)"
@@ -198,13 +201,9 @@ done | sed 's/\t/ /g' | while read -r TRACEPARENT job_id step_number step_conclu
     if [ "$previous_step_completed_at" > "$step_started_at" ]; then step_started_at="$previous_step_completed_at"; fi
     if [ "$step_started_at" > "$step_completed_at" ]; then step_completed_at="$step_started_at"; fi
   fi
-  step_log_file="$(printf '%s' "$logs_dir"/"${job_name//\//}"/"$step_number"_*.txt | tr -d ':')"
-  if [ -r "$step_log_file" ]; then
-    last_log_timestamp="$(tail < "$step_log_file" -n 1 | cut -d ' ' -f 1)"
-    if [ -n "$last_log_timestamp" ] && [ "$last_log_timestamp" > "$step_completed_at" ]; then step_completed_at="$last_log_timestamp"; fi
-  else
-    echo "::warning ::Cannot resolve log for job $job_name step $step_number."
-  fi
+  step_log_file="$(printf '%s' "${job_name//\//}"/"$step_number"_ | tr -d ':')"
+  last_log_timestamp="$(read_log_file "$step_log_file" | tail -n 1 | cut -d ' ' -f 1)"
+  if [ -n "$last_log_timestamp" ] && [ "$last_log_timestamp" > "$step_completed_at" ]; then step_completed_at="$last_log_timestamp"; fi
 
   action_name="$step_name"
   case "$action_name" in
@@ -295,7 +294,7 @@ done | sed 's/\t/ /g' | while read -r TRACEPARENT job_id step_number step_conclu
   otel_span_attribute_typed "$step_span_handle" string github.actions.action.phase="${action_phase:-}"
   otel_span_attribute_typed "$step_span_handle" string github.actions.step.conclusion="$step_conclusion"
   otel_span_activate "$step_span_handle"
-  [ -r "$step_log_file" ] && cat "$step_log_file" | while read -r line; do
+  read_log_file "$step_log_file" | while read -r line; do
     timestamp="${line%% *}"
     if ! [[ "$timestamp" =~ ^[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]\.[0-9]{7}Z$ ]]; then continue; fi
     line="${line#* }"
@@ -329,7 +328,7 @@ done | sed 's/\t/ /g' | while read -r TRACEPARENT job_id step_number step_conclu
     esac
     [ -z "${INPUT_DEBUG}" ] || echo "log $TRACEPARENT $job_name $timestamp $severity $line" >&2
     _otel_log_record "$TRACEPARENT" "$timestamp" "$severity" "$line"
-  done || true
+  done || echo "::warning ::Cannot resolve log for job $job_name step $step_number."
   [ -z "${INPUT_DEBUG}" ] || echo "span step $TRACEPARENT $step_name" >&2
   otel_span_deactivate "$step_span_handle"
   if [ "$step_conclusion" = failure ]; then otel_span_error "$step_span_handle"; fi

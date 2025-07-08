@@ -39,3 +39,36 @@ jobs:
       actions: read
     steps:
       - run: echo 'hello world, im a publisher (not injected)'
+  name-with_special-characters:
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: none
+      actions: read
+    steps:
+      - run: echo 'hello world, im a job with some special characters (not injected)'
+  job-with-name:
+    name: 'job-with(a)special[name]with.special&characters'
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: none
+      actions: read
+    steps:
+      - run: echo 'hello world, im a job with custom name (not injected)'
+  job-with-python-producing-utf-log:
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: none
+      actions: read
+    steps:
+      - run: python -m venv venv && . venv/bin/activate && pip3 install opentelemetry-api && deactivate
+  job-with-npm-producing-utf-log:
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: none
+      actions: read
+    steps:
+      - run: npm install @opentelemetry/api
