@@ -292,6 +292,7 @@ root4job_end() {
       sudo docker logs "$OTEL_SHELL_COLLECTOR_CONTAINER"
     fi
   fi
+  lsof -p $$
   exit 0
 }
 export -f root4job_end
