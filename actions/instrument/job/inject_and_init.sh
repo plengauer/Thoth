@@ -286,8 +286,10 @@ root4job_end() {
   fi
 
   while kill -0 "$observe_rate_limit_pid" 2> /dev/null; do sleep 1; done
+  pgrep -f /opt/opentelemetry_shell/
+  ps -ef | grep /opt/opentelemetry_shell/
   timeout 60s sh -c 'while [ "$(pgrep -cf /opt/opentelemetry_shell/)" -gt 0 ]; do sleep 1; done' || true
-  ls -la /tmp
+  pgrep -f /opt/opentelemetry_shell/
   ps -ef | grep /opt/opentelemetry_shell/
   
   if [ -n "${OTEL_SHELL_COLLECTOR_CONTAINER:-}" ]; then
