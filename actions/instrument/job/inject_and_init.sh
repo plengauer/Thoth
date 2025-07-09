@@ -288,6 +288,7 @@ root4job_end() {
   while kill -0 "$observe_rate_limit_pid" 2> /dev/null; do sleep 1; done
   timeout 60s sh -c 'while [ "$(pgrep -cf /opt/opentelemetry_shell/)" -gt 0 ]; do sleep 1; done' || true
   ls -la /tmp
+  ps -ef | grep /opt/opentelemetry_shell/
   
   if [ -n "${OTEL_SHELL_COLLECTOR_CONTAINER:-}" ]; then
     sudo docker stop "$OTEL_SHELL_COLLECTOR_CONTAINER"
