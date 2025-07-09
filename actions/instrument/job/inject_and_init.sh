@@ -288,7 +288,7 @@ root4job_end() {
   while kill -0 "$observe_rate_limit_pid" 2> /dev/null; do sleep 1; done
   pgrep -f /opt/opentelemetry_shell/
   ps -ef | grep /opt/opentelemetry_shell/
-  timeout 60s sh -c 'while [ "$(pgrep -cf /opt/opentelemetry_shell/)" -gt 0 ]; do sleep 1; done' || true
+  timeout 60s sh -xc 'while [ "$(pgrep -cf /opt/opentelemetry_shell/)" -gt 0 ]; do sleep 1; done' || true
   pgrep -f /opt/opentelemetry_shell/
   ps -ef | grep /opt/opentelemetry_shell/
   
