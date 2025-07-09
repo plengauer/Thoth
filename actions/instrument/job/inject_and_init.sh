@@ -346,6 +346,8 @@ root4job() {
     rm -rf "$opentelemetry_job_dir"
   fi
   otel_span_deactivate "$span_handle"
+fuser /tmp/opentelemetry_shell.github.debug.log
+ps -ef
   exec 2>&-
   exec 1>&-
   trap root4job_end SIGUSR1
