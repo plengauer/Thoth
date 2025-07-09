@@ -323,7 +323,7 @@ root4job() {
   }
   otel_init
   touch /tmp/opentelemetry_shell.github.observe_rate_limits
-  observe_rate_limit &
+  observe_rate_limit &> /dev/null &
   observe_rate_limit_pid="$!"
   time_start="$(date +%s.%N)"
   span_handle="$(otel_span_start CONSUMER "${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}")"
