@@ -272,7 +272,7 @@ root4job_end() {
       otel_counter_observe "$(otel_counter_create counter selfmonitoring.opentelemetry.github.job.spans 1 'Spans created by job-level instrumentation')" "$spans_observation_handle"
       rm "$self_monitoring_metrics_file"
       step_counter_handle="$(otel_counter_create counter selfmonitoring.opentelemetry.github.job.steps 1 'Steps observed by job-level instrumentation')"
-      cat /tmp/opentelemetry_shell.github.step.log | while read -r action_type action_name; do
+      ( cat /tmp/opentelemetry_shell.github.step.log || true ) | while read -r action_type action_name; do
         step_observation_handle="$(otel_observation_create 1)"
         otel_observation_attribute_typed "$step_observation_handle" string github.actions.runner.os="$RUNNER_OS"
         otel_observation_attribute_typed "$step_observation_handle" string github.actions.runner.arch="$RUNNER_ARCH"
@@ -346,8 +346,6 @@ root4job() {
     rm -rf "$opentelemetry_job_dir"
   fi
   otel_span_deactivate "$span_handle"
-fuser /tmp/opentelemetry_shell.github.debug.log
-ps -ef
   exec 2>&-
   exec 1>&-
   trap root4job_end SIGUSR1
