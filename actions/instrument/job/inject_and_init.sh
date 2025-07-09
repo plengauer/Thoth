@@ -294,10 +294,15 @@ root4job_end() {
       sudo docker logs "$OTEL_SHELL_COLLECTOR_CONTAINER"
     fi
   fi
+  echo debug debug debug 0
   lsof -p $$
+  echo debug debug debug 1
   ls -la /tmp/*_opentelemetry_shell_*.pipe || true 
+  echo debug debug debug 2
   fuser /tmp/*_opentelemetry_shell_*.pipe || true
+  echo debug debug debug 3
   ps -ef || true
+  echo debug debug debug 4
   exit 0
 }
 export -f root4job_end
