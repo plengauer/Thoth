@@ -350,7 +350,7 @@ export -f root4job
 
 traceparent_file="$(mktemp -u)"
 mkfifo /tmp/opentelemetry_shell.github.debug.log
-nohup bash -c 'root4job "$@"' bash "$traceparent_file" &
+nohup bash -c 'root4job "$@"' bash "$traceparent_file" &> /dev/null &
 echo "pid=$!" >> "$GITHUB_STATE"
 cat /tmp/opentelemetry_shell.github.debug.log
 
