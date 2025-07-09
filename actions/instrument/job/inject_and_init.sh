@@ -286,7 +286,7 @@ root4job_end() {
   fi
 
   while kill -0 "$observe_rate_limit_pid" 2> /dev/null; do sleep 1; done
-  timeout 60s sh -c 'while ls /tmp | grep _opentelemetry_shell_; do sleep 1; done' || true
+  timeout 60s sh -c 'while fuser /opt/opentelemetry_shell/venv/bin/python; do sleep 1; done' || true
   
   if [ -n "${OTEL_SHELL_COLLECTOR_CONTAINER:-}" ]; then
     sudo docker stop "$OTEL_SHELL_COLLECTOR_CONTAINER"
