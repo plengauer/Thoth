@@ -191,6 +191,8 @@ observe_rate_limit() {
 export -f observe_rate_limit
 
 root4job_end() {
+  exec 1> /tmp/opentelemetry_shell.github.debug.log
+  exec 2> /tmp/opentelemetry_shell.github.debug.log
   rm /tmp/opentelemetry_shell.github.observe_rate_limits
   if [ -f /tmp/opentelemetry_shell.github.error ]; then local conclusion=failure; else local conclusion=success; fi
   otel_span_attribute_typed $span_handle string github.actions.job.conclusion="$conclusion"
@@ -301,6 +303,8 @@ root4job_end() {
 export -f root4job_end
 
 root4job() {
+  exec 1> /tmp/opentelemetry_shell.github.debug.log
+  exec 2> /tmp/opentelemetry_shell.github.debug.log
   [ -z "${OTEL_SHELL_COLLECTOR_IMAGE:-}" ] || export OTEL_SHELL_COLLECTOR_CONTAINER="$(OTEL_SHELL_COLLECTOR_CONFIG="$(cat "$(pwd)"/collector.yaml)" sudo -E docker run --detach --restart unless-stopped --network=host --env OTEL_SHELL_COLLECTOR_CONFIG "$OTEL_SHELL_COLLECTOR_IMAGE" --config=env:OTEL_SHELL_COLLECTOR_CONFIG)"
   rm -rf "$(pwd)"/collector.yaml 2> /dev/null
   rm /tmp/opentelemetry_shell.github.error 2> /dev/null
@@ -337,15 +341,18 @@ root4job() {
     rm -rf "$opentelemetry_job_dir"
   fi
   otel_span_deactivate "$span_handle"
+  exec 2>&-
+  exec 1>&-
   trap root4job_end SIGUSR1
   while true; do sleep 1; done
 }
 export -f root4job
 
 traceparent_file="$(mktemp -u)"
-mkfifo "$traceparent_file"
+mkfifo /tmp/opentelemetry_shell.github.debug.log
 nohup bash -c 'root4job "$@"' bash "$traceparent_file" &> /tmp/opentelemetry_shell.github.debug.log &
 echo "pid=$!" >> "$GITHUB_STATE"
+cat /tmp/opentelemetry_shell.github.debug.log
 
 # propagate context to the steps
 export TRACEPARENT="$(cat "$traceparent_file")"
