@@ -286,6 +286,15 @@ root4job_end() {
   fi
 
   while kill -0 "$observe_rate_limit_pid" 2> /dev/null; do sleep 1; done
+echo debug debug debug 0
+lsof -p $$
+echo debug debug debug 1
+ls -la /tmp/*_opentelemetry_shell_*.pipe || true 
+echo debug debug debug 2
+fuser /tmp/*_opentelemetry_shell_*.pipe || true
+echo debug debug debug 3
+ps -ef || true
+echo debug debug debug 4
   timeout 60s sh -c 'while [ "$(pgrep -cf /opt/opentelemetry_shell/)" -gt 0 ]; do sleep 1; done' || true
   
   if [ -n "${OTEL_SHELL_COLLECTOR_CONTAINER:-}" ]; then
@@ -294,15 +303,15 @@ root4job_end() {
       sudo docker logs "$OTEL_SHELL_COLLECTOR_CONTAINER"
     fi
   fi
-  echo debug debug debug 0
-  lsof -p $$
-  echo debug debug debug 1
-  ls -la /tmp/*_opentelemetry_shell_*.pipe || true 
-  echo debug debug debug 2
-  fuser /tmp/*_opentelemetry_shell_*.pipe || true
-  echo debug debug debug 3
-  ps -ef || true
-  echo debug debug debug 4
+echo debug debug debug 0
+lsof -p $$
+echo debug debug debug 1
+ls -la /tmp/*_opentelemetry_shell_*.pipe || true 
+echo debug debug debug 2
+fuser /tmp/*_opentelemetry_shell_*.pipe || true
+echo debug debug debug 3
+ps -ef || true
+echo debug debug debug 4
   exit 0
 }
 export -f root4job_end
