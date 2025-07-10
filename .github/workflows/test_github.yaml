@@ -450,7 +450,6 @@ jobs:
       - run: |
           . ./actions/instrument/shared/github.sh
           INPUT_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} gh_artifact_download '${{ steps.workflow_run.outputs.id }}' '${{ steps.workflow_run.outputs.run_attempt }}' 'opentelemetry_workflow_run_${{ steps.workflow_run.outputs.run_attempt }}' .
-      - run: cat '${{ steps.filename.outputs.otlp }}'
       - env:
           OTLP_JSON: '${{ steps.filename.outputs.otlp }}'
         run: |
