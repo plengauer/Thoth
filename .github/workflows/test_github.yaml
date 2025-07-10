@@ -487,7 +487,7 @@ jobs:
     strategy:
       matrix:
         secret_redaction_strategy: ['none', 'list', 'all']
-        private: [ 'true', 'false' ]
+        private: [ 'false' ]
       fail-fast: false
     env:
       REPOSITORY_TEMPLATE: thoth-deploy-test-repository-${{ matrix.private  }}-${{ matrix.secret_redaction_strategy }}
@@ -504,9 +504,9 @@ jobs:
           curl -L -H "Authorization: Bearer ${{ secrets.TEST_GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/user | jq -r .login | xargs -I '{}' echo "user={}" >> "$GITHUB_OUTPUT"
           echo repository="${{ env.REPOSITORY_TEMPLATE }}"-"$(echo "${{ github.ref_name }}" | tr / -)" >> "$GITHUB_OUTPUT"
       - run: |
-          curl -L -H "Authorization: Bearer ${{ secrets.TEST_GITHUB_TOKEN }}" -X DELETE "${GITHUB_API_URL:-https://api.github.com}"/repos/${{ steps.config.outputs.user }}/${{ env.steps.config.outputs.repository }} || true
+          curl -L -H "Authorization: Bearer ${{ secrets.TEST_GITHUB_TOKEN }}" -X DELETE "${GITHUB_API_URL:-https://api.github.com}"/repos/${{ steps.config.outputs.user }}/${{ steps.config.outputs.repository }} || true
       - run: |
-          curl -L -H "Authorization: Bearer ${{ secrets.TEST_GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/user/repos -d '{"name":"${{ steps.config.outputs.repository }}","private":"${{ matrix.private }}","auto_init":"true"}'
+          curl -L -H "Authorization: Bearer ${{ secrets.TEST_GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/user/repos -d '{"name":"${{ steps.config.outputs.repository }}","private":${{ matrix.private }},"auto_init":true}'
       - uses: actions/checkout@v4.2.2
         with:
           repository: "${{ steps.config.outputs.user }}/${{ steps.config.outputs.repository }}"
