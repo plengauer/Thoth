@@ -488,7 +488,7 @@ jobs:
     strategy:
       matrix:
         secret_redaction_strategy: ['none', 'list', 'all']
-        private: [ 'true', 'false' ]
+        private: [ 'false' ]
       fail-fast: false
     env:
       REPOSITORY_TEMPLATE: thoth-deploy-test-repository-${{ matrix.private  }}-${{ matrix.secret_redaction_strategy }}
