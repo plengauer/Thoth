@@ -41,7 +41,7 @@ _otel_alias_prepend taskset _otel_inject_inner_command
 _otel_alias_prepend nice _otel_inject_inner_command
 _otel_alias_prepend ionice _otel_inject_inner_command
 # _otel_alias_prepend stdbuf _otel_inject_inner_command # injecting via changing the command defeats the purpose of stdbuf
-# _otel_alias_prepend nohup _otel_inject_inner_command # injecting via changing the command defeats the purpose of nohup
+# _otel_alias_prepend nohup _otel_inject_inner_command # injecting via changing the command defeats the purpose of nohup, because our injection functions do not close the streams even when the subprocess closes them and GitHub steps do not finish until all streams are closed
 # _otel_alias_prepend strace _otel_inject_inner_command # injecting via changing the command defeats the purpose of strace
 _otel_alias_prepend time _otel_inject_inner_command
 _otel_alias_prepend timeout _otel_inject_inner_command

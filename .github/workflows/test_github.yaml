@@ -100,6 +100,7 @@ jobs:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
       - run: sudo apt-get update # check if command fails
+      - run: nohup sleep $((60 * 60 * 2)) 1> /dev/null 2> /dev/null &
       - run: | # check if install succeeded
           type otel.sh && type strace
       - run: | # check if instrumentation happened
@@ -227,7 +228,7 @@ jobs:
         with:
           name: packages
       - run: |
-          nohup node -e "require('http').createServer(function (req, res) { console.log(req.method, req.url); res.writeHead(200); res.end(); }).listen(8080);" > /tmp/http.log &
+          nohup node -e "require('http').createServer(function (req, res) { console.log(req.method, req.url); res.writeHead(200); res.end(); }).listen(8080);" 1> /tmp/http.log 2> /dev/null &
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
@@ -268,7 +269,7 @@ jobs:
         with:
           name: packages
       - run: |
-          nohup node -e "require('http').createServer(function (req, res) { console.log(req.method, req.url); res.writeHead(200); res.end(); }).listen(8080);" > /tmp/http.log &
+          nohup node -e "require('http').createServer(function (req, res) { console.log(req.method, req.url); res.writeHead(200); res.end(); }).listen(8080);" 1> /tmp/http.log 2> /dev/null &
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
@@ -337,7 +338,7 @@ jobs:
         with:
           name: packages
       - run: |
-          nohup node -e "require('http').createServer(function (req, res) { console.log(req.method, req.url); res.writeHead(200); res.end(); }).listen(8080);" > /tmp/http.log &
+          nohup node -e "require('http').createServer(function (req, res) { console.log(req.method, req.url); res.writeHead(200); res.end(); }).listen(8080);" 1> /tmp/http.log 2> /dev/null &
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
@@ -529,7 +530,7 @@ jobs:
           git add . && git commit --message "added workflow" && git push
       - if: ${{ env.ASSERT_RECEIVING_DATA == 'true' }}
         run: |
-          nohup node -e "require('http').createServer(function (req, res) { console.log(req.method, req.url); res.writeHead(200); res.end(); }).listen(8080);" > /tmp/http.log &
+          nohup node -e "require('http').createServer(function (req, res) { console.log(req.method, req.url); res.writeHead(200); res.end(); }).listen(8080);" 1> /tmp/http.log 2> /dev/null &
       - run: |
           printf '%s' '${{ secrets.TEST_GITHUB_TOKEN }}' | GH_TOKEN='${{ secrets.TEST_GITHUB_TOKEN }}' gh secret set DEPLOY_OBSERVABILITY_TOKEN --repo ${{ steps.config.outputs.user }}/${{ steps.config.outputs.repository }}
           wget --header "Authorization: Bearer ${{ secrets.ACTIONS_GITHUB_TOKEN }}" https://raw.githubusercontent.com/plengauer/Thoth/${{ github.sha }}/README.md -O - | sed -n '/```yaml/,/```/p' | grep -v '```yaml' | sed '/```/,$d' > .github/workflows/deploy_otel.yaml
