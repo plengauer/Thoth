@@ -100,7 +100,11 @@ jobs:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
       - run: sudo apt-get update # check if command fails
-      - run: exec nohup sleep $((60 * 60 * 2)) &
+      - run: |
+          nohup sleep $((60 * 60 * 2)) &
+          sleep 60
+          fuser "$_otel_remote_sdk_pipe"
+          ps -ef
       - run: | # check if install succeeded
           type otel.sh && type strace
       - run: | # check if instrumentation happened
