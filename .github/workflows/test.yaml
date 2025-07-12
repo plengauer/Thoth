@@ -241,7 +241,7 @@ jobs:
       - id: dynamic
         run: |
           seq "$(cat venv/lib/python*/site-packages/opentelemetry_*.dist-info/METADATA | grep '^Requires-Python: >=' | cut -d . -f 2 | sort -n -u | tail -n 1)" "$(cat src/usr/share/opentelemetry_shell/agent.instrumentation.python/Dockerfile | grep '^FROM ' | cut -d ' ' -f 2 | cut -d : -f 2 | cut -d . -f 2)" \
-            | while read -r version; do echo '"'3."$version"'"'; done | jq -s -c | xargs -0 -I {} echo 'versions={}' >> "$GITHUB_OUTPUT"
+            | while read -r version; do echo '"'3."$version"'"'; done | jq -s -c | tee /dev/stderr | xargs -t -0 -I {} echo 'versions={}' >> "$GITHUB_OUTPUT"
   build-python-site-packages:
     needs: list-python-versions
     runs-on: ubuntu-latest
