@@ -23,10 +23,10 @@ _otel_inject_inner_command_args() {
   for arg in $more_args; do \echo -n " ";  _otel_escape_arg "$arg"; done
   # wrap command
   \echo -n " $_otel_shell -c '. otel.sh
-"
-  while \[ "$#" -gt 0 ]; do \echo -n " "; no_quote=1 _otel_escape_arg "$(_otel_escape_arg "$1")"; shift; done
-  \echo -n " "; no_quote=1 _otel_escape_arg '"$@"'
-  \printf '%s' "' $(_otel_escape_arg "${command#\\}")"
+$(_otel_escape_arg "$1") "'"$@"'"'"
+  shift
+  while \[ "$#" -gt 0 ]; do \echo -n " "; _otel_escape_arg "$1"; shift; done
+  \printf ' %s' "$(_otel_escape_arg "${command#\\}")"
 }
 
 _otel_inject_inner_command() {
@@ -91,4 +91,4 @@ _otel_inject_xargs() {
   fi
 }
 
-_otel_alias_prepend xargs _otel_inject_xargs
+_otel_alias_prepend xargs _otel_inject_inner_command # _otel_inject_xargs
