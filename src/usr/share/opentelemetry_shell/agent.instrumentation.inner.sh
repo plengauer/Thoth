@@ -25,8 +25,8 @@ _otel_inject_inner_command_args() {
   \echo -n " $_otel_shell -c '. otel.sh
 $(_otel_escape_arg "$1") "'"$@"'"'"
   shift
-  while \[ "$#" -gt 0 ]; do \echo -n " "; _otel_escape_arg "$1"; shift; done
   \printf ' %s' "$(_otel_escape_arg "${command#\\}")"
+  while \[ "$#" -gt 0 ]; do \echo -n " "; _otel_escape_arg "$1"; shift; done
 }
 
 _otel_inject_inner_command() {
