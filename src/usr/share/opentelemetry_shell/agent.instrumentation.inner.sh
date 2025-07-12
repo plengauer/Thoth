@@ -48,7 +48,6 @@ _otel_alias_prepend timeout _otel_inject_inner_command
 _otel_alias_prepend watch _otel_inject_inner_command
 _otel_alias_prepend at _otel_inject_inner_command
 _otel_alias_prepend flock _otel_inject_inner_command
-_otel_alias_prepend xargs _otel_inject_inner_command
 _otel_alias_prepend dumb-init _otel_inject_inner_command
 
 # sudo apt-get update => sudo sh -c '. /otel.sh; apt-get update' 'sudo'
@@ -78,3 +77,18 @@ _otel_inject_env() {
 }
 
 _otel_alias_prepend env _otel_inject_env
+
+_otel_inject_xargs() {
+  local has_replace_string=0
+  for arg in "$@"; do
+    if ! ( _otel_string_starts_with "$1" - || ! ( \[ -x "$1" ] || \[ -x "$(\which "$1" 2> /dev/null)" ] ) || ( \[ -x "$1" ] && _otel_string_starts_with "$(_otel_resolve_shebang "${1##*/}")" "$command " ) ); then break; fi
+    if \[ "$arg" = -I ] || _otel_string_starts_with "$arg" -i || _otel_string_starts_with "$arg" --replace; then local has_replace_string=1; fi
+  done
+  if \[ "$has_replace_string" = 1 ]; then
+    \sed 's/['\''"]/\\\\&/g' | _otel_inject_inner_command "$@"
+  else
+    _otel_inject_inner_command "$@"
+  fi
+}
+
+_otel_alias_prepend xargs _otel_inject_xargs
