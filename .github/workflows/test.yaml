@@ -240,7 +240,8 @@ jobs:
           directory="$(mktemp -d)"
           unzip -d "$directory" src/usr/share/opentelemetry_shell/agent.instrumentation.java/opentelemetry-javaagent.jar 2> /dev/null
           cd "$directory"
-          class_file_version="$(cat META-INF/MANIFEST.MF | grep '^Premain-Class' | cut -d : -f 2 | tr -d ' ' | tr -d '\r' | xargs -t -r javap -v -cp . | grep 'major version' | cut -d : -f 2 | tr -d ' ')"
+          # class_file_version="$(cat META-INF/MANIFEST.MF | grep '^Premain-Class' | cut -d : -f 2 | tr -d ' ' | tr -d '\r' | xargs -t -r javap -v -cp . | grep 'major version' | cut -d : -f 2 | tr -d ' ')"
+          class_file_version="$(find . -iname '.class' | cut -d . -f 1 | tr / . | xargs -r -n 1 javap -v -cp . | grep 'major version' | cut -d : -f 2 | tr -d ' ' | sort -n | tail -n 1)"
           class_file_version_base=45
           java_version=$((class_file_version - class_file_version_base))
           echo version="$java_version" >> "$GITHUB_OUTPUT"
