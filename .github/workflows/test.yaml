@@ -244,9 +244,8 @@ jobs:
           cd "$directory"
           # class_file_version="$(cat META-INF/MANIFEST.MF | grep '^Premain-Class' | cut -d : -f 2 | tr -d ' ' | tr -d '\r' | xargs -t -r javap -v -cp . | grep 'major version' | cut -d : -f 2 | tr -d ' ')"
           class_file_version="$(find . -iname '*.class' | while read -r path; do echo "${path#\./}"; done | cut -d . -f 1 | tr / . | xargs -r -P 0 javap -v -cp . | grep 'major version' | cut -d : -f 2 | tr -d ' ' | sort -n | tail -n 1)"
-          class_file_version_base=45
+          class_file_version_base=44
           java_version=$((class_file_version - class_file_version_base))
-          [ "$DEFAULT_JAVA_VERSION" -gt "$java_version" ] || java_version="$DEFAULT_JAVA_VERSION"
           echo version="$java_version" >> "$GITHUB_OUTPUT"
       - uses: actions/setup-java@v4.7.1
         with:
