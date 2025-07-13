@@ -455,13 +455,18 @@ jobs:
           OTLP_JSON: '${{ steps.filename.outputs.otlp }}'
         run: |
           [ "$(cat "$OTLP_JSON" | jq -r .context.trace_id | grep -v '^null$' | sort -u | cut -d x -f 2 | tee /dev/stderr)" = "$(cat traceparent | cut -d - -f 2 | tee /dev/stderr)" ]
-          cat "$OTLP_JSON" | jq -r .name | grep -v '^null$' | sort -u | grep 'test (foo)'
-          cat "$OTLP_JSON" | jq -r .name | grep -v '^null$' | sort -u | grep 'test (bar)'
-          cat "$OTLP_JSON" | jq -r .name | grep -v '^null$' | sort -u | grep 'test (baz)'
-          cat "$OTLP_JSON" | jq -r .name | grep -v '^null$' | sort -u | grep 'publish'
-          cat "$OTLP_JSON" | jq -r .name | grep -v '^null$' | sort -u | grep 'Set up job'
-          cat "$OTLP_JSON" | jq -r .name | grep -v '^null$' | sort -u | grep 'Complete job'
-          # cat "$OTLP_JSON" | jq -r .body | grep -v '^null$' | sort -u | grep 'Cleaning up orphan processes'
+          cat "$OTLP_JSON" | jq -r .name | grep -v '^null$' | sort -u | grep -F 'test (foo)'
+          cat "$OTLP_JSON" | jq -r .name | grep -v '^null$' | sort -u | grep -F 'test (bar)'
+          cat "$OTLP_JSON" | jq -r .name | grep -v '^null$' | sort -u | grep -F 'test (baz)'
+          cat "$OTLP_JSON" | jq -r .name | grep -v '^null$' | sort -u | grep -F 'publish'
+          cat "$OTLP_JSON" | jq -r .name | grep -v '^null$' | sort -u | grep -F 'name-with_special-characters'
+          cat "$OTLP_JSON" | jq -r .name | grep -v '^null$' | sort -u | grep -F 'job-with(a)special[name]with.special&characters'
+          cat "$OTLP_JSON" | jq -r .name | grep -v '^null$' | sort -u | grep -F 'Set up job'
+          cat "$OTLP_JSON" | jq -r .name | grep -v '^null$' | sort -u | grep -F 'Complete job'
+          cat "$OTLP_JSON" | jq -r .body | grep -v '^null$' | sort -u | grep -F 'Cleaning up orphan processes'
+          cat "$OTLP_JSON" | jq -r .body | grep -v '^null$' | sort -u | grep -F 'hello world, im a publisher (not injected)'
+          cat "$OTLP_JSON" | jq -r .body | grep -v '^null$' | sort -u | grep -F 'hello world, im a job with some special characters (not injected)'
+          cat "$OTLP_JSON" | jq -r .body | grep -v '^null$' | sort -u | grep -F 'hello world, im a job with custom name (not injected)'
   deploy-smoke:
     runs-on: ubuntu-latest
     timeout-minutes: 60
