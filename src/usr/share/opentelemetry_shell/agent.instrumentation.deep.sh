@@ -1,7 +1,7 @@
 #!/bin/false
 
 _otel_inject_deep() {
-  if \type strace 1> /dev/null 2> /dev/null; then
+  if \[ -z "${WSL_DISTRO_NAME:-}" ] && \type strace 1> /dev/null 2> /dev/null; then
     OTEL_SHELL_CONFIG_OBSERVE_SUBPROCESSES=TRUE _otel_call_and_record_subprocesses "$(otel_span_current)" _otel_call "$@"
   else
     _otel_call "$@"
