@@ -38,7 +38,7 @@ jobs:
       contents: none
       actions: read
     steps:
-      - run: echo 'hello world, im a publisher (not injected)'
+      - run: echo '::notice::hello world, im a publisher (not injected)'
   name-with_special-characters:
     needs: test
     runs-on: ubuntu-latest
@@ -46,7 +46,7 @@ jobs:
       contents: none
       actions: read
     steps:
-      - run: echo 'hello world, im a job with some special characters (not injected)'
+      - run: echo '::notice::hello world, im a job with some special characters (not injected)'
   job-with-name:
     name: 'job-with(a)special[name]with.special&characters'
     needs: test
@@ -55,7 +55,7 @@ jobs:
       contents: none
       actions: read
     steps:
-      - run: echo 'hello world, im a job with custom name (not injected)'
+      - run: echo '::notice::hello world, im a job with custom name (not injected)'
   job-with-python-producing-utf-log:
     needs: test
     runs-on: ubuntu-latest
