@@ -298,10 +298,13 @@ jobs:
           Can-Retransform-Classes: true
           ' > manifest.txt
           jar cmf manifest.txt subprocessinjectionagent.jar SubprocessInjectionAgent.class          
+      - run: |
+          cd src/usr/share/opentelemetry_shell/agent.instrumentation.java
+          echo "${{ steps.determine-minimum-version.outputs.version }}" > version
       - uses: actions/upload-artifact@v4.6.2
         with:
           name: java
-          path: src/usr/share/opentelemetry_shell/agent.instrumentation.java/*.jar
+          path: src/usr/share/opentelemetry_shell/agent.instrumentation.java/*.jar src/usr/share/opentelemetry_shell/agent.instrumentation.java/version
   build:
     needs: [verify-python-dependency, verify-debian-dependencies, merge-http, merge-node-modules, merge-python-site-packages, build-java-agents, list-python-versions]
     runs-on: ubuntu-latest
