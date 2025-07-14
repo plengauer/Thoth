@@ -9,9 +9,8 @@ public class SubprocessInjectionAgent {
     public static void premain(String args, Instrumentation instrumentation) throws Exception {
         new AgentBuilder.Default()
             .type(ElementMatchers.named("java.lang.ProcessImpl"))
-            .transform((builder, typeDescription, classLoader, module) ->
-                builder.method(ElementMatchers.named("start")
-                    .and(ElementMatchers.takesArguments(String[].class, Map.class, String.class, java.lang.ProcessBuilder.Redirect[].class, boolean.class)))
+            .transform((builder, typeDescription, classLoader, module, protectionDomain) ->
+                builder.method(ElementMatchers.named("start").and(ElementMatchers.takesArguments(String[].class, Map.class, String.class, java.lang.ProcessBuilder.Redirect[].class, boolean.class)))
                     .intercept(Advice.to(InjectCommandAdvice.class))
             ).installOn(instrumentation);
     }
