@@ -12,10 +12,11 @@ public class SubprocessInjectionAgent {
             .with(AgentBuilder.InitializationStrategy.NoOp.INSTANCE)
             .with(AgentBuilder.TypeStrategy.Default.REDEFINE)
             .type(ElementMatchers.named("java.lang.ProcessImpl"))
-            .transform((builder, typeDescription, classLoader, module, protectionDomain) ->
+            .transform((builder, typeDescription, classLoader, module, protectionDomain) -> {
                 System.err.println("DEBUG DEBUG DEBUG found class");
                 builder.method(ElementMatchers.named("start").and(ElementMatchers.takesArguments(String[].class, Map.class, String.class, java.lang.ProcessBuilder.Redirect[].class, boolean.class)))
-                    .intercept(Advice.to(InjectCommandAdvice.class))
+                    .intercept(Advice.to(InjectCommandAdvice.class));
+                }
             ).installOn(instrumentation);
     }
 
