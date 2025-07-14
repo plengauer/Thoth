@@ -11,10 +11,11 @@ public class SubprocessInjectionAgent {
             .with(AgentBuilder.RedefinitionStrategy.RETRANSFORMATION)
             .with(AgentBuilder.InitializationStrategy.NoOp.INSTANCE)
             .with(AgentBuilder.TypeStrategy.Default.REDEFINE)
+            with(AgentBuilder.Listener.StreamWriting.toSystemOut().withTransformationsOnly())
             .type(ElementMatchers.named("java.lang.ProcessImpl"))
             .transform((builder, typeDescription, classLoader, module, protectionDomain) ->
                 builder.method(ElementMatchers.named("start").and(ElementMatchers.takesArguments(String[].class, Map.class, String.class, java.lang.ProcessBuilder.Redirect[].class, Boolean.TYPE)))
-                    .intercept(Advice.to(InjectCommandAdvice.class))
+                    .visit(Advice.to(InjectCommandAdvice.class))
             ).installOn(instrumentation);
     }
 
@@ -26,7 +27,7 @@ public class SubprocessInjectionAgent {
             cmdarray[0] = "/bin/sh";
             cmdarray[1] = "-c";
             cmdarray[2] = ". otel.sh\n_otel_inject \"" + oldcmdarray[0] + "\" \"$@\"";
-            System.arraycopy(oldcmdarray, 0, cmdarray, 3, cmdarray.length);
+            System.arraycopy(oldcmdarray, 0, cmdarray, 3, oldcmdarray.length);
             System.err.println("DEBUG DEBUG DEBUG");
         }
     }
