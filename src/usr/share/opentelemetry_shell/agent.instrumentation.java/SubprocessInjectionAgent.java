@@ -13,10 +13,13 @@ public class SubprocessInjectionAgent {
             .with(AgentBuilder.TypeStrategy.Default.REDEFINE)
             .with(AgentBuilder.Listener.StreamWriting.toSystemError())
             .type(ElementMatchers.named("java.lang.ProcessImpl"))
-            .transform((builder, typeDescription, classLoader, module, protectionDomain) ->
-                builder.visit(
-                    Advice.to(InjectCommandAdvice.class).on(ElementMatchers.named("start"))
-                )
+            .transform((builder, typeDescription, classLoader, module, protectionDomain) -> {
+                    System.err.println("METHODS of " + typeDescription.getName() + ":");
+                    typeDescription.getDeclaredMethods().forEach(m -> System.err.println(m.toString()));
+                    return builder.visit(
+                        Advice.to(InjectCommandAdvice.class).on(ElementMatchers.named("start"))
+                    );
+                }
                 // builder.visit(Advice.to(InjectCommandAdvice.class).on(ElementMatchers.named("start").and(ElementMatchers.takesArguments(String[].class, Map.class, String.class, java.lang.ProcessBuilder.Redirect[].class, Boolean.TYPE))))
                 /*
                 builder.method(ElementMatchers.named("start").and(ElementMatchers.takesArguments(String[].class, Map.class, String.class, java.lang.ProcessBuilder.Redirect[].class, Boolean.TYPE)))
