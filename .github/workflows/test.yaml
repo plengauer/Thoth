@@ -296,6 +296,7 @@ jobs:
           printf '%s\n\n' 'Premain-Class: SubprocessInjectionAgent
           Boot-Class-Path: ./byte-buddy.jar
           Can-Retransform-Classes: true
+          Can-Redefine-Classes: true
           ' > manifest.txt
           jar cmf manifest.txt subprocessinjectionagent.jar SubprocessInjectionAgent.class          
       - run: |
