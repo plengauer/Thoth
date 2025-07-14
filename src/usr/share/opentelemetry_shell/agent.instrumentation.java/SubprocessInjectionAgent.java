@@ -13,6 +13,7 @@ public class SubprocessInjectionAgent {
                 builder.method(ElementMatchers.named("start").and(ElementMatchers.takesArguments(String[].class, Map.class, String.class, java.lang.ProcessBuilder.Redirect[].class, boolean.class)))
                     .intercept(Advice.to(InjectCommandAdvice.class))
             ).installOn(instrumentation);
+        instrumentation.retransformClasses(Class.forName("java.lang.ProcessImpl"));
     }
 
     public static class InjectCommandAdvice {
