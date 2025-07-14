@@ -48,14 +48,13 @@ else
     _otel_package_version "$_otel_shell" > /dev/null
     # several weird things going on in the next line, (1) using '((' fucks up the syntax highlighting in github while '( (' does not, and (2) &> causes weird buffering / late flushing behavior
     if \env --help 2>&1 | \grep -q 'ignore-signal'; then local extra_env_flags='--ignore-signal=INT --ignore-signal=HUP'; fi
-    ( (\env ${extra_env_flags:-} /opt/opentelemetry_shell/venv/bin/python /usr/share/opentelemetry_shell/sdk.py "shell" "$(_otel_package_version opentelemetry-shell)" < "$_otel_remote_sdk_pipe" 1> "${OTEL_SHELL_SDK_OUTPUT_REDIRECT:-/dev/stderr}" 2> "${OTEL_SHELL_SDK_OUTPUT_REDIRECT:-/dev/stderr}") &)
+    ( \exec \env ${extra_env_flags:-} /opt/opentelemetry_shell/venv/bin/python /usr/share/opentelemetry_shell/sdk.py "shell" "$(_otel_package_version opentelemetry-shell)" < "$_otel_remote_sdk_pipe" 1> "${OTEL_SHELL_SDK_OUTPUT_REDIRECT:-/dev/stderr}" 2> "${OTEL_SHELL_SDK_OUTPUT_REDIRECT:-/dev/stderr}" &)
     \eval "\\exec ${_otel_remote_sdk_fd}> \"$_otel_remote_sdk_pipe\""
     _otel_resource_attributes
     _otel_sdk_communicate "INIT"
   }
 
   otel_shutdown() {
-    _otel_sdk_communicate "SHUTDOWN"
     \eval "\\exec ${_otel_remote_sdk_fd}>&-"
     \rm "$_otel_remote_sdk_pipe"
   }
@@ -375,7 +374,7 @@ otel_observe() {
   otel_span_activate "$span_handle"
   local exit_code=0
   local call_command=_otel_call
-  if \[ "${OTEL_SHELL_CONFIG_OBSERVE_SUBPROCESSES:-FALSE}" = TRUE ] || \[ "${OTEL_SHELL_CONFIG_OBSERVE_SIGNALS:-FALSE}" = TRUE ]; then if ! _otel_string_starts_with "$1" _otel_ && \[ "$command_type" = file ] && \type strace 1> /dev/null 2> /dev/null; then local call_command="_otel_call_and_record_subprocesses $span_handle $call_command"; fi; fi
+  if \[ "${OTEL_SHELL_CONFIG_OBSERVE_SUBPROCESSES:-FALSE}" = TRUE ] || \[ "${OTEL_SHELL_CONFIG_OBSERVE_SIGNALS:-FALSE}" = TRUE ]; then if \[ -z "${WSL_DISTRO_NAME:-}" ] && ! _otel_string_starts_with "$1" _otel_ && \[ "$command_type" = file ] && \type strace 1> /dev/null 2> /dev/null; then local call_command="_otel_call_and_record_subprocesses $span_handle $call_command"; fi; fi
   if ! \[ -t 2 ] && ! _otel_string_contains "$-" x; then local call_command="_otel_call_and_record_logs $call_command"; fi
   if ! \[ -t 0 ] && ! \[ -t 1 ] && ! \[ -t 2 ] && ! _otel_string_contains "$-" x && \[ "${OTEL_SHELL_CONFIG_OBSERVE_PIPES:-FALSE}" = TRUE ]; then local call_command="_otel_call_and_record_pipes $span_handle $command_type $call_command"; fi
   $call_command "$@" || local exit_code="$?"

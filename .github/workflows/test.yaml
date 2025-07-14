@@ -65,8 +65,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        # architecture: [ 'i386', 'amd64', 'arm32v5', 'arm64v8' ]
-        architecture: [ 'amd64', 'arm64/v8' ]
+        architecture: [ 'amd64', 'arm64/v8', 'ppc64le', 'mips64le', 'riscv64', 's390x' ] # 'i386', 'arm32/v7'
       fail-fast: false
     permissions:
       contents: read
@@ -76,8 +75,14 @@ jobs:
         uses: docker/setup-qemu-action@v3.6.0
       - id: build
         run: |
+          case "${{ matrix.architecture }}" in
+            mips64le) image=debian:stable;;
+            riscv64) image=debian:testing;;
+            s390x) image=debian:stable;;
+            *) image=debian:oldstable;;
+          esac
           echo 'cd src/usr/share/opentelemetry_shell/agent.instrumentation.http/ && apt-get update 1>&2 && yes | apt-get install build-essential 1>&2 && gcc -shared -fPIC -o libinjecthttpheader.so agent.injection.http_header.c -ldl 1>&2 && arch' \
-           | sudo docker run -i --rm --network host -v "$(pwd)"/src:/home/root/src -w /home/root --platform linux/${{ matrix.architecture }} docker.io/"$(echo ${{ matrix.architecture }} | tr -d /)"/debian:oldstable | xargs -0 -I {} echo 'architecture={}' >> "$GITHUB_OUTPUT"
+           | sudo docker run -i --rm --network host -v "$(pwd)"/src:/home/root/src -w /home/root --platform linux/${{ matrix.architecture }} docker.io/"$(echo ${{ matrix.architecture }} | tr -d /)"/"$image" | xargs -0 -I {} echo 'architecture={}' >> "$GITHUB_OUTPUT"
       - run: |
           [ -r src/usr/share/opentelemetry_shell/agent.instrumentation.http/libinjecthttpheader.so ]
       - uses: actions/upload-artifact@v4.6.2
@@ -134,6 +139,9 @@ jobs:
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.node
           npm install
           npm prune
+      - run: find src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules -iname '*.so' -exec false ';'
+      - run: |
+          ! find -L src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules -type l -exec readlink -f '{}' ';' | while read -r file; do realpath "$file"; done | grep '^'"$(pwd)"/src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules
       - uses: actions/upload-artifact@v4
         with:
           name: node_modules_${{ matrix.version }}
@@ -152,6 +160,18 @@ jobs:
             mkdir "$version"
             mv node_modules_"$version" "$version"/node_modules
           done
+      - if: false
+        run: |
+          hash_folder() { find "$1" -name package.json | xargs cat | jq '. | [.name, .version] | @tsv' -r | tr '\t' ' ' | sha256sum | cut -d ' ' -f 1; }
+          ls | sort --version-sort | while read -r version; do
+            if [ -L __last ] && [ "$(hash_folder "$version")" = "$(hash_folder __last)" ]; then
+              rm -rf "$version"
+            else
+              rm __last
+              ln --symbolic "$version" __last
+            fi
+          done
+          rm __last
       - run: find . -type f -print0 | xargs -0 sha256sum | sort | cut -d ' ' -f 3- | tar -cf node_modules.tar -T - && xz -9 node_modules.tar
       - uses: actions/upload-artifact@v4.6.2
         with:
@@ -198,8 +218,11 @@ jobs:
           print(*default_instrumentations, sep="\n")
           print(*map(lambda element: element["instrumentation"], libraries), sep="\n")
           ' | python3 | grep "==$(pip3 show opentelemetry-distro | grep Version | cut -d ':' -f 2- | tr -d ' ')"'$' | grep -v opentelemetry-instrumentation-system-metrics | xargs pip3 install
-          pip3 check
+          pip3 uninstall --yes setuptools pip
           deactivate
+      - run: find src/usr/share/opentelemetry_shell/agent.instrumentation.python/venv/lib/python${{ matrix.version }}/site-packages -iname '*.so' -exec false ';'
+      - run: |
+          ! find -L src/usr/share/opentelemetry_shell/agent.instrumentation.python/venv/lib/python${{ matrix.version }}/site-packages -type l -exec readlink -f '{}' ';' | while read -r file; do realpath "$file"; done | grep '^'"$(pwd)"/src/usr/share/opentelemetry_shell/agent.instrumentation.python/
       - uses: actions/upload-artifact@v4.6.2
         with:
           name: python_site_packages_${{ matrix.version }}
@@ -218,6 +241,18 @@ jobs:
             mkdir "$version"
             mv python_site_packages_"$version" "$version"/site-packages
           done
+      - if: false
+        run: |
+          hash_folder() { find "$1" -name METADATA | grep -E '^Name:|^Version:' | sha256sum | cut -d ' ' -f 1; }
+          ls | sort --version-sort | while read -r version; do
+            if [ -L __last ] && [ "$(hash_folder "$version")" = "$(hash_folder __last)" ]; then
+              rm -rf "$version"
+            else
+              rm __last
+              ln --symbolic "$version" __last
+            fi
+          done
+          rm __last
       - run: find . -type f -print0 | xargs -0 sha256sum | sort | cut -d ' ' -f 3- | tar -cf python_site_packages.tar -T - && xz -9 python_site_packages.tar
       - uses: actions/upload-artifact@v4.6.2
         with:
@@ -268,7 +303,7 @@ jobs:
           name: java
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.java/*.jar
   build:
-    needs: [verify-python-dependency, verify-debian-dependencies, merge-http, merge-node-modules, merge-python-site-packages, build-java-agents]
+    needs: [verify-python-dependency, verify-debian-dependencies, merge-http, merge-node-modules, merge-python-site-packages, build-java-agents, list-python-versions]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -290,24 +325,27 @@ jobs:
             find src -iname 'manifest.txt' -type f
             find src -iname 'pom.xml' -type f
           } | xargs -r rm
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4.3.0
         with:
           name: http
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.http
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4.3.0
         with:
           name: node_modules
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.node
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4.3.0
         with:
           name: python_site_packages
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.python
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4.3.0
         with:
           name: java
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.java
-      - run: find src
       - run: sed -i "s/__VERSION__/$(cat VERSION)/g" src/DEBIAN/control
+      - run: |
+          printf '%s' "${{ needs.list-python-versions.outputs.versions }}" | jq -r '.[]' | while read -r version; do
+            cat src/DEBIAN/triggers | grep 'python3$' | sed "s~/python3~/python$version~g" >> src/DEBIAN/triggers
+          done
       - run: cd src && dpkg-deb --root-owner-group -Zgzip --build . ../package.deb
       - run: |
           cd src

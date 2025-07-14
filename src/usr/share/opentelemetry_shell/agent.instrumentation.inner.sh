@@ -23,10 +23,10 @@ _otel_inject_inner_command_args() {
   for arg in $more_args; do \echo -n " ";  _otel_escape_arg "$arg"; done
   # wrap command
   \echo -n " $_otel_shell -c '. otel.sh
-"
-  while \[ "$#" -gt 0 ]; do \echo -n " "; no_quote=1 _otel_escape_arg "$(_otel_escape_arg "$1")"; shift; done
-  \echo -n " "; no_quote=1 _otel_escape_arg '"$@"'
-  \printf '%s' "' $(_otel_escape_arg "${command#\\}")"
+$(_otel_escape_arg "$1") "'"$@"'"'"
+  shift
+  \printf ' %s' "$(_otel_escape_arg "${command#\\}")"
+  while \[ "$#" -gt 0 ]; do \echo -n " "; _otel_escape_arg "$1"; shift; done
 }
 
 _otel_inject_inner_command() {
@@ -41,7 +41,7 @@ _otel_alias_prepend taskset _otel_inject_inner_command
 _otel_alias_prepend nice _otel_inject_inner_command
 _otel_alias_prepend ionice _otel_inject_inner_command
 # _otel_alias_prepend stdbuf _otel_inject_inner_command # injecting via changing the command defeats the purpose of stdbuf
-# _otel_alias_prepend nohup _otel_inject_inner_command # injecting via changing the command defeats the purpose of nohup
+# _otel_alias_prepend nohup _otel_inject_inner_command # injecting via changing the command defeats the purpose of nohup, because our injection functions do not close the streams even when the subprocess closes them and GitHub steps do not finish until all streams are closed
 # _otel_alias_prepend strace _otel_inject_inner_command # injecting via changing the command defeats the purpose of strace
 _otel_alias_prepend time _otel_inject_inner_command
 _otel_alias_prepend timeout _otel_inject_inner_command
