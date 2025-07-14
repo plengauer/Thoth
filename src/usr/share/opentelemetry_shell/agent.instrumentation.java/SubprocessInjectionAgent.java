@@ -14,8 +14,11 @@ public class SubprocessInjectionAgent {
             .with(AgentBuilder.Listener.StreamWriting.toSystemOut().withTransformationsOnly())
             .type(ElementMatchers.named("java.lang.ProcessImpl"))
             .transform((builder, typeDescription, classLoader, module, protectionDomain) ->
+                builder.visit(Advice.to(InjectCommandAdvice.class)).on(ElementMatchers.named("start").and(ElementMatchers.takesArguments(String[].class, Map.class, String.class, java.lang.ProcessBuilder.Redirect[].class, Boolean.TYPE)))
+                /*
                 builder.method(ElementMatchers.named("start").and(ElementMatchers.takesArguments(String[].class, Map.class, String.class, java.lang.ProcessBuilder.Redirect[].class, Boolean.TYPE)))
                     .visit(Advice.to(InjectCommandAdvice.class))
+                */
             ).installOn(instrumentation);
     }
 
