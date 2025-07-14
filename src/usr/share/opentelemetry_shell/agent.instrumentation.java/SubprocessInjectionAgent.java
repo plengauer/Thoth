@@ -1,6 +1,9 @@
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.asm.Advice;
 import net.bytebuddy.matcher.ElementMatchers;
+import net.bytebuddy.agent.builder.RedefinitionStrategy;
+import net.bytebuddy.agent.builder.NoOp;
+import net.bytebuddy.agent.builder.TypeStrategy;
 import java.lang.instrument.*;
 import java.io.*;
 import java.util.*;
@@ -8,12 +11,15 @@ import java.util.*;
 public class SubprocessInjectionAgent {
     public static void premain(String args, Instrumentation instrumentation) throws Exception {
         new AgentBuilder.Default()
+            .with(RedefinitionStrategy.RETRANSFORMATION)
+            .with(InitializationStrategy.NoOp.INSTANCE)
+            .with(TypeStrategy.Default.REDEFINE)
             .type(ElementMatchers.named("java.lang.ProcessImpl"))
             .transform((builder, typeDescription, classLoader, module, protectionDomain) ->
                 builder.method(ElementMatchers.named("start").and(ElementMatchers.takesArguments(String[].class, Map.class, String.class, java.lang.ProcessBuilder.Redirect[].class, boolean.class)))
                     .intercept(Advice.to(InjectCommandAdvice.class))
             ).installOn(instrumentation);
-        instrumentation.retransformClasses(Class.forName("java.lang.ProcessImpl"));
+        //instrumentation.retransformClasses(Class.forName("java.lang.ProcessImpl"));
     }
 
     public static class InjectCommandAdvice {
