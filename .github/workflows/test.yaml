@@ -294,7 +294,7 @@ jobs:
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.java
           javac -classpath ./byte-buddy.jar SubprocessInjectionAgent.java
           printf '%s\n\n' 'Premain-Class: SubprocessInjectionAgent
-          Boot-Class-Path: /opt/opentelemetry_shell/javassist.jar
+          Boot-Class-Path: ./byte-buddy.jar
           Can-Retransform-Classes: true
           ' > manifest.txt
           jar cmf manifest.txt subprocessinjectionagent.jar SubprocessInjectionAgent.class          
