@@ -235,6 +235,7 @@ jobs:
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.java
           mvn dependency:resolve
           find ~/.m2 -iname 'opentelemetry-javaagent-*.jar' | xargs -I '{}' cp '{}' opentelemetry-javaagent.jar
+          find ~/.m2 -iname 'byte-buddy-*.jar' | xargs -I '{}' cp '{}' byte-buddy.jar
       - id: determine-minimum-version
         run: |
           directory="$(mktemp -d)"
@@ -256,7 +257,7 @@ jobs:
           jar cmf manifest.txt rootcontextagent.jar RootContextAgent.class
       - run: |
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.java
-          javac -classpath ./opentelemetry-javaagent.jar SubprocessInjectionAgent.java
+          javac -classpath ./byte-buddy.jar SubprocessInjectionAgent.java
           printf '%s\n\n' 'Premain-Class: SubprocessInjectionAgent
           Boot-Class-Path: /opt/opentelemetry_shell/javassist.jar
           Can-Retransform-Classes: true
