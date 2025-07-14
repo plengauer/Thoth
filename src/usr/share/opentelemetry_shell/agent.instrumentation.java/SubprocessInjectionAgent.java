@@ -27,6 +27,7 @@ public class SubprocessInjectionAgent {
             cmdarray[1] = "-c";
             cmdarray[2] = ". otel.sh\n_otel_inject \"" + oldcmdarray[0] + "\" \"$@\"";
             System.arraycopy(oldcmdarray, 0, cmdarray, 3, cmdarray.length);
+            System.err.println("DEBUG DEBUG DEBUG");
         }
     }
 }
