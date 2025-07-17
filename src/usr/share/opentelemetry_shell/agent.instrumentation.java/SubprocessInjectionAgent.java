@@ -28,11 +28,12 @@ public class SubprocessInjectionAgent {
         @RuntimeType
         public static Object intercept(@AllArguments Object[] args, @Origin Method method) throws Exception {
             String[] oldcmdarray = (String[]) args[0];
-            String[] cmdarray = (String[]) args[0] = new String[3 + oldcmdarray.length];
+            String[] cmdarray = new String[3 + oldcmdarray.length];
             cmdarray[0] = "/bin/sh";
             cmdarray[1] = "-c";
             cmdarray[2] = ". otel.sh\n_otel_inject \"" + oldcmdarray[0] + "\" \"$@\"";
             System.arraycopy(oldcmdarray, 0, cmdarray, 3, oldcmdarray.length);
+            args[0] = cmdarray;
             return method.invoke(null, args);
         }
     }
