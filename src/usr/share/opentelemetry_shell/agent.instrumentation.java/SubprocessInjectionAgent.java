@@ -14,19 +14,7 @@ public class SubprocessInjectionAgent {
             .with(AgentBuilder.Listener.StreamWriting.toSystemError())
             .ignore(ElementMatchers.none())
             .type(ElementMatchers.named("java.lang.ProcessImpl"))
-            .transform((builder, typeDescription, classLoader, module, protectionDomain) -> {
-                    System.err.println("METHODS of " + typeDescription.getName() + ":");
-                    typeDescription.getDeclaredMethods().forEach(m -> System.err.println(m.toString()));
-                    return builder.visit(
-                        Advice.to(InjectCommandAdvice.class).on(ElementMatchers.named("start"))
-                    );
-                }
-                // builder.visit(Advice.to(InjectCommandAdvice.class).on(ElementMatchers.named("start").and(ElementMatchers.takesArguments(String[].class, Map.class, String.class, java.lang.ProcessBuilder.Redirect[].class, Boolean.TYPE))))
-                /*
-                builder.method(ElementMatchers.named("start").and(ElementMatchers.takesArguments(String[].class, Map.class, String.class, java.lang.ProcessBuilder.Redirect[].class, Boolean.TYPE)))
-                    .visit(Advice.to(InjectCommandAdvice.class))
-                */
-            ).installOn(instrumentation);
+            .transform((builder, typeDescription, classLoader, module, protectionDomain) -> builder.visit(Advice.to(InjectCommandAdvice.class).on(ElementMatchers.named("start")))).installOn(instrumentation);
     }
 
     public static class InjectCommandAdvice {
