@@ -1,6 +1,9 @@
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.asm.Advice;
 import net.bytebuddy.matcher.ElementMatchers;
+import net.bytebuddy.implementation.bind.annotation.RuntimeType;
+import net.bytebuddy.implementation.bind.annotation.AllArguments;
+import net.bytebuddy.implementation.bind.annotation.Origin;
 import java.lang.instrument.*;
 import java.io.*;
 import java.util.*;
@@ -15,7 +18,22 @@ public class SubprocessInjectionAgent {
             //.with(AgentBuilder.Listener.StreamWriting.toSystemError())
             .ignore(ElementMatchers.none())
             .type(ElementMatchers.named("java.lang.ProcessImpl"))
-            .transform((builder, typeDescription, classLoader, module, protectionDomain) -> builder.visit(Advice.to(InjectCommandAdvice.class).on(ElementMatchers.named("start")))).installOn(instrumentation);
+            // .transform((builder, typeDescription, classLoader, module, protectionDomain) -> builder.visit(Advice.to(InjectCommandAdvice.class).on(ElementMatchers.named("start"))))
+            .transform((builder, typeDescription, classLoader, module, protectionDomain) -> builder.method(ElementMatchers.named("start")).intercept(MethodDelegation.to(InjectCommandInterceptor.class)))
+            .installOn(instrumentation);
+    }
+
+    public static class InjectCommandInterceptor {
+        @RuntimeType
+        public static Object intercept(@AllArguments Object[] args, @Origin Method method) throws Exception {
+            String[] oldcmdarray = args[0];
+            String[] cmdarray = args[0] = new String[3 + oldcmdarray.length];
+            cmdarray[0] = "/bin/sh";
+            cmdarray[1] = "-c";
+            cmdarray[2] = ". otel.sh\n_otel_inject \"" + oldcmdarray[0] + "\" \"$@\"";
+            System.arraycopy(oldcmdarray, 0, cmdarray, 3, oldcmdarray.length);
+            return method.invoke(null, args);
+        }
     }
 
     public static class InjectCommandAdvice {
