@@ -4,7 +4,7 @@ import net.bytebuddy.matcher.ElementMatchers;
 import net.bytebuddy.implementation.bind.annotation.RuntimeType;
 import net.bytebuddy.implementation.bind.annotation.AllArguments;
 import net.bytebuddy.implementation.bind.annotation.Origin;
-import net.bytebuddy.implementation.MethodDlegation;
+import net.bytebuddy.implementation.MethodDelegation;
 import java.lang.instrument.Instrumentation;
 import java.util.Map;
 import java.lang.reflect.Method;
@@ -27,8 +27,8 @@ public class SubprocessInjectionAgent {
     public static class InjectCommandInterceptor {
         @RuntimeType
         public static Object intercept(@AllArguments Object[] args, @Origin Method method) throws Exception {
-            String[] oldcmdarray = args[0];
-            String[] cmdarray = args[0] = new String[3 + oldcmdarray.length];
+            String[] oldcmdarray = (String[]) args[0];
+            String[] cmdarray = (String[]) args[0] = new String[3 + oldcmdarray.length];
             cmdarray[0] = "/bin/sh";
             cmdarray[1] = "-c";
             cmdarray[2] = ". otel.sh\n_otel_inject \"" + oldcmdarray[0] + "\" \"$@\"";
