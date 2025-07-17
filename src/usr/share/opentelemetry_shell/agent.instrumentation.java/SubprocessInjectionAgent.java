@@ -12,7 +12,7 @@ public class SubprocessInjectionAgent {
             .with(AgentBuilder.InitializationStrategy.NoOp.INSTANCE)
             .with(AgentBuilder.TypeStrategy.Default.REDEFINE)
             .with(AgentBuilder.Listener.StreamWriting.toSystemError())
-            .type(ElementMatchers.nameContains("ProcessImpl"))
+            .type(ElementMatchers.named("ProcessImpl"))
             .transform((builder, typeDescription, classLoader, module, protectionDomain) -> {
                     System.err.println("METHODS of " + typeDescription.getName() + ":");
                     typeDescription.getDeclaredMethods().forEach(m -> System.err.println(m.toString()));
