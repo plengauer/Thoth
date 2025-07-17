@@ -4,9 +4,10 @@ import net.bytebuddy.matcher.ElementMatchers;
 import net.bytebuddy.implementation.bind.annotation.RuntimeType;
 import net.bytebuddy.implementation.bind.annotation.AllArguments;
 import net.bytebuddy.implementation.bind.annotation.Origin;
-import java.lang.instrument.*;
-import java.io.*;
-import java.util.*;
+import net.bytebuddy.implementation.MethodDlegation;
+import java.lang.instrument.Instrumentation;
+import java.util.Map;
+import java.lang.reflect.Method;
 
 public class SubprocessInjectionAgent {
     public static void premain(String args, Instrumentation instrumentation) throws Exception {
