@@ -16,7 +16,7 @@ public class SubprocessInjectionAgent {
             .with(AgentBuilder.RedefinitionStrategy.RETRANSFORMATION)
             .with(AgentBuilder.InitializationStrategy.NoOp.INSTANCE)
             .with(AgentBuilder.TypeStrategy.Default.REDEFINE)
-            //.with(AgentBuilder.Listener.StreamWriting.toSystemError())
+            .with(AgentBuilder.Listener.StreamWriting.toSystemError())
             .ignore(ElementMatchers.none())
             .type(ElementMatchers.named("java.lang.ProcessImpl"))
             // .transform((builder, typeDescription, classLoader, module, protectionDomain) -> builder.visit(Advice.to(InjectCommandAdvice.class).on(ElementMatchers.named("start"))))
