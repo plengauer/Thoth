@@ -35,7 +35,16 @@ public class SubprocessInjectionAgent {
             cmdarray[2] = ". otel.sh\n_otel_inject \"" + oldcmdarray[0] + "\" \"$@\"";
             System.arraycopy(oldcmdarray, 0, cmdarray, 3, oldcmdarray.length);
             args[0] = cmdarray;
-            return method.invoke(null, args);
+            method.setAccessible(true);
+            try {
+                return method.invoke(null, args);
+            } catch (IllegalAccessException e) {
+                throw new Error("Here be dragons!");
+            } catch (IllegalArgumentException e) {
+                throw new Error("Here be dragons!");
+            } catch (InvocationTargetException e) {
+                throw e.getCause();
+            }
         }
     }
 
