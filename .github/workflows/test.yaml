@@ -289,7 +289,7 @@ jobs:
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.java
           javac -classpath ./opentelemetry-javaagent.jar RootContextAgent.java
           printf '%s\n\n' "Premain-Class: RootContextAgent" > manifest.txt
-          jar cmf manifest.txt rootcontextagent.jar RootContextAgent.class
+          jar cmf manifest.txt rootcontextagent.jar RootContextAgent*.class
       - run: |
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.java
           javac -classpath ./byte-buddy.jar SubprocessInjectionAgent.java
