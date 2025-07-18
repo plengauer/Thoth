@@ -21,8 +21,8 @@ public class SubprocessInjectionAgent {
             .assureReadEdgeFromAndTo(instrumentation, InjectCommandInterceptor.class)
             .ignore(ElementMatchers.none())
             .type(ElementMatchers.named("java.lang.ProcessImpl"))
-            // .transform((builder, typeDescription, classLoader, module, protectionDomain) -> builder.visit(Advice.to(InjectCommandAdvice.class).on(ElementMatchers.named("start"))))
-            .transform((builder, typeDescription, classLoader, module, protectionDomain) -> builder.method(ElementMatchers.named("start")).intercept(MethodDelegation.to(InjectCommandInterceptor.class)))
+            .transform((builder, typeDescription, classLoader, module, protectionDomain) -> builder.visit(Advice.to(InjectCommandAdvice.class).on(ElementMatchers.named("start"))))
+            //.transform((builder, typeDescription, classLoader, module, protectionDomain) -> builder.method(ElementMatchers.named("start")).intercept(MethodDelegation.to(InjectCommandInterceptor.class)))
             .installOn(instrumentation);
     }
 
