@@ -27,7 +27,7 @@ public class SubprocessInjectionAgent {
 
     public static class InjectCommandInterceptor {
         @RuntimeType
-        public static Object intercept(@AllArguments Object[] args, @Origin Method method) throws Exception {
+        public static Object intercept(@AllArguments Object[] args, @Origin Method method) throws Throwable {
             System.err.println("DEBUG DEBUG DEBUG");
             String[] oldcmdarray = (String[]) args[0];
             String[] cmdarray = new String[3 + oldcmdarray.length];
