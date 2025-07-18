@@ -8,6 +8,7 @@ import net.bytebuddy.implementation.MethodDelegation;
 import java.lang.instrument.Instrumentation;
 import java.util.Map;
 import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
 
 public class SubprocessInjectionAgent {
     public static void premain(String args, Instrumentation instrumentation) throws Exception {
