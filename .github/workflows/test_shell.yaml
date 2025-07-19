@@ -54,7 +54,7 @@ jobs:
       actions: read
     steps:
       - run: |
-          curl --no-progress-meter --fail --header "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/repos/"$GITHUB_REPOSITORY"/releases/tags/${{ matrix.tag_name }} | jq -r '.assets[].browser_download_url' | xargs wget --header "Authorization: Bearer $GITHUB_TOKEN"
+          curl --no-progress-meter --fail --header "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/repos/"$GITHUB_REPOSITORY"/releases/tags/${{ matrix.tag_name }} | jq -r '.assets[] | select(.name | endswith(".deb")) | .url' | xargs curl --no-progress-meter --fail --header "Authorization: Bearer $GITHUB_TOKEN" > package.deb
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - run: sudo apt-get -y install ./*.deb
