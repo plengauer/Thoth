@@ -34,12 +34,12 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
       fi
       venv="$(mktemp -u)"
       eval "python$version" -m venv "$venv"
-      cp /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"/site-packages/* "$venv"/lib/python"$version"/site-packages/
+      cp -r /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"/site-packages/* "$venv"/lib/python"$version"/site-packages/
       . "$venv"/bin/activate
       pip3 install -r /usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.txt
       pip3 uninstall --yes pip setuptools
       deactivate # SKIP_DEPENDENCY_CHECK
-      cp -u "$venv"/lib/python"$version"/site-packages/* /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"/site-packages/
+      cp -r -u "$venv"/lib/python"$version"/site-packages/* /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"/site-packages/
       rm -rf "$venv"
     done
   fi
