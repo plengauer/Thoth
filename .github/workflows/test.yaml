@@ -222,7 +222,7 @@ jobs:
           pip3 uninstall --yes setuptools pip
           deactivate
       - run: |
-          find src/usr/share/opentelemetry_shell/agent.instrumentation.python/venv -iname '*.so' | sed 's~/site-packages/~ ~g' | cut -d ' ' -f 2- | cut -d / -f 1 | xargs -t -I '{}' sh -c 'rm -rf src/usr/share/opentelemetry_shell/agent.instrumentation.python/venv/lib/python*/site-packages/{}*'
+          find src/usr/share/opentelemetry_shell/agent.instrumentation.python/venv -iname '*.so' | sed 's~/site-packages/~ ~g' | cut -d ' ' -f 2- | cut -d / -f 1 | xargs -I '{}' sh -c 'rm -rf src/usr/share/opentelemetry_shell/agent.instrumentation.python/venv/lib/python*/site-packages/{}*'
       - run: |
           ! find -L src/usr/share/opentelemetry_shell/agent.instrumentation.python/venv/lib/python${{ matrix.version }}/site-packages -type l -exec readlink -f '{}' ';' | while read -r file; do realpath "$file"; done | grep '^'"$(pwd)"/src/usr/share/opentelemetry_shell/agent.instrumentation.python/
       - uses: actions/upload-artifact@v4.6.2
