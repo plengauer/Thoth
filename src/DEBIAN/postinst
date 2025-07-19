@@ -28,18 +28,16 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
     rm -rf /usr/share/opentelemetry_shell/agent.instrumentation.python/*/
     ( type docker 1>&2 || ( echo "$PATH" | tr : '\n' | while read -r directory; do find "$directory" -name 'python3.*'; done | grep -v -- - | while read -r executable; do eval "$executable -V"; done | cut -d ' ' -f 2 | cut -d . -f -2 ) ) \
       | while read -r version; do echo "./$version"; done | ( xargs tar -xJf /usr/share/opentelemetry_shell/agent.instrumentation.python/python_site_packages.tar.xz -C /usr/share/opentelemetry_shell/agent.instrumentation.python/ || true )
-    echo "$PATH" | tr : '\n' | while read -r directory; do find "$directory" -name 'python3.*'; done | grep -v -- - | while read -r executable; do
-      version="$(eval "$executable -V"; done | cut -d ' ' -f 2 | cut -d . -f -2)"
-      if [ -d /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version" ]; then continue; fi
-      eval "$executable -m venv /usr/share/opentelemetry_shell/agent.instrumentation.python/venv"
-      . /usr/share/opentelemetry_shell/agent.instrumentation.python/venv/bin/activate
-      pip3 install -r requirements.txt && printf '%s' '
-      from opentelemetry.instrumentation.bootstrap_gen import (default_instrumentations, libraries)
-      print(*default_instrumentations, sep="\n")
-      print(*map(lambda element: element["instrumentation"], libraries), sep="\n")
-      ' | python3 | grep "==$(pip3 show opentelemetry-distro | grep Version | cut -d ':' -f 2- | tr -d ' ')"'$' | xargs pip3 install && mkdir /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version" && mv /usr/share/opentelemetry_shell/agent.instrumentation.python/venv/lib/python"$version"/site-packages /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"/ || true
+    ls /usr/share/opentelemetry_shell/agent.instrumentation.python | grep -v '.txt$' | grep -v '.py$' | grep -v '.xz$' | while read -r version; do
+      venv="$(mktemp -u)"
+      eval "python$version" -m venv "$venv"
+      cp "$version"/site-packages/* "$venv"/lib/python"$version"/site-packages/
+      . "$venv"/bin/activate
+      pip3 install -r /usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.txt
+      pip3 uninstall --yes pip setuptools
       deactivate
-      rm -rf /usr/share/opentelemetry_shell/agent.instrumentation.python/venv
+      cp -u "$venv"/lib/python"$version"/site-packages/* "$version"/site-packages/
+      rm -rf "$venv"
     done
   fi
 else
