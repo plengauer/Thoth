@@ -150,6 +150,7 @@ if [ "$(jq < "$workflow_json" .conclusion -r)" = failure ]; then otel_span_error
 otel_span_end "$workflow_span_handle" @"$workflow_ended_at"
 
 jq < "$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .started_at, .completed_at, .name] | @tsv' | sed 's/\t/ /g' | while read -r TRACEPARENT job_id job_conclusion job_started_at job_completed_at job_name; do
+  if [ "$job_conclusion" = skipped ]; then continue; fi
   if [[ "$job_started_at" < "$workflow_started_at" ]] || jq < "$artifacts_json" -r .name | grep -q '^opentelemetry_job_'"$job_id"'$'; then continue; fi
   job_log_file="$(printf '%s' "${job_name//\//}" | tr -d ':')"
   last_log_timestamp="$(read_log_file "$job_log_file" | tail -n 1 | cut -d ' ' -f 1)"
@@ -195,6 +196,7 @@ jq < "$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .s
   otel_span_end "$job_span_handle" @"$job_completed_at"
 
 done | sed 's/\t/ /g' | while read -r TRACEPARENT job_id step_number step_conclusion step_started_at step_completed_at step_name; do
+  if [ "$step_conclusion" = skipped ]; then continue; fi
   job_name="$(jq < "$jobs_json" -r '. | select(.id == '"$job_id"') | .name')"
   if [ -r "$times_dir"/"$TRACEPARENT" ]; then
     previous_step_completed_at="$(cat "$times_dir"/"$TRACEPARENT")"
