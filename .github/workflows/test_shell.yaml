@@ -54,9 +54,7 @@ jobs:
       actions: read
     steps:
       - run: |
-          curl --no-progress-meter --fail --header "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/repos/"$GITHUB_REPOSITORY"/releases/tags/${{ matrix.tag_name }} | jq -r '.assets[] | select(.name | endswith(".deb")) | .url' | xargs wget --header "Authorization: Bearer $GITHUB_TOKEN" -O package.deb
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+          curl --no-progress-meter --fail --header "Authorization: Bearer ${{ github.token }}" https://api.github.com/repos/"$GITHUB_REPOSITORY"/releases/tags/${{ matrix.tag_name }} | jq -r '.assets[] | select(.name | endswith(".deb")) | .url' | xargs wget --header "Authorization: Bearer ${{ github.token }}" --header "Accept: application/octet-stream" -O package.deb
       - run: sudo apt-get -y install ./*.deb
       - uses: actions/download-artifact@v4.3.0
         with:
