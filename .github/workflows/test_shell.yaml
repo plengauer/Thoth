@@ -108,7 +108,7 @@ jobs:
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
       - uses: actions/checkout@v4.2.2
       - id: key
-        run: printenv | grep -E '^IMAGE_' | md5sum | cut -d ' ' -f 1 | xargs -I '{}' echo "key={}" >> "$GITHUB_OUTPUT"
+        run: cat .github/workflows/images.json | md5sum | cut -d ' ' -f 1 | xargs -I '{}' echo "key={}" >> "$GITHUB_OUTPUT"
       - uses: actions/cache@v4.2.3
         with:
           path: images.json
@@ -117,13 +117,15 @@ jobs:
         run: |
           sudo docker login -u '${{ secrets.DOCKERHUB_USERNAME }}' -p '${{ secrets.DOCKERHUB_TOKEN }}'
           min_version="$(cat src/DEBIAN/control | grep '^Pre-Depends:' | tr ',' '\n' | grep -F -- 'python3 (>=' | cut -d '(' -f 2- | cut -d ')' -f 1 | cut -d ' ' -f 2 | cut -d . -f 2)"
-          printenv | grep '^IMAGE_' | while read -r kvp; do
-            key="$(echo "$kvp" | cut -sd '=' -f 1 | tr '[:upper:]' '[:lower:]')"
-            value="$(echo "$kvp" | cut -sd '=' -f 2)"
-            if [ -z "$value" ]; then continue; fi
+          cat .github/workflows/images.json | jq '.[] | [ .name, .oldest, .stable, .latest, .dev ] | @tsv' -r | while read -r name oldest stable latest dev; do
+            [ -z "$oldest" ] || echo "$name":"$oldest" "$name" oldest
+            [ -z "$stable" ] || echo "$name":"$stable" "$name" stable
+            [ -z "$latest" ] || echo "$name":"$latest" "$name" latest
+            [ -z "$dev" ] || echo "$name":"$dev" "$name" dev
+          done | while read -r image os type; do
             echo '((apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install python3) || dnf -y install python3 || yum -y install python3 || zypper --non-interactive install python3) > /dev/null && python3 --version' \
-              | sudo docker run --rm --network=host -i "$value" \
-              | cut -d ' ' -f 2 | cut -d . -f 2 | while read -r version; do [ "$version" -ge "$min_version" ] && echo "{\"image\":\"$value\",\"os\":\"$(echo "$key" | cut -d _ -f 2)\",\"type\":\"$(echo "$key" | cut -d _ -f 3)\"}" || true; done
+              | sudo docker run --rm --network=host -i "$image" \
+              | cut -d ' ' -f 2 | cut -d . -f 2 | while read -r version; do [ "$version" -ge "$min_version" ] && echo "{\"image\":\"$image\",\"os\":\"$os\",\"type\":\"$type\"}" || true; done
           done | jq -s > images.json
       - run: |
           [ "$(cat images.json | jq -r '.[].image' | wc -l)" -ge 5 ] # double check that we dont fail everywhere and then run no tests at all
