@@ -70,35 +70,6 @@ jobs:
       images_upgradeable: ${{ steps.dynamic.outputs.images_upgradeable }}
     permissions:
       actions: read
-    env:
-      IMAGE_DEBIAN_OLDEST: 'debian:oldstable'
-      IMAGE_DEBIAN_STABLE: 'debian:stable'
-      IMAGE_DEBIAN_LATEST: 'debian:testing'
-      IMAGE_DEBIAN_DEV: 'debian:unstable'
-      IMAGE_DEBIAN_SLIM_OLDEST: 'debian:oldstable-slim'
-      IMAGE_DEBIAN_SLIM_STABLE: 'debian:stable-slim'
-      IMAGE_DEBIAN_SLIM_LATEST: 'debian:testing-slim'
-      IMAGE_DEBIAN_SLIM_DEV: 'debian:unstable-slim'
-      IMAGE_UBUNTU_OLDEST: 'ubuntu:jammy' # needs manual maintenance on April 2027 (https://ubuntu.com/about/release-cycle)
-      IMAGE_UBUNTU_STABLE: 'ubuntu:latest'
-      IMAGE_UBUNTU_LATEST: 'ubuntu:rolling'
-      IMAGE_UBUNTU_DEV: 'ubuntu:devel'
-      IMAGE_CENTOS_OLDEST: '' # CentOS is EOL
-      IMAGE_CENTOS_STABLE: '' # CentOS is EOL
-      IMAGE_CENTOS_LATEST: 'centos:latest'
-      IMAGE_CENTOS_DEV: 'centos:latest'
-      IMAGE_FEDORA_OLDEST: 'fedora:41' # needs manual maintenance on June 2026 (https://docs.fedoraproject.org/en-US/releases/lifecycle/)
-      IMAGE_FEDORA_STABLE: 'fedora:42' # needs manual maintenance on June 2026 (https://docs.fedoraproject.org/en-US/releases/lifecycle/)
-      IMAGE_FEDORA_LATEST: 'fedora:latest'
-      IMAGE_FEDORA_DEV: 'fedora:rawhide'
-      IMAGE_RHEL_OLDEST: 'redhat/ubi8:latest' # needs manual maintenance
-      IMAGE_RHEL_STABLE: 'redhat/ubi9:latest' # needs manual maintenance
-      IMAGE_RHEL_LATEST: 'redhat/ubi9:latest' # needs manual maintenance
-      IMAGE_RHEL_DEV: '' # not public
-      IMAGE_OPENSUSE_OLDEST: 'opensuse/leap:15.6' # needs manual maintenance on January 2026 (https://endoflife.date/opensuse)
-      IMAGE_OPENSUSE_STABLE: 'opensuse/leap:latest'
-      IMAGE_OPENSUSE_LATEST: 'opensuse/tumbleweed:latest'
-      IMAGE_OPENSUSE_DEV: '' # not public
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.21.0
         with:
