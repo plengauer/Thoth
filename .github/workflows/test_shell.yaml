@@ -54,9 +54,8 @@ jobs:
       actions: read
     steps:
       - run: |
-          curl --no-progress-meter --fail --header "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/repos/"$GITHUB_REPOSITORY"/releases/tags/${{ matrix.tag_name }} | jq -r '.assets[].browser_download_url' | xargs wget --header "Authorization: Bearer $GITHUB_TOKEN"
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+          # curl --no-progress-meter --fail --header "Authorization: Bearer ${{ github.token }}" https://api.github.com/repos/"$GITHUB_REPOSITORY"/releases/tags/${{ matrix.tag_name }} | jq -r '.assets[] | select(.name | endswith(".deb")) | .url' | xargs wget --header "Authorization: Bearer ${{ github.token }}" --header "Accept: application/octet-stream" -O package.deb
+          GH_TOKEN=${{ github.token }} gh release download ${{ matrix.tag_name }} -p '*.deb' --repo "$GITHUB_REPOSITORY"
       - run: sudo apt-get -y install ./*.deb
       - uses: actions/download-artifact@v4.3.0
         with:
@@ -370,9 +369,8 @@ jobs:
           name: packages
       - if: matrix.tag_name != '~local'
         run: |
-          curl --no-progress-meter --fail --header "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/repos/"$GITHUB_REPOSITORY"/releases | jq -r '.[] | select(.tag_name == "${{ matrix.tag_name }}") | .assets[].browser_download_url' | grep '.deb$' | xargs wget --header "Authorization: Bearer $GITHUB_TOKEN"
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+          # curl --no-progress-meter --fail --header "Authorization: Bearer ${{ github.token }}" https://api.github.com/repos/"$GITHUB_REPOSITORY"/releases/tags/${{ matrix.tag_name }} | jq -r '.assets[] | select(.name | endswith(".deb")) | .url' | xargs wget --header "Authorization: Bearer ${{ github.token }}" --header "Accept: application/octet-stream" -O package.deb
+          GH_TOKEN=${{ github.token }} gh release download ${{ matrix.tag_name }} -p '*.deb' --repo "$GITHUB_REPOSITORY"
       - run: sudo apt-get install -y ./*.deb
       - run: |
           export OTEL_SHELL_SDK_OUTPUT_REDIRECT=/dev/null
