@@ -461,9 +461,7 @@ def handle(scope, version, command, arguments):
         logger = opentelemetry._logs.get_logger(scope, version)
         record = LogRecord(
             timestamp=parse_time(log_time),
-            trace_id=context.trace_id,
-            span_id=context.span_id,
-            trace_flags=context.trace_flags,
+            context=context,
             severity_text='unspecified',
             severity_number=SeverityNumber(int(log_severity)),
             body=line,
