@@ -65,7 +65,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        architecture: [ 'amd64', 'arm64/v8', 'ppc64le', 's390x' ] # 'i386', 'arm32/v7'
+        architecture: [ 'amd64', 'arm64/v8', 'ppc64le', 'mips64le', 'riscv64', 's390x' ] # 'i386', 'arm32/v7'
       fail-fast: false
     permissions:
       contents: read
@@ -75,8 +75,12 @@ jobs:
         uses: docker/setup-qemu-action@v3.6.0
       - id: build
         run: |
-          image=debian:oldstable
-          [ "${{ matrix.architecture }}" != s390x ] || image=debian:stable
+          case "${{ matrix.architecture }}" in
+            mips64le) image=debian:stable;;
+            riscv64) image=debian:testing;;
+            s390x) image=debian:stable;;
+            *) image=debian:oldstable;;
+          esac
           echo 'cd src/usr/share/opentelemetry_shell/agent.instrumentation.http/ && apt-get update 1>&2 && yes | apt-get install build-essential 1>&2 && gcc -shared -fPIC -o libinjecthttpheader.so agent.injection.http_header.c -ldl 1>&2 && arch' \
            | sudo docker run -i --rm --network host -v "$(pwd)"/src:/home/root/src -w /home/root --platform linux/${{ matrix.architecture }} docker.io/"$(echo ${{ matrix.architecture }} | tr -d /)"/"$image" | xargs -0 -I {} echo 'architecture={}' >> "$GITHUB_OUTPUT"
       - run: |
@@ -214,7 +218,7 @@ jobs:
           print(*default_instrumentations, sep="\n")
           print(*map(lambda element: element["instrumentation"], libraries), sep="\n")
           ' | python3 | grep "==$(pip3 show opentelemetry-distro | grep Version | cut -d ':' -f 2- | tr -d ' ')"'$' | grep -v opentelemetry-instrumentation-system-metrics | xargs pip3 install
-          yes | pip3 uninstall setuptools pip
+          pip3 uninstall --yes setuptools pip
           deactivate
       - run: find src/usr/share/opentelemetry_shell/agent.instrumentation.python/venv/lib/python${{ matrix.version }}/site-packages -iname '*.so' -exec false ';'
       - run: |

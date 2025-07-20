@@ -1,4 +1,5 @@
 if ! type strace; then exit 0; fi
+if [ -n "${WSL_DISTRO_NAME:-}" ]; then exit 0; fi
 
 . ./assert.sh
 export OTEL_SHELL_CONFIG_OBSERVE_SUBPROCESSES=TRUE

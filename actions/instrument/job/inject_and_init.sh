@@ -176,7 +176,7 @@ if [ "$(printf '%s' "$GITHUB_JOB_ID" | wc -l)" -le 1 ]; then echo "Guessing GitH
 observe_rate_limit() {
   used_gauge_handle="$(otel_counter_create observable_gauge github.api.rate_limit.used 1 "The amount of rate limited requests used")"
   remaining_gauge_handle="$(otel_counter_create observable_gauge github.api.rate_limit.remaining 1 "The amount of rate limited requests remaining")"
-  while true; do
+  while [ -r /tmp/opentelemetry_shell.github.observe_rate_limits ]; do
     gh_rate_limit | jq --unbuffered -r '.resources | to_entries[] | [.key, .value.used, .value.remaining] | @tsv' | sed 's/\t/ /g' | while read -r resource used remaining; do
       observation_handle="$(otel_observation_create "$used")"
       otel_observation_attribute_typed "$observation_handle" string github.api.resource="$resource"
@@ -191,6 +191,9 @@ observe_rate_limit() {
 export -f observe_rate_limit
 
 root4job_end() {
+  exec 1> /tmp/opentelemetry_shell.github.debug.log
+  exec 2> /tmp/opentelemetry_shell.github.debug.log
+  rm /tmp/opentelemetry_shell.github.observe_rate_limits
   if [ -f /tmp/opentelemetry_shell.github.error ]; then local conclusion=failure; else local conclusion=success; fi
   otel_span_attribute_typed $span_handle string github.actions.job.conclusion="$conclusion"
   if [ "$conclusion" = failure ]; then otel_span_error "$span_handle"; fi
@@ -269,7 +272,7 @@ root4job_end() {
       otel_counter_observe "$(otel_counter_create counter selfmonitoring.opentelemetry.github.job.spans 1 'Spans created by job-level instrumentation')" "$spans_observation_handle"
       rm "$self_monitoring_metrics_file"
       step_counter_handle="$(otel_counter_create counter selfmonitoring.opentelemetry.github.job.steps 1 'Steps observed by job-level instrumentation')"
-      cat /tmp/opentelemetry_shell.github.step.log | while read -r action_type action_name; do
+      ( cat /tmp/opentelemetry_shell.github.step.log || true ) | while read -r action_type action_name; do
         step_observation_handle="$(otel_observation_create 1)"
         otel_observation_attribute_typed "$step_observation_handle" string github.actions.runner.os="$RUNNER_OS"
         otel_observation_attribute_typed "$step_observation_handle" string github.actions.runner.arch="$RUNNER_ARCH"
@@ -281,20 +284,23 @@ root4job_end() {
       otel_shutdown
     )
   fi
+
+  while kill -0 "$observe_rate_limit_pid" 2> /dev/null; do sleep 1; done
+  timeout 60s sh -c 'while fuser /opt/opentelemetry_shell/venv/bin/python; do sleep 1; done' &> /dev/null || true
   
-  while [ "$(pgrep -cf /opt/opentelemetry_shell/)" -gt 0 ]; do sleep 1; done
   if [ -n "${OTEL_SHELL_COLLECTOR_CONTAINER:-}" ]; then
     sudo docker stop "$OTEL_SHELL_COLLECTOR_CONTAINER"
     if [ -n "$INPUT_DEBUG" ]; then
       sudo docker logs "$OTEL_SHELL_COLLECTOR_CONTAINER"
     fi
   fi
-  kill -9 "$observe_rate_limit_pid" || true
   exit 0
 }
 export -f root4job_end
 
 root4job() {
+  exec 1> /tmp/opentelemetry_shell.github.debug.log
+  exec 2> /tmp/opentelemetry_shell.github.debug.log
   [ -z "${OTEL_SHELL_COLLECTOR_IMAGE:-}" ] || export OTEL_SHELL_COLLECTOR_CONTAINER="$(OTEL_SHELL_COLLECTOR_CONFIG="$(cat "$(pwd)"/collector.yaml)" sudo -E docker run --detach --restart unless-stopped --network=host --env OTEL_SHELL_COLLECTOR_CONFIG "$OTEL_SHELL_COLLECTOR_IMAGE" --config=env:OTEL_SHELL_COLLECTOR_CONFIG)"
   rm -rf "$(pwd)"/collector.yaml 2> /dev/null
   rm /tmp/opentelemetry_shell.github.error 2> /dev/null
@@ -307,7 +313,8 @@ root4job() {
     _otel_resource_attribute string telemetry.sdk.language=github
   }
   otel_init
-  observe_rate_limit &
+  touch /tmp/opentelemetry_shell.github.observe_rate_limits
+  observe_rate_limit &> /dev/null &
   observe_rate_limit_pid="$!"
   time_start="$(date +%s.%N)"
   span_handle="$(otel_span_start CONSUMER "${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}")"
@@ -330,15 +337,18 @@ root4job() {
     rm -rf "$opentelemetry_job_dir"
   fi
   otel_span_deactivate "$span_handle"
+  exec 2>&-
+  exec 1>&-
   trap root4job_end SIGUSR1
   while true; do sleep 1; done
 }
 export -f root4job
 
 traceparent_file="$(mktemp -u)"
-mkfifo "$traceparent_file"
-nohup bash -c 'root4job "$@"' bash "$traceparent_file" &> /tmp/opentelemetry_shell.github.debug.log &
+mkfifo /tmp/opentelemetry_shell.github.debug.log
+nohup bash -c 'root4job "$@"' bash "$traceparent_file" &> /dev/null &
 echo "pid=$!" >> "$GITHUB_STATE"
+cat /tmp/opentelemetry_shell.github.debug.log
 
 # propagate context to the steps
 export TRACEPARENT="$(cat "$traceparent_file")"
