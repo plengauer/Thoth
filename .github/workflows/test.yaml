@@ -265,23 +265,54 @@ jobs:
   build-java-agents:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4.2.2
       - uses: actions/setup-java@v4.7.1
         with:
-          java-version: 8 # TODO make this dynamic based on minimum
-          distribution: adopt
-      - uses: actions/checkout@v4.2.2
+          java-version: 8
+          distribution: temurin
       - run: |
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.java
           mvn dependency:resolve
           find ~/.m2 -iname 'opentelemetry-javaagent-*.jar' | xargs -I '{}' cp '{}' opentelemetry-javaagent.jar
+          find ~/.m2 -iname 'byte-buddy-*.jar' | xargs -I '{}' cp '{}' byte-buddy.jar
+      - id: determine-minimum-version
+        run: |
+          directory="$(mktemp -d)"
+          unzip -d "$directory" src/usr/share/opentelemetry_shell/agent.instrumentation.java/opentelemetry-javaagent.jar 2> /dev/null
+          cd "$directory"
+          # class_file_version="$(cat META-INF/MANIFEST.MF | grep '^Premain-Class' | cut -d : -f 2 | tr -d ' ' | tr -d '\r' | xargs -t -r javap -v -cp . | grep 'major version' | cut -d : -f 2 | tr -d ' ')"
+          class_file_version="$(find . -iname '*.class' | while read -r path; do echo "${path#\./}"; done | cut -d . -f 1 | tr / . | xargs -r -P 0 javap -v -cp . | grep 'major version' | cut -d : -f 2 | tr -d ' ' | sort -n | tail -n 1)"
+          class_file_version_base=44
+          java_version=$((class_file_version - class_file_version_base))
+          echo version="$java_version" >> "$GITHUB_OUTPUT"
+      - uses: actions/setup-java@v4.7.1
+        with:
+          java-version: ${{ steps.determine-minimum-version.outputs.version }}
+          distribution: temurin
       - run: |
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.java
           javac -classpath ./opentelemetry-javaagent.jar RootContextAgent.java
-          jar cmf manifest.txt rootcontextagent.jar RootContextAgent.class
+          printf '%s\n\n' "Premain-Class: RootContextAgent" > manifest.txt
+          jar cmf manifest.txt rootcontextagent.jar RootContextAgent*.class
+      - run: |
+          cd src/usr/share/opentelemetry_shell/agent.instrumentation.java
+          javac -classpath ./byte-buddy.jar SubprocessInjectionAgent.java
+          printf '%s\n\n' 'Premain-Class: SubprocessInjectionAgent
+          Boot-Class-Path: /usr/share/opentelemetry_shell/agent.instrumentation.java/subprocessinjectionagent.jar ./byte-buddy.jar
+          Can-Retransform-Classes: true
+          Can-Redefine-Classes: true
+          ' > manifest.txt
+          set +f
+          jar cmf manifest.txt subprocessinjectionagent.jar SubprocessInjectionAgent*.class
+      - run: |
+          cd src/usr/share/opentelemetry_shell/agent.instrumentation.java
+          echo "${{ steps.determine-minimum-version.outputs.version }}" > version
       - uses: actions/upload-artifact@v4.6.2
         with:
           name: java
-          path: src/usr/share/opentelemetry_shell/agent.instrumentation.java/*.jar
+          path: |
+            src/usr/share/opentelemetry_shell/agent.instrumentation.java/*.jar
+            src/usr/share/opentelemetry_shell/agent.instrumentation.java/version
   build:
     needs: [verify-python-dependency, verify-debian-dependencies, merge-http, merge-node-modules, merge-python-site-packages, build-java-agents, list-python-versions]
     runs-on: ubuntu-latest
