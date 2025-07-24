@@ -117,7 +117,7 @@ $(cat $section_pipeline_metrics)
 $(cat $section_pipeline_traces)
 EOF
   if [ -n "$INPUT_DEBUG" ]; then
-    echo "$INPUT_SECRETS_TO_REDACT" | jq -r '. | to_entries[].value' | sed 's/[.[\(*^$+?{|]/\\\\&/g' | xargs -I '{}' echo '::add-mask::{}'    
+    echo "$INPUT_SECRETS_TO_REDACT" | jq -r '. | to_entries[].value' | sed 's/[.[\(*^$+?{|]/\\\\&/g' | xargs -I '{}' echo '::add-mask::{}'
     cat collector.yaml
   fi
 fi
