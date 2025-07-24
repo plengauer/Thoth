@@ -302,6 +302,7 @@ jobs:
     timeout-minutes: 120
     strategy:
       matrix:
+        distribution: Ubuntu-24.04
         version: [1, 2]
         shell: ${{ fromJSON(needs.list-shells.outputs.shells) }}
       fail-fast: false
