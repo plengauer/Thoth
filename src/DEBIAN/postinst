@@ -28,12 +28,11 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
     ( type docker 1>&2 || ( echo "$PATH" | tr : '\n' | while read -r directory; do find "$directory" -name 'python3.*'; done | grep -v -- - | while read -r executable; do eval "$executable -V"; done | cut -d ' ' -f 2 | cut -d . -f -2 ) ) \
       | while read -r version; do echo "./$version"; done | ( xargs tar -xJf /usr/share/opentelemetry_shell/agent.instrumentation.python/python_site_packages.tar.xz -C /usr/share/opentelemetry_shell/agent.instrumentation.python/ || true )
     ls /usr/share/opentelemetry_shell/agent.instrumentation.python | grep -v '.txt$' | grep -v '.py$' | grep -v '.xz$' | while read -r version; do
-      if ! type python"$version"; then
+      venv="$(mktemp -u)"
+      if ! type python"$version" || ! eval "python$version" -m venv "$venv"; then
         rm -rf /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"
         continue
       fi
-      venv="$(mktemp -u)"
-      eval "python$version" -m venv "$venv"
       cp -r /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"/site-packages/* "$venv"/lib/python"$version"/site-packages/
       . "$venv"/bin/activate
       pip3 install -r /usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.txt
