@@ -1,5 +1,5 @@
 set +f
-if ! type sudo || ! type systemctl || ! type apt-get; then
+if ! type sudo || ! type systemctl || ! type apt-get || [ -n "${WSL_DISTRO_NAME:-}" ]; then
   exit 0
 fi
 
