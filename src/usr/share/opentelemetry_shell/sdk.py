@@ -457,13 +457,11 @@ def handle(scope, version, command, arguments):
         line = tokens[3] if len(tokens) > 3 else ""
         if len(line) == 0:
             return
-        context = opentelemetry.trace.get_current_span(TraceContextTextMapPropagator().extract({'traceparent': traceparent})).get_span_context()
+        context = TraceContextTextMapPropagator().extract({'traceparent': traceparent})
         logger = opentelemetry._logs.get_logger(scope, version)
         record = LogRecord(
             timestamp=parse_time(log_time),
-            trace_id=context.trace_id,
-            span_id=context.span_id,
-            trace_flags=context.trace_flags,
+            context=context,
             severity_text='unspecified',
             severity_number=SeverityNumber(int(log_severity)),
             body=line,
