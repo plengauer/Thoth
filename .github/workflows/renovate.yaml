@@ -78,8 +78,6 @@ jobs:
           dev="$(jq < /tmp/launchpad.ubuntu.json '.entries[] | select(.active == true) | select(.status == "Active Development") | .name' -r | head -n 1)"
           cat .github/workflows/images.json | jq ".ubuntu.oldest = \"$oldest\"" | jq ".ubuntu.stable = \"$stable\"" | jq ".ubuntu.latest = \"$latest\"" | jq ".ubuntu.dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/workflows/images.json
       - run: |
-          cat .github/workflows/images.json | jq ".centos.oldest = \"\"" | jq ".centos.stable = \"\"" | jq ".centos.latest = \"7\"" | jq ".centos.dev = \"\"" > /tmp/images.json && cat < /tmp/images.json > .github/workflows/images.json
-      - run: |
           curl -s https://fedoraproject.org/releases.json > /tmp/fedora_releases.json
           oldest="$(jq < /tmp/fedora_releases.json '.[].version' -r | sort -u | tail -n 2 | head -n 1)"
           stable="$(jq < /tmp/fedora_releases.json '.[].version' -r | sort -u | tail -n 1)"
