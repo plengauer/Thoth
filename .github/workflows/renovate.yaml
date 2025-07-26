@@ -69,23 +69,23 @@ jobs:
           stable="$(jq < /tmp/launchpad.debian.json '.entries[] | select(.active == true) | select(.status == "Supported") | .name' -r | head -n 1)"
           latest="$(jq < /tmp/launchpad.debian.json '.entries[] | select(.active == true) | select(.status == "Current Stable Release") | .name' -r)"
           dev="$(jq < /tmp/launchpad.debian.json '.entries[] | select(.active == true) | select(.status == "Active Development") | .name' -r | head -n 1)"
-          cat .github/workflows/images.json | jq ".debian.oldest = \"$oldest\" | .debian.stable = \"$stable\" | .debian.latest = \"$latest\" | .debian.dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/workflows/images.json
+          cat .github/workflows/images.json | jq ".debian.oldest = \"$oldest\"" | jq ".debian.stable = \"$stable\"" | jq ".debian.latest = \"$latest\"" | jq ".debian.dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/workflows/images.json
       - run: |
           curl -s https://api.launchpad.net/devel/ubuntu/series > /tmp/launchpad.ubuntu.json
           oldest="$(jq < /tmp/launchpad.ubuntu.json '.entries[] | select(.active == true) | select(.status == "Supported") | .name' -r | head -n 2 | tail -n 1)"
           stable="$(jq < /tmp/launchpad.ubuntu.json '.entries[] | select(.active == true) | select(.status == "Supported") | .name' -r | head -n 1)"
           latest="$(jq < /tmp/launchpad.ubuntu.json '.entries[] | select(.active == true) | select(.status == "Current Stable Release") | .name' -r)"
           dev="$(jq < /tmp/launchpad.ubuntu.json '.entries[] | select(.active == true) | select(.status == "Active Development") | .name' -r | head -n 1)"
-          cat .github/workflows/images.json | jq ".ubuntu.oldest = \"$oldest\" | .ubuntu.stable = \"$stable\" | .ubuntu.latest = \"$latest\" | .ubuntu.dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/workflows/images.json
+          cat .github/workflows/images.json | jq ".ubuntu.oldest = \"$oldest\"" | jq ".ubuntu.stable = \"$stable\"" | jq ".ubuntu.latest = \"$latest\"" | jq ".ubuntu.dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/workflows/images.json
       - run: |
-          cat .github/workflows/images.json | jq ".centos.oldest = \"\" | .centos.stable = \"\" | .centos.latest = \"7\" | .centos.dev = \"\"" > /tmp/images.json && cat < /tmp/images.json > .github/workflows/images.json
+          cat .github/workflows/images.json | jq ".centos.oldest = \"\"" | jq ".centos.stable = \"\"" | jq ".centos.latest = \"7\"" | jq ".centos.dev = \"\"" > /tmp/images.json && cat < /tmp/images.json > .github/workflows/images.json
       - run: |
           curl -s https://fedoraproject.org/releases.json > /tmp/fedora_releases.json
           oldest="$(jq < /tmp/fedora_releases.json '.[].version' -r | sort -u | tail -n 2 | head -n 1)"
           stable="$(jq < /tmp/fedora_releases.json '.[].version' -r | sort -u | tail -n 1)"
           latest="$stable"
           dev=rawhide
-          cat .github/workflows/images.json | jq ".fedora.oldest = \"$oldest\" | .fedora.stable = \"$stable\" | .fedora.latest = \"$latest\" | .fedora.dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/workflows/images.json
+          cat .github/workflows/images.json | jq ".fedora.oldest = \"$oldest\"" | jq ".fedora.stable = \"$stable\"" | jq ".fedora.latest = \"$latest\"" | jq ".fedora.dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/workflows/images.json
       - id: open-pr
         uses: peter-evans/create-pull-request@v7.0.8
         with:
