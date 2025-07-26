@@ -1,0 +1,59 @@
+[
+  {
+    "name": "debian",
+    "oldest": "oldstable",
+    "stable": "stable",
+    "latest": "testing",
+    "dev": "unstable",
+    "variants": [ "slim" ]
+  },
+  {
+    "name": "ubuntu",
+    "oldest": "jammy",
+    "stable": "latest",
+    "latest": "rolling",
+    "dev": "devel"
+  },
+  {
+    "name": "centos",
+    "oldest": "",
+    "stable": "",
+    "latest": "latest",
+    "dev": ""
+  },
+  {
+    "name": "fedora",
+    "oldest": "41",
+    "stable": "42",
+    "latest": "42",
+    "dev": "rawhide"
+  },
+  {
+    "name": "redhat/ubi8",
+    "oldest": "latest",
+    "stable": "latest",
+    "latest": "latest",
+    "dev": ""
+  },
+  {
+    "name": "redhat/ubi9",
+    "oldest": "latest",
+    "stable": "latest",
+    "latest": "latest",
+    "dev": ""
+  },
+  {
+    "name": "opensuse/leap",
+    "oldest": "15.5",
+    "stable": "15.6",
+    "latest": "15.6",
+    "dev": "16.0"
+  },
+  {
+    "name": "opensuse/tumbleweed",
+    "oldest": "15.5",
+    "stable": "15.6",
+    "latest": "15.6",
+    "dev": "16.0"
+  }
+]
