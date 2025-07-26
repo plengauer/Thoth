@@ -87,7 +87,7 @@ jobs:
         run: |
           sudo docker login -u '${{ secrets.DOCKERHUB_USERNAME }}' -p '${{ secrets.DOCKERHUB_TOKEN }}'
           min_version="$(cat src/DEBIAN/control | grep '^Pre-Depends:' | tr ',' '\n' | grep -F -- 'python3 (>=' | cut -d '(' -f 2- | cut -d ')' -f 1 | cut -d ' ' -f 2 | cut -d . -f 2)"
-          cat .github/workflows/images.json | jq '.to_entries | [ .key, .value.oldest, .value.stable, .value.latest, .value.dev ] | @tsv' -r | sed 's/\t/ /g' | while read -r name oldest stable latest dev; do
+          cat .github/workflows/images.json | jq 'to_entries[] | [ .key, .value.oldest, .value.stable, .value.latest, .value.dev ] | @tsv' -r | sed 's/\t/ /g' | while read -r name oldest stable latest dev; do
             [ -z "$oldest" ] || echo "$name":"$oldest" "$name" oldest
             [ -z "$stable" ] || echo "$name":"$stable" "$name" stable
             [ -z "$latest" ] || echo "$name":"$latest" "$name" latest
