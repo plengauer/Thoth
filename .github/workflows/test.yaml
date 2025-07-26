@@ -76,6 +76,7 @@ jobs:
       - id: build
         run: |
           case "${{ matrix.architecture }}" in
+            ppc64le) image=debian:stable;; # oldstable apt repo is very flaky
             mips64le) image=debian:stable;;
             riscv64) image=debian:testing;;
             s390x) image=debian:stable;;
