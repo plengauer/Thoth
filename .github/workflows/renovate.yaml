@@ -57,3 +57,51 @@ jobs:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           pull-request-number: ${{ steps.open-pr.outputs.pull-request-number }}
           merge-method: squash
+  renovate-test-images:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - run: |
+          curl -s https://api.launchpad.net/devel/debian/series > /tmp/launchpad.debian.json
+          oldest="$(jq < /tmp/launchpad.debian.json '.entries[] | select(.active == true) | select(.status == "Supported") | .name' -r | head -n 2 | tail -n 1)"
+          stable="$(jq < /tmp/launchpad.debian.json '.entries[] | select(.active == true) | select(.status == "Supported") | .name' -r | head -n 1)"
+          latest="$(jq < /tmp/launchpad.debian.json '.entries[] | select(.active == true) | select(.status == "Current Stable Release") | .name' -r)"
+          dev="$(jq < /tmp/launchpad.debian.json '.entries[] | select(.active == true) | select(.status == "Active Development") | .name' -r | head -n 1)"
+          cat .github/workflows/images.json | jq ".[] | select(.name == \"debian\") | .oldest = \"$oldest\" | .stable = \"$stable\" | .latest = \"$latest\" | .dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/workflows/images.json
+      - run: |
+          curl -s https://api.launchpad.net/devel/ubuntu/series > /tmp/launchpad.ubuntu.json
+          oldest="$(jq < /tmp/launchpad.ubuntu.json '.entries[] | select(.active == true) | select(.status == "Supported") | .name' -r | head -n 2 | tail -n 1)"
+          stable="$(jq < /tmp/launchpad.ubuntu.json '.entries[] | select(.active == true) | select(.status == "Supported") | .name' -r | head -n 1)"
+          latest="$(jq < /tmp/launchpad.ubuntu.json '.entries[] | select(.active == true) | select(.status == "Current Stable Release") | .name' -r)"
+          dev="$(jq < /tmp/launchpad.ubuntu.json '.entries[] | select(.active == true) | select(.status == "Active Development") | .name' -r | head -n 1)"
+          cat .github/workflows/images.json | jq ".[] | select(.name == \"ubuntu\") | .oldest = \"$oldest\" | .stable = \"$stable\" | .latest = \"$latest\" | .dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/workflows/images.json
+      - run: |
+          cat .github/workflows/images.json | jq ".[] | select(.name == \"centos\") | .oldest = \"\" | .stable = \"\" | .latest = \"7\" | .dev = \"\"" > /tmp/images.json && cat < /tmp/images.json > .github/workflows/images.json
+      - run: |
+          curl -s https://fedoraproject.org/releases.json > /tmp/fedora_releases.json
+          oldest="$(jq < /tmp/fedora_releases.json '.[].version' -r | sort -u | tail -n 2 | head -n 1)"
+          stable="$(jq < /tmp/fedora_releases.json '.[].version' -r | sort -u | tail -n 1)"
+          latest="$stable"
+          dev=rawhide
+          cat .github/workflows/images.json | jq ".[] | select(.name == \"fedora\") | .oldest = \"$oldest\" | .stable = \"$stable\" | .latest = \"$latest\" | .dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/workflows/images.json
+      - id: open-pr
+        uses: peter-evans/create-pull-request@v7.0.8
+        with:
+          token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          commit-message: "Renove python dependency"
+          base: main
+          branch: "renovate-manual/test-images"
+          title: "Renovate Debian Python"
+          body: |
+            (this PR is automatically generated)
+          delete-branch: true
+      - run: sleep 60 # make sure PR state is updated and API can catch up
+        if: steps.open-pr.outputs.pull-request-number != null
+      - uses: peter-evans/enable-pull-request-automerge@v3.0.0
+        if: steps.open-pr.outputs.pull-request-number != null
+        with:
+          token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          pull-request-number: ${{ steps.open-pr.outputs.pull-request-number }}
+          merge-method: squash
