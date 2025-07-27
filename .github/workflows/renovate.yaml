@@ -45,7 +45,7 @@ jobs:
           commit-message: "Renove python dependency"
           base: main
           branch: "renovate-manual/debian-python"
-          title: "Renovate Debian Python"
+          title: "Update Debian Python Dependency"
           body: |
             (this PR is automatically generated)
           delete-branch: true
@@ -88,7 +88,7 @@ jobs:
         uses: peter-evans/create-pull-request@v7.0.8
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
-          commit-message: "Renove python dependency"
+          commit-message: "Update Test Images"
           base: main
           branch: "renovate-manual/test-images"
           title: "Renovate Debian Python"
