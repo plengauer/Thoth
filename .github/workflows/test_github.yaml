@@ -147,8 +147,11 @@ jobs:
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
-      - run: echo hello world
-      # TODO check trace, check if its connecting to otel collector, check node action
+      - run: echo hello world # check if run action works
+      - uses: actions/download-artifact@v4 # check if node action works
+        with:
+          name: packages
+      # TODO check trace (job level, as well as trace structure), check if its connecting to otel collector, check with different images
   job-integration:
     needs: job-smoke
     runs-on: ubuntu-latest
