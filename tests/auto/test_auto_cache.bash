@@ -1,13 +1,13 @@
 . ./assert.sh
 
 time bash -c '. otel.sh
-bash auto/echo_arg.shell hello world 0'
+bash auto/echo_arg.sh hello world 0'
 time bash -c '. otel.sh
-bash auto/echo_arg.shell hello world 1'
+bash auto/echo_arg.sh hello world 1'
 time bash -c '. otel.sh
-bash auto/echo_arg.shell hello world 2'
+bash auto/echo_arg.sh hello world 2'
 time bash -c '. otel.sh
-bash auto/echo_arg.shell hello world 3'
+bash auto/echo_arg.sh hello world 3'
 
 span="$(resolve_span '.name == "echo hello world 0"')"
 assert_equals "SpanKind.INTERNAL" $(\echo "$span" | jq -r '.kind')

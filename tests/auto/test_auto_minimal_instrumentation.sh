@@ -3,7 +3,7 @@
 alias
 
 if [ -n "$(alias | grep ech | grep cho)" ]; then printf '%s\n' "e-cho has been instrumented"; exit 1; fi
-. auto/count_fail_no_auto.shell
+. auto/count_fail_no_auto.sh
 alias
 if [ -z "$(alias | grep ech | grep cho)" ]; then printf '%s\n' "e-cho has not been instrumented"; exit 1; fi
 
