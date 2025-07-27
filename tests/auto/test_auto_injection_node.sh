@@ -60,7 +60,7 @@ assert_not_equals null $(\echo "$span" | jq -r '.parent_id')
 # lets check with the above test if it works on any node version, but lets not rely on instrumentations actually working
 
 \node -e "require('http').createServer(function (req, res) { console.log(req.method, req.url); res.writeHead(200); res.end(); }).listen(8080);" 1> /tmp/http.log 2> /dev/null &
-server_pid="$?"
+server_pid="$!"
 
 directory="$(mktemp -d)"
 echo "
