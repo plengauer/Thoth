@@ -59,19 +59,21 @@ assert_not_equals null $(\echo "$span" | jq -r '.parent_id')
 
 # lets check with the above test if it works on any node version, but lets not rely on instrumentations actually working
 
+node -e "require('http').createServer(function (req, res) { console.log(req.method, req.url); res.writeHead(200); res.end(); }).listen(8080);" 1> /tmp/http.log 2> /dev/null &
+
 directory="$(mktemp -d)"
 echo "
-const https = require('https');
+const http = require('http');
 const options = {
-  hostname: 'example.com',
-  port: 443,
+  hostname: '127.0.0.1',
+  port: 8080,
   path: '/',
   method: 'GET',
   headers: {
     'Connection': 'close'
   }
 };
-const req = https.request(options, (res) => {});
+const req = http.request(options, (res) => {});
 req.end();
 " > "$directory"/index.js
 span="$(node "$directory"/index.js 2>&1)"
@@ -92,17 +94,17 @@ const sdk = new NodeSDK({
 });
 sdk.start();
 process.on('exit', () => sdk.shutdown());
-const https = require('https');
+const http = require('http');
 const options = {
-  hostname: 'example.com',
-  port: 443,
+  hostname: '127.0.0.1',
+  port: 8080,
   path: '/',
   method: 'GET',
   headers: {
     'Connection': 'close'
   }
 };
-const req = https.request(options, (res) => {});
+const req = http.request(options, (res) => {});
 req.end();
 " > "$directory"/index.js
 (cd "$directory" && npm install @opentelemetry/api @opentelemetry/sdk-node @opentelemetry/sdk-trace-node @opentelemetry/auto-instrumentations-node)
