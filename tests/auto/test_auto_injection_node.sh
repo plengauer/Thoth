@@ -59,7 +59,8 @@ assert_not_equals null $(\echo "$span" | jq -r '.parent_id')
 
 # lets check with the above test if it works on any node version, but lets not rely on instrumentations actually working
 
-node -e "require('http').createServer(function (req, res) { console.log(req.method, req.url); res.writeHead(200); res.end(); }).listen(8080);" 1> /tmp/http.log 2> /dev/null &
+\node -e "require('http').createServer(function (req, res) { console.log(req.method, req.url); res.writeHead(200); res.end(); }).listen(8080);" 1> /tmp/http.log 2> /dev/null &
+server_pid="$?"
 
 directory="$(mktemp -d)"
 echo "
@@ -138,3 +139,5 @@ span="$(node "$directory"/index.js 2>&1)"
 assert_equals 0 $?
 \echo "$span"
 assert_equals "$(resolve_span '.name == "echo hello world 7"' | jq -r .parent_id)" 0x"$(\echo "$span" | grep -E '^  id:' | cut -d ':' -f 2- | tr -d \''" ,')"
+
+kill -9 "$server_pid"
