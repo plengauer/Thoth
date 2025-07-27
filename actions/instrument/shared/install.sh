@@ -1,7 +1,9 @@
 #!/bin/sh -e
 export GITHUB_ACTION_REPOSITORY="${GITHUB_ACTION_REPOSITORY:-"$GITHUB_REPOSITORY"}"
 
-ensure_installed() { for item in "$@"; do type "${item%%;*}" 1> /dev/null 2> /dev/null || echo "${item#*;}"; done | (type eatmydata 1> /dev/null 2> /dev/null && xargs -r sudo eatmydata apt-get install || xargs -r sudo apt-get install); }
+type sudo || ( [ "$USER" = root ] && sudo() { eval "$@"; } ) 
+
+ensure_installed() { for item in "$@"; do type "${item%%;*}" 1> /dev/null 2> /dev/null || echo "${item#*;}"; done | (type eatmydata 1> /dev/null 2> /dev/null && sudo xargs -r eatmydata apt-get install || sudo xargs -r apt-get install); }
 ensure_installed eatmydata
 ensure_installed curl wget jq sed unzip 'node;nodejs' npm 'docker;docker.io'
 
