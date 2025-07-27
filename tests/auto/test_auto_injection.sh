@@ -3,7 +3,7 @@
 
 eval "$SHELL auto/fail_no_auto.sh"
 assert_equals 0 $?
-span="$(resolve_span '.resource.attributes."process.command_line" == "bash auto/fail_no_auto.sh"')"
+span="$(resolve_span '.resource.attributes."process.command_line" == "'$SHELL' auto/fail_no_auto.sh"')"
 assert_equals "myspan" "$(\echo "$span" | jq -r '.name')"
 assert_equals "SpanKind.INTERNAL" $(\echo "$span" | jq -r '.kind')
 
