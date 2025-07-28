@@ -135,7 +135,7 @@ jobs:
       - uses: actions/setup-node@v4.4.0
         with:
           node-version: ${{ matrix.version }}
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.2.2
       - run: |
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.node
           npm install
@@ -144,7 +144,7 @@ jobs:
           ! find src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules -iname '*.so' | grep '.so$'
       - run: |
           ! find -L src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules -type l -exec readlink -f '{}' ';' | while read -r file; do realpath "$file"; done | grep '^'"$(pwd)"/src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4.6.2
         with:
           name: node_modules_${{ matrix.version }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules
