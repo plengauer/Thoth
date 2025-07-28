@@ -2,7 +2,7 @@
 export GITHUB_ACTION_REPOSITORY="${GITHUB_ACTION_REPOSITORY:-"$GITHUB_REPOSITORY"}"
 
 if ! type sudo; then
-  if [ "$USER" != root ]; then exit 0;
+  if [ "$USER" != root ]; then exit 0; fi
   sudo() { eval "$@"; }
 fi
 
