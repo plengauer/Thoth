@@ -1,7 +1,10 @@
 #!/bin/sh -e
 export GITHUB_ACTION_REPOSITORY="${GITHUB_ACTION_REPOSITORY:-"$GITHUB_REPOSITORY"}"
 
-type sudo || ( [ "$USER" = root ] && sudo() { eval "$@"; } ) 
+if ! type sudo; then
+  if [ "$USER" != root ]; then exit 0;
+  sudo() { eval "$@"; }
+fi
 
 ensure_installed() { for item in "$@"; do type "${item%%;*}" 1> /dev/null 2> /dev/null || echo "${item#*;}"; done | (type eatmydata 1> /dev/null 2> /dev/null && sudo xargs -r eatmydata apt-get install || sudo xargs -r apt-get install); }
 ensure_installed eatmydata
