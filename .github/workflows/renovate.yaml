@@ -88,10 +88,10 @@ jobs:
         uses: peter-evans/create-pull-request@v7.0.8
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
-          commit-message: "Update Test Images"
+          commit-message: "Update test images"
           base: main
           branch: "renovate-manual/test-images"
-          title: "Renovate Debian Python"
+          title: "Update Test Images"
           body: |
             (this PR is automatically generated)
           delete-branch: true
