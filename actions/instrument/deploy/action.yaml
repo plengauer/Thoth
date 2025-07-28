@@ -20,7 +20,7 @@ runs:
       shell: bash
       run: type yq || (sudo apt-get update && sudo apt-get -y install yq)
     - name: "Checkout"
-      uses: actions/checkout@v4
+      uses: actions/checkout@v4.2.2
       with:
         token: ${{ inputs.github_token }}
     - name: "Save blank lines"
@@ -169,7 +169,7 @@ runs:
     - name: "Open Pull Request"
       if: ${{ inputs.dry_run != 'true' }}
       id: open-pr
-      uses: peter-evans/create-pull-request@v7
+      uses: peter-evans/create-pull-request@v7.0.8
       with:
         token: ${{ inputs.github_token }}
         branch: "deploy-otel"
@@ -185,7 +185,7 @@ runs:
       run: sleep 60
     - name: "Enable auto-merge"
       if: steps.open-pr.outputs.pull-request-number != null
-      uses: peter-evans/enable-pull-request-automerge@v3
+      uses: peter-evans/enable-pull-request-automerge@v3.0.0
       with:
         token: ${{ inputs.github_token }}
         pull-request-number: ${{ steps.open-pr.outputs.pull-request-number }}
