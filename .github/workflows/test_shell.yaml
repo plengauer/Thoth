@@ -93,7 +93,7 @@ jobs:
             echo "$name":"$latest" "$name" latest
             echo "$name":"$dev" "$name" dev
           done | while read -r image os type; do
-            echo '((apt-get update DEBIAN_FRONTEND=noninteractive && apt-get -y dist-upgrade && DEBIAN_FRONTEND=noninteractive apt-get -y install python3) || (dnf -y upgrade && dnf -y install python3) || (yum -y upgrade && yum -y install python3) || (zypper --non-interactive dup && zypper --non-interactive install python3)) >&2 && cat /etc/os-release | grep PRETTY >&2 && python3 --version' \
+            echo '((apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y dist-upgrade && DEBIAN_FRONTEND=noninteractive apt-get -y install python3) || (dnf -y upgrade && dnf -y install python3) || (yum -y upgrade && yum -y install python3) || (zypper --non-interactive dup && zypper --non-interactive install python3)) >&2 && cat /etc/os-release | grep PRETTY >&2 && python3 --version' \
               | sudo docker run --rm --network=host -i "$image" | tee /dev/stderr \
               | cut -d ' ' -f 2 | cut -d . -f 2 | while read -r version; do [ "$version" -ge "$min_version" ] && echo "{\"image\":\"$image\",\"os\":\"$os\",\"type\":\"$type\"}" || true; done
           done | jq -s > images.json
