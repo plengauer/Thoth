@@ -91,10 +91,10 @@ jobs:
         run: |
           sudo docker login -u '${{ secrets.DOCKERHUB_USERNAME }}' -p '${{ secrets.DOCKERHUB_TOKEN }}'
           cat .github/workflows/images.json | jq 'to_entries[] | [ .key, .value.oldest, .value.stable, .value.latest, .value.dev ] | @tsv' -r | sed 's/\t/ /g' | while read -r name oldest stable latest dev; do
-            echo "$name":"$oldest" "$name" oldest
-            echo "$name":"$stable" "$name" stable
-            echo "$name":"$latest" "$name" latest
-            echo "$name":"$dev" "$name" dev
+            echo "$oldest" "$name" oldest
+            echo "$stable" "$name" stable
+            echo "$latest" "$name" latest
+            echo "$dev" "$name" dev
           done | while read -r image os type; do
             echo 'cat /etc/os-release | grep PRETTY >&2 && ((apt-get update && apt-get -y install /package.deb) || dnf -y install /package.rpm || yum -y install /package.rpm || zypper --non-interactive install --allow-unsigned-rpm /package.rpm)' \
               | OTEL_SHELL_CONFIG_INJECT_DEEP=FALSE \sudo docker run --rm --network=host --mount type=bind,src="$(pwd)"/package.deb,dst=/package.deb --mount type=bind,src="$(pwd)"/package.rpm,dst=/package.rpm -i "$image" >&2 \
