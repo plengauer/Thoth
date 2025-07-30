@@ -97,7 +97,7 @@ jobs:
             echo "$name":"$dev" "$name" dev
           done | while read -r image os type; do
             echo 'cat /etc/os-release | grep PRETTY >&2 && ((apt-get update && apt-get -y install /package.deb) || dnf -y install /package.rpm || yum -y install /package.rpm || zypper --non-interactive install --allow-unsigned-rpm /package.rpm)' \
-              | sudo OTEL_SHELL_CONFIG_INJECT_DEEP=FALSE docker run --rm --network=host --mount type=bind,src="$(pwd)"/package.deb,dst=/package.deb --mount type=bind,src="$(pwd)"/package.rpm,dst=/package.rpm -i "$image" >&2 \
+              | OTEL_SHELL_CONFIG_INJECT_DEEP=FALSE sudo docker run --rm --network=host --mount type=bind,src="$(pwd)"/package.deb,dst=/package.deb --mount type=bind,src="$(pwd)"/package.rpm,dst=/package.rpm -i "$image" >&2 \
               && echo "{\"image\":\"$image\",\"os\":\"$os\",\"type\":\"$type\"}" || true
           done | jq -s > images.json
       - run: |
