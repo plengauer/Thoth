@@ -24,7 +24,7 @@ assert_not_equals "null" $(echo "$span" | jq -r '.resource.attributes."process.e
 assert_not_equals "null" $(echo "$span" | jq -r '.resource.attributes."process.command_line"')
 assert_not_equals "null" $(echo "$span" | jq -r '.resource.attributes."process.command"')
 assert_not_equals "null" $(echo "$span" | jq -r '.resource.attributes."process.owner"')
-if [ "$TEST_SHELL" = "sh" ] || [ "TEST_$SHELL" = "ash" ]; then
+if [ "$TEST_SHELL" = "sh" ] || [ "$TEST_SHELL" = "ash" ]; then
   : # we dont know what sh defaults to, and ash sometimes is dash (on debian systems) but also sometimes just ash
 elif [ "$TEST_SHELL" = "dash" ]; then
   assert_not_equals null "$(echo "$span" | jq -r '.resource.attributes."process.runtime.name"')"
