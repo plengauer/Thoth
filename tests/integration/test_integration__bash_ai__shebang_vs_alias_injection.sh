@@ -8,7 +8,7 @@ sudo chmod +x /usr/bin/bash-ai
 alias ai=bash-ai
 # lets simulate the caller
 . /usr/bin/opentelemetry_shell.sh
-if [ "$SHELL" = 'busybox sh' ] &&  ! [ -x /bin/busybox ]; then sudo ln --symbolic $(which busybox) /bin/busybox; fi
+if [ "$TEST_SHELL" = 'busybox sh' ] && ! [ -x /bin/busybox ]; then sudo ln --symbolic $(which busybox) /bin/busybox; fi
 alias
 ai some arguments
 # lets assert
