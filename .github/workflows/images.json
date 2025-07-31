@@ -1,50 +1,44 @@
 {
   "debian": {
-    "oldest": "bullseye",
-    "stable": "bullseye",
-    "latest": "bookworm",
-    "dev": "sid"
+    "oldest": "debian:bullseye",
+    "stable": "debian:bullseye",
+    "latest": "debian:bookworm",
+    "dev": "debian:sid"
+  },
+  "debian-slim": {
+    "oldest": "debian:bullseye-slim",
+    "stable": "debian:bullseye-slim",
+    "latest": "debian:bookworm-slim",
+    "dev": "debian:sid-slim"
   },
   "ubuntu": {
-    "oldest": "jammy",
-    "stable": "noble",
-    "latest": "plucky",
-    "dev": "questing"
+    "oldest": "ubuntu:jammy",
+    "stable": "ubuntu:noble",
+    "latest": "ubuntu:plucky",
+    "dev": "ubuntu:questing"
   },
   "centos": {
-    "oldest": "7",
-    "stable": "7",
-    "latest": "7",
-    "dev": "7"
+    "oldest": "centos:7",
+    "stable": "centos:7",
+    "latest": "centos:7",
+    "dev": "centos:7"
   },
   "fedora": {
-    "oldest": "41",
-    "stable": "42",
-    "latest": "42",
-    "dev": "rawhide"
+    "oldest": "fedora:41",
+    "stable": "fedora:42",
+    "latest": "fedora:42",
+    "dev": "fedora:rawhide"
   },
-  "redhat/ubi8": {
-    "oldest": "latest",
-    "stable": "latest",
-    "latest": "latest",
-    "dev": "latest"
+  "rhel": {
+    "oldest": "redhat/ubi8:latest",
+    "stable": "redhat/ubi9:latest",
+    "latest": "redhat/ubi9:latest",
+    "dev": "redhat/ubi10:latest"
   },
-  "redhat/ubi9": {
-    "oldest": "latest",
-    "stable": "latest",
-    "latest": "latest",
-    "dev": "latest"
-  },
-  "opensuse/leap": {
-    "oldest": "15.5",
-    "stable": "15.6",
-    "latest": "15.6",
-    "dev": "16.0"
-  },
-  "opensuse/tumbleweed": {
-    "oldest": "latest",
-    "stable": "latest",
-    "latest": "latest",
-    "dev": "latest"
+  "opensuse": {
+    "oldest": "opensuse/leap:15.5",
+    "stable": "opensuse/leap:15.6",
+    "latest": "opensuse/tumbleweed:latest",
+    "dev": "opensuse/tumbleweed:latest"
   }
 }

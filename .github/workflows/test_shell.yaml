@@ -78,27 +78,30 @@ jobs:
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
       - uses: actions/checkout@v4.2.2
       - id: key
-        run: cat .github/workflows/images.json | md5sum | cut -d ' ' -f 1 | xargs -I '{}' echo "key={}" >> "$GITHUB_OUTPUT"
+        run: cat .github/workflows/images.json .github/workflows/test_shell.yaml | md5sum | cut -d ' ' -f 1 | xargs -I '{}' echo "key={}" >> "$GITHUB_OUTPUT"
       - uses: actions/cache@v4.2.3
         with:
           path: images.json
           key: images ${{ steps.key.outputs.key }}
       - if: ${{ hashFiles('images.json') == '' }}
+        uses: actions/download-artifact@v4.3.0
+        with:
+          name: packages
+      - if: ${{ hashFiles('images.json') == '' }}
         run: |
           sudo docker login -u '${{ secrets.DOCKERHUB_USERNAME }}' -p '${{ secrets.DOCKERHUB_TOKEN }}'
-          min_version="$(cat src/DEBIAN/control | grep '^Pre-Depends:' | tr ',' '\n' | grep -F -- 'python3 (>=' | cut -d '(' -f 2- | cut -d ')' -f 1 | cut -d ' ' -f 2 | cut -d . -f 2)"
           cat .github/workflows/images.json | jq 'to_entries[] | [ .key, .value.oldest, .value.stable, .value.latest, .value.dev ] | @tsv' -r | sed 's/\t/ /g' | while read -r name oldest stable latest dev; do
-            echo "$name":"$oldest" "$name" oldest
-            echo "$name":"$stable" "$name" stable
-            echo "$name":"$latest" "$name" latest
-            echo "$name":"$dev" "$name" dev
+            echo "$oldest" "$name" oldest
+            echo "$stable" "$name" stable
+            echo "$latest" "$name" latest
+            echo "$dev" "$name" dev
           done | while read -r image os type; do
-            echo '((apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y dist-upgrade && DEBIAN_FRONTEND=noninteractive apt-get -y install python3) || (dnf -y upgrade && dnf -y install python3) || (yum -y upgrade && yum -y install python3) || (zypper --non-interactive dup && zypper --non-interactive install python3)) >&2 && cat /etc/os-release | grep PRETTY >&2 && python3 --version' \
-              | sudo docker run --rm --network=host -i "$image" | tee /dev/stderr \
-              | cut -d ' ' -f 2 | cut -d . -f 2 | while read -r version; do [ "$version" -ge "$min_version" ] && echo "{\"image\":\"$image\",\"os\":\"$os\",\"type\":\"$type\"}" || true; done
+            echo 'cat /etc/os-release | grep PRETTY >&2 && ((apt-get update && apt-get -y install /package.deb) || dnf -y install /package.rpm || yum -y install /package.rpm || zypper --non-interactive install --allow-unsigned-rpm /package.rpm)' \
+              | OTEL_SHELL_CONFIG_INJECT_DEEP=FALSE \sudo docker run --rm --network=host --mount type=bind,src="$(pwd)"/package.deb,dst=/package.deb --mount type=bind,src="$(pwd)"/package.rpm,dst=/package.rpm -i "$image" >&2 \
+              && echo "{\"image\":\"$image\",\"os\":\"$os\",\"type\":\"$type\"}" || true
           done | jq -s > images.json
       - run: |
-          [ "$(cat images.json | jq -r '.[].image' | wc -l)" -ge 5 ] # double check that we dont fail everywhere and then run no tests at all
+          [ "$(cat images.json | jq -r '.[].image' | wc -l)" -ge 7 ] # double check that we dont fail everywhere and then run no tests at all
           cat images.json | jq '.[] | select(.type != "dev")'                                                       | jq .image | sort -u | jq -s tostring | xargs -0 -I {} echo 'images={}' >> "$GITHUB_OUTPUT"
           cat images.json | jq '.[] | select(.type != "dev") | select(.type != "latest") | select(.os == "ubuntu")' | jq .image | sort -u | jq -s tostring | xargs -0 -I {} echo 'images_upgradeable={}' >> "$GITHUB_OUTPUT"
         id: dynamic

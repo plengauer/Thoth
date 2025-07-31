@@ -6,7 +6,9 @@ if [ "$SHELL" = "" ]; then
   exit 1
 fi
 if [ "$SHELL" = busybox ]; then
-  export SHELL="busybox sh";
+  export TEST_SHELL="busybox sh";
+else
+  export TEST_SHELL="$SHELL"
 fi
 
 for dir in unit sdk auto integration; do
@@ -20,13 +22,13 @@ for dir in unit sdk auto integration; do
     mkfifo --mode=666 "$OTEL_SHELL_SDK_OUTPUT_REDIRECT"
     ( while true; do cat "$OTEL_SHELL_SDK_OUTPUT_REDIRECT" >> "$OTEL_EXPORT_LOCATION"; done & )
     echo "running $file"
-    options='-u -f'
+    options='-f -u'
     if [ "$SHELL" = bash ]; then
       options="$options -p -o pipefail"
     fi
     stdout="$(mktemp -u).out"
     stderr="$(mktemp -u).err"
-    timeout $((60 * 60 * 3)) $SHELL $options "$file" 1> "$stdout" && echo "$file SUCCEEDED" || (echo "$file FAILED" && echo "stdout:" && cat "$stdout" && echo "otlp:" && cat "$OTEL_EXPORT_LOCATION" && exit 1)
+    timeout $((60 * 60 * 3)) $TEST_SHELL $options "$file" 1> "$stdout" && echo "$file SUCCEEDED" || (echo "$file FAILED" && echo "stdout:" && cat "$stdout" && echo "otlp:" && cat "$OTEL_EXPORT_LOCATION" && exit 1)
   done
 done
 echo "ALL TESTS SUCCESSFUL"
