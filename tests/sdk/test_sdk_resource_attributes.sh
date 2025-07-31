@@ -13,9 +13,9 @@ assert_equals "shell" $(echo "$span" | jq -r '.resource.attributes."telemetry.sd
 assert_equals "opentelemetry" $(echo "$span" | jq -r '.resource.attributes."telemetry.sdk.name"')
 assert_not_equals "null" $(echo "$span" | jq -r '.resource.attributes."telemetry.sdk.version"')
 assert_not_equals "null" $(echo "$span" | jq -r '.resource.attributes."process.pid"')
-if  [ "$SHELL" = "sh" ] || [ "$SHELL" = "ash" ]; then
+if  [ "$TEST_SHELL" = "sh" ] || [ "$TEST_SHELL" = "ash" ]; then
   : # we dont know what sh defaults to, and ash sometimes is dash (on debian systems) but also sometimes just ash
-elif  [ "$SHELL" = "busybox sh" ]; then
+elif  [ "$TEST_SHELL" = "busybox sh" ]; then
   assert_equals "busybox" $(echo "$span" | jq -r '.resource.attributes."process.executable.name"')
 else
   assert_equals "$SHELL" $(echo "$span" | jq -r '.resource.attributes."process.executable.name"')
@@ -24,15 +24,15 @@ assert_not_equals "null" $(echo "$span" | jq -r '.resource.attributes."process.e
 assert_not_equals "null" $(echo "$span" | jq -r '.resource.attributes."process.command_line"')
 assert_not_equals "null" $(echo "$span" | jq -r '.resource.attributes."process.command"')
 assert_not_equals "null" $(echo "$span" | jq -r '.resource.attributes."process.owner"')
-if [ "$SHELL" = "sh" ] || [ "$SHELL" = "ash" ]; then
+if [ "$TEST_SHELL" = "sh" ] || [ "TEST_$SHELL" = "ash" ]; then
   : # we dont know what sh defaults to, and ash sometimes is dash (on debian systems) but also sometimes just ash
-elif [ "$SHELL" = "dash" ]; then
+elif [ "$TEST_SHELL" = "dash" ]; then
   assert_not_equals null "$(echo "$span" | jq -r '.resource.attributes."process.runtime.name"')"
   assert_equals "Debian Almquist Shell" "$(echo "$span" | jq -r '.resource.attributes."process.runtime.description"')"
-elif [ "$SHELL" = "bash" ]; then
+elif [ "$TEST_SHELL" = "bash" ]; then
   assert_equals "bash" "$(echo "$span" | jq -r '.resource.attributes."process.runtime.name"')"
   assert_equals "Bourne Again Shell" "$(echo "$span" | jq -r '.resource.attributes."process.runtime.description"')"
-elif [ "$SHELL" = "busybox sh" ]; then
+elif [ "$TEST_SHELL" = "busybox sh" ]; then
   assert_equals "busybox sh" "$(echo "$span" | jq -r '.resource.attributes."process.runtime.name"')"
   assert_equals "Busy Box" "$(echo "$span" | jq -r '.resource.attributes."process.runtime.description"')"
 else
