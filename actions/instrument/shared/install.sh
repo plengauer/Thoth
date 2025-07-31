@@ -8,7 +8,7 @@ if ! type sudo; then
 fi
 ensure_installed() { for item in "$@"; do type "${item%%;*}" 1> /dev/null 2> /dev/null || echo "${item#*;}"; done | (type eatmydata 1> /dev/null 2> /dev/null && sudo xargs -r eatmydata apt-get -y install || sudo xargs -r apt-get -y install); }
 ensure_installed eatmydata
-ensure_installed curl wget jq sed unzip 'node;nodejs' npm 'docker;docker.io'
+ensure_installed curl wget jq sed unzip 'node;nodejs' gcc npm 'docker;docker.io'
 
 cp ../shared/package.json . && npm install && rm package.json
 
