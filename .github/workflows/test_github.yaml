@@ -128,6 +128,30 @@ jobs:
       - uses: plengauer/autorerun@v0.26.0
         with:
           github_token: ${{ github.token }}
+  job-container:
+    needs: job-smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      actions: read
+    container: ubuntu:latest
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/download-artifact@v4.3.0
+        with:
+          name: packages
+      - uses: ./actions/instrument/job
+        with:
+          cache: 'false'
+        env:
+          OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
+          OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
+      - run: echo hello world # check if run action works
+      - uses: actions/download-artifact@v4 # check if node action works
+        with:
+          name: packages
+      # TODO check trace (job level, as well as trace structure), check if its connecting to otel collector, check with different images
   job-integration:
     needs: job-smoke
     runs-on: ubuntu-latest
