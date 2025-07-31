@@ -2,7 +2,7 @@
 # from a real world example
 # setup the environment
 sudo touch /usr/bin/bash-ai
-sudo sh -c 'echo "#!/bin/'"$SHELL"' -e" >> /usr/bin/bash-ai'
+sudo sh -c 'echo "#!/bin/'"$TEST_SHELL"' -e" >> /usr/bin/bash-ai'
 sudo sh -c 'echo "echo hello world" >> /usr/bin/bash-ai' # lets abstract away the actual content of the script
 sudo chmod +x /usr/bin/bash-ai
 alias ai=bash-ai
