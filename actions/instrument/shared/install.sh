@@ -3,7 +3,7 @@ export GITHUB_ACTION_REPOSITORY="${GITHUB_ACTION_REPOSITORY:-"$GITHUB_REPOSITORY
 
 if ! type sudo; then
   if [ "$(id -u)" != 0 ]; then exit 0; fi
-  sudo() { if [ "$1" = -E ]; then shift; fi; eval "$@"; }
+  sudo() { if [ "$1" = -E ]; then shift; fi; if [ "$1" = -H ]; then shift; fi;eval "$@"; }
   sudo apt-get update
 fi
 ensure_installed() { for item in "$@"; do type "${item%%;*}" 1> /dev/null 2> /dev/null || echo "${item#*;}"; done | (type eatmydata 1> /dev/null 2> /dev/null && sudo xargs -r eatmydata apt-get -y install || sudo xargs -r apt-get -y install); }
