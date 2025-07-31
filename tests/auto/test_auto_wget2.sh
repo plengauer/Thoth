@@ -3,7 +3,7 @@ if ! type wget2; then exit 0; fi
 set -e
 . ./assert.sh
 
-$SHELL auto/wget2.sh http://www.google.com/
+$TEST_SHELL auto/wget2.sh http://www.google.com/
 
 span="$(resolve_span '.name == "wget2 -O - http://www.google.com/"')"
 assert_equals "wget2 -O - http://www.google.com/" "$(\echo "$span" | jq -r '.name')"

@@ -14,5 +14,5 @@ echo "cat cut sed awk bash sh" >> "$script"
 echo "echo 'hello world'" >> "$script"
 echo "printf '%s %s' \"hello world\"" >> "$script"
 
-timeout 5s $SHELL "$script"
+timeout 5s $TEST_SHELL "$script"
 

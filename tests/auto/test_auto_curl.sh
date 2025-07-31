@@ -1,7 +1,7 @@
 set -e
 . ./assert.sh
 
-$SHELL auto/curl.sh http://www.google.com/
+$TEST_SHELL auto/curl.sh http://www.google.com/
 
 span="$(resolve_span '.name == "curl http://www.google.com/"')"
 assert_equals "curl http://www.google.com/" "$(\echo "$span" | jq -r '.name')"
@@ -24,7 +24,7 @@ assert_not_equals null "$(\echo "$span" | jq -r '.attributes."http.response.head
 assert_not_equals null "$(\echo "$span" | jq -r '.attributes."network.peer.address"')"
 assert_not_equals null "$(\echo "$span" | jq -r '.attributes."network.peer.port"')"
 
-$SHELL auto/curl.sh https://www.google.de/index.html https://www.google.de/index http://www.bing.com
+$TEST_SHELL auto/curl.sh https://www.google.de/index.html https://www.google.de/index http://www.bing.com
 
 span="$(resolve_span '.attributes."url.path" == "/index.html"')"
 assert_equals "GET" $(\echo "$span" | jq -r '.name')

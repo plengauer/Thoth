@@ -18,7 +18,7 @@ if [ -n "$(alias alias | grep otel_observe)" ] || [ -n "$(alias unalias | grep o
 fi
 
 file=$(mktemp)
-$SHELL -c '. /usr/bin/opentelemetry_shell.sh
+$TEST_SHELL -c '. /usr/bin/opentelemetry_shell.sh
 alias' | sed 's/^alias //g' | cut -d= -f1 > $file
 assert_equals "" "$(cat $file | grep '^OTEL_')"
 assert_equals "" "$(cat $file | grep '^_otel_')"

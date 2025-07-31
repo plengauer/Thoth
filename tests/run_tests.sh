@@ -6,7 +6,9 @@ if [ "$SHELL" = "" ]; then
   exit 1
 fi
 if [ "$SHELL" = busybox ]; then
-  export SHELL="busybox sh";
+  export TEST_SHELL="busybox sh";
+else
+  export TEST_SHELL="$SHELL"
 fi
 
 for dir in unit sdk auto integration; do
