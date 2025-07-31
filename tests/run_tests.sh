@@ -22,7 +22,10 @@ for dir in unit sdk auto integration; do
     mkfifo --mode=666 "$OTEL_SHELL_SDK_OUTPUT_REDIRECT"
     ( while true; do cat "$OTEL_SHELL_SDK_OUTPUT_REDIRECT" >> "$OTEL_EXPORT_LOCATION"; done & )
     echo "running $file"
-    options='-u -f'
+    options='-f'
+    if [ "$SHELL" != busybox ]; then
+      options="$options -u"
+    fi
     if [ "$SHELL" = bash ]; then
       options="$options -p -o pipefail"
     fi
