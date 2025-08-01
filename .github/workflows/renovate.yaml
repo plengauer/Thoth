@@ -94,9 +94,9 @@ jobs:
           cat .github/workflows/images.json | jq ".opensuse.oldest = \"$oldest\"" | jq ".opensuse.stable = \"$stable\"" | jq ".opensuse.latest = \"$latest\"" | jq ".opensuse.dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/workflows/images.json
       - run: |
           curl -s https://endoflife.date/api/v1/products/rhel > /tmp/rhel.json
-          oldest="redhat/ubi$(jq < /tmp/opensuse.json '.result.releases[] | select(.isEol == false) | .name' -r | tail -n 1):latest"
-          stable="redhat/ubi$(jq < /tmp/opensuse.json '.result.releases[] | select(.isEol == false) | .name' -r | head -n 2 | tail -n 1):latest"
-          latest="redhat/ubi$(jq < /tmp/opensuse.json '.result.releases[] | select(.isEol == false) | .name' -r | head -n 1):latest"
+          oldest="redhat/ubi$(jq < /tmp/rhel.json '.result.releases[] | select(.isEol == false) | .name' -r | tail -n 1):latest"
+          stable="redhat/ubi$(jq < /tmp/rhel.json '.result.releases[] | select(.isEol == false) | .name' -r | head -n 2 | tail -n 1):latest"
+          latest="redhat/ubi$(jq < /tmp/rhel.json '.result.releases[] | select(.isEol == false) | .name' -r | head -n 1):latest"
           dev="$latest"
           cat .github/workflows/images.json | jq ".rhel.oldest = \"$oldest\"" | jq ".rhel.stable = \"$stable\"" | jq ".rhel.latest = \"$latest\"" | jq ".rhel.dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/workflows/images.json      
       - id: open-pr
