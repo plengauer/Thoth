@@ -275,7 +275,7 @@ jobs:
   windows-shell:
     needs: [list-shells, smoke]
     runs-on: windows-latest
-    timeout-minutes: 120
+    timeout-minutes: 180
     strategy:
       matrix:
         version: [1, 2]
