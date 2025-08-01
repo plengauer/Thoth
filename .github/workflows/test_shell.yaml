@@ -78,7 +78,7 @@ jobs:
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
       - uses: actions/checkout@v4.2.2
       - id: key
-        run: cat .github/workflows/images.json .github/workflows/test_shell.yaml | md5sum | cut -d ' ' -f 1 | xargs -I '{}' echo "key={}" >> "$GITHUB_OUTPUT"
+        run: cat .github/workflows/images.json .github/workflows/test_shell.yaml src/DEBIAN/control | md5sum | cut -d ' ' -f 1 | xargs -I '{}' echo "key={}" >> "$GITHUB_OUTPUT"
       - uses: actions/cache@v4.2.3
         with:
           path: images.json
