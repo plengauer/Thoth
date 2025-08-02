@@ -2,6 +2,15 @@ name: 'Refresh Demos'
 on:
   release:
     types: published
+  push:
+    branches:
+      - main
+    paths:
+      - 'demos/*/*'
+      - '!demos/*/README.md'
+      - '!demos/*/otlp.json'
+      - '!demos/*/output.*'
+      - '.github/workflows/refresh_demos.yaml'
 jobs:
   prepare:
     runs-on: ubuntu-latest
@@ -96,7 +105,7 @@ jobs:
           }
 
           get_root_span_id() {
-            spans | jq -r '. | select(.name != null) | select(.parentSpanId == "") | .spanId'
+            spans | jq -r '. | select(.name != null) | select(.parentSpanId == null or .parentSpanId == "") | .spanId'
           }
 
           get_child_span_ids() {
