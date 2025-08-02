@@ -12,8 +12,7 @@ else
 fi
 
 for dir in unit sdk auto integration; do
-  ls "$dir" | grep '\.sh$' | grep '\.'"$SHELL"'$' | while read -r name; do
-    file="$dir"/"$name"
+  { find $dir -iname 'test_*.sh'; find $dir -iname 'test_*.'"$SHELL"; } | sort -u | while read -r file; do
     rm /tmp/opentelemetry_shell_*_instrumentation_cache_*.aliases 2> /dev/null || true
     export OTEL_EXPORT_LOCATION="$(mktemp -u)".sdk.out
     export OTEL_SHELL_SDK_OUTPUT_REDIRECT="$(mktemp -u -p "$(mktemp -d)")".pipe
