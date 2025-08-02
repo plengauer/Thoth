@@ -1,21 +1,24 @@
-Downloading https://services.gradle.org/distributions/gradle-8.13-bin.zip
-.............10%.............20%.............30%.............40%.............50%.............60%.............70%.............80%.............90%.............100%
+Downloading https://services.gradle.org/distributions/gradle-9.0.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
 
-Welcome to Gradle 8.13!
+Welcome to Gradle 9.0.0!
 
 Here are the highlights of this release:
- - Daemon JVM auto-provisioning
- - Enhancements for Scala plugin and JUnit testing
- - Improvements for build authors and plugin developers
+ - Configuration Cache is the recommended execution mode
+ - Gradle requires JVM 17 or higher to run
+ - Build scripts use Kotlin 2.2 and Groovy 4.0
+ - Improved Kotlin DSL script compilation avoidance
 
-For more details see https://docs.gradle.org/8.13/release-notes.html
+For more details see https://docs.gradle.org/9.0.0/release-notes.html
 
-To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.13/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.0.0/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
 Daemon will be stopped at the end of the build 
 Calculating task graph as no cached configuration is available for tasks: build
-> Task :app:processTestResources NO-SOURCE
 > Task :app:processResources NO-SOURCE
+> Task :app:processTestResources NO-SOURCE
+
 > Task :app:compileJava
+
 > Task :app:classes
 > Task :app:jar
 > Task :app:compileTestJava
@@ -24,10 +27,12 @@ Calculating task graph as no cached configuration is available for tasks: build
 > Task :app:distTar
 > Task :app:distZip
 > Task :app:assemble
+
 > Task :app:test
+
 > Task :app:check
 > Task :app:build
 
-BUILD SUCCESSFUL in 33s
+BUILD SUCCESSFUL in 1m 39s
 7 actionable tasks: 7 executed
 Configuration cache entry stored.
