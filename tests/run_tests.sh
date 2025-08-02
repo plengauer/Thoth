@@ -12,7 +12,8 @@ else
 fi
 
 for dir in unit sdk auto integration; do
-  for file in $(find $dir -iname 'test_*.sh') $(find $dir -iname 'test_*.'"$SHELL"); do
+  ls "$dir" | grep '\.sh$' | grep '\.'"$SHELL"'$' | while read -r name; do
+    file="$dir"/"$name"
     rm /tmp/opentelemetry_shell_*_instrumentation_cache_*.aliases 2> /dev/null || true
     export OTEL_EXPORT_LOCATION="$(mktemp -u)".sdk.out
     export OTEL_SHELL_SDK_OUTPUT_REDIRECT="$(mktemp -u -p "$(mktemp -d)")".pipe
@@ -23,7 +24,7 @@ for dir in unit sdk auto integration; do
     ( while true; do cat "$OTEL_SHELL_SDK_OUTPUT_REDIRECT" >> "$OTEL_EXPORT_LOCATION"; done & )
     echo "running $file"
     options='-f -u'
-    if [ "$SHELL" = bash ]; then
+    if [ "$TEST_SHELL" = bash ]; then
       options="$options -p -o pipefail"
     fi
     stdout="$(mktemp -u).out"
