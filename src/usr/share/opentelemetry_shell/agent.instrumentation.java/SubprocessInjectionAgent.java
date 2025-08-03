@@ -32,8 +32,7 @@ public class SubprocessInjectionAgent {
             if (environment == null) {
                 try {
                     Map<String, String> rootenvironment = System.getenv();
-                    Class<?> clazz = class.forName("java.lang.ProcessEnvironment");
-                    Method method = clazz.getDeclaredMethod("emptyEnvironment", Integer.TYPE);
+                    Method method = Class.forName("java.lang.ProcessEnvironment").getDeclaredMethod("emptyEnvironment", Integer.TYPE);
                     method.setAccessible(true);
                     environment = (Map<String, String>) method.invoke(null, new Object[] { rootenvironment.size() + 2 });
                     for (String key : rootenvironment.keySet()) environment.put(key, rootenvironment.get(key));
