@@ -39,7 +39,7 @@ public class SubprocessInjectionAgent {
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace(System.err);
                     // here be dragons
-                } catch (InvocationTargetExcetpion e) {
+                } catch (InvocationTargetException e) {
                     e.printStackTrace(System.err);
                     // here be dragons
                 }
