@@ -29,10 +29,27 @@ public class SubprocessInjectionAgent {
     public static class InjectCommandAdvice {
         @Advice.OnMethodEnter
         public static void onEnter(@Advice.Argument(value = 0, readOnly = false) String[] cmdarray, @Advice.Argument(value = 1, readOnly = false) Map<String, String> environment) {
-            if (environment == null) environment = new HashMap<String, String>(System.getenv());
-            SpanContext spanContext = Span.current().getSpanContext();
-            environment.put("TRACEPARENT", String.format("%s-%s-%s-%s", "00", spanContext.getTraceId(), spanContext.getSpanId(), spanContext.getTraceFlags().asHex()));
-            environment.put("OTEL_SHELL_AUTO_INJECTED", "FALSE");
+            if (environment == null) {
+                try {
+                    Map<String, String> rootenvironment = System.getenv();
+                    Class<?> clazz = class.forName("java.lang.ProcessEnvironment");
+                    Method method = clazz.getDeclaredMethod("emptyEnvironment", Integer.TYPE);
+                    method.setAccessible(true);
+                    environment = (Map<String, String>) method.invoke(null, new Object[] { rootenvironment.size() + 2 });
+                    for (String key : rootenvironment.keySet()) environment.put(key, rootenvironment.get(key));
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace(System.err);
+                    // here be dragons
+                } catch (InvocationTargetExcetpion e) {
+                    e.printStackTrace(System.err);
+                    // here be dragons
+                }
+            }
+            if (environment != null) {
+                SpanContext spanContext = Span.current().getSpanContext();
+                environment.put("TRACEPARENT", String.format("%s-%s-%s-%s", "00", spanContext.getTraceId(), spanContext.getSpanId(), spanContext.getTraceFlags().asHex()));
+                environment.put("OTEL_SHELL_AUTO_INJECTED", "FALSE");
+            }
             String[] oldcmdarray = cmdarray;
             cmdarray = new String[3 + oldcmdarray.length];
             cmdarray[0] = "/bin/sh";
