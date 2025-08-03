@@ -7,6 +7,7 @@ import net.bytebuddy.implementation.bind.annotation.Origin;
 import net.bytebuddy.implementation.MethodDelegation;
 import java.lang.instrument.Instrumentation;
 import java.util.Map;
+import java.util.HashMap;
 import java.lang.reflect.Method;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.Span;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.SpanContext;
@@ -28,6 +29,7 @@ public class SubprocessInjectionAgent {
     public static class InjectCommandAdvice {
         @Advice.OnMethodEnter
         public static void onEnter(@Advice.Argument(value = 0, readOnly = false) String[] cmdarray, @Advice.Argument(value = 1, readOnly = false) Map<String, String> environment) {
+            if (environment == null) environment = new HashMap<String, String>(System.getenv());
             SpanContext spanContext = Span.current().getSpanContext();
             environment.put("TRACEPARENT", String.format("%s-%s-%s-%s", "00", spanContext.getTraceId(), spanContext.getSpanId(), spanContext.getTraceFlags().asHex()));
             environment.put("OTEL_SHELL_AUTO_INJECTED", "FALSE");
