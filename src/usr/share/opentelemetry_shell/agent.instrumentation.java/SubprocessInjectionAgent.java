@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.NoSuchMethodException;
+import java.lang.NoSuchMethodException;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.Span;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.SpanContext;
 
