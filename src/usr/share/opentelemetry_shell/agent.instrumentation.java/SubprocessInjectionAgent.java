@@ -7,7 +7,12 @@ import net.bytebuddy.implementation.bind.annotation.Origin;
 import net.bytebuddy.implementation.MethodDelegation;
 import java.lang.instrument.Instrumentation;
 import java.util.Map;
+import java.util.HashMap;
 import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.NoSuchMethodException;
+import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.Span;
+import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.SpanContext;
 
 public class SubprocessInjectionAgent {
     public static void premain(String args, Instrumentation instrumentation) throws Exception {
@@ -25,7 +30,29 @@ public class SubprocessInjectionAgent {
 
     public static class InjectCommandAdvice {
         @Advice.OnMethodEnter
-        public static void onEnter(@Advice.Argument(value = 0, readOnly = false) String[] cmdarray) {
+        public static void onEnter(@Advice.Argument(value = 0, readOnly = false) String[] cmdarray, @Advice.Argument(value = 1, readOnly = false) Map<String, String> environment) {
+            if (environment == null) {
+                try {
+                    Map<String, String> rootenvironment = System.getenv();
+                    Method method = Class.forName("java.lang.ProcessEnvironment").getDeclaredMethod("emptyEnvironment", Integer.TYPE);
+                    method.setAccessible(true);
+                    environment = (Map<String, String>) method.invoke(null, new Object[] { rootenvironment.size() + 2 });
+                    for (String key : rootenvironment.keySet()) environment.put(key, rootenvironment.get(key));
+                } catch (ClassNotFoundException e) {
+                    // here be dragons
+                } catch (NoSuchMethodException e) {
+                    // here be dragons
+                } catch (IllegalAccessException e) {
+                    // here be dragons
+                } catch (InvocationTargetException e) {
+                    // here be dragons
+                }
+            }
+            if (environment != null) {
+                SpanContext spanContext = Span.current().getSpanContext();
+                environment.put("TRACEPARENT", String.format("%s-%s-%s-%s", "00", spanContext.getTraceId(), spanContext.getSpanId(), spanContext.getTraceFlags().asHex()));
+                environment.put("OTEL_SHELL_AUTO_INJECTED", "FALSE");
+            }
             String[] oldcmdarray = cmdarray;
             cmdarray = new String[3 + oldcmdarray.length];
             cmdarray[0] = "/bin/sh";
