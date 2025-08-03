@@ -8,6 +8,8 @@ import net.bytebuddy.implementation.MethodDelegation;
 import java.lang.instrument.Instrumentation;
 import java.util.Map;
 import java.lang.reflect.Method;
+import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.api.trace.SpanContext;
 
 public class SubprocessInjectionAgent {
     public static void premain(String args, Instrumentation instrumentation) throws Exception {
@@ -26,6 +28,8 @@ public class SubprocessInjectionAgent {
     public static class InjectCommandAdvice {
         @Advice.OnMethodEnter
         public static void onEnter(@Advice.Argument(value = 0, readOnly = false) String[] cmdarray, @Advice.Argument(value = 1, readOnly = false) Map<String, String> environment) {
+            SpanContext spanContext = Span.current().getSpanContext();
+            environment.put("TRACEPARENT", String.format("%s-%s-%s-%s", "00", spanContext.getTraceId(), spanContext.getSpanId(), spanContext.getTraceFlags().asHex()));
             environment.put("OTEL_SHELL_AUTO_INJECTED", "FALSE");
             String[] oldcmdarray = cmdarray;
             cmdarray = new String[3 + oldcmdarray.length];
