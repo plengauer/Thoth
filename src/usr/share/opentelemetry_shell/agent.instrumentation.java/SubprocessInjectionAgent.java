@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.NoSuchMethodException;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.Span;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.SpanContext;
 
@@ -38,6 +39,9 @@ public class SubprocessInjectionAgent {
                     environment = (Map<String, String>) method.invoke(null, new Object[] { rootenvironment.size() + 2 });
                     for (String key : rootenvironment.keySet()) environment.put(key, rootenvironment.get(key));
                 } catch (ClassNotFoundException e) {
+                    e.printStackTrace(System.err);
+                    // here be dragons
+                } catch (NoSuchMethodException e) {
                     e.printStackTrace(System.err);
                     // here be dragons
                 } catch (InvocationTargetException e) {
