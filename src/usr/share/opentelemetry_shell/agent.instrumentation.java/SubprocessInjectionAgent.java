@@ -26,7 +26,7 @@ public class SubprocessInjectionAgent {
     public static class InjectCommandAdvice {
         @Advice.OnMethodEnter
         public static void onEnter(@Advice.Argument(value = 0, readOnly = false) String[] cmdarray, @Advice.Argument(value = 1, readOnly = false) Map<String, String> environment) {
-            environment.put("OTEL_SHELL_AUTO_INJECTED", "TRUE");
+            environment.put("OTEL_SHELL_AUTO_INJECTED", "FALSE");
             String[] oldcmdarray = cmdarray;
             cmdarray = new String[3 + oldcmdarray.length];
             cmdarray[0] = "/bin/sh";
