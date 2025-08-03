@@ -39,16 +39,12 @@ public class SubprocessInjectionAgent {
                     environment = (Map<String, String>) method.invoke(null, new Object[] { rootenvironment.size() + 2 });
                     for (String key : rootenvironment.keySet()) environment.put(key, rootenvironment.get(key));
                 } catch (ClassNotFoundException e) {
-                    e.printStackTrace(System.err);
                     // here be dragons
                 } catch (NoSuchMethodException e) {
-                    e.printStackTrace(System.err);
                     // here be dragons
                 } catch (IllegalAccessException e) {
-                    e.printStackTrace(System.err);
                     // here be dragons
                 } catch (InvocationTargetException e) {
-                    e.printStackTrace(System.err);
                     // here be dragons
                 }
             }
