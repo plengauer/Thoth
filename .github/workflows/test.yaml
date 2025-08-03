@@ -295,7 +295,7 @@ jobs:
           jar cmf manifest.txt rootcontextagent.jar RootContextAgent*.class
       - run: |
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.java
-          javac -classpath ./byte-buddy.jar SubprocessInjectionAgent.java
+          javac -classpath  ./opentelemetry-javaagent.jar:./byte-buddy.jar SubprocessInjectionAgent.java
           printf '%s\n\n' 'Premain-Class: SubprocessInjectionAgent
           Boot-Class-Path: /usr/share/opentelemetry_shell/agent.instrumentation.java/subprocessinjectionagent.jar ./byte-buddy.jar
           Can-Retransform-Classes: true
