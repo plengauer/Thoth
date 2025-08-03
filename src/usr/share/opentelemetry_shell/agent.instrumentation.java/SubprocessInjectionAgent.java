@@ -47,7 +47,6 @@ public class SubprocessInjectionAgent {
                 } catch (IllegalAccessException e) {
                     e.printStackTrace(System.err);
                     // here be dragons
-                }
                 } catch (InvocationTargetException e) {
                     e.printStackTrace(System.err);
                     // here be dragons
