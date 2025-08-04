@@ -56,7 +56,7 @@ assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
 span="$(resolve_span '.name == "echo d3"')"
 assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
 
-if [ "$SHELL" = bash ]; then
+if [ "$TEST_SHELL" = bash ]; then
   my_echo() { echo "$1"; }
   export -f my_echo
   parallel my_echo ::: e1 e2 e3

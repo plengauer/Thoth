@@ -1,0 +1,44 @@
+{
+  "debian": {
+    "oldest": "debian:bullseye",
+    "stable": "debian:bullseye",
+    "latest": "debian:bookworm",
+    "dev": "debian:sid"
+  },
+  "debian-slim": {
+    "oldest": "debian:bullseye-slim",
+    "stable": "debian:bullseye-slim",
+    "latest": "debian:bookworm-slim",
+    "dev": "debian:sid-slim"
+  },
+  "ubuntu": {
+    "oldest": "ubuntu:jammy",
+    "stable": "ubuntu:noble",
+    "latest": "ubuntu:plucky",
+    "dev": "ubuntu:questing"
+  },
+  "centos": {
+    "oldest": "centos:7",
+    "stable": "centos:7",
+    "latest": "centos:7",
+    "dev": "centos:7"
+  },
+  "fedora": {
+    "oldest": "fedora:41",
+    "stable": "fedora:42",
+    "latest": "fedora:42",
+    "dev": "fedora:rawhide"
+  },
+  "rhel": {
+    "oldest": "redhat/ubi8:latest",
+    "stable": "redhat/ubi9:latest",
+    "latest": "redhat/ubi10:latest",
+    "dev": "redhat/ubi10:latest"
+  },
+  "opensuse": {
+    "oldest": "opensuse/leap:15.6",
+    "stable": "opensuse/leap:15.6",
+    "latest": "opensuse/tumbleweed:latest",
+    "dev": "opensuse/tumbleweed:latest"
+  }
+}

@@ -3,7 +3,7 @@ set -e
 
 if wget --version | grep -q Wget2; then exit 0; fi
 
-$SHELL auto/wget.shell http://www.google.com/
+$TEST_SHELL auto/wget.sh http://www.google.com/
 
 span="$(resolve_span '.name == "wget -O - http://www.google.com/"')"
 assert_equals "wget -O - http://www.google.com/" "$(\echo "$span" | jq -r '.name')"
@@ -25,7 +25,7 @@ assert_not_equals null "$(\echo "$span" | jq -r '.attributes."http.response.head
 assert_not_equals null "$(\echo "$span" | jq -r '.attributes."network.peer.address"')"
 assert_not_equals null "$(\echo "$span" | jq -r '.attributes."network.peer.port"')"
 
-$SHELL auto/wget.shell https://www.google.de/index.html https://www.google.de/index || true
+$TEST_SHELL auto/wget.sh https://www.google.de/index.html https://www.google.de/index || true
 
 span="$(resolve_span '.attributes."url.path" == "/index.html"')"
 assert_equals "GET" "$(\echo "$span" | jq -r '.name')"

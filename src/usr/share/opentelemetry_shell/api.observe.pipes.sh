@@ -50,7 +50,7 @@ _otel_call_and_record_pipes() {
   local stdout_pid="$!"
   \tee "$stderr_bytes" "$stderr_lines" < "$stderr" >&2 2> /dev/null &
   local stderr_pid="$!"
-  if \[ "$OTEL_SHELL_CONFIG_OBSERVE_PIPES_STDIN" != TRUE ] || \[ "$(\readlink -f /proc/self/fd/0)" = /dev/null ] || \[ "$command_type" = builtin ] || \[ "$command_type" = 'function' ] || \[ "$command_type" = keyword ] || \[ -n "${WSL_DISTRO_NAME:-}" ]; then
+  if \[ "${OTEL_SHELL_CONFIG_OBSERVE_PIPES_STDIN:-FALSE}" != TRUE ] || \[ "$(\readlink -f /proc/self/fd/0)" = /dev/null ] || \[ "$command_type" = builtin ] || \[ "$command_type" = 'function' ] || \[ "$command_type" = keyword ] || \[ -n "${WSL_DISTRO_NAME:-}" ]; then
     local observe_stdin=FALSE
     \echo -n '' > "$stdin_bytes"
     \echo -n '' > "$stdin_lines"

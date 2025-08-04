@@ -3,8 +3,6 @@ on:
   push:
     branches:
       - '**'
-  schedule:
-    - cron: "0 0 * * *"
   workflow_call:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -76,6 +74,7 @@ jobs:
       - id: build
         run: |
           case "${{ matrix.architecture }}" in
+            ppc64le) image=debian:stable;; # oldstable apt repo is very flaky
             mips64le) image=debian:stable;;
             riscv64) image=debian:testing;;
             s390x) image=debian:stable;;
@@ -134,15 +133,16 @@ jobs:
       - uses: actions/setup-node@v4.4.0
         with:
           node-version: ${{ matrix.version }}
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.2.2
       - run: |
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.node
           npm install
           npm prune
-      - run: find src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules -iname '*.so' -exec false ';'
+      - run: |
+          ! find src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules -iname '*.so' | grep '.so$'
       - run: |
           ! find -L src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules -type l -exec readlink -f '{}' ';' | while read -r file; do realpath "$file"; done | grep '^'"$(pwd)"/src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4.6.2
         with:
           name: node_modules_${{ matrix.version }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules
@@ -220,7 +220,19 @@ jobs:
           ' | python3 | grep "==$(pip3 show opentelemetry-distro | grep Version | cut -d ':' -f 2- | tr -d ' ')"'$' | grep -v opentelemetry-instrumentation-system-metrics | xargs pip3 install
           pip3 uninstall --yes setuptools pip
           deactivate
-      - run: find src/usr/share/opentelemetry_shell/agent.instrumentation.python/venv/lib/python${{ matrix.version }}/site-packages -iname '*.so' -exec false ';'
+      - run: |
+          set +f
+          cd src/usr/share/opentelemetry_shell/agent.instrumentation.python/
+          find venv -iname '*.so' | sed 's~/site-packages/~ ~g' | cut -d ' ' -f 2- | cut -d / -f 1 | while read -r name; do
+            rm -rf venv/lib/python*/site-packages/"$name"*
+            ls venv/lib/python*/site-packages/ | grep -E '.dist-info$' | while read -r directory; do
+              if ! [ -r venv/lib/python*/site-packages/"$directory"/top_level.txt ]; then continue; fi
+              if [ "$(cat venv/lib/python*/site-packages/"$directory"/top_level.txt)" != "$name" ]; then continue; fi
+              rm -rf venv/lib/python*/site-packages/"$directory"
+            done
+          done
+      - run: |
+          ! find src/usr/share/opentelemetry_shell/agent.instrumentation.python/venv -iname '*.so' | grep '.so$'
       - run: |
           ! find -L src/usr/share/opentelemetry_shell/agent.instrumentation.python/venv/lib/python${{ matrix.version }}/site-packages -type l -exec readlink -f '{}' ';' | while read -r file; do realpath "$file"; done | grep '^'"$(pwd)"/src/usr/share/opentelemetry_shell/agent.instrumentation.python/
       - uses: actions/upload-artifact@v4.6.2
@@ -292,7 +304,7 @@ jobs:
           jar cmf manifest.txt rootcontextagent.jar RootContextAgent*.class
       - run: |
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.java
-          javac -classpath ./byte-buddy.jar SubprocessInjectionAgent.java
+          javac -classpath  ./opentelemetry-javaagent.jar:./byte-buddy.jar SubprocessInjectionAgent.java
           printf '%s\n\n' 'Premain-Class: SubprocessInjectionAgent
           Boot-Class-Path: /usr/share/opentelemetry_shell/agent.instrumentation.java/subprocessinjectionagent.jar ./byte-buddy.jar
           Can-Retransform-Classes: true
@@ -407,7 +419,7 @@ jobs:
       discussions: none
       id-token: none
       issues: none
-      models: none
+      # models: none
       packages: read
       pages: none
       pull-requests: none

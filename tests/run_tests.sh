@@ -6,11 +6,13 @@ if [ "$SHELL" = "" ]; then
   exit 1
 fi
 if [ "$SHELL" = busybox ]; then
-  export SHELL="busybox sh";
+  export TEST_SHELL="busybox sh";
+else
+  export TEST_SHELL="$SHELL"
 fi
 
 for dir in unit sdk auto integration; do
-  for file in $(find $dir -iname 'test_*.shell') $(find $dir -iname 'test_*.'"$SHELL"); do
+  { find $dir -iname 'test_*.sh'; find $dir -iname 'test_*.'"$SHELL"; } | sort -u | while read -r file; do
     rm /tmp/opentelemetry_shell_*_instrumentation_cache_*.aliases 2> /dev/null || true
     export OTEL_EXPORT_LOCATION="$(mktemp -u)".sdk.out
     export OTEL_SHELL_SDK_OUTPUT_REDIRECT="$(mktemp -u -p "$(mktemp -d)")".pipe
@@ -20,13 +22,13 @@ for dir in unit sdk auto integration; do
     mkfifo --mode=666 "$OTEL_SHELL_SDK_OUTPUT_REDIRECT"
     ( while true; do cat "$OTEL_SHELL_SDK_OUTPUT_REDIRECT" >> "$OTEL_EXPORT_LOCATION"; done & )
     echo "running $file"
-    options='-u -f'
-    if [ "$SHELL" = bash ]; then
+    options='-f -u'
+    if [ "$TEST_SHELL" = bash ]; then
       options="$options -p -o pipefail"
     fi
     stdout="$(mktemp -u).out"
     stderr="$(mktemp -u).err"
-    timeout $((60 * 60 * 3)) $SHELL $options "$file" 1> "$stdout" && echo "$file SUCCEEDED" || (echo "$file FAILED" && echo "stdout:" && cat "$stdout" && echo "otlp:" && cat "$OTEL_EXPORT_LOCATION" && exit 1)
+    timeout $((60 * 60 * 3)) $TEST_SHELL $options "$file" 1> "$stdout" && echo "$file SUCCEEDED" || (echo "$file FAILED" && echo "stdout:" && cat "$stdout" && echo "otlp:" && cat "$OTEL_EXPORT_LOCATION" && exit 1)
   done
 done
 echo "ALL TESTS SUCCESSFUL"

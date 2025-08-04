@@ -1,4 +1,4 @@
-if [ "$SHELL" = sh ] && type rpm; then exit 0; fi
+if type rpm; then exit 0; fi
 . ./assert.sh
 . /usr/bin/opentelemetry_shell.sh
 

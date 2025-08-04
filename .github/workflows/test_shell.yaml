@@ -69,35 +69,6 @@ jobs:
       images_upgradeable: ${{ steps.dynamic.outputs.images_upgradeable }}
     permissions:
       actions: read
-    env:
-      IMAGE_DEBIAN_OLDEST: 'debian:oldstable'
-      IMAGE_DEBIAN_STABLE: 'debian:stable'
-      IMAGE_DEBIAN_LATEST: 'debian:testing'
-      IMAGE_DEBIAN_DEV: 'debian:unstable'
-      IMAGE_DEBIAN_SLIM_OLDEST: 'debian:oldstable-slim'
-      IMAGE_DEBIAN_SLIM_STABLE: 'debian:stable-slim'
-      IMAGE_DEBIAN_SLIM_LATEST: 'debian:testing-slim'
-      IMAGE_DEBIAN_SLIM_DEV: 'debian:unstable-slim'
-      IMAGE_UBUNTU_OLDEST: 'ubuntu:jammy' # needs manual maintenance on April 2027 (https://ubuntu.com/about/release-cycle)
-      IMAGE_UBUNTU_STABLE: 'ubuntu:latest'
-      IMAGE_UBUNTU_LATEST: 'ubuntu:rolling'
-      IMAGE_UBUNTU_DEV: 'ubuntu:devel'
-      IMAGE_CENTOS_OLDEST: '' # CentOS is EOL
-      IMAGE_CENTOS_STABLE: '' # CentOS is EOL
-      IMAGE_CENTOS_LATEST: 'centos:latest'
-      IMAGE_CENTOS_DEV: 'centos:latest'
-      IMAGE_FEDORA_OLDEST: 'fedora:41' # needs manual maintenance on June 2026 (https://docs.fedoraproject.org/en-US/releases/lifecycle/)
-      IMAGE_FEDORA_STABLE: 'fedora:42' # needs manual maintenance on June 2026 (https://docs.fedoraproject.org/en-US/releases/lifecycle/)
-      IMAGE_FEDORA_LATEST: 'fedora:latest'
-      IMAGE_FEDORA_DEV: 'fedora:rawhide'
-      IMAGE_RHEL_OLDEST: 'redhat/ubi8:latest' # needs manual maintenance
-      IMAGE_RHEL_STABLE: 'redhat/ubi9:latest' # needs manual maintenance
-      IMAGE_RHEL_LATEST: 'redhat/ubi9:latest' # needs manual maintenance
-      IMAGE_RHEL_DEV: '' # not public
-      IMAGE_OPENSUSE_OLDEST: 'opensuse/leap:15.6' # needs manual maintenance on January 2026 (https://endoflife.date/opensuse)
-      IMAGE_OPENSUSE_STABLE: 'opensuse/leap:latest'
-      IMAGE_OPENSUSE_LATEST: 'opensuse/tumbleweed:latest'
-      IMAGE_OPENSUSE_DEV: '' # not public
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.21.0
         with:
@@ -107,25 +78,30 @@ jobs:
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
       - uses: actions/checkout@v4.2.2
       - id: key
-        run: printenv | grep -E '^IMAGE_' | md5sum | cut -d ' ' -f 1 | xargs -I '{}' echo "key={}" >> "$GITHUB_OUTPUT"
+        run: cat .github/workflows/images.json .github/workflows/test_shell.yaml src/DEBIAN/control | md5sum | cut -d ' ' -f 1 | xargs -I '{}' echo "key={}" >> "$GITHUB_OUTPUT"
       - uses: actions/cache@v4.2.3
         with:
           path: images.json
           key: images ${{ steps.key.outputs.key }}
       - if: ${{ hashFiles('images.json') == '' }}
+        uses: actions/download-artifact@v4.3.0
+        with:
+          name: packages
+      - if: ${{ hashFiles('images.json') == '' }}
         run: |
           sudo docker login -u '${{ secrets.DOCKERHUB_USERNAME }}' -p '${{ secrets.DOCKERHUB_TOKEN }}'
-          min_version="$(cat src/DEBIAN/control | grep '^Pre-Depends:' | tr ',' '\n' | grep -F -- 'python3 (>=' | cut -d '(' -f 2- | cut -d ')' -f 1 | cut -d ' ' -f 2 | cut -d . -f 2)"
-          printenv | grep '^IMAGE_' | while read -r kvp; do
-            key="$(echo "$kvp" | cut -sd '=' -f 1 | tr '[:upper:]' '[:lower:]')"
-            value="$(echo "$kvp" | cut -sd '=' -f 2)"
-            if [ -z "$value" ]; then continue; fi
-            echo '((apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install python3) || dnf -y install python3 || yum -y install python3 || zypper --non-interactive install python3) > /dev/null && python3 --version' \
-              | sudo docker run --rm --network=host -i "$value" \
-              | cut -d ' ' -f 2 | cut -d . -f 2 | while read -r version; do [ "$version" -ge "$min_version" ] && echo "{\"image\":\"$value\",\"os\":\"$(echo "$key" | cut -d _ -f 2)\",\"type\":\"$(echo "$key" | cut -d _ -f 3)\"}" || true; done
+          cat .github/workflows/images.json | jq 'to_entries[] | [ .key, .value.oldest, .value.stable, .value.latest, .value.dev ] | @tsv' -r | sed 's/\t/ /g' | while read -r name oldest stable latest dev; do
+            echo "$oldest" "$name" oldest
+            echo "$stable" "$name" stable
+            echo "$latest" "$name" latest
+            echo "$dev" "$name" dev
+          done | while read -r image os type; do
+            echo 'cat /etc/os-release | grep PRETTY >&2 && ((apt-get update && apt-get -y install /package.deb) || dnf -y install /package.rpm || yum -y install /package.rpm || zypper --non-interactive install --allow-unsigned-rpm /package.rpm)' \
+              | OTEL_SHELL_CONFIG_INJECT_DEEP=FALSE \sudo docker run --rm --network=host --mount type=bind,src="$(pwd)"/package.deb,dst=/package.deb --mount type=bind,src="$(pwd)"/package.rpm,dst=/package.rpm -i "$image" >&2 \
+              && echo "{\"image\":\"$image\",\"os\":\"$os\",\"type\":\"$type\"}" || true
           done | jq -s > images.json
       - run: |
-          [ "$(cat images.json | jq -r '.[].image' | wc -l)" -ge 5 ] # double check that we dont fail everywhere and then run no tests at all
+          [ "$(cat images.json | jq -r '.[].image' | wc -l)" -ge 7 ] # double check that we dont fail everywhere and then run no tests at all
           cat images.json | jq '.[] | select(.type != "dev")'                                                       | jq .image | sort -u | jq -s tostring | xargs -0 -I {} echo 'images={}' >> "$GITHUB_OUTPUT"
           cat images.json | jq '.[] | select(.type != "dev") | select(.type != "latest") | select(.os == "ubuntu")' | jq .image | sort -u | jq -s tostring | xargs -0 -I {} echo 'images_upgradeable={}' >> "$GITHUB_OUTPUT"
         id: dynamic
@@ -299,7 +275,7 @@ jobs:
   windows-shell:
     needs: [list-shells, smoke]
     runs-on: windows-latest
-    timeout-minutes: 120
+    timeout-minutes: 180
     strategy:
       matrix:
         version: [1, 2]
