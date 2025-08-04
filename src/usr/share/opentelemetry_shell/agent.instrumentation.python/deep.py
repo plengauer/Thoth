@@ -41,9 +41,10 @@ def inject_arguments(file, args, is_file=True):
     if is_file:
         if not '/' in file:
             for path in os.environ['PATH'].split(':'):
-                if not os.path.exists(file) or not os.path.isfile(file) or not os.access(file, os.X_OK):
+                file_candidate = path + '/' + file
+                if not os.path.exists(file_candidate) or not os.path.isfile(file_candidate) or not os.access(file_candidate, os.X_OK):
                     continue
-                file = path + '/' + file
+                file = file_candidate
                 break
         if not os.path.exists(file) or not os.path.isfile(file) or not os.access(file, os.X_OK):
             raise FileNotFoundError(file) # python will just trial and error all possible paths if the 'p' variants of exec are used
