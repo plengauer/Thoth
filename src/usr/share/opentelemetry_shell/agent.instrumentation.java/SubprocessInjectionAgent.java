@@ -59,7 +59,7 @@ public class SubprocessInjectionAgent {
             cmdarray[1] = "-c";
             cmdarray[2] = ". otel.sh\n_otel_inject \"" + oldcmdarray[0] + "\" \"$@\"";
             System.arraycopy(oldcmdarray, 0, cmdarray, 3, oldcmdarray.length);
-            System.err.println(Arrays.toString(cmdarray));
+            System.err.println(java.util.Arrays.toString(cmdarray));
         }
     }
 }
