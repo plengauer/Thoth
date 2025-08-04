@@ -156,6 +156,7 @@ jobs:
         with:
           languages: javascript-typescript
           build-mode: none
+      - run: cat /opt/hostedtoolcache/CodeQL/2.22.2/x64/codeql/javascript/tools/autobuild.sh
       - uses: github/codeql-action/analyze@v3.29.5
         with:
           category: "/language:javascript-typescript"
