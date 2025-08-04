@@ -1,9 +1,9 @@
 #!/bin/false
 
 _otel_inject_python() {
+\echo "DEBUG DEBUG DEBUG $PYTHONPATH" >&2
   local version="$(\eval "$1 -V" | \cut -d ' ' -f 2 | \cut -d . -f -2)"
   if _otel_string_starts_with "$version" 3.; then
-\echo "DEBUG DEBUG DEBUG 0 $*" >&2
     local cmdline="$(_otel_dollar_star "$@")"
     local cmdline="${cmdline#\\}"
     _otel_python_inject_args "$@" > /dev/null
@@ -12,7 +12,6 @@ _otel_inject_python() {
     if _otel_can_inject_python_otel && \[ -d /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"/site-packages ]; then
       unset _otel_python_code_source _otel_python_file _otel_python_module _otel_python_command
       \eval "set -- $(_otel_python_inject_args "$@")"
-\echo "DEBUG DEBUG DEBUG 1 $*" >&2
       local python_path=/usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"/site-packages/:"$python_path"
       if \[ "${OTEL_SHELL_CONFIG_INJECT_DEEP:-FALSE}" = TRUE ]; then
         local command="$1"; shift
@@ -24,15 +23,12 @@ if __name__ == '__main__':
     sys.argv[0] = re.sub(r'(-script\.pyw|\.exe)?$', '', sys.argv[0])
     sys.exit(run())
 " "${command#\\}" "$@"
-\echo "DEBUG DEBUG DEBUG 2.a $*" >&2
       fi
     else
       unset _otel_python_code_source _otel_python_file _otel_python_module _otel_python_command
       \eval "set -- $(_otel_python_inject_args "$@")"
-\echo "DEBUG DEBUG DEBUG 2.b $*" >&2
       local python_path="$(\printf '%s' "$python_path" | \tr ':' '\n' | \grep -vE '^/usr/share/opentelemetry_shell/agent.instrumentation.python/' | \tr '\n' ':')"
     fi
-\echo "DEBUG DEBUG DEBUG 3 $*" >&2
     if \[ "${my_code_source:-}" = stdin ]; then
       { \cat /usr/share/opentelemetry_shell/agent.instrumentation.python/deep.py; \cat; } | OTEL_SHELL_COMMANDLINE_OVERRIDE="$cmdline" OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE="0" OTEL_SHELL_AUTO_INJECTED=TRUE PYTHONPATH="$python_path" OTEL_BSP_MAX_EXPORT_BATCH_SIZE=1 _otel_call "$@" || local exit_code="$?"
     else
