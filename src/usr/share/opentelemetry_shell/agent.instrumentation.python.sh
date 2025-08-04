@@ -1,7 +1,6 @@
 #!/bin/false
 
 _otel_inject_python() {
-\echo "DEBUG DEBUG DEBUG $PYTHONPATH" >&2
   local version="$(\eval "$1 -V" | \cut -d ' ' -f 2 | \cut -d . -f -2)"
   if _otel_string_starts_with "$version" 3.; then
     local cmdline="$(_otel_dollar_star "$@")"
