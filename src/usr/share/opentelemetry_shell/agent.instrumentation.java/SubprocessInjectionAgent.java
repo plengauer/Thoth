@@ -51,7 +51,7 @@ public class SubprocessInjectionAgent {
             if (environment != null) {
                 SpanContext spanContext = Span.current().getSpanContext();
                 environment.put("TRACEPARENT", String.format("%s-%s-%s-%s", "00", spanContext.getTraceId(), spanContext.getSpanId(), spanContext.getTraceFlags().asHex()));
-                environment.put("OTEL_SHELL_AUTO_INJECTED", "FALSE");
+                environment.put("OTEL_SHELL_AUTO_INJECTED", "TRUE");
             }
             String[] oldcmdarray = cmdarray;
             cmdarray = new String[3 + oldcmdarray.length];
