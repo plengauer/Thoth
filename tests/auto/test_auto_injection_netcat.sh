@@ -11,7 +11,7 @@ sleep 3
 assert_equals "hello world" "$(echo -n hello world | ncat -i 10 --no-shutdown 127.0.0.1 12345)"
 wait "$pid"
 
-span="$(resolve_span '.name == "cat"')"
+span="$(resolve_span '.name | endswith("cat")')"
 assert_equals "SpanKind.INTERNAL" $(\echo "$span" | jq -r '.kind')
 span_id=$(\echo "$span" | jq -r '.parent_id')
 span="$(resolve_span '.context.span_id == "'"$span_id"'"')"
