@@ -164,7 +164,7 @@ jobs:
         with:
           languages: python
           build-mode: none
-      - run: cat /opt/hostedtoolcache/CodeQL/2.22.2/x64/codeql/python/tools/index.py
+      - run: find /opt/hostedtoolcache/CodeQL/2.22.2/x64/codeql/python/tools
       - uses: github/codeql-action/analyze@v3.29.5
         with:
           category: "/language:python"
