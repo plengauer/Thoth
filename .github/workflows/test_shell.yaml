@@ -102,8 +102,8 @@ jobs:
           done | jq -s > images.json
       - run: |
           [ "$(cat images.json | jq -r '.[].image' | wc -l)" -ge 7 ] # double check that we dont fail everywhere and then run no tests at all
-          cat images.json | jq '.[] | select(.type != "dev")'                                                       | jq .image | sort -u | jq -s tostring | xargs -0 -I {} echo 'images={}' >> "$GITHUB_OUTPUT"
-          cat images.json | jq '.[] | select(.type != "dev") | select(.type != "latest") | select(.os == "ubuntu")' | jq .image | sort -u | jq -s tostring | xargs -0 -I {} echo 'images_upgradeable={}' >> "$GITHUB_OUTPUT"
+          cat images.json | jq '.[] | select(.type != "dev")'                                                       | jq .image | sort -u | jq -s | tr -d '\n' | tr -d ' ' | xargs -0 -I {} echo 'images={}' >> "$GITHUB_OUTPUT"
+          cat images.json | jq '.[] | select(.type != "dev") | select(.type != "latest") | select(.os == "ubuntu")' | jq .image | sort -u | jq -s | tr -d '\n' | tr -d ' ' | xargs -0 -I {} echo 'images_upgradeable={}' >> "$GITHUB_OUTPUT"
         id: dynamic
   list-shells:
     needs: smoke
@@ -125,7 +125,7 @@ jobs:
           {
             echo sh
             cat src/DEBIAN/control | grep '^Enhances: ' | tr ' ' '\n' | tr ',' '\n' | grep -v -F 'Enhances:' | grep -v '^$'
-          } | sort -u | while read -r shell; do echo "\"$shell\""; done | jq -s tostring | xargs -0 -I {} echo 'shells={}' | tee /dev/stderr >> "$GITHUB_OUTPUT"
+          } | sort -u | while read -r shell; do echo "\"$shell\""; done | jq -s | tr -d '\n' | tr -d ' ' | xargs -0 -I {} echo 'shells={}' | tee /dev/stderr >> "$GITHUB_OUTPUT"
         id: dynamic
   system-upgrade:
     needs: [list-images, smoke]
@@ -161,7 +161,7 @@ jobs:
       - run: |
           cat src/DEBIAN/triggers | cut -sd ' ' -f 2- | rev | cut -sd / -f 1 | rev | grep -v '^$' | sed 's/node/nodejs/g' \
            | grep -vF "$(cat src/DEBIAN/control | grep '^Pre-Depends:' | cut -d : -f 2- | tr '|' ',' | tr , '\n' | tr -d ' ' | cut -d '(' -f 1 | sed 's/python3-pip/pip3/g')" \
-           | sort -u | while read -r dependency; do echo "\"$dependency\""; done | jq -s tostring | xargs -0 -I {} echo 'dependencies={}' >> "$GITHUB_OUTPUT"
+           | sort -u | while read -r dependency; do echo "\"$dependency\""; done | jq -s | tr -d '\n' | tr -d ' ' | xargs -0 -I {} echo 'dependencies={}' >> "$GITHUB_OUTPUT"
         id: dynamic
   dependency:
     needs: [list-dependencies, list-images, smoke]
