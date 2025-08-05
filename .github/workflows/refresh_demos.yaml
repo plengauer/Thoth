@@ -20,7 +20,7 @@ jobs:
     outputs:
       matrix: ${{ steps.demos.outputs.matrix }}
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.21.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.22.5
         with:
           secrets_to_redact: '["${{ github.token }}"]'
         env:
