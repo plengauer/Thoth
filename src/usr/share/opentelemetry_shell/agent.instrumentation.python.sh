@@ -101,6 +101,8 @@ runpy.run_module('$arg', run_name='__main__')"
       _otel_python_code_source=module
     elif \[ -f "$arg" ]; then
       _otel_escape_args -c "$(\cat /usr/share/opentelemetry_shell/agent.instrumentation.python/deep.py)
+import sys, os # SKIP_DEPENDENCY_CHECK
+sys.path.insert(0, os.path.abspath(os.path.dirname('$arg'))) # SKIP_DEPENDENCY_CHECK
 with open('$arg', 'r') as file: # SKIP_DEPENDENCY_CHECK
   exec(file.read())"
       _otel_python_file="$arg"
