@@ -125,7 +125,7 @@ jobs:
           {
             echo sh
             cat src/DEBIAN/control | grep '^Enhances: ' | tr ' ' '\n' | tr ',' '\n' | grep -v -F 'Enhances:' | grep -v '^$'
-          } | sort -u | while read -r shell; do echo "\"$shell\""; done | jq -s tostring | xargs -0 -I {} echo 'shells={}' >> "$GITHUB_OUTPUT"
+          } | sort -u | while read -r shell; do echo "\"$shell\""; done | jq -s tostring | xargs -0 -I {} echo 'shells={}' | tee /dev/stderr >> "$GITHUB_OUTPUT"
         id: dynamic
   system-upgrade:
     needs: [list-images, smoke]
