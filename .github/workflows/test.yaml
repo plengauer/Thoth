@@ -222,7 +222,10 @@ jobs:
           deactivate
       - run: |
           set +f
-          ls venv/lib/python*/site-packages/ | grep '.dist-info$' | cut -d - -f 1 | while read -r package; do cat venv/lib/python*/site-packages/"$package"-*.dist-info/RECORD | grep -q '.so,' && echo "$package" || true; done | xargs pip3 uninstall -y
+          . venv/bin/activate
+          ls venv/lib/python*/site-packages/ | grep '.dist-info$' | cut -d - -f 1 | while read -r package; do cat venv/lib/python*/site-packages/"$package"-*.dist-info/RECORD | grep -q '.so,' && echo "$package" || true; done | xargs pip3 uninstall --yes
+          pip3 uninstall --yes setuptools pip
+          deactivate
       - run: |
           ! find src/usr/share/opentelemetry_shell/agent.instrumentation.python/venv -iname '*.so' | grep '.so$'
       - run: |
