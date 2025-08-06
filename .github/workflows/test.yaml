@@ -222,15 +222,7 @@ jobs:
           deactivate
       - run: |
           set +f
-          cd src/usr/share/opentelemetry_shell/agent.instrumentation.python/
-          find venv -iname '*.so' | sed 's~/site-packages/~ ~g' | cut -d ' ' -f 2- | cut -d / -f 1 | while read -r name; do
-            rm -rf venv/lib/python*/site-packages/"$name"*
-            ls venv/lib/python*/site-packages/ | grep -E '.dist-info$' | while read -r directory; do
-              if ! [ -r venv/lib/python*/site-packages/"$directory"/top_level.txt ]; then continue; fi
-              if [ "$(cat venv/lib/python*/site-packages/"$directory"/top_level.txt)" != "$name" ]; then continue; fi
-              rm -rf venv/lib/python*/site-packages/"$directory"
-            done
-          done
+          ls venv/lib/python*/site-packages/ | grep '.dist-info$' | cut -d - -f 1 | while read -r package; do cat venv/lib/python*/site-packages/"$package"-*.dist-info/RECORD | grep -q '.so,' && echo "$package" || true; done | xargs pip3 uninstall -y
       - run: |
           ! find src/usr/share/opentelemetry_shell/agent.instrumentation.python/venv -iname '*.so' | grep '.so$'
       - run: |
