@@ -354,3 +354,5 @@ cat /tmp/opentelemetry_shell.github.debug.log
 export TRACEPARENT="$(cat "$traceparent_file")"
 rm "$traceparent_file"
 printenv | grep -E '^OTEL_|^TRACEPARENT=|^TRACESTATE=' >> "$GITHUB_ENV"
+
+echo ::notice::"Trace ID: $(echo "$TRACEPARENT" | cut -d - -f 2), Span ID: $(echo "$TRACEPARENT" | cut -d - -f 3)"
