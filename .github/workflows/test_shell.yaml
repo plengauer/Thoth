@@ -24,7 +24,7 @@ jobs:
     needs: smoke
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.dynamic.outputs.versions }}
+      versions: ${{ steps.dynamic.outputs.versions }}
     permissions:
       actions: read
     steps:
@@ -313,7 +313,7 @@ jobs:
     needs: smoke
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.dynamic.outputs.matrix }}
+      versions: ${{ steps.dynamic.outputs.versions }}
     permissions:
       contents: read
       actions: read
