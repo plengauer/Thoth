@@ -218,7 +218,6 @@ jobs:
           print(*default_instrumentations, sep="\n")
           print(*map(lambda element: element["instrumentation"], libraries), sep="\n")
           ' | python3 | grep "==$(pip3 show opentelemetry-distro | grep Version | cut -d ':' -f 2- | tr -d ' ')"'$' | grep -v opentelemetry-instrumentation-system-metrics | xargs pip3 install
-          pip3 uninstall --yes setuptools pip
           deactivate
       - run: |
           set +f
