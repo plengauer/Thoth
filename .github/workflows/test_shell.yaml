@@ -341,7 +341,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - if: matrix.tag_name == '~local'
+      - if: matrix.version == '~local'
         uses: actions/download-artifact@v5.0.0
         with:
           name: packages
