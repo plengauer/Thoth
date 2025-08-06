@@ -40,11 +40,9 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJSON(needs.prepare.outputs.matrix) }}
     steps:
-      - env:
-          GITHUB_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
-        run: |
-          cat "$GITHUB_EVENT_PATH" | jq -r .release.assets[].browser_download_url | grep '.deb$' | xargs wget --header="Authorization: Bearer $GITHUB_TOKEN"
-          sudo apt-get -y install ./*.deb
+      - run: |
+          ([ "$GITHUB_EVENT" = release ] && cat "$GITHUB_EVENT_PATH" || curl --header "Authorization: Bearer ${{ github.token }}" https://api.github.com/repos/"$GITHUB_REPOSITORY"/releases/latest) | jq -r '.assets[] | select(.name | endswith(".deb")) | .url' | xargs wget --header "Authorization: Bearer ${{ github.token }}" --header "Accept: application/octet-stream" -O package.deb
+      - run: sudo apt-get -y install ./package.deb
       - uses: actions/checkout@v4.2.2
       - id: demo
         env:
