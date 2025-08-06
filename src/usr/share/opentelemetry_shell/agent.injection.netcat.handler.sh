@@ -1,6 +1,6 @@
 #!/bin/sh -e
 . otelapi.sh
-handler_command_string="$(_otel_escape_args "$@")"
+handler_command_string="_otel_inject $(_otel_escape_args "$@")"
 netcat_command_string="$OTEL_SHELL_NETCAT_COMMAND"
 unset OTEL_SHELL_NETCAT_COMMAND
 export OTEL_SHELL_SDK_OUTPUT_REDIRECT="${OTEL_SHELL_SDK_OUTPUT_REDIRECT:-/dev/null}"
