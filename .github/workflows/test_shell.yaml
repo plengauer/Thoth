@@ -24,11 +24,11 @@ jobs:
     needs: smoke
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.dynamic-matrix.outputs.matrix }}
+      versions: ${{ steps.dynamic.outputs.versions }}
     permissions:
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.21.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.22.5
         with:
           secrets_to_redact: '["${{ github.token }}"]'
         env:
@@ -39,8 +39,8 @@ jobs:
             | tr '[:upper:]' '[:lower:]' | grep '^link: ' | cut -d ' '  -f 2- | tr -d ' <>' | tr ',' '\n' | grep 'rel="last"' | cut -d ';' -f 1 | cut -d '?' -f 2- | tr '&' '\n' | grep '^page=' | cut -d = -f 2 \
             | xargs seq 1 | xargs -I '{}' curl --no-progress-meter --fail --header "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/repos/"$GITHUB_REPOSITORY"/releases?per_page=100\&page={} | jq -r '.[].tag_name' \
             | grep -v - | grep -v '^v1.0.0$' | grep -v '^v1.1.0$' | grep -v '^v1.12.6$' \
-            | head -n 256 | while read -r version; do echo \""$version"\"; done | jq -nR '{"include": [inputs | select(length > 0) | {tag_name: .}]}' | tr -d '\n' | xargs -0 -I {} echo 'matrix={}' >> "$GITHUB_OUTPUT"
-        id: dynamic-matrix
+            | head -n 256 | while read -r version; do echo \""$version"\"; done | jq -s | tr -d '\n' | tr -d ' ' | xargs -0 -I {} echo 'versions={}' >> "$GITHUB_OUTPUT"
+        id: dynamic
         env:
           GITHUB_TOKEN: ${{ github.token }}
   upgrade:
@@ -48,14 +48,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
-      matrix: ${{ fromJSON(needs.list-released-versions.outputs.matrix) }}
+      matrix:
+        version: ${{ fromJSON(needs.list-released-versions.outputs.versions) }}
       fail-fast: false
     permissions:
       actions: read
     steps:
       - run: |
-          curl --no-progress-meter --fail --header "Authorization: Bearer ${{ github.token }}" https://api.github.com/repos/"$GITHUB_REPOSITORY"/releases/tags/${{ matrix.tag_name }} | jq -r '.assets[] | select(.name | endswith(".deb")) | .url' | xargs wget --header "Authorization: Bearer ${{ github.token }}" --header "Accept: application/octet-stream" -O package.deb
-          # GH_TOKEN=${{ github.token }} gh release download ${{ matrix.tag_name }} -p '*.deb' --repo "$GITHUB_REPOSITORY"
+          curl --no-progress-meter --fail --header "Authorization: Bearer ${{ github.token }}" https://api.github.com/repos/"$GITHUB_REPOSITORY"/releases/tags/${{ matrix.version }} | jq -r '.assets[] | select(.name | endswith(".deb")) | .url' | xargs wget --header "Authorization: Bearer ${{ github.token }}" --header "Accept: application/octet-stream" -O package.deb
       - run: sudo apt-get -y install ./*.deb
       - uses: actions/download-artifact@v5.0.0
         with:
@@ -70,7 +70,7 @@ jobs:
     permissions:
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.21.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.22.5
         with:
           secrets_to_redact: '["${{ github.token }}","${{ secrets.DOCKERHUB_TOKEN }}","${{ secrets.DOCKERHUB_USERNAME }}"]'
         env:
@@ -102,8 +102,8 @@ jobs:
           done | jq -s > images.json
       - run: |
           [ "$(cat images.json | jq -r '.[].image' | wc -l)" -ge 7 ] # double check that we dont fail everywhere and then run no tests at all
-          cat images.json | jq '.[] | select(.type != "dev")'                                                       | jq .image | sort -u | jq -s tostring | xargs -0 -I {} echo 'images={}' >> "$GITHUB_OUTPUT"
-          cat images.json | jq '.[] | select(.type != "dev") | select(.type != "latest") | select(.os == "ubuntu")' | jq .image | sort -u | jq -s tostring | xargs -0 -I {} echo 'images_upgradeable={}' >> "$GITHUB_OUTPUT"
+          cat images.json | jq '.[] | select(.type != "dev")'                                                       | jq .image | sort -u | jq -s | tr -d '\n' | tr -d ' ' | xargs -0 -I {} echo 'images={}' >> "$GITHUB_OUTPUT"
+          cat images.json | jq '.[] | select(.type != "dev") | select(.type != "latest") | select(.os == "ubuntu")' | jq .image | sort -u | jq -s | tr -d '\n' | tr -d ' ' | xargs -0 -I {} echo 'images_upgradeable={}' >> "$GITHUB_OUTPUT"
         id: dynamic
   list-shells:
     needs: smoke
@@ -114,7 +114,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.21.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.22.5
         with:
           secrets_to_redact: '["${{ github.token }}"]'
         env:
@@ -125,7 +125,7 @@ jobs:
           {
             echo sh
             cat src/DEBIAN/control | grep '^Enhances: ' | tr ' ' '\n' | tr ',' '\n' | grep -v -F 'Enhances:' | grep -v '^$'
-          } | sort -u | while read -r shell; do echo "\"$shell\""; done | jq -s tostring | xargs -0 -I {} echo 'shells={}' >> "$GITHUB_OUTPUT"
+          } | sort -u | while read -r shell; do echo "\"$shell\""; done | jq -s | tr -d '\n' | tr -d ' ' | xargs -0 -I {} echo 'shells={}' | tee /dev/stderr >> "$GITHUB_OUTPUT"
         id: dynamic
   system-upgrade:
     needs: [list-images, smoke]
@@ -151,7 +151,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.21.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.22.5
         with:
           secrets_to_redact: '["${{ github.token }}"]'
         env:
@@ -161,7 +161,7 @@ jobs:
       - run: |
           cat src/DEBIAN/triggers | cut -sd ' ' -f 2- | rev | cut -sd / -f 1 | rev | grep -v '^$' | sed 's/node/nodejs/g' \
            | grep -vF "$(cat src/DEBIAN/control | grep '^Pre-Depends:' | cut -d : -f 2- | tr '|' ',' | tr , '\n' | tr -d ' ' | cut -d '(' -f 1 | sed 's/python3-pip/pip3/g')" \
-           | sort -u | while read -r dependency; do echo "\"$dependency\""; done | jq -s tostring | xargs -0 -I {} echo 'dependencies={}' >> "$GITHUB_OUTPUT"
+           | sort -u | while read -r dependency; do echo "\"$dependency\""; done | jq -s | tr -d '\n' | tr -d ' ' | xargs -0 -I {} echo 'dependencies={}' >> "$GITHUB_OUTPUT"
         id: dynamic
   dependency:
     needs: [list-dependencies, list-images, smoke]
@@ -313,20 +313,20 @@ jobs:
     needs: smoke
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.dynamic-matrix.outputs.matrix }}
+      versions: ${{ steps.dynamic.outputs.versions }}
     permissions:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.21.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.22.5
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
         with:
           secrets_to_redact: '["${{ github.token }}"]'
       - run: |
-          { echo '~local'; curl --no-progress-meter --fail --header "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/repos/"$GITHUB_REPOSITORY"/releases | jq -r .[].tag_name | head --lines=10; } | while read -r version; do echo \""$version"\"; done | jq -nR '{"include": [inputs | select(length > 0) | {tag_name: .}]}' | tr -d '\n' | xargs -0 -I {} echo 'matrix={}' >> "$GITHUB_OUTPUT"
-        id: dynamic-matrix
+          { echo '~local'; curl --no-progress-meter --fail --header "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/repos/"$GITHUB_REPOSITORY"/releases | jq -r .[].tag_name | head --lines=10; } | while read -r version; do echo \""$version"\"; done  | jq -s | tr -d '\n' | tr -d ' ' | xargs -0 -I {} echo 'versions={}' >> "$GITHUB_OUTPUT"
+        id: dynamic
         env:
           GITHUB_TOKEN: ${{ github.token }}
   performance:
@@ -334,34 +334,34 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
-      matrix: ${{ fromJSON(needs.prepare-performance.outputs.matrix) }}
+      matrix:
+        version: ${{ fromJSON(needs.prepare-performance.outputs.versions) }}
       fail-fast: false
     permissions:
       contents: read
       actions: read
     steps:
-      - if: matrix.tag_name == '~local'
+      - if: matrix.version == '~local'
         uses: actions/download-artifact@v5.0.0
         with:
           name: packages
-      - if: matrix.tag_name != '~local'
+      - if: matrix.version != '~local'
         run: |
-          # curl --no-progress-meter --fail --header "Authorization: Bearer ${{ github.token }}" https://api.github.com/repos/"$GITHUB_REPOSITORY"/releases/tags/${{ matrix.tag_name }} | jq -r '.assets[] | select(.name | endswith(".deb")) | .url' | xargs wget --header "Authorization: Bearer ${{ github.token }}" --header "Accept: application/octet-stream" -O package.deb
-          GH_TOKEN=${{ github.token }} gh release download ${{ matrix.tag_name }} -p '*.deb' --repo "$GITHUB_REPOSITORY"
+          curl --no-progress-meter --fail --header "Authorization: Bearer ${{ github.token }}" https://api.github.com/repos/"$GITHUB_REPOSITORY"/releases/tags/${{ matrix.version }} | jq -r '.assets[] | select(.name | endswith(".deb")) | .url' | xargs wget --header "Authorization: Bearer ${{ github.token }}" --header "Accept: application/octet-stream" -O package.deb
       - run: sudo apt-get install -y ./*.deb
       - run: |
           export OTEL_SHELL_SDK_OUTPUT_REDIRECT=/dev/null
-          command time -f '%U' bash -c '. /usr/bin/opentelemetry_shell.sh' 2>> performance.${{ matrix.tag_name }}.coldstart.list
-          for i in $(seq 1 100); do command time -f '%U' bash -c '. /usr/bin/opentelemetry_shell.sh' 2>> performance.${{ matrix.tag_name }}.warmstart.list; done
+          command time -f '%U' bash -c '. /usr/bin/opentelemetry_shell.sh' 2>> performance.${{ matrix.version }}.coldstart.list
+          for i in $(seq 1 100); do command time -f '%U' bash -c '. /usr/bin/opentelemetry_shell.sh' 2>> performance.${{ matrix.version }}.warmstart.list; done
       - uses: actions/upload-artifact@v4.6.2
         with:
-          name: performance.${{ matrix.tag_name }}.coldstart.list
-          path: performance.${{ matrix.tag_name }}.coldstart.list
+          name: performance.${{ matrix.version }}.coldstart.list
+          path: performance.${{ matrix.version }}.coldstart.list
           retention-days: 1
       - uses: actions/upload-artifact@v4.6.2
         with:
-          name: performance.${{ matrix.tag_name }}.warmstart.list
-          path: performance.${{ matrix.tag_name }}.warmstart.list
+          name: performance.${{ matrix.version }}.warmstart.list
+          path: performance.${{ matrix.version }}.warmstart.list
           retention-days: 1
   performance-summary:
     needs: performance
@@ -369,7 +369,7 @@ jobs:
     permissions:
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.21.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.22.5
         with:
           secrets_to_redact: '["${{ github.token }}"]'
         env:
