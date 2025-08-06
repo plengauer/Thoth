@@ -14,7 +14,7 @@ jobs:
       actions: read
     steps:
       - uses: actions/checkout@v4.2.2
-      - uses: actions/download-artifact@v4.3.0
+      - uses: actions/download-artifact@v5.0.0
         with:
           name: packages
       - run: sudo apt-get -y install ./package.deb apt-file
@@ -57,7 +57,7 @@ jobs:
       - run: |
           curl --no-progress-meter --fail --header "Authorization: Bearer ${{ github.token }}" https://api.github.com/repos/"$GITHUB_REPOSITORY"/releases/tags/${{ matrix.version }} | jq -r '.assets[] | select(.name | endswith(".deb")) | .url' | xargs wget --header "Authorization: Bearer ${{ github.token }}" --header "Accept: application/octet-stream" -O package.deb
       - run: sudo apt-get -y install ./*.deb
-      - uses: actions/download-artifact@v4.3.0
+      - uses: actions/download-artifact@v5.0.0
         with:
           name: packages
       - run: sudo apt-get -y install ./package.deb
@@ -84,7 +84,7 @@ jobs:
           path: images.json
           key: images ${{ steps.key.outputs.key }}
       - if: ${{ hashFiles('images.json') == '' }}
-        uses: actions/download-artifact@v4.3.0
+        uses: actions/download-artifact@v5.0.0
         with:
           name: packages
       - if: ${{ hashFiles('images.json') == '' }}
@@ -138,7 +138,7 @@ jobs:
     permissions:
       actions: read
     steps:
-      - uses: actions/download-artifact@v4.3.0
+      - uses: actions/download-artifact@v5.0.0
         with:
           name: packages
       - run: "echo '\n  apt-get update\n  apt-get -y install /root/package.deb \n  apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y dist-upgrade && apt-get -y autoremove && apt-get -y autoclean\n  case \"$(cat /etc/os-release | grep '^NAME=' | cut -d = -f 2 | tr -d \"\\\"\")\" in\n    Ubuntu)\n      DEBIAN_FRONTEND=noninteractive apt-get -y install sed systemctl update-manager-core\n      sed -i \"/Prompt/d\" /etc/update-manager/release-upgrades && echo \"Prompt=normal\" >> /etc/update-manager/release-upgrades\n      do-release-upgrade -c || exit 0 && RELEASE_UPGRADER_ALLOW_THIRD_PARTY=1 do-release-upgrade -f DistUpgradeViewNonInteractive\n      ;;\n    Debian*)\n      DEBIAN_FRONTEND=noninteractive apt-get -y install curl sed\n      version_destination=\"$(curl -sL https://deb.debian.org/debian/dists/testing/InRelease | grep \"^Codename:\" | cut -d \" \" -f 2)\"\n      version_source=\"$(cat /etc/os-release | grep '^VERSION_CODENAME' | cut -d = -f 2)\"\n      sed -i \"s/$version_source/$version_destination/g\" /etc/apt/sources.list /etc/apt/sources.list.d/*\n      sed -i \"s/oldstable/testing/g\" /etc/apt/sources.list /etc/apt/sources.list.d/*\n      sed -i \"s/stable/testing/g\" /etc/apt/sources.list /etc/apt/sources.list.d/*\n      ;;\n    *) exit 1;;\n  esac\n  apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y dist-upgrade && apt-get -y autoremove && apt-get -y autoclean\n' | sudo docker run -v $(pwd)/package.deb:/root/package.deb --rm --network=host -i --entrypoint=/bin/sh ${{ matrix.image }} -e\n"
@@ -176,7 +176,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/download-artifact@v4.3.0
+      - uses: actions/download-artifact@v5.0.0
         with:
           name: packages
       - env:
@@ -265,7 +265,7 @@ jobs:
     steps:
       # - run: sudo docker login -u '${{ secrets.DOCKERHUB_USERNAME }}' -p '${{ secrets.DOCKERHUB_TOKEN }}'
       - uses: actions/checkout@v4.2.2
-      - uses: actions/download-artifact@v4.3.0
+      - uses: actions/download-artifact@v5.0.0
         with:
           name: packages
       - run: mv ./package.* tests
@@ -290,7 +290,7 @@ jobs:
           distribution: Ubuntu-24.04
           wsl-version: ${{ matrix.version }}
       - uses: actions/checkout@v4.2.2
-      - uses: actions/download-artifact@v4.3.0
+      - uses: actions/download-artifact@v5.0.0
         with:
           name: packages
       - shell: wsl-bash {0}
@@ -341,8 +341,8 @@ jobs:
       contents: read
       actions: read
     steps:
-      - if: matrix.version == '~local'
-        uses: actions/download-artifact@v4.3.0
+      - if: matrix.tag_name == '~local'
+        uses: actions/download-artifact@v5.0.0
         with:
           name: packages
       - if: matrix.version != '~local'
@@ -375,7 +375,7 @@ jobs:
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - uses: actions/download-artifact@v4.3.0
+      - uses: actions/download-artifact@v5.0.0
         with:
           pattern: 'performance.*.list'
           merge-multiple: true

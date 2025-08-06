@@ -95,7 +95,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/download-artifact@v4.3.0
+      - uses: actions/download-artifact@v5.0.0
         with:
           pattern: http_*
       - run: |
@@ -152,7 +152,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/download-artifact@v4.3.0
+      - uses: actions/download-artifact@v5.0.0
         with:
           pattern: node_modules_*
       - run: |
@@ -245,7 +245,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/download-artifact@v4.3.0
+      - uses: actions/download-artifact@v5.0.0
         with:
           pattern: python_site_packages_*
       - run: |
@@ -344,19 +344,19 @@ jobs:
             find src -iname 'manifest.txt' -type f
             find src -iname 'pom.xml' -type f
           } | xargs -r rm
-      - uses: actions/download-artifact@v4.3.0
+      - uses: actions/download-artifact@v5.0.0
         with:
           name: http
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.http
-      - uses: actions/download-artifact@v4.3.0
+      - uses: actions/download-artifact@v5.0.0
         with:
           name: node_modules
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.node
-      - uses: actions/download-artifact@v4.3.0
+      - uses: actions/download-artifact@v5.0.0
         with:
           name: python_site_packages
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.python
-      - uses: actions/download-artifact@v4.3.0
+      - uses: actions/download-artifact@v5.0.0
         with:
           name: java
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.java
