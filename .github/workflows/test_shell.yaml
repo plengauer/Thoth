@@ -79,7 +79,7 @@ jobs:
       - uses: actions/checkout@v4.2.2
       - id: key
         run: cat .github/workflows/images.json .github/workflows/test_shell.yaml src/DEBIAN/control | md5sum | cut -d ' ' -f 1 | xargs -I '{}' echo "key={}" >> "$GITHUB_OUTPUT"
-      - uses: actions/cache@v4.2.3
+      - uses: actions/cache@v4.2.4
         with:
           path: images.json
           key: images ${{ steps.key.outputs.key }}
