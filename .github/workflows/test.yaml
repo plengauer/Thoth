@@ -160,19 +160,7 @@ jobs:
             mkdir "$version"
             mv node_modules_"$version" "$version"/node_modules
           done
-      - if: false
-        run: |
-          hash_folder() { find "$1" -name package.json | xargs cat | jq '. | [.name, .version] | @tsv' -r | tr '\t' ' ' | sha256sum | cut -d ' ' -f 1; }
-          ls | sort --version-sort | while read -r version; do
-            if [ -L __last ] && [ "$(hash_folder "$version")" = "$(hash_folder __last)" ]; then
-              rm -rf "$version"
-            else
-              rm __last
-              ln --symbolic "$version" __last
-            fi
-          done
-          rm __last
-      - run: find . -type f -print0 | xargs -0 sha256sum | sort | cut -d ' ' -f 3- | tar -cf node_modules.tar -T - && xz -9 node_modules.tar
+      - run: find . -exec sha256sum '{}' + | sort | cut -d ' ' -f 3- | tar -cf node_modules.tar -T - && xz -9 node_modules.tar
       - uses: actions/upload-artifact@v4.6.2
         with:
           name: node_modules
@@ -253,19 +241,7 @@ jobs:
             mkdir "$version"
             mv python_site_packages_"$version" "$version"/site-packages
           done
-      - if: false
-        run: |
-          hash_folder() { find "$1" -name METADATA | grep -E '^Name:|^Version:' | sha256sum | cut -d ' ' -f 1; }
-          ls | sort --version-sort | while read -r version; do
-            if [ -L __last ] && [ "$(hash_folder "$version")" = "$(hash_folder __last)" ]; then
-              rm -rf "$version"
-            else
-              rm __last
-              ln --symbolic "$version" __last
-            fi
-          done
-          rm __last
-      - run: find . -type f -print0 | xargs -0 sha256sum | sort | cut -d ' ' -f 3- | tar -cf python_site_packages.tar -T - && xz -9 python_site_packages.tar
+      - run: find . -exec sha256sum '{}' + | sort | cut -d ' ' -f 3- | tar -cf python_site_packages.tar -T - && xz -9 python_site_packages.tar
       - uses: actions/upload-artifact@v4.6.2
         with:
           name: python_site_packages
