@@ -18,7 +18,7 @@ jobs:
       contents: read
       actions: read
     outputs:
-      matrix: ${{ steps.demos.outputs.matrix }}
+      dirs: ${{ steps.demos.outputs.dirs }}
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.22.5
         with:
@@ -28,7 +28,7 @@ jobs:
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
       - uses: actions/checkout@v4.2.2
       - run: |
-          cd demos && echo */ | tr ' ' '\n' | tr -d / | while read -r dir; do echo \""$dir"\"; done | jq -nR '{"include": [inputs | select(length > 0) | {demo_directory: .}]}' | tr -d '\n' | xargs -0 -I {} echo 'matrix={}' >> "$GITHUB_OUTPUT"
+          cd demos && echo */ | tr ' ' '\n' | tr -d / | while read -r dir; do echo \""$dir"\"; done | jq -s | tr -d ' ' | tr -d '\n' | xargs -0 -I {} echo 'dirs={}' >> "$GITHUB_OUTPUT"
         id: demos
   generate:
     needs: prepare
@@ -38,7 +38,8 @@ jobs:
       actions: read
     strategy:
       fail-fast: false
-      matrix: ${{ fromJSON(needs.prepare.outputs.matrix) }}
+      matrix: 
+        demo_directory: ${{ fromJSON(needs.prepare.outputs.dirs) }}
     steps:
       - run: |
           ([ "$GITHUB_EVENT" = release ] && cat "$GITHUB_EVENT_PATH" || curl --header "Authorization: Bearer ${{ github.token }}" https://api.github.com/repos/"$GITHUB_REPOSITORY"/releases/latest) | jq -r '.assets[] | select(.name | endswith(".deb")) | .url' | xargs wget --header "Authorization: Bearer ${{ github.token }}" --header "Accept: application/octet-stream" -O package.deb
