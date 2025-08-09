@@ -18,7 +18,7 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "5.22.6"
+              "stringValue": "5.22.7"
             }
           },
           {
@@ -42,13 +42,13 @@
           {
             "key": "process.pid",
             "value": {
-              "intValue": "3290"
+              "intValue": "3258"
             }
           },
           {
             "key": "process.parent_pid",
             "value": {
-              "intValue": "3289"
+              "intValue": "3257"
             }
           },
           {
@@ -129,18 +129,18 @@
         {
           "scope": {
             "name": "shell",
-            "version": "5.22.6"
+            "version": "5.22.7"
           },
           "spans": [
             {
-              "traceId": "0f6f6e49ea282fe5b4c23da78ed2bec5",
-              "spanId": "599130b16dd315fc",
-              "parentSpanId": "a0a75f891d0fce63",
+              "traceId": "e14893e59c51d25e58227481666add5a",
+              "spanId": "5302978518d5f6cd",
+              "parentSpanId": "4af6045481367c5c",
               "name": "exec",
               "flags": 768,
               "kind": 1,
-              "startTimeUnixNano": "1754729786982769664",
-              "endTimeUnixNano": "1754729786991310848",
+              "startTimeUnixNano": "1754771383582737920",
+              "endTimeUnixNano": "1754771383591185920",
               "status": {}
             }
           ]
@@ -284,14 +284,14 @@
           },
           "spans": [
             {
-              "traceId": "0f6f6e49ea282fe5b4c23da78ed2bec5",
-              "spanId": "9f12c9f50a1f1efc",
-              "parentSpanId": "02c4f3267e994483",
+              "traceId": "e14893e59c51d25e58227481666add5a",
+              "spanId": "076aa8b619e9e010",
+              "parentSpanId": "b6a6925ba3e23625",
               "name": "exec",
               "flags": 768,
               "kind": 1,
-              "startTimeUnixNano": "1754729787850310656",
-              "endTimeUnixNano": "1754729787859080960",
+              "startTimeUnixNano": "1754771384432327424",
+              "endTimeUnixNano": "1754771384440808448",
               "status": {}
             }
           ]
@@ -398,13 +398,13 @@
           {
             "key": "vcs.commit.id",
             "value": {
-              "stringValue": "455708a5b885527fd05b0fbd8b75f84f7a7141de"
+              "stringValue": "30b51ab4cd1f558d34b15165e459c81111800336"
             }
           },
           {
             "key": "vcs.clone.id",
             "value": {
-              "stringValue": "73b31c29-013a-4df2-9cdd-dfda3b45c498"
+              "stringValue": "60651f2f-956d-4f20-997f-ffca30ef47ae"
             }
           },
           {
@@ -416,7 +416,7 @@
           {
             "key": "container.id",
             "value": {
-              "stringValue": "d628041aa4fbcebcc9d12acb0863e18656a0bfb16267ab6111bfe34479ca205e"
+              "stringValue": "5e128ad61e3dbffba505c81c2e9dc7c88323e8e71972cc8e2b3ba0e773f21deb"
             }
           },
           {
@@ -453,18 +453,18 @@
           },
           "spans": [
             {
-              "traceId": "0f6f6e49ea282fe5b4c23da78ed2bec5",
-              "spanId": "159a625ac239e885",
-              "parentSpanId": "0485c240ef4814b1",
+              "traceId": "e14893e59c51d25e58227481666add5a",
+              "spanId": "670e8c1dbf53aa9a",
+              "parentSpanId": "7933a38af33bf071",
               "name": "dns.lookup",
               "kind": 3,
-              "startTimeUnixNano": "1754729793493000000",
-              "endTimeUnixNano": "1754729793495694644",
+              "startTimeUnixNano": "1754771389882000000",
+              "endTimeUnixNano": "1754771389886465944",
               "attributes": [
                 {
                   "key": "peer.ipv4",
                   "value": {
-                    "stringValue": "140.82.114.6"
+                    "stringValue": "140.82.116.6"
                   }
                 }
               ],
@@ -570,13 +570,13 @@
           {
             "key": "vcs.commit.id",
             "value": {
-              "stringValue": "455708a5b885527fd05b0fbd8b75f84f7a7141de"
+              "stringValue": "30b51ab4cd1f558d34b15165e459c81111800336"
             }
           },
           {
             "key": "vcs.clone.id",
             "value": {
-              "stringValue": "73b31c29-013a-4df2-9cdd-dfda3b45c498"
+              "stringValue": "60651f2f-956d-4f20-997f-ffca30ef47ae"
             }
           },
           {
@@ -588,7 +588,7 @@
           {
             "key": "container.id",
             "value": {
-              "stringValue": "d628041aa4fbcebcc9d12acb0863e18656a0bfb16267ab6111bfe34479ca205e"
+              "stringValue": "5e128ad61e3dbffba505c81c2e9dc7c88323e8e71972cc8e2b3ba0e773f21deb"
             }
           },
           {
@@ -625,13 +625,13 @@
           },
           "spans": [
             {
-              "traceId": "0f6f6e49ea282fe5b4c23da78ed2bec5",
-              "spanId": "ade9d4909534304b",
-              "parentSpanId": "f8e562261d4c0015",
+              "traceId": "e14893e59c51d25e58227481666add5a",
+              "spanId": "fcd99cb395198b08",
+              "parentSpanId": "4885d0bbedc9348d",
               "name": "tcp.connect",
               "kind": 1,
-              "startTimeUnixNano": "1754729793492000000",
-              "endTimeUnixNano": "1754729793501670068",
+              "startTimeUnixNano": "1754771389882000000",
+              "endTimeUnixNano": "1754771389906062009",
               "attributes": [
                 {
                   "key": "net.transport",
@@ -654,19 +654,19 @@
                 {
                   "key": "net.peer.ip",
                   "value": {
-                    "stringValue": "140.82.114.6"
+                    "stringValue": "140.82.116.6"
                   }
                 },
                 {
                   "key": "net.host.ip",
                   "value": {
-                    "stringValue": "10.1.0.192"
+                    "stringValue": "10.1.0.16"
                   }
                 },
                 {
                   "key": "net.host.port",
                   "value": {
-                    "intValue": "42382"
+                    "intValue": "43566"
                   }
                 }
               ],
@@ -772,13 +772,13 @@
           {
             "key": "vcs.commit.id",
             "value": {
-              "stringValue": "455708a5b885527fd05b0fbd8b75f84f7a7141de"
+              "stringValue": "30b51ab4cd1f558d34b15165e459c81111800336"
             }
           },
           {
             "key": "vcs.clone.id",
             "value": {
-              "stringValue": "73b31c29-013a-4df2-9cdd-dfda3b45c498"
+              "stringValue": "60651f2f-956d-4f20-997f-ffca30ef47ae"
             }
           },
           {
@@ -790,7 +790,7 @@
           {
             "key": "container.id",
             "value": {
-              "stringValue": "d628041aa4fbcebcc9d12acb0863e18656a0bfb16267ab6111bfe34479ca205e"
+              "stringValue": "5e128ad61e3dbffba505c81c2e9dc7c88323e8e71972cc8e2b3ba0e773f21deb"
             }
           },
           {
@@ -827,13 +827,13 @@
           },
           "spans": [
             {
-              "traceId": "0f6f6e49ea282fe5b4c23da78ed2bec5",
-              "spanId": "f8e562261d4c0015",
-              "parentSpanId": "0485c240ef4814b1",
+              "traceId": "e14893e59c51d25e58227481666add5a",
+              "spanId": "4885d0bbedc9348d",
+              "parentSpanId": "7933a38af33bf071",
               "name": "tls.connect",
               "kind": 1,
-              "startTimeUnixNano": "1754729793492000000",
-              "endTimeUnixNano": "1754729793511278191",
+              "startTimeUnixNano": "1754771389881000000",
+              "endTimeUnixNano": "1754771389929829769",
               "attributes": [
                 {
                   "key": "tls.protocol",
@@ -895,7 +895,11 @@
           ]
         }
       ]
-    },
+    }
+  ]
+}
+{
+  "resourceSpans": [
     {
       "resource": {
         "attributes": [
@@ -992,13 +996,13 @@
           {
             "key": "vcs.commit.id",
             "value": {
-              "stringValue": "455708a5b885527fd05b0fbd8b75f84f7a7141de"
+              "stringValue": "30b51ab4cd1f558d34b15165e459c81111800336"
             }
           },
           {
             "key": "vcs.clone.id",
             "value": {
-              "stringValue": "73b31c29-013a-4df2-9cdd-dfda3b45c498"
+              "stringValue": "60651f2f-956d-4f20-997f-ffca30ef47ae"
             }
           },
           {
@@ -1010,7 +1014,7 @@
           {
             "key": "container.id",
             "value": {
-              "stringValue": "d628041aa4fbcebcc9d12acb0863e18656a0bfb16267ab6111bfe34479ca205e"
+              "stringValue": "5e128ad61e3dbffba505c81c2e9dc7c88323e8e71972cc8e2b3ba0e773f21deb"
             }
           },
           {
@@ -1047,13 +1051,13 @@
           },
           "spans": [
             {
-              "traceId": "0f6f6e49ea282fe5b4c23da78ed2bec5",
-              "spanId": "0485c240ef4814b1",
-              "parentSpanId": "007361aa21a71648",
+              "traceId": "e14893e59c51d25e58227481666add5a",
+              "spanId": "7933a38af33bf071",
+              "parentSpanId": "be2a0b17a1eaf2aa",
               "name": "POST",
               "kind": 3,
-              "startTimeUnixNano": "1754729793489000000",
-              "endTimeUnixNano": "1754729793580446432",
+              "startTimeUnixNano": "1754771389879000000",
+              "endTimeUnixNano": "1754771390109827614",
               "attributes": [
                 {
                   "key": "http.url",
@@ -1088,13 +1092,13 @@
                 {
                   "key": "http.user_agent",
                   "value": {
-                    "stringValue": "RenovateBot/41.60.2 (https://github.com/renovatebot/renovate)"
+                    "stringValue": "RenovateBot/41.60.3 (https://github.com/renovatebot/renovate)"
                   }
                 },
                 {
                   "key": "net.peer.ip",
                   "value": {
-                    "stringValue": "140.82.114.6"
+                    "stringValue": "140.82.116.6"
                   }
                 },
                 {
@@ -1230,13 +1234,13 @@
           {
             "key": "vcs.commit.id",
             "value": {
-              "stringValue": "455708a5b885527fd05b0fbd8b75f84f7a7141de"
+              "stringValue": "30b51ab4cd1f558d34b15165e459c81111800336"
             }
           },
           {
             "key": "vcs.clone.id",
             "value": {
-              "stringValue": "73b31c29-013a-4df2-9cdd-dfda3b45c498"
+              "stringValue": "60651f2f-956d-4f20-997f-ffca30ef47ae"
             }
           },
           {
@@ -1248,7 +1252,7 @@
           {
             "key": "container.id",
             "value": {
-              "stringValue": "d628041aa4fbcebcc9d12acb0863e18656a0bfb16267ab6111bfe34479ca205e"
+              "stringValue": "5e128ad61e3dbffba505c81c2e9dc7c88323e8e71972cc8e2b3ba0e773f21deb"
             }
           },
           {
@@ -1284,13 +1288,13 @@
           },
           "spans": [
             {
-              "traceId": "0f6f6e49ea282fe5b4c23da78ed2bec5",
-              "spanId": "007361aa21a71648",
-              "parentSpanId": "d0b98bc905b21b14",
+              "traceId": "e14893e59c51d25e58227481666add5a",
+              "spanId": "be2a0b17a1eaf2aa",
+              "parentSpanId": "7f300f3a4aadbceb",
               "name": "config",
               "kind": 1,
-              "startTimeUnixNano": "1754729793062000000",
-              "endTimeUnixNano": "1754729793612210222",
+              "startTimeUnixNano": "1754771389462000000",
+              "endTimeUnixNano": "1754771390134664640",
               "status": {}
             }
           ]
@@ -1393,13 +1397,13 @@
           {
             "key": "vcs.commit.id",
             "value": {
-              "stringValue": "455708a5b885527fd05b0fbd8b75f84f7a7141de"
+              "stringValue": "30b51ab4cd1f558d34b15165e459c81111800336"
             }
           },
           {
             "key": "vcs.clone.id",
             "value": {
-              "stringValue": "73b31c29-013a-4df2-9cdd-dfda3b45c498"
+              "stringValue": "60651f2f-956d-4f20-997f-ffca30ef47ae"
             }
           },
           {
@@ -1411,7 +1415,7 @@
           {
             "key": "container.id",
             "value": {
-              "stringValue": "d628041aa4fbcebcc9d12acb0863e18656a0bfb16267ab6111bfe34479ca205e"
+              "stringValue": "5e128ad61e3dbffba505c81c2e9dc7c88323e8e71972cc8e2b3ba0e773f21deb"
             }
           },
           {
@@ -1447,13 +1451,13 @@
           },
           "spans": [
             {
-              "traceId": "0f6f6e49ea282fe5b4c23da78ed2bec5",
-              "spanId": "1d62f395c41aec36",
-              "parentSpanId": "d0b98bc905b21b14",
+              "traceId": "e14893e59c51d25e58227481666add5a",
+              "spanId": "0128e5b28f677262",
+              "parentSpanId": "7f300f3a4aadbceb",
               "name": "discover",
               "kind": 1,
-              "startTimeUnixNano": "1754729793613000000",
-              "endTimeUnixNano": "1754729793613195745",
+              "startTimeUnixNano": "1754771390135000000",
+              "endTimeUnixNano": "1754771390135186857",
               "status": {}
             }
           ]
@@ -1560,13 +1564,13 @@
           {
             "key": "vcs.commit.id",
             "value": {
-              "stringValue": "455708a5b885527fd05b0fbd8b75f84f7a7141de"
+              "stringValue": "30b51ab4cd1f558d34b15165e459c81111800336"
             }
           },
           {
             "key": "vcs.clone.id",
             "value": {
-              "stringValue": "73b31c29-013a-4df2-9cdd-dfda3b45c498"
+              "stringValue": "60651f2f-956d-4f20-997f-ffca30ef47ae"
             }
           },
           {
@@ -1578,7 +1582,7 @@
           {
             "key": "container.id",
             "value": {
-              "stringValue": "d628041aa4fbcebcc9d12acb0863e18656a0bfb16267ab6111bfe34479ca205e"
+              "stringValue": "5e128ad61e3dbffba505c81c2e9dc7c88323e8e71972cc8e2b3ba0e773f21deb"
             }
           },
           {
@@ -1615,13 +1619,13 @@
           },
           "spans": [
             {
-              "traceId": "0f6f6e49ea282fe5b4c23da78ed2bec5",
-              "spanId": "df4b2d8cbf80c241",
-              "parentSpanId": "59006f004006afba",
+              "traceId": "e14893e59c51d25e58227481666add5a",
+              "spanId": "c2cc4dcfb68c815d",
+              "parentSpanId": "ffd3c6e3dab27954",
               "name": "POST",
               "kind": 3,
-              "startTimeUnixNano": "1754729793626000000",
-              "endTimeUnixNano": "1754729793810428601",
+              "startTimeUnixNano": "1754771390147000000",
+              "endTimeUnixNano": "1754771390397842817",
               "attributes": [
                 {
                   "key": "http.url",
@@ -1656,13 +1660,13 @@
                 {
                   "key": "http.user_agent",
                   "value": {
-                    "stringValue": "RenovateBot/41.60.2 (https://github.com/renovatebot/renovate)"
+                    "stringValue": "RenovateBot/41.60.3 (https://github.com/renovatebot/renovate)"
                   }
                 },
                 {
                   "key": "net.peer.ip",
                   "value": {
-                    "stringValue": "140.82.114.6"
+                    "stringValue": "140.82.116.6"
                   }
                 },
                 {
@@ -1798,13 +1802,13 @@
           {
             "key": "vcs.commit.id",
             "value": {
-              "stringValue": "455708a5b885527fd05b0fbd8b75f84f7a7141de"
+              "stringValue": "30b51ab4cd1f558d34b15165e459c81111800336"
             }
           },
           {
             "key": "vcs.clone.id",
             "value": {
-              "stringValue": "73b31c29-013a-4df2-9cdd-dfda3b45c498"
+              "stringValue": "60651f2f-956d-4f20-997f-ffca30ef47ae"
             }
           },
           {
@@ -1816,7 +1820,7 @@
           {
             "key": "container.id",
             "value": {
-              "stringValue": "d628041aa4fbcebcc9d12acb0863e18656a0bfb16267ab6111bfe34479ca205e"
+              "stringValue": "5e128ad61e3dbffba505c81c2e9dc7c88323e8e71972cc8e2b3ba0e773f21deb"
             }
           },
           {
@@ -1852,13 +1856,13 @@
           },
           "spans": [
             {
-              "traceId": "0f6f6e49ea282fe5b4c23da78ed2bec5",
-              "spanId": "59006f004006afba",
-              "parentSpanId": "d0b98bc905b21b14",
+              "traceId": "e14893e59c51d25e58227481666add5a",
+              "spanId": "ffd3c6e3dab27954",
+              "parentSpanId": "7f300f3a4aadbceb",
               "name": "repository",
               "kind": 1,
-              "startTimeUnixNano": "1754729793614000000",
-              "endTimeUnixNano": "1754729793816138519",
+              "startTimeUnixNano": "1754771390136000000",
+              "endTimeUnixNano": "1754771390403681327",
               "attributes": [
                 {
                   "key": "repository",
@@ -1969,13 +1973,13 @@
           {
             "key": "vcs.commit.id",
             "value": {
-              "stringValue": "455708a5b885527fd05b0fbd8b75f84f7a7141de"
+              "stringValue": "30b51ab4cd1f558d34b15165e459c81111800336"
             }
           },
           {
             "key": "vcs.clone.id",
             "value": {
-              "stringValue": "73b31c29-013a-4df2-9cdd-dfda3b45c498"
+              "stringValue": "60651f2f-956d-4f20-997f-ffca30ef47ae"
             }
           },
           {
@@ -1987,7 +1991,7 @@
           {
             "key": "container.id",
             "value": {
-              "stringValue": "d628041aa4fbcebcc9d12acb0863e18656a0bfb16267ab6111bfe34479ca205e"
+              "stringValue": "5e128ad61e3dbffba505c81c2e9dc7c88323e8e71972cc8e2b3ba0e773f21deb"
             }
           },
           {
@@ -2023,23 +2027,19 @@
           },
           "spans": [
             {
-              "traceId": "0f6f6e49ea282fe5b4c23da78ed2bec5",
-              "spanId": "d0b98bc905b21b14",
-              "parentSpanId": "f02b93c11165ff6c",
+              "traceId": "e14893e59c51d25e58227481666add5a",
+              "spanId": "7f300f3a4aadbceb",
+              "parentSpanId": "02e7266b245ee65d",
               "name": "run",
               "kind": 1,
-              "startTimeUnixNano": "1754729793061000000",
-              "endTimeUnixNano": "1754729793819702767",
+              "startTimeUnixNano": "1754771389461000000",
+              "endTimeUnixNano": "1754771390407073756",
               "status": {}
             }
           ]
         }
       ]
-    }
-  ]
-}
-{
-  "resourceSpans": [
+    },
     {
       "resource": {
         "attributes": [
@@ -2058,7 +2058,7 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "5.22.6"
+              "stringValue": "5.22.7"
             }
           },
           {
@@ -2082,13 +2082,13 @@
           {
             "key": "process.pid",
             "value": {
-              "intValue": "3290"
+              "intValue": "3258"
             }
           },
           {
             "key": "process.parent_pid",
             "value": {
-              "intValue": "3289"
+              "intValue": "3257"
             }
           },
           {
@@ -2169,18 +2169,18 @@
         {
           "scope": {
             "name": "shell",
-            "version": "5.22.6"
+            "version": "5.22.7"
           },
           "spans": [
             {
-              "traceId": "0f6f6e49ea282fe5b4c23da78ed2bec5",
-              "spanId": "2286e1938e26a2eb",
-              "parentSpanId": "007361aa21a71648",
+              "traceId": "e14893e59c51d25e58227481666add5a",
+              "spanId": "b5a2f3a89c38ee4f",
+              "parentSpanId": "be2a0b17a1eaf2aa",
               "name": "git --version",
               "flags": 768,
               "kind": 1,
-              "startTimeUnixNano": "1754729793450944768",
-              "endTimeUnixNano": "1754729793477781248",
+              "startTimeUnixNano": "1754771389841614336",
+              "endTimeUnixNano": "1754771389867161856",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -2234,14 +2234,14 @@
               "status": {}
             },
             {
-              "traceId": "0f6f6e49ea282fe5b4c23da78ed2bec5",
-              "spanId": "f02b93c11165ff6c",
-              "parentSpanId": "e06079d896e4a605",
+              "traceId": "e14893e59c51d25e58227481666add5a",
+              "spanId": "02e7266b245ee65d",
+              "parentSpanId": "f1754c41b275f364",
               "name": "/usr/local/renovate/node --use-openssl-ca /usr/local/renovate/dist/renovate.js --dry-run plengauer/opentelemetry-bash",
               "flags": 768,
               "kind": 1,
-              "startTimeUnixNano": "1754729789075542528",
-              "endTimeUnixNano": "1754729793862871040",
+              "startTimeUnixNano": "1754771385612299776",
+              "endTimeUnixNano": "1754771390446283264",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -2289,14 +2289,14 @@
               "status": {}
             },
             {
-              "traceId": "0f6f6e49ea282fe5b4c23da78ed2bec5",
-              "spanId": "e06079d896e4a605",
-              "parentSpanId": "2f2c7221b466152b",
+              "traceId": "e14893e59c51d25e58227481666add5a",
+              "spanId": "f1754c41b275f364",
+              "parentSpanId": "4fea1ea769a7c3f5",
               "name": "/bin/bash /usr/local/sbin/renovate --dry-run plengauer/opentelemetry-bash",
               "flags": 768,
               "kind": 1,
-              "startTimeUnixNano": "1754729788524457216",
-              "endTimeUnixNano": "1754729793865552640",
+              "startTimeUnixNano": "1754771385083699968",
+              "endTimeUnixNano": "1754771390448890368",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -2350,14 +2350,14 @@
               "status": {}
             },
             {
-              "traceId": "0f6f6e49ea282fe5b4c23da78ed2bec5",
-              "spanId": "2f2c7221b466152b",
-              "parentSpanId": "9f12c9f50a1f1efc",
+              "traceId": "e14893e59c51d25e58227481666add5a",
+              "spanId": "4fea1ea769a7c3f5",
+              "parentSpanId": "076aa8b619e9e010",
               "name": "dumb-init -- renovate --dry-run plengauer/opentelemetry-bash",
               "flags": 768,
               "kind": 1,
-              "startTimeUnixNano": "1754729788197447424",
-              "endTimeUnixNano": "1754729793867071744",
+              "startTimeUnixNano": "1754771384764946176",
+              "endTimeUnixNano": "1754771390450275072",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -2411,14 +2411,14 @@
               "status": {}
             },
             {
-              "traceId": "0f6f6e49ea282fe5b4c23da78ed2bec5",
-              "spanId": "02c4f3267e994483",
-              "parentSpanId": "599130b16dd315fc",
+              "traceId": "e14893e59c51d25e58227481666add5a",
+              "spanId": "b6a6925ba3e23625",
+              "parentSpanId": "5302978518d5f6cd",
               "name": "/bin/bash /usr/local/sbin/docker-entrypoint.sh renovate --dry-run plengauer/opentelemetry-bash",
               "flags": 768,
               "kind": 1,
-              "startTimeUnixNano": "1754729787331176960",
-              "endTimeUnixNano": "1754729793869327872",
+              "startTimeUnixNano": "1754771383925885184",
+              "endTimeUnixNano": "1754771390452422400",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -2472,14 +2472,14 @@
               "status": {}
             },
             {
-              "traceId": "0f6f6e49ea282fe5b4c23da78ed2bec5",
-              "spanId": "a0a75f891d0fce63",
-              "parentSpanId": "f4475cd860ce8740",
+              "traceId": "e14893e59c51d25e58227481666add5a",
+              "spanId": "4af6045481367c5c",
+              "parentSpanId": "9bde783061bc97cf",
               "name": "/bin/bash /usr/local/sbin/renovate-entrypoint.sh --dry-run plengauer/opentelemetry-bash",
               "flags": 768,
               "kind": 1,
-              "startTimeUnixNano": "1754729786493969408",
-              "endTimeUnixNano": "1754729793870393344",
+              "startTimeUnixNano": "1754771383106557696",
+              "endTimeUnixNano": "1754771390453410816",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -2527,14 +2527,14 @@
               "status": {}
             },
             {
-              "traceId": "0f6f6e49ea282fe5b4c23da78ed2bec5",
-              "spanId": "f4475cd860ce8740",
-              "parentSpanId": "7eb6d0d4af3af94e",
+              "traceId": "e14893e59c51d25e58227481666add5a",
+              "spanId": "9bde783061bc97cf",
+              "parentSpanId": "a4e9f9d99d59c3cf",
               "name": "docker run --rm --network host --env RENOVATE_TOKEN renovate/renovate --dry-run plengauer/opentelemetry-bash",
               "flags": 768,
               "kind": 1,
-              "startTimeUnixNano": "1754729762794830336",
-              "endTimeUnixNano": "1754729793942452480",
+              "startTimeUnixNano": "1754771358200398592",
+              "endTimeUnixNano": "1754771390530579456",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -2621,7 +2621,7 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "5.22.6"
+              "stringValue": "5.22.7"
             }
           },
           {
@@ -2645,13 +2645,13 @@
           {
             "key": "process.pid",
             "value": {
-              "intValue": "2480"
+              "intValue": "2450"
             }
           },
           {
             "key": "process.parent_pid",
             "value": {
-              "intValue": "2383"
+              "intValue": "2350"
             }
           },
           {
@@ -2732,18 +2732,18 @@
         {
           "scope": {
             "name": "shell",
-            "version": "5.22.6"
+            "version": "5.22.7"
           },
           "spans": [
             {
-              "traceId": "0f6f6e49ea282fe5b4c23da78ed2bec5",
-              "spanId": "7eb6d0d4af3af94e",
-              "parentSpanId": "d36b5fb568e5009d",
+              "traceId": "e14893e59c51d25e58227481666add5a",
+              "spanId": "a4e9f9d99d59c3cf",
+              "parentSpanId": "2d7f3048d8703c3b",
               "name": "sudo -E docker run --rm --network host --env RENOVATE_TOKEN renovate/renovate --dry-run plengauer/opentelemetry-bash",
               "flags": 768,
               "kind": 1,
-              "startTimeUnixNano": "1754729762157939200",
-              "endTimeUnixNano": "1754729793978466560",
+              "startTimeUnixNano": "1754771357566980096",
+              "endTimeUnixNano": "1754771390563155456",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -2803,13 +2803,13 @@
               "status": {}
             },
             {
-              "traceId": "0f6f6e49ea282fe5b4c23da78ed2bec5",
-              "spanId": "d36b5fb568e5009d",
+              "traceId": "e14893e59c51d25e58227481666add5a",
+              "spanId": "2d7f3048d8703c3b",
               "name": "bash -e demo.sh",
               "flags": 256,
               "kind": 2,
-              "startTimeUnixNano": "1754729762145755904",
-              "endTimeUnixNano": "1754729793978661888",
+              "startTimeUnixNano": "1754771357554704640",
+              "endTimeUnixNano": "1754771390563313408",
               "status": {}
             }
           ]
