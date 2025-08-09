@@ -59,7 +59,7 @@ if [ -r "$logs_zip" ] && unzip -t "$logs_zip"; then
     unzip -Z1 "$logs_zip" | grep '.txt$' | grep -E "$(printf '%s' "$1" | sed 's/[.[\(*^$+?{|]/\\\\&/g')" | xargs -d '\n' -r unzip -p "$logs_zip" | sed '1s/^\xEF\xBB\xBF//' | sed '1s/^\xFE\xFF//' | sed '1s/^\x00\x00\xFE\xFF//'
   }
 else
-  log_stream() { false; }
+  read_log_file() { false; }
   rm -rf "$logs_zip"
 fi 
 
