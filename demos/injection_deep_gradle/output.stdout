@@ -14,8 +14,8 @@ For more details see https://docs.gradle.org/9.0.0/release-notes.html
 To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.0.0/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
 Daemon will be stopped at the end of the build 
 Calculating task graph as no cached configuration is available for tasks: build
-> Task :app:processTestResources NO-SOURCE
 > Task :app:processResources NO-SOURCE
+> Task :app:processTestResources NO-SOURCE
 
 > Task :app:compileJava
 
@@ -33,6 +33,6 @@ Calculating task graph as no cached configuration is available for tasks: build
 > Task :app:check
 > Task :app:build
 
-BUILD SUCCESSFUL in 1m 8s
+BUILD SUCCESSFUL in 1m 7s
 7 actionable tasks: 7 executed
 Configuration cache entry stored.
