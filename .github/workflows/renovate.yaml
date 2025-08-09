@@ -27,7 +27,14 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      actions: read
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.22.6
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}"]'
       - uses: actions/checkout@v4.2.2
       - run: |
           python3 -m venv venv
@@ -61,7 +68,14 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      actions: read
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.22.6
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}"]'
       - uses: actions/checkout@v4.2.2
       - run: |
           curl -s https://api.launchpad.net/devel/debian/series > /tmp/launchpad.debian.json
@@ -92,13 +106,7 @@ jobs:
           latest=opensuse/tumbleweed:latest
           dev=opensuse/tumbleweed:latest
           cat .github/workflows/images.json | jq ".opensuse.oldest = \"$oldest\"" | jq ".opensuse.stable = \"$stable\"" | jq ".opensuse.latest = \"$latest\"" | jq ".opensuse.dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/workflows/images.json
-      - run: |
-          curl -s https://endoflife.date/api/v1/products/rhel > /tmp/rhel.json
-          oldest="redhat/ubi$(jq < /tmp/rhel.json '.result.releases[] | select(.isEol == false) | .name' -r | tail -n 1):latest"
-          stable="redhat/ubi$(jq < /tmp/rhel.json '.result.releases[] | select(.isEol == false) | .name' -r | head -n 2 | tail -n 1):latest"
-          latest="redhat/ubi$(jq < /tmp/rhel.json '.result.releases[] | select(.isEol == false) | .name' -r | head -n 1):latest"
-          dev="$latest"
-          cat .github/workflows/images.json | jq ".rhel.oldest = \"$oldest\"" | jq ".rhel.stable = \"$stable\"" | jq ".rhel.latest = \"$latest\"" | jq ".rhel.dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/workflows/images.json      
+      - run: "curl -s https://endoflife.date/api/v1/products/rhel > /tmp/rhel.json\noldest=\"redhat/ubi$(jq < /tmp/rhel.json '.result.releases[] | select(.isEol == false) | .name' -r | tail -n 1):latest\"\nstable=\"redhat/ubi$(jq < /tmp/rhel.json '.result.releases[] | select(.isEol == false) | .name' -r | head -n 2 | tail -n 1):latest\"\nlatest=\"redhat/ubi$(jq < /tmp/rhel.json '.result.releases[] | select(.isEol == false) | .name' -r | head -n 1):latest\"\ndev=\"$latest\"\ncat .github/workflows/images.json | jq \".rhel.oldest = \\\"$oldest\\\"\" | jq \".rhel.stable = \\\"$stable\\\"\" | jq \".rhel.latest = \\\"$latest\\\"\" | jq \".rhel.dev = \\\"$dev\\\"\" > /tmp/images.json && cat < /tmp/images.json > .github/workflows/images.json      \n"
       - id: open-pr
         uses: peter-evans/create-pull-request@v7.0.8
         with:
