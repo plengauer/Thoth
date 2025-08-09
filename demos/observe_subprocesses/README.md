@@ -25,8 +25,8 @@ bash -e demo.sh
       /usr/lib/apt/methods/store
       /usr/lib/apt/methods/gpgv
         /usr/lib/apt/methods/gpgv
-          /usr/bin/apt-key --quiet --readonly --keyring /etc/apt/keyrings/microsoft.gpg verify --status-fd 3 /tmp/apt.sig.4aSGuP /tmp/apt.data.miU9u9
-            /usr/bin/apt-key --quiet --readonly --keyring /etc/apt/keyrings/microsoft.gpg verify --status-fd 3 /tmp/apt.sig.4aSGuP /tmp/apt.data.miU9u9
+          /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.0UJFC2 /tmp/apt.data.T1BI5X
+            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.0UJFC2 /tmp/apt.data.T1BI5X
             apt-config shell MASTER_KEYRING APT::Key::MasterKeyring
               /usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures
             apt-config shell ARCHIVE_KEYRING APT::Key::ArchiveKeyring
@@ -35,31 +35,31 @@ bash -e demo.sh
               /usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures
             apt-config shell ARCHIVE_KEYRING_URI APT::Key::ArchiveKeyringURI
               /usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures
-            /usr/bin/apt-key --quiet --readonly --keyring /etc/apt/keyrings/microsoft.gpg verify --status-fd 3 /tmp/apt.sig.4aSGuP /tmp/apt.data.miU9u9
+            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.0UJFC2 /tmp/apt.data.T1BI5X
             apt-config shell GPGV Apt::Key::gpgvcommand ASSERT_PUBKEY_ALGO Apt::Key::assert-pubkey-algo
               /usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures
-            /usr/bin/apt-key --quiet --readonly --keyring /etc/apt/keyrings/microsoft.gpg verify --status-fd 3 /tmp/apt.sig.4aSGuP /tmp/apt.data.miU9u9
+            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.0UJFC2 /tmp/apt.data.T1BI5X
               gpgv --assert-pubkey-algo
             mktemp --directory --tmpdir apt-key-gpghome.XXXXXXXXXX
-            chmod 700 /tmp/apt-key-gpghome.pJZBZX4Av4
-            /usr/bin/apt-key --quiet --readonly --keyring /etc/apt/keyrings/microsoft.gpg verify --status-fd 3 /tmp/apt.sig.4aSGuP /tmp/apt.data.miU9u9
-            /usr/bin/apt-key --quiet --readonly --keyring /etc/apt/keyrings/microsoft.gpg verify --status-fd 3 /tmp/apt.sig.4aSGuP /tmp/apt.data.miU9u9
-              /usr/bin/apt-key --quiet --readonly --keyring /etc/apt/keyrings/microsoft.gpg verify --status-fd 3 /tmp/apt.sig.4aSGuP /tmp/apt.data.miU9u9
+            chmod 700 /tmp/apt-key-gpghome.Ky2eb76B3b
+            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.0UJFC2 /tmp/apt.data.T1BI5X
+            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.0UJFC2 /tmp/apt.data.T1BI5X
+              /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.0UJFC2 /tmp/apt.data.T1BI5X
               sed -e s#'#'\"'\"'#g
-            /usr/bin/apt-key --quiet --readonly --keyring /etc/apt/keyrings/microsoft.gpg verify --status-fd 3 /tmp/apt.sig.4aSGuP /tmp/apt.data.miU9u9
-              /usr/bin/apt-key --quiet --readonly --keyring /etc/apt/keyrings/microsoft.gpg verify --status-fd 3 /tmp/apt.sig.4aSGuP /tmp/apt.data.miU9u9
+            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.0UJFC2 /tmp/apt.data.T1BI5X
+              /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.0UJFC2 /tmp/apt.data.T1BI5X
               sed -e s#'#'\"'\"'#g
-            /usr/bin/apt-key --quiet --readonly --keyring /etc/apt/keyrings/microsoft.gpg verify --status-fd 3 /tmp/apt.sig.4aSGuP /tmp/apt.data.miU9u9
-            gpgv --assert-pubkey-algo=>=rsa1024,ed25519,ed448,nistp256,nistp384,nistp512,brainpoolP256r1,brainpoolP320r1,brainpoolP384r1,brainpoolP512r1,secp256k1 --homedir /tmp/apt-key-gpghome.pJZBZX4Av4 --keyring /etc/apt/keyrings/microsoft.gpg --ignore-time-conflict --status-fd 3 /tmp/apt.sig.4aSGuP /tmp/apt.data.miU9u9
+            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.0UJFC2 /tmp/apt.data.T1BI5X
+            gpgv --assert-pubkey-algo=>=rsa1024,ed25519,ed448,nistp256,nistp384,nistp512,brainpoolP256r1,brainpoolP320r1,brainpoolP384r1,brainpoolP512r1,secp256k1 --homedir /tmp/apt-key-gpghome.Ky2eb76B3b --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg --ignore-time-conflict --status-fd 3 /tmp/apt.sig.0UJFC2 /tmp/apt.data.T1BI5X
             gpgconf --kill all
-              gpg-connect-agent --homedir /tmp/apt-key-gpghome.pJZBZX4Av4 --no-autostart --dirmngr KILLDIRMNGR
-              gpg-connect-agent --homedir /tmp/apt-key-gpghome.pJZBZX4Av4 -s --no-autostart GETINFO scd_running /if ${! $?} scd killscd /end
-              gpg-connect-agent --homedir /tmp/apt-key-gpghome.pJZBZX4Av4 --no-autostart KILLAGENT
-              gpg-connect-agent --no-autostart --keyboxd KILLKEYBOXD --homedir /tmp/apt-key-gpghome.pJZBZX4Av4
-            rm -rf /tmp/apt-key-gpghome.pJZBZX4Av4
+              gpg-connect-agent --homedir /tmp/apt-key-gpghome.Ky2eb76B3b --no-autostart --dirmngr KILLDIRMNGR
+              gpg-connect-agent --homedir /tmp/apt-key-gpghome.Ky2eb76B3b -s --no-autostart GETINFO scd_running /if ${! $?} scd killscd /end
+              gpg-connect-agent --homedir /tmp/apt-key-gpghome.Ky2eb76B3b --no-autostart KILLAGENT
+              gpg-connect-agent --no-autostart --keyboxd KILLKEYBOXD --homedir /tmp/apt-key-gpghome.Ky2eb76B3b
+            rm -rf /tmp/apt-key-gpghome.Ky2eb76B3b
         /usr/lib/apt/methods/gpgv
-          /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/microsoft-prod.gpg verify --status-fd 3 /tmp/apt.sig.dAshbY /tmp/apt.data.1ueDob
-            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/microsoft-prod.gpg verify --status-fd 3 /tmp/apt.sig.dAshbY /tmp/apt.data.1ueDob
+          /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.05672U /tmp/apt.data.3qfOrj
+            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.05672U /tmp/apt.data.3qfOrj
             apt-config shell MASTER_KEYRING APT::Key::MasterKeyring
               /usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures
             apt-config shell ARCHIVE_KEYRING APT::Key::ArchiveKeyring
@@ -68,31 +68,31 @@ bash -e demo.sh
               /usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures
             apt-config shell ARCHIVE_KEYRING_URI APT::Key::ArchiveKeyringURI
               /usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures
-            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/microsoft-prod.gpg verify --status-fd 3 /tmp/apt.sig.dAshbY /tmp/apt.data.1ueDob
+            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.05672U /tmp/apt.data.3qfOrj
             apt-config shell GPGV Apt::Key::gpgvcommand ASSERT_PUBKEY_ALGO Apt::Key::assert-pubkey-algo
               /usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures
-            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/microsoft-prod.gpg verify --status-fd 3 /tmp/apt.sig.dAshbY /tmp/apt.data.1ueDob
+            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.05672U /tmp/apt.data.3qfOrj
               gpgv --assert-pubkey-algo
             mktemp --directory --tmpdir apt-key-gpghome.XXXXXXXXXX
-            chmod 700 /tmp/apt-key-gpghome.iBNzBpZAiz
-            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/microsoft-prod.gpg verify --status-fd 3 /tmp/apt.sig.dAshbY /tmp/apt.data.1ueDob
-            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/microsoft-prod.gpg verify --status-fd 3 /tmp/apt.sig.dAshbY /tmp/apt.data.1ueDob
-              /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/microsoft-prod.gpg verify --status-fd 3 /tmp/apt.sig.dAshbY /tmp/apt.data.1ueDob
+            chmod 700 /tmp/apt-key-gpghome.7bsv7Ccq8D
+            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.05672U /tmp/apt.data.3qfOrj
+            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.05672U /tmp/apt.data.3qfOrj
+              /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.05672U /tmp/apt.data.3qfOrj
               sed -e s#'#'\"'\"'#g
-            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/microsoft-prod.gpg verify --status-fd 3 /tmp/apt.sig.dAshbY /tmp/apt.data.1ueDob
-              /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/microsoft-prod.gpg verify --status-fd 3 /tmp/apt.sig.dAshbY /tmp/apt.data.1ueDob
+            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.05672U /tmp/apt.data.3qfOrj
+              /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.05672U /tmp/apt.data.3qfOrj
               sed -e s#'#'\"'\"'#g
-            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/microsoft-prod.gpg verify --status-fd 3 /tmp/apt.sig.dAshbY /tmp/apt.data.1ueDob
-            gpgv --assert-pubkey-algo=>=rsa1024,ed25519,ed448,nistp256,nistp384,nistp512,brainpoolP256r1,brainpoolP320r1,brainpoolP384r1,brainpoolP512r1,secp256k1 --homedir /tmp/apt-key-gpghome.iBNzBpZAiz --keyring /usr/share/keyrings/microsoft-prod.gpg --ignore-time-conflict --status-fd 3 /tmp/apt.sig.dAshbY /tmp/apt.data.1ueDob
+            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.05672U /tmp/apt.data.3qfOrj
+            gpgv --assert-pubkey-algo=>=rsa1024,ed25519,ed448,nistp256,nistp384,nistp512,brainpoolP256r1,brainpoolP320r1,brainpoolP384r1,brainpoolP512r1,secp256k1 --homedir /tmp/apt-key-gpghome.7bsv7Ccq8D --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg --ignore-time-conflict --status-fd 3 /tmp/apt.sig.05672U /tmp/apt.data.3qfOrj
             gpgconf --kill all
-              gpg-connect-agent --homedir /tmp/apt-key-gpghome.iBNzBpZAiz --no-autostart --dirmngr KILLDIRMNGR
-              gpg-connect-agent --homedir /tmp/apt-key-gpghome.iBNzBpZAiz -s --no-autostart GETINFO scd_running /if ${! $?} scd killscd /end
-              gpg-connect-agent --homedir /tmp/apt-key-gpghome.iBNzBpZAiz --no-autostart KILLAGENT
-              gpg-connect-agent --no-autostart --keyboxd KILLKEYBOXD --homedir /tmp/apt-key-gpghome.iBNzBpZAiz
-            rm -rf /tmp/apt-key-gpghome.iBNzBpZAiz
+              gpg-connect-agent --homedir /tmp/apt-key-gpghome.7bsv7Ccq8D --no-autostart --dirmngr KILLDIRMNGR
+              gpg-connect-agent --homedir /tmp/apt-key-gpghome.7bsv7Ccq8D -s --no-autostart GETINFO scd_running /if ${! $?} scd killscd /end
+              gpg-connect-agent --homedir /tmp/apt-key-gpghome.7bsv7Ccq8D --no-autostart KILLAGENT
+              gpg-connect-agent --no-autostart --keyboxd KILLKEYBOXD --homedir /tmp/apt-key-gpghome.7bsv7Ccq8D
+            rm -rf /tmp/apt-key-gpghome.7bsv7Ccq8D
         /usr/lib/apt/methods/gpgv
-          /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.oMYBlA /tmp/apt.data.1LN6OG
-            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.oMYBlA /tmp/apt.data.1LN6OG
+          /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.kHYtIT /tmp/apt.data.7cLh79
+            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.kHYtIT /tmp/apt.data.7cLh79
             apt-config shell MASTER_KEYRING APT::Key::MasterKeyring
               /usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures
             apt-config shell ARCHIVE_KEYRING APT::Key::ArchiveKeyring
@@ -101,31 +101,31 @@ bash -e demo.sh
               /usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures
             apt-config shell ARCHIVE_KEYRING_URI APT::Key::ArchiveKeyringURI
               /usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures
-            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.oMYBlA /tmp/apt.data.1LN6OG
+            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.kHYtIT /tmp/apt.data.7cLh79
             apt-config shell GPGV Apt::Key::gpgvcommand ASSERT_PUBKEY_ALGO Apt::Key::assert-pubkey-algo
               /usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures
-            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.oMYBlA /tmp/apt.data.1LN6OG
+            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.kHYtIT /tmp/apt.data.7cLh79
               gpgv --assert-pubkey-algo
             mktemp --directory --tmpdir apt-key-gpghome.XXXXXXXXXX
-            chmod 700 /tmp/apt-key-gpghome.lG9AFyC28C
-            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.oMYBlA /tmp/apt.data.1LN6OG
-            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.oMYBlA /tmp/apt.data.1LN6OG
-              /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.oMYBlA /tmp/apt.data.1LN6OG
+            chmod 700 /tmp/apt-key-gpghome.w5YINb2yRQ
+            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.kHYtIT /tmp/apt.data.7cLh79
+            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.kHYtIT /tmp/apt.data.7cLh79
+              /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.kHYtIT /tmp/apt.data.7cLh79
               sed -e s#'#'\"'\"'#g
-            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.oMYBlA /tmp/apt.data.1LN6OG
-              /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.oMYBlA /tmp/apt.data.1LN6OG
+            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.kHYtIT /tmp/apt.data.7cLh79
+              /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.kHYtIT /tmp/apt.data.7cLh79
               sed -e s#'#'\"'\"'#g
-            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.oMYBlA /tmp/apt.data.1LN6OG
-            gpgv --assert-pubkey-algo=>=rsa1024,ed25519,ed448,nistp256,nistp384,nistp512,brainpoolP256r1,brainpoolP320r1,brainpoolP384r1,brainpoolP512r1,secp256k1 --homedir /tmp/apt-key-gpghome.lG9AFyC28C --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg --ignore-time-conflict --status-fd 3 /tmp/apt.sig.oMYBlA /tmp/apt.data.1LN6OG
+            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.kHYtIT /tmp/apt.data.7cLh79
+            gpgv --assert-pubkey-algo=>=rsa1024,ed25519,ed448,nistp256,nistp384,nistp512,brainpoolP256r1,brainpoolP320r1,brainpoolP384r1,brainpoolP512r1,secp256k1 --homedir /tmp/apt-key-gpghome.w5YINb2yRQ --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg --ignore-time-conflict --status-fd 3 /tmp/apt.sig.kHYtIT /tmp/apt.data.7cLh79
             gpgconf --kill all
-              gpg-connect-agent --homedir /tmp/apt-key-gpghome.lG9AFyC28C --no-autostart --dirmngr KILLDIRMNGR
-              gpg-connect-agent --homedir /tmp/apt-key-gpghome.lG9AFyC28C -s --no-autostart GETINFO scd_running /if ${! $?} scd killscd /end
-              gpg-connect-agent --homedir /tmp/apt-key-gpghome.lG9AFyC28C --no-autostart KILLAGENT
-              gpg-connect-agent --no-autostart --keyboxd KILLKEYBOXD --homedir /tmp/apt-key-gpghome.lG9AFyC28C
-            rm -rf /tmp/apt-key-gpghome.lG9AFyC28C
+              gpg-connect-agent --homedir /tmp/apt-key-gpghome.w5YINb2yRQ --no-autostart --dirmngr KILLDIRMNGR
+              gpg-connect-agent --homedir /tmp/apt-key-gpghome.w5YINb2yRQ -s --no-autostart GETINFO scd_running /if ${! $?} scd killscd /end
+              gpg-connect-agent --homedir /tmp/apt-key-gpghome.w5YINb2yRQ --no-autostart KILLAGENT
+              gpg-connect-agent --no-autostart --keyboxd KILLKEYBOXD --homedir /tmp/apt-key-gpghome.w5YINb2yRQ
+            rm -rf /tmp/apt-key-gpghome.w5YINb2yRQ
         /usr/lib/apt/methods/gpgv
-          /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.OgXZTL /tmp/apt.data.gXJMmI
-            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.OgXZTL /tmp/apt.data.gXJMmI
+          /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.S7KxYw /tmp/apt.data.6YF98f
+            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.S7KxYw /tmp/apt.data.6YF98f
             apt-config shell MASTER_KEYRING APT::Key::MasterKeyring
               /usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures
             apt-config shell ARCHIVE_KEYRING APT::Key::ArchiveKeyring
@@ -134,31 +134,31 @@ bash -e demo.sh
               /usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures
             apt-config shell ARCHIVE_KEYRING_URI APT::Key::ArchiveKeyringURI
               /usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures
-            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.OgXZTL /tmp/apt.data.gXJMmI
+            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.S7KxYw /tmp/apt.data.6YF98f
             apt-config shell GPGV Apt::Key::gpgvcommand ASSERT_PUBKEY_ALGO Apt::Key::assert-pubkey-algo
               /usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures
-            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.OgXZTL /tmp/apt.data.gXJMmI
+            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.S7KxYw /tmp/apt.data.6YF98f
               gpgv --assert-pubkey-algo
             mktemp --directory --tmpdir apt-key-gpghome.XXXXXXXXXX
-            chmod 700 /tmp/apt-key-gpghome.Gs5aK6cf9C
-            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.OgXZTL /tmp/apt.data.gXJMmI
-            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.OgXZTL /tmp/apt.data.gXJMmI
-              /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.OgXZTL /tmp/apt.data.gXJMmI
+            chmod 700 /tmp/apt-key-gpghome.5SLKNvh22i
+            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.S7KxYw /tmp/apt.data.6YF98f
+            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.S7KxYw /tmp/apt.data.6YF98f
+              /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.S7KxYw /tmp/apt.data.6YF98f
               sed -e s#'#'\"'\"'#g
-            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.OgXZTL /tmp/apt.data.gXJMmI
-              /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.OgXZTL /tmp/apt.data.gXJMmI
+            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.S7KxYw /tmp/apt.data.6YF98f
+              /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.S7KxYw /tmp/apt.data.6YF98f
               sed -e s#'#'\"'\"'#g
-            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.OgXZTL /tmp/apt.data.gXJMmI
-            gpgv --assert-pubkey-algo=>=rsa1024,ed25519,ed448,nistp256,nistp384,nistp512,brainpoolP256r1,brainpoolP320r1,brainpoolP384r1,brainpoolP512r1,secp256k1 --homedir /tmp/apt-key-gpghome.Gs5aK6cf9C --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg --ignore-time-conflict --status-fd 3 /tmp/apt.sig.OgXZTL /tmp/apt.data.gXJMmI
+            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.S7KxYw /tmp/apt.data.6YF98f
+            gpgv --assert-pubkey-algo=>=rsa1024,ed25519,ed448,nistp256,nistp384,nistp512,brainpoolP256r1,brainpoolP320r1,brainpoolP384r1,brainpoolP512r1,secp256k1 --homedir /tmp/apt-key-gpghome.5SLKNvh22i --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg --ignore-time-conflict --status-fd 3 /tmp/apt.sig.S7KxYw /tmp/apt.data.6YF98f
             gpgconf --kill all
-              gpg-connect-agent --homedir /tmp/apt-key-gpghome.Gs5aK6cf9C --no-autostart --dirmngr KILLDIRMNGR
-              gpg-connect-agent --homedir /tmp/apt-key-gpghome.Gs5aK6cf9C -s --no-autostart GETINFO scd_running /if ${! $?} scd killscd /end
-              gpg-connect-agent --homedir /tmp/apt-key-gpghome.Gs5aK6cf9C --no-autostart KILLAGENT
-              gpg-connect-agent --no-autostart --keyboxd KILLKEYBOXD --homedir /tmp/apt-key-gpghome.Gs5aK6cf9C
-            rm -rf /tmp/apt-key-gpghome.Gs5aK6cf9C
+              gpg-connect-agent --homedir /tmp/apt-key-gpghome.5SLKNvh22i --no-autostart --dirmngr KILLDIRMNGR
+              gpg-connect-agent --homedir /tmp/apt-key-gpghome.5SLKNvh22i -s --no-autostart GETINFO scd_running /if ${! $?} scd killscd /end
+              gpg-connect-agent --homedir /tmp/apt-key-gpghome.5SLKNvh22i --no-autostart KILLAGENT
+              gpg-connect-agent --no-autostart --keyboxd KILLKEYBOXD --homedir /tmp/apt-key-gpghome.5SLKNvh22i
+            rm -rf /tmp/apt-key-gpghome.5SLKNvh22i
         /usr/lib/apt/methods/gpgv
-          /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.0ezLBw /tmp/apt.data.6hjAjI
-            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.0ezLBw /tmp/apt.data.6hjAjI
+          /usr/bin/apt-key --quiet --readonly --keyring /etc/apt/keyrings/microsoft.gpg verify --status-fd 3 /tmp/apt.sig.IQlsdd /tmp/apt.data.z7Oe6p
+            /usr/bin/apt-key --quiet --readonly --keyring /etc/apt/keyrings/microsoft.gpg verify --status-fd 3 /tmp/apt.sig.IQlsdd /tmp/apt.data.z7Oe6p
             apt-config shell MASTER_KEYRING APT::Key::MasterKeyring
               /usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures
             apt-config shell ARCHIVE_KEYRING APT::Key::ArchiveKeyring
@@ -167,31 +167,31 @@ bash -e demo.sh
               /usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures
             apt-config shell ARCHIVE_KEYRING_URI APT::Key::ArchiveKeyringURI
               /usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures
-            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.0ezLBw /tmp/apt.data.6hjAjI
+            /usr/bin/apt-key --quiet --readonly --keyring /etc/apt/keyrings/microsoft.gpg verify --status-fd 3 /tmp/apt.sig.IQlsdd /tmp/apt.data.z7Oe6p
             apt-config shell GPGV Apt::Key::gpgvcommand ASSERT_PUBKEY_ALGO Apt::Key::assert-pubkey-algo
               /usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures
-            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.0ezLBw /tmp/apt.data.6hjAjI
+            /usr/bin/apt-key --quiet --readonly --keyring /etc/apt/keyrings/microsoft.gpg verify --status-fd 3 /tmp/apt.sig.IQlsdd /tmp/apt.data.z7Oe6p
               gpgv --assert-pubkey-algo
             mktemp --directory --tmpdir apt-key-gpghome.XXXXXXXXXX
-            chmod 700 /tmp/apt-key-gpghome.afy13skrwF
-            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.0ezLBw /tmp/apt.data.6hjAjI
-            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.0ezLBw /tmp/apt.data.6hjAjI
-              /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.0ezLBw /tmp/apt.data.6hjAjI
+            chmod 700 /tmp/apt-key-gpghome.QexeRtkO2U
+            /usr/bin/apt-key --quiet --readonly --keyring /etc/apt/keyrings/microsoft.gpg verify --status-fd 3 /tmp/apt.sig.IQlsdd /tmp/apt.data.z7Oe6p
+            /usr/bin/apt-key --quiet --readonly --keyring /etc/apt/keyrings/microsoft.gpg verify --status-fd 3 /tmp/apt.sig.IQlsdd /tmp/apt.data.z7Oe6p
+              /usr/bin/apt-key --quiet --readonly --keyring /etc/apt/keyrings/microsoft.gpg verify --status-fd 3 /tmp/apt.sig.IQlsdd /tmp/apt.data.z7Oe6p
               sed -e s#'#'\"'\"'#g
-            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.0ezLBw /tmp/apt.data.6hjAjI
-              /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.0ezLBw /tmp/apt.data.6hjAjI
+            /usr/bin/apt-key --quiet --readonly --keyring /etc/apt/keyrings/microsoft.gpg verify --status-fd 3 /tmp/apt.sig.IQlsdd /tmp/apt.data.z7Oe6p
+              /usr/bin/apt-key --quiet --readonly --keyring /etc/apt/keyrings/microsoft.gpg verify --status-fd 3 /tmp/apt.sig.IQlsdd /tmp/apt.data.z7Oe6p
               sed -e s#'#'\"'\"'#g
-            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.0ezLBw /tmp/apt.data.6hjAjI
-            gpgv --assert-pubkey-algo=>=rsa1024,ed25519,ed448,nistp256,nistp384,nistp512,brainpoolP256r1,brainpoolP320r1,brainpoolP384r1,brainpoolP512r1,secp256k1 --homedir /tmp/apt-key-gpghome.afy13skrwF --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg --ignore-time-conflict --status-fd 3 /tmp/apt.sig.0ezLBw /tmp/apt.data.6hjAjI
+            /usr/bin/apt-key --quiet --readonly --keyring /etc/apt/keyrings/microsoft.gpg verify --status-fd 3 /tmp/apt.sig.IQlsdd /tmp/apt.data.z7Oe6p
+            gpgv --assert-pubkey-algo=>=rsa1024,ed25519,ed448,nistp256,nistp384,nistp512,brainpoolP256r1,brainpoolP320r1,brainpoolP384r1,brainpoolP512r1,secp256k1 --homedir /tmp/apt-key-gpghome.QexeRtkO2U --keyring /etc/apt/keyrings/microsoft.gpg --ignore-time-conflict --status-fd 3 /tmp/apt.sig.IQlsdd /tmp/apt.data.z7Oe6p
             gpgconf --kill all
-              gpg-connect-agent --homedir /tmp/apt-key-gpghome.afy13skrwF --no-autostart --dirmngr KILLDIRMNGR
-              gpg-connect-agent --homedir /tmp/apt-key-gpghome.afy13skrwF -s --no-autostart GETINFO scd_running /if ${! $?} scd killscd /end
-              gpg-connect-agent --homedir /tmp/apt-key-gpghome.afy13skrwF --no-autostart KILLAGENT
-              gpg-connect-agent --no-autostart --keyboxd KILLKEYBOXD --homedir /tmp/apt-key-gpghome.afy13skrwF
-            rm -rf /tmp/apt-key-gpghome.afy13skrwF
+              gpg-connect-agent --homedir /tmp/apt-key-gpghome.QexeRtkO2U --no-autostart --dirmngr KILLDIRMNGR
+              gpg-connect-agent --homedir /tmp/apt-key-gpghome.QexeRtkO2U -s --no-autostart GETINFO scd_running /if ${! $?} scd killscd /end
+              gpg-connect-agent --homedir /tmp/apt-key-gpghome.QexeRtkO2U --no-autostart KILLAGENT
+              gpg-connect-agent --no-autostart --keyboxd KILLKEYBOXD --homedir /tmp/apt-key-gpghome.QexeRtkO2U
+            rm -rf /tmp/apt-key-gpghome.QexeRtkO2U
         /usr/lib/apt/methods/gpgv
-          /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.ctJehA /tmp/apt.data.P2b1Jr
-            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.ctJehA /tmp/apt.data.P2b1Jr
+          /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/microsoft-prod.gpg verify --status-fd 3 /tmp/apt.sig.wgcsNN /tmp/apt.data.3cIrFd
+            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/microsoft-prod.gpg verify --status-fd 3 /tmp/apt.sig.wgcsNN /tmp/apt.data.3cIrFd
             apt-config shell MASTER_KEYRING APT::Key::MasterKeyring
               /usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures
             apt-config shell ARCHIVE_KEYRING APT::Key::ArchiveKeyring
@@ -200,28 +200,28 @@ bash -e demo.sh
               /usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures
             apt-config shell ARCHIVE_KEYRING_URI APT::Key::ArchiveKeyringURI
               /usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures
-            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.ctJehA /tmp/apt.data.P2b1Jr
+            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/microsoft-prod.gpg verify --status-fd 3 /tmp/apt.sig.wgcsNN /tmp/apt.data.3cIrFd
             apt-config shell GPGV Apt::Key::gpgvcommand ASSERT_PUBKEY_ALGO Apt::Key::assert-pubkey-algo
               /usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures
-            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.ctJehA /tmp/apt.data.P2b1Jr
+            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/microsoft-prod.gpg verify --status-fd 3 /tmp/apt.sig.wgcsNN /tmp/apt.data.3cIrFd
               gpgv --assert-pubkey-algo
             mktemp --directory --tmpdir apt-key-gpghome.XXXXXXXXXX
-            chmod 700 /tmp/apt-key-gpghome.HQwHHf50an
-            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.ctJehA /tmp/apt.data.P2b1Jr
-            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.ctJehA /tmp/apt.data.P2b1Jr
-              /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.ctJehA /tmp/apt.data.P2b1Jr
+            chmod 700 /tmp/apt-key-gpghome.rs2y6vGFvE
+            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/microsoft-prod.gpg verify --status-fd 3 /tmp/apt.sig.wgcsNN /tmp/apt.data.3cIrFd
+            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/microsoft-prod.gpg verify --status-fd 3 /tmp/apt.sig.wgcsNN /tmp/apt.data.3cIrFd
+              /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/microsoft-prod.gpg verify --status-fd 3 /tmp/apt.sig.wgcsNN /tmp/apt.data.3cIrFd
               sed -e s#'#'\"'\"'#g
-            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.ctJehA /tmp/apt.data.P2b1Jr
-              /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.ctJehA /tmp/apt.data.P2b1Jr
+            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/microsoft-prod.gpg verify --status-fd 3 /tmp/apt.sig.wgcsNN /tmp/apt.data.3cIrFd
+              /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/microsoft-prod.gpg verify --status-fd 3 /tmp/apt.sig.wgcsNN /tmp/apt.data.3cIrFd
               sed -e s#'#'\"'\"'#g
-            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.ctJehA /tmp/apt.data.P2b1Jr
-            gpgv --assert-pubkey-algo=>=rsa1024,ed25519,ed448,nistp256,nistp384,nistp512,brainpoolP256r1,brainpoolP320r1,brainpoolP384r1,brainpoolP512r1,secp256k1 --homedir /tmp/apt-key-gpghome.HQwHHf50an --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg --ignore-time-conflict --status-fd 3 /tmp/apt.sig.ctJehA /tmp/apt.data.P2b1Jr
+            /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/microsoft-prod.gpg verify --status-fd 3 /tmp/apt.sig.wgcsNN /tmp/apt.data.3cIrFd
+            gpgv --assert-pubkey-algo=>=rsa1024,ed25519,ed448,nistp256,nistp384,nistp512,brainpoolP256r1,brainpoolP320r1,brainpoolP384r1,brainpoolP512r1,secp256k1 --homedir /tmp/apt-key-gpghome.rs2y6vGFvE --keyring /usr/share/keyrings/microsoft-prod.gpg --ignore-time-conflict --status-fd 3 /tmp/apt.sig.wgcsNN /tmp/apt.data.3cIrFd
             gpgconf --kill all
-              gpg-connect-agent --homedir /tmp/apt-key-gpghome.HQwHHf50an --no-autostart --dirmngr KILLDIRMNGR
-              gpg-connect-agent --homedir /tmp/apt-key-gpghome.HQwHHf50an -s --no-autostart GETINFO scd_running /if ${! $?} scd killscd /end
-              gpg-connect-agent --homedir /tmp/apt-key-gpghome.HQwHHf50an --no-autostart KILLAGENT
-              gpg-connect-agent --no-autostart --keyboxd KILLKEYBOXD --homedir /tmp/apt-key-gpghome.HQwHHf50an
-            rm -rf /tmp/apt-key-gpghome.HQwHHf50an
+              gpg-connect-agent --homedir /tmp/apt-key-gpghome.rs2y6vGFvE --no-autostart --dirmngr KILLDIRMNGR
+              gpg-connect-agent --homedir /tmp/apt-key-gpghome.rs2y6vGFvE -s --no-autostart GETINFO scd_running /if ${! $?} scd killscd /end
+              gpg-connect-agent --homedir /tmp/apt-key-gpghome.rs2y6vGFvE --no-autostart KILLAGENT
+              gpg-connect-agent --no-autostart --keyboxd KILLKEYBOXD --homedir /tmp/apt-key-gpghome.rs2y6vGFvE
+            rm -rf /tmp/apt-key-gpghome.rs2y6vGFvE
       /usr/lib/apt/methods/http
       /usr/lib/apt/methods/file
       /usr/lib/apt/methods/mirror+file
@@ -245,6 +245,22 @@ bash -e demo.sh
           /usr/bin/test -w /var/lib/command-not-found/ -a -e /usr/lib/cnf-update-db
           /usr/lib/cnf-update-db
             /usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures
+            /usr/lib/apt/apt-helper cat-file /var/lib/apt/lists/_etc_apt_apt-mirrors.txt_dists_noble_main_cnf_Commands-amd64
+            /usr/lib/apt/apt-helper cat-file /var/lib/apt/lists/_etc_apt_apt-mirrors.txt_dists_noble-updates_multiverse_cnf_Commands-amd64
+            /usr/lib/apt/apt-helper cat-file /var/lib/apt/lists/_etc_apt_apt-mirrors.txt_dists_noble-updates_restricted_cnf_Commands-amd64
+            /usr/lib/apt/apt-helper cat-file /var/lib/apt/lists/_etc_apt_apt-mirrors.txt_dists_noble-backports_main_cnf_Commands-amd64
+            /usr/lib/apt/apt-helper cat-file /var/lib/apt/lists/_etc_apt_apt-mirrors.txt_dists_noble-security_main_cnf_Commands-amd64
+            /usr/lib/apt/apt-helper cat-file /var/lib/apt/lists/_etc_apt_apt-mirrors.txt_dists_noble-backports_universe_cnf_Commands-amd64
+            /usr/lib/apt/apt-helper cat-file /var/lib/apt/lists/_etc_apt_apt-mirrors.txt_dists_noble-security_multiverse_cnf_Commands-amd64
+            /usr/lib/apt/apt-helper cat-file /var/lib/apt/lists/_etc_apt_apt-mirrors.txt_dists_noble_universe_cnf_Commands-amd64
+            /usr/lib/apt/apt-helper cat-file /var/lib/apt/lists/_etc_apt_apt-mirrors.txt_dists_noble_restricted_cnf_Commands-amd64
+            /usr/lib/apt/apt-helper cat-file /var/lib/apt/lists/_etc_apt_apt-mirrors.txt_dists_noble-updates_universe_cnf_Commands-amd64
+            /usr/lib/apt/apt-helper cat-file /var/lib/apt/lists/_etc_apt_apt-mirrors.txt_dists_noble-security_restricted_cnf_Commands-amd64
+            /usr/lib/apt/apt-helper cat-file /var/lib/apt/lists/_etc_apt_apt-mirrors.txt_dists_noble-backports_multiverse_cnf_Commands-amd64
+            /usr/lib/apt/apt-helper cat-file /var/lib/apt/lists/_etc_apt_apt-mirrors.txt_dists_noble-updates_main_cnf_Commands-amd64
+            /usr/lib/apt/apt-helper cat-file /var/lib/apt/lists/_etc_apt_apt-mirrors.txt_dists_noble-backports_restricted_cnf_Commands-amd64
+            /usr/lib/apt/apt-helper cat-file /var/lib/apt/lists/_etc_apt_apt-mirrors.txt_dists_noble-security_universe_cnf_Commands-amd64
+            /usr/lib/apt/apt-helper cat-file /var/lib/apt/lists/_etc_apt_apt-mirrors.txt_dists_noble_multiverse_cnf_Commands-amd64
         sh -c -- /usr/lib/update-notifier/update-motd-updates-available 2>/dev/null || true
           /usr/lib/update-notifier/update-motd-updates-available
             apt-config shell StateDir Dir::State
@@ -260,21 +276,21 @@ bash -e demo.sh
             find /var/lib/apt/lists/ /etc/apt/sources.list //var/lib/dpkg/status -type f -newer /var/lib/update-notifier/updates-available -print -quit
             mktemp -p /var/lib/update-notifier
               dirname /var/lib/update-notifier/updates-available
-            rm -f /var/lib/update-notifier/tmp.2uirF6QnM8
+            rm -f /var/lib/update-notifier/tmp.y93TFjug0k
       /usr/bin/dpkg --force-confdef --force-confold --print-foreign-architectures
       /usr/bin/dpkg --force-confdef --force-confold --print-foreign-architectures
 ```
 ## Full Trace
 ```
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "153f4431c762dd93",
-  "parent_span_id": "aa2db57c5f30ca7a",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "321549587109f2bd",
+  "parent_span_id": "7eaec5b248092503",
   "name": "/bin/echo",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652805775271000,
-  "time_end": 1754652805781400000,
+  "time_start": 1754729624036388000,
+  "time_end": 1754729624041671000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -283,8 +299,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -302,14 +318,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "cd844415a7d4917c",
-  "parent_span_id": "64e2d3a6fc341712",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /etc/apt/keyrings/microsoft.gpg verify --status-fd 3 /tmp/apt.sig.4aSGuP /tmp/apt.data.miU9u9",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "a45dc17d535d1155",
+  "parent_span_id": "b71527c22bd3f18b",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /etc/apt/keyrings/microsoft.gpg verify --status-fd 3 /tmp/apt.sig.IQlsdd /tmp/apt.data.z7Oe6p",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652802890839000,
-  "time_end": 1754652803148054000,
+  "time_start": 1754729623426990000,
+  "time_end": 1754729623672364000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -318,8 +334,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -337,14 +353,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "0fa45437add5ecfe",
-  "parent_span_id": "cd844415a7d4917c",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /etc/apt/keyrings/microsoft.gpg verify --status-fd 3 /tmp/apt.sig.4aSGuP /tmp/apt.data.miU9u9",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "dac27722dc1e218b",
+  "parent_span_id": "a45dc17d535d1155",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /etc/apt/keyrings/microsoft.gpg verify --status-fd 3 /tmp/apt.sig.IQlsdd /tmp/apt.data.z7Oe6p",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652802898352000,
-  "time_end": 1754652802898987000,
+  "time_start": 1754729623431712000,
+  "time_end": 1754729623432349000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -353,8 +369,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -372,14 +388,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "da12a19cd9192b92",
-  "parent_span_id": "cd844415a7d4917c",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /etc/apt/keyrings/microsoft.gpg verify --status-fd 3 /tmp/apt.sig.4aSGuP /tmp/apt.data.miU9u9",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "e5c3cef10126adbd",
+  "parent_span_id": "a45dc17d535d1155",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /etc/apt/keyrings/microsoft.gpg verify --status-fd 3 /tmp/apt.sig.IQlsdd /tmp/apt.data.z7Oe6p",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803003699000,
-  "time_end": 1754652803004379000,
+  "time_start": 1754729623560252000,
+  "time_end": 1754729623560921000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -388,8 +404,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -407,14 +423,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "6c27be3749d4f2ff",
-  "parent_span_id": "cd844415a7d4917c",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /etc/apt/keyrings/microsoft.gpg verify --status-fd 3 /tmp/apt.sig.4aSGuP /tmp/apt.data.miU9u9",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "37c11030c72cae2d",
+  "parent_span_id": "a45dc17d535d1155",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /etc/apt/keyrings/microsoft.gpg verify --status-fd 3 /tmp/apt.sig.IQlsdd /tmp/apt.data.z7Oe6p",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803031854000,
-  "time_end": 1754652803059249000,
+  "time_start": 1754729623592492000,
+  "time_end": 1754729623603190000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -423,8 +439,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -442,14 +458,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "d9b14dde6f6197d7",
-  "parent_span_id": "cd844415a7d4917c",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /etc/apt/keyrings/microsoft.gpg verify --status-fd 3 /tmp/apt.sig.4aSGuP /tmp/apt.data.miU9u9",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "9d77b0bd985ff9ce",
+  "parent_span_id": "a45dc17d535d1155",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /etc/apt/keyrings/microsoft.gpg verify --status-fd 3 /tmp/apt.sig.IQlsdd /tmp/apt.data.z7Oe6p",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803066510000,
-  "time_end": 1754652803067555000,
+  "time_start": 1754729623609711000,
+  "time_end": 1754729623610679000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -458,8 +474,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -477,14 +493,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "8c51c278d3d4f272",
-  "parent_span_id": "cd844415a7d4917c",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /etc/apt/keyrings/microsoft.gpg verify --status-fd 3 /tmp/apt.sig.4aSGuP /tmp/apt.data.miU9u9",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "d6c307f24ca29f31",
+  "parent_span_id": "a45dc17d535d1155",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /etc/apt/keyrings/microsoft.gpg verify --status-fd 3 /tmp/apt.sig.IQlsdd /tmp/apt.data.z7Oe6p",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803068052000,
-  "time_end": 1754652803074319000,
+  "time_start": 1754729623611197000,
+  "time_end": 1754729623617198000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -493,8 +509,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -512,14 +528,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "9bd563a295a35ab2",
-  "parent_span_id": "8c51c278d3d4f272",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /etc/apt/keyrings/microsoft.gpg verify --status-fd 3 /tmp/apt.sig.4aSGuP /tmp/apt.data.miU9u9",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "fe3491259296ce63",
+  "parent_span_id": "d6c307f24ca29f31",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /etc/apt/keyrings/microsoft.gpg verify --status-fd 3 /tmp/apt.sig.IQlsdd /tmp/apt.data.z7Oe6p",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803068849000,
-  "time_end": 1754652803069381000,
+  "time_start": 1754729623611966000,
+  "time_end": 1754729623612490000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -528,8 +544,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -547,14 +563,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "3626f84d18181ed8",
-  "parent_span_id": "cd844415a7d4917c",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /etc/apt/keyrings/microsoft.gpg verify --status-fd 3 /tmp/apt.sig.4aSGuP /tmp/apt.data.miU9u9",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "3bd682870ed1c0a1",
+  "parent_span_id": "a45dc17d535d1155",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /etc/apt/keyrings/microsoft.gpg verify --status-fd 3 /tmp/apt.sig.IQlsdd /tmp/apt.data.z7Oe6p",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803074660000,
-  "time_end": 1754652803081452000,
+  "time_start": 1754729623617516000,
+  "time_end": 1754729623624434000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -563,8 +579,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -582,14 +598,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "6a317d3bb731fbb0",
-  "parent_span_id": "3626f84d18181ed8",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /etc/apt/keyrings/microsoft.gpg verify --status-fd 3 /tmp/apt.sig.4aSGuP /tmp/apt.data.miU9u9",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "f7ba8fa7bd6500d3",
+  "parent_span_id": "3bd682870ed1c0a1",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /etc/apt/keyrings/microsoft.gpg verify --status-fd 3 /tmp/apt.sig.IQlsdd /tmp/apt.data.z7Oe6p",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803076176000,
-  "time_end": 1754652803076820000,
+  "time_start": 1754729623618328000,
+  "time_end": 1754729623618816000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -598,8 +614,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -617,14 +633,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "c515aedc8051f760",
-  "parent_span_id": "cd844415a7d4917c",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /etc/apt/keyrings/microsoft.gpg verify --status-fd 3 /tmp/apt.sig.4aSGuP /tmp/apt.data.miU9u9",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "d420f852300de0e0",
+  "parent_span_id": "a45dc17d535d1155",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /etc/apt/keyrings/microsoft.gpg verify --status-fd 3 /tmp/apt.sig.IQlsdd /tmp/apt.data.z7Oe6p",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803082189000,
-  "time_end": 1754652803083210000,
+  "time_start": 1754729623625107000,
+  "time_end": 1754729623626102000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -633,8 +649,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -652,14 +668,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "835433504c029d69",
-  "parent_span_id": "caa8775a1536bcae",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/microsoft-prod.gpg verify --status-fd 3 /tmp/apt.sig.dAshbY /tmp/apt.data.1ueDob",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "39882ebb57555ff5",
+  "parent_span_id": "9768b9d78cc1d30d",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/microsoft-prod.gpg verify --status-fd 3 /tmp/apt.sig.wgcsNN /tmp/apt.data.3cIrFd",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803159262000,
-  "time_end": 1754652803383899000,
+  "time_start": 1754729623683184000,
+  "time_end": 1754729623902784000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -668,8 +684,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -687,14 +703,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "e75cb5a496a141bd",
-  "parent_span_id": "835433504c029d69",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/microsoft-prod.gpg verify --status-fd 3 /tmp/apt.sig.dAshbY /tmp/apt.data.1ueDob",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "8fa59f50e346faa5",
+  "parent_span_id": "39882ebb57555ff5",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/microsoft-prod.gpg verify --status-fd 3 /tmp/apt.sig.wgcsNN /tmp/apt.data.3cIrFd",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803164234000,
-  "time_end": 1754652803164817000,
+  "time_start": 1754729623687279000,
+  "time_end": 1754729623687916000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -703,8 +719,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -722,14 +738,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "3cc145d27acb8b28",
-  "parent_span_id": "835433504c029d69",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/microsoft-prod.gpg verify --status-fd 3 /tmp/apt.sig.dAshbY /tmp/apt.data.1ueDob",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "82ae415491fd51da",
+  "parent_span_id": "39882ebb57555ff5",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/microsoft-prod.gpg verify --status-fd 3 /tmp/apt.sig.wgcsNN /tmp/apt.data.3cIrFd",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803271191000,
-  "time_end": 1754652803271817000,
+  "time_start": 1754729623792967000,
+  "time_end": 1754729623793548000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -738,8 +754,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -757,14 +773,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "fef99fb097afd844",
-  "parent_span_id": "835433504c029d69",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/microsoft-prod.gpg verify --status-fd 3 /tmp/apt.sig.dAshbY /tmp/apt.data.1ueDob",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "4c9c31adf84f7a14",
+  "parent_span_id": "39882ebb57555ff5",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/microsoft-prod.gpg verify --status-fd 3 /tmp/apt.sig.wgcsNN /tmp/apt.data.3cIrFd",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803300902000,
-  "time_end": 1754652803311149000,
+  "time_start": 1754729623820693000,
+  "time_end": 1754729623831119000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -773,8 +789,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -792,14 +808,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "bbc9a4ce7a7029a1",
-  "parent_span_id": "835433504c029d69",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/microsoft-prod.gpg verify --status-fd 3 /tmp/apt.sig.dAshbY /tmp/apt.data.1ueDob",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "1f8a038187bed23d",
+  "parent_span_id": "39882ebb57555ff5",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/microsoft-prod.gpg verify --status-fd 3 /tmp/apt.sig.wgcsNN /tmp/apt.data.3cIrFd",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803318285000,
-  "time_end": 1754652803319292000,
+  "time_start": 1754729623838190000,
+  "time_end": 1754729623839096000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -808,8 +824,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -827,14 +843,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "d43b3ade5b629a41",
-  "parent_span_id": "835433504c029d69",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/microsoft-prod.gpg verify --status-fd 3 /tmp/apt.sig.dAshbY /tmp/apt.data.1ueDob",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "d18f9e17abb46b00",
+  "parent_span_id": "39882ebb57555ff5",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/microsoft-prod.gpg verify --status-fd 3 /tmp/apt.sig.wgcsNN /tmp/apt.data.3cIrFd",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803319919000,
-  "time_end": 1754652803326103000,
+  "time_start": 1754729623839753000,
+  "time_end": 1754729623845622000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -843,8 +859,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -862,14 +878,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "8e680ac1c0133a98",
-  "parent_span_id": "d43b3ade5b629a41",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/microsoft-prod.gpg verify --status-fd 3 /tmp/apt.sig.dAshbY /tmp/apt.data.1ueDob",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "42b78f7dde982b9f",
+  "parent_span_id": "d18f9e17abb46b00",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/microsoft-prod.gpg verify --status-fd 3 /tmp/apt.sig.wgcsNN /tmp/apt.data.3cIrFd",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803320714000,
-  "time_end": 1754652803321226000,
+  "time_start": 1754729623840555000,
+  "time_end": 1754729623841165000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -878,8 +894,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -897,14 +913,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "775d368502e5ba0c",
-  "parent_span_id": "835433504c029d69",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/microsoft-prod.gpg verify --status-fd 3 /tmp/apt.sig.dAshbY /tmp/apt.data.1ueDob",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "186dc42e518a34b8",
+  "parent_span_id": "39882ebb57555ff5",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/microsoft-prod.gpg verify --status-fd 3 /tmp/apt.sig.wgcsNN /tmp/apt.data.3cIrFd",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803326451000,
-  "time_end": 1754652803332430000,
+  "time_start": 1754729623845935000,
+  "time_end": 1754729623852705000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -913,8 +929,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -932,14 +948,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "31cdb8ba1b119c0a",
-  "parent_span_id": "775d368502e5ba0c",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/microsoft-prod.gpg verify --status-fd 3 /tmp/apt.sig.dAshbY /tmp/apt.data.1ueDob",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "5b79162f46df31f8",
+  "parent_span_id": "186dc42e518a34b8",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/microsoft-prod.gpg verify --status-fd 3 /tmp/apt.sig.wgcsNN /tmp/apt.data.3cIrFd",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803327239000,
-  "time_end": 1754652803327781000,
+  "time_start": 1754729623847447000,
+  "time_end": 1754729623848042000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -948,8 +964,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -967,14 +983,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "b1df459fba4a78f9",
-  "parent_span_id": "835433504c029d69",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/microsoft-prod.gpg verify --status-fd 3 /tmp/apt.sig.dAshbY /tmp/apt.data.1ueDob",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "bf5f2b541cd69e73",
+  "parent_span_id": "39882ebb57555ff5",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/microsoft-prod.gpg verify --status-fd 3 /tmp/apt.sig.wgcsNN /tmp/apt.data.3cIrFd",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803333133000,
-  "time_end": 1754652803334191000,
+  "time_start": 1754729623853497000,
+  "time_end": 1754729623854570000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -983,8 +999,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -1002,14 +1018,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "2b916c82419fe185",
-  "parent_span_id": "e5b6710bf27bea20",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.0ezLBw /tmp/apt.data.6hjAjI",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "8afadfb578a8ed51",
+  "parent_span_id": "39f704ed79f10bd3",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.05672U /tmp/apt.data.3qfOrj",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804380335000,
-  "time_end": 1754652804642992000,
+  "time_start": 1754729622383346000,
+  "time_end": 1754729622596211000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -1018,8 +1034,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -1037,14 +1053,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "1a92f834ad291109",
-  "parent_span_id": "2b916c82419fe185",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.0ezLBw /tmp/apt.data.6hjAjI",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "0e3b592dd04f9213",
+  "parent_span_id": "8afadfb578a8ed51",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.05672U /tmp/apt.data.3qfOrj",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804385497000,
-  "time_end": 1754652804386093000,
+  "time_start": 1754729622388124000,
+  "time_end": 1754729622388720000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -1053,8 +1069,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -1072,14 +1088,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "2a824c3c10da5880",
-  "parent_span_id": "2b916c82419fe185",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.0ezLBw /tmp/apt.data.6hjAjI",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "5b460f6b42e96f5c",
+  "parent_span_id": "8afadfb578a8ed51",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.05672U /tmp/apt.data.3qfOrj",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804508503000,
-  "time_end": 1754652804509160000,
+  "time_start": 1754729622491426000,
+  "time_end": 1754729622492020000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -1088,8 +1104,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -1107,14 +1123,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "78ddf66fde678919",
-  "parent_span_id": "2b916c82419fe185",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.0ezLBw /tmp/apt.data.6hjAjI",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "adb5cd656fa40e3e",
+  "parent_span_id": "8afadfb578a8ed51",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.05672U /tmp/apt.data.3qfOrj",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804544418000,
-  "time_end": 1754652804555852000,
+  "time_start": 1754729622518404000,
+  "time_end": 1754729622528784000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -1123,8 +1139,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -1142,14 +1158,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "9a7b43bb26117f17",
-  "parent_span_id": "2b916c82419fe185",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.0ezLBw /tmp/apt.data.6hjAjI",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "d14996ad708b1fdb",
+  "parent_span_id": "8afadfb578a8ed51",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.05672U /tmp/apt.data.3qfOrj",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804564165000,
-  "time_end": 1754652804565223000,
+  "time_start": 1754729622535696000,
+  "time_end": 1754729622536616000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -1158,8 +1174,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -1177,14 +1193,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "40acbe933325a6dc",
-  "parent_span_id": "2b916c82419fe185",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.0ezLBw /tmp/apt.data.6hjAjI",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "7f88c2f876f20886",
+  "parent_span_id": "8afadfb578a8ed51",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.05672U /tmp/apt.data.3qfOrj",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804565687000,
-  "time_end": 1754652804574257000,
+  "time_start": 1754729622536974000,
+  "time_end": 1754729622542852000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -1193,8 +1209,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -1212,14 +1228,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "7613c8913991440c",
-  "parent_span_id": "40acbe933325a6dc",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.0ezLBw /tmp/apt.data.6hjAjI",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "d16f2d01b37cacc3",
+  "parent_span_id": "7f88c2f876f20886",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.05672U /tmp/apt.data.3qfOrj",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804566805000,
-  "time_end": 1754652804567766000,
+  "time_start": 1754729622537741000,
+  "time_end": 1754729622538242000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -1228,8 +1244,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -1247,14 +1263,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "63157bc027d7f81c",
-  "parent_span_id": "2b916c82419fe185",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.0ezLBw /tmp/apt.data.6hjAjI",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "4613e5d862f43347",
+  "parent_span_id": "8afadfb578a8ed51",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.05672U /tmp/apt.data.3qfOrj",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804574844000,
-  "time_end": 1754652804582550000,
+  "time_start": 1754729622543156000,
+  "time_end": 1754729622548821000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -1263,8 +1279,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -1282,14 +1298,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "d64d6b360780e6dc",
-  "parent_span_id": "63157bc027d7f81c",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.0ezLBw /tmp/apt.data.6hjAjI",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "aaaceb1ebbd9c7c4",
+  "parent_span_id": "4613e5d862f43347",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.05672U /tmp/apt.data.3qfOrj",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804575767000,
-  "time_end": 1754652804576769000,
+  "time_start": 1754729622543905000,
+  "time_end": 1754729622544488000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -1298,8 +1314,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -1317,14 +1333,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "d5f2f83f9c52f075",
-  "parent_span_id": "2b916c82419fe185",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.0ezLBw /tmp/apt.data.6hjAjI",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "32fa162695956773",
+  "parent_span_id": "8afadfb578a8ed51",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.05672U /tmp/apt.data.3qfOrj",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804583259000,
-  "time_end": 1754652804584632000,
+  "time_start": 1754729622549986000,
+  "time_end": 1754729622550962000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -1333,8 +1349,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -1352,14 +1368,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "55e5cf1cf7b3323a",
-  "parent_span_id": "93a4e3d11f579617",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.OgXZTL /tmp/apt.data.gXJMmI",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "63944420658bdbdb",
+  "parent_span_id": "41f003d85d725674",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.0UJFC2 /tmp/apt.data.T1BI5X",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803999599000,
-  "time_end": 1754652804219806000,
+  "time_start": 1754729621978768000,
+  "time_end": 1754729622245006000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -1368,8 +1384,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -1387,14 +1403,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "b5c2651e7723ad3e",
-  "parent_span_id": "55e5cf1cf7b3323a",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.OgXZTL /tmp/apt.data.gXJMmI",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "4fc555a2db481ab3",
+  "parent_span_id": "63944420658bdbdb",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.0UJFC2 /tmp/apt.data.T1BI5X",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804003555000,
-  "time_end": 1754652804004101000,
+  "time_start": 1754729621983484000,
+  "time_end": 1754729621984088000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -1403,8 +1419,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -1422,14 +1438,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "7e9d0c42566ee590",
-  "parent_span_id": "55e5cf1cf7b3323a",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.OgXZTL /tmp/apt.data.gXJMmI",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "53132e86c3eab9ec",
+  "parent_span_id": "63944420658bdbdb",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.0UJFC2 /tmp/apt.data.T1BI5X",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804110959000,
-  "time_end": 1754652804111527000,
+  "time_start": 1754729622088299000,
+  "time_end": 1754729622088918000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -1438,8 +1454,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -1457,14 +1473,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "f1e87d1c0af7c3ea",
-  "parent_span_id": "55e5cf1cf7b3323a",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.OgXZTL /tmp/apt.data.gXJMmI",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "5b3957517e350a64",
+  "parent_span_id": "63944420658bdbdb",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.0UJFC2 /tmp/apt.data.T1BI5X",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804138909000,
-  "time_end": 1754652804149267000,
+  "time_start": 1754729622115756000,
+  "time_end": 1754729622131556000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -1473,8 +1489,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -1492,14 +1508,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "8ac418a4ea13b65e",
-  "parent_span_id": "55e5cf1cf7b3323a",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.OgXZTL /tmp/apt.data.gXJMmI",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "14bebb4b0e8d134f",
+  "parent_span_id": "63944420658bdbdb",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.0UJFC2 /tmp/apt.data.T1BI5X",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804155820000,
-  "time_end": 1754652804157014000,
+  "time_start": 1754729622141572000,
+  "time_end": 1754729622145321000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -1508,8 +1524,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -1527,14 +1543,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "6ec7119cc2f94eb1",
-  "parent_span_id": "55e5cf1cf7b3323a",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.OgXZTL /tmp/apt.data.gXJMmI",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "096101a97401e062",
+  "parent_span_id": "63944420658bdbdb",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.0UJFC2 /tmp/apt.data.T1BI5X",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804157404000,
-  "time_end": 1754652804163344000,
+  "time_start": 1754729622145933000,
+  "time_end": 1754729622153862000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -1543,8 +1559,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -1562,14 +1578,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "c166da97e15f33be",
-  "parent_span_id": "6ec7119cc2f94eb1",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.OgXZTL /tmp/apt.data.gXJMmI",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "e46b0fbb720e935a",
+  "parent_span_id": "096101a97401e062",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.0UJFC2 /tmp/apt.data.T1BI5X",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804158194000,
-  "time_end": 1754652804158704000,
+  "time_start": 1754729622147121000,
+  "time_end": 1754729622147788000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -1578,8 +1594,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -1597,14 +1613,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "e04c3694ca88f734",
-  "parent_span_id": "55e5cf1cf7b3323a",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.OgXZTL /tmp/apt.data.gXJMmI",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "5d769502a93fe745",
+  "parent_span_id": "63944420658bdbdb",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.0UJFC2 /tmp/apt.data.T1BI5X",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804163637000,
-  "time_end": 1754652804169500000,
+  "time_start": 1754729622154257000,
+  "time_end": 1754729622162644000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -1613,8 +1629,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -1632,14 +1648,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "e3ddca75c4999a1d",
-  "parent_span_id": "e04c3694ca88f734",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.OgXZTL /tmp/apt.data.gXJMmI",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "4289e97b6b9acc39",
+  "parent_span_id": "5d769502a93fe745",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.0UJFC2 /tmp/apt.data.T1BI5X",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804164393000,
-  "time_end": 1754652804165024000,
+  "time_start": 1754729622155831000,
+  "time_end": 1754729622157104000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -1648,8 +1664,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -1667,14 +1683,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "1168bfcb2ef3c52c",
-  "parent_span_id": "55e5cf1cf7b3323a",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.OgXZTL /tmp/apt.data.gXJMmI",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "e2862694b573c350",
+  "parent_span_id": "63944420658bdbdb",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.0UJFC2 /tmp/apt.data.T1BI5X",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804170303000,
-  "time_end": 1754652804171310000,
+  "time_start": 1754729622163189000,
+  "time_end": 1754729622164906000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -1683,8 +1699,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -1702,14 +1718,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "fa61c6475562d2bd",
-  "parent_span_id": "1d755a11ba0329d0",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.ctJehA /tmp/apt.data.P2b1Jr",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "4407335859b30283",
+  "parent_span_id": "4b92c322deb471a5",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.S7KxYw /tmp/apt.data.6YF98f",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804798291000,
-  "time_end": 1754652805057616000,
+  "time_start": 1754729623173069000,
+  "time_end": 1754729623406422000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -1718,8 +1734,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -1737,14 +1753,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "73b9fab275042b0c",
-  "parent_span_id": "fa61c6475562d2bd",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.ctJehA /tmp/apt.data.P2b1Jr",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "99e430594f089282",
+  "parent_span_id": "4407335859b30283",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.S7KxYw /tmp/apt.data.6YF98f",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804803803000,
-  "time_end": 1754652804804535000,
+  "time_start": 1754729623178222000,
+  "time_end": 1754729623179289000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -1753,8 +1769,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -1772,14 +1788,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "7bf8c7226e5c4c56",
-  "parent_span_id": "fa61c6475562d2bd",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.ctJehA /tmp/apt.data.P2b1Jr",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "6c07f3c8599483a3",
+  "parent_span_id": "4407335859b30283",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.S7KxYw /tmp/apt.data.6YF98f",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804927342000,
-  "time_end": 1754652804928013000,
+  "time_start": 1754729623294593000,
+  "time_end": 1754729623295208000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -1788,8 +1804,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -1807,14 +1823,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "830e772dd6591bc5",
-  "parent_span_id": "fa61c6475562d2bd",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.ctJehA /tmp/apt.data.P2b1Jr",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "7779a7f19f2a5ae8",
+  "parent_span_id": "4407335859b30283",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.S7KxYw /tmp/apt.data.6YF98f",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804958927000,
-  "time_end": 1754652804970986000,
+  "time_start": 1754729623323947000,
+  "time_end": 1754729623335124000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -1823,8 +1839,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -1842,14 +1858,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "c5270c873db16eeb",
-  "parent_span_id": "fa61c6475562d2bd",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.ctJehA /tmp/apt.data.P2b1Jr",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "4058f29c23632b8c",
+  "parent_span_id": "4407335859b30283",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.S7KxYw /tmp/apt.data.6YF98f",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804980136000,
-  "time_end": 1754652804981194000,
+  "time_start": 1754729623341616000,
+  "time_end": 1754729623342588000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -1858,8 +1874,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -1877,14 +1893,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "ff8b11128c67fc37",
-  "parent_span_id": "fa61c6475562d2bd",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.ctJehA /tmp/apt.data.P2b1Jr",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "99312c4cae461691",
+  "parent_span_id": "4407335859b30283",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.S7KxYw /tmp/apt.data.6YF98f",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804981637000,
-  "time_end": 1754652804988591000,
+  "time_start": 1754729623342959000,
+  "time_end": 1754729623349243000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -1893,8 +1909,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -1912,14 +1928,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "c7800bd46feda4c1",
-  "parent_span_id": "ff8b11128c67fc37",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.ctJehA /tmp/apt.data.P2b1Jr",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "24ddae49a2214047",
+  "parent_span_id": "99312c4cae461691",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.S7KxYw /tmp/apt.data.6YF98f",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804982778000,
-  "time_end": 1754652804983349000,
+  "time_start": 1754729623343762000,
+  "time_end": 1754729623344469000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -1928,8 +1944,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -1947,14 +1963,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "ec2dbd19ab4139c3",
-  "parent_span_id": "fa61c6475562d2bd",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.ctJehA /tmp/apt.data.P2b1Jr",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "08b64ac4f836128a",
+  "parent_span_id": "4407335859b30283",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.S7KxYw /tmp/apt.data.6YF98f",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804989236000,
-  "time_end": 1754652804996163000,
+  "time_start": 1754729623349548000,
+  "time_end": 1754729623356589000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -1963,8 +1979,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -1982,14 +1998,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "ccd7fb6a366a8a64",
-  "parent_span_id": "ec2dbd19ab4139c3",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.ctJehA /tmp/apt.data.P2b1Jr",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "8ca66a23e074b07c",
+  "parent_span_id": "08b64ac4f836128a",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.S7KxYw /tmp/apt.data.6YF98f",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804990069000,
-  "time_end": 1754652804990645000,
+  "time_start": 1754729623350360000,
+  "time_end": 1754729623350860000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -1998,8 +2014,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -2017,14 +2033,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "9d28fcf809fac928",
-  "parent_span_id": "fa61c6475562d2bd",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.ctJehA /tmp/apt.data.P2b1Jr",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "ed176f168af954d2",
+  "parent_span_id": "4407335859b30283",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.S7KxYw /tmp/apt.data.6YF98f",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804997779000,
-  "time_end": 1754652804998970000,
+  "time_start": 1754729623357286000,
+  "time_end": 1754729623358452000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -2033,8 +2049,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -2052,14 +2068,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "879abf9175f28283",
-  "parent_span_id": "cbea922bf38b7704",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.oMYBlA /tmp/apt.data.1LN6OG",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "dec85e96e5b421e5",
+  "parent_span_id": "9f1fc59f9c3a71d8",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.kHYtIT /tmp/apt.data.7cLh79",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803648649000,
-  "time_end": 1754652803868700000,
+  "time_start": 1754729622760914000,
+  "time_end": 1754729623018647000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -2068,8 +2084,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -2087,14 +2103,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "5fafadbee373412c",
-  "parent_span_id": "879abf9175f28283",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.oMYBlA /tmp/apt.data.1LN6OG",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "bfdae9b85d7ba2bc",
+  "parent_span_id": "dec85e96e5b421e5",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.kHYtIT /tmp/apt.data.7cLh79",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803652935000,
-  "time_end": 1754652803653642000,
+  "time_start": 1754729622766031000,
+  "time_end": 1754729622766757000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -2103,8 +2119,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -2122,14 +2138,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "46d5209e1abc2f9a",
-  "parent_span_id": "879abf9175f28283",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.oMYBlA /tmp/apt.data.1LN6OG",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "09291015412b02db",
+  "parent_span_id": "dec85e96e5b421e5",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.kHYtIT /tmp/apt.data.7cLh79",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803757308000,
-  "time_end": 1754652803757917000,
+  "time_start": 1754729622891359000,
+  "time_end": 1754729622892342000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -2138,8 +2154,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -2157,14 +2173,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "ec1285da7223d7bc",
-  "parent_span_id": "879abf9175f28283",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.oMYBlA /tmp/apt.data.1LN6OG",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "a857ae78345374d4",
+  "parent_span_id": "dec85e96e5b421e5",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.kHYtIT /tmp/apt.data.7cLh79",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803784615000,
-  "time_end": 1754652803794596000,
+  "time_start": 1754729622925020000,
+  "time_end": 1754729622937348000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -2173,8 +2189,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -2192,14 +2208,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "71abe5e03a54c0d9",
-  "parent_span_id": "879abf9175f28283",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.oMYBlA /tmp/apt.data.1LN6OG",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "a1b6c499f40a6864",
+  "parent_span_id": "dec85e96e5b421e5",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.kHYtIT /tmp/apt.data.7cLh79",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803801267000,
-  "time_end": 1754652803802240000,
+  "time_start": 1754729622944963000,
+  "time_end": 1754729622946025000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -2208,8 +2224,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -2227,14 +2243,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "532ecc85b2fc70e2",
-  "parent_span_id": "879abf9175f28283",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.oMYBlA /tmp/apt.data.1LN6OG",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "3586235ef6f04662",
+  "parent_span_id": "dec85e96e5b421e5",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.kHYtIT /tmp/apt.data.7cLh79",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803802615000,
-  "time_end": 1754652803808466000,
+  "time_start": 1754729622946466000,
+  "time_end": 1754729622953472000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -2243,8 +2259,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -2262,14 +2278,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "90e18c10e50fd9a1",
-  "parent_span_id": "532ecc85b2fc70e2",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.oMYBlA /tmp/apt.data.1LN6OG",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "c2ebc830d024a367",
+  "parent_span_id": "3586235ef6f04662",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.kHYtIT /tmp/apt.data.7cLh79",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803803376000,
-  "time_end": 1754652803803900000,
+  "time_start": 1754729622947619000,
+  "time_end": 1754729622948171000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -2278,8 +2294,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -2297,14 +2313,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "092e55ffc83b8b1e",
-  "parent_span_id": "879abf9175f28283",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.oMYBlA /tmp/apt.data.1LN6OG",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "1c5b4c1e74e88a33",
+  "parent_span_id": "dec85e96e5b421e5",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.kHYtIT /tmp/apt.data.7cLh79",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803808809000,
-  "time_end": 1754652803814634000,
+  "time_start": 1754729622953798000,
+  "time_end": 1754729622960827000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -2313,8 +2329,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -2332,14 +2348,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "0c36094c78a48f84",
-  "parent_span_id": "092e55ffc83b8b1e",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.oMYBlA /tmp/apt.data.1LN6OG",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "a26cf3270404c9c0",
+  "parent_span_id": "1c5b4c1e74e88a33",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.kHYtIT /tmp/apt.data.7cLh79",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803809600000,
-  "time_end": 1754652803810180000,
+  "time_start": 1754729622954945000,
+  "time_end": 1754729622955541000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -2348,8 +2364,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -2367,14 +2383,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "12790336f24b3e91",
-  "parent_span_id": "879abf9175f28283",
-  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.oMYBlA /tmp/apt.data.1LN6OG",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "285936569d3bbf60",
+  "parent_span_id": "dec85e96e5b421e5",
+  "name": "/usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.kHYtIT /tmp/apt.data.7cLh79",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803816011000,
-  "time_end": 1754652803816990000,
+  "time_start": 1754729622961659000,
+  "time_end": 1754729622962697000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -2383,8 +2399,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -2402,14 +2418,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "c0a57ead568f5101",
-  "parent_span_id": "32319ea70d2e2b10",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "89635baf934e6360",
+  "parent_span_id": "addcf88a214d4247",
   "name": "/usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652807655547000,
-  "time_end": 1754652807667060000,
+  "time_start": 1754729625905901000,
+  "time_end": 1754729625916919000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -2418,8 +2434,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -2437,14 +2453,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "cf106a5c85365a53",
-  "parent_span_id": "a0239de3dc4a64c4",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "5c9fbecbef280546",
+  "parent_span_id": "581222b6074482ac",
   "name": "/usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652802915011000,
-  "time_end": 1754652802923527000,
+  "time_start": 1754729622002762000,
+  "time_end": 1754729622008788000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -2453,8 +2469,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -2472,14 +2488,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "10240f62554da6e0",
-  "parent_span_id": "d6535c1c98066414",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "cb68ae5d35b1fbb3",
+  "parent_span_id": "b3a510cccad67eba",
   "name": "/usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652802941640000,
-  "time_end": 1754652802948964000,
+  "time_start": 1754729622028835000,
+  "time_end": 1754729622035068000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -2488,8 +2504,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -2507,14 +2523,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "8c62a2fab93ac9a2",
-  "parent_span_id": "b189fdd1b7f1b006",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "2ddc8f04b5591ff8",
+  "parent_span_id": "c9ecf349563aa21b",
   "name": "/usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652802969805000,
-  "time_end": 1754652802976020000,
+  "time_start": 1754729622054721000,
+  "time_end": 1754729622060688000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -2523,8 +2539,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -2542,14 +2558,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "5ab813ae24571ea4",
-  "parent_span_id": "bd0b909b0c13d6fe",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "f7f003b90f347cf2",
+  "parent_span_id": "98727d5df0de0db8",
   "name": "/usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652802995972000,
-  "time_end": 1754652803002273000,
+  "time_start": 1754729622080369000,
+  "time_end": 1754729622086793000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -2558,8 +2574,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -2577,14 +2593,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "ad06237c04fba0a9",
-  "parent_span_id": "0b7714ee65947a7c",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "d4d14395f506b327",
+  "parent_span_id": "d09ff3da64e2f75d",
   "name": "/usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803023450000,
-  "time_end": 1754652803029714000,
+  "time_start": 1754729622107671000,
+  "time_end": 1754729622113576000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -2593,8 +2609,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -2612,14 +2628,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "0a95c0fdc19100e6",
-  "parent_span_id": "6c216859e87c2131",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "84965ff5425660c1",
+  "parent_span_id": "ae1c330933a1e34f",
   "name": "/usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803185334000,
-  "time_end": 1754652803191890000,
+  "time_start": 1754729622406916000,
+  "time_end": 1754729622413126000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -2628,8 +2644,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -2647,14 +2663,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "58a73ef092fabb50",
-  "parent_span_id": "39192aefe5682ab5",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "9e7833494e7ac0a9",
+  "parent_span_id": "423978a50d013496",
   "name": "/usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803211062000,
-  "time_end": 1754652803216943000,
+  "time_start": 1754729622433771000,
+  "time_end": 1754729622439899000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -2663,8 +2679,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -2682,14 +2698,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "f798a7abb297c743",
-  "parent_span_id": "e8b80faebb045a04",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "b2af2f09de2f967a",
+  "parent_span_id": "fa141bafb6975c79",
   "name": "/usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803237400000,
-  "time_end": 1754652803243286000,
+  "time_start": 1754729622459367000,
+  "time_end": 1754729622465243000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -2698,8 +2714,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -2717,14 +2733,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "89fbac90fef77666",
-  "parent_span_id": "7fe5a5f2e94b7447",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "ef8f9c815033e0c9",
+  "parent_span_id": "569aa4409c4ac481",
   "name": "/usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803263971000,
-  "time_end": 1754652803269699000,
+  "time_start": 1754729622484069000,
+  "time_end": 1754729622490001000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -2733,8 +2749,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -2752,14 +2768,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "e802da19250c2806",
-  "parent_span_id": "1727cd7693592c44",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "b15499e2f604717e",
+  "parent_span_id": "6a59405b5e79aef1",
   "name": "/usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803292564000,
-  "time_end": 1754652803298861000,
+  "time_start": 1754729622510462000,
+  "time_end": 1754729622516434000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -2768,8 +2784,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -2787,14 +2803,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "b167bd6f849a7b01",
-  "parent_span_id": "814d2b8d986135b5",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "086a44dc78d3062a",
+  "parent_span_id": "ff8be1fe1f323b08",
   "name": "/usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803672334000,
-  "time_end": 1754652803678964000,
+  "time_start": 1754729622788822000,
+  "time_end": 1754729622796467000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -2803,8 +2819,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -2822,14 +2838,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "832c97ed8084d6b4",
-  "parent_span_id": "e857b7f3959e1141",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "d6a6281c238b8a4d",
+  "parent_span_id": "b80309c326e70337",
   "name": "/usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803698553000,
-  "time_end": 1754652803705174000,
+  "time_start": 1754729622820619000,
+  "time_end": 1754729622827953000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -2838,8 +2854,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -2857,14 +2873,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "e5905f9a4961be94",
-  "parent_span_id": "14446574c026bd93",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "4dcf49c6b9a6950e",
+  "parent_span_id": "a26ff1909e9655de",
   "name": "/usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803723866000,
-  "time_end": 1754652803730294000,
+  "time_start": 1754729622850076000,
+  "time_end": 1754729622857625000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -2873,8 +2889,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -2892,14 +2908,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "62ab75184d03506d",
-  "parent_span_id": "4bf8d3bd36dc9c4e",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "4df2bc4f071bee58",
+  "parent_span_id": "910579862ae19ba3",
   "name": "/usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803749912000,
-  "time_end": 1754652803755925000,
+  "time_start": 1754729622882311000,
+  "time_end": 1754729622889982000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -2908,8 +2924,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -2927,14 +2943,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "bf07937ef1344781",
-  "parent_span_id": "164fa7c25549fc9f",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "cac5f906ceab98bd",
+  "parent_span_id": "5ba24409b502f672",
   "name": "/usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803776587000,
-  "time_end": 1754652803782492000,
+  "time_start": 1754729622915279000,
+  "time_end": 1754729622922437000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -2943,8 +2959,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -2962,14 +2978,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "f66b1601820206a5",
-  "parent_span_id": "22fd9ac48a82f935",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "ead0aae4e274dcd8",
+  "parent_span_id": "96595e17d032de3b",
   "name": "/usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804025026000,
-  "time_end": 1754652804031357000,
+  "time_start": 1754729623202422000,
+  "time_end": 1754729623209589000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -2978,8 +2994,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -2997,14 +3013,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "dd5abf05efbc0455",
-  "parent_span_id": "5855d58bdff70b1d",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "f0c6ed462e56a17f",
+  "parent_span_id": "575b006655718c73",
   "name": "/usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804049822000,
-  "time_end": 1754652804056351000,
+  "time_start": 1754729623231774000,
+  "time_end": 1754729623238924000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -3013,8 +3029,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -3032,14 +3048,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "73e792afc34f39aa",
-  "parent_span_id": "1b4ad2e9d9c4ce57",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "a845ac7159e3d04d",
+  "parent_span_id": "62c7d955d1acd42d",
   "name": "/usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804075137000,
-  "time_end": 1754652804081877000,
+  "time_start": 1754729623259907000,
+  "time_end": 1754729623266363000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -3048,8 +3064,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -3067,14 +3083,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "a43ae09454b06123",
-  "parent_span_id": "d36ff1b7111b9122",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "9abcc56729d4bd33",
+  "parent_span_id": "b2719517d05e6102",
   "name": "/usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804103124000,
-  "time_end": 1754652804109467000,
+  "time_start": 1754729623287001000,
+  "time_end": 1754729623293074000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -3083,8 +3099,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -3102,14 +3118,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "2ff14a0190105df5",
-  "parent_span_id": "c443c7daf5eda99d",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "174e5411c942744a",
+  "parent_span_id": "08364d0fca60a6d1",
   "name": "/usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804130106000,
-  "time_end": 1754652804136151000,
+  "time_start": 1754729623315969000,
+  "time_end": 1754729623321883000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -3118,8 +3134,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -3137,14 +3153,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "703c3714e80d1a51",
-  "parent_span_id": "612230ac3b449c42",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "bcaa912e7ea136cc",
+  "parent_span_id": "1c2cbf04fcfc9f16",
   "name": "/usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804409667000,
-  "time_end": 1754652804417190000,
+  "time_start": 1754729623457776000,
+  "time_end": 1754729623465713000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -3153,8 +3169,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -3172,14 +3188,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "da02d625c8e3c293",
-  "parent_span_id": "6e5dbf8fdb472753",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "1af6277fef7bca3b",
+  "parent_span_id": "f8173d05a79e6584",
   "name": "/usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804439514000,
-  "time_end": 1754652804446290000,
+  "time_start": 1754729623489449000,
+  "time_end": 1754729623497131000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -3188,8 +3204,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -3207,14 +3223,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "a37e5115411631e0",
-  "parent_span_id": "0a5ca9bc9261052b",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "80b6738b42e8214e",
+  "parent_span_id": "3ea1a6bddc098de9",
   "name": "/usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804468969000,
-  "time_end": 1754652804475780000,
+  "time_start": 1754729623521688000,
+  "time_end": 1754729623529685000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -3223,8 +3239,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -3242,14 +3258,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "41e7f1fd487d4228",
-  "parent_span_id": "83394c131c05462f",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "790ca74dc463eb05",
+  "parent_span_id": "e24768e0ed9f7cd3",
   "name": "/usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804498706000,
-  "time_end": 1754652804506727000,
+  "time_start": 1754729623551797000,
+  "time_end": 1754729623558707000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -3258,8 +3274,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -3277,14 +3293,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "1ee5bd6a47e808ae",
-  "parent_span_id": "36f28924ad3f0ed1",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "cd3a9139a50b83e7",
+  "parent_span_id": "29af1a47f95979c8",
   "name": "/usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804533960000,
-  "time_end": 1754652804541669000,
+  "time_start": 1754729623582194000,
+  "time_end": 1754729623589849000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -3293,8 +3309,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -3312,14 +3328,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "bbe68ae47b1be2af",
-  "parent_span_id": "52d587d97f2912bd",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "c7db53ce9c5c8b32",
+  "parent_span_id": "a0ec8f775a2ff9be",
   "name": "/usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804827685000,
-  "time_end": 1754652804835181000,
+  "time_start": 1754729623708642000,
+  "time_end": 1754729623715373000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -3328,8 +3344,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -3347,14 +3363,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "2e2be42d7dc78912",
-  "parent_span_id": "65cb6680274d8777",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "63cd98c82092e87b",
+  "parent_span_id": "73f45e589cf2d322",
   "name": "/usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804860016000,
-  "time_end": 1754652804868202000,
+  "time_start": 1754729623735298000,
+  "time_end": 1754729623741276000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -3363,8 +3379,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -3382,14 +3398,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "217af7ed55988d10",
-  "parent_span_id": "07a386dabb640e73",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "e81a4e718cc4ec8c",
+  "parent_span_id": "a71ec3839e424980",
   "name": "/usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804888703000,
-  "time_end": 1754652804896257000,
+  "time_start": 1754729623759623000,
+  "time_end": 1754729623765933000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -3398,8 +3414,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -3417,14 +3433,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "554be6ce8e25a4d2",
-  "parent_span_id": "4e34c87644ca1db7",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "7a810a0566864533",
+  "parent_span_id": "dcde982b4d2417e8",
   "name": "/usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804918874000,
-  "time_end": 1754652804925375000,
+  "time_start": 1754729623785183000,
+  "time_end": 1754729623791631000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -3433,8 +3449,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -3452,14 +3468,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "8d8c3c0316282491",
-  "parent_span_id": "03146574675924c2",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "9619775006e22d55",
+  "parent_span_id": "97ac8d319a4269db",
   "name": "/usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804949793000,
-  "time_end": 1754652804956748000,
+  "time_start": 1754729623812634000,
+  "time_end": 1754729623818603000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -3468,8 +3484,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -3487,14 +3503,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "ea1fe3c0cce5c8bd",
-  "parent_span_id": "7dcd13b5948cdf56",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "006bce61062c193d",
+  "parent_span_id": "5cfc0ffd1e5c08f7",
   "name": "/usr/bin/dpkg --force-confdef --force-confold --print-foreign-architectures",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652802634445000,
-  "time_end": 1754652802645322000,
+  "time_start": 1754729621448801000,
+  "time_end": 1754729621459073000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -3503,8 +3519,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -3522,14 +3538,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "d39a8aa730eeee2e",
-  "parent_span_id": "5b6fad77f017c674",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "cae84c29f4522b2a",
+  "parent_span_id": "c49b6c6c81f0b018",
   "name": "/usr/bin/dpkg --force-confdef --force-confold --print-foreign-architectures",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652807705649000,
-  "time_end": 1754652807715736000,
+  "time_start": 1754729636149513000,
+  "time_end": 1754729636158763000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -3538,8 +3554,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -3557,14 +3573,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "211dc446a074fa6e",
-  "parent_span_id": "517f2801a03aaad0",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "83dbc6735f586265",
+  "parent_span_id": "e603cac6dec2d9f7",
   "name": "/usr/bin/dpkg --force-confdef --force-confold --print-foreign-architectures",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652807737873000,
-  "time_end": 1754652807747862000,
+  "time_start": 1754729636183043000,
+  "time_end": 1754729636192465000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -3573,8 +3589,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -3592,14 +3608,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "b405b5d4d771516d",
-  "parent_span_id": "e5890f06d0b8f399",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "597b35e756e6551b",
+  "parent_span_id": "c403f625361528e1",
   "name": "/usr/bin/dpkg --force-confdef --force-confold --print-foreign-architectures",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652807769933000,
-  "time_end": 1754652807779517000,
+  "time_start": 1754729636215349000,
+  "time_end": 1754729636224575000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -3608,8 +3624,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -3627,14 +3643,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "d79df5ee07e80fde",
-  "parent_span_id": "eb3fc6b69ff697ea",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "e33cf5e275f84c4b",
+  "parent_span_id": "3874ae3b6ce0a64a",
   "name": "/usr/bin/dpkg --force-confdef --force-confold --print-foreign-architectures",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652807801076000,
-  "time_end": 1754652807810198000,
+  "time_start": 1754729636246082000,
+  "time_end": 1754729636255054000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -3643,8 +3659,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -3662,14 +3678,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "93dca277ff4f0cc8",
-  "parent_span_id": "cc9189fc8f16ab15",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "01b44a7fc2027111",
+  "parent_span_id": "227efe52ee32330d",
   "name": "/usr/bin/dpkg --force-confdef --force-confold --print-foreign-architectures",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652807833602000,
-  "time_end": 1754652807842772000,
+  "time_start": 1754729636276845000,
+  "time_end": 1754729636286532000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -3678,8 +3694,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -3697,14 +3713,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "ccd7aa402987b22f",
-  "parent_span_id": "7dcd13b5948cdf56",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "4859cd19ef40f2d4",
+  "parent_span_id": "5cfc0ffd1e5c08f7",
   "name": "/usr/bin/dpkg --force-confdef --force-confold --print-foreign-architectures",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652807902336000,
-  "time_end": 1754652807912190000,
+  "time_start": 1754729636347511000,
+  "time_end": 1754729636357156000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -3713,8 +3729,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -3732,14 +3748,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "cddbbac8f54b546a",
-  "parent_span_id": "7dcd13b5948cdf56",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "7c7e4be7c2afa07e",
+  "parent_span_id": "5cfc0ffd1e5c08f7",
   "name": "/usr/bin/dpkg --force-confdef --force-confold --print-foreign-architectures",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652808956126000,
-  "time_end": 1754652808967466000,
+  "time_start": 1754729637347329000,
+  "time_end": 1754729637358752000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -3748,8 +3764,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -3767,14 +3783,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "70fef8e52ea85a46",
-  "parent_span_id": "aa2db57c5f30ca7a",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "e27a18d8e693151c",
+  "parent_span_id": "7eaec5b248092503",
   "name": "/usr/bin/gdbus call --system --dest org.freedesktop.PackageKit --object-path /org/freedesktop/PackageKit --timeout 4 --method org.freedesktop.PackageKit.StateHasChanged cache-update",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652805749732000,
-  "time_end": 1754652805774340000,
+  "time_start": 1754729624012673000,
+  "time_end": 1754729624035532000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -3783,8 +3799,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -3802,14 +3818,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "b59b4734db9f2ad7",
-  "parent_span_id": "70fef8e52ea85a46",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "0b897e09067fb88d",
+  "parent_span_id": "e27a18d8e693151c",
   "name": "/usr/bin/gdbus call --system --dest org.freedesktop.PackageKit --object-path /org/freedesktop/PackageKit --timeout 4 --method org.freedesktop.PackageKit.StateHasChanged cache-update",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652805761812000,
-  "time_end": 1754652805773957000,
+  "time_start": 1754729624023945000,
+  "time_end": 1754729624035518000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -3818,8 +3834,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -3837,14 +3853,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "68c7d0a499e53d32",
-  "parent_span_id": "70fef8e52ea85a46",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "84fd63db02b9d433",
+  "parent_span_id": "e27a18d8e693151c",
   "name": "/usr/bin/gdbus call --system --dest org.freedesktop.PackageKit --object-path /org/freedesktop/PackageKit --timeout 4 --method org.freedesktop.PackageKit.StateHasChanged cache-update",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652805762304000,
-  "time_end": 1754652805774323000,
+  "time_start": 1754729624024526000,
+  "time_end": 1754729624035180000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -3853,8 +3869,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -3872,14 +3888,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "80fd9c64f12eb624",
-  "parent_span_id": "70fef8e52ea85a46",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "5f8fc7039d6eea35",
+  "parent_span_id": "e27a18d8e693151c",
   "name": "/usr/bin/gdbus call --system --dest org.freedesktop.PackageKit --object-path /org/freedesktop/PackageKit --timeout 4 --method org.freedesktop.PackageKit.StateHasChanged cache-update",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652805767458000,
-  "time_end": 1754652805773946000,
+  "time_start": 1754729624029701000,
+  "time_end": 1754729624035165000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -3888,8 +3904,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -3907,14 +3923,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "4707a582c6d48a8d",
-  "parent_span_id": "aa2db57c5f30ca7a",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "9cfd2770f058382f",
+  "parent_span_id": "7eaec5b248092503",
   "name": "/usr/bin/test -S /var/run/dbus/system_bus_socket",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652805744131000,
-  "time_end": 1754652805749010000,
+  "time_start": 1754729624005845000,
+  "time_end": 1754729624011920000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -3923,8 +3939,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -3942,14 +3958,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "ed20f8c51b78f35f",
-  "parent_span_id": "aa2db57c5f30ca7a",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "4ccdb977a938d32d",
+  "parent_span_id": "7eaec5b248092503",
   "name": "/usr/bin/test -e /usr/share/dbus-1/system-services/org.freedesktop.PackageKit.service",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652805738626000,
-  "time_end": 1754652805743660000,
+  "time_start": 1754729624000436000,
+  "time_end": 1754729624005385000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -3958,8 +3974,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -3977,14 +3993,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "789d111ad6ac5e35",
-  "parent_span_id": "5206e310ca313abe",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "157c848f123864e0",
+  "parent_span_id": "1358b3c8807b6209",
   "name": "/usr/bin/test -w /var/cache/swcatalog -a -e /usr/bin/appstreamcli",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652805785702000,
-  "time_end": 1754652805791530000,
+  "time_start": 1754729624045452000,
+  "time_end": 1754729624050991000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -3993,8 +4009,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -4012,14 +4028,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "20e510f106907c8f",
-  "parent_span_id": "e6f2ea19dc9e5516",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "6a69e4cc2b7720e2",
+  "parent_span_id": "cc310fc8e4e3b5c1",
   "name": "/usr/bin/test -w /var/lib/command-not-found/ -a -e /usr/lib/cnf-update-db",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652807519685000,
-  "time_end": 1754652807525429000,
+  "time_start": 1754729625778365000,
+  "time_end": 1754729625784181000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -4028,8 +4044,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -4047,14 +4063,574 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "7746025ac0a22163",
-  "parent_span_id": "7dcd13b5948cdf56",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "d1f277d8c5257847",
+  "parent_span_id": "addcf88a214d4247",
+  "name": "/usr/lib/apt/apt-helper cat-file /var/lib/apt/lists/_etc_apt_apt-mirrors.txt_dists_noble-backports_main_cnf_Commands-amd64",
+  "kind": "INTERNAL",
+  "status": "UNSET",
+  "time_start": 1754729626089837000,
+  "time_end": 1754729626114612000,
+  "attributes": {},
+  "resource_attributes": {
+    "telemetry.sdk.language": "shell",
+    "telemetry.sdk.name": "opentelemetry",
+    "telemetry.sdk.version": "5.22.6",
+    "service.name": "unknown_service",
+    "os.type": "linux",
+    "os.version": "6.11.0-1018-azure",
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
+    "process.executable.name": "bash",
+    "process.executable.path": "/usr/bin/bash",
+    "process.command_line": "sudo apt-get update",
+    "process.command": "sudo",
+    "process.owner": "root",
+    "process.runtime.name": "bash",
+    "process.runtime.description": "Bourne Again Shell",
+    "process.runtime.version": "5.2.21-2ubuntu4",
+    "process.runtime.options": "hBc",
+    "service.version": "",
+    "service.namespace": "",
+    "service.instance.id": ""
+  },
+  "links": [],
+  "events": []
+}
+{
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "7ca849a69a679cd9",
+  "parent_span_id": "addcf88a214d4247",
+  "name": "/usr/lib/apt/apt-helper cat-file /var/lib/apt/lists/_etc_apt_apt-mirrors.txt_dists_noble-backports_multiverse_cnf_Commands-amd64",
+  "kind": "INTERNAL",
+  "status": "UNSET",
+  "time_start": 1754729634652669000,
+  "time_end": 1754729634676308000,
+  "attributes": {},
+  "resource_attributes": {
+    "telemetry.sdk.language": "shell",
+    "telemetry.sdk.name": "opentelemetry",
+    "telemetry.sdk.version": "5.22.6",
+    "service.name": "unknown_service",
+    "os.type": "linux",
+    "os.version": "6.11.0-1018-azure",
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
+    "process.executable.name": "bash",
+    "process.executable.path": "/usr/bin/bash",
+    "process.command_line": "sudo apt-get update",
+    "process.command": "sudo",
+    "process.owner": "root",
+    "process.runtime.name": "bash",
+    "process.runtime.description": "Bourne Again Shell",
+    "process.runtime.version": "5.2.21-2ubuntu4",
+    "process.runtime.options": "hBc",
+    "service.version": "",
+    "service.namespace": "",
+    "service.instance.id": ""
+  },
+  "links": [],
+  "events": []
+}
+{
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "e0d75e1fefbf2585",
+  "parent_span_id": "addcf88a214d4247",
+  "name": "/usr/lib/apt/apt-helper cat-file /var/lib/apt/lists/_etc_apt_apt-mirrors.txt_dists_noble-backports_restricted_cnf_Commands-amd64",
+  "kind": "INTERNAL",
+  "status": "UNSET",
+  "time_start": 1754729635896261000,
+  "time_end": 1754729635922243000,
+  "attributes": {},
+  "resource_attributes": {
+    "telemetry.sdk.language": "shell",
+    "telemetry.sdk.name": "opentelemetry",
+    "telemetry.sdk.version": "5.22.6",
+    "service.name": "unknown_service",
+    "os.type": "linux",
+    "os.version": "6.11.0-1018-azure",
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
+    "process.executable.name": "bash",
+    "process.executable.path": "/usr/bin/bash",
+    "process.command_line": "sudo apt-get update",
+    "process.command": "sudo",
+    "process.owner": "root",
+    "process.runtime.name": "bash",
+    "process.runtime.description": "Bourne Again Shell",
+    "process.runtime.version": "5.2.21-2ubuntu4",
+    "process.runtime.options": "hBc",
+    "service.version": "",
+    "service.namespace": "",
+    "service.instance.id": ""
+  },
+  "links": [],
+  "events": []
+}
+{
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "53f98c9677bbf8b4",
+  "parent_span_id": "addcf88a214d4247",
+  "name": "/usr/lib/apt/apt-helper cat-file /var/lib/apt/lists/_etc_apt_apt-mirrors.txt_dists_noble-backports_universe_cnf_Commands-amd64",
+  "kind": "INTERNAL",
+  "status": "UNSET",
+  "time_start": 1754729626211663000,
+  "time_end": 1754729626233084000,
+  "attributes": {},
+  "resource_attributes": {
+    "telemetry.sdk.language": "shell",
+    "telemetry.sdk.name": "opentelemetry",
+    "telemetry.sdk.version": "5.22.6",
+    "service.name": "unknown_service",
+    "os.type": "linux",
+    "os.version": "6.11.0-1018-azure",
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
+    "process.executable.name": "bash",
+    "process.executable.path": "/usr/bin/bash",
+    "process.command_line": "sudo apt-get update",
+    "process.command": "sudo",
+    "process.owner": "root",
+    "process.runtime.name": "bash",
+    "process.runtime.description": "Bourne Again Shell",
+    "process.runtime.version": "5.2.21-2ubuntu4",
+    "process.runtime.options": "hBc",
+    "service.version": "",
+    "service.namespace": "",
+    "service.instance.id": ""
+  },
+  "links": [],
+  "events": []
+}
+{
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "a64566d8a8fb9947",
+  "parent_span_id": "addcf88a214d4247",
+  "name": "/usr/lib/apt/apt-helper cat-file /var/lib/apt/lists/_etc_apt_apt-mirrors.txt_dists_noble-security_main_cnf_Commands-amd64",
+  "kind": "INTERNAL",
+  "status": "UNSET",
+  "time_start": 1754729626117864000,
+  "time_end": 1754729626160797000,
+  "attributes": {},
+  "resource_attributes": {
+    "telemetry.sdk.language": "shell",
+    "telemetry.sdk.name": "opentelemetry",
+    "telemetry.sdk.version": "5.22.6",
+    "service.name": "unknown_service",
+    "os.type": "linux",
+    "os.version": "6.11.0-1018-azure",
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
+    "process.executable.name": "bash",
+    "process.executable.path": "/usr/bin/bash",
+    "process.command_line": "sudo apt-get update",
+    "process.command": "sudo",
+    "process.owner": "root",
+    "process.runtime.name": "bash",
+    "process.runtime.description": "Bourne Again Shell",
+    "process.runtime.version": "5.2.21-2ubuntu4",
+    "process.runtime.options": "hBc",
+    "service.version": "",
+    "service.namespace": "",
+    "service.instance.id": ""
+  },
+  "links": [],
+  "events": []
+}
+{
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "96be382274172c80",
+  "parent_span_id": "addcf88a214d4247",
+  "name": "/usr/lib/apt/apt-helper cat-file /var/lib/apt/lists/_etc_apt_apt-mirrors.txt_dists_noble-security_multiverse_cnf_Commands-amd64",
+  "kind": "INTERNAL",
+  "status": "UNSET",
+  "time_start": 1754729626236330000,
+  "time_end": 1754729626256304000,
+  "attributes": {},
+  "resource_attributes": {
+    "telemetry.sdk.language": "shell",
+    "telemetry.sdk.name": "opentelemetry",
+    "telemetry.sdk.version": "5.22.6",
+    "service.name": "unknown_service",
+    "os.type": "linux",
+    "os.version": "6.11.0-1018-azure",
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
+    "process.executable.name": "bash",
+    "process.executable.path": "/usr/bin/bash",
+    "process.command_line": "sudo apt-get update",
+    "process.command": "sudo",
+    "process.owner": "root",
+    "process.runtime.name": "bash",
+    "process.runtime.description": "Bourne Again Shell",
+    "process.runtime.version": "5.2.21-2ubuntu4",
+    "process.runtime.options": "hBc",
+    "service.version": "",
+    "service.namespace": "",
+    "service.instance.id": ""
+  },
+  "links": [],
+  "events": []
+}
+{
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "9ac74deb4b9bdc7e",
+  "parent_span_id": "addcf88a214d4247",
+  "name": "/usr/lib/apt/apt-helper cat-file /var/lib/apt/lists/_etc_apt_apt-mirrors.txt_dists_noble-security_restricted_cnf_Commands-amd64",
+  "kind": "INTERNAL",
+  "status": "UNSET",
+  "time_start": 1754729634625337000,
+  "time_end": 1754729634648483000,
+  "attributes": {},
+  "resource_attributes": {
+    "telemetry.sdk.language": "shell",
+    "telemetry.sdk.name": "opentelemetry",
+    "telemetry.sdk.version": "5.22.6",
+    "service.name": "unknown_service",
+    "os.type": "linux",
+    "os.version": "6.11.0-1018-azure",
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
+    "process.executable.name": "bash",
+    "process.executable.path": "/usr/bin/bash",
+    "process.command_line": "sudo apt-get update",
+    "process.command": "sudo",
+    "process.owner": "root",
+    "process.runtime.name": "bash",
+    "process.runtime.description": "Bourne Again Shell",
+    "process.runtime.version": "5.2.21-2ubuntu4",
+    "process.runtime.options": "hBc",
+    "service.version": "",
+    "service.namespace": "",
+    "service.instance.id": ""
+  },
+  "links": [],
+  "events": []
+}
+{
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "078103aa0adbfd7c",
+  "parent_span_id": "addcf88a214d4247",
+  "name": "/usr/lib/apt/apt-helper cat-file /var/lib/apt/lists/_etc_apt_apt-mirrors.txt_dists_noble-security_universe_cnf_Commands-amd64",
+  "kind": "INTERNAL",
+  "status": "UNSET",
+  "time_start": 1754729635925631000,
+  "time_end": 1754729635979047000,
+  "attributes": {},
+  "resource_attributes": {
+    "telemetry.sdk.language": "shell",
+    "telemetry.sdk.name": "opentelemetry",
+    "telemetry.sdk.version": "5.22.6",
+    "service.name": "unknown_service",
+    "os.type": "linux",
+    "os.version": "6.11.0-1018-azure",
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
+    "process.executable.name": "bash",
+    "process.executable.path": "/usr/bin/bash",
+    "process.command_line": "sudo apt-get update",
+    "process.command": "sudo",
+    "process.owner": "root",
+    "process.runtime.name": "bash",
+    "process.runtime.description": "Bourne Again Shell",
+    "process.runtime.version": "5.2.21-2ubuntu4",
+    "process.runtime.options": "hBc",
+    "service.version": "",
+    "service.namespace": "",
+    "service.instance.id": ""
+  },
+  "links": [],
+  "events": []
+}
+{
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "8d53270a6921adfc",
+  "parent_span_id": "addcf88a214d4247",
+  "name": "/usr/lib/apt/apt-helper cat-file /var/lib/apt/lists/_etc_apt_apt-mirrors.txt_dists_noble-updates_main_cnf_Commands-amd64",
+  "kind": "INTERNAL",
+  "status": "UNSET",
+  "time_start": 1754729634679650000,
+  "time_end": 1754729634710130000,
+  "attributes": {},
+  "resource_attributes": {
+    "telemetry.sdk.language": "shell",
+    "telemetry.sdk.name": "opentelemetry",
+    "telemetry.sdk.version": "5.22.6",
+    "service.name": "unknown_service",
+    "os.type": "linux",
+    "os.version": "6.11.0-1018-azure",
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
+    "process.executable.name": "bash",
+    "process.executable.path": "/usr/bin/bash",
+    "process.command_line": "sudo apt-get update",
+    "process.command": "sudo",
+    "process.owner": "root",
+    "process.runtime.name": "bash",
+    "process.runtime.description": "Bourne Again Shell",
+    "process.runtime.version": "5.2.21-2ubuntu4",
+    "process.runtime.options": "hBc",
+    "service.version": "",
+    "service.namespace": "",
+    "service.instance.id": ""
+  },
+  "links": [],
+  "events": []
+}
+{
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "0dd67c4cfda21cf4",
+  "parent_span_id": "addcf88a214d4247",
+  "name": "/usr/lib/apt/apt-helper cat-file /var/lib/apt/lists/_etc_apt_apt-mirrors.txt_dists_noble-updates_multiverse_cnf_Commands-amd64",
+  "kind": "INTERNAL",
+  "status": "UNSET",
+  "time_start": 1754729626033970000,
+  "time_end": 1754729626060032000,
+  "attributes": {},
+  "resource_attributes": {
+    "telemetry.sdk.language": "shell",
+    "telemetry.sdk.name": "opentelemetry",
+    "telemetry.sdk.version": "5.22.6",
+    "service.name": "unknown_service",
+    "os.type": "linux",
+    "os.version": "6.11.0-1018-azure",
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
+    "process.executable.name": "bash",
+    "process.executable.path": "/usr/bin/bash",
+    "process.command_line": "sudo apt-get update",
+    "process.command": "sudo",
+    "process.owner": "root",
+    "process.runtime.name": "bash",
+    "process.runtime.description": "Bourne Again Shell",
+    "process.runtime.version": "5.2.21-2ubuntu4",
+    "process.runtime.options": "hBc",
+    "service.version": "",
+    "service.namespace": "",
+    "service.instance.id": ""
+  },
+  "links": [],
+  "events": []
+}
+{
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "9c30f55b7e74554a",
+  "parent_span_id": "addcf88a214d4247",
+  "name": "/usr/lib/apt/apt-helper cat-file /var/lib/apt/lists/_etc_apt_apt-mirrors.txt_dists_noble-updates_restricted_cnf_Commands-amd64",
+  "kind": "INTERNAL",
+  "status": "UNSET",
+  "time_start": 1754729626064212000,
+  "time_end": 1754729626085586000,
+  "attributes": {},
+  "resource_attributes": {
+    "telemetry.sdk.language": "shell",
+    "telemetry.sdk.name": "opentelemetry",
+    "telemetry.sdk.version": "5.22.6",
+    "service.name": "unknown_service",
+    "os.type": "linux",
+    "os.version": "6.11.0-1018-azure",
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
+    "process.executable.name": "bash",
+    "process.executable.path": "/usr/bin/bash",
+    "process.command_line": "sudo apt-get update",
+    "process.command": "sudo",
+    "process.owner": "root",
+    "process.runtime.name": "bash",
+    "process.runtime.description": "Bourne Again Shell",
+    "process.runtime.version": "5.2.21-2ubuntu4",
+    "process.runtime.options": "hBc",
+    "service.version": "",
+    "service.namespace": "",
+    "service.instance.id": ""
+  },
+  "links": [],
+  "events": []
+}
+{
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "b4132fba15d6bfea",
+  "parent_span_id": "addcf88a214d4247",
+  "name": "/usr/lib/apt/apt-helper cat-file /var/lib/apt/lists/_etc_apt_apt-mirrors.txt_dists_noble-updates_universe_cnf_Commands-amd64",
+  "kind": "INTERNAL",
+  "status": "UNSET",
+  "time_start": 1754729626946961000,
+  "time_end": 1754729630146638000,
+  "attributes": {},
+  "resource_attributes": {
+    "telemetry.sdk.language": "shell",
+    "telemetry.sdk.name": "opentelemetry",
+    "telemetry.sdk.version": "5.22.6",
+    "service.name": "unknown_service",
+    "os.type": "linux",
+    "os.version": "6.11.0-1018-azure",
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
+    "process.executable.name": "bash",
+    "process.executable.path": "/usr/bin/bash",
+    "process.command_line": "sudo apt-get update",
+    "process.command": "sudo",
+    "process.owner": "root",
+    "process.runtime.name": "bash",
+    "process.runtime.description": "Bourne Again Shell",
+    "process.runtime.version": "5.2.21-2ubuntu4",
+    "process.runtime.options": "hBc",
+    "service.version": "",
+    "service.namespace": "",
+    "service.instance.id": ""
+  },
+  "links": [],
+  "events": []
+}
+{
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "c33f77a378b580ea",
+  "parent_span_id": "addcf88a214d4247",
+  "name": "/usr/lib/apt/apt-helper cat-file /var/lib/apt/lists/_etc_apt_apt-mirrors.txt_dists_noble_main_cnf_Commands-amd64",
+  "kind": "INTERNAL",
+  "status": "UNSET",
+  "time_start": 1754729625935814000,
+  "time_end": 1754729625992354000,
+  "attributes": {},
+  "resource_attributes": {
+    "telemetry.sdk.language": "shell",
+    "telemetry.sdk.name": "opentelemetry",
+    "telemetry.sdk.version": "5.22.6",
+    "service.name": "unknown_service",
+    "os.type": "linux",
+    "os.version": "6.11.0-1018-azure",
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
+    "process.executable.name": "bash",
+    "process.executable.path": "/usr/bin/bash",
+    "process.command_line": "sudo apt-get update",
+    "process.command": "sudo",
+    "process.owner": "root",
+    "process.runtime.name": "bash",
+    "process.runtime.description": "Bourne Again Shell",
+    "process.runtime.version": "5.2.21-2ubuntu4",
+    "process.runtime.options": "hBc",
+    "service.version": "",
+    "service.namespace": "",
+    "service.instance.id": ""
+  },
+  "links": [],
+  "events": []
+}
+{
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "5ebff1a894e47659",
+  "parent_span_id": "addcf88a214d4247",
+  "name": "/usr/lib/apt/apt-helper cat-file /var/lib/apt/lists/_etc_apt_apt-mirrors.txt_dists_noble_multiverse_cnf_Commands-amd64",
+  "kind": "INTERNAL",
+  "status": "UNSET",
+  "time_start": 1754729636015987000,
+  "time_end": 1754729636037117000,
+  "attributes": {},
+  "resource_attributes": {
+    "telemetry.sdk.language": "shell",
+    "telemetry.sdk.name": "opentelemetry",
+    "telemetry.sdk.version": "5.22.6",
+    "service.name": "unknown_service",
+    "os.type": "linux",
+    "os.version": "6.11.0-1018-azure",
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
+    "process.executable.name": "bash",
+    "process.executable.path": "/usr/bin/bash",
+    "process.command_line": "sudo apt-get update",
+    "process.command": "sudo",
+    "process.owner": "root",
+    "process.runtime.name": "bash",
+    "process.runtime.description": "Bourne Again Shell",
+    "process.runtime.version": "5.2.21-2ubuntu4",
+    "process.runtime.options": "hBc",
+    "service.version": "",
+    "service.namespace": "",
+    "service.instance.id": ""
+  },
+  "links": [],
+  "events": []
+}
+{
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "f9f8dd3e492189ca",
+  "parent_span_id": "addcf88a214d4247",
+  "name": "/usr/lib/apt/apt-helper cat-file /var/lib/apt/lists/_etc_apt_apt-mirrors.txt_dists_noble_restricted_cnf_Commands-amd64",
+  "kind": "INTERNAL",
+  "status": "UNSET",
+  "time_start": 1754729626917261000,
+  "time_end": 1754729626941732000,
+  "attributes": {},
+  "resource_attributes": {
+    "telemetry.sdk.language": "shell",
+    "telemetry.sdk.name": "opentelemetry",
+    "telemetry.sdk.version": "5.22.6",
+    "service.name": "unknown_service",
+    "os.type": "linux",
+    "os.version": "6.11.0-1018-azure",
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
+    "process.executable.name": "bash",
+    "process.executable.path": "/usr/bin/bash",
+    "process.command_line": "sudo apt-get update",
+    "process.command": "sudo",
+    "process.owner": "root",
+    "process.runtime.name": "bash",
+    "process.runtime.description": "Bourne Again Shell",
+    "process.runtime.version": "5.2.21-2ubuntu4",
+    "process.runtime.options": "hBc",
+    "service.version": "",
+    "service.namespace": "",
+    "service.instance.id": ""
+  },
+  "links": [],
+  "events": []
+}
+{
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "1d02c6e315551687",
+  "parent_span_id": "addcf88a214d4247",
+  "name": "/usr/lib/apt/apt-helper cat-file /var/lib/apt/lists/_etc_apt_apt-mirrors.txt_dists_noble_universe_cnf_Commands-amd64",
+  "kind": "INTERNAL",
+  "status": "UNSET",
+  "time_start": 1754729626259603000,
+  "time_end": 1754729626877801000,
+  "attributes": {},
+  "resource_attributes": {
+    "telemetry.sdk.language": "shell",
+    "telemetry.sdk.name": "opentelemetry",
+    "telemetry.sdk.version": "5.22.6",
+    "service.name": "unknown_service",
+    "os.type": "linux",
+    "os.version": "6.11.0-1018-azure",
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
+    "process.executable.name": "bash",
+    "process.executable.path": "/usr/bin/bash",
+    "process.command_line": "sudo apt-get update",
+    "process.command": "sudo",
+    "process.owner": "root",
+    "process.runtime.name": "bash",
+    "process.runtime.description": "Bourne Again Shell",
+    "process.runtime.version": "5.2.21-2ubuntu4",
+    "process.runtime.options": "hBc",
+    "service.version": "",
+    "service.namespace": "",
+    "service.instance.id": ""
+  },
+  "links": [],
+  "events": []
+}
+{
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "20464aff65a12c84",
+  "parent_span_id": "5cfc0ffd1e5c08f7",
   "name": "/usr/lib/apt/methods/file",
   "kind": "INTERNAL",
   "status": "ERROR",
-  "time_start": 1754652802773270000,
-  "time_end": 1754652802785968000,
+  "time_start": 1754729621595350000,
+  "time_end": 1754729621610103000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -4063,8 +4639,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -4082,14 +4658,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "4874bfda21a2046a",
-  "parent_span_id": "7dcd13b5948cdf56",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "2da21ede6c47aebf",
+  "parent_span_id": "5cfc0ffd1e5c08f7",
   "name": "/usr/lib/apt/methods/file",
   "kind": "INTERNAL",
   "status": "ERROR",
-  "time_start": 1754652802786290000,
-  "time_end": 1754652805663367000,
+  "time_start": 1754729621610494000,
+  "time_end": 1754729623930283000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -4098,8 +4674,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -4117,14 +4693,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "cfd28031b1226468",
-  "parent_span_id": "7dcd13b5948cdf56",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "94ad14d1a52e321c",
+  "parent_span_id": "5cfc0ffd1e5c08f7",
   "name": "/usr/lib/apt/methods/gpgv",
   "kind": "INTERNAL",
   "status": "ERROR",
-  "time_start": 1754652802855276000,
-  "time_end": 1754652802871852000,
+  "time_start": 1754729621683005000,
+  "time_end": 1754729621698939000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -4133,8 +4709,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -4152,14 +4728,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "c277d7a868017aab",
-  "parent_span_id": "7dcd13b5948cdf56",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "71b7ea381a7bcb3c",
+  "parent_span_id": "5cfc0ffd1e5c08f7",
   "name": "/usr/lib/apt/methods/gpgv",
   "kind": "INTERNAL",
   "status": "ERROR",
-  "time_start": 1754652802872186000,
-  "time_end": 1754652805661521000,
+  "time_start": 1754729621699271000,
+  "time_end": 1754729623928554000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -4168,8 +4744,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -4187,14 +4763,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "64e2d3a6fc341712",
-  "parent_span_id": "c277d7a868017aab",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "41f003d85d725674",
+  "parent_span_id": "71b7ea381a7bcb3c",
   "name": "/usr/lib/apt/methods/gpgv",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652802885716000,
-  "time_end": 1754652803148973000,
+  "time_start": 1754729621717280000,
+  "time_end": 1754729622246442000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -4203,8 +4779,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -4222,14 +4798,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "caa8775a1536bcae",
-  "parent_span_id": "c277d7a868017aab",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "39f704ed79f10bd3",
+  "parent_span_id": "71b7ea381a7bcb3c",
   "name": "/usr/lib/apt/methods/gpgv",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803153422000,
-  "time_end": 1754652803384894000,
+  "time_start": 1754729622265298000,
+  "time_end": 1754729622597130000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -4238,8 +4814,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -4257,14 +4833,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "cbea922bf38b7704",
-  "parent_span_id": "c277d7a868017aab",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "9f1fc59f9c3a71d8",
+  "parent_span_id": "71b7ea381a7bcb3c",
   "name": "/usr/lib/apt/methods/gpgv",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803389381000,
-  "time_end": 1754652803869807000,
+  "time_start": 1754729622611783000,
+  "time_end": 1754729623019816000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -4273,8 +4849,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -4292,14 +4868,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "93a4e3d11f579617",
-  "parent_span_id": "c277d7a868017aab",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "4b92c322deb471a5",
+  "parent_span_id": "71b7ea381a7bcb3c",
   "name": "/usr/lib/apt/methods/gpgv",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803882841000,
-  "time_end": 1754652804220705000,
+  "time_start": 1754729623035547000,
+  "time_end": 1754729623407335000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -4308,8 +4884,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -4327,14 +4903,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "e5b6710bf27bea20",
-  "parent_span_id": "c277d7a868017aab",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "b71527c22bd3f18b",
+  "parent_span_id": "71b7ea381a7bcb3c",
   "name": "/usr/lib/apt/methods/gpgv",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804234798000,
-  "time_end": 1754652804644195000,
+  "time_start": 1754729623420365000,
+  "time_end": 1754729623673377000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -4343,8 +4919,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -4362,14 +4938,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "1d755a11ba0329d0",
-  "parent_span_id": "c277d7a868017aab",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "9768b9d78cc1d30d",
+  "parent_span_id": "71b7ea381a7bcb3c",
   "name": "/usr/lib/apt/methods/gpgv",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804661137000,
-  "time_end": 1754652805058907000,
+  "time_start": 1754729623677664000,
+  "time_end": 1754729623903667000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -4378,8 +4954,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -4397,14 +4973,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "ff45eeee33c04c38",
-  "parent_span_id": "7dcd13b5948cdf56",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "feeff6f0bfcdf8c3",
+  "parent_span_id": "5cfc0ffd1e5c08f7",
   "name": "/usr/lib/apt/methods/http",
   "kind": "INTERNAL",
   "status": "ERROR",
-  "time_start": 1754652802804346000,
-  "time_end": 1754652802819306000,
+  "time_start": 1754729621628102000,
+  "time_end": 1754729621642640000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -4413,8 +4989,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -4432,14 +5008,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "202d795e686e10ef",
-  "parent_span_id": "7dcd13b5948cdf56",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "cf12829ecedf7199",
+  "parent_span_id": "5cfc0ffd1e5c08f7",
   "name": "/usr/lib/apt/methods/http",
   "kind": "INTERNAL",
   "status": "ERROR",
-  "time_start": 1754652802819613000,
-  "time_end": 1754652805662624000,
+  "time_start": 1754729621642929000,
+  "time_end": 1754729623929475000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -4448,8 +5024,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -4467,14 +5043,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "7f6e0c472ab88e9d",
-  "parent_span_id": "7dcd13b5948cdf56",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "fa1cc288150e0870",
+  "parent_span_id": "5cfc0ffd1e5c08f7",
   "name": "/usr/lib/apt/methods/https",
   "kind": "INTERNAL",
   "status": "ERROR",
-  "time_start": 1754652802653779000,
-  "time_end": 1754652802673455000,
+  "time_start": 1754729621467382000,
+  "time_end": 1754729621497611000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -4483,8 +5059,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -4502,14 +5078,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "72565108a7bf736a",
-  "parent_span_id": "7dcd13b5948cdf56",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "49fc262737d36201",
+  "parent_span_id": "5cfc0ffd1e5c08f7",
   "name": "/usr/lib/apt/methods/https",
   "kind": "INTERNAL",
   "status": "ERROR",
-  "time_start": 1754652802752596000,
-  "time_end": 1754652805665373000,
+  "time_start": 1754729621575323000,
+  "time_end": 1754729623932244000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -4518,8 +5094,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -4537,14 +5113,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "497ecac4a56f9315",
-  "parent_span_id": "7dcd13b5948cdf56",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "a1b26afb87a4b986",
+  "parent_span_id": "5cfc0ffd1e5c08f7",
   "name": "/usr/lib/apt/methods/mirror+file",
   "kind": "INTERNAL",
   "status": "ERROR",
-  "time_start": 1754652802673955000,
-  "time_end": 1754652802687466000,
+  "time_start": 1754729621498164000,
+  "time_end": 1754729621512721000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -4553,8 +5129,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -4572,14 +5148,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "deeef4d8c26b3a21",
-  "parent_span_id": "7dcd13b5948cdf56",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "cd38f5673b30e4a1",
+  "parent_span_id": "5cfc0ffd1e5c08f7",
   "name": "/usr/lib/apt/methods/mirror+file",
   "kind": "INTERNAL",
   "status": "ERROR",
-  "time_start": 1754652802739978000,
-  "time_end": 1754652805664175000,
+  "time_start": 1754729621563214000,
+  "time_end": 1754729623930934000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -4588,8 +5164,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -4607,14 +5183,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "2dc11eb0621b03c3",
-  "parent_span_id": "7dcd13b5948cdf56",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "edd4453accb50ce9",
+  "parent_span_id": "5cfc0ffd1e5c08f7",
   "name": "/usr/lib/apt/methods/store",
   "kind": "INTERNAL",
   "status": "ERROR",
-  "time_start": 1754652803160556000,
-  "time_end": 1754652803175830000,
+  "time_start": 1754729622629824000,
+  "time_end": 1754729622645720000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -4623,8 +5199,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -4642,14 +5218,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "637ea5cae7e80e1c",
-  "parent_span_id": "7dcd13b5948cdf56",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "8f767112194c5f41",
+  "parent_span_id": "5cfc0ffd1e5c08f7",
   "name": "/usr/lib/apt/methods/store",
   "kind": "INTERNAL",
   "status": "ERROR",
-  "time_start": 1754652803176351000,
-  "time_end": 1754652805660705000,
+  "time_start": 1754729622646155000,
+  "time_end": 1754729623927812000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -4658,8 +5234,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -4677,14 +5253,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "32319ea70d2e2b10",
-  "parent_span_id": "e6f2ea19dc9e5516",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "addcf88a214d4247",
+  "parent_span_id": "cc310fc8e4e3b5c1",
   "name": "/usr/lib/cnf-update-db",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652807526657000,
-  "time_end": 1754652807676369000,
+  "time_start": 1754729625785031000,
+  "time_end": 1754729636120423000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -4693,8 +5269,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -4712,14 +5288,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "fc9997f2c1c26aed",
-  "parent_span_id": "6117e094d2f8f301",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "f7aab9386eb44c66",
+  "parent_span_id": "cf161584f199591c",
   "name": "/usr/lib/update-notifier/update-motd-updates-available",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652807680694000,
-  "time_end": 1754652807877421000,
+  "time_start": 1754729636124826000,
+  "time_end": 1754729636319934000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -4728,8 +5304,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -4747,14 +5323,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "8f09526d70a11e2b",
-  "parent_span_id": "5206e310ca313abe",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "f60f28dc251494f0",
+  "parent_span_id": "1358b3c8807b6209",
   "name": "appstreamcli refresh --source=os",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652805797100000,
-  "time_end": 1754652807515446000,
+  "time_start": 1754729624056168000,
+  "time_end": 1754729625774108000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -4763,8 +5339,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -4782,14 +5358,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "bb1158bdf3bbde72",
-  "parent_span_id": "8f09526d70a11e2b",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "c4ab79176d187e3e",
+  "parent_span_id": "f60f28dc251494f0",
   "name": "appstreamcli refresh --source=os",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652805852564000,
-  "time_end": 1754652807515427000,
+  "time_start": 1754729624111595000,
+  "time_end": 1754729625774086000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -4798,8 +5374,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -4817,14 +5393,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "d6535c1c98066414",
-  "parent_span_id": "cd844415a7d4917c",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "b3a510cccad67eba",
+  "parent_span_id": "63944420658bdbdb",
   "name": "apt-config shell ARCHIVE_KEYRING APT::Key::ArchiveKeyring",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652802925365000,
-  "time_end": 1754652802950166000,
+  "time_start": 1754729622010206000,
+  "time_end": 1754729622036203000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -4833,8 +5409,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -4852,14 +5428,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "39192aefe5682ab5",
-  "parent_span_id": "835433504c029d69",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "423978a50d013496",
+  "parent_span_id": "8afadfb578a8ed51",
   "name": "apt-config shell ARCHIVE_KEYRING APT::Key::ArchiveKeyring",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803193545000,
-  "time_end": 1754652803217949000,
+  "time_start": 1754729622414537000,
+  "time_end": 1754729622440980000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -4868,8 +5444,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -4887,14 +5463,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "e857b7f3959e1141",
-  "parent_span_id": "879abf9175f28283",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "b80309c326e70337",
+  "parent_span_id": "dec85e96e5b421e5",
   "name": "apt-config shell ARCHIVE_KEYRING APT::Key::ArchiveKeyring",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803680471000,
-  "time_end": 1754652803706297000,
+  "time_start": 1754729622798115000,
+  "time_end": 1754729622828974000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -4903,8 +5479,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -4922,14 +5498,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "5855d58bdff70b1d",
-  "parent_span_id": "55e5cf1cf7b3323a",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "575b006655718c73",
+  "parent_span_id": "4407335859b30283",
   "name": "apt-config shell ARCHIVE_KEYRING APT::Key::ArchiveKeyring",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804032770000,
-  "time_end": 1754652804057385000,
+  "time_start": 1754729623211264000,
+  "time_end": 1754729623240201000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -4938,8 +5514,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -4957,14 +5533,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "6e5dbf8fdb472753",
-  "parent_span_id": "2b916c82419fe185",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "f8173d05a79e6584",
+  "parent_span_id": "a45dc17d535d1155",
   "name": "apt-config shell ARCHIVE_KEYRING APT::Key::ArchiveKeyring",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804418649000,
-  "time_end": 1754652804447518000,
+  "time_start": 1754729623467706000,
+  "time_end": 1754729623498305000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -4973,8 +5549,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -4992,14 +5568,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "65cb6680274d8777",
-  "parent_span_id": "fa61c6475562d2bd",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "73f45e589cf2d322",
+  "parent_span_id": "39882ebb57555ff5",
   "name": "apt-config shell ARCHIVE_KEYRING APT::Key::ArchiveKeyring",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804836778000,
-  "time_end": 1754652804869270000,
+  "time_start": 1754729623716876000,
+  "time_end": 1754729623742435000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -5008,8 +5584,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -5027,14 +5603,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "bd0b909b0c13d6fe",
-  "parent_span_id": "cd844415a7d4917c",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "98727d5df0de0db8",
+  "parent_span_id": "63944420658bdbdb",
   "name": "apt-config shell ARCHIVE_KEYRING_URI APT::Key::ArchiveKeyringURI",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652802978398000,
-  "time_end": 1754652803003321000,
+  "time_start": 1754729622062328000,
+  "time_end": 1754729622087931000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -5043,8 +5619,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -5062,14 +5638,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "7fe5a5f2e94b7447",
-  "parent_span_id": "835433504c029d69",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "569aa4409c4ac481",
+  "parent_span_id": "8afadfb578a8ed51",
   "name": "apt-config shell ARCHIVE_KEYRING_URI APT::Key::ArchiveKeyringURI",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803245463000,
-  "time_end": 1754652803270831000,
+  "time_start": 1754729622466738000,
+  "time_end": 1754729622491063000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -5078,8 +5654,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -5097,14 +5673,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "4bf8d3bd36dc9c4e",
-  "parent_span_id": "879abf9175f28283",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "910579862ae19ba3",
+  "parent_span_id": "dec85e96e5b421e5",
   "name": "apt-config shell ARCHIVE_KEYRING_URI APT::Key::ArchiveKeyringURI",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803732323000,
-  "time_end": 1754652803756944000,
+  "time_start": 1754729622859286000,
+  "time_end": 1754729622890951000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -5113,8 +5689,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -5132,14 +5708,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "d36ff1b7111b9122",
-  "parent_span_id": "55e5cf1cf7b3323a",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "b2719517d05e6102",
+  "parent_span_id": "4407335859b30283",
   "name": "apt-config shell ARCHIVE_KEYRING_URI APT::Key::ArchiveKeyringURI",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804083348000,
-  "time_end": 1754652804110618000,
+  "time_start": 1754729623267851000,
+  "time_end": 1754729623294223000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -5148,8 +5724,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -5167,14 +5743,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "83394c131c05462f",
-  "parent_span_id": "2b916c82419fe185",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "e24768e0ed9f7cd3",
+  "parent_span_id": "a45dc17d535d1155",
   "name": "apt-config shell ARCHIVE_KEYRING_URI APT::Key::ArchiveKeyringURI",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804477302000,
-  "time_end": 1754652804508136000,
+  "time_start": 1754729623531365000,
+  "time_end": 1754729623559876000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -5183,8 +5759,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -5202,14 +5778,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "4e34c87644ca1db7",
-  "parent_span_id": "fa61c6475562d2bd",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "dcde982b4d2417e8",
+  "parent_span_id": "39882ebb57555ff5",
   "name": "apt-config shell ARCHIVE_KEYRING_URI APT::Key::ArchiveKeyringURI",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804897749000,
-  "time_end": 1754652804926947000,
+  "time_start": 1754729623767341000,
+  "time_end": 1754729623792647000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -5218,8 +5794,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -5237,14 +5813,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "e5890f06d0b8f399",
-  "parent_span_id": "fc9997f2c1c26aed",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "c403f625361528e1",
+  "parent_span_id": "f7aab9386eb44c66",
   "name": "apt-config shell DpkgStatus Dir::State::status",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652807749524000,
-  "time_end": 1754652807780726000,
+  "time_start": 1754729636194035000,
+  "time_end": 1754729636225792000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -5253,8 +5829,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -5272,14 +5848,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "eb3fc6b69ff697ea",
-  "parent_span_id": "fc9997f2c1c26aed",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "3874ae3b6ce0a64a",
+  "parent_span_id": "f7aab9386eb44c66",
   "name": "apt-config shell EtcDir Dir::Etc",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652807781041000,
-  "time_end": 1754652807811389000,
+  "time_start": 1754729636226111000,
+  "time_end": 1754729636256288000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -5288,8 +5864,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -5307,14 +5883,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "0b7714ee65947a7c",
-  "parent_span_id": "cd844415a7d4917c",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "d09ff3da64e2f75d",
+  "parent_span_id": "63944420658bdbdb",
   "name": "apt-config shell GPGV Apt::Key::gpgvcommand ASSERT_PUBKEY_ALGO Apt::Key::assert-pubkey-algo",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803005477000,
-  "time_end": 1754652803030896000,
+  "time_start": 1754729622090177000,
+  "time_end": 1754729622114780000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -5323,8 +5899,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -5342,14 +5918,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "1727cd7693592c44",
-  "parent_span_id": "835433504c029d69",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "6a59405b5e79aef1",
+  "parent_span_id": "8afadfb578a8ed51",
   "name": "apt-config shell GPGV Apt::Key::gpgvcommand ASSERT_PUBKEY_ALGO Apt::Key::assert-pubkey-algo",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803272954000,
-  "time_end": 1754652803299953000,
+  "time_start": 1754729622493168000,
+  "time_end": 1754729622517507000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -5358,8 +5934,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -5377,14 +5953,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "164fa7c25549fc9f",
-  "parent_span_id": "879abf9175f28283",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "5ba24409b502f672",
+  "parent_span_id": "dec85e96e5b421e5",
   "name": "apt-config shell GPGV Apt::Key::gpgvcommand ASSERT_PUBKEY_ALGO Apt::Key::assert-pubkey-algo",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803758946000,
-  "time_end": 1754652803783693000,
+  "time_start": 1754729622893377000,
+  "time_end": 1754729622923961000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -5393,8 +5969,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -5412,14 +5988,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "c443c7daf5eda99d",
-  "parent_span_id": "55e5cf1cf7b3323a",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "08364d0fca60a6d1",
+  "parent_span_id": "4407335859b30283",
   "name": "apt-config shell GPGV Apt::Key::gpgvcommand ASSERT_PUBKEY_ALGO Apt::Key::assert-pubkey-algo",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804112517000,
-  "time_end": 1754652804138024000,
+  "time_start": 1754729623296222000,
+  "time_end": 1754729623323009000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -5428,8 +6004,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -5447,14 +6023,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "36f28924ad3f0ed1",
-  "parent_span_id": "2b916c82419fe185",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "29af1a47f95979c8",
+  "parent_span_id": "a45dc17d535d1155",
   "name": "apt-config shell GPGV Apt::Key::gpgvcommand ASSERT_PUBKEY_ALGO Apt::Key::assert-pubkey-algo",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804511040000,
-  "time_end": 1754652804543313000,
+  "time_start": 1754729623562498000,
+  "time_end": 1754729623591347000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -5463,8 +6039,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -5482,14 +6058,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "03146574675924c2",
-  "parent_span_id": "fa61c6475562d2bd",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "97ac8d319a4269db",
+  "parent_span_id": "39882ebb57555ff5",
   "name": "apt-config shell GPGV Apt::Key::gpgvcommand ASSERT_PUBKEY_ALGO Apt::Key::assert-pubkey-algo",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804929730000,
-  "time_end": 1754652804957996000,
+  "time_start": 1754729623794698000,
+  "time_end": 1754729623819755000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -5498,8 +6074,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -5517,14 +6093,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "517f2801a03aaad0",
-  "parent_span_id": "fc9997f2c1c26aed",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "e603cac6dec2d9f7",
+  "parent_span_id": "f7aab9386eb44c66",
   "name": "apt-config shell ListDir Dir::State::Lists",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652807717259000,
-  "time_end": 1754652807749178000,
+  "time_start": 1754729636160317000,
+  "time_end": 1754729636193741000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -5533,8 +6109,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -5552,14 +6128,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "a0239de3dc4a64c4",
-  "parent_span_id": "cd844415a7d4917c",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "581222b6074482ac",
+  "parent_span_id": "63944420658bdbdb",
   "name": "apt-config shell MASTER_KEYRING APT::Key::MasterKeyring",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652802899237000,
-  "time_end": 1754652802925024000,
+  "time_start": 1754729621984543000,
+  "time_end": 1754729622009837000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -5568,8 +6144,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -5587,14 +6163,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "6c216859e87c2131",
-  "parent_span_id": "835433504c029d69",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "ae1c330933a1e34f",
+  "parent_span_id": "8afadfb578a8ed51",
   "name": "apt-config shell MASTER_KEYRING APT::Key::MasterKeyring",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803165227000,
-  "time_end": 1754652803193085000,
+  "time_start": 1754729622389020000,
+  "time_end": 1754729622414225000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -5603,8 +6179,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -5622,14 +6198,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "814d2b8d986135b5",
-  "parent_span_id": "879abf9175f28283",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "ff8be1fe1f323b08",
+  "parent_span_id": "dec85e96e5b421e5",
   "name": "apt-config shell MASTER_KEYRING APT::Key::MasterKeyring",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803653976000,
-  "time_end": 1754652803680077000,
+  "time_start": 1754729622767117000,
+  "time_end": 1754729622797910000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -5638,8 +6214,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -5657,14 +6233,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "22fd9ac48a82f935",
-  "parent_span_id": "55e5cf1cf7b3323a",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "96595e17d032de3b",
+  "parent_span_id": "4407335859b30283",
   "name": "apt-config shell MASTER_KEYRING APT::Key::MasterKeyring",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804004450000,
-  "time_end": 1754652804032431000,
+  "time_start": 1754729623179634000,
+  "time_end": 1754729623210893000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -5673,8 +6249,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -5692,14 +6268,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "612230ac3b449c42",
-  "parent_span_id": "2b916c82419fe185",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "1c2cbf04fcfc9f16",
+  "parent_span_id": "a45dc17d535d1155",
   "name": "apt-config shell MASTER_KEYRING APT::Key::MasterKeyring",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804386520000,
-  "time_end": 1754652804418286000,
+  "time_start": 1754729623432771000,
+  "time_end": 1754729623467189000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -5708,8 +6284,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -5727,14 +6303,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "52d587d97f2912bd",
-  "parent_span_id": "fa61c6475562d2bd",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "a0ec8f775a2ff9be",
+  "parent_span_id": "39882ebb57555ff5",
   "name": "apt-config shell MASTER_KEYRING APT::Key::MasterKeyring",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804804871000,
-  "time_end": 1754652804836380000,
+  "time_start": 1754729623688287000,
+  "time_end": 1754729623716537000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -5743,8 +6319,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -5762,14 +6338,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "b189fdd1b7f1b006",
-  "parent_span_id": "cd844415a7d4917c",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "c9ecf349563aa21b",
+  "parent_span_id": "63944420658bdbdb",
   "name": "apt-config shell REMOVED_KEYS APT::Key::RemovedKeys",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652802950889000,
-  "time_end": 1754652802978033000,
+  "time_start": 1754729622036545000,
+  "time_end": 1754729622061964000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -5778,8 +6354,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -5797,14 +6373,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "e8b80faebb045a04",
-  "parent_span_id": "835433504c029d69",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "fa141bafb6975c79",
+  "parent_span_id": "8afadfb578a8ed51",
   "name": "apt-config shell REMOVED_KEYS APT::Key::RemovedKeys",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803218267000,
-  "time_end": 1754652803245127000,
+  "time_start": 1754729622441361000,
+  "time_end": 1754729622466391000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -5813,8 +6389,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -5832,14 +6408,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "14446574c026bd93",
-  "parent_span_id": "879abf9175f28283",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "a26ff1909e9655de",
+  "parent_span_id": "dec85e96e5b421e5",
   "name": "apt-config shell REMOVED_KEYS APT::Key::RemovedKeys",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803706644000,
-  "time_end": 1754652803731298000,
+  "time_start": 1754729622829283000,
+  "time_end": 1754729622858924000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -5848,8 +6424,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -5867,14 +6443,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "1b4ad2e9d9c4ce57",
-  "parent_span_id": "55e5cf1cf7b3323a",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "62c7d955d1acd42d",
+  "parent_span_id": "4407335859b30283",
   "name": "apt-config shell REMOVED_KEYS APT::Key::RemovedKeys",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804057739000,
-  "time_end": 1754652804082971000,
+  "time_start": 1754729623240555000,
+  "time_end": 1754729623267500000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -5883,8 +6459,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -5902,14 +6478,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "0a5ca9bc9261052b",
-  "parent_span_id": "2b916c82419fe185",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "3ea1a6bddc098de9",
+  "parent_span_id": "a45dc17d535d1155",
   "name": "apt-config shell REMOVED_KEYS APT::Key::RemovedKeys",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804447876000,
-  "time_end": 1754652804476939000,
+  "time_start": 1754729623498701000,
+  "time_end": 1754729623530908000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -5918,8 +6494,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -5937,14 +6513,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "07a386dabb640e73",
-  "parent_span_id": "fa61c6475562d2bd",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "a71ec3839e424980",
+  "parent_span_id": "39882ebb57555ff5",
   "name": "apt-config shell REMOVED_KEYS APT::Key::RemovedKeys",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804869555000,
-  "time_end": 1754652804897377000,
+  "time_start": 1754729623742759000,
+  "time_end": 1754729623766993000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -5953,8 +6529,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -5972,14 +6548,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "cc9189fc8f16ab15",
-  "parent_span_id": "fc9997f2c1c26aed",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "227efe52ee32330d",
+  "parent_span_id": "f7aab9386eb44c66",
   "name": "apt-config shell SourceList Dir::Etc::sourcelist",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652807811709000,
-  "time_end": 1754652807844007000,
+  "time_start": 1754729636256569000,
+  "time_end": 1754729636287754000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -5988,8 +6564,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -6007,14 +6583,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "5b6fad77f017c674",
-  "parent_span_id": "fc9997f2c1c26aed",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "c49b6c6c81f0b018",
+  "parent_span_id": "f7aab9386eb44c66",
   "name": "apt-config shell StateDir Dir::State",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652807683342000,
-  "time_end": 1754652807716908000,
+  "time_start": 1754729636127546000,
+  "time_end": 1754729636159981000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -6023,8 +6599,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -6042,14 +6618,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "7dcd13b5948cdf56",
-  "parent_span_id": "0bf187aed029ab10",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "5cfc0ffd1e5c08f7",
+  "parent_span_id": "f40e99cc8e9449d2",
   "name": "apt-get update",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652802450651392,
-  "time_end": 1754652808979046144,
+  "time_start": 1754729621309431040,
+  "time_end": 1754729637369888256,
   "attributes": {
     "shell.command_line": "apt-get update",
     "shell.command": "apt-get",
@@ -6069,8 +6645,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -6088,14 +6664,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "77edf798ae9cd033",
-  "parent_span_id": "7dcd13b5948cdf56",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "b6e139ba8fcf08a6",
+  "parent_span_id": "5cfc0ffd1e5c08f7",
   "name": "apt-get update",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652802687641000,
-  "time_end": 1754652802738129000,
+  "time_start": 1754729621512899000,
+  "time_end": 1754729621561440000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -6104,8 +6680,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -6123,14 +6699,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "620d0927ca88b24e",
-  "parent_span_id": "7dcd13b5948cdf56",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "7e2bd2a8884d0442",
+  "parent_span_id": "5cfc0ffd1e5c08f7",
   "name": "apt-get update",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652805724749000,
-  "time_end": 1754652807878715000,
+  "time_start": 1754729623985579000,
+  "time_end": 1754729636321121000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -6139,8 +6715,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -6158,14 +6734,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "ef1a57ca4a7d1b03",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "19a19269d31b55d3",
   "parent_span_id": null,
   "name": "bash -e demo.sh",
   "kind": "SERVER",
   "status": "UNSET",
-  "time_start": 1754652801797515520,
-  "time_end": 1754652809012685056,
+  "time_start": 1754729620645632256,
+  "time_end": 1754729637402409984,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -6174,8 +6750,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 2450,
-    "process.parent_pid": 2356,
+    "process.pid": 2455,
+    "process.parent_pid": 2357,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -6193,14 +6769,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "58615ff151e14a7c",
-  "parent_span_id": "55e5cf1cf7b3323a",
-  "name": "chmod 700 /tmp/apt-key-gpghome.Gs5aK6cf9C",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "00be2396ed6479e0",
+  "parent_span_id": "4407335859b30283",
+  "name": "chmod 700 /tmp/apt-key-gpghome.5SLKNvh22i",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804153613000,
-  "time_end": 1754652804155596000,
+  "time_start": 1754729623339373000,
+  "time_end": 1754729623341371000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -6209,8 +6785,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -6228,14 +6804,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "efa880fb80e59ec0",
-  "parent_span_id": "fa61c6475562d2bd",
-  "name": "chmod 700 /tmp/apt-key-gpghome.HQwHHf50an",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "f2633ab52a9decd3",
+  "parent_span_id": "8afadfb578a8ed51",
+  "name": "chmod 700 /tmp/apt-key-gpghome.7bsv7Ccq8D",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804977343000,
-  "time_end": 1754652804979646000,
+  "time_start": 1754729622533488000,
+  "time_end": 1754729622535469000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -6244,8 +6820,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -6263,14 +6839,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "de9b32400a133bb0",
-  "parent_span_id": "2b916c82419fe185",
-  "name": "chmod 700 /tmp/apt-key-gpghome.afy13skrwF",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "9f7157d59a28bd04",
+  "parent_span_id": "63944420658bdbdb",
+  "name": "chmod 700 /tmp/apt-key-gpghome.Ky2eb76B3b",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804561478000,
-  "time_end": 1754652804563871000,
+  "time_start": 1754729622138372000,
+  "time_end": 1754729622141258000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -6279,8 +6855,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -6298,14 +6874,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "ea6bcc108f468e82",
-  "parent_span_id": "835433504c029d69",
-  "name": "chmod 700 /tmp/apt-key-gpghome.iBNzBpZAiz",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "c2a5b474217e7525",
+  "parent_span_id": "a45dc17d535d1155",
+  "name": "chmod 700 /tmp/apt-key-gpghome.QexeRtkO2U",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803315744000,
-  "time_end": 1754652803318006000,
+  "time_start": 1754729623607536000,
+  "time_end": 1754729623609439000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -6314,8 +6890,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -6333,14 +6909,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "b77de6e3f4652965",
-  "parent_span_id": "879abf9175f28283",
-  "name": "chmod 700 /tmp/apt-key-gpghome.lG9AFyC28C",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "6a89c7c962739a5f",
+  "parent_span_id": "39882ebb57555ff5",
+  "name": "chmod 700 /tmp/apt-key-gpghome.rs2y6vGFvE",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803799072000,
-  "time_end": 1754652803800999000,
+  "time_start": 1754729623835642000,
+  "time_end": 1754729623837941000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -6349,8 +6925,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -6368,14 +6944,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "549cf6fb744f819b",
-  "parent_span_id": "cd844415a7d4917c",
-  "name": "chmod 700 /tmp/apt-key-gpghome.pJZBZX4Av4",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "632041c3048ccad5",
+  "parent_span_id": "dec85e96e5b421e5",
+  "name": "chmod 700 /tmp/apt-key-gpghome.w5YINb2yRQ",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803064147000,
-  "time_end": 1754652803066269000,
+  "time_start": 1754729622942497000,
+  "time_end": 1754729622944789000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -6384,8 +6960,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -6403,14 +6979,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "238b4caaeb808bf1",
-  "parent_span_id": "59375d0911d426b5",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "945f3d5ab6e46424",
+  "parent_span_id": "dd84495249de8021",
   "name": "dirname /var/lib/update-notifier/updates-available",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652807857358000,
-  "time_end": 1754652807863506000,
+  "time_start": 1754729636301195000,
+  "time_end": 1754729636307192000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -6419,8 +6995,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -6438,14 +7014,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "09f8946ba059059e",
-  "parent_span_id": "fc9997f2c1c26aed",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "4a67b0854af453a8",
+  "parent_span_id": "f7aab9386eb44c66",
   "name": "find /var/lib/apt/lists/ /etc/apt/sources.list //var/lib/dpkg/status -type f -newer /var/lib/update-notifier/updates-available -print -quit",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652807844417000,
-  "time_end": 1754652807856655000,
+  "time_start": 1754729636288127000,
+  "time_end": 1754729636300531000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -6454,8 +7030,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -6473,14 +7049,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "6847b66fee271d1c",
-  "parent_span_id": "bae39d82e07047f8",
-  "name": "gpg-connect-agent --homedir /tmp/apt-key-gpghome.Gs5aK6cf9C --no-autostart --dirmngr KILLDIRMNGR",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "7bff37b149230f0f",
+  "parent_span_id": "1edc911d570c2d80",
+  "name": "gpg-connect-agent --homedir /tmp/apt-key-gpghome.5SLKNvh22i --no-autostart --dirmngr KILLDIRMNGR",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804186231000,
-  "time_end": 1754652804192924000,
+  "time_start": 1754729623373543000,
+  "time_end": 1754729623380319000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -6489,8 +7065,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -6508,14 +7084,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "1d2529e7bebdb36a",
-  "parent_span_id": "bae39d82e07047f8",
-  "name": "gpg-connect-agent --homedir /tmp/apt-key-gpghome.Gs5aK6cf9C --no-autostart KILLAGENT",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "4bdc00a2cc1955e7",
+  "parent_span_id": "1edc911d570c2d80",
+  "name": "gpg-connect-agent --homedir /tmp/apt-key-gpghome.5SLKNvh22i --no-autostart KILLAGENT",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804200409000,
-  "time_end": 1754652804206987000,
+  "time_start": 1754729623387647000,
+  "time_end": 1754729623394165000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -6524,8 +7100,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -6543,14 +7119,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "7d7d4f8a968a555d",
-  "parent_span_id": "bae39d82e07047f8",
-  "name": "gpg-connect-agent --homedir /tmp/apt-key-gpghome.Gs5aK6cf9C -s --no-autostart GETINFO scd_running /if ${! $?} scd killscd /end",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "17354165740ecab7",
+  "parent_span_id": "1edc911d570c2d80",
+  "name": "gpg-connect-agent --homedir /tmp/apt-key-gpghome.5SLKNvh22i -s --no-autostart GETINFO scd_running /if ${! $?} scd killscd /end",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804193037000,
-  "time_end": 1754652804200216000,
+  "time_start": 1754729623380441000,
+  "time_end": 1754729623387520000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -6559,8 +7135,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -6578,14 +7154,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "35b6f5e0965d0683",
-  "parent_span_id": "9d219ac297c112f3",
-  "name": "gpg-connect-agent --homedir /tmp/apt-key-gpghome.HQwHHf50an --no-autostart --dirmngr KILLDIRMNGR",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "d2261830d4fcafc9",
+  "parent_span_id": "2b93f693a8f72cec",
+  "name": "gpg-connect-agent --homedir /tmp/apt-key-gpghome.7bsv7Ccq8D --no-autostart --dirmngr KILLDIRMNGR",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652805016185000,
-  "time_end": 1754652805026475000,
+  "time_start": 1754729622565260000,
+  "time_end": 1754729622572172000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -6594,8 +7170,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -6613,14 +7189,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "0893c1381b2a2dc8",
-  "parent_span_id": "9d219ac297c112f3",
-  "name": "gpg-connect-agent --homedir /tmp/apt-key-gpghome.HQwHHf50an --no-autostart KILLAGENT",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "69fa31b72a6ac6e1",
+  "parent_span_id": "2b93f693a8f72cec",
+  "name": "gpg-connect-agent --homedir /tmp/apt-key-gpghome.7bsv7Ccq8D --no-autostart KILLAGENT",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652805035380000,
-  "time_end": 1754652805043802000,
+  "time_start": 1754729622578730000,
+  "time_end": 1754729622585282000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -6629,8 +7205,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -6648,14 +7224,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "ba1c180a7eb5b751",
-  "parent_span_id": "9d219ac297c112f3",
-  "name": "gpg-connect-agent --homedir /tmp/apt-key-gpghome.HQwHHf50an -s --no-autostart GETINFO scd_running /if ${! $?} scd killscd /end",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "24997199567bc563",
+  "parent_span_id": "2b93f693a8f72cec",
+  "name": "gpg-connect-agent --homedir /tmp/apt-key-gpghome.7bsv7Ccq8D -s --no-autostart GETINFO scd_running /if ${! $?} scd killscd /end",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652805026594000,
-  "time_end": 1754652805035259000,
+  "time_start": 1754729622572295000,
+  "time_end": 1754729622578630000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -6664,8 +7240,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -6683,14 +7259,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "ca821cf8e2f723a6",
-  "parent_span_id": "25b677f65958c680",
-  "name": "gpg-connect-agent --homedir /tmp/apt-key-gpghome.afy13skrwF --no-autostart --dirmngr KILLDIRMNGR",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "6da1440be5c6c8ca",
+  "parent_span_id": "d5b6c8aad47d2923",
+  "name": "gpg-connect-agent --homedir /tmp/apt-key-gpghome.Ky2eb76B3b --no-autostart --dirmngr KILLDIRMNGR",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804602293000,
-  "time_end": 1754652804611461000,
+  "time_start": 1754729622195602000,
+  "time_end": 1754729622208581000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -6699,8 +7275,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -6718,14 +7294,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "2abff352587d1594",
-  "parent_span_id": "25b677f65958c680",
-  "name": "gpg-connect-agent --homedir /tmp/apt-key-gpghome.afy13skrwF --no-autostart KILLAGENT",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "779e644ac395a42d",
+  "parent_span_id": "d5b6c8aad47d2923",
+  "name": "gpg-connect-agent --homedir /tmp/apt-key-gpghome.Ky2eb76B3b --no-autostart KILLAGENT",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804620258000,
-  "time_end": 1754652804628322000,
+  "time_start": 1754729622220445000,
+  "time_end": 1754729622228991000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -6734,8 +7310,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -6753,14 +7329,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "448d1db5b6db350a",
-  "parent_span_id": "25b677f65958c680",
-  "name": "gpg-connect-agent --homedir /tmp/apt-key-gpghome.afy13skrwF -s --no-autostart GETINFO scd_running /if ${! $?} scd killscd /end",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "9cb536d6a1d0c8d9",
+  "parent_span_id": "d5b6c8aad47d2923",
+  "name": "gpg-connect-agent --homedir /tmp/apt-key-gpghome.Ky2eb76B3b -s --no-autostart GETINFO scd_running /if ${! $?} scd killscd /end",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804611615000,
-  "time_end": 1754652804620167000,
+  "time_start": 1754729622208717000,
+  "time_end": 1754729622220318000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -6769,8 +7345,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -6788,14 +7364,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "ef3123ea6c89011f",
-  "parent_span_id": "ff837397ded26d32",
-  "name": "gpg-connect-agent --homedir /tmp/apt-key-gpghome.iBNzBpZAiz --no-autostart --dirmngr KILLDIRMNGR",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "3f3fbe3307f409db",
+  "parent_span_id": "4573b17cfbfe1ce4",
+  "name": "gpg-connect-agent --homedir /tmp/apt-key-gpghome.QexeRtkO2U --no-autostart --dirmngr KILLDIRMNGR",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803352052000,
-  "time_end": 1754652803359476000,
+  "time_start": 1754729623639299000,
+  "time_end": 1754729623646327000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -6804,8 +7380,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -6823,14 +7399,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "977e0c6638e8ce10",
-  "parent_span_id": "ff837397ded26d32",
-  "name": "gpg-connect-agent --homedir /tmp/apt-key-gpghome.iBNzBpZAiz --no-autostart KILLAGENT",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "0cbfadbd109ce722",
+  "parent_span_id": "4573b17cfbfe1ce4",
+  "name": "gpg-connect-agent --homedir /tmp/apt-key-gpghome.QexeRtkO2U --no-autostart KILLAGENT",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803366550000,
-  "time_end": 1754652803373266000,
+  "time_start": 1754729623653268000,
+  "time_end": 1754729623660151000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -6839,8 +7415,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -6858,14 +7434,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "f9d9f0a3a8e92f3c",
-  "parent_span_id": "ff837397ded26d32",
-  "name": "gpg-connect-agent --homedir /tmp/apt-key-gpghome.iBNzBpZAiz -s --no-autostart GETINFO scd_running /if ${! $?} scd killscd /end",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "a0ff995ce8111672",
+  "parent_span_id": "4573b17cfbfe1ce4",
+  "name": "gpg-connect-agent --homedir /tmp/apt-key-gpghome.QexeRtkO2U -s --no-autostart GETINFO scd_running /if ${! $?} scd killscd /end",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803359579000,
-  "time_end": 1754652803366448000,
+  "time_start": 1754729623646442000,
+  "time_end": 1754729623653120000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -6874,8 +7450,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -6893,14 +7469,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "af5d72b15dac7b60",
-  "parent_span_id": "965f400adb271552",
-  "name": "gpg-connect-agent --homedir /tmp/apt-key-gpghome.lG9AFyC28C --no-autostart --dirmngr KILLDIRMNGR",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "00c86a6e60ef847d",
+  "parent_span_id": "bcb1c7de576ff7fe",
+  "name": "gpg-connect-agent --homedir /tmp/apt-key-gpghome.rs2y6vGFvE --no-autostart --dirmngr KILLDIRMNGR",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803836771000,
-  "time_end": 1754652803843823000,
+  "time_start": 1754729623871001000,
+  "time_end": 1754729623877787000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -6909,8 +7485,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -6928,14 +7504,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "5c0a493c8315f20e",
-  "parent_span_id": "965f400adb271552",
-  "name": "gpg-connect-agent --homedir /tmp/apt-key-gpghome.lG9AFyC28C --no-autostart KILLAGENT",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "b523a41cb8b9edbc",
+  "parent_span_id": "bcb1c7de576ff7fe",
+  "name": "gpg-connect-agent --homedir /tmp/apt-key-gpghome.rs2y6vGFvE --no-autostart KILLAGENT",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803850873000,
-  "time_end": 1754652803857329000,
+  "time_start": 1754729623884923000,
+  "time_end": 1754729623891422000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -6944,8 +7520,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -6963,14 +7539,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "b73f4cdc1eba9212",
-  "parent_span_id": "965f400adb271552",
-  "name": "gpg-connect-agent --homedir /tmp/apt-key-gpghome.lG9AFyC28C -s --no-autostart GETINFO scd_running /if ${! $?} scd killscd /end",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "37b1c55b6b615adb",
+  "parent_span_id": "bcb1c7de576ff7fe",
+  "name": "gpg-connect-agent --homedir /tmp/apt-key-gpghome.rs2y6vGFvE -s --no-autostart GETINFO scd_running /if ${! $?} scd killscd /end",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803843927000,
-  "time_end": 1754652803850764000,
+  "time_start": 1754729623877908000,
+  "time_end": 1754729623884819000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -6979,8 +7555,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -6998,14 +7574,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "4302a90a17273e26",
-  "parent_span_id": "1ff54a93151b1d52",
-  "name": "gpg-connect-agent --homedir /tmp/apt-key-gpghome.pJZBZX4Av4 --no-autostart --dirmngr KILLDIRMNGR",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "675804baff6110b9",
+  "parent_span_id": "07a463f0108ed121",
+  "name": "gpg-connect-agent --homedir /tmp/apt-key-gpghome.w5YINb2yRQ --no-autostart --dirmngr KILLDIRMNGR",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803107615000,
-  "time_end": 1754652803122817000,
+  "time_start": 1754729622980244000,
+  "time_end": 1754729622988908000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -7014,8 +7590,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -7033,14 +7609,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "f02e6fdbc6c80751",
-  "parent_span_id": "1ff54a93151b1d52",
-  "name": "gpg-connect-agent --homedir /tmp/apt-key-gpghome.pJZBZX4Av4 --no-autostart KILLAGENT",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "91abe7d707bc9ed7",
+  "parent_span_id": "07a463f0108ed121",
+  "name": "gpg-connect-agent --homedir /tmp/apt-key-gpghome.w5YINb2yRQ --no-autostart KILLAGENT",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803129534000,
-  "time_end": 1754652803136355000,
+  "time_start": 1754729622996666000,
+  "time_end": 1754729623004381000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -7049,8 +7625,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -7068,14 +7644,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "ed8084a17e7cd4b3",
-  "parent_span_id": "1ff54a93151b1d52",
-  "name": "gpg-connect-agent --homedir /tmp/apt-key-gpghome.pJZBZX4Av4 -s --no-autostart GETINFO scd_running /if ${! $?} scd killscd /end",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "2bb8b459ffbeda4e",
+  "parent_span_id": "07a463f0108ed121",
+  "name": "gpg-connect-agent --homedir /tmp/apt-key-gpghome.w5YINb2yRQ -s --no-autostart GETINFO scd_running /if ${! $?} scd killscd /end",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803122928000,
-  "time_end": 1754652803129408000,
+  "time_start": 1754729622989009000,
+  "time_end": 1754729622996559000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -7084,8 +7660,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -7103,14 +7679,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "d56aef1738196914",
-  "parent_span_id": "bae39d82e07047f8",
-  "name": "gpg-connect-agent --no-autostart --keyboxd KILLKEYBOXD --homedir /tmp/apt-key-gpghome.Gs5aK6cf9C",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "f5cab551aba0b988",
+  "parent_span_id": "1edc911d570c2d80",
+  "name": "gpg-connect-agent --no-autostart --keyboxd KILLKEYBOXD --homedir /tmp/apt-key-gpghome.5SLKNvh22i",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804207088000,
-  "time_end": 1754652804215662000,
+  "time_start": 1754729623394269000,
+  "time_end": 1754729623401611000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -7119,8 +7695,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -7138,14 +7714,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "71b741fe1794a340",
-  "parent_span_id": "9d219ac297c112f3",
-  "name": "gpg-connect-agent --no-autostart --keyboxd KILLKEYBOXD --homedir /tmp/apt-key-gpghome.HQwHHf50an",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "f1df6cfbf243a9b7",
+  "parent_span_id": "2b93f693a8f72cec",
+  "name": "gpg-connect-agent --no-autostart --keyboxd KILLKEYBOXD --homedir /tmp/apt-key-gpghome.7bsv7Ccq8D",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652805043904000,
-  "time_end": 1754652805052389000,
+  "time_start": 1754729622585387000,
+  "time_end": 1754729622591976000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -7154,8 +7730,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -7173,14 +7749,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "f00be4d7e5a99148",
-  "parent_span_id": "25b677f65958c680",
-  "name": "gpg-connect-agent --no-autostart --keyboxd KILLKEYBOXD --homedir /tmp/apt-key-gpghome.afy13skrwF",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "6ab27373787fbb97",
+  "parent_span_id": "d5b6c8aad47d2923",
+  "name": "gpg-connect-agent --no-autostart --keyboxd KILLKEYBOXD --homedir /tmp/apt-key-gpghome.Ky2eb76B3b",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804628434000,
-  "time_end": 1754652804637164000,
+  "time_start": 1754729622229127000,
+  "time_end": 1754729622238840000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -7189,8 +7765,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -7208,14 +7784,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "52b671548441118d",
-  "parent_span_id": "ff837397ded26d32",
-  "name": "gpg-connect-agent --no-autostart --keyboxd KILLKEYBOXD --homedir /tmp/apt-key-gpghome.iBNzBpZAiz",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "15e78087da63852a",
+  "parent_span_id": "4573b17cfbfe1ce4",
+  "name": "gpg-connect-agent --no-autostart --keyboxd KILLKEYBOXD --homedir /tmp/apt-key-gpghome.QexeRtkO2U",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803373373000,
-  "time_end": 1754652803379811000,
+  "time_start": 1754729623660254000,
+  "time_end": 1754729623668082000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -7224,8 +7800,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -7243,14 +7819,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "929858cfc7636fa8",
-  "parent_span_id": "965f400adb271552",
-  "name": "gpg-connect-agent --no-autostart --keyboxd KILLKEYBOXD --homedir /tmp/apt-key-gpghome.lG9AFyC28C",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "d0a80dd0a0a26bac",
+  "parent_span_id": "bcb1c7de576ff7fe",
+  "name": "gpg-connect-agent --no-autostart --keyboxd KILLKEYBOXD --homedir /tmp/apt-key-gpghome.rs2y6vGFvE",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803857434000,
-  "time_end": 1754652803864596000,
+  "time_start": 1754729623891527000,
+  "time_end": 1754729623898247000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -7259,8 +7835,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -7278,14 +7854,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "ec1b78711bec5682",
-  "parent_span_id": "1ff54a93151b1d52",
-  "name": "gpg-connect-agent --no-autostart --keyboxd KILLKEYBOXD --homedir /tmp/apt-key-gpghome.pJZBZX4Av4",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "ff380bfa7c08f3a6",
+  "parent_span_id": "07a463f0108ed121",
+  "name": "gpg-connect-agent --no-autostart --keyboxd KILLKEYBOXD --homedir /tmp/apt-key-gpghome.w5YINb2yRQ",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803136463000,
-  "time_end": 1754652803143960000,
+  "time_start": 1754729623004492000,
+  "time_end": 1754729623013486000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -7294,8 +7870,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -7313,14 +7889,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "1ff54a93151b1d52",
-  "parent_span_id": "cd844415a7d4917c",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "d5b6c8aad47d2923",
+  "parent_span_id": "63944420658bdbdb",
   "name": "gpgconf --kill all",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803100201000,
-  "time_end": 1754652803144300000,
+  "time_start": 1754729622188237000,
+  "time_end": 1754729622239250000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -7329,8 +7905,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -7348,14 +7924,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "ff837397ded26d32",
-  "parent_span_id": "835433504c029d69",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "2b93f693a8f72cec",
+  "parent_span_id": "8afadfb578a8ed51",
   "name": "gpgconf --kill all",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803349085000,
-  "time_end": 1754652803380084000,
+  "time_start": 1754729622562427000,
+  "time_end": 1754729622592264000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -7364,8 +7940,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -7383,14 +7959,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "965f400adb271552",
-  "parent_span_id": "879abf9175f28283",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "07a463f0108ed121",
+  "parent_span_id": "dec85e96e5b421e5",
   "name": "gpgconf --kill all",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803833820000,
-  "time_end": 1754652803864904000,
+  "time_start": 1754729622976710000,
+  "time_end": 1754729623013821000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -7399,8 +7975,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -7418,14 +7994,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "bae39d82e07047f8",
-  "parent_span_id": "55e5cf1cf7b3323a",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "1edc911d570c2d80",
+  "parent_span_id": "4407335859b30283",
   "name": "gpgconf --kill all",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804183195000,
-  "time_end": 1754652804215941000,
+  "time_start": 1754729623370220000,
+  "time_end": 1754729623401921000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -7434,8 +8010,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -7453,14 +8029,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "25b677f65958c680",
-  "parent_span_id": "2b916c82419fe185",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "4573b17cfbfe1ce4",
+  "parent_span_id": "a45dc17d535d1155",
   "name": "gpgconf --kill all",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804598097000,
-  "time_end": 1754652804637542000,
+  "time_start": 1754729623636290000,
+  "time_end": 1754729623668419000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -7469,8 +8045,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -7488,14 +8064,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "9d219ac297c112f3",
-  "parent_span_id": "fa61c6475562d2bd",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "bcb1c7de576ff7fe",
+  "parent_span_id": "39882ebb57555ff5",
   "name": "gpgconf --kill all",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652805012559000,
-  "time_end": 1754652805052730000,
+  "time_start": 1754729623867921000,
+  "time_end": 1754729623898666000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -7504,8 +8080,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -7523,14 +8099,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "37fca48e173ea789",
-  "parent_span_id": "6c27be3749d4f2ff",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "33f10fd0509a8d31",
+  "parent_span_id": "5b3957517e350a64",
   "name": "gpgv --assert-pubkey-algo",
   "kind": "INTERNAL",
   "status": "ERROR",
-  "time_start": 1754652803038711000,
-  "time_end": 1754652803058795000,
+  "time_start": 1754729622121064000,
+  "time_end": 1754729622131161000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -7539,8 +8115,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -7558,14 +8134,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "923d30592062e166",
-  "parent_span_id": "fef99fb097afd844",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "2d3947443b3bf38d",
+  "parent_span_id": "adb5cd656fa40e3e",
   "name": "gpgv --assert-pubkey-algo",
   "kind": "INTERNAL",
   "status": "ERROR",
-  "time_start": 1754652803301783000,
-  "time_end": 1754652803310723000,
+  "time_start": 1754729622519337000,
+  "time_end": 1754729622528372000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -7574,8 +8150,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -7593,14 +8169,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "4fb6d2d1abe1254e",
-  "parent_span_id": "ec1285da7223d7bc",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "c22bc117f83250f0",
+  "parent_span_id": "a857ae78345374d4",
   "name": "gpgv --assert-pubkey-algo",
   "kind": "INTERNAL",
   "status": "ERROR",
-  "time_start": 1754652803785497000,
-  "time_end": 1754652803794152000,
+  "time_start": 1754729622926357000,
+  "time_end": 1754729622936885000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -7609,8 +8185,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -7628,14 +8204,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "c5301bbce9baab96",
-  "parent_span_id": "f1e87d1c0af7c3ea",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "8b8676df37bdee1f",
+  "parent_span_id": "7779a7f19f2a5ae8",
   "name": "gpgv --assert-pubkey-algo",
   "kind": "INTERNAL",
   "status": "ERROR",
-  "time_start": 1754652804139762000,
-  "time_end": 1754652804148837000,
+  "time_start": 1754729623324778000,
+  "time_end": 1754729623334687000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -7644,8 +8220,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -7663,14 +8239,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "28d87978fc7571e9",
-  "parent_span_id": "78ddf66fde678919",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "44f65dcc2b15a2fa",
+  "parent_span_id": "37c11030c72cae2d",
   "name": "gpgv --assert-pubkey-algo",
   "kind": "INTERNAL",
   "status": "ERROR",
-  "time_start": 1754652804544763000,
-  "time_end": 1754652804555479000,
+  "time_start": 1754729623593274000,
+  "time_end": 1754729623602718000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -7679,8 +8255,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -7698,14 +8274,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "63e706b4cbe43303",
-  "parent_span_id": "830e772dd6591bc5",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "491fa6b083fa358e",
+  "parent_span_id": "4c9c31adf84f7a14",
   "name": "gpgv --assert-pubkey-algo",
   "kind": "INTERNAL",
   "status": "ERROR",
-  "time_start": 1754652804960028000,
-  "time_end": 1754652804970527000,
+  "time_start": 1754729623821567000,
+  "time_end": 1754729623830701000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -7714,8 +8290,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -7733,14 +8309,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "aa23eb138ca8885f",
-  "parent_span_id": "55e5cf1cf7b3323a",
-  "name": "gpgv --assert-pubkey-algo=>=rsa1024,ed25519,ed448,nistp256,nistp384,nistp512,brainpoolP256r1,brainpoolP320r1,brainpoolP384r1,brainpoolP512r1,secp256k1 --homedir /tmp/apt-key-gpghome.Gs5aK6cf9C --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg --ignore-time-conflict --status-fd 3 /tmp/apt.sig.OgXZTL /tmp/apt.data.gXJMmI",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "0cf3f1be877ac807",
+  "parent_span_id": "4407335859b30283",
+  "name": "gpgv --assert-pubkey-algo=>=rsa1024,ed25519,ed448,nistp256,nistp384,nistp512,brainpoolP256r1,brainpoolP320r1,brainpoolP384r1,brainpoolP512r1,secp256k1 --homedir /tmp/apt-key-gpghome.5SLKNvh22i --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg --ignore-time-conflict --status-fd 3 /tmp/apt.sig.S7KxYw /tmp/apt.data.6YF98f",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804171880000,
-  "time_end": 1754652804180725000,
+  "time_start": 1754729623359003000,
+  "time_end": 1754729623367904000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -7749,8 +8325,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -7768,14 +8344,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "721146108c8c0d33",
-  "parent_span_id": "fa61c6475562d2bd",
-  "name": "gpgv --assert-pubkey-algo=>=rsa1024,ed25519,ed448,nistp256,nistp384,nistp512,brainpoolP256r1,brainpoolP320r1,brainpoolP384r1,brainpoolP512r1,secp256k1 --homedir /tmp/apt-key-gpghome.HQwHHf50an --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg --ignore-time-conflict --status-fd 3 /tmp/apt.sig.ctJehA /tmp/apt.data.P2b1Jr",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "a989d2fa20f4f912",
+  "parent_span_id": "8afadfb578a8ed51",
+  "name": "gpgv --assert-pubkey-algo=>=rsa1024,ed25519,ed448,nistp256,nistp384,nistp512,brainpoolP256r1,brainpoolP320r1,brainpoolP384r1,brainpoolP512r1,secp256k1 --homedir /tmp/apt-key-gpghome.7bsv7Ccq8D --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg --ignore-time-conflict --status-fd 3 /tmp/apt.sig.05672U /tmp/apt.data.3qfOrj",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804999590000,
-  "time_end": 1754652805010499000,
+  "time_start": 1754729622551546000,
+  "time_end": 1754729622560818000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -7784,8 +8360,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -7803,14 +8379,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "5d330a59909eab8b",
-  "parent_span_id": "2b916c82419fe185",
-  "name": "gpgv --assert-pubkey-algo=>=rsa1024,ed25519,ed448,nistp256,nistp384,nistp512,brainpoolP256r1,brainpoolP320r1,brainpoolP384r1,brainpoolP512r1,secp256k1 --homedir /tmp/apt-key-gpghome.afy13skrwF --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg --ignore-time-conflict --status-fd 3 /tmp/apt.sig.0ezLBw /tmp/apt.data.6hjAjI",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "942ea3534c4771bd",
+  "parent_span_id": "63944420658bdbdb",
+  "name": "gpgv --assert-pubkey-algo=>=rsa1024,ed25519,ed448,nistp256,nistp384,nistp512,brainpoolP256r1,brainpoolP320r1,brainpoolP384r1,brainpoolP512r1,secp256k1 --homedir /tmp/apt-key-gpghome.Ky2eb76B3b --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg --ignore-time-conflict --status-fd 3 /tmp/apt.sig.0UJFC2 /tmp/apt.data.T1BI5X",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804585238000,
-  "time_end": 1754652804596240000,
+  "time_start": 1754729622165557000,
+  "time_end": 1754729622182790000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -7819,8 +8395,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -7838,14 +8414,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "a9cbeb4d385c1083",
-  "parent_span_id": "835433504c029d69",
-  "name": "gpgv --assert-pubkey-algo=>=rsa1024,ed25519,ed448,nistp256,nistp384,nistp512,brainpoolP256r1,brainpoolP320r1,brainpoolP384r1,brainpoolP512r1,secp256k1 --homedir /tmp/apt-key-gpghome.iBNzBpZAiz --keyring /usr/share/keyrings/microsoft-prod.gpg --ignore-time-conflict --status-fd 3 /tmp/apt.sig.dAshbY /tmp/apt.data.1ueDob",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "ae2f947f88e134f7",
+  "parent_span_id": "a45dc17d535d1155",
+  "name": "gpgv --assert-pubkey-algo=>=rsa1024,ed25519,ed448,nistp256,nistp384,nistp512,brainpoolP256r1,brainpoolP320r1,brainpoolP384r1,brainpoolP512r1,secp256k1 --homedir /tmp/apt-key-gpghome.QexeRtkO2U --keyring /etc/apt/keyrings/microsoft.gpg --ignore-time-conflict --status-fd 3 /tmp/apt.sig.IQlsdd /tmp/apt.data.z7Oe6p",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803334837000,
-  "time_end": 1754652803346785000,
+  "time_start": 1754729623626711000,
+  "time_end": 1754729623634692000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -7854,8 +8430,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -7873,14 +8449,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "8c31efed513c952d",
-  "parent_span_id": "879abf9175f28283",
-  "name": "gpgv --assert-pubkey-algo=>=rsa1024,ed25519,ed448,nistp256,nistp384,nistp512,brainpoolP256r1,brainpoolP320r1,brainpoolP384r1,brainpoolP512r1,secp256k1 --homedir /tmp/apt-key-gpghome.lG9AFyC28C --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg --ignore-time-conflict --status-fd 3 /tmp/apt.sig.oMYBlA /tmp/apt.data.1LN6OG",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "dbce5ba37a07545c",
+  "parent_span_id": "39882ebb57555ff5",
+  "name": "gpgv --assert-pubkey-algo=>=rsa1024,ed25519,ed448,nistp256,nistp384,nistp512,brainpoolP256r1,brainpoolP320r1,brainpoolP384r1,brainpoolP512r1,secp256k1 --homedir /tmp/apt-key-gpghome.rs2y6vGFvE --keyring /usr/share/keyrings/microsoft-prod.gpg --ignore-time-conflict --status-fd 3 /tmp/apt.sig.wgcsNN /tmp/apt.data.3cIrFd",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803817602000,
-  "time_end": 1754652803832227000,
+  "time_start": 1754729623855110000,
+  "time_end": 1754729623866410000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -7889,8 +8465,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -7908,14 +8484,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "e689a3f3d3d885c2",
-  "parent_span_id": "cd844415a7d4917c",
-  "name": "gpgv --assert-pubkey-algo=>=rsa1024,ed25519,ed448,nistp256,nistp384,nistp512,brainpoolP256r1,brainpoolP320r1,brainpoolP384r1,brainpoolP512r1,secp256k1 --homedir /tmp/apt-key-gpghome.pJZBZX4Av4 --keyring /etc/apt/keyrings/microsoft.gpg --ignore-time-conflict --status-fd 3 /tmp/apt.sig.4aSGuP /tmp/apt.data.miU9u9",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "4365ef35465d2629",
+  "parent_span_id": "dec85e96e5b421e5",
+  "name": "gpgv --assert-pubkey-algo=>=rsa1024,ed25519,ed448,nistp256,nistp384,nistp512,brainpoolP256r1,brainpoolP320r1,brainpoolP384r1,brainpoolP512r1,secp256k1 --homedir /tmp/apt-key-gpghome.w5YINb2yRQ --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg --ignore-time-conflict --status-fd 3 /tmp/apt.sig.kHYtIT /tmp/apt.data.7cLh79",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803083781000,
-  "time_end": 1754652803093268000,
+  "time_start": 1754729622963362000,
+  "time_end": 1754729622975099000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -7924,8 +8500,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -7943,14 +8519,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "d338d584efd83870",
-  "parent_span_id": "2f8eae6ee619d0e2",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "ba9b30d4e879a918",
+  "parent_span_id": "7a17c66a1bbc2ccb",
   "name": "id -u",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652802691785000,
-  "time_end": 1754652802701177000,
+  "time_start": 1754729621517105000,
+  "time_end": 1754729621526101000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -7959,8 +8535,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -7978,14 +8554,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "2f10ba5f900ca3c1",
-  "parent_span_id": "cd844415a7d4917c",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "0d65798a3b9eefeb",
+  "parent_span_id": "63944420658bdbdb",
   "name": "mktemp --directory --tmpdir apt-key-gpghome.XXXXXXXXXX",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803059604000,
-  "time_end": 1754652803062895000,
+  "time_start": 1754729622131894000,
+  "time_end": 1754729622136214000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -7994,8 +8570,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -8013,14 +8589,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "3d08a8e0a8f0d556",
-  "parent_span_id": "835433504c029d69",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "f73f36d1df9fdf78",
+  "parent_span_id": "8afadfb578a8ed51",
   "name": "mktemp --directory --tmpdir apt-key-gpghome.XXXXXXXXXX",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803311469000,
-  "time_end": 1754652803314405000,
+  "time_start": 1754729622529096000,
+  "time_end": 1754729622531918000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -8029,8 +8605,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -8048,14 +8624,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "96e192341551e842",
-  "parent_span_id": "879abf9175f28283",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "be1a84e98d4847c9",
+  "parent_span_id": "dec85e96e5b421e5",
   "name": "mktemp --directory --tmpdir apt-key-gpghome.XXXXXXXXXX",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803794947000,
-  "time_end": 1754652803797888000,
+  "time_start": 1754729622937896000,
+  "time_end": 1754729622941234000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -8064,8 +8640,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -8083,14 +8659,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "b168c9cc2452292a",
-  "parent_span_id": "55e5cf1cf7b3323a",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "404bff86fd2b1df7",
+  "parent_span_id": "4407335859b30283",
   "name": "mktemp --directory --tmpdir apt-key-gpghome.XXXXXXXXXX",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804149576000,
-  "time_end": 1754652804152341000,
+  "time_start": 1754729623335460000,
+  "time_end": 1754729623338175000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -8099,8 +8675,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -8118,14 +8694,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "a8a0917b5e335b2c",
-  "parent_span_id": "2b916c82419fe185",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "94eacfd5d861d32d",
+  "parent_span_id": "a45dc17d535d1155",
   "name": "mktemp --directory --tmpdir apt-key-gpghome.XXXXXXXXXX",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804556206000,
-  "time_end": 1754652804559760000,
+  "time_start": 1754729623603540000,
+  "time_end": 1754729623606359000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -8134,8 +8710,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -8153,14 +8729,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "9d2c3829b9e7bd2b",
-  "parent_span_id": "fa61c6475562d2bd",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "117f4c299fb92d7d",
+  "parent_span_id": "39882ebb57555ff5",
   "name": "mktemp --directory --tmpdir apt-key-gpghome.XXXXXXXXXX",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804971521000,
-  "time_end": 1754652804975880000,
+  "time_start": 1754729623831460000,
+  "time_end": 1754729623834277000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -8169,8 +8745,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -8188,14 +8764,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "59375d0911d426b5",
-  "parent_span_id": "fc9997f2c1c26aed",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "dd84495249de8021",
+  "parent_span_id": "f7aab9386eb44c66",
   "name": "mktemp -p /var/lib/update-notifier",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652807856911000,
-  "time_end": 1754652807870901000,
+  "time_start": 1754729636300785000,
+  "time_end": 1754729636312875000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -8204,8 +8780,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -8223,14 +8799,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "e86f9914bef85038",
-  "parent_span_id": "fc9997f2c1c26aed",
-  "name": "rm -f /var/lib/update-notifier/tmp.2uirF6QnM8",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "5df32935578fbdbf",
+  "parent_span_id": "f7aab9386eb44c66",
+  "name": "rm -f /var/lib/update-notifier/tmp.y93TFjug0k",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652807871642000,
-  "time_end": 1754652807877070000,
+  "time_start": 1754729636313918000,
+  "time_end": 1754729636319593000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -8239,8 +8815,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -8258,14 +8834,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "6502c70bc688f1ac",
-  "parent_span_id": "55e5cf1cf7b3323a",
-  "name": "rm -rf /tmp/apt-key-gpghome.Gs5aK6cf9C",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "d37fb084c8dc2bb5",
+  "parent_span_id": "4407335859b30283",
+  "name": "rm -rf /tmp/apt-key-gpghome.5SLKNvh22i",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804216787000,
-  "time_end": 1754652804219451000,
+  "time_start": 1754729623402771000,
+  "time_end": 1754729623406030000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -8274,8 +8850,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -8293,14 +8869,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "10019ba2c2c13de7",
-  "parent_span_id": "fa61c6475562d2bd",
-  "name": "rm -rf /tmp/apt-key-gpghome.HQwHHf50an",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "a485498db871eca3",
+  "parent_span_id": "8afadfb578a8ed51",
+  "name": "rm -rf /tmp/apt-key-gpghome.7bsv7Ccq8D",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652805054614000,
-  "time_end": 1754652805057264000,
+  "time_start": 1754729622593181000,
+  "time_end": 1754729622595870000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -8309,8 +8885,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -8328,14 +8904,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "3386eeb7e661b744",
-  "parent_span_id": "2b916c82419fe185",
-  "name": "rm -rf /tmp/apt-key-gpghome.afy13skrwF",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "818a3ed97f3d5a4d",
+  "parent_span_id": "63944420658bdbdb",
+  "name": "rm -rf /tmp/apt-key-gpghome.Ky2eb76B3b",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804638924000,
-  "time_end": 1754652804642585000,
+  "time_start": 1754729622240360000,
+  "time_end": 1754729622244582000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -8344,8 +8920,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -8363,14 +8939,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "a423476cbb56b313",
-  "parent_span_id": "835433504c029d69",
-  "name": "rm -rf /tmp/apt-key-gpghome.iBNzBpZAiz",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "e4c0a5fc63acc4f5",
+  "parent_span_id": "a45dc17d535d1155",
+  "name": "rm -rf /tmp/apt-key-gpghome.QexeRtkO2U",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803380956000,
-  "time_end": 1754652803383539000,
+  "time_start": 1754729623669248000,
+  "time_end": 1754729623671944000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -8379,8 +8955,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -8398,14 +8974,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "e5597367202b968d",
-  "parent_span_id": "879abf9175f28283",
-  "name": "rm -rf /tmp/apt-key-gpghome.lG9AFyC28C",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "50b4004edb5c62da",
+  "parent_span_id": "39882ebb57555ff5",
+  "name": "rm -rf /tmp/apt-key-gpghome.rs2y6vGFvE",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803865691000,
-  "time_end": 1754652803868346000,
+  "time_start": 1754729623899609000,
+  "time_end": 1754729623902458000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -8414,8 +8990,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -8433,14 +9009,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "90376f6e91ee7ccb",
-  "parent_span_id": "cd844415a7d4917c",
-  "name": "rm -rf /tmp/apt-key-gpghome.pJZBZX4Av4",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "7a5cd4780064753e",
+  "parent_span_id": "dec85e96e5b421e5",
+  "name": "rm -rf /tmp/apt-key-gpghome.w5YINb2yRQ",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803145101000,
-  "time_end": 1754652803147727000,
+  "time_start": 1754729623015207000,
+  "time_end": 1754729623018035000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -8449,8 +9025,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -8468,14 +9044,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "7865f8cadb6fe10a",
-  "parent_span_id": "8c51c278d3d4f272",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "2720a4234b05093f",
+  "parent_span_id": "096101a97401e062",
   "name": "sed -e s#'#'\\\"'\\\"'#g",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803069414000,
-  "time_end": 1754652803073984000,
+  "time_start": 1754729622147694000,
+  "time_end": 1754729622153576000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -8484,8 +9060,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -8503,14 +9079,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "c9d50060871c38bb",
-  "parent_span_id": "3626f84d18181ed8",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "8ab30038c9b76627",
+  "parent_span_id": "5d769502a93fe745",
   "name": "sed -e s#'#'\\\"'\\\"'#g",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803076835000,
-  "time_end": 1754652803081101000,
+  "time_start": 1754729622157239000,
+  "time_end": 1754729622162330000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -8519,8 +9095,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -8538,14 +9114,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "1f3073330e4f1608",
-  "parent_span_id": "d43b3ade5b629a41",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "a8e78d3a469e313d",
+  "parent_span_id": "7f88c2f876f20886",
   "name": "sed -e s#'#'\\\"'\\\"'#g",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803321319000,
-  "time_end": 1754652803325792000,
+  "time_start": 1754729622538320000,
+  "time_end": 1754729622542511000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -8554,8 +9130,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -8573,14 +9149,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "925dde61175bf79c",
-  "parent_span_id": "775d368502e5ba0c",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "5834eec794fcaf14",
+  "parent_span_id": "4613e5d862f43347",
   "name": "sed -e s#'#'\\\"'\\\"'#g",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803327833000,
-  "time_end": 1754652803332062000,
+  "time_start": 1754729622544458000,
+  "time_end": 1754729622548498000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -8589,8 +9165,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -8608,14 +9184,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "816472c801af84bb",
-  "parent_span_id": "532ecc85b2fc70e2",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "bdfef281b1991572",
+  "parent_span_id": "3586235ef6f04662",
   "name": "sed -e s#'#'\\\"'\\\"'#g",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803803947000,
-  "time_end": 1754652803808152000,
+  "time_start": 1754729622948276000,
+  "time_end": 1754729622953098000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -8624,8 +9200,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -8643,14 +9219,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "f1d725ea7172e97b",
-  "parent_span_id": "092e55ffc83b8b1e",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "e3543821f24b667a",
+  "parent_span_id": "1c5b4c1e74e88a33",
   "name": "sed -e s#'#'\\\"'\\\"'#g",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652803810210000,
-  "time_end": 1754652803814286000,
+  "time_start": 1754729622955652000,
+  "time_end": 1754729622960420000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -8659,8 +9235,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -8678,14 +9254,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "ecdfbbd41fc90a47",
-  "parent_span_id": "6ec7119cc2f94eb1",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "a79f0ea1bbc31c08",
+  "parent_span_id": "99312c4cae461691",
   "name": "sed -e s#'#'\\\"'\\\"'#g",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804158817000,
-  "time_end": 1754652804163028000,
+  "time_start": 1754729623344508000,
+  "time_end": 1754729623348884000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -8694,8 +9270,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -8713,14 +9289,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "70e2e4a4a9134961",
-  "parent_span_id": "e04c3694ca88f734",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "2a0b1159ac9fcc8e",
+  "parent_span_id": "08b64ac4f836128a",
   "name": "sed -e s#'#'\\\"'\\\"'#g",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804165037000,
-  "time_end": 1754652804169161000,
+  "time_start": 1754729623350937000,
+  "time_end": 1754729623355813000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -8729,8 +9305,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -8748,14 +9324,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "0408de4e85e9206f",
-  "parent_span_id": "40acbe933325a6dc",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "edc8cabb92a58f7d",
+  "parent_span_id": "d6c307f24ca29f31",
   "name": "sed -e s#'#'\\\"'\\\"'#g",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804567293000,
-  "time_end": 1754652804573873000,
+  "time_start": 1754729623612557000,
+  "time_end": 1754729623616840000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -8764,8 +9340,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -8783,14 +9359,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "307a4626e61d59ea",
-  "parent_span_id": "63157bc027d7f81c",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "061426876308bada",
+  "parent_span_id": "3bd682870ed1c0a1",
   "name": "sed -e s#'#'\\\"'\\\"'#g",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804576840000,
-  "time_end": 1754652804582210000,
+  "time_start": 1754729623619051000,
+  "time_end": 1754729623624059000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -8799,8 +9375,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -8818,14 +9394,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "cee6190866f58c6b",
-  "parent_span_id": "ff8b11128c67fc37",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "eb89087b4be53a0d",
+  "parent_span_id": "d18f9e17abb46b00",
   "name": "sed -e s#'#'\\\"'\\\"'#g",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804983402000,
-  "time_end": 1754652804988249000,
+  "time_start": 1754729623841213000,
+  "time_end": 1754729623845303000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -8834,8 +9410,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -8853,14 +9429,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "a282f5603174d533",
-  "parent_span_id": "ec2dbd19ab4139c3",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "4e48e0e528c58a66",
+  "parent_span_id": "186dc42e518a34b8",
   "name": "sed -e s#'#'\\\"'\\\"'#g",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652804990768000,
-  "time_end": 1754652804995793000,
+  "time_start": 1754729623848071000,
+  "time_end": 1754729623852381000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -8869,8 +9445,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -8888,14 +9464,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "aa2db57c5f30ca7a",
-  "parent_span_id": "620d0927ca88b24e",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "7eaec5b248092503",
+  "parent_span_id": "7e2bd2a8884d0442",
   "name": "sh -c -- /usr/bin/test -e /usr/share/dbus-1/system-services/org.freedesktop.PackageKit.service && /usr/bin/test -S /var/run/dbus/system_bus_socket && /usr/bin/gdbus call --system --dest org.freedesktop.PackageKit --object-path /org/freedesktop/PackageKit --timeout 4 --method org.freedesktop.PackageKit.StateHasChanged cache-update > /dev/null; /bin/echo > /dev/null",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652805736081000,
-  "time_end": 1754652805781768000,
+  "time_start": 1754729623997852000,
+  "time_end": 1754729624042077000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -8904,8 +9480,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -8923,14 +9499,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "6117e094d2f8f301",
-  "parent_span_id": "620d0927ca88b24e",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "cf161584f199591c",
+  "parent_span_id": "7e2bd2a8884d0442",
   "name": "sh -c -- /usr/lib/update-notifier/update-motd-updates-available 2>/dev/null || true",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652807677655000,
-  "time_end": 1754652807877843000,
+  "time_start": 1754729636121776000,
+  "time_end": 1754729636320373000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -8939,8 +9515,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -8958,14 +9534,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "2f8eae6ee619d0e2",
-  "parent_span_id": "77edf798ae9cd033",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "7a17c66a1bbc2ccb",
+  "parent_span_id": "b6e139ba8fcf08a6",
   "name": "sh -c -- [ ! -e /run/systemd/system ] || [ $(id -u) -ne 0 ] || systemctl start --no-block apt-news.service esm-cache.service >/dev/null 2>&1 || true",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652802689267000,
-  "time_end": 1754652802737652000,
+  "time_start": 1754729621514572000,
+  "time_end": 1754729621560883000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -8974,8 +9550,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -8993,14 +9569,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "5206e310ca313abe",
-  "parent_span_id": "620d0927ca88b24e",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "1358b3c8807b6209",
+  "parent_span_id": "7e2bd2a8884d0442",
   "name": "sh -c -- if /usr/bin/test -w /var/cache/swcatalog -a -e /usr/bin/appstreamcli; then appstreamcli refresh --source=os > /dev/null || true; fi",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652805782580000,
-  "time_end": 1754652807515894000,
+  "time_start": 1754729624042877000,
+  "time_end": 1754729625774597000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -9009,8 +9585,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -9028,14 +9604,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "e6f2ea19dc9e5516",
-  "parent_span_id": "620d0927ca88b24e",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "cc310fc8e4e3b5c1",
+  "parent_span_id": "7e2bd2a8884d0442",
   "name": "sh -c -- if /usr/bin/test -w /var/lib/command-not-found/ -a -e /usr/lib/cnf-update-db; then /usr/lib/cnf-update-db > /dev/null; fi",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652807516868000,
-  "time_end": 1754652807676825000,
+  "time_start": 1754729625775548000,
+  "time_end": 1754729636120877000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -9044,8 +9620,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -9063,14 +9639,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "24755097b748ae51",
-  "parent_span_id": "620d0927ca88b24e",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "e8958d48f12a3c95",
+  "parent_span_id": "7e2bd2a8884d0442",
   "name": "sh -c -- touch /var/lib/apt/periodic/update-success-stamp 2>/dev/null || true",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652805726545000,
-  "time_end": 1754652805735320000,
+  "time_start": 1754729623987271000,
+  "time_end": 1754729623997083000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -9079,8 +9655,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -9098,14 +9674,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "0bf187aed029ab10",
-  "parent_span_id": "ef1a57ca4a7d1b03",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "f40e99cc8e9449d2",
+  "parent_span_id": "19a19269d31b55d3",
   "name": "sudo apt-get update",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652801807191808,
-  "time_end": 1754652809012541952,
+  "time_start": 1754729620657914624,
+  "time_end": 1754729637402223872,
   "attributes": {
     "shell.command_line": "sudo apt-get update",
     "shell.command": "sudo",
@@ -9124,8 +9700,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 2450,
-    "process.parent_pid": 2356,
+    "process.pid": 2455,
+    "process.parent_pid": 2357,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -9143,14 +9719,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "aadbb1a56ebd134a",
-  "parent_span_id": "2f8eae6ee619d0e2",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "b2af9dab7484461d",
+  "parent_span_id": "7a17c66a1bbc2ccb",
   "name": "systemctl start --no-block apt-news.service esm-cache.service",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652802702267000,
-  "time_end": 1754652802737229000,
+  "time_start": 1754729621527211000,
+  "time_end": 1754729621559604000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -9159,8 +9735,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
@@ -9178,14 +9754,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5c81381ffbf07bd7d47ec570037853b8",
-  "span_id": "89d0237b4a8bf50e",
-  "parent_span_id": "24755097b748ae51",
+  "trace_id": "9bbc140c24742aab036a77635fa5dbc4",
+  "span_id": "75e6b69b61bfcc39",
+  "parent_span_id": "e8958d48f12a3c95",
   "name": "touch /var/lib/apt/periodic/update-success-stamp",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652805729662000,
-  "time_end": 1754652805734906000,
+  "time_start": 1754729623990556000,
+  "time_end": 1754729623996709000,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -9194,8 +9770,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3174,
-    "process.parent_pid": 3173,
+    "process.pid": 3209,
+    "process.parent_pid": 3208,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo apt-get update",
