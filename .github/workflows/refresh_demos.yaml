@@ -50,6 +50,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         run: |
           set +o pipefail
+          for name in $(printenv | cut -d = -f 1 | grep '^GITHUB_'); do unset "$name"; done
+          export GITHUB_TOKEN=${{ github.token }}
           cd demos/${{ matrix.demo_directory }}
           echo "
           receivers:
@@ -84,11 +86,11 @@ jobs:
           sudo docker create --rm --mount type=bind,source=$(pwd)/config.yaml,target=/etc/otelcol/config.yaml --mount type=bind,source=$(pwd)/otlp.json,target=/etc/otelcol/otlp.json --network=host --name=collector otel/opentelemetry-collector:latest
           sudo docker start collector
           cat meta.json | jq -r .setup | (grep -v '^null$' || true) | sh
-          env -i GITHUB_TOKEN="$GITHUB_TOKEN" bash -e demo.sh 1> output.stdout 2> output.stderr || (cat output.stdout output.stderr && false)
+          bash -e demo.sh 1> output.stdout 2> output.stderr || (cat output.stdout output.stderr && false)
           while [ "$(pgrep -cf /opt/opentelemetry_shell/)" -gt 0 ]; do sleep 3; done
           sudo docker stop collector
           rm config.yaml
-          sed -i s/"$GITHUB_TOKEN"/***/g otlp.json
+          sed -i s/${{ github.token }}/***/g otlp.json
       - env:
           GITHUB_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         run: |
