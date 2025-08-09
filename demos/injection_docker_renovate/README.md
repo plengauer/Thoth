@@ -21,11 +21,10 @@ bash -e demo.sh
                     run
                       config
                         git --version
-                        GET
+                        POST
                           dns.lookup
                           tls.connect
                             tcp.connect
-                        GET
                       discover
                       repository
                         POST
@@ -33,14 +32,14 @@ bash -e demo.sh
 ## Full Trace
 ```
 {
-  "trace_id": "0aa545a20fed9f9f57294ef193ecc18e",
-  "span_id": "739d58f7ca80af59",
-  "parent_span_id": "4ab8527e183fa05c",
+  "trace_id": "0f6f6e49ea282fe5b4c23da78ed2bec5",
+  "span_id": "02c4f3267e994483",
+  "parent_span_id": "599130b16dd315fc",
   "name": "/bin/bash /usr/local/sbin/docker-entrypoint.sh renovate --dry-run plengauer/opentelemetry-bash",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652867810746624,
-  "time_end": 1754652874239002368,
+  "time_start": 1754729787331176960,
+  "time_end": 1754729793869327872,
   "attributes": {
     "shell.command_line": "/bin/bash /usr/local/sbin/docker-entrypoint.sh renovate --dry-run plengauer/opentelemetry-bash",
     "shell.command": "/bin/bash",
@@ -58,8 +57,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3234,
-    "process.parent_pid": 3233,
+    "process.pid": 3290,
+    "process.parent_pid": 3289,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo -E docker run --rm --network host --env RENOVATE_TOKEN renovate/renovate --dry-run plengauer/opentelemetry-bash",
@@ -77,14 +76,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "0aa545a20fed9f9f57294ef193ecc18e",
-  "span_id": "54340837246ba35e",
-  "parent_span_id": "462916fe46c9d6f0",
+  "trace_id": "0f6f6e49ea282fe5b4c23da78ed2bec5",
+  "span_id": "e06079d896e4a605",
+  "parent_span_id": "2f2c7221b466152b",
   "name": "/bin/bash /usr/local/sbin/renovate --dry-run plengauer/opentelemetry-bash",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652868977083648,
-  "time_end": 1754652874235403264,
+  "time_start": 1754729788524457216,
+  "time_end": 1754729793865552640,
   "attributes": {
     "shell.command_line": "/bin/bash /usr/local/sbin/renovate --dry-run plengauer/opentelemetry-bash",
     "shell.command": "/bin/bash",
@@ -102,8 +101,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3234,
-    "process.parent_pid": 3233,
+    "process.pid": 3290,
+    "process.parent_pid": 3289,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo -E docker run --rm --network host --env RENOVATE_TOKEN renovate/renovate --dry-run plengauer/opentelemetry-bash",
@@ -121,14 +120,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "0aa545a20fed9f9f57294ef193ecc18e",
-  "span_id": "474ad229e26ec502",
-  "parent_span_id": "4858322738fe96ec",
+  "trace_id": "0f6f6e49ea282fe5b4c23da78ed2bec5",
+  "span_id": "a0a75f891d0fce63",
+  "parent_span_id": "f4475cd860ce8740",
   "name": "/bin/bash /usr/local/sbin/renovate-entrypoint.sh --dry-run plengauer/opentelemetry-bash",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652866979751936,
-  "time_end": 1754652874240033536,
+  "time_start": 1754729786493969408,
+  "time_end": 1754729793870393344,
   "attributes": {
     "shell.command_line": "/bin/bash /usr/local/sbin/renovate-entrypoint.sh --dry-run plengauer/opentelemetry-bash",
     "shell.command": "/bin/bash",
@@ -145,8 +144,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3234,
-    "process.parent_pid": 3233,
+    "process.pid": 3290,
+    "process.parent_pid": 3289,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo -E docker run --rm --network host --env RENOVATE_TOKEN renovate/renovate --dry-run plengauer/opentelemetry-bash",
@@ -164,14 +163,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "0aa545a20fed9f9f57294ef193ecc18e",
-  "span_id": "2b727ba83a46e9a8",
-  "parent_span_id": "54340837246ba35e",
+  "trace_id": "0f6f6e49ea282fe5b4c23da78ed2bec5",
+  "span_id": "f02b93c11165ff6c",
+  "parent_span_id": "e06079d896e4a605",
   "name": "/usr/local/renovate/node --use-openssl-ca /usr/local/renovate/dist/renovate.js --dry-run plengauer/opentelemetry-bash",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652869513295872,
-  "time_end": 1754652874232829184,
+  "time_start": 1754729789075542528,
+  "time_end": 1754729793862871040,
   "attributes": {
     "shell.command_line": "/usr/local/renovate/node --use-openssl-ca /usr/local/renovate/dist/renovate.js --dry-run plengauer/opentelemetry-bash",
     "shell.command": "/usr/local/renovate/node",
@@ -188,8 +187,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3234,
-    "process.parent_pid": 3233,
+    "process.pid": 3290,
+    "process.parent_pid": 3289,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo -E docker run --rm --network host --env RENOVATE_TOKEN renovate/renovate --dry-run plengauer/opentelemetry-bash",
@@ -207,134 +206,22 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "0aa545a20fed9f9f57294ef193ecc18e",
-  "span_id": "41a0bb2922cd9bfa",
-  "parent_span_id": "2946424c43e3a1df",
-  "name": "GET",
-  "kind": "CLIENT",
-  "status": "UNSET",
-  "time_start": 1754652873831000000,
-  "time_end": 1754652873918386726,
-  "attributes": {
-    "http.url": "https://api.github.com/user",
-    "http.method": "GET",
-    "http.target": "/user",
-    "net.peer.name": "api.github.com",
-    "http.host": "api.github.com:443",
-    "http.user_agent": "RenovateBot/41.59.0 (https://github.com/renovatebot/renovate)",
-    "net.peer.ip": "140.82.114.5",
-    "net.peer.port": 443,
-    "http.status_code": 200,
-    "http.status_text": "OK",
-    "http.flavor": "1.1",
-    "net.transport": "ip_tcp"
-  },
-  "resource_attributes": {
-    "process.pid": 5845,
-    "process.executable.name": "/usr/local/renovate/node",
-    "process.executable.path": "/usr/local/renovate/node",
-    "process.command_args": [
-      "/usr/local/renovate/node",
-      "--require",
-      "/usr/share/opentelemetry_shell/agent.instrumentation.node/22/deep.inject.js",
-      "--use-openssl-ca",
-      "--require",
-      "/usr/share/opentelemetry_shell/agent.instrumentation.node/22/deep.instrument.js",
-      "/usr/local/renovate/dist/renovate.js",
-      "--dry-run",
-      "plengauer/opentelemetry-bash"
-    ],
-    "process.runtime.version": "22.18.0",
-    "process.runtime.name": "nodejs",
-    "process.runtime.description": "Node.js",
-    "process.command": "/usr/local/renovate/dist/renovate.js",
-    "process.owner": "ubuntu",
-    "vcs.system": "git",
-    "vcs.commit.id": "455708a5b885527fd05b0fbd8b75f84f7a7141de",
-    "vcs.clone.id": "73b31c29-013a-4df2-9cdd-dfda3b45c498",
-    "vcs.branch.name": "main",
-    "container.id": "cb75265b0afd95d81bf8c730d31777d467eca3e2a719763ee2ec1d0fb54dfc81",
-    "service.name": "unknown_service:/usr/local/renovate/node",
-    "telemetry.sdk.language": "nodejs",
-    "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "2.0.1"
-  },
-  "links": [],
-  "events": []
-}
-{
-  "trace_id": "0aa545a20fed9f9f57294ef193ecc18e",
-  "span_id": "a5823070a32be9b6",
-  "parent_span_id": "2946424c43e3a1df",
-  "name": "GET",
-  "kind": "CLIENT",
-  "status": "ERROR",
-  "time_start": 1754652873922000000,
-  "time_end": 1754652873974039683,
-  "attributes": {
-    "http.url": "https://api.github.com/user/emails",
-    "http.method": "GET",
-    "http.target": "/user/emails",
-    "net.peer.name": "api.github.com",
-    "http.host": "api.github.com:443",
-    "http.user_agent": "RenovateBot/41.59.0 (https://github.com/renovatebot/renovate)",
-    "net.peer.ip": "140.82.114.5",
-    "net.peer.port": 443,
-    "http.status_code": 404,
-    "http.status_text": "NOT FOUND",
-    "http.flavor": "1.1",
-    "net.transport": "ip_tcp"
-  },
-  "resource_attributes": {
-    "process.pid": 5845,
-    "process.executable.name": "/usr/local/renovate/node",
-    "process.executable.path": "/usr/local/renovate/node",
-    "process.command_args": [
-      "/usr/local/renovate/node",
-      "--require",
-      "/usr/share/opentelemetry_shell/agent.instrumentation.node/22/deep.inject.js",
-      "--use-openssl-ca",
-      "--require",
-      "/usr/share/opentelemetry_shell/agent.instrumentation.node/22/deep.instrument.js",
-      "/usr/local/renovate/dist/renovate.js",
-      "--dry-run",
-      "plengauer/opentelemetry-bash"
-    ],
-    "process.runtime.version": "22.18.0",
-    "process.runtime.name": "nodejs",
-    "process.runtime.description": "Node.js",
-    "process.command": "/usr/local/renovate/dist/renovate.js",
-    "process.owner": "ubuntu",
-    "vcs.system": "git",
-    "vcs.commit.id": "455708a5b885527fd05b0fbd8b75f84f7a7141de",
-    "vcs.clone.id": "73b31c29-013a-4df2-9cdd-dfda3b45c498",
-    "vcs.branch.name": "main",
-    "container.id": "cb75265b0afd95d81bf8c730d31777d467eca3e2a719763ee2ec1d0fb54dfc81",
-    "service.name": "unknown_service:/usr/local/renovate/node",
-    "telemetry.sdk.language": "nodejs",
-    "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "2.0.1"
-  },
-  "links": [],
-  "events": []
-}
-{
-  "trace_id": "0aa545a20fed9f9f57294ef193ecc18e",
-  "span_id": "78846daf22b270b6",
-  "parent_span_id": "ae79e7ae016db837",
+  "trace_id": "0f6f6e49ea282fe5b4c23da78ed2bec5",
+  "span_id": "0485c240ef4814b1",
+  "parent_span_id": "007361aa21a71648",
   "name": "POST",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1754652874015000000,
-  "time_end": 1754652874185123208,
+  "time_start": 1754729793489000000,
+  "time_end": 1754729793580446432,
   "attributes": {
     "http.url": "https://api.github.com/graphql",
     "http.method": "POST",
     "http.target": "/graphql",
     "net.peer.name": "api.github.com",
     "http.host": "api.github.com:443",
-    "http.user_agent": "RenovateBot/41.59.0 (https://github.com/renovatebot/renovate)",
-    "net.peer.ip": "140.82.114.5",
+    "http.user_agent": "RenovateBot/41.60.2 (https://github.com/renovatebot/renovate)",
+    "net.peer.ip": "140.82.114.6",
     "net.peer.port": 443,
     "http.status_code": 200,
     "http.status_text": "OK",
@@ -365,7 +252,7 @@ bash -e demo.sh
     "vcs.commit.id": "455708a5b885527fd05b0fbd8b75f84f7a7141de",
     "vcs.clone.id": "73b31c29-013a-4df2-9cdd-dfda3b45c498",
     "vcs.branch.name": "main",
-    "container.id": "cb75265b0afd95d81bf8c730d31777d467eca3e2a719763ee2ec1d0fb54dfc81",
+    "container.id": "d628041aa4fbcebcc9d12acb0863e18656a0bfb16267ab6111bfe34479ca205e",
     "service.name": "unknown_service:/usr/local/renovate/node",
     "telemetry.sdk.language": "nodejs",
     "telemetry.sdk.name": "opentelemetry",
@@ -375,14 +262,70 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "0aa545a20fed9f9f57294ef193ecc18e",
-  "span_id": "a7c71062b74bfd82",
+  "trace_id": "0f6f6e49ea282fe5b4c23da78ed2bec5",
+  "span_id": "df4b2d8cbf80c241",
+  "parent_span_id": "59006f004006afba",
+  "name": "POST",
+  "kind": "CLIENT",
+  "status": "UNSET",
+  "time_start": 1754729793626000000,
+  "time_end": 1754729793810428601,
+  "attributes": {
+    "http.url": "https://api.github.com/graphql",
+    "http.method": "POST",
+    "http.target": "/graphql",
+    "net.peer.name": "api.github.com",
+    "http.host": "api.github.com:443",
+    "http.user_agent": "RenovateBot/41.60.2 (https://github.com/renovatebot/renovate)",
+    "net.peer.ip": "140.82.114.6",
+    "net.peer.port": 443,
+    "http.status_code": 200,
+    "http.status_text": "OK",
+    "http.flavor": "1.1",
+    "net.transport": "ip_tcp"
+  },
+  "resource_attributes": {
+    "process.pid": 5845,
+    "process.executable.name": "/usr/local/renovate/node",
+    "process.executable.path": "/usr/local/renovate/node",
+    "process.command_args": [
+      "/usr/local/renovate/node",
+      "--require",
+      "/usr/share/opentelemetry_shell/agent.instrumentation.node/22/deep.inject.js",
+      "--use-openssl-ca",
+      "--require",
+      "/usr/share/opentelemetry_shell/agent.instrumentation.node/22/deep.instrument.js",
+      "/usr/local/renovate/dist/renovate.js",
+      "--dry-run",
+      "plengauer/opentelemetry-bash"
+    ],
+    "process.runtime.version": "22.18.0",
+    "process.runtime.name": "nodejs",
+    "process.runtime.description": "Node.js",
+    "process.command": "/usr/local/renovate/dist/renovate.js",
+    "process.owner": "ubuntu",
+    "vcs.system": "git",
+    "vcs.commit.id": "455708a5b885527fd05b0fbd8b75f84f7a7141de",
+    "vcs.clone.id": "73b31c29-013a-4df2-9cdd-dfda3b45c498",
+    "vcs.branch.name": "main",
+    "container.id": "d628041aa4fbcebcc9d12acb0863e18656a0bfb16267ab6111bfe34479ca205e",
+    "service.name": "unknown_service:/usr/local/renovate/node",
+    "telemetry.sdk.language": "nodejs",
+    "telemetry.sdk.name": "opentelemetry",
+    "telemetry.sdk.version": "2.0.1"
+  },
+  "links": [],
+  "events": []
+}
+{
+  "trace_id": "0f6f6e49ea282fe5b4c23da78ed2bec5",
+  "span_id": "d36b5fb568e5009d",
   "parent_span_id": null,
   "name": "bash -e demo.sh",
   "kind": "SERVER",
   "status": "UNSET",
-  "time_start": 1754652842796733184,
-  "time_end": 1754652874347316736,
+  "time_start": 1754729762145755904,
+  "time_end": 1754729793978661888,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -391,8 +334,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 2454,
-    "process.parent_pid": 2362,
+    "process.pid": 2480,
+    "process.parent_pid": 2383,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -410,14 +353,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "0aa545a20fed9f9f57294ef193ecc18e",
-  "span_id": "2946424c43e3a1df",
-  "parent_span_id": "8a5119d0851e5667",
+  "trace_id": "0f6f6e49ea282fe5b4c23da78ed2bec5",
+  "span_id": "007361aa21a71648",
+  "parent_span_id": "d0b98bc905b21b14",
   "name": "config",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652873402000000,
-  "time_end": 1754652874002891404,
+  "time_start": 1754729793062000000,
+  "time_end": 1754729793612210222,
   "attributes": {},
   "resource_attributes": {
     "process.pid": 5845,
@@ -443,7 +386,7 @@ bash -e demo.sh
     "vcs.commit.id": "455708a5b885527fd05b0fbd8b75f84f7a7141de",
     "vcs.clone.id": "73b31c29-013a-4df2-9cdd-dfda3b45c498",
     "vcs.branch.name": "main",
-    "container.id": "cb75265b0afd95d81bf8c730d31777d467eca3e2a719763ee2ec1d0fb54dfc81",
+    "container.id": "d628041aa4fbcebcc9d12acb0863e18656a0bfb16267ab6111bfe34479ca205e",
     "service.name": "unknown_service:/usr/local/renovate/node",
     "telemetry.sdk.language": "nodejs",
     "telemetry.sdk.name": "opentelemetry",
@@ -453,14 +396,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "0aa545a20fed9f9f57294ef193ecc18e",
-  "span_id": "cddf5f96b4b97fb4",
-  "parent_span_id": "8a5119d0851e5667",
+  "trace_id": "0f6f6e49ea282fe5b4c23da78ed2bec5",
+  "span_id": "1d62f395c41aec36",
+  "parent_span_id": "d0b98bc905b21b14",
   "name": "discover",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652874003000000,
-  "time_end": 1754652874003212536,
+  "time_start": 1754729793613000000,
+  "time_end": 1754729793613195745,
   "attributes": {},
   "resource_attributes": {
     "process.pid": 5845,
@@ -486,7 +429,7 @@ bash -e demo.sh
     "vcs.commit.id": "455708a5b885527fd05b0fbd8b75f84f7a7141de",
     "vcs.clone.id": "73b31c29-013a-4df2-9cdd-dfda3b45c498",
     "vcs.branch.name": "main",
-    "container.id": "cb75265b0afd95d81bf8c730d31777d467eca3e2a719763ee2ec1d0fb54dfc81",
+    "container.id": "d628041aa4fbcebcc9d12acb0863e18656a0bfb16267ab6111bfe34479ca205e",
     "service.name": "unknown_service:/usr/local/renovate/node",
     "telemetry.sdk.language": "nodejs",
     "telemetry.sdk.name": "opentelemetry",
@@ -496,16 +439,16 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "0aa545a20fed9f9f57294ef193ecc18e",
-  "span_id": "40344defddd06f8f",
-  "parent_span_id": "41a0bb2922cd9bfa",
+  "trace_id": "0f6f6e49ea282fe5b4c23da78ed2bec5",
+  "span_id": "159a625ac239e885",
+  "parent_span_id": "0485c240ef4814b1",
   "name": "dns.lookup",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1754652873834000000,
-  "time_end": 1754652873836336563,
+  "time_start": 1754729793493000000,
+  "time_end": 1754729793495694644,
   "attributes": {
-    "peer.ipv4": "140.82.114.5"
+    "peer.ipv4": "140.82.114.6"
   },
   "resource_attributes": {
     "process.pid": 5845,
@@ -531,7 +474,7 @@ bash -e demo.sh
     "vcs.commit.id": "455708a5b885527fd05b0fbd8b75f84f7a7141de",
     "vcs.clone.id": "73b31c29-013a-4df2-9cdd-dfda3b45c498",
     "vcs.branch.name": "main",
-    "container.id": "cb75265b0afd95d81bf8c730d31777d467eca3e2a719763ee2ec1d0fb54dfc81",
+    "container.id": "d628041aa4fbcebcc9d12acb0863e18656a0bfb16267ab6111bfe34479ca205e",
     "service.name": "unknown_service:/usr/local/renovate/node",
     "telemetry.sdk.language": "nodejs",
     "telemetry.sdk.name": "opentelemetry",
@@ -541,14 +484,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "0aa545a20fed9f9f57294ef193ecc18e",
-  "span_id": "4858322738fe96ec",
-  "parent_span_id": "b9115c2faf3cb508",
+  "trace_id": "0f6f6e49ea282fe5b4c23da78ed2bec5",
+  "span_id": "f4475cd860ce8740",
+  "parent_span_id": "7eb6d0d4af3af94e",
   "name": "docker run --rm --network host --env RENOVATE_TOKEN renovate/renovate --dry-run plengauer/opentelemetry-bash",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652843445631488,
-  "time_end": 1754652874313881088,
+  "time_start": 1754729762794830336,
+  "time_end": 1754729793942452480,
   "attributes": {
     "shell.command_line": "docker run --rm --network host --env RENOVATE_TOKEN renovate/renovate --dry-run plengauer/opentelemetry-bash",
     "shell.command": "docker",
@@ -568,8 +511,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3234,
-    "process.parent_pid": 3233,
+    "process.pid": 3290,
+    "process.parent_pid": 3289,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo -E docker run --rm --network host --env RENOVATE_TOKEN renovate/renovate --dry-run plengauer/opentelemetry-bash",
@@ -587,14 +530,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "0aa545a20fed9f9f57294ef193ecc18e",
-  "span_id": "462916fe46c9d6f0",
-  "parent_span_id": "5368335c38c9ae81",
+  "trace_id": "0f6f6e49ea282fe5b4c23da78ed2bec5",
+  "span_id": "2f2c7221b466152b",
+  "parent_span_id": "9f12c9f50a1f1efc",
   "name": "dumb-init -- renovate --dry-run plengauer/opentelemetry-bash",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652868655504384,
-  "time_end": 1754652874236848896,
+  "time_start": 1754729788197447424,
+  "time_end": 1754729793867071744,
   "attributes": {
     "shell.command_line": "dumb-init -- renovate --dry-run plengauer/opentelemetry-bash",
     "shell.command": "dumb-init",
@@ -612,8 +555,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3234,
-    "process.parent_pid": 3233,
+    "process.pid": 3290,
+    "process.parent_pid": 3289,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo -E docker run --rm --network host --env RENOVATE_TOKEN renovate/renovate --dry-run plengauer/opentelemetry-bash",
@@ -631,14 +574,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "0aa545a20fed9f9f57294ef193ecc18e",
-  "span_id": "4ab8527e183fa05c",
-  "parent_span_id": "474ad229e26ec502",
+  "trace_id": "0f6f6e49ea282fe5b4c23da78ed2bec5",
+  "span_id": "599130b16dd315fc",
+  "parent_span_id": "a0a75f891d0fce63",
   "name": "exec",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652867468972544,
-  "time_end": 1754652867477535744,
+  "time_start": 1754729786982769664,
+  "time_end": 1754729786991310848,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -647,8 +590,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3234,
-    "process.parent_pid": 3233,
+    "process.pid": 3290,
+    "process.parent_pid": 3289,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo -E docker run --rm --network host --env RENOVATE_TOKEN renovate/renovate --dry-run plengauer/opentelemetry-bash",
@@ -666,14 +609,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "0aa545a20fed9f9f57294ef193ecc18e",
-  "span_id": "5368335c38c9ae81",
-  "parent_span_id": "739d58f7ca80af59",
+  "trace_id": "0f6f6e49ea282fe5b4c23da78ed2bec5",
+  "span_id": "9f12c9f50a1f1efc",
+  "parent_span_id": "02c4f3267e994483",
   "name": "exec",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652868319272192,
-  "time_end": 1754652868327765504,
+  "time_start": 1754729787850310656,
+  "time_end": 1754729787859080960,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -682,8 +625,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3234,
-    "process.parent_pid": 3233,
+    "process.pid": 3290,
+    "process.parent_pid": 3289,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo -E docker run --rm --network host --env RENOVATE_TOKEN renovate/renovate --dry-run plengauer/opentelemetry-bash",
@@ -701,14 +644,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "0aa545a20fed9f9f57294ef193ecc18e",
-  "span_id": "ffc253a94708cd4f",
-  "parent_span_id": "2946424c43e3a1df",
+  "trace_id": "0f6f6e49ea282fe5b4c23da78ed2bec5",
+  "span_id": "2286e1938e26a2eb",
+  "parent_span_id": "007361aa21a71648",
   "name": "git --version",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652873792817152,
-  "time_end": 1754652873818987520,
+  "time_start": 1754729793450944768,
+  "time_end": 1754729793477781248,
   "attributes": {
     "shell.command_line": "git --version",
     "shell.command": "git",
@@ -726,8 +669,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3234,
-    "process.parent_pid": 3233,
+    "process.pid": 3290,
+    "process.parent_pid": 3289,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "sudo -E docker run --rm --network host --env RENOVATE_TOKEN renovate/renovate --dry-run plengauer/opentelemetry-bash",
@@ -745,14 +688,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "0aa545a20fed9f9f57294ef193ecc18e",
-  "span_id": "ae79e7ae016db837",
-  "parent_span_id": "8a5119d0851e5667",
+  "trace_id": "0f6f6e49ea282fe5b4c23da78ed2bec5",
+  "span_id": "59006f004006afba",
+  "parent_span_id": "d0b98bc905b21b14",
   "name": "repository",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652874004000000,
-  "time_end": 1754652874190413283,
+  "time_start": 1754729793614000000,
+  "time_end": 1754729793816138519,
   "attributes": {
     "repository": "plengauer/opentelemetry-bash"
   },
@@ -780,7 +723,7 @@ bash -e demo.sh
     "vcs.commit.id": "455708a5b885527fd05b0fbd8b75f84f7a7141de",
     "vcs.clone.id": "73b31c29-013a-4df2-9cdd-dfda3b45c498",
     "vcs.branch.name": "main",
-    "container.id": "cb75265b0afd95d81bf8c730d31777d467eca3e2a719763ee2ec1d0fb54dfc81",
+    "container.id": "d628041aa4fbcebcc9d12acb0863e18656a0bfb16267ab6111bfe34479ca205e",
     "service.name": "unknown_service:/usr/local/renovate/node",
     "telemetry.sdk.language": "nodejs",
     "telemetry.sdk.name": "opentelemetry",
@@ -790,14 +733,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "0aa545a20fed9f9f57294ef193ecc18e",
-  "span_id": "8a5119d0851e5667",
-  "parent_span_id": "2b727ba83a46e9a8",
+  "trace_id": "0f6f6e49ea282fe5b4c23da78ed2bec5",
+  "span_id": "d0b98bc905b21b14",
+  "parent_span_id": "f02b93c11165ff6c",
   "name": "run",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652873401000000,
-  "time_end": 1754652874194268247,
+  "time_start": 1754729793061000000,
+  "time_end": 1754729793819702767,
   "attributes": {},
   "resource_attributes": {
     "process.pid": 5845,
@@ -823,7 +766,7 @@ bash -e demo.sh
     "vcs.commit.id": "455708a5b885527fd05b0fbd8b75f84f7a7141de",
     "vcs.clone.id": "73b31c29-013a-4df2-9cdd-dfda3b45c498",
     "vcs.branch.name": "main",
-    "container.id": "cb75265b0afd95d81bf8c730d31777d467eca3e2a719763ee2ec1d0fb54dfc81",
+    "container.id": "d628041aa4fbcebcc9d12acb0863e18656a0bfb16267ab6111bfe34479ca205e",
     "service.name": "unknown_service:/usr/local/renovate/node",
     "telemetry.sdk.language": "nodejs",
     "telemetry.sdk.name": "opentelemetry",
@@ -833,14 +776,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "0aa545a20fed9f9f57294ef193ecc18e",
-  "span_id": "b9115c2faf3cb508",
-  "parent_span_id": "a7c71062b74bfd82",
+  "trace_id": "0f6f6e49ea282fe5b4c23da78ed2bec5",
+  "span_id": "7eb6d0d4af3af94e",
+  "parent_span_id": "d36b5fb568e5009d",
   "name": "sudo -E docker run --rm --network host --env RENOVATE_TOKEN renovate/renovate --dry-run plengauer/opentelemetry-bash",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652842806561024,
-  "time_end": 1754652874347140608,
+  "time_start": 1754729762157939200,
+  "time_end": 1754729793978466560,
   "attributes": {
     "shell.command_line": "sudo -E docker run --rm --network host --env RENOVATE_TOKEN renovate/renovate --dry-run plengauer/opentelemetry-bash",
     "shell.command": "sudo",
@@ -859,8 +802,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 2454,
-    "process.parent_pid": 2362,
+    "process.pid": 2480,
+    "process.parent_pid": 2383,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -878,21 +821,21 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "0aa545a20fed9f9f57294ef193ecc18e",
-  "span_id": "ede1010f5a31c02d",
-  "parent_span_id": "cb64cb50a15de291",
+  "trace_id": "0f6f6e49ea282fe5b4c23da78ed2bec5",
+  "span_id": "ade9d4909534304b",
+  "parent_span_id": "f8e562261d4c0015",
   "name": "tcp.connect",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652873833000000,
-  "time_end": 1754652873842517850,
+  "time_start": 1754729793492000000,
+  "time_end": 1754729793501670068,
   "attributes": {
     "net.transport": "ip_tcp",
     "net.peer.name": "api.github.com",
     "net.peer.port": 443,
-    "net.peer.ip": "140.82.114.5",
-    "net.host.ip": "10.1.0.114",
-    "net.host.port": 52256
+    "net.peer.ip": "140.82.114.6",
+    "net.host.ip": "10.1.0.192",
+    "net.host.port": 42382
   },
   "resource_attributes": {
     "process.pid": 5845,
@@ -918,7 +861,7 @@ bash -e demo.sh
     "vcs.commit.id": "455708a5b885527fd05b0fbd8b75f84f7a7141de",
     "vcs.clone.id": "73b31c29-013a-4df2-9cdd-dfda3b45c498",
     "vcs.branch.name": "main",
-    "container.id": "cb75265b0afd95d81bf8c730d31777d467eca3e2a719763ee2ec1d0fb54dfc81",
+    "container.id": "d628041aa4fbcebcc9d12acb0863e18656a0bfb16267ab6111bfe34479ca205e",
     "service.name": "unknown_service:/usr/local/renovate/node",
     "telemetry.sdk.language": "nodejs",
     "telemetry.sdk.name": "opentelemetry",
@@ -928,14 +871,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "0aa545a20fed9f9f57294ef193ecc18e",
-  "span_id": "cb64cb50a15de291",
-  "parent_span_id": "41a0bb2922cd9bfa",
+  "trace_id": "0f6f6e49ea282fe5b4c23da78ed2bec5",
+  "span_id": "f8e562261d4c0015",
+  "parent_span_id": "0485c240ef4814b1",
   "name": "tls.connect",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754652873833000000,
-  "time_end": 1754652873852163287,
+  "time_start": 1754729793492000000,
+  "time_end": 1754729793511278191,
   "attributes": {
     "tls.protocol": "TLSv1.3",
     "tls.authorized": "true",
@@ -971,7 +914,7 @@ bash -e demo.sh
     "vcs.commit.id": "455708a5b885527fd05b0fbd8b75f84f7a7141de",
     "vcs.clone.id": "73b31c29-013a-4df2-9cdd-dfda3b45c498",
     "vcs.branch.name": "main",
-    "container.id": "cb75265b0afd95d81bf8c730d31777d467eca3e2a719763ee2ec1d0fb54dfc81",
+    "container.id": "d628041aa4fbcebcc9d12acb0863e18656a0bfb16267ab6111bfe34479ca205e",
     "service.name": "unknown_service:/usr/local/renovate/node",
     "telemetry.sdk.language": "nodejs",
     "telemetry.sdk.name": "opentelemetry",
