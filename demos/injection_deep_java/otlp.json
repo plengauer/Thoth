@@ -1,5 +1,5 @@
 {
-  "resourceLogs": [
+  "resourceSpans": [
     {
       "resource": {
         "attributes": [
@@ -18,7 +18,7 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "5.22.6"
+              "stringValue": "5.22.7"
             }
           },
           {
@@ -42,13 +42,220 @@
           {
             "key": "process.pid",
             "value": {
-              "intValue": "3961"
+              "intValue": "3996"
             }
           },
           {
             "key": "process.parent_pid",
             "value": {
-              "intValue": "2360"
+              "intValue": "2362"
+            }
+          },
+          {
+            "key": "process.executable.name",
+            "value": {
+              "stringValue": "bash"
+            }
+          },
+          {
+            "key": "process.executable.path",
+            "value": {
+              "stringValue": "/usr/bin/bash"
+            }
+          },
+          {
+            "key": "process.command_line",
+            "value": {
+              "stringValue": "bash -e demo.sh"
+            }
+          },
+          {
+            "key": "process.command",
+            "value": {
+              "stringValue": "bash"
+            }
+          },
+          {
+            "key": "process.owner",
+            "value": {
+              "stringValue": "runner"
+            }
+          },
+          {
+            "key": "process.runtime.name",
+            "value": {
+              "stringValue": "bash"
+            }
+          },
+          {
+            "key": "process.runtime.description",
+            "value": {
+              "stringValue": "Bourne Again Shell"
+            }
+          },
+          {
+            "key": "process.runtime.version",
+            "value": {
+              "stringValue": "5.2.21-2ubuntu4"
+            }
+          },
+          {
+            "key": "process.runtime.options",
+            "value": {
+              "stringValue": "ehB"
+            }
+          },
+          {
+            "key": "service.version",
+            "value": {
+              "stringValue": ""
+            }
+          },
+          {
+            "key": "service.namespace",
+            "value": {
+              "stringValue": ""
+            }
+          },
+          {
+            "key": "service.instance.id",
+            "value": {
+              "stringValue": ""
+            }
+          }
+        ]
+      },
+      "scopeSpans": [
+        {
+          "scope": {
+            "name": "shell",
+            "version": "5.22.7"
+          },
+          "spans": [
+            {
+              "traceId": "459ff35be9b12ac61e7956148c19e335",
+              "spanId": "36296205387e90a8",
+              "parentSpanId": "1fb774545d2adcca",
+              "name": "javac Main.java",
+              "flags": 768,
+              "kind": 1,
+              "startTimeUnixNano": "1754846646493749504",
+              "endTimeUnixNano": "1754846647548259072",
+              "attributes": [
+                {
+                  "key": "shell.command_line",
+                  "value": {
+                    "stringValue": "javac Main.java"
+                  }
+                },
+                {
+                  "key": "shell.command",
+                  "value": {
+                    "stringValue": "javac"
+                  }
+                },
+                {
+                  "key": "shell.command.type",
+                  "value": {
+                    "stringValue": "file"
+                  }
+                },
+                {
+                  "key": "shell.command.name",
+                  "value": {
+                    "stringValue": "javac"
+                  }
+                },
+                {
+                  "key": "subprocess.executable.path",
+                  "value": {
+                    "stringValue": "/usr/bin/javac"
+                  }
+                },
+                {
+                  "key": "subprocess.executable.name",
+                  "value": {
+                    "stringValue": "javac"
+                  }
+                },
+                {
+                  "key": "shell.command.exit_code",
+                  "value": {
+                    "intValue": "0"
+                  }
+                },
+                {
+                  "key": "code.filepath",
+                  "value": {
+                    "stringValue": "demo.sh"
+                  }
+                },
+                {
+                  "key": "code.lineno",
+                  "value": {
+                    "intValue": "3"
+                  }
+                }
+              ],
+              "status": {}
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+{
+  "resourceLogs": [
+    {
+      "resource": {
+        "attributes": [
+          {
+            "key": "telemetry.sdk.language",
+            "value": {
+              "stringValue": "shell"
+            }
+          },
+          {
+            "key": "telemetry.sdk.name",
+            "value": {
+              "stringValue": "opentelemetry"
+            }
+          },
+          {
+            "key": "telemetry.sdk.version",
+            "value": {
+              "stringValue": "5.22.7"
+            }
+          },
+          {
+            "key": "service.name",
+            "value": {
+              "stringValue": "unknown_service"
+            }
+          },
+          {
+            "key": "os.type",
+            "value": {
+              "stringValue": "linux"
+            }
+          },
+          {
+            "key": "os.version",
+            "value": {
+              "stringValue": "6.11.0-1018-azure"
+            }
+          },
+          {
+            "key": "process.pid",
+            "value": {
+              "intValue": "3996"
+            }
+          },
+          {
+            "key": "process.parent_pid",
+            "value": {
+              "intValue": "2362"
             }
           },
           {
@@ -129,14 +336,14 @@
         {
           "scope": {
             "name": "shell",
-            "version": "5.22.6"
+            "version": "5.22.7"
           },
           "logRecords": [
             {
-              "observedTimeUnixNano": "1754729640954391884",
-              "timeUnixNano": "1754729640954358272",
-              "traceId": "557c41134670109b16c0b33cb361942e",
-              "spanId": "b4f3e2325039c464",
+              "observedTimeUnixNano": "1754846647707904773",
+              "timeUnixNano": "1754846647707870720",
+              "traceId": "459ff35be9b12ac61e7956148c19e335",
+              "spanId": "75cd7956851d3b84",
               "flags": 1,
               "severityText": "unspecified",
               "body": {
@@ -144,21 +351,21 @@
               }
             },
             {
-              "observedTimeUnixNano": "1754729641296583341",
-              "timeUnixNano": "1754729641296542464",
-              "traceId": "557c41134670109b16c0b33cb361942e",
-              "spanId": "b4f3e2325039c464",
+              "observedTimeUnixNano": "1754846648044208249",
+              "timeUnixNano": "1754846648044166144",
+              "traceId": "459ff35be9b12ac61e7956148c19e335",
+              "spanId": "75cd7956851d3b84",
               "flags": 1,
               "severityText": "unspecified",
               "body": {
-                "stringValue": "[otel.javaagent 2025-08-09 08:54:01:294 +0000] [main] INFO io.opentelemetry.javaagent.tooling.VersionLogger - opentelemetry-javaagent - version: 2.18.1"
+                "stringValue": "[otel.javaagent 2025-08-10 17:24:08:042 +0000] [main] INFO io.opentelemetry.javaagent.tooling.VersionLogger - opentelemetry-javaagent - version: 2.18.1"
               }
             },
             {
-              "observedTimeUnixNano": "1754729643743486690",
-              "timeUnixNano": "1754729643743454208",
-              "traceId": "557c41134670109b16c0b33cb361942e",
-              "spanId": "b4f3e2325039c464",
+              "observedTimeUnixNano": "1754846650478660310",
+              "timeUnixNano": "1754846650478629632",
+              "traceId": "459ff35be9b12ac61e7956148c19e335",
+              "spanId": "75cd7956851d3b84",
               "flags": 1,
               "severityText": "unspecified",
               "body": {
@@ -233,7 +440,7 @@
           {
             "key": "process.pid",
             "value": {
-              "intValue": "4761"
+              "intValue": "4795"
             }
           },
           {
@@ -257,7 +464,7 @@
           {
             "key": "service.instance.id",
             "value": {
-              "stringValue": "4a038ede-e737-4517-bd8e-2a0b80ca4d75"
+              "stringValue": "43deb501-5ea3-4fa4-806a-ba39978abf3e"
             }
           },
           {
@@ -302,13 +509,655 @@
       "scopeMetrics": [
         {
           "scope": {
-            "name": "io.opentelemetry.http-url-connection",
+            "name": "io.opentelemetry.runtime-telemetry-java8",
             "version": "2.18.1-alpha"
           },
           "metrics": [
             {
-              "name": "http.client.request.duration",
-              "description": "Duration of HTTP client requests.",
+              "name": "jvm.memory.committed",
+              "description": "Measure of memory committed.",
+              "unit": "By",
+              "sum": {
+                "aggregationTemporality": 2,
+                "dataPoints": [
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "Compressed Class Space"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "non_heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846709096326591",
+                    "asInt": "4194304"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "G1 Old Gen"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846709096326591",
+                    "asInt": "33554432"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "G1 Survivor Space"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846709096326591",
+                    "asInt": "2097152"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "G1 Eden Space"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846709096326591",
+                    "asInt": "48234496"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "CodeHeap 'non-nmethods'"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "non_heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846709096326591",
+                    "asInt": "2555904"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "Metaspace"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "non_heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846709096326591",
+                    "asInt": "30146560"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "CodeHeap 'profiled nmethods'"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "non_heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846709096326591",
+                    "asInt": "8978432"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "CodeHeap 'non-profiled nmethods'"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "non_heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846709096326591",
+                    "asInt": "2555904"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "jvm.cpu.recent_utilization",
+              "description": "Recent CPU utilization for the process as reported by the JVM.",
+              "unit": "1",
+              "gauge": {
+                "dataPoints": [
+                  {
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846709096326591",
+                    "asDouble": 0
+                  }
+                ]
+              }
+            },
+            {
+              "name": "jvm.memory.limit",
+              "description": "Measure of max obtainable memory.",
+              "unit": "By",
+              "sum": {
+                "aggregationTemporality": 2,
+                "dataPoints": [
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "Compressed Class Space"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "non_heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846709096326591",
+                    "asInt": "1073741824"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "G1 Old Gen"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846709096326591",
+                    "asInt": "4194304000"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "CodeHeap 'non-nmethods'"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "non_heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846709096326591",
+                    "asInt": "5836800"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "CodeHeap 'profiled nmethods'"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "non_heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846709096326591",
+                    "asInt": "122908672"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "CodeHeap 'non-profiled nmethods'"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "non_heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846709096326591",
+                    "asInt": "122912768"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "jvm.memory.used",
+              "description": "Measure of memory used.",
+              "unit": "By",
+              "sum": {
+                "aggregationTemporality": 2,
+                "dataPoints": [
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "Compressed Class Space"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "non_heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846709096326591",
+                    "asInt": "4042560"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "G1 Old Gen"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846709096326591",
+                    "asInt": "17710592"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "G1 Survivor Space"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846709096326591",
+                    "asInt": "892832"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "G1 Eden Space"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846709096326591",
+                    "asInt": "29360128"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "CodeHeap 'non-nmethods'"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "non_heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846709096326591",
+                    "asInt": "1278208"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "Metaspace"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "non_heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846709096326591",
+                    "asInt": "29809184"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "CodeHeap 'profiled nmethods'"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "non_heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846709096326591",
+                    "asInt": "6245376"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "CodeHeap 'non-profiled nmethods'"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "non_heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846709096326591",
+                    "asInt": "1650688"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "jvm.cpu.count",
+              "description": "Number of processors available to the Java virtual machine.",
+              "unit": "{cpu}",
+              "sum": {
+                "aggregationTemporality": 2,
+                "dataPoints": [
+                  {
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846709096326591",
+                    "asInt": "4"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "jvm.thread.count",
+              "description": "Number of executing platform threads.",
+              "unit": "{thread}",
+              "sum": {
+                "aggregationTemporality": 2,
+                "dataPoints": [
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.thread.daemon",
+                        "value": {
+                          "boolValue": false
+                        }
+                      },
+                      {
+                        "key": "jvm.thread.state",
+                        "value": {
+                          "stringValue": "runnable"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846709096326591",
+                    "asInt": "1"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.thread.daemon",
+                        "value": {
+                          "boolValue": true
+                        }
+                      },
+                      {
+                        "key": "jvm.thread.state",
+                        "value": {
+                          "stringValue": "runnable"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846709096326591",
+                    "asInt": "4"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.thread.daemon",
+                        "value": {
+                          "boolValue": true
+                        }
+                      },
+                      {
+                        "key": "jvm.thread.state",
+                        "value": {
+                          "stringValue": "waiting"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846709096326591",
+                    "asInt": "2"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.thread.daemon",
+                        "value": {
+                          "boolValue": true
+                        }
+                      },
+                      {
+                        "key": "jvm.thread.state",
+                        "value": {
+                          "stringValue": "timed_waiting"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846709096326591",
+                    "asInt": "3"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "jvm.memory.used_after_last_gc",
+              "description": "Measure of memory used, as measured after the most recent garbage collection event on this pool.",
+              "unit": "By",
+              "sum": {
+                "aggregationTemporality": 2,
+                "dataPoints": [
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "G1 Old Gen"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846709096326591",
+                    "asInt": "17710592"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "G1 Survivor Space"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846709096326591",
+                    "asInt": "892832"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "G1 Eden Space"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846709096326591",
+                    "asInt": "0"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "jvm.cpu.time",
+              "description": "CPU time used by the process as reported by the JVM.",
+              "unit": "s",
+              "sum": {
+                "aggregationTemporality": 2,
+                "isMonotonic": true,
+                "dataPoints": [
+                  {
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846709096326591",
+                    "asDouble": 8.45
+                  }
+                ]
+              }
+            },
+            {
+              "name": "jvm.class.count",
+              "description": "Number of classes currently loaded.",
+              "unit": "{class}",
+              "sum": {
+                "aggregationTemporality": 2,
+                "dataPoints": [
+                  {
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846709096326591",
+                    "asInt": "6546"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "jvm.gc.duration",
+              "description": "Duration of JVM garbage collection actions.",
               "unit": "s",
               "histogram": {
                 "aggregationTemporality": 2,
@@ -316,85 +1165,69 @@
                   {
                     "attributes": [
                       {
-                        "key": "http.request.method",
+                        "key": "jvm.gc.action",
                         "value": {
-                          "stringValue": "GET"
+                          "stringValue": "end of minor GC"
                         }
                       },
                       {
-                        "key": "http.response.status_code",
+                        "key": "jvm.gc.name",
                         "value": {
-                          "intValue": "200"
-                        }
-                      },
-                      {
-                        "key": "network.protocol.version",
-                        "value": {
-                          "stringValue": "1.1"
-                        }
-                      },
-                      {
-                        "key": "server.address",
-                        "value": {
-                          "stringValue": "example.com"
+                          "stringValue": "G1 Young Generation"
                         }
                       }
                     ],
-                    "startTimeUnixNano": "1754729642363524397",
-                    "timeUnixNano": "1754729644240664837",
-                    "count": "1",
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846709096326591",
+                    "count": "2",
                     "bucketCounts": [
-                      "0",
-                      "0",
-                      "0",
-                      "0",
-                      "0",
-                      "0",
-                      "1",
-                      "0",
-                      "0",
-                      "0",
-                      "0",
+                      "2",
                       "0",
                       "0",
                       "0",
                       "0"
                     ],
                     "explicitBounds": [
-                      0.005,
                       0.01,
-                      0.025,
-                      0.05,
-                      0.075,
                       0.1,
-                      0.25,
-                      0.5,
-                      0.75,
                       1,
-                      2.5,
-                      5,
-                      7.5,
                       10
                     ],
-                    "exemplars": [
-                      {
-                        "timeUnixNano": "1754729644236000000",
-                        "asDouble": 0.176562984,
-                        "filteredAttributes": [
-                          {
-                            "key": "url.full",
-                            "value": {
-                              "stringValue": "http://example.com"
-                            }
-                          }
-                        ],
-                        "traceId": "557c41134670109b16c0b33cb361942e",
-                        "spanId": "c5d292d795df8bfb"
-                      }
-                    ],
-                    "sum": 0.176562984,
-                    "min": 0.176562984,
-                    "max": 0.176562984
+                    "sum": 0.011,
+                    "min": 0.003,
+                    "max": 0.008
+                  }
+                ]
+              }
+            },
+            {
+              "name": "jvm.class.unloaded",
+              "description": "Number of classes unloaded since JVM start.",
+              "unit": "{class}",
+              "sum": {
+                "aggregationTemporality": 2,
+                "isMonotonic": true,
+                "dataPoints": [
+                  {
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846709096326591",
+                    "asInt": "0"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "jvm.class.loaded",
+              "description": "Number of classes loaded since JVM start.",
+              "unit": "{class}",
+              "sum": {
+                "aggregationTemporality": 2,
+                "isMonotonic": true,
+                "dataPoints": [
+                  {
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846709096326591",
+                    "asInt": "6546"
                   }
                 ]
               }
@@ -421,8 +1254,8 @@
                         }
                       }
                     ],
-                    "startTimeUnixNano": "1754729642363524397",
-                    "timeUnixNano": "1754729644240664837",
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846709096326591",
                     "asInt": "0"
                   }
                 ]
@@ -450,11 +1283,1346 @@
                         }
                       }
                     ],
-                    "startTimeUnixNano": "1754729642363524397",
-                    "timeUnixNano": "1754729644240664837",
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846709096326591",
                     "asInt": "0"
                   }
                 ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+{
+  "resourceMetrics": [
+    {
+      "resource": {
+        "attributes": [
+          {
+            "key": "host.arch",
+            "value": {
+              "stringValue": "amd64"
+            }
+          },
+          {
+            "key": "host.name",
+            "value": {
+              "stringValue": "pkrvmsl9tci6h6u"
+            }
+          },
+          {
+            "key": "os.description",
+            "value": {
+              "stringValue": "Linux 6.11.0-1018-azure"
+            }
+          },
+          {
+            "key": "os.type",
+            "value": {
+              "stringValue": "linux"
+            }
+          },
+          {
+            "key": "process.command_args",
+            "value": {
+              "arrayValue": {
+                "values": [
+                  {
+                    "stringValue": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java"
+                  },
+                  {
+                    "stringValue": "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/opentelemetry-javaagent.jar"
+                  },
+                  {
+                    "stringValue": "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/rootcontextagent.jar"
+                  },
+                  {
+                    "stringValue": "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/subprocessinjectionagent.jar"
+                  },
+                  {
+                    "stringValue": "Main"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "key": "process.executable.path",
+            "value": {
+              "stringValue": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java"
+            }
+          },
+          {
+            "key": "process.pid",
+            "value": {
+              "intValue": "4795"
+            }
+          },
+          {
+            "key": "process.runtime.description",
+            "value": {
+              "stringValue": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8"
+            }
+          },
+          {
+            "key": "process.runtime.name",
+            "value": {
+              "stringValue": "OpenJDK Runtime Environment"
+            }
+          },
+          {
+            "key": "process.runtime.version",
+            "value": {
+              "stringValue": "17.0.16+8"
+            }
+          },
+          {
+            "key": "service.instance.id",
+            "value": {
+              "stringValue": "43deb501-5ea3-4fa4-806a-ba39978abf3e"
+            }
+          },
+          {
+            "key": "service.name",
+            "value": {
+              "stringValue": "unknown_service:java"
+            }
+          },
+          {
+            "key": "telemetry.distro.name",
+            "value": {
+              "stringValue": "opentelemetry-java-instrumentation"
+            }
+          },
+          {
+            "key": "telemetry.distro.version",
+            "value": {
+              "stringValue": "2.18.1"
+            }
+          },
+          {
+            "key": "telemetry.sdk.language",
+            "value": {
+              "stringValue": "java"
+            }
+          },
+          {
+            "key": "telemetry.sdk.name",
+            "value": {
+              "stringValue": "opentelemetry"
+            }
+          },
+          {
+            "key": "telemetry.sdk.version",
+            "value": {
+              "stringValue": "1.52.0"
+            }
+          }
+        ]
+      },
+      "schemaUrl": "https://opentelemetry.io/schemas/1.24.0",
+      "scopeMetrics": [
+        {
+          "scope": {
+            "name": "io.opentelemetry.runtime-telemetry-java8",
+            "version": "2.18.1-alpha"
+          },
+          "metrics": [
+            {
+              "name": "jvm.memory.committed",
+              "description": "Measure of memory committed.",
+              "unit": "By",
+              "sum": {
+                "aggregationTemporality": 2,
+                "dataPoints": [
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "Compressed Class Space"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "non_heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846769085804317",
+                    "asInt": "4390912"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "G1 Old Gen"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846769085804317",
+                    "asInt": "33554432"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "G1 Survivor Space"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846769085804317",
+                    "asInt": "4194304"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "G1 Eden Space"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846769085804317",
+                    "asInt": "46137344"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "CodeHeap 'non-nmethods'"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "non_heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846769085804317",
+                    "asInt": "2555904"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "Metaspace"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "non_heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846769085804317",
+                    "asInt": "32047104"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "CodeHeap 'profiled nmethods'"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "non_heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846769085804317",
+                    "asInt": "8978432"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "CodeHeap 'non-profiled nmethods'"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "non_heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846769085804317",
+                    "asInt": "2555904"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "jvm.cpu.recent_utilization",
+              "description": "Recent CPU utilization for the process as reported by the JVM.",
+              "unit": "1",
+              "gauge": {
+                "dataPoints": [
+                  {
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846769085804317",
+                    "asDouble": 0.002086985558059938
+                  }
+                ]
+              }
+            },
+            {
+              "name": "jvm.memory.limit",
+              "description": "Measure of max obtainable memory.",
+              "unit": "By",
+              "sum": {
+                "aggregationTemporality": 2,
+                "dataPoints": [
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "Compressed Class Space"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "non_heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846769085804317",
+                    "asInt": "1073741824"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "G1 Old Gen"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846769085804317",
+                    "asInt": "4194304000"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "CodeHeap 'non-nmethods'"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "non_heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846769085804317",
+                    "asInt": "5836800"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "CodeHeap 'profiled nmethods'"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "non_heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846769085804317",
+                    "asInt": "122908672"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "CodeHeap 'non-profiled nmethods'"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "non_heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846769085804317",
+                    "asInt": "122912768"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "jvm.memory.used",
+              "description": "Measure of memory used.",
+              "unit": "By",
+              "sum": {
+                "aggregationTemporality": 2,
+                "dataPoints": [
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "Compressed Class Space"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "non_heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846769085804317",
+                    "asInt": "4266992"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "G1 Old Gen"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846769085804317",
+                    "asInt": "17710592"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "G1 Survivor Space"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846769085804317",
+                    "asInt": "2632304"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "G1 Eden Space"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846769085804317",
+                    "asInt": "0"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "CodeHeap 'non-nmethods'"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "non_heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846769085804317",
+                    "asInt": "1298688"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "Metaspace"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "non_heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846769085804317",
+                    "asInt": "31804672"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "CodeHeap 'profiled nmethods'"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "non_heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846769085804317",
+                    "asInt": "6521728"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "CodeHeap 'non-profiled nmethods'"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "non_heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846769085804317",
+                    "asInt": "1781376"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "jvm.cpu.count",
+              "description": "Number of processors available to the Java virtual machine.",
+              "unit": "{cpu}",
+              "sum": {
+                "aggregationTemporality": 2,
+                "dataPoints": [
+                  {
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846769085804317",
+                    "asInt": "4"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "jvm.thread.count",
+              "description": "Number of executing platform threads.",
+              "unit": "{thread}",
+              "sum": {
+                "aggregationTemporality": 2,
+                "dataPoints": [
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.thread.daemon",
+                        "value": {
+                          "boolValue": false
+                        }
+                      },
+                      {
+                        "key": "jvm.thread.state",
+                        "value": {
+                          "stringValue": "runnable"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846769085804317",
+                    "asInt": "1"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.thread.daemon",
+                        "value": {
+                          "boolValue": true
+                        }
+                      },
+                      {
+                        "key": "jvm.thread.state",
+                        "value": {
+                          "stringValue": "runnable"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846769085804317",
+                    "asInt": "4"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.thread.daemon",
+                        "value": {
+                          "boolValue": true
+                        }
+                      },
+                      {
+                        "key": "jvm.thread.state",
+                        "value": {
+                          "stringValue": "waiting"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846769085804317",
+                    "asInt": "2"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.thread.daemon",
+                        "value": {
+                          "boolValue": true
+                        }
+                      },
+                      {
+                        "key": "jvm.thread.state",
+                        "value": {
+                          "stringValue": "timed_waiting"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846769085804317",
+                    "asInt": "6"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "jvm.memory.used_after_last_gc",
+              "description": "Measure of memory used, as measured after the most recent garbage collection event on this pool.",
+              "unit": "By",
+              "sum": {
+                "aggregationTemporality": 2,
+                "dataPoints": [
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "G1 Old Gen"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846769085804317",
+                    "asInt": "17710592"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "G1 Survivor Space"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846769085804317",
+                    "asInt": "2632304"
+                  },
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.memory.pool.name",
+                        "value": {
+                          "stringValue": "G1 Eden Space"
+                        }
+                      },
+                      {
+                        "key": "jvm.memory.type",
+                        "value": {
+                          "stringValue": "heap"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846769085804317",
+                    "asInt": "0"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "jvm.cpu.time",
+              "description": "CPU time used by the process as reported by the JVM.",
+              "unit": "s",
+              "sum": {
+                "aggregationTemporality": 2,
+                "isMonotonic": true,
+                "dataPoints": [
+                  {
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846769085804317",
+                    "asDouble": 8.95
+                  }
+                ]
+              }
+            },
+            {
+              "name": "jvm.class.count",
+              "description": "Number of classes currently loaded.",
+              "unit": "{class}",
+              "sum": {
+                "aggregationTemporality": 2,
+                "dataPoints": [
+                  {
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846769085804317",
+                    "asInt": "6908"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "jvm.gc.duration",
+              "description": "Duration of JVM garbage collection actions.",
+              "unit": "s",
+              "histogram": {
+                "aggregationTemporality": 2,
+                "dataPoints": [
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.gc.action",
+                        "value": {
+                          "stringValue": "end of minor GC"
+                        }
+                      },
+                      {
+                        "key": "jvm.gc.name",
+                        "value": {
+                          "stringValue": "G1 Young Generation"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846769085804317",
+                    "count": "2",
+                    "bucketCounts": [
+                      "2",
+                      "0",
+                      "0",
+                      "0",
+                      "0"
+                    ],
+                    "explicitBounds": [
+                      0.01,
+                      0.1,
+                      1,
+                      10
+                    ],
+                    "sum": 0.011,
+                    "min": 0.003,
+                    "max": 0.008
+                  }
+                ]
+              }
+            },
+            {
+              "name": "jvm.class.unloaded",
+              "description": "Number of classes unloaded since JVM start.",
+              "unit": "{class}",
+              "sum": {
+                "aggregationTemporality": 2,
+                "isMonotonic": true,
+                "dataPoints": [
+                  {
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846769085804317",
+                    "asInt": "0"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "jvm.class.loaded",
+              "description": "Number of classes loaded since JVM start.",
+              "unit": "{class}",
+              "sum": {
+                "aggregationTemporality": 2,
+                "isMonotonic": true,
+                "dataPoints": [
+                  {
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846769085804317",
+                    "asInt": "6908"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "scope": {
+            "name": "io.opentelemetry.exporters.otlp-http"
+          },
+          "metrics": [
+            {
+              "name": "otlp.exporter.exported",
+              "sum": {
+                "aggregationTemporality": 2,
+                "isMonotonic": true,
+                "dataPoints": [
+                  {
+                    "attributes": [
+                      {
+                        "key": "success",
+                        "value": {
+                          "boolValue": true
+                        }
+                      },
+                      {
+                        "key": "type",
+                        "value": {
+                          "stringValue": "metric"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846769085804317",
+                    "asInt": "14"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "otlp.exporter.seen",
+              "sum": {
+                "aggregationTemporality": 2,
+                "isMonotonic": true,
+                "dataPoints": [
+                  {
+                    "attributes": [
+                      {
+                        "key": "type",
+                        "value": {
+                          "stringValue": "metric"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846769085804317",
+                    "asInt": "14"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "scope": {
+            "name": "io.opentelemetry.sdk.logs"
+          },
+          "metrics": [
+            {
+              "name": "queueSize",
+              "description": "The number of items queued",
+              "unit": "1",
+              "gauge": {
+                "dataPoints": [
+                  {
+                    "attributes": [
+                      {
+                        "key": "processorType",
+                        "value": {
+                          "stringValue": "BatchLogRecordProcessor"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846769085804317",
+                    "asInt": "0"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "scope": {
+            "name": "io.opentelemetry.sdk.trace"
+          },
+          "metrics": [
+            {
+              "name": "queueSize",
+              "description": "The number of items queued",
+              "unit": "1",
+              "gauge": {
+                "dataPoints": [
+                  {
+                    "attributes": [
+                      {
+                        "key": "processorType",
+                        "value": {
+                          "stringValue": "BatchSpanProcessor"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846769085804317",
+                    "asInt": "0"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+{
+  "resourceLogs": [
+    {
+      "resource": {
+        "attributes": [
+          {
+            "key": "telemetry.sdk.language",
+            "value": {
+              "stringValue": "shell"
+            }
+          },
+          {
+            "key": "telemetry.sdk.name",
+            "value": {
+              "stringValue": "opentelemetry"
+            }
+          },
+          {
+            "key": "telemetry.sdk.version",
+            "value": {
+              "stringValue": "5.22.7"
+            }
+          },
+          {
+            "key": "service.name",
+            "value": {
+              "stringValue": "unknown_service"
+            }
+          },
+          {
+            "key": "os.type",
+            "value": {
+              "stringValue": "linux"
+            }
+          },
+          {
+            "key": "os.version",
+            "value": {
+              "stringValue": "6.11.0-1018-azure"
+            }
+          },
+          {
+            "key": "process.pid",
+            "value": {
+              "intValue": "3996"
+            }
+          },
+          {
+            "key": "process.parent_pid",
+            "value": {
+              "intValue": "2362"
+            }
+          },
+          {
+            "key": "process.executable.name",
+            "value": {
+              "stringValue": "bash"
+            }
+          },
+          {
+            "key": "process.executable.path",
+            "value": {
+              "stringValue": "/usr/bin/bash"
+            }
+          },
+          {
+            "key": "process.command_line",
+            "value": {
+              "stringValue": "bash -e demo.sh"
+            }
+          },
+          {
+            "key": "process.command",
+            "value": {
+              "stringValue": "bash"
+            }
+          },
+          {
+            "key": "process.owner",
+            "value": {
+              "stringValue": "runner"
+            }
+          },
+          {
+            "key": "process.runtime.name",
+            "value": {
+              "stringValue": "bash"
+            }
+          },
+          {
+            "key": "process.runtime.description",
+            "value": {
+              "stringValue": "Bourne Again Shell"
+            }
+          },
+          {
+            "key": "process.runtime.version",
+            "value": {
+              "stringValue": "5.2.21-2ubuntu4"
+            }
+          },
+          {
+            "key": "process.runtime.options",
+            "value": {
+              "stringValue": "ehB"
+            }
+          },
+          {
+            "key": "service.version",
+            "value": {
+              "stringValue": ""
+            }
+          },
+          {
+            "key": "service.namespace",
+            "value": {
+              "stringValue": ""
+            }
+          },
+          {
+            "key": "service.instance.id",
+            "value": {
+              "stringValue": ""
+            }
+          }
+        ]
+      },
+      "scopeLogs": [
+        {
+          "scope": {
+            "name": "shell",
+            "version": "5.22.7"
+          },
+          "logRecords": [
+            {
+              "observedTimeUnixNano": "1754846785146709881",
+              "timeUnixNano": "1754846785146679296",
+              "traceId": "459ff35be9b12ac61e7956148c19e335",
+              "spanId": "75cd7956851d3b84",
+              "flags": 1,
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "java.net.ConnectException: Connection timed out"
+              }
+            },
+            {
+              "observedTimeUnixNano": "1754846785147606977",
+              "timeUnixNano": "1754846785147590912",
+              "traceId": "459ff35be9b12ac61e7956148c19e335",
+              "spanId": "75cd7956851d3b84",
+              "flags": 1,
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "\tat java.base/sun.nio.ch.Net.connect0(Native Method)"
+              }
+            },
+            {
+              "observedTimeUnixNano": "1754846785149430163",
+              "timeUnixNano": "1754846785149415168",
+              "traceId": "459ff35be9b12ac61e7956148c19e335",
+              "spanId": "75cd7956851d3b84",
+              "flags": 1,
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "\tat java.base/sun.nio.ch.Net.connect(Net.java:579)"
+              }
+            },
+            {
+              "observedTimeUnixNano": "1754846785149851801",
+              "timeUnixNano": "1754846785149837056",
+              "traceId": "459ff35be9b12ac61e7956148c19e335",
+              "spanId": "75cd7956851d3b84",
+              "flags": 1,
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "\tat java.base/sun.nio.ch.Net.connect(Net.java:568)"
+              }
+            },
+            {
+              "observedTimeUnixNano": "1754846785151045381",
+              "timeUnixNano": "1754846785151030016",
+              "traceId": "459ff35be9b12ac61e7956148c19e335",
+              "spanId": "75cd7956851d3b84",
+              "flags": 1,
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "\tat java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:593)"
+              }
+            },
+            {
+              "observedTimeUnixNano": "1754846785154079419",
+              "timeUnixNano": "1754846785154064384",
+              "traceId": "459ff35be9b12ac61e7956148c19e335",
+              "spanId": "75cd7956851d3b84",
+              "flags": 1,
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "\tat java.base/java.net.Socket.connect(Socket.java:633)"
+              }
+            },
+            {
+              "observedTimeUnixNano": "1754846785154143669",
+              "timeUnixNano": "1754846785154131968",
+              "traceId": "459ff35be9b12ac61e7956148c19e335",
+              "spanId": "75cd7956851d3b84",
+              "flags": 1,
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "\tat java.base/java.net.Socket.connect(Socket.java:583)"
+              }
+            },
+            {
+              "observedTimeUnixNano": "1754846785154497703",
+              "timeUnixNano": "1754846785154481920",
+              "traceId": "459ff35be9b12ac61e7956148c19e335",
+              "spanId": "75cd7956851d3b84",
+              "flags": 1,
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "\tat java.base/sun.net.NetworkClient.doConnect(NetworkClient.java:183)"
+              }
+            },
+            {
+              "observedTimeUnixNano": "1754846785155733763",
+              "timeUnixNano": "1754846785155717632",
+              "traceId": "459ff35be9b12ac61e7956148c19e335",
+              "spanId": "75cd7956851d3b84",
+              "flags": 1,
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "\tat java.base/sun.net.www.http.HttpClient.openServer(HttpClient.java:533)"
+              }
+            },
+            {
+              "observedTimeUnixNano": "1754846785156961316",
+              "timeUnixNano": "1754846785156944896",
+              "traceId": "459ff35be9b12ac61e7956148c19e335",
+              "spanId": "75cd7956851d3b84",
+              "flags": 1,
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "\tat java.base/sun.net.www.http.HttpClient.openServer(HttpClient.java:638)"
+              }
+            },
+            {
+              "observedTimeUnixNano": "1754846785158211051",
+              "timeUnixNano": "1754846785158194688",
+              "traceId": "459ff35be9b12ac61e7956148c19e335",
+              "spanId": "75cd7956851d3b84",
+              "flags": 1,
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "\tat java.base/sun.net.www.http.HttpClient.<init>(HttpClient.java:283)"
+              }
+            },
+            {
+              "observedTimeUnixNano": "1754846785159424904",
+              "timeUnixNano": "1754846785159408640",
+              "traceId": "459ff35be9b12ac61e7956148c19e335",
+              "spanId": "75cd7956851d3b84",
+              "flags": 1,
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "\tat java.base/sun.net.www.http.HttpClient.New(HttpClient.java:386)"
+              }
+            },
+            {
+              "observedTimeUnixNano": "1754846785160862760",
+              "timeUnixNano": "1754846785160846848",
+              "traceId": "459ff35be9b12ac61e7956148c19e335",
+              "spanId": "75cd7956851d3b84",
+              "flags": 1,
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "\tat java.base/sun.net.www.http.HttpClient.New(HttpClient.java:408)"
+              }
+            },
+            {
+              "observedTimeUnixNano": "1754846785162410211",
+              "timeUnixNano": "1754846785162397696",
+              "traceId": "459ff35be9b12ac61e7956148c19e335",
+              "spanId": "75cd7956851d3b84",
+              "flags": 1,
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "\tat java.base/sun.net.www.protocol.http.HttpURLConnection.getNewHttpClient(HttpURLConnection.java:1325)"
+              }
+            },
+            {
+              "observedTimeUnixNano": "1754846785163213522",
+              "timeUnixNano": "1754846785163203328",
+              "traceId": "459ff35be9b12ac61e7956148c19e335",
+              "spanId": "75cd7956851d3b84",
+              "flags": 1,
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "\tat java.base/sun.net.www.protocol.http.HttpURLConnection.plainConnect0(HttpURLConnection.java:1258)"
+              }
+            },
+            {
+              "observedTimeUnixNano": "1754846785164042511",
+              "timeUnixNano": "1754846785164032512",
+              "traceId": "459ff35be9b12ac61e7956148c19e335",
+              "spanId": "75cd7956851d3b84",
+              "flags": 1,
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "\tat java.base/sun.net.www.protocol.http.HttpURLConnection.plainConnect(HttpURLConnection.java:1144)"
+              }
+            },
+            {
+              "observedTimeUnixNano": "1754846785164858044",
+              "timeUnixNano": "1754846785164848128",
+              "traceId": "459ff35be9b12ac61e7956148c19e335",
+              "spanId": "75cd7956851d3b84",
+              "flags": 1,
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "\tat java.base/sun.net.www.protocol.http.HttpURLConnection.connect(HttpURLConnection.java:1073)"
+              }
+            },
+            {
+              "observedTimeUnixNano": "1754846785165665383",
+              "timeUnixNano": "1754846785165655552",
+              "traceId": "459ff35be9b12ac61e7956148c19e335",
+              "spanId": "75cd7956851d3b84",
+              "flags": 1,
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "\tat java.base/sun.net.www.protocol.http.HttpURLConnection.getInputStream0(HttpURLConnection.java:1703)"
+              }
+            },
+            {
+              "observedTimeUnixNano": "1754846785166475637",
+              "timeUnixNano": "1754846785166466304",
+              "traceId": "459ff35be9b12ac61e7956148c19e335",
+              "spanId": "75cd7956851d3b84",
+              "flags": 1,
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "\tat java.base/sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:1627)"
+              }
+            },
+            {
+              "observedTimeUnixNano": "1754846785167203326",
+              "timeUnixNano": "1754846785167193856",
+              "traceId": "459ff35be9b12ac61e7956148c19e335",
+              "spanId": "75cd7956851d3b84",
+              "flags": 1,
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "\tat Main.main(Main.java:12)"
               }
             }
           ]
@@ -525,7 +2693,7 @@
           {
             "key": "process.pid",
             "value": {
-              "intValue": "4761"
+              "intValue": "4795"
             }
           },
           {
@@ -549,7 +2717,7 @@
           {
             "key": "service.instance.id",
             "value": {
-              "stringValue": "4a038ede-e737-4517-bd8e-2a0b80ca4d75"
+              "stringValue": "43deb501-5ea3-4fa4-806a-ba39978abf3e"
             }
           },
           {
@@ -599,14 +2767,14 @@
           },
           "spans": [
             {
-              "traceId": "557c41134670109b16c0b33cb361942e",
-              "spanId": "c5d292d795df8bfb",
-              "parentSpanId": "b4f3e2325039c464",
+              "traceId": "459ff35be9b12ac61e7956148c19e335",
+              "spanId": "d7275b6762e013da",
+              "parentSpanId": "75cd7956851d3b84",
               "name": "GET",
               "flags": 257,
               "kind": 3,
-              "startTimeUnixNano": "1754729644055033290",
-              "endTimeUnixNano": "1754729644236338933",
+              "startTimeUnixNano": "1754846650803675929",
+              "endTimeUnixNano": "1754846785145005229",
               "attributes": [
                 {
                   "key": "thread.name",
@@ -627,15 +2795,15 @@
                   }
                 },
                 {
-                  "key": "http.response.status_code",
-                  "value": {
-                    "intValue": "200"
-                  }
-                },
-                {
                   "key": "server.address",
                   "value": {
                     "stringValue": "example.com"
+                  }
+                },
+                {
+                  "key": "error.type",
+                  "value": {
+                    "stringValue": "java.net.ConnectException"
                   }
                 },
                 {
@@ -651,7 +2819,35 @@
                   }
                 }
               ],
-              "status": {}
+              "events": [
+                {
+                  "timeUnixNano": "1754846785143209685",
+                  "name": "exception",
+                  "attributes": [
+                    {
+                      "key": "exception.stacktrace",
+                      "value": {
+                        "stringValue": "java.net.ConnectException: Connection timed out\n\tat java.base/sun.nio.ch.Net.connect0(Native Method)\n\tat java.base/sun.nio.ch.Net.connect(Net.java:579)\n\tat java.base/sun.nio.ch.Net.connect(Net.java:568)\n\tat java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:593)\n\tat java.base/java.net.Socket.connect(Socket.java:633)\n\tat java.base/java.net.Socket.connect(Socket.java:583)\n\tat java.base/sun.net.NetworkClient.doConnect(NetworkClient.java:183)\n\tat java.base/sun.net.www.http.HttpClient.openServer(HttpClient.java:533)\n\tat java.base/sun.net.www.http.HttpClient.openServer(HttpClient.java:638)\n\tat java.base/sun.net.www.http.HttpClient.<init>(HttpClient.java:283)\n\tat java.base/sun.net.www.http.HttpClient.New(HttpClient.java:386)\n\tat java.base/sun.net.www.http.HttpClient.New(HttpClient.java:408)\n\tat java.base/sun.net.www.protocol.http.HttpURLConnection.getNewHttpClient(HttpURLConnection.java:1325)\n\tat java.base/sun.net.www.protocol.http.HttpURLConnection.plainConnect0(HttpURLConnection.java:1258)\n\tat java.base/sun.net.www.protocol.http.HttpURLConnection.plainConnect(HttpURLConnection.java:1144)\n\tat java.base/sun.net.www.protocol.http.HttpURLConnection.connect(HttpURLConnection.java:1073)\n\tat java.base/sun.net.www.protocol.http.HttpURLConnection.getInputStream0(HttpURLConnection.java:1703)\n\tat java.base/sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:1627)\n\tat Main.main(Main.java:12)\n"
+                      }
+                    },
+                    {
+                      "key": "exception.type",
+                      "value": {
+                        "stringValue": "java.net.ConnectException"
+                      }
+                    },
+                    {
+                      "key": "exception.message",
+                      "value": {
+                        "stringValue": "Connection timed out"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": {
+                "code": 2
+              }
             }
           ]
         }
@@ -675,7 +2871,7 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "5.22.6"
+              "stringValue": "5.22.7"
             }
           },
           {
@@ -699,13 +2895,13 @@
           {
             "key": "process.pid",
             "value": {
-              "intValue": "3961"
+              "intValue": "3996"
             }
           },
           {
             "key": "process.parent_pid",
             "value": {
-              "intValue": "2360"
+              "intValue": "2362"
             }
           },
           {
@@ -786,85 +2982,18 @@
         {
           "scope": {
             "name": "shell",
-            "version": "5.22.6"
+            "version": "5.22.7"
           },
           "spans": [
             {
-              "traceId": "557c41134670109b16c0b33cb361942e",
-              "spanId": "7a78f9f094ba198e",
-              "parentSpanId": "b572b4a10ee47ea7",
-              "name": "javac Main.java",
-              "flags": 768,
-              "kind": 1,
-              "startTimeUnixNano": "1754729639638634240",
-              "endTimeUnixNano": "1754729640799954688",
-              "attributes": [
-                {
-                  "key": "shell.command_line",
-                  "value": {
-                    "stringValue": "javac Main.java"
-                  }
-                },
-                {
-                  "key": "shell.command",
-                  "value": {
-                    "stringValue": "javac"
-                  }
-                },
-                {
-                  "key": "shell.command.type",
-                  "value": {
-                    "stringValue": "file"
-                  }
-                },
-                {
-                  "key": "shell.command.name",
-                  "value": {
-                    "stringValue": "javac"
-                  }
-                },
-                {
-                  "key": "subprocess.executable.path",
-                  "value": {
-                    "stringValue": "/usr/bin/javac"
-                  }
-                },
-                {
-                  "key": "subprocess.executable.name",
-                  "value": {
-                    "stringValue": "javac"
-                  }
-                },
-                {
-                  "key": "shell.command.exit_code",
-                  "value": {
-                    "intValue": "0"
-                  }
-                },
-                {
-                  "key": "code.filepath",
-                  "value": {
-                    "stringValue": "demo.sh"
-                  }
-                },
-                {
-                  "key": "code.lineno",
-                  "value": {
-                    "intValue": "3"
-                  }
-                }
-              ],
-              "status": {}
-            },
-            {
-              "traceId": "557c41134670109b16c0b33cb361942e",
-              "spanId": "b4f3e2325039c464",
-              "parentSpanId": "b572b4a10ee47ea7",
+              "traceId": "459ff35be9b12ac61e7956148c19e335",
+              "spanId": "75cd7956851d3b84",
+              "parentSpanId": "1fb774545d2adcca",
               "name": "java Main",
               "flags": 768,
               "kind": 1,
-              "startTimeUnixNano": "1754729640804228864",
-              "endTimeUnixNano": "1754729644410509568",
+              "startTimeUnixNano": "1754846647552576512",
+              "endTimeUnixNano": "1754846785181254656",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -924,14 +3053,14 @@
               "status": {}
             },
             {
-              "traceId": "557c41134670109b16c0b33cb361942e",
-              "spanId": "a54585200cbebfd9",
-              "parentSpanId": "b572b4a10ee47ea7",
+              "traceId": "459ff35be9b12ac61e7956148c19e335",
+              "spanId": "1234800e6756be6e",
+              "parentSpanId": "1fb774545d2adcca",
               "name": "rm Main.class",
               "flags": 768,
               "kind": 1,
-              "startTimeUnixNano": "1754729644414861312",
-              "endTimeUnixNano": "1754729644432002816",
+              "startTimeUnixNano": "1754846785185472256",
+              "endTimeUnixNano": "1754846785202247168",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -991,14 +3120,416 @@
               "status": {}
             },
             {
-              "traceId": "557c41134670109b16c0b33cb361942e",
-              "spanId": "b572b4a10ee47ea7",
+              "traceId": "459ff35be9b12ac61e7956148c19e335",
+              "spanId": "1fb774545d2adcca",
               "name": "bash -e demo.sh",
               "flags": 256,
               "kind": 2,
-              "startTimeUnixNano": "1754729639626754304",
-              "endTimeUnixNano": "1754729644432128256",
+              "startTimeUnixNano": "1754846646481617920",
+              "endTimeUnixNano": "1754846785202398464",
               "status": {}
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+{
+  "resourceMetrics": [
+    {
+      "resource": {
+        "attributes": [
+          {
+            "key": "host.arch",
+            "value": {
+              "stringValue": "amd64"
+            }
+          },
+          {
+            "key": "host.name",
+            "value": {
+              "stringValue": "pkrvmsl9tci6h6u"
+            }
+          },
+          {
+            "key": "os.description",
+            "value": {
+              "stringValue": "Linux 6.11.0-1018-azure"
+            }
+          },
+          {
+            "key": "os.type",
+            "value": {
+              "stringValue": "linux"
+            }
+          },
+          {
+            "key": "process.command_args",
+            "value": {
+              "arrayValue": {
+                "values": [
+                  {
+                    "stringValue": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java"
+                  },
+                  {
+                    "stringValue": "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/opentelemetry-javaagent.jar"
+                  },
+                  {
+                    "stringValue": "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/rootcontextagent.jar"
+                  },
+                  {
+                    "stringValue": "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/subprocessinjectionagent.jar"
+                  },
+                  {
+                    "stringValue": "Main"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "key": "process.executable.path",
+            "value": {
+              "stringValue": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java"
+            }
+          },
+          {
+            "key": "process.pid",
+            "value": {
+              "intValue": "4795"
+            }
+          },
+          {
+            "key": "process.runtime.description",
+            "value": {
+              "stringValue": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8"
+            }
+          },
+          {
+            "key": "process.runtime.name",
+            "value": {
+              "stringValue": "OpenJDK Runtime Environment"
+            }
+          },
+          {
+            "key": "process.runtime.version",
+            "value": {
+              "stringValue": "17.0.16+8"
+            }
+          },
+          {
+            "key": "service.instance.id",
+            "value": {
+              "stringValue": "43deb501-5ea3-4fa4-806a-ba39978abf3e"
+            }
+          },
+          {
+            "key": "service.name",
+            "value": {
+              "stringValue": "unknown_service:java"
+            }
+          },
+          {
+            "key": "telemetry.distro.name",
+            "value": {
+              "stringValue": "opentelemetry-java-instrumentation"
+            }
+          },
+          {
+            "key": "telemetry.distro.version",
+            "value": {
+              "stringValue": "2.18.1"
+            }
+          },
+          {
+            "key": "telemetry.sdk.language",
+            "value": {
+              "stringValue": "java"
+            }
+          },
+          {
+            "key": "telemetry.sdk.name",
+            "value": {
+              "stringValue": "opentelemetry"
+            }
+          },
+          {
+            "key": "telemetry.sdk.version",
+            "value": {
+              "stringValue": "1.52.0"
+            }
+          }
+        ]
+      },
+      "schemaUrl": "https://opentelemetry.io/schemas/1.24.0",
+      "scopeMetrics": [
+        {
+          "scope": {
+            "name": "io.opentelemetry.http-url-connection",
+            "version": "2.18.1-alpha"
+          },
+          "metrics": [
+            {
+              "name": "http.client.request.duration",
+              "description": "Duration of HTTP client requests.",
+              "unit": "s",
+              "histogram": {
+                "aggregationTemporality": 2,
+                "dataPoints": [
+                  {
+                    "attributes": [
+                      {
+                        "key": "error.type",
+                        "value": {
+                          "stringValue": "java.net.ConnectException"
+                        }
+                      },
+                      {
+                        "key": "http.request.method",
+                        "value": {
+                          "stringValue": "GET"
+                        }
+                      },
+                      {
+                        "key": "network.protocol.version",
+                        "value": {
+                          "stringValue": "1.1"
+                        }
+                      },
+                      {
+                        "key": "server.address",
+                        "value": {
+                          "stringValue": "example.com"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846785147082625",
+                    "count": "1",
+                    "bucketCounts": [
+                      "0",
+                      "0",
+                      "0",
+                      "0",
+                      "0",
+                      "0",
+                      "0",
+                      "0",
+                      "0",
+                      "0",
+                      "0",
+                      "0",
+                      "0",
+                      "0",
+                      "1"
+                    ],
+                    "explicitBounds": [
+                      0.005,
+                      0.01,
+                      0.025,
+                      0.05,
+                      0.075,
+                      0.1,
+                      0.25,
+                      0.5,
+                      0.75,
+                      1,
+                      2.5,
+                      5,
+                      7.5,
+                      10
+                    ],
+                    "exemplars": [
+                      {
+                        "timeUnixNano": "1754846785144000000",
+                        "asDouble": 134.339072303,
+                        "filteredAttributes": [
+                          {
+                            "key": "url.full",
+                            "value": {
+                              "stringValue": "http://example.com"
+                            }
+                          }
+                        ],
+                        "traceId": "459ff35be9b12ac61e7956148c19e335",
+                        "spanId": "d7275b6762e013da"
+                      }
+                    ],
+                    "sum": 134.339072303,
+                    "min": 134.339072303,
+                    "max": 134.339072303
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "scope": {
+            "name": "io.opentelemetry.runtime-telemetry-java8",
+            "version": "2.18.1-alpha"
+          },
+          "metrics": [
+            {
+              "name": "jvm.gc.duration",
+              "description": "Duration of JVM garbage collection actions.",
+              "unit": "s",
+              "histogram": {
+                "aggregationTemporality": 2,
+                "dataPoints": [
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.gc.action",
+                        "value": {
+                          "stringValue": "end of minor GC"
+                        }
+                      },
+                      {
+                        "key": "jvm.gc.name",
+                        "value": {
+                          "stringValue": "G1 Young Generation"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846785147082625",
+                    "count": "3",
+                    "bucketCounts": [
+                      "3",
+                      "0",
+                      "0",
+                      "0",
+                      "0"
+                    ],
+                    "explicitBounds": [
+                      0.01,
+                      0.1,
+                      1,
+                      10
+                    ],
+                    "sum": 0.015,
+                    "min": 0.003,
+                    "max": 0.008
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "scope": {
+            "name": "io.opentelemetry.exporters.otlp-http"
+          },
+          "metrics": [
+            {
+              "name": "otlp.exporter.exported",
+              "sum": {
+                "aggregationTemporality": 2,
+                "isMonotonic": true,
+                "dataPoints": [
+                  {
+                    "attributes": [
+                      {
+                        "key": "success",
+                        "value": {
+                          "boolValue": true
+                        }
+                      },
+                      {
+                        "key": "type",
+                        "value": {
+                          "stringValue": "metric"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846785147082625",
+                    "asInt": "30"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "otlp.exporter.seen",
+              "sum": {
+                "aggregationTemporality": 2,
+                "isMonotonic": true,
+                "dataPoints": [
+                  {
+                    "attributes": [
+                      {
+                        "key": "type",
+                        "value": {
+                          "stringValue": "metric"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846785147082625",
+                    "asInt": "30"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "scope": {
+            "name": "io.opentelemetry.sdk.logs"
+          },
+          "metrics": [
+            {
+              "name": "queueSize",
+              "description": "The number of items queued",
+              "unit": "1",
+              "gauge": {
+                "dataPoints": [
+                  {
+                    "attributes": [
+                      {
+                        "key": "processorType",
+                        "value": {
+                          "stringValue": "BatchLogRecordProcessor"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846785147082625",
+                    "asInt": "0"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "scope": {
+            "name": "io.opentelemetry.sdk.trace"
+          },
+          "metrics": [
+            {
+              "name": "queueSize",
+              "description": "The number of items queued",
+              "unit": "1",
+              "gauge": {
+                "dataPoints": [
+                  {
+                    "attributes": [
+                      {
+                        "key": "processorType",
+                        "value": {
+                          "stringValue": "BatchSpanProcessor"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1754846649070089831",
+                    "timeUnixNano": "1754846785147082625",
+                    "asInt": "0"
+                  }
+                ]
+              }
             }
           ]
         }
