@@ -48,8 +48,15 @@ _otel_alias_prepend timeout _otel_inject_inner_command
 _otel_alias_prepend watch _otel_inject_inner_command
 _otel_alias_prepend at _otel_inject_inner_command
 _otel_alias_prepend flock _otel_inject_inner_command
-_otel_alias_prepend xargs _otel_inject_inner_command
 _otel_alias_prepend dumb-init _otel_inject_inner_command
+
+_otel_alias_prepend xargs _otel_inject_xargs
+
+_otel_inject_xargs() {
+  local args_length=$(($(\getconf ARG_MAX) - $(\env | \wc -c) - $(\echo "$*" | wc -c) - 4096)) # this is an estimation of the default
+  local args_length=$(($args_length - 4096)) # make sure we have enough room for proper injection
+  OTEL_SHELL_INJECT_INNER_COMMAND_MORE_ARGS="-s $args_length" _otel_inject_inner_command "$@"
+}
 
 # sudo apt-get update => sudo sh -c '. /otel.sh; apt-get update' 'sudo'
 
