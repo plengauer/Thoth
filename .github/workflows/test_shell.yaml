@@ -208,7 +208,7 @@ jobs:
               zypper --non-interactive remove $DEPENDENCY
             elif type apk; then
               apk del $DEPENDENCY || true
-              apk add --allow-untrusted /root/package.rpm
+              apk add --allow-untrusted /root/package.apk
               apk add $DEPENDENCY
               apk del $DEPENDENCY
             else
