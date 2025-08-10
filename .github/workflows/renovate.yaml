@@ -105,7 +105,7 @@ jobs:
           stable="alpine:$(jq < /tmp/alpine.json '.result.releases[] | select(.isEol == false) | .name' -r | head -n 2 | tail -n 1):latest"
           latest="alpine:$(jq < /tmp/alpine.json '.result.releases[] | select(.isEol == false) | .name' -r | head -n 1):latest"
           dev="$latest"
-          cat .github/workflows/images.json | jq ".rhel.oldest = \"$oldest\"" | jq ".rhel.stable = \"$stable\"" | jq ".rhel.latest = \"$latest\"" | jq ".rhel.dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/workflows/images.json      
+          cat .github/workflows/images.json | jq ".alpine.oldest = \"$oldest\"" | jq ".alpine.stable = \"$stable\"" | jq ".alpine.latest = \"$latest\"" | jq ".alpine.dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/workflows/images.json      
       - id: open-pr
         uses: peter-evans/create-pull-request@v7.0.8
         with:
