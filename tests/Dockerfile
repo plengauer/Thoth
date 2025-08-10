@@ -37,7 +37,7 @@ RUN <<EOF
     for package in $packages_optional; do zypper --non-interactive install $package || true; done
     zypper --non-interactive install --allow-unsigned-rpm ./package.rpm
   elif type apk; then
-    [ "$update" = TRUE ] && zypper --non-interactive update
+    [ "$update" = TRUE ] && apk upgrade
     type "$shell" || apk add "$shell"
     apk add $packages_mandatory
     for package in $packages_optional; do apk add $package || true; done
