@@ -368,6 +368,8 @@ jobs:
           } > rpm.spec && rm "$rpm_dir"/*.spec
           rpmbuild -bb --buildroot="$(cat rpm.spec | grep '^Buildroot: ' | cut -d ' ' -f 2)" rpm.spec
           mv ../*.rpm ../package.rpm
+      - run: |
+          # TODO build apk
       - uses: actions/upload-artifact@v4.6.2
         with:
           name: packages
