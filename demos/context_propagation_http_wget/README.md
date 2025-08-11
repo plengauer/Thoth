@@ -20,14 +20,14 @@ bash -e demo.sh
 ## Full Trace
 ```
 {
-  "trace_id": "49fb1a01ddcce1ce417cba7bf93c4383",
-  "span_id": "b4fbc625cefa6623",
-  "parent_span_id": "67e6ff2fb4b0f467",
+  "trace_id": "b478c3b7066b6148ec12e7fe9ad21c88",
+  "span_id": "53cdcf8e6cc126e0",
+  "parent_span_id": "b96f658aa5342725",
   "name": "GET",
   "kind": "CLIENT",
   "status": "ERROR",
-  "time_start": 1754895293750952960,
-  "time_end": 1754895294495189760,
+  "time_start": 1754949976778805760,
+  "time_end": 1754949977525202176,
   "attributes": {
     "network.protocol.name": "http",
     "network.transport": "tcp",
@@ -45,12 +45,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.7",
+    "telemetry.sdk.version": "5.23.0",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3524,
-    "process.parent_pid": 2397,
+    "process.pid": 3460,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -68,22 +68,22 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "49fb1a01ddcce1ce417cba7bf93c4383",
-  "span_id": "ec69d5f070a89fab",
-  "parent_span_id": "b4fbc625cefa6623",
+  "trace_id": "b478c3b7066b6148ec12e7fe9ad21c88",
+  "span_id": "6f508b88def2e19d",
+  "parent_span_id": "53cdcf8e6cc126e0",
   "name": "GET",
   "kind": "SERVER",
   "status": "UNSET",
-  "time_start": 1754895294399936000,
-  "time_end": 1754895294499158784,
+  "time_start": 1754949977429392128,
+  "time_end": 1754949977529145344,
   "attributes": {
     "network.transport": "TCP",
     "network.peer.address": "127.0.0.1",
-    "network.peer.port": 55696,
+    "network.peer.port": 49314,
     "server.address": "127.0.0.1",
     "server.port": 12345,
     "client.address": "127.0.0.1",
-    "client.port": 55696,
+    "client.port": 49314,
     "network.protocol.name": "http",
     "network.protocol.version": "1.1",
     "url.full": "http://:12345/",
@@ -103,12 +103,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.7",
+    "telemetry.sdk.version": "5.23.0",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 4514,
-    "process.parent_pid": 4510,
+    "process.pid": 4448,
+    "process.parent_pid": 4444,
     "process.executable.name": "dash",
     "process.executable.path": "/usr/bin/dash",
     "process.command_line": "ncat -l -c printf \"HTTP/1.1 418 I'm a teapot    \" 12345",
@@ -124,32 +124,32 @@ bash -e demo.sh
   },
   "links": [
     {
-      "trace_id": "f5b672064872d1bba14e8907906ed441",
-      "span_id": "6a131b2d681e6b98",
+      "trace_id": "2c2a1286e03a53185bce6ae7df3bc86a",
+      "span_id": "ab7c9ce9809011c2",
       "attributes": {}
     }
   ],
   "events": []
 }
 {
-  "trace_id": "49fb1a01ddcce1ce417cba7bf93c4383",
-  "span_id": "eee6b41b4bb51eae",
+  "trace_id": "b478c3b7066b6148ec12e7fe9ad21c88",
+  "span_id": "2885d8dfe550d5e8",
   "parent_span_id": null,
   "name": "bash -e demo.sh",
   "kind": "SERVER",
   "status": "UNSET",
-  "time_start": 1754895293702561024,
-  "time_end": 1754895294521147392,
+  "time_start": 1754949976731760896,
+  "time_end": 1754949977551297280,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.7",
+    "telemetry.sdk.version": "5.23.0",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3524,
-    "process.parent_pid": 2397,
+    "process.pid": 3460,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -167,14 +167,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "49fb1a01ddcce1ce417cba7bf93c4383",
-  "span_id": "f1d9fb207303f616",
-  "parent_span_id": "ec69d5f070a89fab",
+  "trace_id": "b478c3b7066b6148ec12e7fe9ad21c88",
+  "span_id": "991290886837cdd8",
+  "parent_span_id": "6f508b88def2e19d",
   "name": "printf HTTP/1.1 418 I'm a teapot",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754895294411163136,
-  "time_end": 1754895294429844736,
+  "time_start": 1754949977440919040,
+  "time_end": 1754949977459318016,
   "attributes": {
     "shell.command_line": "printf HTTP/1.1 418 I'm a teapot",
     "shell.command": "printf",
@@ -186,12 +186,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.7",
+    "telemetry.sdk.version": "5.23.0",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 4514,
-    "process.parent_pid": 4510,
+    "process.pid": 4448,
+    "process.parent_pid": 4444,
     "process.executable.name": "dash",
     "process.executable.path": "/usr/bin/dash",
     "process.command_line": "ncat -l -c printf \"HTTP/1.1 418 I'm a teapot    \" 12345",
@@ -209,32 +209,32 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f5b672064872d1bba14e8907906ed441",
-  "span_id": "6a131b2d681e6b98",
+  "trace_id": "2c2a1286e03a53185bce6ae7df3bc86a",
+  "span_id": "ab7c9ce9809011c2",
   "parent_span_id": null,
   "name": "send/receive",
   "kind": "CONSUMER",
   "status": "UNSET",
-  "time_start": 1754895294308057088,
-  "time_end": 1754895294501172224,
+  "time_start": 1754949977336378368,
+  "time_end": 1754949977531286272,
   "attributes": {
     "network.transport": "TCP",
     "network.peer.address": "127.0.0.1",
-    "network.peer.port": 55696,
+    "network.peer.port": 49314,
     "server.address": "127.0.0.1",
     "server.port": 12345,
     "client.address": "127.0.0.1",
-    "client.port": 55696
+    "client.port": 49314
   },
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.7",
+    "telemetry.sdk.version": "5.23.0",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 4514,
-    "process.parent_pid": 4510,
+    "process.pid": 4448,
+    "process.parent_pid": 4444,
     "process.executable.name": "dash",
     "process.executable.path": "/usr/bin/dash",
     "process.command_line": "ncat -l -c printf \"HTTP/1.1 418 I'm a teapot    \" 12345",
@@ -250,22 +250,22 @@ bash -e demo.sh
   },
   "links": [
     {
-      "trace_id": "49fb1a01ddcce1ce417cba7bf93c4383",
-      "span_id": "ec69d5f070a89fab",
+      "trace_id": "b478c3b7066b6148ec12e7fe9ad21c88",
+      "span_id": "6f508b88def2e19d",
       "attributes": {}
     }
   ],
   "events": []
 }
 {
-  "trace_id": "49fb1a01ddcce1ce417cba7bf93c4383",
-  "span_id": "d6a809267e9041c3",
-  "parent_span_id": "eee6b41b4bb51eae",
+  "trace_id": "b478c3b7066b6148ec12e7fe9ad21c88",
+  "span_id": "65f7d69b461dce9b",
+  "parent_span_id": "2885d8dfe550d5e8",
   "name": "true",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754895294504193536,
-  "time_end": 1754895294520934656,
+  "time_start": 1754949977534673408,
+  "time_end": 1754949977551051776,
   "attributes": {
     "shell.command_line": "true",
     "shell.command": "true",
@@ -278,12 +278,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.7",
+    "telemetry.sdk.version": "5.23.0",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3524,
-    "process.parent_pid": 2397,
+    "process.pid": 3460,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -301,14 +301,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "49fb1a01ddcce1ce417cba7bf93c4383",
-  "span_id": "67e6ff2fb4b0f467",
-  "parent_span_id": "eee6b41b4bb51eae",
+  "trace_id": "b478c3b7066b6148ec12e7fe9ad21c88",
+  "span_id": "b96f658aa5342725",
+  "parent_span_id": "2885d8dfe550d5e8",
   "name": "wget http://127.0.0.1:12345",
   "kind": "INTERNAL",
   "status": "ERROR",
-  "time_start": 1754895293715426560,
-  "time_end": 1754895294499303680,
+  "time_start": 1754949976743780096,
+  "time_end": 1754949977529474048,
   "attributes": {
     "shell.command_line": "wget http://127.0.0.1:12345",
     "shell.command": "wget",
@@ -323,12 +323,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.7",
+    "telemetry.sdk.version": "5.23.0",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3524,
-    "process.parent_pid": 2397,
+    "process.pid": 3460,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
