@@ -76,11 +76,11 @@ jobs:
           debian_architecture="$(echo ${{ matrix.architecture }} | cut -sd / -f 1 | sed 's/le$/el/g')"
           if curl -s -L https://deb.debian.org/debian/dists/oldstable/main | grep -q binary-"$debian_architecture"; then
             image=debian:oldstable
-          elif  curl -s -L https://deb.debian.org/debian/dists/stable/main | grep -q binary-"$debian_architecture"; then
+          elif curl -s -L https://deb.debian.org/debian/dists/stable/main | grep -q binary-"$debian_architecture"; then
             image=debian:stable
-          elif  curl -s -L https://deb.debian.org/debian/dists/testing/main | grep -q binary-"$debian_architecture"; then
+          elif curl -s -L https://deb.debian.org/debian/dists/testing/main | grep -q binary-"$debian_architecture"; then
             image=debian:testing
-          elif  curl -s -L https://deb.debian.org/debian/dists/unstable/main | grep -q binary-"$debian_architecture"; then
+          elif curl -s -L https://deb.debian.org/debian/dists/unstable/main | grep -q binary-"$debian_architecture"; then
             image=debian:unstable
           else
             echo "no debian found supporting the architecture ${{ matrix.architecture }}"
