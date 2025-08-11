@@ -73,7 +73,7 @@ jobs:
         uses: docker/setup-qemu-action@v3.6.0
       - id: build
         run: |
-          debian_architecture="$(echo ${{ matrix.architecture }} | cut -sd / -f 1 | sed 's/le$/el/g')"
+          debian_architecture="$(echo ${{ matrix.architecture }} | cut -d / -f 1 | sed 's/le$/el/g')"
           if curl -s -L https://deb.debian.org/debian/dists/oldstable/main | grep -q binary-"$debian_architecture"; then
             image=debian:oldstable
           elif curl -s -L https://deb.debian.org/debian/dists/stable/main | grep -q binary-"$debian_architecture"; then
