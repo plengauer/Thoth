@@ -63,7 +63,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        architecture: [ 'amd64', 'arm64/v8', 'ppc64le', 'riscv64', 's390x' ] # mips64le # 'i386', 'arm32/v7'
+        architecture: [ 'amd64', 'arm64/v8', 'mips64le', 'ppc64le', 'riscv64', 's390x' ] # 'i386', 'arm32/v7'
       fail-fast: false
     permissions:
       contents: read
@@ -73,13 +73,19 @@ jobs:
         uses: docker/setup-qemu-action@v3.6.0
       - id: build
         run: |
-          case "${{ matrix.architecture }}" in
-            ppc64le) image=debian:stable;; # oldstable apt repo is very flaky
-            mips64le) image=debian:stable;;
-            riscv64) image=debian:testing;;
-            s390x) image=debian:stable;;
-            *) image=debian:oldstable;;
-          esac
+          debian_architecture="$(echo ${{ matrix.architecture }} | cut -d / -f 1 | sed 's/le$/el/g')"
+          if curl -s -L https://deb.debian.org/debian/dists/oldstable/main | grep -q binary-"$debian_architecture" && sudo docker pull --platform linux/${{ matrix.architecture }} docker.io/"$(echo ${{ matrix.architecture }} | tr -d /)"/debian:oldstable; then
+            image=debian:oldstable
+          elif curl -s -L https://deb.debian.org/debian/dists/stable/main | grep -q binary-"$debian_architecture" && sudo docker pull --platform linux/${{ matrix.architecture }} docker.io/"$(echo ${{ matrix.architecture }} | tr -d /)"/debian:stable; then
+            image=debian:stable
+          elif curl -s -L https://deb.debian.org/debian/dists/testing/main | grep -q binary-"$debian_architecture" && sudo docker pull --platform linux/${{ matrix.architecture }} docker.io/"$(echo ${{ matrix.architecture }} | tr -d /)"/debian:testing; then
+            image=debian:testing
+          elif curl -s -L https://deb.debian.org/debian/dists/unstable/main | grep -q binary-"$debian_architecture" && sudo docker pull --platform linux/${{ matrix.architecture }} docker.io/"$(echo ${{ matrix.architecture }} | tr -d /)"/debian:unstable; then
+            image=debian:unstable
+          else
+            echo "no debian found supporting the architecture ${{ matrix.architecture }}"
+            exit 1
+          fi
           echo 'cd src/usr/share/opentelemetry_shell/agent.instrumentation.http/ && apt-get update 1>&2 && yes | apt-get install build-essential 1>&2 && gcc -shared -fPIC -o libinjecthttpheader.so agent.injection.http_header.c -ldl 1>&2 && arch' \
            | sudo docker run -i --rm --network host -v "$(pwd)"/src:/home/root/src -w /home/root --platform linux/${{ matrix.architecture }} docker.io/"$(echo ${{ matrix.architecture }} | tr -d /)"/"$image" | xargs -0 -I {} echo 'architecture={}' >> "$GITHUB_OUTPUT"
       - run: |
