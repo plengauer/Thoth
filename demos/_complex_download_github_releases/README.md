@@ -37,6 +37,14 @@ bash -e demo.sh
   xargs seq 1
     seq 1 4
   head --lines=3
+  xargs wget
+    wget https://github.com/plengauer/Thoth/releases/download/v1.13.7/opentelemetry-shell_1.13.7.deb https://github.com/plengauer/Thoth/releases/download/v1.13.6/opentelemetry-shell_1.13.6.deb https://github.com/plengauer/Thoth/releases/download/v1.13.5/opentelemetry-shell_1.13.5.deb
+      GET
+      GET
+      GET
+      GET
+      GET
+      GET
   xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}
     curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=1
       GET
@@ -49,31 +57,23 @@ bash -e demo.sh
   jq .[].assets[].browser_download_url -r
   grep .deb$
   grep _1.
-  xargs wget
-    wget https://github.com/plengauer/Thoth/releases/download/v1.13.7/opentelemetry-shell_1.13.7.deb https://github.com/plengauer/Thoth/releases/download/v1.13.6/opentelemetry-shell_1.13.6.deb https://github.com/plengauer/Thoth/releases/download/v1.13.5/opentelemetry-shell_1.13.5.deb
-      GET
-      GET
-      GET
-      GET
-      GET
-      GET
 ```
 ## Full Trace
 ```
 {
-  "trace_id": "4592b7a8a16cac2f1accb5e50dff4d45",
-  "span_id": "5e35f5aad7106886",
-  "parent_span_id": "871d4da5bae19b2f",
+  "trace_id": "d5f038d8481999b18d3c0fff3b32362f",
+  "span_id": "0cfd67bc2f434d95",
+  "parent_span_id": "f2a47ada257e67fb",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1754949979548740096,
-  "time_end": 1754949980143407104,
+  "time_start": 1755042037685509632,
+  "time_end": 1755042038243553536,
   "attributes": {
     "network.transport": "tcp",
     "network.protocol.name": "https",
     "network.protocol.version": "2",
-    "network.peer.address": "140.82.112.6",
+    "network.peer.address": "140.82.114.5",
     "network.peer.port": 443,
     "server.address": "api.github.com",
     "server.port": 443,
@@ -93,11 +93,11 @@ bash -e demo.sh
       "*/*"
     ],
     "http.request.header.traceparent": [
-      "00-4592b7a8a16cac2f1accb5e50dff4d45-871d4da5bae19b2f-01"
+      "00-d5f038d8481999b18d3c0fff3b32362f-f2a47ada257e67fb-01"
     ],
     "http.response.status_code": 200,
     "http.response.header.date": [
-      "Mon, 11 Aug 2025 22:06:19 GMT"
+      "Tue, 12 Aug 2025 23:40:37 GMT"
     ],
     "http.response.header.content-type": [
       "application/json; charset=utf-8"
@@ -109,7 +109,7 @@ bash -e demo.sh
       "Accept,Accept-Encoding, Accept, X-Requested-With"
     ],
     "http.response.header.etag": [
-      "W/\"05e705439d4fa0d65146c3c99ec05e96503c72d4b53ee9bb12baec8c387cedb3\""
+      "W/\"4390c55e96bbf04b331f06d173d84b851159c6347ebce705689269e5e1dd80c2\""
     ],
     "http.response.header.x-github-media-type": [
       "github.v3; format=json"
@@ -157,7 +157,7 @@ bash -e demo.sh
       "53"
     ],
     "http.response.header.x-ratelimit-reset": [
-      "1754952715"
+      "1755043034"
     ],
     "http.response.header.x-ratelimit-resource": [
       "core"
@@ -166,7 +166,7 @@ bash -e demo.sh
       "7"
     ],
     "http.response.header.x-github-request-id": [
-      "DC00:16F52B:15FDA3A:463D921:689A695B"
+      "9C01:C2A5:193586D:5964A72:689BD0F5"
     ]
   },
   "resource_attributes": {
@@ -176,8 +176,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 5868,
-    "process.parent_pid": 4550,
+    "process.pid": 5872,
+    "process.parent_pid": 4541,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
@@ -195,19 +195,19 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "4592b7a8a16cac2f1accb5e50dff4d45",
-  "span_id": "82f45aa136617ca8",
-  "parent_span_id": "04bc37df356dedbe",
+  "trace_id": "d5f038d8481999b18d3c0fff3b32362f",
+  "span_id": "b0f6b25c1fd65b6b",
+  "parent_span_id": "85409dd31556de70",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1754949980514355968,
-  "time_end": 1754949981004200704,
+  "time_start": 1755042038613050368,
+  "time_end": 1755042039608916992,
   "attributes": {
     "network.transport": "tcp",
     "network.protocol.name": "https",
     "network.protocol.version": "2",
-    "network.peer.address": "140.82.112.6",
+    "network.peer.address": "140.82.114.5",
     "network.peer.port": 443,
     "server.address": "api.github.com",
     "server.port": 443,
@@ -227,11 +227,11 @@ bash -e demo.sh
       "*/*"
     ],
     "http.request.header.traceparent": [
-      "00-4592b7a8a16cac2f1accb5e50dff4d45-04bc37df356dedbe-01"
+      "00-d5f038d8481999b18d3c0fff3b32362f-85409dd31556de70-01"
     ],
     "http.response.status_code": 200,
     "http.response.header.date": [
-      "Mon, 11 Aug 2025 22:06:20 GMT"
+      "Tue, 12 Aug 2025 23:40:39 GMT"
     ],
     "http.response.header.content-type": [
       "application/json; charset=utf-8"
@@ -243,7 +243,7 @@ bash -e demo.sh
       "Accept,Accept-Encoding, Accept, X-Requested-With"
     ],
     "http.response.header.etag": [
-      "W/\"2cbb8ded4a1c766a34dc7e53d9234ee3ecad0017e1a33940c3a11574293b3636\""
+      "W/\"f03f853f3576a682f44b43c12516cf7a5c43b8c473bb251b48478b4e6422ebea\""
     ],
     "http.response.header.x-github-media-type": [
       "github.v3; format=json"
@@ -291,7 +291,7 @@ bash -e demo.sh
       "52"
     ],
     "http.response.header.x-ratelimit-reset": [
-      "1754952715"
+      "1755043034"
     ],
     "http.response.header.x-ratelimit-resource": [
       "core"
@@ -300,7 +300,7 @@ bash -e demo.sh
       "8"
     ],
     "http.response.header.x-github-request-id": [
-      "DC01:2D26F4:1604618:4606A21:689A695C"
+      "9C02:32ABF4:19346A0:595B66C:689BD0F6"
     ]
   },
   "resource_attributes": {
@@ -310,8 +310,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 7316,
-    "process.parent_pid": 4550,
+    "process.pid": 7320,
+    "process.parent_pid": 4541,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
@@ -329,19 +329,19 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "4592b7a8a16cac2f1accb5e50dff4d45",
-  "span_id": "365f1ba8da8b2df0",
-  "parent_span_id": "efeb8d03d6088f49",
+  "trace_id": "d5f038d8481999b18d3c0fff3b32362f",
+  "span_id": "c821d22ccb204fe9",
+  "parent_span_id": "21f8d3db23723b75",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1754949981383280896,
-  "time_end": 1754949982018759680,
+  "time_start": 1755042039974064640,
+  "time_end": 1755042040582475520,
   "attributes": {
     "network.transport": "tcp",
     "network.protocol.name": "https",
     "network.protocol.version": "2",
-    "network.peer.address": "140.82.112.6",
+    "network.peer.address": "140.82.114.5",
     "network.peer.port": 443,
     "server.address": "api.github.com",
     "server.port": 443,
@@ -361,11 +361,11 @@ bash -e demo.sh
       "*/*"
     ],
     "http.request.header.traceparent": [
-      "00-4592b7a8a16cac2f1accb5e50dff4d45-efeb8d03d6088f49-01"
+      "00-d5f038d8481999b18d3c0fff3b32362f-21f8d3db23723b75-01"
     ],
     "http.response.status_code": 200,
     "http.response.header.date": [
-      "Mon, 11 Aug 2025 22:06:21 GMT"
+      "Tue, 12 Aug 2025 23:40:40 GMT"
     ],
     "http.response.header.content-type": [
       "application/json; charset=utf-8"
@@ -377,7 +377,7 @@ bash -e demo.sh
       "Accept,Accept-Encoding, Accept, X-Requested-With"
     ],
     "http.response.header.etag": [
-      "W/\"61d343269858a35cfcf530ce3af1303fb910c7461bbaff5ab0bc380b0bef9a65\""
+      "W/\"bf76a3a34e092979373f612968d152ebdaa05a51e3463b4839596d6bdab43737\""
     ],
     "http.response.header.x-github-media-type": [
       "github.v3; format=json"
@@ -425,7 +425,7 @@ bash -e demo.sh
       "51"
     ],
     "http.response.header.x-ratelimit-reset": [
-      "1754952715"
+      "1755043034"
     ],
     "http.response.header.x-ratelimit-resource": [
       "core"
@@ -434,7 +434,7 @@ bash -e demo.sh
       "9"
     ],
     "http.response.header.x-github-request-id": [
-      "DC02:7CB7:16C8B60:48A9BCD:689A695D"
+      "9C03:14E07C:60F9B:155D81:689BD0F7"
     ]
   },
   "resource_attributes": {
@@ -444,8 +444,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 8209,
-    "process.parent_pid": 4550,
+    "process.pid": 8213,
+    "process.parent_pid": 4541,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
@@ -463,19 +463,19 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "4592b7a8a16cac2f1accb5e50dff4d45",
-  "span_id": "f667b89de2b5f5a9",
-  "parent_span_id": "7ad72f957f3f28f3",
+  "trace_id": "d5f038d8481999b18d3c0fff3b32362f",
+  "span_id": "73ab8520474d2742",
+  "parent_span_id": "21721a594b9dacfe",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1754949982458113280,
-  "time_end": 1754949982917767424,
+  "time_start": 1755042040997305856,
+  "time_end": 1755042041495926528,
   "attributes": {
     "network.transport": "tcp",
     "network.protocol.name": "https",
     "network.protocol.version": "2",
-    "network.peer.address": "140.82.112.6",
+    "network.peer.address": "140.82.114.5",
     "network.peer.port": 443,
     "server.address": "api.github.com",
     "server.port": 443,
@@ -495,11 +495,11 @@ bash -e demo.sh
       "*/*"
     ],
     "http.request.header.traceparent": [
-      "00-4592b7a8a16cac2f1accb5e50dff4d45-7ad72f957f3f28f3-01"
+      "00-d5f038d8481999b18d3c0fff3b32362f-21721a594b9dacfe-01"
     ],
     "http.response.status_code": 200,
     "http.response.header.date": [
-      "Mon, 11 Aug 2025 22:06:22 GMT"
+      "Tue, 12 Aug 2025 23:40:41 GMT"
     ],
     "http.response.header.content-type": [
       "application/json; charset=utf-8"
@@ -511,7 +511,7 @@ bash -e demo.sh
       "Accept,Accept-Encoding, Accept, X-Requested-With"
     ],
     "http.response.header.etag": [
-      "W/\"49e3c46147142f4d451d8514c2eb28237f2f5fb09a50e3e89ac5f5ed4391cd6e\""
+      "W/\"48af49e76aac4b0252dd370b9dcab2b0eb45ef683723aa40348657c828541676\""
     ],
     "http.response.header.x-github-media-type": [
       "github.v3; format=json"
@@ -559,7 +559,7 @@ bash -e demo.sh
       "50"
     ],
     "http.response.header.x-ratelimit-reset": [
-      "1754952715"
+      "1755043034"
     ],
     "http.response.header.x-ratelimit-resource": [
       "core"
@@ -567,12 +567,12 @@ bash -e demo.sh
     "http.response.header.x-ratelimit-used": [
       "10"
     ],
-    "http.response.body.size": 22964,
+    "http.response.body.size": 23216,
     "http.response.header.content-length": [
-      "22964"
+      "23216"
     ],
     "http.response.header.x-github-request-id": [
-      "DC03:35171:167BE95:4810AB6:689A695E"
+      "9C04:821E4:60335:153493:689BD0F8"
     ]
   },
   "resource_attributes": {
@@ -582,8 +582,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 9407,
-    "process.parent_pid": 4550,
+    "process.pid": 9471,
+    "process.parent_pid": 4541,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
@@ -601,18 +601,18 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "4592b7a8a16cac2f1accb5e50dff4d45",
-  "span_id": "b04b9b67ab2bc36a",
-  "parent_span_id": "48d5e751a311ca8c",
+  "trace_id": "d5f038d8481999b18d3c0fff3b32362f",
+  "span_id": "99d93d78c8302b1a",
+  "parent_span_id": "60839fb2f0af0ad5",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1754949982598707200,
-  "time_end": 1754949983620151296,
+  "time_start": 1755042041102470400,
+  "time_end": 1755042041204736000,
   "attributes": {
     "network.protocol.name": "https",
     "network.transport": "tcp",
-    "network.peer.address": "140.82.112.4",
+    "network.peer.address": "140.82.112.3",
     "network.peer.port": 443,
     "server.address": "github.com",
     "server.port": 443,
@@ -630,8 +630,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 8748,
-    "process.parent_pid": 4449,
+    "process.pid": 8684,
+    "process.parent_pid": 4475,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs wget",
@@ -649,24 +649,24 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "4592b7a8a16cac2f1accb5e50dff4d45",
-  "span_id": "4176aa8625a7b9c5",
-  "parent_span_id": "48d5e751a311ca8c",
+  "trace_id": "d5f038d8481999b18d3c0fff3b32362f",
+  "span_id": "41a4b67687a21efa",
+  "parent_span_id": "60839fb2f0af0ad5",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1754949982706188800,
-  "time_end": 1754949983657818112,
+  "time_start": 1755042041197243392,
+  "time_end": 1755042041248580864,
   "attributes": {
     "network.protocol.name": "https",
     "network.transport": "tcp",
-    "network.peer.address": "185.199.109.133",
+    "network.peer.address": "185.199.111.133",
     "network.peer.port": 443,
     "server.address": "release-assets.githubusercontent.com",
     "server.port": 443,
-    "url.full": "https://release-assets.githubusercontent.com/github-production-release-asset/692042935/5544a935-3cf9-4f9b-b6ed-d668fd012e99?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-08-11T22%3A53%3A17Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.7.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-08-11T21%3A52%3A42Z&ske=2025-08-11T22%3A53%3A17Z&sks=b&skv=2018-11-09&sig=AYVjjCUnd3E4mXe6rhPs6QbXdS7kp7P3gNP4s6aV%2FDA%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NDk1MDI4MiwibmJmIjoxNzU0OTQ5OTgyLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.qyczvgxqt9KJ3hpHS--Kz38OYUOjAJQERLwClWbHXRQ&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.7.deb&response-content-type=application%2Foctet-stream",
+    "url.full": "https://release-assets.githubusercontent.com/github-production-release-asset/692042935/5544a935-3cf9-4f9b-b6ed-d668fd012e99?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-08-13T00%3A35%3A48Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.7.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-08-12T23%3A34%3A49Z&ske=2025-08-13T00%3A35%3A48Z&sks=b&skv=2018-11-09&sig=xa5FpGd5Z7NvS6b0rWkAOEahfL0OMLDMn4E4PhKnbKM%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NTA0MjM0MSwibmJmIjoxNzU1MDQyMDQxLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.AEANWL5esw_f2mLFtdmjDuod4PZ2_4OySUX08ZKaYE8&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.7.deb&response-content-type=application%2Foctet-stream",
     "url.path": "/github-production-release-asset/692042935/5544a935-3cf9-4f9b-b6ed-d668fd012e99",
-    "url.query": "sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-08-11T22%3A53%3A17Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.7.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-08-11T21%3A52%3A42Z&ske=2025-08-11T22%3A53%3A17Z&sks=b&skv=2018-11-09&sig=AYVjjCUnd3E4mXe6rhPs6QbXdS7kp7P3gNP4s6aV%2FDA%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NDk1MDI4MiwibmJmIjoxNzU0OTQ5OTgyLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.qyczvgxqt9KJ3hpHS--Kz38OYUOjAJQERLwClWbHXRQ&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.7.deb&response-content-type=application%2Foctet-stream",
+    "url.query": "sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-08-13T00%3A35%3A48Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.7.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-08-12T23%3A34%3A49Z&ske=2025-08-13T00%3A35%3A48Z&sks=b&skv=2018-11-09&sig=xa5FpGd5Z7NvS6b0rWkAOEahfL0OMLDMn4E4PhKnbKM%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NTA0MjM0MSwibmJmIjoxNzU1MDQyMDQxLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.AEANWL5esw_f2mLFtdmjDuod4PZ2_4OySUX08ZKaYE8&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.7.deb&response-content-type=application%2Foctet-stream",
     "url.scheme": "https",
     "user_agent.original": "wget",
     "http.request.method": "GET",
@@ -685,8 +685,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 8748,
-    "process.parent_pid": 4449,
+    "process.pid": 8684,
+    "process.parent_pid": 4475,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs wget",
@@ -704,18 +704,18 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "4592b7a8a16cac2f1accb5e50dff4d45",
-  "span_id": "1e75abb9ec69567e",
-  "parent_span_id": "48d5e751a311ca8c",
+  "trace_id": "d5f038d8481999b18d3c0fff3b32362f",
+  "span_id": "042b624565d4d982",
+  "parent_span_id": "60839fb2f0af0ad5",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1754949983665171200,
-  "time_end": 1754949984687745536,
+  "time_start": 1755042041232804352,
+  "time_end": 1755042041332195072,
   "attributes": {
     "network.protocol.name": "https",
     "network.transport": "tcp",
-    "network.peer.address": "140.82.112.4",
+    "network.peer.address": "140.82.112.3",
     "network.peer.port": 443,
     "server.address": "github.com",
     "server.port": 443,
@@ -733,8 +733,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 8748,
-    "process.parent_pid": 4449,
+    "process.pid": 8684,
+    "process.parent_pid": 4475,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs wget",
@@ -752,24 +752,24 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "4592b7a8a16cac2f1accb5e50dff4d45",
-  "span_id": "a9d817aae86d3ac2",
-  "parent_span_id": "48d5e751a311ca8c",
+  "trace_id": "d5f038d8481999b18d3c0fff3b32362f",
+  "span_id": "85ab2e25c24f28d0",
+  "parent_span_id": "60839fb2f0af0ad5",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1754949983783770368,
-  "time_end": 1754949984723465216,
+  "time_start": 1755042041324769024,
+  "time_end": 1755042041376401664,
   "attributes": {
     "network.protocol.name": "https",
     "network.transport": "tcp",
-    "network.peer.address": "185.199.109.133",
+    "network.peer.address": "185.199.111.133",
     "network.peer.port": 443,
     "server.address": "release-assets.githubusercontent.com",
     "server.port": 443,
-    "url.full": "https://release-assets.githubusercontent.com/github-production-release-asset/692042935/e8091cbc-915a-4ba7-bca7-308817fe26c4?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-08-11T23%3A01%3A22Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.6.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-08-11T22%3A00%3A32Z&ske=2025-08-11T23%3A01%3A22Z&sks=b&skv=2018-11-09&sig=YCayh9M00F3AYqdnpBY5AJ4vWAZmcA4qrSWsecR4rCU%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NDk1MDI4MywibmJmIjoxNzU0OTQ5OTgzLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.fe43cOTzn65p9J8iXG4cTWnb89mZFfdNMGgj0vr9D9M&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.6.deb&response-content-type=application%2Foctet-stream",
+    "url.full": "https://release-assets.githubusercontent.com/github-production-release-asset/692042935/e8091cbc-915a-4ba7-bca7-308817fe26c4?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-08-13T00%3A36%3A47Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.6.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-08-12T23%3A36%3A24Z&ske=2025-08-13T00%3A36%3A47Z&sks=b&skv=2018-11-09&sig=YvB0KVjpx6VaSFfdDjzOGoIspMiCgj0v1%2FAKF51%2FgGM%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NTA0MjM0MSwibmJmIjoxNzU1MDQyMDQxLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.AEANWL5esw_f2mLFtdmjDuod4PZ2_4OySUX08ZKaYE8&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.6.deb&response-content-type=application%2Foctet-stream",
     "url.path": "/github-production-release-asset/692042935/e8091cbc-915a-4ba7-bca7-308817fe26c4",
-    "url.query": "sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-08-11T23%3A01%3A22Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.6.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-08-11T22%3A00%3A32Z&ske=2025-08-11T23%3A01%3A22Z&sks=b&skv=2018-11-09&sig=YCayh9M00F3AYqdnpBY5AJ4vWAZmcA4qrSWsecR4rCU%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NDk1MDI4MywibmJmIjoxNzU0OTQ5OTgzLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.fe43cOTzn65p9J8iXG4cTWnb89mZFfdNMGgj0vr9D9M&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.6.deb&response-content-type=application%2Foctet-stream",
+    "url.query": "sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-08-13T00%3A36%3A47Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.6.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-08-12T23%3A36%3A24Z&ske=2025-08-13T00%3A36%3A47Z&sks=b&skv=2018-11-09&sig=YvB0KVjpx6VaSFfdDjzOGoIspMiCgj0v1%2FAKF51%2FgGM%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NTA0MjM0MSwibmJmIjoxNzU1MDQyMDQxLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.AEANWL5esw_f2mLFtdmjDuod4PZ2_4OySUX08ZKaYE8&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.6.deb&response-content-type=application%2Foctet-stream",
     "url.scheme": "https",
     "user_agent.original": "wget",
     "http.request.method": "GET",
@@ -788,8 +788,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 8748,
-    "process.parent_pid": 4449,
+    "process.pid": 8684,
+    "process.parent_pid": 4475,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs wget",
@@ -807,18 +807,18 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "4592b7a8a16cac2f1accb5e50dff4d45",
-  "span_id": "445c9c84d6b106fb",
-  "parent_span_id": "48d5e751a311ca8c",
+  "trace_id": "d5f038d8481999b18d3c0fff3b32362f",
+  "span_id": "c7f4f2bad7703975",
+  "parent_span_id": "60839fb2f0af0ad5",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1754949984725283584,
-  "time_end": 1754949985753466880,
+  "time_start": 1755042041359707648,
+  "time_end": 1755042041468857344,
   "attributes": {
     "network.protocol.name": "https",
     "network.transport": "tcp",
-    "network.peer.address": "140.82.112.4",
+    "network.peer.address": "140.82.112.3",
     "network.peer.port": 443,
     "server.address": "github.com",
     "server.port": 443,
@@ -836,8 +836,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 8748,
-    "process.parent_pid": 4449,
+    "process.pid": 8684,
+    "process.parent_pid": 4475,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs wget",
@@ -855,24 +855,24 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "4592b7a8a16cac2f1accb5e50dff4d45",
-  "span_id": "c2fc9eec699b47f9",
-  "parent_span_id": "48d5e751a311ca8c",
+  "trace_id": "d5f038d8481999b18d3c0fff3b32362f",
+  "span_id": "0577ca204be2eb4e",
+  "parent_span_id": "60839fb2f0af0ad5",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1754949984841856000,
-  "time_end": 1754949985774050560,
+  "time_start": 1755042041459939840,
+  "time_end": 1755042041492418048,
   "attributes": {
     "network.protocol.name": "https",
     "network.transport": "tcp",
-    "network.peer.address": "185.199.109.133",
+    "network.peer.address": "185.199.111.133",
     "network.peer.port": 443,
     "server.address": "release-assets.githubusercontent.com",
     "server.port": 443,
-    "url.full": "https://release-assets.githubusercontent.com/github-production-release-asset/692042935/25d95ab9-56aa-4a77-8e84-d4947ecef0fc?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-08-11T23%3A01%3A01Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.5.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-08-11T22%3A00%3A23Z&ske=2025-08-11T23%3A01%3A01Z&sks=b&skv=2018-11-09&sig=nZLeJy5w%2Bdv1Yor0vtop4p4dZZHUpgXBBFpAizZ4FAM%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NDk1MDI4NCwibmJmIjoxNzU0OTQ5OTg0LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.MW6GS3Gp5Z0dvDdDPY1B4vWbIPPzTQh8h4HFsx7SBzI&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.5.deb&response-content-type=application%2Foctet-stream",
+    "url.full": "https://release-assets.githubusercontent.com/github-production-release-asset/692042935/25d95ab9-56aa-4a77-8e84-d4947ecef0fc?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-08-13T00%3A37%3A17Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.5.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-08-12T23%3A36%3A48Z&ske=2025-08-13T00%3A37%3A17Z&sks=b&skv=2018-11-09&sig=eD51seUlRbFmId2dO%2FhL6NsYWi8kG0FMiCLotaclKD0%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NTA0MjM0MSwibmJmIjoxNzU1MDQyMDQxLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.AEANWL5esw_f2mLFtdmjDuod4PZ2_4OySUX08ZKaYE8&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.5.deb&response-content-type=application%2Foctet-stream",
     "url.path": "/github-production-release-asset/692042935/25d95ab9-56aa-4a77-8e84-d4947ecef0fc",
-    "url.query": "sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-08-11T23%3A01%3A01Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.5.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-08-11T22%3A00%3A23Z&ske=2025-08-11T23%3A01%3A01Z&sks=b&skv=2018-11-09&sig=nZLeJy5w%2Bdv1Yor0vtop4p4dZZHUpgXBBFpAizZ4FAM%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NDk1MDI4NCwibmJmIjoxNzU0OTQ5OTg0LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.MW6GS3Gp5Z0dvDdDPY1B4vWbIPPzTQh8h4HFsx7SBzI&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.5.deb&response-content-type=application%2Foctet-stream",
+    "url.query": "sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-08-13T00%3A37%3A17Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.5.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-08-12T23%3A36%3A48Z&ske=2025-08-13T00%3A37%3A17Z&sks=b&skv=2018-11-09&sig=eD51seUlRbFmId2dO%2FhL6NsYWi8kG0FMiCLotaclKD0%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NTA0MjM0MSwibmJmIjoxNzU1MDQyMDQxLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.AEANWL5esw_f2mLFtdmjDuod4PZ2_4OySUX08ZKaYE8&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.5.deb&response-content-type=application%2Foctet-stream",
     "url.scheme": "https",
     "user_agent.original": "wget",
     "http.request.method": "GET",
@@ -891,8 +891,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 8748,
-    "process.parent_pid": 4449,
+    "process.pid": 8684,
+    "process.parent_pid": 4475,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs wget",
@@ -910,14 +910,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "4592b7a8a16cac2f1accb5e50dff4d45",
-  "span_id": "a9adf7650e6fbc05",
-  "parent_span_id": "058000e55ca6c2c0",
+  "trace_id": "d5f038d8481999b18d3c0fff3b32362f",
+  "span_id": "b17c1aa902955b5e",
+  "parent_span_id": "a30290a78d6bbff5",
   "name": "HEAD",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1754949974800770560,
-  "time_end": 1754949978163384576,
+  "time_start": 1755042032937241344,
+  "time_end": 1755042036310005760,
   "attributes": {
     "network.transport": "tcp",
     "network.peer.port": 443,
@@ -943,7 +943,7 @@ bash -e demo.sh
     ],
     "http.response.status_code": 200,
     "http.response.header.date": [
-      "Mon, 11 Aug 2025 22:06:15 GMT"
+      "Tue, 12 Aug 2025 23:40:33 GMT"
     ],
     "http.response.header.content-type": [
       "application/json; charset=utf-8"
@@ -955,7 +955,7 @@ bash -e demo.sh
       "Accept,Accept-Encoding, Accept, X-Requested-With"
     ],
     "http.response.header.etag": [
-      "W/\"6208302d1d7688d1588155cfc532fcfc4a2ae40d1bf0520aadd84313aaf959b3\""
+      "W/\"4d271146629c9778e49ad4ee60acd132409d1ec93b63127d89b4446565c8f6ff\""
     ],
     "http.response.header.x-github-media-type": [
       "github.v3; format=json"
@@ -1000,19 +1000,19 @@ bash -e demo.sh
       "60"
     ],
     "http.response.header.x-ratelimit-remaining": [
-      "57"
+      "54"
     ],
     "http.response.header.x-ratelimit-reset": [
-      "1754951867"
+      "1755043034"
     ],
     "http.response.header.x-ratelimit-resource": [
       "core"
     ],
     "http.response.header.x-ratelimit-used": [
-      "3"
+      "6"
     ],
     "http.response.header.x-github-request-id": [
-      "DC00:2ACE43:1567978:4449944:689A6956"
+      "9C00:9F1CF:18EF4D6:5883F72:689BD0F0"
     ],
     "http.response.header.connection": [
       "close"
@@ -1026,8 +1026,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3093,
-    "process.parent_pid": 2352,
+    "process.pid": 3097,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1045,14 +1045,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "4592b7a8a16cac2f1accb5e50dff4d45",
-  "span_id": "3621f2955521406c",
+  "trace_id": "d5f038d8481999b18d3c0fff3b32362f",
+  "span_id": "72d10e4529ba9322",
   "parent_span_id": null,
   "name": "bash -e demo.sh",
   "kind": "SERVER",
   "status": "UNSET",
-  "time_start": 1754949974450134528,
-  "time_end": 1754949985817684736,
+  "time_start": 1755042032587292160,
+  "time_end": 1755042041547259392,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -1061,8 +1061,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3093,
-    "process.parent_pid": 2352,
+    "process.pid": 3097,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1080,14 +1080,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "4592b7a8a16cac2f1accb5e50dff4d45",
-  "span_id": "871d4da5bae19b2f",
-  "parent_span_id": "fa9caa2a1e9296b0",
+  "trace_id": "d5f038d8481999b18d3c0fff3b32362f",
+  "span_id": "f2a47ada257e67fb",
+  "parent_span_id": "f30718c3c97a23e6",
   "name": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=1",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754949979458211584,
-  "time_end": 1754949980147149568,
+  "time_start": 1755042037607167232,
+  "time_end": 1755042038247257344,
   "attributes": {
     "shell.command_line": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=1",
     "shell.command": "curl",
@@ -1107,8 +1107,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 5868,
-    "process.parent_pid": 4550,
+    "process.pid": 5872,
+    "process.parent_pid": 4541,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
@@ -1126,14 +1126,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "4592b7a8a16cac2f1accb5e50dff4d45",
-  "span_id": "04bc37df356dedbe",
-  "parent_span_id": "fa9caa2a1e9296b0",
+  "trace_id": "d5f038d8481999b18d3c0fff3b32362f",
+  "span_id": "85409dd31556de70",
+  "parent_span_id": "f30718c3c97a23e6",
   "name": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=2",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754949980425080064,
-  "time_end": 1754949981007843072,
+  "time_start": 1755042038537695488,
+  "time_end": 1755042039612559360,
   "attributes": {
     "shell.command_line": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=2",
     "shell.command": "curl",
@@ -1153,8 +1153,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 7316,
-    "process.parent_pid": 4550,
+    "process.pid": 7320,
+    "process.parent_pid": 4541,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
@@ -1172,14 +1172,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "4592b7a8a16cac2f1accb5e50dff4d45",
-  "span_id": "efeb8d03d6088f49",
-  "parent_span_id": "fa9caa2a1e9296b0",
+  "trace_id": "d5f038d8481999b18d3c0fff3b32362f",
+  "span_id": "21f8d3db23723b75",
+  "parent_span_id": "f30718c3c97a23e6",
   "name": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=3",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754949981287605504,
-  "time_end": 1754949982022896896,
+  "time_start": 1755042039894792192,
+  "time_end": 1755042040586575616,
   "attributes": {
     "shell.command_line": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=3",
     "shell.command": "curl",
@@ -1199,8 +1199,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 8209,
-    "process.parent_pid": 4550,
+    "process.pid": 8213,
+    "process.parent_pid": 4541,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
@@ -1218,14 +1218,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "4592b7a8a16cac2f1accb5e50dff4d45",
-  "span_id": "7ad72f957f3f28f3",
-  "parent_span_id": "fa9caa2a1e9296b0",
+  "trace_id": "d5f038d8481999b18d3c0fff3b32362f",
+  "span_id": "21721a594b9dacfe",
+  "parent_span_id": "f30718c3c97a23e6",
   "name": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=4",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754949982363020800,
-  "time_end": 1754949982921303552,
+  "time_start": 1755042040913290496,
+  "time_end": 1755042041500447744,
   "attributes": {
     "shell.command_line": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=4",
     "shell.command": "curl",
@@ -1245,8 +1245,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 9407,
-    "process.parent_pid": 4550,
+    "process.pid": 9471,
+    "process.parent_pid": 4541,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
@@ -1264,14 +1264,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "4592b7a8a16cac2f1accb5e50dff4d45",
-  "span_id": "47d116f151673f14",
-  "parent_span_id": "3621f2955521406c",
+  "trace_id": "d5f038d8481999b18d3c0fff3b32362f",
+  "span_id": "1cac924005fc0ad3",
+  "parent_span_id": "72d10e4529ba9322",
   "name": "cut -d   -f 2-",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754949974484810752,
-  "time_end": 1754949978175945984,
+  "time_start": 1755042032631934208,
+  "time_end": 1755042036322056960,
   "attributes": {
     "shell.command_line": "cut -d   -f 2-",
     "shell.command": "cut",
@@ -1290,8 +1290,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3093,
-    "process.parent_pid": 2352,
+    "process.pid": 3097,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1309,14 +1309,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "4592b7a8a16cac2f1accb5e50dff4d45",
-  "span_id": "7e605b88f65465fa",
-  "parent_span_id": "3621f2955521406c",
+  "trace_id": "d5f038d8481999b18d3c0fff3b32362f",
+  "span_id": "4482104341363e4f",
+  "parent_span_id": "72d10e4529ba9322",
   "name": "cut -d ; -f1",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754949974485252608,
-  "time_end": 1754949978185938944,
+  "time_start": 1755042032631805184,
+  "time_end": 1755042036331630592,
   "attributes": {
     "shell.command_line": "cut -d ; -f1",
     "shell.command": "cut",
@@ -1335,8 +1335,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3093,
-    "process.parent_pid": 2352,
+    "process.pid": 3097,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1354,14 +1354,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "4592b7a8a16cac2f1accb5e50dff4d45",
-  "span_id": "f1242999f266e66b",
-  "parent_span_id": "3621f2955521406c",
+  "trace_id": "d5f038d8481999b18d3c0fff3b32362f",
+  "span_id": "4486303782619cf6",
+  "parent_span_id": "72d10e4529ba9322",
   "name": "cut -d = -f 2",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754949974496686080,
-  "time_end": 1754949978195488768,
+  "time_start": 1755042032639461632,
+  "time_end": 1755042036341133568,
   "attributes": {
     "shell.command_line": "cut -d = -f 2",
     "shell.command": "cut",
@@ -1380,8 +1380,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3093,
-    "process.parent_pid": 2352,
+    "process.pid": 3097,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1399,14 +1399,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "4592b7a8a16cac2f1accb5e50dff4d45",
-  "span_id": "314605b2ccd45b95",
-  "parent_span_id": "3621f2955521406c",
+  "trace_id": "d5f038d8481999b18d3c0fff3b32362f",
+  "span_id": "1f925b78e9273bd4",
+  "parent_span_id": "72d10e4529ba9322",
   "name": "cut -d ? -f 2-",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754949974488079616,
-  "time_end": 1754949978188328448,
+  "time_start": 1755042032639039744,
+  "time_end": 1755042036333968640,
   "attributes": {
     "shell.command_line": "cut -d ? -f 2-",
     "shell.command": "cut",
@@ -1425,8 +1425,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3093,
-    "process.parent_pid": 2352,
+    "process.pid": 3097,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1444,14 +1444,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "4592b7a8a16cac2f1accb5e50dff4d45",
-  "span_id": "38c6bcf49b9bd889",
-  "parent_span_id": "3621f2955521406c",
+  "trace_id": "d5f038d8481999b18d3c0fff3b32362f",
+  "span_id": "6bce92a4baa9b390",
+  "parent_span_id": "72d10e4529ba9322",
   "name": "grep .deb$",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754949974496523008,
-  "time_end": 1754949982963076608,
+  "time_start": 1755042032632148224,
+  "time_end": 1755042041543486720,
   "attributes": {
     "shell.command_line": "grep .deb$",
     "shell.command": "grep",
@@ -1470,8 +1470,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3093,
-    "process.parent_pid": 2352,
+    "process.pid": 3097,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1489,14 +1489,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "4592b7a8a16cac2f1accb5e50dff4d45",
-  "span_id": "973fd0719f7ea56f",
-  "parent_span_id": "3621f2955521406c",
+  "trace_id": "d5f038d8481999b18d3c0fff3b32362f",
+  "span_id": "ceb51cbf538e3b07",
+  "parent_span_id": "72d10e4529ba9322",
   "name": "grep ^link:",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754949974485124864,
-  "time_end": 1754949978173459968,
+  "time_start": 1755042032610079744,
+  "time_end": 1755042036319755264,
   "attributes": {
     "shell.command_line": "grep ^link:",
     "shell.command": "grep",
@@ -1515,8 +1515,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3093,
-    "process.parent_pid": 2352,
+    "process.pid": 3097,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1534,14 +1534,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "4592b7a8a16cac2f1accb5e50dff4d45",
-  "span_id": "7a5c234618439554",
-  "parent_span_id": "3621f2955521406c",
+  "trace_id": "d5f038d8481999b18d3c0fff3b32362f",
+  "span_id": "2f162478e86af39c",
+  "parent_span_id": "72d10e4529ba9322",
   "name": "grep ^page=",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754949974501696768,
-  "time_end": 1754949978193146624,
+  "time_start": 1755042032639606272,
+  "time_end": 1755042036338686208,
   "attributes": {
     "shell.command_line": "grep ^page=",
     "shell.command": "grep",
@@ -1560,8 +1560,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3093,
-    "process.parent_pid": 2352,
+    "process.pid": 3097,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1579,14 +1579,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "4592b7a8a16cac2f1accb5e50dff4d45",
-  "span_id": "8322a0f58967eda6",
-  "parent_span_id": "3621f2955521406c",
+  "trace_id": "d5f038d8481999b18d3c0fff3b32362f",
+  "span_id": "8ff33ad3c8e88b46",
+  "parent_span_id": "72d10e4529ba9322",
   "name": "grep _1.",
   "kind": "INTERNAL",
   "status": "ERROR",
-  "time_start": 1754949974494216448,
-  "time_end": 1754949982966191616,
+  "time_start": 1755042032632463360,
+  "time_end": 1755042041546663936,
   "attributes": {
     "shell.command_line": "grep _1.",
     "shell.command": "grep",
@@ -1605,8 +1605,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3093,
-    "process.parent_pid": 2352,
+    "process.pid": 3097,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1624,14 +1624,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "4592b7a8a16cac2f1accb5e50dff4d45",
-  "span_id": "0e1806bf939c4490",
-  "parent_span_id": "3621f2955521406c",
+  "trace_id": "d5f038d8481999b18d3c0fff3b32362f",
+  "span_id": "24a9dbaea30ea2eb",
+  "parent_span_id": "72d10e4529ba9322",
   "name": "grep rel=\"last\"",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754949974491063040,
-  "time_end": 1754949978183471616,
+  "time_start": 1755042032625693440,
+  "time_end": 1755042036329240064,
   "attributes": {
     "shell.command_line": "grep rel=\"last\"",
     "shell.command": "grep",
@@ -1650,8 +1650,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3093,
-    "process.parent_pid": 2352,
+    "process.pid": 3097,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1669,14 +1669,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "4592b7a8a16cac2f1accb5e50dff4d45",
-  "span_id": "065b89d1f6b56ca5",
-  "parent_span_id": "3621f2955521406c",
+  "trace_id": "d5f038d8481999b18d3c0fff3b32362f",
+  "span_id": "5af8ca64a23797bb",
+  "parent_span_id": "72d10e4529ba9322",
   "name": "head --lines=3",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754949974494352640,
-  "time_end": 1754949981772322304,
+  "time_start": 1755042032639298304,
+  "time_end": 1755042040289624320,
   "attributes": {
     "shell.command_line": "head --lines=3",
     "shell.command": "head",
@@ -1695,8 +1695,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3093,
-    "process.parent_pid": 2352,
+    "process.pid": 3097,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1714,14 +1714,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "4592b7a8a16cac2f1accb5e50dff4d45",
-  "span_id": "975fde3a9936c206",
-  "parent_span_id": "3621f2955521406c",
+  "trace_id": "d5f038d8481999b18d3c0fff3b32362f",
+  "span_id": "eeb13e1097ad1f31",
+  "parent_span_id": "72d10e4529ba9322",
   "name": "jq .[].assets[].browser_download_url -r",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754949974496827136,
-  "time_end": 1754949982960657920,
+  "time_start": 1755042032618496000,
+  "time_end": 1755042041541076224,
   "attributes": {
     "shell.command_line": "jq .[].assets[].browser_download_url -r",
     "shell.command": "jq",
@@ -1740,8 +1740,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3093,
-    "process.parent_pid": 2352,
+    "process.pid": 3097,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1759,14 +1759,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "4592b7a8a16cac2f1accb5e50dff4d45",
-  "span_id": "adf68985d5ee87ef",
-  "parent_span_id": "3621f2955521406c",
+  "trace_id": "d5f038d8481999b18d3c0fff3b32362f",
+  "span_id": "825f344f9a323b51",
+  "parent_span_id": "72d10e4529ba9322",
   "name": "ncat --ssl -i 3 --no-shutdown api.github.com 443",
   "kind": "INTERNAL",
   "status": "ERROR",
-  "time_start": 1754949974468630784,
-  "time_end": 1754949978168398848,
+  "time_start": 1755042032622995200,
+  "time_end": 1755042036314821376,
   "attributes": {
     "shell.command_line": "ncat --ssl -i 3 --no-shutdown api.github.com 443",
     "shell.command": "ncat",
@@ -1785,8 +1785,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3093,
-    "process.parent_pid": 2352,
+    "process.pid": 3097,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1804,14 +1804,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "4592b7a8a16cac2f1accb5e50dff4d45",
-  "span_id": "20f80d12108a318f",
-  "parent_span_id": "3621f2955521406c",
+  "trace_id": "d5f038d8481999b18d3c0fff3b32362f",
+  "span_id": "fa916c437748a3c2",
+  "parent_span_id": "72d10e4529ba9322",
   "name": "printf HEAD /repos/plengauer/Thoth/releases?per_page=100 HTTP/1.1\\r\\nConnection: close\\r\\nUser-Agent: ncat\\r\\nHost: api.github.com\\r\\n\\r\\n",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754949974476385792,
-  "time_end": 1754949974587944192,
+  "time_start": 1755042032605219840,
+  "time_end": 1755042032710271232,
   "attributes": {
     "shell.command_line": "printf HEAD /repos/plengauer/Thoth/releases?per_page=100 HTTP/1.1\\r\\nConnection: close\\r\\nUser-Agent: ncat\\r\\nHost: api.github.com\\r\\n\\r\\n",
     "shell.command": "printf",
@@ -1828,8 +1828,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3093,
-    "process.parent_pid": 2352,
+    "process.pid": 3097,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1847,14 +1847,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "4592b7a8a16cac2f1accb5e50dff4d45",
-  "span_id": "058000e55ca6c2c0",
-  "parent_span_id": "adf68985d5ee87ef",
+  "trace_id": "d5f038d8481999b18d3c0fff3b32362f",
+  "span_id": "a30290a78d6bbff5",
+  "parent_span_id": "825f344f9a323b51",
   "name": "send/receive",
   "kind": "PRODUCER",
   "status": "UNSET",
-  "time_start": 1754949974601341696,
-  "time_end": 1754949978163923456,
+  "time_start": 1755042032741856768,
+  "time_end": 1755042036310543104,
   "attributes": {
     "network.transport": "tcp",
     "network.peer.port": 443,
@@ -1868,8 +1868,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3093,
-    "process.parent_pid": 2352,
+    "process.pid": 3097,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1887,14 +1887,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "4592b7a8a16cac2f1accb5e50dff4d45",
-  "span_id": "6fa1c60fb2e127dc",
-  "parent_span_id": "c7f5063df88b25c1",
+  "trace_id": "d5f038d8481999b18d3c0fff3b32362f",
+  "span_id": "0e1fea866d345f9e",
+  "parent_span_id": "7604852b81ef4a1d",
   "name": "seq 1 4",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754949978812954112,
-  "time_end": 1754949978830545152,
+  "time_start": 1755042036948548608,
+  "time_end": 1755042036965707520,
   "attributes": {
     "shell.command_line": "seq 1 4",
     "shell.command": "seq",
@@ -1914,8 +1914,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 5237,
-    "process.parent_pid": 4493,
+    "process.pid": 5241,
+    "process.parent_pid": 4470,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs seq 1",
@@ -1933,14 +1933,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "4592b7a8a16cac2f1accb5e50dff4d45",
-  "span_id": "201ce1d6794fad03",
-  "parent_span_id": "3621f2955521406c",
+  "trace_id": "d5f038d8481999b18d3c0fff3b32362f",
+  "span_id": "6cde6fdc1e7216d5",
+  "parent_span_id": "72d10e4529ba9322",
   "name": "tr & \\n",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754949974485433088,
-  "time_end": 1754949978190772224,
+  "time_start": 1755042032639163136,
+  "time_end": 1755042036336301056,
   "attributes": {
     "shell.command_line": "tr & \\n",
     "shell.command": "tr",
@@ -1959,8 +1959,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3093,
-    "process.parent_pid": 2352,
+    "process.pid": 3097,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1978,14 +1978,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "4592b7a8a16cac2f1accb5e50dff4d45",
-  "span_id": "9a05bb49c479f770",
-  "parent_span_id": "3621f2955521406c",
+  "trace_id": "d5f038d8481999b18d3c0fff3b32362f",
+  "span_id": "6320ee40dfdb0f81",
+  "parent_span_id": "72d10e4529ba9322",
   "name": "tr , \\n",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754949974487950336,
-  "time_end": 1754949978180941824,
+  "time_start": 1755042032625561344,
+  "time_end": 1755042036326820608,
   "attributes": {
     "shell.command_line": "tr , \\n",
     "shell.command": "tr",
@@ -2004,8 +2004,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3093,
-    "process.parent_pid": 2352,
+    "process.pid": 3097,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2023,14 +2023,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "4592b7a8a16cac2f1accb5e50dff4d45",
-  "span_id": "d3b2cdcf6349c944",
-  "parent_span_id": "3621f2955521406c",
+  "trace_id": "d5f038d8481999b18d3c0fff3b32362f",
+  "span_id": "5b33ec5309de124c",
+  "parent_span_id": "72d10e4529ba9322",
   "name": "tr -d  <>",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754949974490920704,
-  "time_end": 1754949978178479360,
+  "time_start": 1755042032638890496,
+  "time_end": 1755042036324519680,
   "attributes": {
     "shell.command_line": "tr -d  <>",
     "shell.command": "tr",
@@ -2049,8 +2049,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3093,
-    "process.parent_pid": 2352,
+    "process.pid": 3097,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2068,14 +2068,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "4592b7a8a16cac2f1accb5e50dff4d45",
-  "span_id": "7202ce154a43f326",
-  "parent_span_id": "3621f2955521406c",
+  "trace_id": "d5f038d8481999b18d3c0fff3b32362f",
+  "span_id": "9c56a629b63cede4",
+  "parent_span_id": "72d10e4529ba9322",
   "name": "tr [:upper:] [:lower:]",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754949974484978688,
-  "time_end": 1754949978171019776,
+  "time_start": 1755042032614003712,
+  "time_end": 1755042036317306112,
   "attributes": {
     "shell.command_line": "tr [:upper:] [:lower:]",
     "shell.command": "tr",
@@ -2094,8 +2094,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3093,
-    "process.parent_pid": 2352,
+    "process.pid": 3097,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2113,14 +2113,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "4592b7a8a16cac2f1accb5e50dff4d45",
-  "span_id": "48d5e751a311ca8c",
-  "parent_span_id": "14753ce009be2914",
+  "trace_id": "d5f038d8481999b18d3c0fff3b32362f",
+  "span_id": "60839fb2f0af0ad5",
+  "parent_span_id": "cd59f7fc2b7f0543",
   "name": "wget https://github.com/plengauer/Thoth/releases/download/v1.13.7/opentelemetry-shell_1.13.7.deb https://github.com/plengauer/Thoth/releases/download/v1.13.6/opentelemetry-shell_1.13.6.deb https://github.com/plengauer/Thoth/releases/download/v1.13.5/opentelemetry-shell_1.13.5.deb",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754949982492362496,
-  "time_end": 1754949985779248640,
+  "time_start": 1755042041008833536,
+  "time_end": 1755042041499042816,
   "attributes": {
     "shell.command_line": "wget https://github.com/plengauer/Thoth/releases/download/v1.13.7/opentelemetry-shell_1.13.7.deb https://github.com/plengauer/Thoth/releases/download/v1.13.6/opentelemetry-shell_1.13.6.deb https://github.com/plengauer/Thoth/releases/download/v1.13.5/opentelemetry-shell_1.13.5.deb",
     "shell.command": "wget",
@@ -2140,8 +2140,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 8748,
-    "process.parent_pid": 4449,
+    "process.pid": 8684,
+    "process.parent_pid": 4475,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs wget",
@@ -2159,14 +2159,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "4592b7a8a16cac2f1accb5e50dff4d45",
-  "span_id": "fa9caa2a1e9296b0",
-  "parent_span_id": "3621f2955521406c",
+  "trace_id": "d5f038d8481999b18d3c0fff3b32362f",
+  "span_id": "f30718c3c97a23e6",
+  "parent_span_id": "72d10e4529ba9322",
   "name": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754949974507632128,
-  "time_end": 1754949982957839360,
+  "time_start": 1755042032639715840,
+  "time_end": 1755042041538419968,
   "attributes": {
     "shell.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
     "shell.command": "xargs",
@@ -2185,8 +2185,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3093,
-    "process.parent_pid": 2352,
+    "process.pid": 3097,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2204,14 +2204,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "4592b7a8a16cac2f1accb5e50dff4d45",
-  "span_id": "c7f5063df88b25c1",
-  "parent_span_id": "3621f2955521406c",
+  "trace_id": "d5f038d8481999b18d3c0fff3b32362f",
+  "span_id": "7604852b81ef4a1d",
+  "parent_span_id": "72d10e4529ba9322",
   "name": "xargs seq 1",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754949974507466752,
-  "time_end": 1754949978875493632,
+  "time_start": 1755042032625415424,
+  "time_end": 1755042037010811136,
   "attributes": {
     "shell.command_line": "xargs seq 1",
     "shell.command": "xargs",
@@ -2230,8 +2230,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3093,
-    "process.parent_pid": 2352,
+    "process.pid": 3097,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2249,14 +2249,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "4592b7a8a16cac2f1accb5e50dff4d45",
-  "span_id": "14753ce009be2914",
-  "parent_span_id": "3621f2955521406c",
+  "trace_id": "d5f038d8481999b18d3c0fff3b32362f",
+  "span_id": "cd59f7fc2b7f0543",
+  "parent_span_id": "72d10e4529ba9322",
   "name": "xargs wget",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754949974501885440,
-  "time_end": 1754949985817010944,
+  "time_start": 1755042032632594688,
+  "time_end": 1755042041538393344,
   "attributes": {
     "shell.command_line": "xargs wget",
     "shell.command": "xargs",
@@ -2275,8 +2275,8 @@ bash -e demo.sh
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3093,
-    "process.parent_pid": 2352,
+    "process.pid": 3097,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
