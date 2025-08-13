@@ -296,7 +296,7 @@ done | sed 's/\t/ /g' | while read -r TRACEPARENT job_id step_number step_conclu
   otel_span_attribute_typed "$step_span_handle" string github.actions.action.phase="${action_phase:-}"
   otel_span_attribute_typed "$step_span_handle" string github.actions.step.conclusion="$step_conclusion"
   otel_span_activate "$step_span_handle"
-  { read_log_file "$step_log_file" || [ "$step_conclusion" = skipped ] || echo "::warning ::Cannot resolve log for job $job_name step $step_number, log file is missing." >&2 } | while read -r line; do
+  { read_log_file "$step_log_file" || [ "$step_conclusion" = skipped ] || echo "::warning ::Cannot resolve log for job $job_name step $step_number, log file is missing." >&2; } | while read -r line; do
     timestamp="${line%% *}"
     if ! [[ "$timestamp" =~ ^[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]\.[0-9]{7}Z$ ]]; then continue; fi
     line="${line#* }"
