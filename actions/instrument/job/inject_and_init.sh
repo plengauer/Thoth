@@ -23,6 +23,7 @@ echo "log_file=$log_file" >> "$GITHUB_STATE"
 
 # install dependencies
 . ../shared/github.sh
+. ../shared/id_printer.sh
 . ../shared/install.sh
 
 # configure collector if required
@@ -355,4 +356,4 @@ export TRACEPARENT="$(cat "$traceparent_file")"
 rm "$traceparent_file"
 printenv | grep -E '^OTEL_|^TRACEPARENT=|^TRACESTATE=' >> "$GITHUB_ENV"
 
-echo ::notice::"Trace ID: $(echo "$TRACEPARENT" | cut -d - -f 2), Span ID: $(echo "$TRACEPARENT" | cut -d - -f 3)"
+echo ::notice::"Trace ID: $(print_trace_id), Span ID: $(print_span_id)"
