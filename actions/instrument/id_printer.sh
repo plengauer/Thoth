@@ -1,16 +1,18 @@
 #!/bin/false
 
 print_trace_id() {
+  local trace_id="$(echo "$TRACEPARENT" | cut -d - -f 2)"
   case "${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT:-http://localhost:4318}}" in
-    *dynatrace*) echo "<a href=\"$(print_dynatrace_link)\">$(echo "$TRACEPARENT" | cut -d - -f 2)</a>";;
-    *) echo "$TRACEPARENT" | cut -d - -f 2;;
+    *dynatrace*) echo "[$trade_id]($(print_dynatrace_link))";;
+    *) echo "$trace_id";;
   esac
 }
 
 print_span_id() {
+  local span_id="$("$TRACEPARENT" | cut -d - -f 3)"
   case "${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT:-http://localhost:4318}}" in
-    *dynatrace*) echo "<a href=\"$(print_dynatrace_link)\">$(echo "$TRACEPARENT" | cut -d - -f 3)</a>";;
-    *) echo "$TRACEPARENT" | cut -d - -f 3;;
+    *dynatrace*) echo "[$span_id]($(print_dynatrace_link))";;
+    *) echo "$span_id";;
   esac
 }
 
