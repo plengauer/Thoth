@@ -20,7 +20,7 @@ jobs:
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v4.3.0
       - run: |
           python3 -m venv venv
           . venv/bin/activate
@@ -36,7 +36,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v4.3.0
       - run: sudo apt-get update && sudo apt-get -y install apt-file
       - run: sudo apt-file update
       - run: |
@@ -68,7 +68,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v4.3.0
       - if: ${{ matrix.architecture != 'amd64' }}
         uses: docker/setup-qemu-action@v3.6.0
       - id: build
@@ -120,7 +120,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v4.3.0
       - run: cd src/usr/share/opentelemetry_shell/agent.instrumentation.node && npm install
       - id: dynamic
         run: |
@@ -139,7 +139,7 @@ jobs:
       - uses: actions/setup-node@v4.4.0
         with:
           node-version: ${{ matrix.version }}
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v4.3.0
       - run: |
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.node
           npm install
@@ -178,7 +178,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v4.3.0
       - run: |
           python3 -m venv venv
           . venv/bin/activate
@@ -201,7 +201,7 @@ jobs:
       - uses: actions/setup-python@v5.6.0
         with:
           python-version: ${{ matrix.version }}
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v4.3.0
       - run: |
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.python
           python3 -m venv venv
@@ -250,7 +250,7 @@ jobs:
   build-java-agents:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v4.3.0
       - uses: actions/setup-java@v4.7.1
         with:
           java-version: 8
@@ -312,7 +312,7 @@ jobs:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
       - run: sudo apt-get update && sudo apt-get install devscripts debhelper alien
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v4.3.0
       - run: |
           {
             find src -iname 'Dockerfile' -type f

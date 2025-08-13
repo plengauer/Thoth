@@ -37,7 +37,7 @@ jobs:
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v4.3.0
       - run: echo "version=$(cat VERSION)" >> "$GITHUB_OUTPUT"
         id: version
       - uses: actions/download-artifact@v5.0.0

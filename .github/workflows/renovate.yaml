@@ -28,7 +28,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v4.3.0
       - run: |
           python3 -m venv venv
           . venv/bin/activate
@@ -62,7 +62,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v4.3.0
       - run: |
           curl -s https://api.launchpad.net/devel/debian/series > /tmp/launchpad.debian.json
           oldest="debian:$(jq < /tmp/launchpad.debian.json '.entries[] | select(.active == true) | select(.status == "Supported") | .name' -r | head -n 2 | tail -n 1)"
