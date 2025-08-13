@@ -11,7 +11,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v5.0.0
       - uses: actions/download-artifact@v5.0.0
         with:
           name: packages
@@ -29,7 +29,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v5.0.0
       - uses: actions/download-artifact@v5.0.0
         with:
           name: packages
@@ -50,7 +50,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v5.0.0
       - uses: actions/download-artifact@v5.0.0
         with:
           name: packages
@@ -89,7 +89,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v5.0.0
       - uses: actions/download-artifact@v5.0.0
         with:
           name: packages
@@ -115,7 +115,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v5.0.0
       - uses: actions/download-artifact@v5.0.0
         with:
           name: packages
@@ -136,7 +136,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v5.0.0
       - uses: actions/download-artifact@v5.0.0
         with:
           name: packages
@@ -178,7 +178,7 @@ jobs:
     outputs:
       foo: ${{ steps.my-step.outputs.foo }}
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v5.0.0
       - uses: actions/download-artifact@v5.0.0
         with:
           name: packages
@@ -198,7 +198,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v5.0.0
       - uses: actions/download-artifact@v5.0.0
         with:
           name: packages
@@ -220,7 +220,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v5.0.0
       - uses: actions/download-artifact@v5.0.0
         with:
           name: packages
@@ -239,7 +239,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v5.0.0
       - uses: actions/download-artifact@v5.0.0
         with:
           name: packages
@@ -280,7 +280,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/download-artifact@v5
         with:
           name: packages
@@ -327,7 +327,7 @@ jobs:
       security-events: none
       statuses: none
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v5.0.0
       - uses: actions/download-artifact@v5.0.0
         with:
           name: packages
@@ -349,7 +349,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v5.0.0
       - uses: actions/download-artifact@v5.0.0
         with:
           name: packages
@@ -373,7 +373,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v5.0.0
       - uses: ./actions/instrument/job
       - run: echo hello world
   job-macos:
@@ -384,7 +384,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v5.0.0
       - uses: ./actions/instrument/job
       - run: echo hello world
   workflow-smoke:
@@ -394,7 +394,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v5.0.0
       - uses: actions/download-artifact@v5.0.0
         with:
           name: packages
@@ -435,7 +435,7 @@ jobs:
     steps:
       - id: filename
         run: echo "otlp=$(mktemp)" >> "$GITHUB_OUTPUT"
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v5.0.0
       - uses: actions/download-artifact@v5.0.0
         with:
           name: packages
@@ -484,7 +484,7 @@ jobs:
     permissions:
       actions: read
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v5.0.0
       - uses: ./actions/instrument/deploy
         with:
           debug: 1
@@ -524,7 +524,7 @@ jobs:
           curl -L -H "Authorization: Bearer ${{ secrets.TEST_GITHUB_TOKEN }}" -X DELETE "${GITHUB_API_URL:-https://api.github.com}"/repos/${{ steps.config.outputs.user }}/${{ steps.config.outputs.repository }} || true
       - run: |
           curl -L -H "Authorization: Bearer ${{ secrets.TEST_GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/user/repos -d '{"name":"${{ steps.config.outputs.repository }}","private":${{ matrix.private }},"auto_init":true}'
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v5.0.0
         with:
           repository: "${{ steps.config.outputs.user }}/${{ steps.config.outputs.repository }}"
           token: ${{ secrets.TEST_GITHUB_TOKEN }}
