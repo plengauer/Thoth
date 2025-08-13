@@ -145,7 +145,7 @@ fi
 otel_span_activate "$workflow_span_handle"
 [ -z "${INPUT_DEBUG}" ] || echo "span workflow $TRACEPARENT $(jq < "$workflow_json" -r .name)" >&2
 if [ "$(jq < "$workflow_json" .conclusion -r)" = failure ]; then otel_span_error "$workflow_span_handle"; fi
-echo ::notice::"Trace ID: $(echo "$TRACEPARENT" | cut -d - -f 2), Span ID: $(echo "$TRACEPARENT" | cut -d - -f 3), Link: $(jq < "$workflow_json" -r .html_url)"
+echo ::notice::"Trace ID: $(echo "$TRACEPARENT" | cut -d - -f 2), Span ID: $(echo "$TRACEPARENT" | cut -d - -f 3), Link: $(jq < "$workflow_json" .html_url -r)/attempts/$(jq < "$workflow_json" .run_attempt)"
 otel_span_end "$workflow_span_handle" @"$workflow_ended_at"
 
 jq < "$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .started_at, .completed_at, .name] | @tsv' | sed 's/\t/ /g' | while read -r TRACEPARENT job_id job_conclusion job_started_at job_completed_at job_name; do
