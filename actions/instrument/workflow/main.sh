@@ -59,8 +59,9 @@ if [ -r "$logs_zip" ] && unzip -t "$logs_zip"; then
     unzip -Z1 "$logs_zip" | grep '.txt$' | grep -E "$(printf '%s' "$1" | sed 's/[.[\(*^$+?{|]/\\\\&/g')" | xargs -d '\n' -r unzip -p "$logs_zip" | sed '1s/^\xEF\xBB\xBF//' | sed '1s/^\xFE\xFF//' | sed '1s/^\x00\x00\xFE\xFF//'
   }
 else
-  read_log_file() { false; }
+  read_log_file() { true; }
   rm -rf "$logs_zip"
+  echo '::warning::Downloading logs failed, zip file was corrupt!'
 fi 
 
 times_dir="$(mktemp -d)"
@@ -151,7 +152,7 @@ otel_span_end "$workflow_span_handle" @"$workflow_ended_at"
 jq < "$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .started_at, .completed_at, .name] | @tsv' | sed 's/\t/ /g' | while read -r TRACEPARENT job_id job_conclusion job_started_at job_completed_at job_name; do
   if [ "$job_conclusion" = skipped ]; then continue; fi
   if [[ "$job_started_at" < "$workflow_started_at" ]] || jq < "$artifacts_json" -r .name | grep -q '^opentelemetry_job_'"$job_id"'$'; then continue; fi
-  job_log_file="$(printf '%s' "${job_name//\//}" | tr -d ':')"
+  job_log_file="$(printf '%s' "${job_name//\//_}" | tr -d ':')"
   last_log_timestamp="$(read_log_file "$job_log_file" | tail -n 1 | cut -d ' ' -f 1)"
   if [ -n "$last_log_timestamp" ] && [ "$last_log_timestamp" > "$job_completed_at" ]; then job_completed_at="$last_log_timestamp"; fi
   
@@ -202,7 +203,7 @@ done | sed 's/\t/ /g' | while read -r TRACEPARENT job_id step_number step_conclu
     if [ "$previous_step_completed_at" > "$step_started_at" ]; then step_started_at="$previous_step_completed_at"; fi
     if [ "$step_started_at" > "$step_completed_at" ]; then step_completed_at="$step_started_at"; fi
   fi
-  step_log_file="$(printf '%s' "${job_name//\//}"/"$step_number"_ | tr -d ':')"
+  step_log_file="$(printf '%s' "${job_name//\//_}"/"$step_number"_ | tr -d ':')"
   last_log_timestamp="$(read_log_file "$step_log_file" | tail -n 1 | cut -d ' ' -f 1)"
   if [ -n "$last_log_timestamp" ] && [ "$last_log_timestamp" > "$step_completed_at" ]; then step_completed_at="$last_log_timestamp"; fi
 
@@ -295,7 +296,7 @@ done | sed 's/\t/ /g' | while read -r TRACEPARENT job_id step_number step_conclu
   otel_span_attribute_typed "$step_span_handle" string github.actions.action.phase="${action_phase:-}"
   otel_span_attribute_typed "$step_span_handle" string github.actions.step.conclusion="$step_conclusion"
   otel_span_activate "$step_span_handle"
-  read_log_file "$step_log_file" | while read -r line; do
+  { read_log_file "$step_log_file" || [ "$step_conclusion" = skipped ] || echo "::warning ::Cannot resolve log for job $job_name step $step_number, log file is missing." >&2 } | while read -r line; do
     timestamp="${line%% *}"
     if ! [[ "$timestamp" =~ ^[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]\.[0-9]{7}Z$ ]]; then continue; fi
     line="${line#* }"
@@ -329,7 +330,7 @@ done | sed 's/\t/ /g' | while read -r TRACEPARENT job_id step_number step_conclu
     esac
     [ -z "${INPUT_DEBUG}" ] || echo "log $TRACEPARENT $job_name $timestamp $severity $line" >&2
     _otel_log_record "$TRACEPARENT" "$timestamp" "$severity" "$line"
-  done || [ "$step_conclusion" = skipped ] || echo "::warning ::Cannot resolve log for job $job_name step $step_number."
+  done
   [ -z "${INPUT_DEBUG}" ] || echo "span step $TRACEPARENT $step_name" >&2
   otel_span_deactivate "$step_span_handle"
   if [ "$step_conclusion" = failure ]; then otel_span_error "$step_span_handle"; fi
