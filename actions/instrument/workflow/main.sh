@@ -146,7 +146,7 @@ fi
 otel_span_activate "$workflow_span_handle"
 [ -z "${INPUT_DEBUG}" ] || echo "span workflow $TRACEPARENT $(jq < "$workflow_json" -r .name)" >&2
 if [ "$(jq < "$workflow_json" .conclusion -r)" = failure ]; then otel_span_error "$workflow_span_handle"; fi
-echo ::notice title=Observability Information::"Trace ID: $(print_trace_id), Span ID: $(print_span_id), GitHub Workflow Run: [$(jq < "$workflow_json" .name -r) @ $(jq < "$workflow_json" .head_branch -r)]($link/attempts/$(jq < "$workflow_json" -r .run_attempt))   <a href=\"$link/attempts/$(jq < "$workflow_json" -r .run_attempt)\">$(jq < "$workflow_json" .name -r) @ $(jq < "$workflow_json" .head_branch -r)</a>"
+echo ::notice title=Observability Information::"Trace ID: $(echo "$TRACEPARENT" | cut -d - -f 2), Span ID: $(echo "$TRACEPARENT" | cut -d - -f 3), Trace Link: $(print_trace_link || echo unavailable), GitHub Workflow Run: $link/attempts/$(jq < "$workflow_json" -r .run_attempt)"
 otel_span_end "$workflow_span_handle" @"$workflow_ended_at"
 
 jq < "$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .started_at, .completed_at, .name] | @tsv' | sed 's/\t/ /g' | while read -r TRACEPARENT job_id job_conclusion job_started_at job_completed_at job_name; do
