@@ -368,8 +368,25 @@ jobs:
           } > rpm.spec && rm "$rpm_dir"/*.spec
           rpmbuild -bb --buildroot="$(cat rpm.spec | grep '^Buildroot: ' | cut -d ' ' -f 2)" rpm.spec
           mv ../*.rpm ../package.rpm
+      - run: find
       - run: |
-          # TODO build apk
+          cd src
+          read_deb_control_value() {
+            cat DEBIAN/control | grep '^'"$1"': ' | cut -d ' ' -f 2-
+          }
+          {
+            echo pkgname="$(read_deb_control_value Package)"
+            echo pkgver="$(read_deb_control_value Version)"
+            echo pkgrel=0
+            echo arch=all
+            echo depends="$({ read_deb_control_value Pre-Depends; read_deb_control_value Depends; read_deb_control_value Recommends; } | tr '\n' ',' | tr ',' ' ')"
+            # TODO install
+            # TODO triggers
+            echo license=MIT # TODO
+            echo maintainer="$(read_deb_control_value Maintainer)"
+            echo url="$(read_deb_control_value Homepage)"
+            echo pkgdesc="$(read_deb_control_value Description)"
+          } > APKBUILD
       - uses: actions/upload-artifact@v4.6.2
         with:
           name: packages
