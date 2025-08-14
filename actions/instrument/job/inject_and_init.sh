@@ -356,4 +356,4 @@ export TRACEPARENT="$(cat "$traceparent_file")"
 rm "$traceparent_file"
 printenv | grep -E '^OTEL_|^TRACEPARENT=|^TRACESTATE=' >> "$GITHUB_ENV"
 
-echo ::notice::"Trace ID: $(print_trace_id), Span ID: $(print_span_id)"
+echo ::notice title=Observability Information::"Trace ID: $(print_trace_id), Span ID: $(print_span_id)"
