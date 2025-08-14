@@ -33,7 +33,7 @@ _otel_inject_node_args() {
     elif _otel_string_starts_with "$1" -; then
       _otel_escape_arg "$1"; shift
     else
-      if \[ "${OTEL_SHELL_CONFIG_INJECT_DEEP:-FALSE}" = TRUE ] && \[ -d /usr/share/opentelemetry_shell/agent.instrumentation.node/"$version" ]; then
+      if \[ "${OTEL_SHELL_CONFIG_INJECT_DEEP:-FALSE}" = TRUE ] && \[ -d /usr/share/opentelemetry_shell/agent.instrumentation.node/"$version" ] && ( \[ "${next_is_code:-FALSE}" = TRUE ] || ! _otel_string_ends_with "$1" /npm ); then
         if \[ "${next_is_code:-FALSE}" = TRUE ]; then
           _otel_escape_arg "$1"; \echo -n ' '
           local base_dir="$(\echo "$1" | \rev | \cut -d / -f 2- | \rev)"
