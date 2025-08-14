@@ -9,7 +9,7 @@ print_trace_id() {
 }
 
 print_span_id() {
-  local span_id="$("$TRACEPARENT" | cut -d - -f 3)"
+  local span_id="$(echo "$TRACEPARENT" | cut -d - -f 3)"
   case "${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT:-http://localhost:4318}}" in
     *dynatrace*) echo "[$span_id]($(print_dynatrace_link))";;
     *) echo "$span_id";;
