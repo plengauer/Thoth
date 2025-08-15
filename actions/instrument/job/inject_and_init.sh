@@ -35,7 +35,7 @@ if [ "$INPUT_COLLECTOR" = true ] || ([ "$INPUT_COLLECTOR" = auto ] && ([ -n "${O
     if [ "${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}" = http/protobuf ] || [ "${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}" = http/json ]; then collector_exporter=otlphttp; else collector_exporter=otlp; fi
     cat > "$section_exporter_logs" <<EOF
   $collector_exporter/logs:
-    endpoint: "$(echo "${OTEL_EXPORTER_OTLP_LOGS_ENDPOINT:-$OTEL_EXPORTER_OTLP_ENDPOINT/v1/logs}" | rev | cut -d / -f 3- | rev)"
+    endpoint: ${OTEL_EXPORTER_OTLP_LOGS_ENDPOINT:-$OTEL_EXPORTER_OTLP_ENDPOINT/v1/logs}
     headers:
 $(echo "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_LOGS_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /g' | sed 's/^/      /g')
 $([ "${OTEL_EXPORTER_OTLP_LOGS_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/json ] && echo '    encoding: json' || true)
@@ -55,7 +55,7 @@ EOF
     if [ "${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}" = http/protobuf ] || [ "${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}" = http/json ]; then collector_exporter=otlphttp; else collector_exporter=otlp; fi
     cat > "$section_exporter_metrics" <<EOF
   $collector_exporter/metrics:
-    endpoint: "$(echo "${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT:-$OTEL_EXPORTER_OTLP_ENDPOINT/v1/metrics}" | rev | cut -d / -f 3- | rev)"
+    endpoint: ${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT:-$OTEL_EXPORTER_OTLP_ENDPOINT/v1/metrics}
     headers:
 $(echo "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_METRICS_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /g' | sed 's/^/      /g')
 $([ "${OTEL_EXPORTER_OTLP_METRICS_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/json ] && echo '    encoding: json' || true)
@@ -75,7 +75,7 @@ EOF
     if [ "${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}" = http/protobuf ] || [ "${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}" = http/json ]; then collector_exporter=otlphttp; else collector_exporter=otlp; fi
     cat > "$section_exporter_traces" <<EOF
   $collector_exporter/traces:
-    endpoint: "$(echo "${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-$OTEL_EXPORTER_OTLP_ENDPOINT/v1/traces}" | rev | cut -d / -f 3- | rev)"
+    endpoint: ${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-$OTEL_EXPORTER_OTLP_ENDPOINT/v1/traces}
     headers:
 $(echo "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_TRACES_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /g' | sed 's/^/      /g')
 $([ "${OTEL_EXPORTER_OTLP_TRACES_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/json ] && echo '    encoding: json' || true)
