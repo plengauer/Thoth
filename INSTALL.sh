@@ -5,8 +5,10 @@ if type dpkg 1> /dev/null 2> /dev/null; then
   extension=deb
 elif type rpm 1> /dev/null 2> /dev/null; then
   extension=rpm
+elif type apk 1> /dev/null 2> /dev/null; then
+  extension=apk
 else
-  echo "Unsupported operating system (no apt-get and no rpm available)" >&2
+  echo "Unsupported operating system (no apt-get, no rpm, and no apk available)" >&2
   exit 1
 fi
 
@@ -40,6 +42,9 @@ case "$extension" in
     else
       $wrapper rpm --install "$package"
     fi
+    ;;
+  apk)
+    $wrapper apk add --allow-untrusted "$package"
     ;;
   *)
     echo Here be dragons >&2
