@@ -102,8 +102,8 @@ jobs:
       - run: |
           curl -s https://endoflife.date/api/v1/products/alpine-linux > /tmp/alpine.json
           oldest="alpine:$(jq < /tmp/alpine.json '.result.releases[] | select(.isEol == false) | .name' -r | tail -n 1)"
-          stable="alpine:$(jq < /tmp/alpine.json '.result.releases[] | select(.isEol == false) | .name' -r | head -n 2 | tail -n 1):latest"
-          latest="alpine:$(jq < /tmp/alpine.json '.result.releases[] | select(.isEol == false) | .name' -r | head -n 1):latest"
+          stable="alpine:$(jq < /tmp/alpine.json '.result.releases[] | select(.isEol == false) | .name' -r | head -n 2 | tail -n 1)"
+          latest="alpine:$(jq < /tmp/alpine.json '.result.releases[] | select(.isEol == false) | .name' -r | head -n 1)"
           dev="$latest"
           cat .github/workflows/images.json | jq ".alpine.oldest = \"$oldest\"" | jq ".alpine.stable = \"$stable\"" | jq ".alpine.latest = \"$latest\"" | jq ".alpine.dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/workflows/images.json      
       - id: open-pr
