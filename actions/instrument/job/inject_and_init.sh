@@ -55,7 +55,7 @@ EOF
     if [ "${OTEL_EXPORTER_OTLP_METRICS_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/protobuf ] || [ "${OTEL_EXPORTER_OTLP_METRICS_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/json ]; then collector_exporter=otlphttp; else collector_exporter=otlp; fi
     cat > "$section_exporter_metrics" <<EOF
   $collector_exporter/metrics:
-    endpoint: $([ -n "$OTEL_EXPORTER_OTLP_METRICS_ENDPOINT" ] && echo "${OTEL_EXPORTER_OTLP_LOGS_ENDPOINT%/v1/metrics}" || echo "$OTEL_EXPORTER_OTLP_ENDPOINT")
+    endpoint: $([ -n "$OTEL_EXPORTER_OTLP_METRICS_ENDPOINT" ] && echo "${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT%/v1/metrics}" || echo "$OTEL_EXPORTER_OTLP_ENDPOINT")
     headers:
 $(echo "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_METRICS_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /g' | sed 's/^/      /g')
 $([ "${OTEL_EXPORTER_OTLP_METRICS_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/json ] && echo '    encoding: json' || true)
@@ -75,7 +75,7 @@ EOF
     if [ "${OTEL_EXPORTER_OTLP_TRACES_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/protobuf ] || [ "${OTEL_EXPORTER_OTLP_TRACES_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/json ]; then collector_exporter=otlphttp; else collector_exporter=otlp; fi
     cat > "$section_exporter_traces" <<EOF
   $collector_exporter/traces:
-    endpoint: $([ -n "$OTEL_EXPORTER_OTLP_TRACES_ENDPOINT" ] && echo "${OTEL_EXPORTER_OTLP_LOGS_ENDPOINT%/v1/traces}" || echo "$OTEL_EXPORTER_OTLP_ENDPOINT")
+    endpoint: $([ -n "$OTEL_EXPORTER_OTLP_TRACES_ENDPOINT" ] && echo "${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT%/v1/traces}" || echo "$OTEL_EXPORTER_OTLP_ENDPOINT")
     headers:
 $(echo "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_TRACES_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /g' | sed 's/^/      /g')
 $([ "${OTEL_EXPORTER_OTLP_TRACES_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/json ] && echo '    encoding: json' || true)
