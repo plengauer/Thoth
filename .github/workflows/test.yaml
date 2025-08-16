@@ -365,7 +365,7 @@ jobs:
               esac
               printf '%s\n' "$line"
             done
-          } | tee /dev/stderr > rpm.spec && rm "$rpm_dir"/*.spec
+          } > rpm.spec && rm "$rpm_dir"/*.spec
           rpmbuild -bb --buildroot="$(cat rpm.spec | grep '^Buildroot: ' | cut -d ' ' -f 2)" rpm.spec
           mv ../*.rpm ../package.rpm
           rm rpm.spec
