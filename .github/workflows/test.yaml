@@ -456,7 +456,7 @@ jobs:
       - run: |
           export OTEL_SHELL_CONFIG_OBSERVE_SUBPROCESSES=FALSE
           export OTEL_SHELL_CONFIG_OBSERVE_SIGNALS=FALSE
-          find . -type f | \strace -D -ttt -f -e trace=process -o /tmp/strace.log -s 8192 xargs -s $(($(\getconf ARG_MAX) - $(\env | \wc -c) - 4096 - 4096)) sh -c '. otel.sh
+          find . -type f | \strace -D -ttt -f -e trace=process -o /tmp/strace.log -s 8192 xargs -s $(($(\getconf ARG_MAX) - $(\env | \wc -c) - 4096 - 1024*16)) sh -c '. otel.sh
           sha256sum "$@"' sh | sort | cut -d ' ' -f 3- | tar -cf node_modules.tar -T - && xz -9 node_modules.tar
       - uses: actions/upload-artifact@v4.6.2
         with:
