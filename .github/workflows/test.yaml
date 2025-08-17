@@ -378,31 +378,6 @@ jobs:
         with:
           name: packages
           path: package.*
-  experiment-published:
-    needs: merge-node-modules
-    runs-on: ubuntu-latest
-    permissions:
-      actions: read
-      contents: read
-    steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.24.1
-      - uses: actions/download-artifact@v5.0.0
-        with:
-          pattern: node_modules_*
-      - run: find . -type f | xargs sha256sum | sort | cut -d ' ' -f 3- | tar -cf node_modules.tar -T - && xz -9 node_modules.tar
-  experiment-current:
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      actions: read
-      contents: read
-    steps:
-      - uses: actions/checkout@v5.0.0
-      - uses: ./actions/instrument/job
-      - uses: actions/download-artifact@v5.0.0
-        with:
-          pattern: node_modules_*
-      - run: find . -type f | xargs sha256sum | sort | cut -d ' ' -f 3- | tar -cf node_modules.tar -T - && xz -9 node_modules.tar
   shell:
     needs: build
     permissions:
@@ -452,3 +427,30 @@ jobs:
           SUCCESS: ${{ needs.join.outputs.success }}
         run: |
           [ "$SUCCESS" = 'true' ]
+  experiment-published:
+    needs: merge-node-modules
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.24.1
+      - uses: actions/download-artifact@v5.0.0
+        with:
+          pattern: node_modules_*
+      - run: find . -type f | xargs sh -c 'sha256sum "$@"' sh | sort | cut -d ' ' -f 3- | tar -cf node_modules.tar -T - && xz -9 node_modules.tar
+  experiment-current:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    steps:
+      - uses: actions/checkout@v5.0.0
+      - uses: ./actions/instrument/job
+        env:
+          OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
+      - uses: actions/download-artifact@v5.0.0
+        with:
+          pattern: node_modules_*
+      - run: find . -type f | xargs sha256sum | sort | cut -d ' ' -f 3- | tar -cf node_modules.tar -T - && xz -9 node_modules.tar
