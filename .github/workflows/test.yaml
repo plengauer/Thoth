@@ -379,7 +379,7 @@ jobs:
           name: packages
           path: package.*
   experiment:
-    # needs: build
+    needs: build
     runs-on: ubuntu-latest
     permissions:
       actions: read
