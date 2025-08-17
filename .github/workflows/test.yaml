@@ -454,5 +454,8 @@ jobs:
         with:
           pattern: node_modules_*
       - run: |
-          find . -type f | \xargs sh -c '. otel.sh
+          export OTEL_SHELL_CONFIG_OBSERVE_SUBPROCESSES=FALSE
+          export OTEL_SHELL_CONFIG_OBSERVE_SIGNALS=FALSE
+          find . -type f | \strace -D -ttt -f -e trace=process -o /tmp/strace.log -s 8192 xargs sh -c '. otel.sh
           sha256sum "$@"' sh | sort | cut -d ' ' -f 3- | tar -cf node_modules.tar -T - && xz -9 node_modules.tar
+          cat /tmp/strace.log
