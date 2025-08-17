@@ -460,7 +460,7 @@ jobs:
           if \[ -z "$args_length" ]; then
             args_length=$(($(\getconf ARG_MAX) - $(\env | \wc -c) - $(\env | \wc -l) * 4 - 2048)) # this is an estimation of the default according to https://www.in-ulm.de/~mascheck/various/argmax/
           fi
-          args_length=$(($args_length - 1024 * 4)) # make sure we have enough room for proper injection
+          args_length=$(($args_length - 1024 * 16)) # make sure we have enough room for proper injection
           \[ "$args_length" -ge 4069 ] || args_length=4096
           echo "$args_length"
           find . -type f | \strace -D -ttt -f -e trace=process -o /tmp/strace.log -s 8192 xargs -s $args_length sh -c '. otel.sh
