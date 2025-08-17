@@ -57,7 +57,7 @@ _otel_inject_xargs() {
   if \[ -z "$args_length" ]; then
     local args_length=$(($(\getconf ARG_MAX) - $(\env | \wc -c) - $(\env | \wc -l) * 4 - 2048)) # this is an estimation of the default according to https://www.in-ulm.de/~mascheck/various/argmax/
   fi
-  local args_length=$(($args_length - 1024 * 4)) # make sure we have enough room for proper injection
+  local args_length=$(($args_length - 1024 * 16)) # make sure we have enough room for proper injection
   \[ "$args_length" -ge 4069 ] || local args_length=4096
   OTEL_SHELL_INJECT_INNER_COMMAND_MORE_ARGS="-s $args_length" _otel_inject_inner_command "$@"
 }
