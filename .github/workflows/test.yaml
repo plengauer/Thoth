@@ -480,7 +480,3 @@ jobs:
           pattern: node_modules_*
       - run: |
           find . -type f | xargs sha256sum | sort | cut -d ' ' -f 3- | tar -cf node_modules.tar -T - && xz -9 node_modules.tar
-      - uses: actions/upload-artifact@v4.6.2
-        with:
-          name: strace
-          path: /tmp/strace.log
