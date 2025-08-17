@@ -438,7 +438,7 @@ jobs:
       - uses: actions/download-artifact@v5.0.0
         with:
           pattern: node_modules_*
-      - run: find . -type f | xargs sh -c 'sha256sum "$@"' sh | sort | cut -d ' ' -f 3- | tar -cf node_modules.tar -T - && xz -9 node_modules.tar
+      - run: find . -type f | xargs sha256sum | sort | cut -d ' ' -f 3- | tar -cf node_modules.tar -T - && xz -9 node_modules.tar
   experiment-current:
     needs: build
     runs-on: ubuntu-latest
@@ -453,4 +453,6 @@ jobs:
       - uses: actions/download-artifact@v5.0.0
         with:
           pattern: node_modules_*
-      - run: find . -type f | xargs sha256sum | sort | cut -d ' ' -f 3- | tar -cf node_modules.tar -T - && xz -9 node_modules.tar
+      - run: |
+          find . -type f | \xargs sh -c '. otel.sh
+          sha256sum "$@"' sh | sort | cut -d ' ' -f 3- | tar -cf node_modules.tar -T - && xz -9 node_modules.tar
