@@ -53,7 +53,9 @@ _otel_alias_prepend dumb-init _otel_inject_inner_command
 _otel_alias_prepend xargs _otel_inject_xargs
 
 _otel_inject_xargs() {
-  local args_length=$(($(\getconf ARG_MAX) - $(\env | \wc -c) - $(\env | \wc -l) * 4 - $(\echo "$*" | \wc -c) - 2048)) # this is an estimation of the default according to https://www.in-ulm.de/~mascheck/various/argmax/
+  local args_length="$(\xargs < /dev/null --show-limit -r 2>&1 | \grep -E 'Maximum length of command we could actually use: ' | \cut -sd : -f 2- | \tr -d ' ')"
+  \[ -n "$args_length" ] || local args_length="$(\getconf ARG_MAX)"
+  local args_length=$(($args_length - $(\env | \wc -c) - $(\env | \wc -l) * 4 - 2048)) # this is an estimation of the default according to https://www.in-ulm.de/~mascheck/various/argmax/
   local args_length=$(($args_length - 1024 * 4)) # make sure we have enough room for proper injection
   OTEL_SHELL_INJECT_INNER_COMMAND_MORE_ARGS="-s $args_length" _otel_inject_inner_command "$@"
 }
