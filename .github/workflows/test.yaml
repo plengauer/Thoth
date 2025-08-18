@@ -482,7 +482,7 @@ jobs:
           name: packages
       - uses: ./actions/instrument/job
         with:
-          cache: false
+          cache: 'false'
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
       - uses: actions/download-artifact@v5.0.0
