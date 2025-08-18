@@ -477,6 +477,9 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v5.0.0
+      - uses: actions/download-artifact@v5.0.0
+        with:
+          name: packages
       - uses: ./actions/instrument/job
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
