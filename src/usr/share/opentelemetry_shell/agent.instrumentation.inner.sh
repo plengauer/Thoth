@@ -34,7 +34,6 @@ _otel_inject_inner_command() {
   local cmdline="${cmdline#\\}"
   local command_string="$(_otel_inject_inner_command_args "$@")"
   unset OTEL_SHELL_INJECT_INNER_COMMAND_MORE_ARGS # unset it also here, not just in subshell above
-\echo DEBUG DEBUG DEBUG "$command_string" >&2
   OTEL_SHELL_AUTO_INSTRUMENTATION_HINT="$cmdline" OTEL_SHELL_COMMANDLINE_OVERRIDE="$cmdline" OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE="0" OTEL_SHELL_AUTO_INJECTED=TRUE \eval _otel_call "$command_string"
 }
 
@@ -59,7 +58,6 @@ _otel_inject_xargs() {
     local args_length=$(($(\getconf ARG_MAX) - $(\env | \wc -c) - $(\env | \wc -l) * 4 - 2048)) # this is an estimation of the default according to https://www.in-ulm.de/~mascheck/various/argmax/
   fi
   local args_length=$(($args_length - 1024 * 16)) # make sure we have enough room for proper injection
-  # local args_length=$(($args_length  / 2)) # make sure we have enough room for proper injection
   \[ "$args_length" -ge 4069 ] || local args_length=4096
   OTEL_SHELL_INJECT_INNER_COMMAND_MORE_ARGS="-s $args_length" _otel_inject_inner_command "$@"
 }
