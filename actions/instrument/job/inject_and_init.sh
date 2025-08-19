@@ -297,6 +297,12 @@ root4job_end() {
     if [ -n "$INPUT_DEBUG" ]; then
       sudo docker logs "$OTEL_SHELL_COLLECTOR_CONTAINER"
     fi
+    sudo docker logs "$OTEL_SHELL_COLLECTOR_CONTAINER" | grep -q -- '^Warning: ' | while read -r line; do
+      echo ::warning::"$line"
+    done
+    sudo docker logs "$OTEL_SHELL_COLLECTOR_CONTAINER" | grep -q -- '^Error: ' | while read -r line; do
+      echo ::error::"$line"
+    done
   fi
   exit 0
 }
