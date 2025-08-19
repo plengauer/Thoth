@@ -22,8 +22,8 @@ mv "$directory" "$directory"". .dir"
 directory="$directory"". .dir"
 chmod +x "$directory"
 for i in $(seq 1 $n); do \touch "$directory/$i"; done
-expected="$(\find "$directory" -exec echo {} '+')"
-actual="$(find "$directory" -exec echo {} '+')"
+expected="$(\find "$directory" -exec echo {} '+' | \tr '\n' ' ')"
+actual="$(find "$directory" -exec echo {} '+' | \tr '\n' ' ')"
 assert_equals "$expected" "$actual"
 
 directory="$(mktemp -d)"
@@ -45,8 +45,8 @@ mv "$directory" "$directory"". .dir"
 directory="$directory"". .dir"
 chmod +x "$directory"
 for i in $(seq 1 $n); do \touch "$directory/$i"; done
-expected="$(\find "$directory" -execdir echo {} '+')"
-actual="$(find "$directory" -execdir echo {} '+')"
+expected="$(\find "$directory" -execdir echo {} '+' | \tr '\n' ' ')"
+actual="$(find "$directory" -execdir echo {} '+' | \tr '\n' ' ')"
 assert_equals "$expected" "$actual"
 
 if which busybox; then
