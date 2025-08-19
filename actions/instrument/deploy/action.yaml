@@ -161,6 +161,15 @@ runs:
         (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
           sed -i 's/#__BLANK_LINE__#//g' "$workflow_file"
         done
+    - name: "Restore blank lines"
+      shell: bash
+      run: |
+        (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
+          git diff -U0 -w -b --ignore-blank-lines "$workflow_file" > "$workflow_file".patch
+          git checkout "$workflow_file"
+          patch "$workflow_file" < "$workflow_file".patch
+          rm "$workflow_file".patch
+        done
     - name: Log
       if: ${{ inputs.dry_run == 'true' }}
       shell: bash
