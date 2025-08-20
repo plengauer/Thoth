@@ -151,8 +151,7 @@ runs:
       shell: bash
       run: |
         (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
-          if git diff -U0 -w -b --ignore-blank-lines "$workflow_file" > "$workflow_file".patch; then
-            git checkout "$workflow_file"
+          if git diff -U0 -w -b --ignore-blank-lines "$workflow_file" > "$workflow_file".patch && git checkout "$workflow_file"; then
             patch "$workflow_file" < "$workflow_file".patch
           fi
           rm -rf "$workflow_file".patch
