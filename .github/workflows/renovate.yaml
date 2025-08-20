@@ -125,7 +125,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5.0.0
       - run: |
-          sed "s/$(($(date +%Y) - 1))/$(date +%Y)/g"
+          sed -i "s/$(($(date +%Y) - 1))/$(date +%Y)/g" LICENSE
       - id: open-pr
         uses: peter-evans/create-pull-request@v7.0.8
         with:
