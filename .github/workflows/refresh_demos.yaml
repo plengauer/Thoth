@@ -176,7 +176,7 @@ jobs:
           pretty_print_trace() {
             cat otlp.json | jq -r '. | select(.resourceSpans != null) | .resourceSpans[].scopeSpans[].spans[]' | jq -r -s '. | sort_by(.startTimeUnixNano) | .[].spanId' | while read -r span_id; do
               span="$(spans | jq 'select(.spanId == "'$span_id'")')"
-              resource_attributes="$(cat otlp.json | jq '. | select(.resourceSpans != null) | .resourceSpans[] | select(.scopeSpans[].spans[].spanId == "'$span_id'") | .resource.attributes')"
+              resource_attributes="$(cat otlp.json | jq --sort-keys '. | select(.resourceSpans != null) | .resourceSpans[] | select(.scopeSpans[].spans[].spanId == "'$span_id'") | .resource.attributes')"
               jq -n \
                 --argjson trace_id "$(printf '%s' "$span" | jq .traceId)" \
                 --argjson span_id "$(printf '%s' "$span" | jq .spanId)" \
@@ -186,7 +186,7 @@ jobs:
                 --argjson status "$(printf '%s' "$span" | jq -r .status.code)" \
                 --argjson time_start "$(printf '%s' "$span" | jq -r .startTimeUnixNano)" \
                 --argjson time_end "$(printf '%s' "$span" | jq -r .endTimeUnixNano)" \
-                --argjson attributes "$(printf '%s' "$span" | jq .attributes | pretty_print_attributes)" \
+                --argjson attributes "$(printf '%s' "$span" | jq --sort-keys .attributes | pretty_print_attributes)" \
                 --argjson resource_attributes "$(printf '%s' "$resource_attributes" | pretty_print_attributes)" \
                 --argjson links "$(printf '%s' "$span" | jq .links | pretty_print_links)" \
                 --argjson events "$(printf '%s' "$span" | jq .events | pretty_print_events)" \
