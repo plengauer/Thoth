@@ -23,7 +23,7 @@ _otel_inject "
       \echo -n '"$@"'
     elif \[ "$in_exec" -eq 1 ] && (\[ "$arg" = ";" ] || \[ "$arg" = "+" ]); then
       local in_exec=0
-      \echo -n "' find {} '$arg'"
+      \echo -n "' find {} ';'" # intentionally do not support + due to too long commandlines
     else
       if \[ "$in_exec" = 1 ]; then
         no_quote=1 _otel_escape_arg "$(_otel_escape_arg "$arg")"
