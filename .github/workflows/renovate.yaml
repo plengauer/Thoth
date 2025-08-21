@@ -82,7 +82,7 @@ jobs:
           curl -s https://fedoraproject.org/releases.json > /tmp/fedora_releases.json
           oldest="fedora:$(jq < /tmp/fedora_releases.json '.[].version' -r | sort -u | tail -n 2 | head -n 1)"
           stable="fedora:$(jq < /tmp/fedora_releases.json '.[].version' -r | sort -u | tail -n 1)"
-          latest="$stable"
+          latest=fedora:rawhide
           dev=fedora:rawhide
           cat .github/workflows/images.json | jq ".fedora.oldest = \"$oldest\"" | jq ".fedora.stable = \"$stable\"" | jq ".fedora.latest = \"$latest\"" | jq ".fedora.dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/workflows/images.json
       - run: |
