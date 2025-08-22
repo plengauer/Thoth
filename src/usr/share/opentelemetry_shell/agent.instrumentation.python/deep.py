@@ -3,7 +3,7 @@ import os
 import subprocess
 
 def inject_env_minimal(env, args):
-    env['OTEL_SHELL_AUTO_INSTRUMENTATION_HINT'] = ' '.join(args)
+    env['OTEL_SHELL_AUTO_INSTRUMENTATION_HINT'] = file
     env['OTEL_SHELL_COMMANDLINE_OVERRIDE'] = ' '.join(args)
     env['OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE'] = str(os.getpid())
     return env
@@ -17,18 +17,18 @@ try:
     if traceparent:
         attach(tracecontext.TraceContextTextMapPropagator().extract(carrier={ "traceparent": traceparent }))
     
-    def inject_env(env, args):
+    def inject_env(env, file, args):
         carrier = {}
         tracecontext.TraceContextTextMapPropagator().inject(carrier, opentelemetry.trace.set_span_in_context(opentelemetry.trace.get_current_span(), None))
         if 'traceparent' in carrier:
             env["TRACEPARENT"] = carrier["traceparent"]
         if 'tracestate' in carrier:
             env["TRACESTATE"] = carrier["tracestate"]
-        return inject_env_minimal(env, args)
+        return inject_env_minimal(env, file, args)
         
 except ModuleNotFoundError:
-    def inject_env(env, args):
-        return inject_env_minimal(env, args)
+    def inject_env(env, file, args):
+        return inject_env_minimal(env, file, args)
 
 import functools
 
@@ -63,7 +63,7 @@ original_subprocess_Popen___init__ = subprocess.Popen.__init__
 def observed_os_execv(file, args):
     if type(args) is tuple:
         args = list(args)
-    env = inject_env(os.environ.copy(), args)
+    env = inject_env(os.environ.copy(), file, args)
     args = [ args[0] ] + inject_arguments(file, args[1:])
     file = inject_file(file)
     return original_os_execve(file, args, env)
@@ -71,7 +71,7 @@ def observed_os_execv(file, args):
 def observed_os_execve(file, args, env):
     if type(args) is tuple:
         args = list(args)
-    env = inject_env(env, args)
+    env = inject_env(env, file, args)
     args = [ args[0] ] + inject_arguments(file, args[1:])
     file = inject_file(file)
     return original_os_execve(file, args, env)
@@ -85,7 +85,7 @@ def observed_subprocess_Popen___init__(self, *args, **kwargs):
     kwargs['env'] = kwargs.get('env', None)
     if not kwargs['env']:
        kwargs['env'] = os.environ.copy()
-    kwargs['env'] = inject_env(kwargs['env'], args)
+    kwargs['env'] = inject_env(kwargs['env'], kwargs.get('executable', args[0]), args)
     args = ([ inject_file(kwargs.get('executable', args[0])) ] + inject_arguments(kwargs.get('executable', args[0]), args[1:], not kwargs.get('shell', False)))
     if kwargs.get('executable'):
         kwargs['executable'] = inject_file(kwargs['executable'])
