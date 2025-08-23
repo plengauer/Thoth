@@ -251,7 +251,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5.0.0
-      - uses: actions/setup-java@v4.7.1
+      - uses: actions/setup-java@v5.0.0
         with:
           java-version: 8
           distribution: temurin
@@ -270,7 +270,7 @@ jobs:
           class_file_version_base=44
           java_version=$((class_file_version - class_file_version_base))
           echo version="$java_version" >> "$GITHUB_OUTPUT"
-      - uses: actions/setup-java@v4.7.1
+      - uses: actions/setup-java@v5.0.0
         with:
           java-version: ${{ steps.determine-minimum-version.outputs.version }}
           distribution: temurin
