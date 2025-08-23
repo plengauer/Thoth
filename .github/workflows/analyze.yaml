@@ -9,6 +9,14 @@ on:
 env:
   CODEQL_EXTRACTOR_CPP_BUILD_MODE_NONE: 'true' # scanning c/c++ without building it is an experimental feature and needs to be enabled like this until released
 jobs:
+  test:
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: github/codeql-action/init@v3.29.11
+        with:
+          languages: java
+          build-mode: none
+      - run: /opt/hostedtoolcache/CodeQL/2.22.4/x64/codeql/tools/linux64/java/bin/java -version
   codeql:
     runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
     permissions:
