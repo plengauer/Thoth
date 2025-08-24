@@ -474,13 +474,14 @@ jobs:
             echo pkgdesc=\""$(read_deb_control_value Description)"\"
 
             echo 'package() { mkdir -p "$pkgdir" && cp src/* "$pkdir"; }'
+            echo 'check() { true; }'
           } | tee /dev/stderr > APKBUILD
           cat APKBUILD | grep '^pkgname' | cut -d = -f 2- | xargs -I {} cp src/DEBIAN/postinst '{}'.post-install
           cat APKBUILD | grep '^pkgname' | cut -d = -f 2- | xargs -I {} cp src/DEBIAN/postinst '{}'.post-upgrade
           cat APKBUILD | grep '^pkgname' | cut -d = -f 2- | xargs -I {} cp src/DEBIAN/prerm '{}'.pre-deinstall
           cat APKBUILD | grep '^pkgname' | cut -d = -f 2- | xargs -I {} cp src/DEBIAN/prerm '{}'.pre-upgrade
           rm -rf DEBIAN
-          echo 'cd ~/workspace && apk add abuild && abuild-keygen -a -n && FAKEROOTKEY="foo" abuild -v -r' | \sudo docker run --rm --network host -v $(pwd):/root/workspace -i alpine:latest
+          echo 'cd ~/workspace && apk add abuild && abuild-keygen -a -n && FAKEROOTKEY="foo" abuild -r' | \sudo docker run --rm --network host -v $(pwd):/root/workspace -i alpine:latest
       - uses: actions/upload-artifact@v4.6.2
         with:
           name: packages
