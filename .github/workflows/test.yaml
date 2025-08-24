@@ -473,7 +473,7 @@ jobs:
             echo url=\""$(read_deb_control_value Homepage)"\"
             echo pkgdesc=\""$(read_deb_control_value Description)"\"
 
-            echo 'package() { pwd >&2; mkdir -p "$pkgdir" && cp src/* "$pkdir"; }'
+            echo 'package() { pwd >&2; find >&2; mkdir -p "$pkgdir" && cp src/* "$pkdir"; }'
             echo 'check() { true; }'
           } | tee /dev/stderr > APKBUILD
           cat APKBUILD | grep '^pkgname' | cut -d = -f 2- | xargs -I {} cp src/DEBIAN/postinst '{}'.post-install
