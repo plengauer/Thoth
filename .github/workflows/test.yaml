@@ -367,6 +367,7 @@ jobs:
         with:
           name: java
           path: |
+            src/usr/share/opentelemetry_shell/agent.instrumentation.java/SystemPropertiesPrinter.class
             src/usr/share/opentelemetry_shell/agent.instrumentation.java/*.jar
             src/usr/share/opentelemetry_shell/agent.instrumentation.java/version
     permissions:
