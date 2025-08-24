@@ -446,9 +446,8 @@ jobs:
           mv ../*.rpm ../package.rpm
           rm rpm.spec
       - run: |
-          cd src
           read_deb_control_value() {
-            cat DEBIAN/control | grep '^'"$1"': ' | cut -d ' ' -f 2-
+            cat src/DEBIAN/control | grep '^'"$1"': ' | cut -d ' ' -f 2-
           }
           dependencies_format_deb_to_apk() {
             cut -sd '(' -f 1 | while read -r package; do
@@ -473,13 +472,15 @@ jobs:
             echo maintainer=\""$(read_deb_control_value Maintainer)"\"
             echo url=\""$(read_deb_control_value Homepage)"\"
             echo pkgdesc=\""$(read_deb_control_value Description)"\"
+
+            echo 'package() { mkdir -p "$pkgdir" && cp src/* "$pkdir"; }'
           } | tee /dev/stderr > APKBUILD
           cat APKBUILD | grep '^pkgname' | cut -d = -f 2- | xargs -I {} cp DEBIAN/postinst '{}'.post-install
           cat APKBUILD | grep '^pkgname' | cut -d = -f 2- | xargs -I {} cp DEBIAN/postinst '{}'.post-upgrade
           cat APKBUILD | grep '^pkgname' | cut -d = -f 2- | xargs -I {} cp DEBIAN/prerm '{}'.pre-deinstall
           cat APKBUILD | grep '^pkgname' | cut -d = -f 2- | xargs -I {} cp DEBIAN/prerm '{}'.pre-upgrade
           rm -rf DEBIAN
-          echo 'cd ~/src && apk add abuild && abuild-keygen -a -n && FAKEROOTKEY="foo" abuild -v -r' | \sudo docker run --rm --network host -v $(pwd):/root/src -i alpine:latest
+          echo 'cd ~/workspace && apk add abuild && abuild-keygen -a -n && FAKEROOTKEY="foo" abuild -v -r' | \sudo docker run --rm --network host -v $(pwd):/root/workspace -i alpine:latest
       - uses: actions/upload-artifact@v4.6.2
         with:
           name: packages
