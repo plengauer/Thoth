@@ -468,7 +468,7 @@ jobs:
           cat APKBUILD | grep '^pkgname' | cut -d = -f 2- | xargs -I {} cp DEBIAN/prerm '{}'.pre-deinstall
           cat APKBUILD | grep '^pkgname' | cut -d = -f 2- | xargs -I {} cp DEBIAN/prerm '{}'.pre-upgrade
           rm -rf DEBIAN
-          echo 'cd ~/src && apk add abuild && abuild -r' | \sudo docker run --rm --network host -v $(pwd):/root/src -i alpine:latest
+          echo 'cd ~/src && apk add abuild && FAKEROOTKEY="foo" abuild -r' | \sudo docker run --rm --network host -v $(pwd):/root/src -i alpine:latest
       - uses: actions/upload-artifact@v4.6.2
         with:
           name: packages
