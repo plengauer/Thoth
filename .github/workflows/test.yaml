@@ -462,7 +462,7 @@ jobs:
             echo maintainer="$(read_deb_control_value Maintainer)"
             echo url="$(read_deb_control_value Homepage)"
             echo pkgdesc="$(read_deb_control_value Description)"
-          } > APKBUILD
+          } | tee /dev/stderr > APKBUILD
           cat APKBUILD | grep '^pkgname' | cut -d = -f 2- | xargs -I {} cp DEBIAN/postinst '{}'.post-install
           cat APKBUILD | grep '^pkgname' | cut -d = -f 2- | xargs -I {} cp DEBIAN/postinst '{}'.post-upgrade
           cat APKBUILD | grep '^pkgname' | cut -d = -f 2- | xargs -I {} cp DEBIAN/prerm '{}'.pre-deinstall
