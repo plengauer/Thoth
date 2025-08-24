@@ -12,13 +12,13 @@ jobs:
       contents: none
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.22.6
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.24.4
         with:
           secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}"]'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - uses: renovatebot/github-action@v43.0.6
+      - uses: renovatebot/github-action@v43.0.8
         env:
           RENOVATE_REPOSITORIES: ${{ github.repository }}
         with:
@@ -27,8 +27,15 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      actions: read
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.24.4
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}"]'
+      - uses: actions/checkout@v5.0.0
       - run: |
           python3 -m venv venv
           . venv/bin/activate
@@ -42,7 +49,7 @@ jobs:
         uses: peter-evans/create-pull-request@v7.0.8
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
-          commit-message: "Renove python dependency"
+          commit-message: "Renovate python dependency"
           base: main
           branch: "renovate-manual/debian-python"
           title: "Update Debian Python Dependency"
@@ -61,8 +68,15 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      actions: read
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.24.4
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}"]'
+      - uses: actions/checkout@v5.0.0
       - run: |
           curl -s https://api.launchpad.net/devel/debian/series > /tmp/launchpad.debian.json
           oldest="debian:$(jq < /tmp/launchpad.debian.json '.entries[] | select(.active == true) | select(.status == "Supported") | .name' -r | head -n 2 | tail -n 1)"
@@ -82,7 +96,7 @@ jobs:
           curl -s https://fedoraproject.org/releases.json > /tmp/fedora_releases.json
           oldest="fedora:$(jq < /tmp/fedora_releases.json '.[].version' -r | sort -u | tail -n 2 | head -n 1)"
           stable="fedora:$(jq < /tmp/fedora_releases.json '.[].version' -r | sort -u | tail -n 1)"
-          latest="$stable"
+          latest=fedora:rawhide
           dev=fedora:rawhide
           cat .github/workflows/images.json | jq ".fedora.oldest = \"$oldest\"" | jq ".fedora.stable = \"$stable\"" | jq ".fedora.latest = \"$latest\"" | jq ".fedora.dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/workflows/images.json
       - run: |
@@ -98,14 +112,14 @@ jobs:
           stable="redhat/ubi$(jq < /tmp/rhel.json '.result.releases[] | select(.isEol == false) | .name' -r | head -n 2 | tail -n 1):latest"
           latest="redhat/ubi$(jq < /tmp/rhel.json '.result.releases[] | select(.isEol == false) | .name' -r | head -n 1):latest"
           dev="$latest"
-          cat .github/workflows/images.json | jq ".rhel.oldest = \"$oldest\"" | jq ".rhel.stable = \"$stable\"" | jq ".rhel.latest = \"$latest\"" | jq ".rhel.dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/workflows/images.json      
+          cat .github/workflows/images.json | jq ".rhel.oldest = \"$oldest\"" | jq ".rhel.stable = \"$stable\"" | jq ".rhel.latest = \"$latest\"" | jq ".rhel.dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/workflows/images.json
       - run: |
           curl -s https://endoflife.date/api/v1/products/alpine-linux > /tmp/alpine.json
           oldest="alpine:$(jq < /tmp/alpine.json '.result.releases[] | select(.isEol == false) | .name' -r | tail -n 1)"
           stable="alpine:$(jq < /tmp/alpine.json '.result.releases[] | select(.isEol == false) | .name' -r | head -n 2 | tail -n 1)"
           latest="alpine:$(jq < /tmp/alpine.json '.result.releases[] | select(.isEol == false) | .name' -r | head -n 1)"
           dev="$latest"
-          cat .github/workflows/images.json | jq ".alpine.oldest = \"$oldest\"" | jq ".alpine.stable = \"$stable\"" | jq ".alpine.latest = \"$latest\"" | jq ".alpine.dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/workflows/images.json      
+          cat .github/workflows/images.json | jq ".alpine.oldest = \"$oldest\"" | jq ".alpine.stable = \"$stable\"" | jq ".alpine.latest = \"$latest\"" | jq ".alpine.dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/workflows/images.json
       - id: open-pr
         uses: peter-evans/create-pull-request@v7.0.8
         with:
@@ -114,6 +128,40 @@ jobs:
           base: main
           branch: "renovate-manual/test-images"
           title: "Update Test Images"
+          body: |
+            (this PR is automatically generated)
+          delete-branch: true
+      - run: sleep 60 # make sure PR state is updated and API can catch up
+        if: steps.open-pr.outputs.pull-request-number != null
+      - uses: peter-evans/enable-pull-request-automerge@v3.0.0
+        if: steps.open-pr.outputs.pull-request-number != null
+        with:
+          token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          pull-request-number: ${{ steps.open-pr.outputs.pull-request-number }}
+          merge-method: squash
+  renovate-license:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.24.4
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}"]'
+      - uses: actions/checkout@v5.0.0
+      - run: |
+          sed -i "s/$(($(date +%Y) - 1))/$(date +%Y)/g" LICENSE
+      - id: open-pr
+        uses: peter-evans/create-pull-request@v7.0.8
+        with:
+          token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          commit-message: "Renovate license date"
+          base: main
+          branch: "renovate-manual/license"
+          title: "Update License Date"
           body: |
             (this PR is automatically generated)
           delete-branch: true

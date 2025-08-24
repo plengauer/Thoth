@@ -27,6 +27,7 @@ function otel_spawn(command, args, options, original) {
   options.env = options.env ? options.env : { ... process.env };
   if (command.includes('/')) command = '_otel_inject ' + command;
   shell_propagator_inject(options.env);
+  options.env['OTEL_SHELL_AUTO_INSTRUMENTATION_HINT'] = command;
   if (options.shell) {
     if (typeof options.shell == 'boolean') options.shell = '/bin/sh';
     options.env['OTEL_SHELL_COMMANDLINE_OVERRIDE'] = options.shell + ' -c ' + command + ' ' + args.join(' ');
@@ -56,6 +57,7 @@ function otel_exec(command, options, callback, original) {
   options = options ? options : {};
   options.env = options.env ? options.env : { ... process.env };
   shell_propagator_inject(options.env);
+  options.env['OTEL_SHELL_AUTO_INSTRUMENTATION_HINT'] = command;
   options.env['OTEL_SHELL_COMMANDLINE_OVERRIDE'] = (options.shell ? options.shell : '/bin/sh') + ' -c ' + command;
   options.env['OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE'] = process.pid;
   options.env['OTEL_SHELL_AUTO_INJECTED'] = 'FALSE'

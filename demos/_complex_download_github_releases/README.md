@@ -12,7 +12,7 @@ printf "HEAD $path HTTP/1.1\r\nConnection: close\r\nUser-Agent: ncat\r\nHost: $h
   | grep '^link: ' | cut -d ' '  -f 2- | tr -d ' <>' | tr ',' '\n' \
   | grep 'rel="last"' | cut -d ';' -f1 | cut -d '?' -f 2- | tr '&' '\n' \
   | grep '^page=' | cut -d = -f 2 \
-  | xargs seq 1 | xargs parallel -q curl --no-progress-meter --fail --retry 16 --retry-all-errors "$url"\&page={} ::: \
+  | xargs seq 1 | xargs -I '{}' curl --no-progress-meter --fail --retry 16 --retry-all-errors "$url"\&page={} \
   | jq '.[].assets[].browser_download_url' -r | grep '.deb$' | grep '_1.' | head --lines=3 \
   | xargs wget
 ```
@@ -36,18 +36,17 @@ bash -e demo.sh
   cut -d = -f 2
   xargs seq 1
     seq 1 4
-  head --lines=3
-  xargs parallel -q curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={} :::
-    /usr/bin/perl /usr/bin/parallel -q curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={} ::: 1 2 3 4
-      curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=4
-        GET
-      curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=1
-        GET
-      curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=2
-        GET
-      curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=3
-        GET
+  xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}
+    curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=1
+      GET
+    curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=2
+      GET
+    curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=3
+      GET
+    curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=4
+      GET
   jq .[].assets[].browser_download_url -r
+  head --lines=3
   grep .deb$
   grep _1.
   xargs wget
@@ -62,337 +61,19 @@ bash -e demo.sh
 ## Full Trace
 ```
 {
-  "trace_id": "14b668cd590fa04bde55d26762695d4f",
-  "span_id": "bc1c23770cac315f",
-  "parent_span_id": "bb1925737f4e1f80",
-  "name": "/usr/bin/perl /usr/bin/parallel -q curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={} ::: 1 2 3 4",
-  "kind": "INTERNAL",
-  "status": "UNSET",
-  "time_start": 1754729840969718016,
-  "time_end": 1754729843443085056,
-  "attributes": {
-    "shell.command_line": "/usr/bin/perl /usr/bin/parallel -q curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={} ::: 1 2 3 4",
-    "shell.command": "/usr/bin/perl",
-    "shell.command.type": "file",
-    "shell.command.name": "perl",
-    "subprocess.executable.path": "/usr/bin/perl",
-    "subprocess.executable.name": "perl",
-    "shell.command.exit_code": 0,
-    "code.filepath": "/usr/bin/otel.sh",
-    "code.lineno": 464,
-    "code.function": "_otel_inject"
-  },
-  "resource_attributes": {
-    "telemetry.sdk.language": "shell",
-    "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.6",
-    "service.name": "unknown_service",
-    "os.type": "linux",
-    "os.version": "6.11.0-1018-azure",
-    "process.pid": 5937,
-    "process.parent_pid": 4607,
-    "process.executable.name": "bash",
-    "process.executable.path": "/usr/bin/bash",
-    "process.command_line": "xargs parallel -q curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={} :::",
-    "process.command": "xargs",
-    "process.owner": "runner",
-    "process.runtime.name": "bash",
-    "process.runtime.description": "Bourne Again Shell",
-    "process.runtime.version": "5.2.21-2ubuntu4",
-    "process.runtime.options": "hBc",
-    "service.version": "",
-    "service.namespace": "",
-    "service.instance.id": ""
-  },
-  "links": [],
-  "events": []
-}
-{
-  "trace_id": "14b668cd590fa04bde55d26762695d4f",
-  "span_id": "35be2c2cebc91924",
-  "parent_span_id": "197bbb951785e216",
+  "trace_id": "c5f5d1e07e8243ddcf8a226854d10c97",
+  "span_id": "92aa62abcfc3f407",
+  "parent_span_id": "266c20807f03017d",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1754729842562641152,
-  "time_end": 1754729843305547520,
+  "time_start": 1755852654738552320,
+  "time_end": 1755852655433511424,
   "attributes": {
     "network.transport": "tcp",
     "network.protocol.name": "https",
     "network.protocol.version": "2",
-    "network.peer.address": "140.82.114.6",
-    "network.peer.port": 443,
-    "server.address": "api.github.com",
-    "server.port": 443,
-    "url.full": "https://api.github.com:443/repos/plengauer/Thoth/releases?per_page=100&page=4",
-    "url.path": "/repos/plengauer/Thoth/releases",
-    "url.query": "per_page=100&page=4",
-    "url.scheme": "https",
-    "http.request.method": "GET",
-    "http.request.header.host": [
-      "api.github.com"
-    ],
-    "user_agent.original": "curl/8.5.0",
-    "http.request.header.user-agent": [
-      "curl/8.5.0"
-    ],
-    "http.request.header.accept": [
-      "*/*"
-    ],
-    "http.request.header.traceparent": [
-      "00-14b668cd590fa04bde55d26762695d4f-197bbb951785e216-01"
-    ],
-    "http.response.status_code": 200,
-    "http.response.header.date": [
-      "Sat, 09 Aug 2025 08:57:22 GMT"
-    ],
-    "http.response.header.content-type": [
-      "application/json; charset=utf-8"
-    ],
-    "http.response.header.cache-control": [
-      "public, max-age=60, s-maxage=60"
-    ],
-    "http.response.header.vary": [
-      "Accept,Accept-Encoding, Accept, X-Requested-With"
-    ],
-    "http.response.header.etag": [
-      "W/\"ee5dd65c051ce1d9e71ec5ef172c6599889b43b304b509c7be50858883215954\""
-    ],
-    "http.response.header.x-github-media-type": [
-      "github.v3; format=json"
-    ],
-    "http.response.header.link": [
-      "<https://api.github.com/repositories/692042935/releases?per_page=100&page=3>; rel=\"prev\", <https://api.github.com/repositories/692042935/releases?per_page=100&page=1>; rel=\"first\""
-    ],
-    "http.response.header.x-github-api-version-selected": [
-      "2022-11-28"
-    ],
-    "http.response.header.access-control-expose-headers": [
-      "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset"
-    ],
-    "http.response.header.access-control-allow-origin": [
-      "*"
-    ],
-    "http.response.header.strict-transport-security": [
-      "max-age=31536000; includeSubdomains; preload"
-    ],
-    "http.response.header.x-frame-options": [
-      "deny"
-    ],
-    "http.response.header.x-content-type-options": [
-      "nosniff"
-    ],
-    "http.response.header.x-xss-protection": [
-      "0"
-    ],
-    "http.response.header.referrer-policy": [
-      "origin-when-cross-origin, strict-origin-when-cross-origin"
-    ],
-    "http.response.header.content-security-policy": [
-      "default-src 'none'"
-    ],
-    "http.response.header.server": [
-      "github.com"
-    ],
-    "http.response.header.accept-ranges": [
-      "bytes"
-    ],
-    "http.response.header.x-ratelimit-limit": [
-      "60"
-    ],
-    "http.response.header.x-ratelimit-remaining": [
-      "56"
-    ],
-    "http.response.header.x-ratelimit-reset": [
-      "1754732074"
-    ],
-    "http.response.header.x-ratelimit-resource": [
-      "core"
-    ],
-    "http.response.header.x-ratelimit-used": [
-      "4"
-    ],
-    "http.response.body.size": 15310,
-    "http.response.header.content-length": [
-      "15310"
-    ],
-    "http.response.header.x-github-request-id": [
-      "A81B:3EB72E:20174D:743163:68970D72"
-    ]
-  },
-  "resource_attributes": {
-    "telemetry.sdk.language": "shell",
-    "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.6",
-    "service.name": "unknown_service",
-    "os.type": "linux",
-    "os.version": "6.11.0-1018-azure",
-    "process.pid": 6754,
-    "process.parent_pid": 6708,
-    "process.executable.name": "bash",
-    "process.executable.path": "/usr/bin/bash",
-    "process.command_line": "/usr/bin/perl /usr/bin/parallel -q curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={} ::: 1 2 3 4",
-    "process.command": "/usr/bin/perl",
-    "process.owner": "runner",
-    "process.runtime.name": "bash",
-    "process.runtime.description": "Bourne Again Shell",
-    "process.runtime.version": "5.2.21-2ubuntu4",
-    "process.runtime.options": "hBc",
-    "service.version": "",
-    "service.namespace": "",
-    "service.instance.id": ""
-  },
-  "links": [],
-  "events": []
-}
-{
-  "trace_id": "14b668cd590fa04bde55d26762695d4f",
-  "span_id": "e2957f5da5f8f3dc",
-  "parent_span_id": "94eee9544057e91b",
-  "name": "GET",
-  "kind": "CLIENT",
-  "status": "UNSET",
-  "time_start": 1754729842567075584,
-  "time_end": 1754729843426120192,
-  "attributes": {
-    "network.transport": "tcp",
-    "network.protocol.name": "https",
-    "network.protocol.version": "2",
-    "network.peer.address": "140.82.114.6",
-    "network.peer.port": 443,
-    "server.address": "api.github.com",
-    "server.port": 443,
-    "url.full": "https://api.github.com:443/repos/plengauer/Thoth/releases?per_page=100&page=3",
-    "url.path": "/repos/plengauer/Thoth/releases",
-    "url.query": "per_page=100&page=3",
-    "url.scheme": "https",
-    "http.request.method": "GET",
-    "http.request.header.host": [
-      "api.github.com"
-    ],
-    "user_agent.original": "curl/8.5.0",
-    "http.request.header.user-agent": [
-      "curl/8.5.0"
-    ],
-    "http.request.header.accept": [
-      "*/*"
-    ],
-    "http.request.header.traceparent": [
-      "00-14b668cd590fa04bde55d26762695d4f-94eee9544057e91b-01"
-    ],
-    "http.response.status_code": 200,
-    "http.response.header.date": [
-      "Sat, 09 Aug 2025 08:57:22 GMT"
-    ],
-    "http.response.header.content-type": [
-      "application/json; charset=utf-8"
-    ],
-    "http.response.header.cache-control": [
-      "public, max-age=60, s-maxage=60"
-    ],
-    "http.response.header.vary": [
-      "Accept,Accept-Encoding, Accept, X-Requested-With"
-    ],
-    "http.response.header.etag": [
-      "W/\"05d61387c97e038dacb0255a6c04768a1a4f632eed295c7f9208718ba4b0ae48\""
-    ],
-    "http.response.header.x-github-media-type": [
-      "github.v3; format=json"
-    ],
-    "http.response.header.link": [
-      "<https://api.github.com/repositories/692042935/releases?per_page=100&page=2>; rel=\"prev\", <https://api.github.com/repositories/692042935/releases?per_page=100&page=4>; rel=\"next\", <https://api.github.com/repositories/692042935/releases?per_page=100&page=4>; rel=\"last\", <https://api.github.com/repositories/692042935/releases?per_page=100&page=1>; rel=\"first\""
-    ],
-    "http.response.header.x-github-api-version-selected": [
-      "2022-11-28"
-    ],
-    "http.response.header.access-control-expose-headers": [
-      "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset"
-    ],
-    "http.response.header.access-control-allow-origin": [
-      "*"
-    ],
-    "http.response.header.strict-transport-security": [
-      "max-age=31536000; includeSubdomains; preload"
-    ],
-    "http.response.header.x-frame-options": [
-      "deny"
-    ],
-    "http.response.header.x-content-type-options": [
-      "nosniff"
-    ],
-    "http.response.header.x-xss-protection": [
-      "0"
-    ],
-    "http.response.header.referrer-policy": [
-      "origin-when-cross-origin, strict-origin-when-cross-origin"
-    ],
-    "http.response.header.content-security-policy": [
-      "default-src 'none'"
-    ],
-    "http.response.header.server": [
-      "github.com"
-    ],
-    "http.response.header.accept-ranges": [
-      "bytes"
-    ],
-    "http.response.header.x-ratelimit-limit": [
-      "60"
-    ],
-    "http.response.header.x-ratelimit-remaining": [
-      "55"
-    ],
-    "http.response.header.x-ratelimit-reset": [
-      "1754732074"
-    ],
-    "http.response.header.x-ratelimit-resource": [
-      "core"
-    ],
-    "http.response.header.x-ratelimit-used": [
-      "5"
-    ],
-    "http.response.header.x-github-request-id": [
-      "A81A:3079B6:1EB354:6F2269:68970D72"
-    ]
-  },
-  "resource_attributes": {
-    "telemetry.sdk.language": "shell",
-    "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.6",
-    "service.name": "unknown_service",
-    "os.type": "linux",
-    "os.version": "6.11.0-1018-azure",
-    "process.pid": 6752,
-    "process.parent_pid": 6708,
-    "process.executable.name": "bash",
-    "process.executable.path": "/usr/bin/bash",
-    "process.command_line": "/usr/bin/perl /usr/bin/parallel -q curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={} ::: 1 2 3 4",
-    "process.command": "/usr/bin/perl",
-    "process.owner": "runner",
-    "process.runtime.name": "bash",
-    "process.runtime.description": "Bourne Again Shell",
-    "process.runtime.version": "5.2.21-2ubuntu4",
-    "process.runtime.options": "hBc",
-    "service.version": "",
-    "service.namespace": "",
-    "service.instance.id": ""
-  },
-  "links": [],
-  "events": []
-}
-{
-  "trace_id": "14b668cd590fa04bde55d26762695d4f",
-  "span_id": "2c9c080657be2b11",
-  "parent_span_id": "a801d75efb3884d5",
-  "name": "GET",
-  "kind": "CLIENT",
-  "status": "UNSET",
-  "time_start": 1754729842574459392,
-  "time_end": 1754729843309406464,
-  "attributes": {
-    "network.transport": "tcp",
-    "network.protocol.name": "https",
-    "network.protocol.version": "2",
-    "network.peer.address": "140.82.114.6",
+    "network.peer.address": "140.82.116.5",
     "network.peer.port": 443,
     "server.address": "api.github.com",
     "server.port": 443,
@@ -412,11 +93,11 @@ bash -e demo.sh
       "*/*"
     ],
     "http.request.header.traceparent": [
-      "00-14b668cd590fa04bde55d26762695d4f-a801d75efb3884d5-01"
+      "00-c5f5d1e07e8243ddcf8a226854d10c97-266c20807f03017d-01"
     ],
     "http.response.status_code": 200,
     "http.response.header.date": [
-      "Sat, 09 Aug 2025 08:57:22 GMT"
+      "Fri, 22 Aug 2025 08:50:55 GMT"
     ],
     "http.response.header.content-type": [
       "application/json; charset=utf-8"
@@ -428,7 +109,7 @@ bash -e demo.sh
       "Accept,Accept-Encoding, Accept, X-Requested-With"
     ],
     "http.response.header.etag": [
-      "W/\"35def3a7b9ca2cae5c9c33cbb86ab7b5a73ac1eb1fc2b31df3e298179b36e1c9\""
+      "W/\"0690ca34295bbd7b40b7654262e3a8327114e99c2fac7b8871ab67a0a27f1a09\""
     ],
     "http.response.header.x-github-media-type": [
       "github.v3; format=json"
@@ -473,34 +154,34 @@ bash -e demo.sh
       "60"
     ],
     "http.response.header.x-ratelimit-remaining": [
-      "54"
+      "56"
     ],
     "http.response.header.x-ratelimit-reset": [
-      "1754732074"
+      "1755854494"
     ],
     "http.response.header.x-ratelimit-resource": [
       "core"
     ],
     "http.response.header.x-ratelimit-used": [
-      "6"
+      "4"
     ],
     "http.response.header.x-github-request-id": [
-      "A819:1EA4A3:1E7F27:6EFCBE:68970D72"
+      "CC01:30750E:64706:673B0:68A82F6E"
     ]
   },
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.6",
+    "telemetry.sdk.version": "5.24.4",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 6749,
-    "process.parent_pid": 6708,
+    "process.pid": 5905,
+    "process.parent_pid": 4581,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
-    "process.command_line": "/usr/bin/perl /usr/bin/parallel -q curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={} ::: 1 2 3 4",
-    "process.command": "/usr/bin/perl",
+    "process.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
+    "process.command": "xargs",
     "process.owner": "runner",
     "process.runtime.name": "bash",
     "process.runtime.description": "Bourne Again Shell",
@@ -514,19 +195,19 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "14b668cd590fa04bde55d26762695d4f",
-  "span_id": "d8ddfd80a61b257b",
-  "parent_span_id": "43cb02ea68cdbb74",
+  "trace_id": "c5f5d1e07e8243ddcf8a226854d10c97",
+  "span_id": "3bd36223f88b953d",
+  "parent_span_id": "7196079f37a114d3",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1754729842590099200,
-  "time_end": 1754729843327580928,
+  "time_start": 1755852655781836032,
+  "time_end": 1755852656485928960,
   "attributes": {
     "network.transport": "tcp",
     "network.protocol.name": "https",
     "network.protocol.version": "2",
-    "network.peer.address": "140.82.114.6",
+    "network.peer.address": "140.82.116.5",
     "network.peer.port": 443,
     "server.address": "api.github.com",
     "server.port": 443,
@@ -546,11 +227,11 @@ bash -e demo.sh
       "*/*"
     ],
     "http.request.header.traceparent": [
-      "00-14b668cd590fa04bde55d26762695d4f-43cb02ea68cdbb74-01"
+      "00-c5f5d1e07e8243ddcf8a226854d10c97-7196079f37a114d3-01"
     ],
     "http.response.status_code": 200,
     "http.response.header.date": [
-      "Sat, 09 Aug 2025 08:57:22 GMT"
+      "Fri, 22 Aug 2025 08:50:56 GMT"
     ],
     "http.response.header.content-type": [
       "application/json; charset=utf-8"
@@ -562,7 +243,7 @@ bash -e demo.sh
       "Accept,Accept-Encoding, Accept, X-Requested-With"
     ],
     "http.response.header.etag": [
-      "W/\"ec322086d288ad5cc4615005ab6e9232fc2bede97ad93c8e868e966bd01a0fab\""
+      "W/\"b6f0255a8d6ec0cbab828a6b84f0d5b877ababd930b36c74703475a53d535010\""
     ],
     "http.response.header.x-github-media-type": [
       "github.v3; format=json"
@@ -607,34 +288,34 @@ bash -e demo.sh
       "60"
     ],
     "http.response.header.x-ratelimit-remaining": [
-      "53"
+      "55"
     ],
     "http.response.header.x-ratelimit-reset": [
-      "1754732074"
+      "1755854494"
     ],
     "http.response.header.x-ratelimit-resource": [
       "core"
     ],
     "http.response.header.x-ratelimit-used": [
-      "7"
+      "5"
     ],
     "http.response.header.x-github-request-id": [
-      "A81C:29304C:1CBF98:6876B9:68970D72"
+      "CC02:30750E:64A94:67764:68A82F6F"
     ]
   },
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.6",
+    "telemetry.sdk.version": "5.24.4",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 6750,
-    "process.parent_pid": 6708,
+    "process.pid": 7352,
+    "process.parent_pid": 4581,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
-    "process.command_line": "/usr/bin/perl /usr/bin/parallel -q curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={} ::: 1 2 3 4",
-    "process.command": "/usr/bin/perl",
+    "process.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
+    "process.command": "xargs",
     "process.owner": "runner",
     "process.runtime.name": "bash",
     "process.runtime.description": "Bourne Again Shell",
@@ -648,18 +329,286 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "14b668cd590fa04bde55d26762695d4f",
-  "span_id": "48d66db28d71b63f",
-  "parent_span_id": "89255ec6b55f4c1c",
+  "trace_id": "c5f5d1e07e8243ddcf8a226854d10c97",
+  "span_id": "8f2e6c4d28d1676e",
+  "parent_span_id": "3ecac9a5883ff90c",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1754729844160086528,
-  "time_end": 1754729845180883712,
+  "time_start": 1755852656833909248,
+  "time_end": 1755852657453078528,
+  "attributes": {
+    "network.transport": "tcp",
+    "network.protocol.name": "https",
+    "network.protocol.version": "2",
+    "network.peer.address": "140.82.116.5",
+    "network.peer.port": 443,
+    "server.address": "api.github.com",
+    "server.port": 443,
+    "url.full": "https://api.github.com:443/repos/plengauer/Thoth/releases?per_page=100&page=3",
+    "url.path": "/repos/plengauer/Thoth/releases",
+    "url.query": "per_page=100&page=3",
+    "url.scheme": "https",
+    "http.request.method": "GET",
+    "http.request.header.host": [
+      "api.github.com"
+    ],
+    "user_agent.original": "curl/8.5.0",
+    "http.request.header.user-agent": [
+      "curl/8.5.0"
+    ],
+    "http.request.header.accept": [
+      "*/*"
+    ],
+    "http.request.header.traceparent": [
+      "00-c5f5d1e07e8243ddcf8a226854d10c97-3ecac9a5883ff90c-01"
+    ],
+    "http.response.status_code": 200,
+    "http.response.header.date": [
+      "Fri, 22 Aug 2025 08:50:57 GMT"
+    ],
+    "http.response.header.content-type": [
+      "application/json; charset=utf-8"
+    ],
+    "http.response.header.cache-control": [
+      "public, max-age=60, s-maxage=60"
+    ],
+    "http.response.header.vary": [
+      "Accept,Accept-Encoding, Accept, X-Requested-With"
+    ],
+    "http.response.header.etag": [
+      "W/\"48d6927c5a53cf689299e918d9efaadb9b4af615ad4b7806115b399831f610eb\""
+    ],
+    "http.response.header.x-github-media-type": [
+      "github.v3; format=json"
+    ],
+    "http.response.header.link": [
+      "<https://api.github.com/repositories/692042935/releases?per_page=100&page=2>; rel=\"prev\", <https://api.github.com/repositories/692042935/releases?per_page=100&page=4>; rel=\"next\", <https://api.github.com/repositories/692042935/releases?per_page=100&page=4>; rel=\"last\", <https://api.github.com/repositories/692042935/releases?per_page=100&page=1>; rel=\"first\""
+    ],
+    "http.response.header.x-github-api-version-selected": [
+      "2022-11-28"
+    ],
+    "http.response.header.access-control-expose-headers": [
+      "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset"
+    ],
+    "http.response.header.access-control-allow-origin": [
+      "*"
+    ],
+    "http.response.header.strict-transport-security": [
+      "max-age=31536000; includeSubdomains; preload"
+    ],
+    "http.response.header.x-frame-options": [
+      "deny"
+    ],
+    "http.response.header.x-content-type-options": [
+      "nosniff"
+    ],
+    "http.response.header.x-xss-protection": [
+      "0"
+    ],
+    "http.response.header.referrer-policy": [
+      "origin-when-cross-origin, strict-origin-when-cross-origin"
+    ],
+    "http.response.header.content-security-policy": [
+      "default-src 'none'"
+    ],
+    "http.response.header.server": [
+      "github.com"
+    ],
+    "http.response.header.accept-ranges": [
+      "bytes"
+    ],
+    "http.response.header.x-ratelimit-limit": [
+      "60"
+    ],
+    "http.response.header.x-ratelimit-remaining": [
+      "54"
+    ],
+    "http.response.header.x-ratelimit-reset": [
+      "1755854494"
+    ],
+    "http.response.header.x-ratelimit-resource": [
+      "core"
+    ],
+    "http.response.header.x-ratelimit-used": [
+      "6"
+    ],
+    "http.response.header.x-github-request-id": [
+      "CC03:1490C4:54E73:57A4A:68A82F70"
+    ]
+  },
+  "resource_attributes": {
+    "telemetry.sdk.language": "shell",
+    "telemetry.sdk.name": "opentelemetry",
+    "telemetry.sdk.version": "5.24.4",
+    "service.name": "unknown_service",
+    "os.type": "linux",
+    "os.version": "6.11.0-1018-azure",
+    "process.pid": 8245,
+    "process.parent_pid": 4581,
+    "process.executable.name": "bash",
+    "process.executable.path": "/usr/bin/bash",
+    "process.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
+    "process.command": "xargs",
+    "process.owner": "runner",
+    "process.runtime.name": "bash",
+    "process.runtime.description": "Bourne Again Shell",
+    "process.runtime.version": "5.2.21-2ubuntu4",
+    "process.runtime.options": "hBc",
+    "service.version": "",
+    "service.namespace": "",
+    "service.instance.id": ""
+  },
+  "links": [],
+  "events": []
+}
+{
+  "trace_id": "c5f5d1e07e8243ddcf8a226854d10c97",
+  "span_id": "0bb7bad80dc1ebb0",
+  "parent_span_id": "fab439faa02af17e",
+  "name": "GET",
+  "kind": "CLIENT",
+  "status": "UNSET",
+  "time_start": 1755852657803745536,
+  "time_end": 1755852658269748736,
+  "attributes": {
+    "network.transport": "tcp",
+    "network.protocol.name": "https",
+    "network.protocol.version": "2",
+    "network.peer.address": "140.82.116.5",
+    "network.peer.port": 443,
+    "server.address": "api.github.com",
+    "server.port": 443,
+    "url.full": "https://api.github.com:443/repos/plengauer/Thoth/releases?per_page=100&page=4",
+    "url.path": "/repos/plengauer/Thoth/releases",
+    "url.query": "per_page=100&page=4",
+    "url.scheme": "https",
+    "http.request.method": "GET",
+    "http.request.header.host": [
+      "api.github.com"
+    ],
+    "user_agent.original": "curl/8.5.0",
+    "http.request.header.user-agent": [
+      "curl/8.5.0"
+    ],
+    "http.request.header.accept": [
+      "*/*"
+    ],
+    "http.request.header.traceparent": [
+      "00-c5f5d1e07e8243ddcf8a226854d10c97-fab439faa02af17e-01"
+    ],
+    "http.response.status_code": 200,
+    "http.response.header.date": [
+      "Fri, 22 Aug 2025 08:50:57 GMT"
+    ],
+    "http.response.header.content-type": [
+      "application/json; charset=utf-8"
+    ],
+    "http.response.header.cache-control": [
+      "public, max-age=60, s-maxage=60"
+    ],
+    "http.response.header.vary": [
+      "Accept,Accept-Encoding, Accept, X-Requested-With"
+    ],
+    "http.response.header.etag": [
+      "W/\"c635a32a6a3d98c7313c8edc29f88762e2ec0800b62ba26e7916c10df9d5ca57\""
+    ],
+    "http.response.header.x-github-media-type": [
+      "github.v3; format=json"
+    ],
+    "http.response.header.link": [
+      "<https://api.github.com/repositories/692042935/releases?per_page=100&page=3>; rel=\"prev\", <https://api.github.com/repositories/692042935/releases?per_page=100&page=1>; rel=\"first\""
+    ],
+    "http.response.header.x-github-api-version-selected": [
+      "2022-11-28"
+    ],
+    "http.response.header.access-control-expose-headers": [
+      "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset"
+    ],
+    "http.response.header.access-control-allow-origin": [
+      "*"
+    ],
+    "http.response.header.strict-transport-security": [
+      "max-age=31536000; includeSubdomains; preload"
+    ],
+    "http.response.header.x-frame-options": [
+      "deny"
+    ],
+    "http.response.header.x-content-type-options": [
+      "nosniff"
+    ],
+    "http.response.header.x-xss-protection": [
+      "0"
+    ],
+    "http.response.header.referrer-policy": [
+      "origin-when-cross-origin, strict-origin-when-cross-origin"
+    ],
+    "http.response.header.content-security-policy": [
+      "default-src 'none'"
+    ],
+    "http.response.header.server": [
+      "github.com"
+    ],
+    "http.response.header.accept-ranges": [
+      "bytes"
+    ],
+    "http.response.header.x-ratelimit-limit": [
+      "60"
+    ],
+    "http.response.header.x-ratelimit-remaining": [
+      "53"
+    ],
+    "http.response.header.x-ratelimit-reset": [
+      "1755854494"
+    ],
+    "http.response.header.x-ratelimit-resource": [
+      "core"
+    ],
+    "http.response.header.x-ratelimit-used": [
+      "7"
+    ],
+    "http.response.header.x-github-request-id": [
+      "CC04:1490C4:551C4:57DBD:68A82F71"
+    ]
+  },
+  "resource_attributes": {
+    "telemetry.sdk.language": "shell",
+    "telemetry.sdk.name": "opentelemetry",
+    "telemetry.sdk.version": "5.24.4",
+    "service.name": "unknown_service",
+    "os.type": "linux",
+    "os.version": "6.11.0-1018-azure",
+    "process.pid": 9138,
+    "process.parent_pid": 4581,
+    "process.executable.name": "bash",
+    "process.executable.path": "/usr/bin/bash",
+    "process.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
+    "process.command": "xargs",
+    "process.owner": "runner",
+    "process.runtime.name": "bash",
+    "process.runtime.description": "Bourne Again Shell",
+    "process.runtime.version": "5.2.21-2ubuntu4",
+    "process.runtime.options": "hBc",
+    "service.version": "",
+    "service.namespace": "",
+    "service.instance.id": ""
+  },
+  "links": [],
+  "events": []
+}
+{
+  "trace_id": "c5f5d1e07e8243ddcf8a226854d10c97",
+  "span_id": "8eb2ef68832bde6f",
+  "parent_span_id": "0823f4ef39eebd32",
+  "name": "GET",
+  "kind": "CLIENT",
+  "status": "UNSET",
+  "time_start": 1755852659134543360,
+  "time_end": 1755852660152392960,
   "attributes": {
     "network.protocol.name": "https",
     "network.transport": "tcp",
-    "network.peer.address": "140.82.114.4",
+    "network.peer.address": "140.82.116.3",
     "network.peer.port": 443,
     "server.address": "github.com",
     "server.port": 443,
@@ -673,12 +622,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.6",
+    "telemetry.sdk.version": "5.24.4",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 12953,
-    "process.parent_pid": 4539,
+    "process.pid": 10034,
+    "process.parent_pid": 4529,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs wget",
@@ -696,14 +645,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "14b668cd590fa04bde55d26762695d4f",
-  "span_id": "ef65255b7b12fed2",
-  "parent_span_id": "89255ec6b55f4c1c",
+  "trace_id": "c5f5d1e07e8243ddcf8a226854d10c97",
+  "span_id": "f004247fcb0ad5a9",
+  "parent_span_id": "0823f4ef39eebd32",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1754729844253672192,
-  "time_end": 1754729845216749824,
+  "time_start": 1755852659310138368,
+  "time_end": 1755852660226015232,
   "attributes": {
     "network.protocol.name": "https",
     "network.transport": "tcp",
@@ -711,9 +660,9 @@ bash -e demo.sh
     "network.peer.port": 443,
     "server.address": "release-assets.githubusercontent.com",
     "server.port": 443,
-    "url.full": "https://release-assets.githubusercontent.com/github-production-release-asset/692042935/5544a935-3cf9-4f9b-b6ed-d668fd012e99?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-08-09T09%3A35%3A21Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.7.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-08-09T08%3A34%3A48Z&ske=2025-08-09T09%3A35%3A21Z&sks=b&skv=2018-11-09&sig=Gbu2rurW0g%2B0%2Bp09JnaeObdzTOlCfdHCEKu1JQ6EBC4%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NDczMDE0NCwibmJmIjoxNzU0NzI5ODQ0LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.0nXWzDadYrEEaByti_T22wQGRFTgS73JT2PR_bi2C5g&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.7.deb&response-content-type=application%2Foctet-stream",
+    "url.full": "https://release-assets.githubusercontent.com/github-production-release-asset/692042935/5544a935-3cf9-4f9b-b6ed-d668fd012e99?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-08-22T09%3A39%3A04Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.7.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-08-22T08%3A38%3A30Z&ske=2025-08-22T09%3A39%3A04Z&sks=b&skv=2018-11-09&sig=nlBtw1%2F%2B%2FTO%2BU%2FSo2cWiBjW6kW6CxKuXo4fwVUgQCQA%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NTg1Mjk1OSwibmJmIjoxNzU1ODUyNjU5LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.mtcC9szQPICt4kG3aa_FtWGnBCk0pQLwvl5-l5RPrJY&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.7.deb&response-content-type=application%2Foctet-stream",
     "url.path": "/github-production-release-asset/692042935/5544a935-3cf9-4f9b-b6ed-d668fd012e99",
-    "url.query": "sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-08-09T09%3A35%3A21Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.7.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-08-09T08%3A34%3A48Z&ske=2025-08-09T09%3A35%3A21Z&sks=b&skv=2018-11-09&sig=Gbu2rurW0g%2B0%2Bp09JnaeObdzTOlCfdHCEKu1JQ6EBC4%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NDczMDE0NCwibmJmIjoxNzU0NzI5ODQ0LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.0nXWzDadYrEEaByti_T22wQGRFTgS73JT2PR_bi2C5g&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.7.deb&response-content-type=application%2Foctet-stream",
+    "url.query": "sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-08-22T09%3A39%3A04Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.7.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-08-22T08%3A38%3A30Z&ske=2025-08-22T09%3A39%3A04Z&sks=b&skv=2018-11-09&sig=nlBtw1%2F%2B%2FTO%2BU%2FSo2cWiBjW6kW6CxKuXo4fwVUgQCQA%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NTg1Mjk1OSwibmJmIjoxNzU1ODUyNjU5LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.mtcC9szQPICt4kG3aa_FtWGnBCk0pQLwvl5-l5RPrJY&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.7.deb&response-content-type=application%2Foctet-stream",
     "url.scheme": "https",
     "user_agent.original": "wget",
     "http.request.method": "GET",
@@ -728,12 +677,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.6",
+    "telemetry.sdk.version": "5.24.4",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 12953,
-    "process.parent_pid": 4539,
+    "process.pid": 10034,
+    "process.parent_pid": 4529,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs wget",
@@ -751,18 +700,18 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "14b668cd590fa04bde55d26762695d4f",
-  "span_id": "65463c85ce9b1548",
-  "parent_span_id": "89255ec6b55f4c1c",
+  "trace_id": "c5f5d1e07e8243ddcf8a226854d10c97",
+  "span_id": "ae6db629205a19e9",
+  "parent_span_id": "0823f4ef39eebd32",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1754729845222291200,
-  "time_end": 1754729846247266560,
+  "time_start": 1755852660237787904,
+  "time_end": 1755852661255240448,
   "attributes": {
     "network.protocol.name": "https",
     "network.transport": "tcp",
-    "network.peer.address": "140.82.114.4",
+    "network.peer.address": "140.82.116.3",
     "network.peer.port": 443,
     "server.address": "github.com",
     "server.port": 443,
@@ -776,12 +725,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.6",
+    "telemetry.sdk.version": "5.24.4",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 12953,
-    "process.parent_pid": 4539,
+    "process.pid": 10034,
+    "process.parent_pid": 4529,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs wget",
@@ -799,14 +748,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "14b668cd590fa04bde55d26762695d4f",
-  "span_id": "50a7d27a7fd1aba4",
-  "parent_span_id": "89255ec6b55f4c1c",
+  "trace_id": "c5f5d1e07e8243ddcf8a226854d10c97",
+  "span_id": "5b81b5d0ca5ba535",
+  "parent_span_id": "0823f4ef39eebd32",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1754729845325512960,
-  "time_end": 1754729846283857920,
+  "time_start": 1755852660403537664,
+  "time_end": 1755852661331837952,
   "attributes": {
     "network.protocol.name": "https",
     "network.transport": "tcp",
@@ -814,9 +763,9 @@ bash -e demo.sh
     "network.peer.port": 443,
     "server.address": "release-assets.githubusercontent.com",
     "server.port": 443,
-    "url.full": "https://release-assets.githubusercontent.com/github-production-release-asset/692042935/e8091cbc-915a-4ba7-bca7-308817fe26c4?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-08-09T09%3A52%3A13Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.6.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-08-09T08%3A51%3A52Z&ske=2025-08-09T09%3A52%3A13Z&sks=b&skv=2018-11-09&sig=7C2smqI6QV%2B45ADeUp9AfYSRFSWldrKXXHB2HVZRU6E%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NDczMDE0NSwibmJmIjoxNzU0NzI5ODQ1LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.pmYS2kQ8ULjsE7m8mp0G5d0-YgYupLAY0Din10ypCzo&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.6.deb&response-content-type=application%2Foctet-stream",
+    "url.full": "https://release-assets.githubusercontent.com/github-production-release-asset/692042935/e8091cbc-915a-4ba7-bca7-308817fe26c4?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-08-22T09%3A39%3A54Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.6.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-08-22T08%3A39%3A21Z&ske=2025-08-22T09%3A39%3A54Z&sks=b&skv=2018-11-09&sig=a%2BF%2BISiwNEFvQVPBetZThuRhx%2FoOQeHya%2B5vLyzZp5c%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NTg1Mjk2MCwibmJmIjoxNzU1ODUyNjYwLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.JADYPFHTNYJ1UDpwAG7dEG7JMIIpG25u8cJ1pjcJen0&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.6.deb&response-content-type=application%2Foctet-stream",
     "url.path": "/github-production-release-asset/692042935/e8091cbc-915a-4ba7-bca7-308817fe26c4",
-    "url.query": "sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-08-09T09%3A52%3A13Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.6.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-08-09T08%3A51%3A52Z&ske=2025-08-09T09%3A52%3A13Z&sks=b&skv=2018-11-09&sig=7C2smqI6QV%2B45ADeUp9AfYSRFSWldrKXXHB2HVZRU6E%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NDczMDE0NSwibmJmIjoxNzU0NzI5ODQ1LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.pmYS2kQ8ULjsE7m8mp0G5d0-YgYupLAY0Din10ypCzo&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.6.deb&response-content-type=application%2Foctet-stream",
+    "url.query": "sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-08-22T09%3A39%3A54Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.6.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-08-22T08%3A39%3A21Z&ske=2025-08-22T09%3A39%3A54Z&sks=b&skv=2018-11-09&sig=a%2BF%2BISiwNEFvQVPBetZThuRhx%2FoOQeHya%2B5vLyzZp5c%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NTg1Mjk2MCwibmJmIjoxNzU1ODUyNjYwLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.JADYPFHTNYJ1UDpwAG7dEG7JMIIpG25u8cJ1pjcJen0&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.6.deb&response-content-type=application%2Foctet-stream",
     "url.scheme": "https",
     "user_agent.original": "wget",
     "http.request.method": "GET",
@@ -831,12 +780,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.6",
+    "telemetry.sdk.version": "5.24.4",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 12953,
-    "process.parent_pid": 4539,
+    "process.pid": 10034,
+    "process.parent_pid": 4529,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs wget",
@@ -854,18 +803,18 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "14b668cd590fa04bde55d26762695d4f",
-  "span_id": "884699d84903562c",
-  "parent_span_id": "89255ec6b55f4c1c",
+  "trace_id": "c5f5d1e07e8243ddcf8a226854d10c97",
+  "span_id": "c10385da6690f33c",
+  "parent_span_id": "0823f4ef39eebd32",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1754729846284088576,
-  "time_end": 1754729847313584128,
+  "time_start": 1755852661343659008,
+  "time_end": 1755852662372261376,
   "attributes": {
     "network.protocol.name": "https",
     "network.transport": "tcp",
-    "network.peer.address": "140.82.114.4",
+    "network.peer.address": "140.82.116.3",
     "network.peer.port": 443,
     "server.address": "github.com",
     "server.port": 443,
@@ -879,12 +828,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.6",
+    "telemetry.sdk.version": "5.24.4",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 12953,
-    "process.parent_pid": 4539,
+    "process.pid": 10034,
+    "process.parent_pid": 4529,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs wget",
@@ -902,14 +851,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "14b668cd590fa04bde55d26762695d4f",
-  "span_id": "2d42120d7fe70cb9",
-  "parent_span_id": "89255ec6b55f4c1c",
+  "trace_id": "c5f5d1e07e8243ddcf8a226854d10c97",
+  "span_id": "627fbdc281b5e158",
+  "parent_span_id": "0823f4ef39eebd32",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1754729846368179712,
-  "time_end": 1754729847333778944,
+  "time_start": 1755852661530089216,
+  "time_end": 1755852662431962624,
   "attributes": {
     "network.protocol.name": "https",
     "network.transport": "tcp",
@@ -917,9 +866,9 @@ bash -e demo.sh
     "network.peer.port": 443,
     "server.address": "release-assets.githubusercontent.com",
     "server.port": 443,
-    "url.full": "https://release-assets.githubusercontent.com/github-production-release-asset/692042935/25d95ab9-56aa-4a77-8e84-d4947ecef0fc?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-08-09T09%3A50%3A54Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.5.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-08-09T08%3A50%3A52Z&ske=2025-08-09T09%3A50%3A54Z&sks=b&skv=2018-11-09&sig=vHQNqSGZKYqX5y9RuFfpFxY8QyFHAp6C%2BP9YCXIkEQI%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NDczMDE0NiwibmJmIjoxNzU0NzI5ODQ2LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.s7tRhoZZqfd-wEjU5hZldytRpjLIARanrx_-x1BDPIk&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.5.deb&response-content-type=application%2Foctet-stream",
+    "url.full": "https://release-assets.githubusercontent.com/github-production-release-asset/692042935/25d95ab9-56aa-4a77-8e84-d4947ecef0fc?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-08-22T09%3A41%3A24Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.5.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-08-22T08%3A41%3A00Z&ske=2025-08-22T09%3A41%3A24Z&sks=b&skv=2018-11-09&sig=ZhylJg9jMFxcSKZ%2BTmU2D7czkX81b7pK9ocO9xymf78%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NTg1Mjk2MSwibmJmIjoxNzU1ODUyNjYxLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.eQbbxlxrX11xwd_F9iy8krVbiFv2trT50TTqiOhfNvM&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.5.deb&response-content-type=application%2Foctet-stream",
     "url.path": "/github-production-release-asset/692042935/25d95ab9-56aa-4a77-8e84-d4947ecef0fc",
-    "url.query": "sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-08-09T09%3A50%3A54Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.5.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-08-09T08%3A50%3A52Z&ske=2025-08-09T09%3A50%3A54Z&sks=b&skv=2018-11-09&sig=vHQNqSGZKYqX5y9RuFfpFxY8QyFHAp6C%2BP9YCXIkEQI%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NDczMDE0NiwibmJmIjoxNzU0NzI5ODQ2LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.s7tRhoZZqfd-wEjU5hZldytRpjLIARanrx_-x1BDPIk&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.5.deb&response-content-type=application%2Foctet-stream",
+    "url.query": "sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-08-22T09%3A41%3A24Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.5.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-08-22T08%3A41%3A00Z&ske=2025-08-22T09%3A41%3A24Z&sks=b&skv=2018-11-09&sig=ZhylJg9jMFxcSKZ%2BTmU2D7czkX81b7pK9ocO9xymf78%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NTg1Mjk2MSwibmJmIjoxNzU1ODUyNjYxLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.eQbbxlxrX11xwd_F9iy8krVbiFv2trT50TTqiOhfNvM&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.5.deb&response-content-type=application%2Foctet-stream",
     "url.scheme": "https",
     "user_agent.original": "wget",
     "http.request.method": "GET",
@@ -934,12 +883,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.6",
+    "telemetry.sdk.version": "5.24.4",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 12953,
-    "process.parent_pid": 4539,
+    "process.pid": 10034,
+    "process.parent_pid": 4529,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs wget",
@@ -957,14 +906,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "14b668cd590fa04bde55d26762695d4f",
-  "span_id": "e3c089e5e7b7cd7b",
-  "parent_span_id": "33ab783f3cbcf830",
+  "trace_id": "c5f5d1e07e8243ddcf8a226854d10c97",
+  "span_id": "528b027d0a4c89ee",
+  "parent_span_id": "c0762cebfab6612c",
   "name": "HEAD",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1754729836278872320,
-  "time_end": 1754729839644801024,
+  "time_start": 1755852649955015168,
+  "time_end": 1755852653390247936,
   "attributes": {
     "network.transport": "tcp",
     "network.peer.port": 443,
@@ -990,7 +939,7 @@ bash -e demo.sh
     ],
     "http.response.status_code": 200,
     "http.response.header.date": [
-      "Sat, 09 Aug 2025 08:57:16 GMT"
+      "Fri, 22 Aug 2025 08:50:50 GMT"
     ],
     "http.response.header.content-type": [
       "application/json; charset=utf-8"
@@ -1002,7 +951,7 @@ bash -e demo.sh
       "Accept,Accept-Encoding, Accept, X-Requested-With"
     ],
     "http.response.header.etag": [
-      "W/\"a7cdc58e2dadd312cc7c42e79fe4b9a22f0257d6a04c46de844df0c524dca80b\""
+      "W/\"1cf68a4a6082cab5fd8b3069a8ccc8ae2c47a03767cea37a2770565907209447\""
     ],
     "http.response.header.x-github-media-type": [
       "github.v3; format=json"
@@ -1050,7 +999,7 @@ bash -e demo.sh
       "57"
     ],
     "http.response.header.x-ratelimit-reset": [
-      "1754732074"
+      "1755854494"
     ],
     "http.response.header.x-ratelimit-resource": [
       "core"
@@ -1059,7 +1008,7 @@ bash -e demo.sh
       "3"
     ],
     "http.response.header.x-github-request-id": [
-      "A818:1A2079:210021:77449A:68970D6C"
+      "CC00:21F534:52310:54D89:68A82F69"
     ],
     "http.response.header.connection": [
       "close"
@@ -1069,12 +1018,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.6",
+    "telemetry.sdk.version": "5.24.4",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3110,
-    "process.parent_pid": 2353,
+    "process.pid": 3102,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1092,24 +1041,24 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "14b668cd590fa04bde55d26762695d4f",
-  "span_id": "f846f6de2b2abf09",
+  "trace_id": "c5f5d1e07e8243ddcf8a226854d10c97",
+  "span_id": "576a2a489bc41827",
   "parent_span_id": null,
   "name": "bash -e demo.sh",
   "kind": "SERVER",
   "status": "UNSET",
-  "time_start": 1754729835933220608,
-  "time_end": 1754729847376050432,
+  "time_start": 1755852649582799104,
+  "time_end": 1755852662476907776,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.6",
+    "telemetry.sdk.version": "5.24.4",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3110,
-    "process.parent_pid": 2353,
+    "process.pid": 3102,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1127,14 +1076,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "14b668cd590fa04bde55d26762695d4f",
-  "span_id": "a801d75efb3884d5",
-  "parent_span_id": "bc1c23770cac315f",
+  "trace_id": "c5f5d1e07e8243ddcf8a226854d10c97",
+  "span_id": "266c20807f03017d",
+  "parent_span_id": "657422e18ac9097f",
   "name": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=1",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754729842428228608,
-  "time_end": 1754729843314704128,
+  "time_start": 1755852654645835520,
+  "time_end": 1755852655437240832,
   "attributes": {
     "shell.command_line": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=1",
     "shell.command": "curl",
@@ -1150,16 +1099,16 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.6",
+    "telemetry.sdk.version": "5.24.4",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 6749,
-    "process.parent_pid": 6708,
+    "process.pid": 5905,
+    "process.parent_pid": 4581,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
-    "process.command_line": "/usr/bin/perl /usr/bin/parallel -q curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={} ::: 1 2 3 4",
-    "process.command": "/usr/bin/perl",
+    "process.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
+    "process.command": "xargs",
     "process.owner": "runner",
     "process.runtime.name": "bash",
     "process.runtime.description": "Bourne Again Shell",
@@ -1173,14 +1122,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "14b668cd590fa04bde55d26762695d4f",
-  "span_id": "43cb02ea68cdbb74",
-  "parent_span_id": "bc1c23770cac315f",
+  "trace_id": "c5f5d1e07e8243ddcf8a226854d10c97",
+  "span_id": "7196079f37a114d3",
+  "parent_span_id": "657422e18ac9097f",
   "name": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=2",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754729842464188672,
-  "time_end": 1754729843334298112,
+  "time_start": 1755852655691995648,
+  "time_end": 1755852656489458688,
   "attributes": {
     "shell.command_line": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=2",
     "shell.command": "curl",
@@ -1196,16 +1145,16 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.6",
+    "telemetry.sdk.version": "5.24.4",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 6750,
-    "process.parent_pid": 6708,
+    "process.pid": 7352,
+    "process.parent_pid": 4581,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
-    "process.command_line": "/usr/bin/perl /usr/bin/parallel -q curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={} ::: 1 2 3 4",
-    "process.command": "/usr/bin/perl",
+    "process.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
+    "process.command": "xargs",
     "process.owner": "runner",
     "process.runtime.name": "bash",
     "process.runtime.description": "Bourne Again Shell",
@@ -1219,14 +1168,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "14b668cd590fa04bde55d26762695d4f",
-  "span_id": "94eee9544057e91b",
-  "parent_span_id": "bc1c23770cac315f",
+  "trace_id": "c5f5d1e07e8243ddcf8a226854d10c97",
+  "span_id": "3ecac9a5883ff90c",
+  "parent_span_id": "657422e18ac9097f",
   "name": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=3",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754729842426279424,
-  "time_end": 1754729843429805312,
+  "time_start": 1755852656743075840,
+  "time_end": 1755852657456681216,
   "attributes": {
     "shell.command_line": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=3",
     "shell.command": "curl",
@@ -1242,16 +1191,16 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.6",
+    "telemetry.sdk.version": "5.24.4",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 6752,
-    "process.parent_pid": 6708,
+    "process.pid": 8245,
+    "process.parent_pid": 4581,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
-    "process.command_line": "/usr/bin/perl /usr/bin/parallel -q curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={} ::: 1 2 3 4",
-    "process.command": "/usr/bin/perl",
+    "process.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
+    "process.command": "xargs",
     "process.owner": "runner",
     "process.runtime.name": "bash",
     "process.runtime.description": "Bourne Again Shell",
@@ -1265,14 +1214,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "14b668cd590fa04bde55d26762695d4f",
-  "span_id": "197bbb951785e216",
-  "parent_span_id": "bc1c23770cac315f",
+  "trace_id": "c5f5d1e07e8243ddcf8a226854d10c97",
+  "span_id": "fab439faa02af17e",
+  "parent_span_id": "657422e18ac9097f",
   "name": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=4",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754729842428566016,
-  "time_end": 1754729843311224064,
+  "time_start": 1755852657710390016,
+  "time_end": 1755852658273556736,
   "attributes": {
     "shell.command_line": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=4",
     "shell.command": "curl",
@@ -1288,16 +1237,16 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.6",
+    "telemetry.sdk.version": "5.24.4",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 6754,
-    "process.parent_pid": 6708,
+    "process.pid": 9138,
+    "process.parent_pid": 4581,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
-    "process.command_line": "/usr/bin/perl /usr/bin/parallel -q curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={} ::: 1 2 3 4",
-    "process.command": "/usr/bin/perl",
+    "process.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
+    "process.command": "xargs",
     "process.owner": "runner",
     "process.runtime.name": "bash",
     "process.runtime.description": "Bourne Again Shell",
@@ -1311,14 +1260,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "14b668cd590fa04bde55d26762695d4f",
-  "span_id": "bda5a98bb69cecd8",
-  "parent_span_id": "f846f6de2b2abf09",
+  "trace_id": "c5f5d1e07e8243ddcf8a226854d10c97",
+  "span_id": "601eccbf6ea8673b",
+  "parent_span_id": "576a2a489bc41827",
   "name": "cut -d   -f 2-",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754729835966977024,
-  "time_end": 1754729839656743936,
+  "time_start": 1755852649640613120,
+  "time_end": 1755852653402617856,
   "attributes": {
     "shell.command_line": "cut -d   -f 2-",
     "shell.command": "cut",
@@ -1333,12 +1282,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.6",
+    "telemetry.sdk.version": "5.24.4",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3110,
-    "process.parent_pid": 2353,
+    "process.pid": 3102,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1356,14 +1305,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "14b668cd590fa04bde55d26762695d4f",
-  "span_id": "50dbbd67b833886e",
-  "parent_span_id": "f846f6de2b2abf09",
+  "trace_id": "c5f5d1e07e8243ddcf8a226854d10c97",
+  "span_id": "10d5963aa8a40d83",
+  "parent_span_id": "576a2a489bc41827",
   "name": "cut -d ; -f1",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754729835961563904,
-  "time_end": 1754729839666308096,
+  "time_start": 1755852649628774144,
+  "time_end": 1755852653412219392,
   "attributes": {
     "shell.command_line": "cut -d ; -f1",
     "shell.command": "cut",
@@ -1378,12 +1327,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.6",
+    "telemetry.sdk.version": "5.24.4",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3110,
-    "process.parent_pid": 2353,
+    "process.pid": 3102,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1401,14 +1350,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "14b668cd590fa04bde55d26762695d4f",
-  "span_id": "f3edf98f84770c05",
-  "parent_span_id": "f846f6de2b2abf09",
+  "trace_id": "c5f5d1e07e8243ddcf8a226854d10c97",
+  "span_id": "851b00227bd4cd77",
+  "parent_span_id": "576a2a489bc41827",
   "name": "cut -d = -f 2",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754729835978838528,
-  "time_end": 1754729839675960320,
+  "time_start": 1755852649631981312,
+  "time_end": 1755852653422060800,
   "attributes": {
     "shell.command_line": "cut -d = -f 2",
     "shell.command": "cut",
@@ -1423,12 +1372,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.6",
+    "telemetry.sdk.version": "5.24.4",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3110,
-    "process.parent_pid": 2353,
+    "process.pid": 3102,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1446,14 +1395,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "14b668cd590fa04bde55d26762695d4f",
-  "span_id": "f886d0dd5f065259",
-  "parent_span_id": "f846f6de2b2abf09",
+  "trace_id": "c5f5d1e07e8243ddcf8a226854d10c97",
+  "span_id": "c1177678826ced27",
+  "parent_span_id": "576a2a489bc41827",
   "name": "cut -d ? -f 2-",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754729835956244736,
-  "time_end": 1754729839668774912,
+  "time_start": 1755852649638395648,
+  "time_end": 1755852653414599424,
   "attributes": {
     "shell.command_line": "cut -d ? -f 2-",
     "shell.command": "cut",
@@ -1468,12 +1417,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.6",
+    "telemetry.sdk.version": "5.24.4",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3110,
-    "process.parent_pid": 2353,
+    "process.pid": 3102,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1491,14 +1440,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "14b668cd590fa04bde55d26762695d4f",
-  "span_id": "03011f1c101b7418",
-  "parent_span_id": "f846f6de2b2abf09",
+  "trace_id": "c5f5d1e07e8243ddcf8a226854d10c97",
+  "span_id": "385cfa439e843afc",
+  "parent_span_id": "576a2a489bc41827",
   "name": "grep .deb$",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754729835990054400,
-  "time_end": 1754729843514890240,
+  "time_start": 1755852649631846912,
+  "time_end": 1755852658315243008,
   "attributes": {
     "shell.command_line": "grep .deb$",
     "shell.command": "grep",
@@ -1513,12 +1462,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.6",
+    "telemetry.sdk.version": "5.24.4",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3110,
-    "process.parent_pid": 2353,
+    "process.pid": 3102,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1536,14 +1485,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "14b668cd590fa04bde55d26762695d4f",
-  "span_id": "6a191a78e18cc840",
-  "parent_span_id": "f846f6de2b2abf09",
+  "trace_id": "c5f5d1e07e8243ddcf8a226854d10c97",
+  "span_id": "3057f6b7e54ccf97",
+  "parent_span_id": "576a2a489bc41827",
   "name": "grep ^link:",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754729835972822528,
-  "time_end": 1754729839654319360,
+  "time_start": 1755852649611050752,
+  "time_end": 1755852653400202752,
   "attributes": {
     "shell.command_line": "grep ^link:",
     "shell.command": "grep",
@@ -1558,12 +1507,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.6",
+    "telemetry.sdk.version": "5.24.4",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3110,
-    "process.parent_pid": 2353,
+    "process.pid": 3102,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1581,14 +1530,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "14b668cd590fa04bde55d26762695d4f",
-  "span_id": "df534d22cbd2a472",
-  "parent_span_id": "f846f6de2b2abf09",
+  "trace_id": "c5f5d1e07e8243ddcf8a226854d10c97",
+  "span_id": "569194ecefb424a5",
+  "parent_span_id": "576a2a489bc41827",
   "name": "grep ^page=",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754729835972959744,
-  "time_end": 1754729839673678080,
+  "time_start": 1755852649631718144,
+  "time_end": 1755852653419612416,
   "attributes": {
     "shell.command_line": "grep ^page=",
     "shell.command": "grep",
@@ -1603,12 +1552,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.6",
+    "telemetry.sdk.version": "5.24.4",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3110,
-    "process.parent_pid": 2353,
+    "process.pid": 3102,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1626,14 +1575,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "14b668cd590fa04bde55d26762695d4f",
-  "span_id": "c020c333deab8ff0",
-  "parent_span_id": "f846f6de2b2abf09",
+  "trace_id": "c5f5d1e07e8243ddcf8a226854d10c97",
+  "span_id": "b687bfee4a5400b1",
+  "parent_span_id": "576a2a489bc41827",
   "name": "grep _1.",
   "kind": "INTERNAL",
   "status": "ERROR",
-  "time_start": 1754729835989813248,
-  "time_end": 1754729843518425600,
+  "time_start": 1755852649640495872,
+  "time_end": 1755852658318975744,
   "attributes": {
     "shell.command_line": "grep _1.",
     "shell.command": "grep",
@@ -1648,12 +1597,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.6",
+    "telemetry.sdk.version": "5.24.4",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3110,
-    "process.parent_pid": 2353,
+    "process.pid": 3102,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1671,14 +1620,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "14b668cd590fa04bde55d26762695d4f",
-  "span_id": "35fa4c43facc14fc",
-  "parent_span_id": "f846f6de2b2abf09",
+  "trace_id": "c5f5d1e07e8243ddcf8a226854d10c97",
+  "span_id": "38e3e1443b8ecbda",
+  "parent_span_id": "576a2a489bc41827",
   "name": "grep rel=\"last\"",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754729835962617344,
-  "time_end": 1754729839663934464,
+  "time_start": 1755852649632103168,
+  "time_end": 1755852653409794560,
   "attributes": {
     "shell.command_line": "grep rel=\"last\"",
     "shell.command": "grep",
@@ -1693,12 +1642,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.6",
+    "telemetry.sdk.version": "5.24.4",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3110,
-    "process.parent_pid": 2353,
+    "process.pid": 3102,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1716,14 +1665,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "14b668cd590fa04bde55d26762695d4f",
-  "span_id": "ce9354022a708b9a",
-  "parent_span_id": "f846f6de2b2abf09",
+  "trace_id": "c5f5d1e07e8243ddcf8a226854d10c97",
+  "span_id": "cb435e9caa2967d8",
+  "parent_span_id": "576a2a489bc41827",
   "name": "head --lines=3",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754729835986058240,
-  "time_end": 1754729843441301760,
+  "time_start": 1755852649642633984,
+  "time_end": 1755852658315153920,
   "attributes": {
     "shell.command_line": "head --lines=3",
     "shell.command": "head",
@@ -1738,12 +1687,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.6",
+    "telemetry.sdk.version": "5.24.4",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3110,
-    "process.parent_pid": 2353,
+    "process.pid": 3102,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1761,14 +1710,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "14b668cd590fa04bde55d26762695d4f",
-  "span_id": "103586e0e69e5bdf",
-  "parent_span_id": "f846f6de2b2abf09",
+  "trace_id": "c5f5d1e07e8243ddcf8a226854d10c97",
+  "span_id": "eabfbbb3b586bae1",
+  "parent_span_id": "576a2a489bc41827",
   "name": "jq .[].assets[].browser_download_url -r",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754729835989685760,
-  "time_end": 1754729843512110592,
+  "time_start": 1755852649640734976,
+  "time_end": 1755852658312302848,
   "attributes": {
     "shell.command_line": "jq .[].assets[].browser_download_url -r",
     "shell.command": "jq",
@@ -1783,12 +1732,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.6",
+    "telemetry.sdk.version": "5.24.4",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3110,
-    "process.parent_pid": 2353,
+    "process.pid": 3102,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1806,14 +1755,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "14b668cd590fa04bde55d26762695d4f",
-  "span_id": "00c75d1efdc9b3dd",
-  "parent_span_id": "f846f6de2b2abf09",
+  "trace_id": "c5f5d1e07e8243ddcf8a226854d10c97",
+  "span_id": "2427a628ad8cb9c9",
+  "parent_span_id": "576a2a489bc41827",
   "name": "ncat --ssl -i 3 --no-shutdown api.github.com 443",
   "kind": "INTERNAL",
   "status": "ERROR",
-  "time_start": 1754729835955353856,
-  "time_end": 1754729839649576192,
+  "time_start": 1755852649640347392,
+  "time_end": 1755852653395146240,
   "attributes": {
     "shell.command_line": "ncat --ssl -i 3 --no-shutdown api.github.com 443",
     "shell.command": "ncat",
@@ -1828,12 +1777,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.6",
+    "telemetry.sdk.version": "5.24.4",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3110,
-    "process.parent_pid": 2353,
+    "process.pid": 3102,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1851,14 +1800,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "14b668cd590fa04bde55d26762695d4f",
-  "span_id": "f6cd5444ee97fed3",
-  "parent_span_id": "f846f6de2b2abf09",
+  "trace_id": "c5f5d1e07e8243ddcf8a226854d10c97",
+  "span_id": "1192dabe69f6ea23",
+  "parent_span_id": "576a2a489bc41827",
   "name": "printf HEAD /repos/plengauer/Thoth/releases?per_page=100 HTTP/1.1\\r\\nConnection: close\\r\\nUser-Agent: ncat\\r\\nHost: api.github.com\\r\\n\\r\\n",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754729835961419776,
-  "time_end": 1754729836065670400,
+  "time_start": 1755852649604962048,
+  "time_end": 1755852649705089024,
   "attributes": {
     "shell.command_line": "printf HEAD /repos/plengauer/Thoth/releases?per_page=100 HTTP/1.1\\r\\nConnection: close\\r\\nUser-Agent: ncat\\r\\nHost: api.github.com\\r\\n\\r\\n",
     "shell.command": "printf",
@@ -1871,12 +1820,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.6",
+    "telemetry.sdk.version": "5.24.4",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3110,
-    "process.parent_pid": 2353,
+    "process.pid": 3102,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1894,14 +1843,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "14b668cd590fa04bde55d26762695d4f",
-  "span_id": "33ab783f3cbcf830",
-  "parent_span_id": "00c75d1efdc9b3dd",
+  "trace_id": "c5f5d1e07e8243ddcf8a226854d10c97",
+  "span_id": "c0762cebfab6612c",
+  "parent_span_id": "2427a628ad8cb9c9",
   "name": "send/receive",
   "kind": "PRODUCER",
   "status": "UNSET",
-  "time_start": 1754729836080253440,
-  "time_end": 1754729839645300224,
+  "time_start": 1755852649755509248,
+  "time_end": 1755852653390787072,
   "attributes": {
     "network.transport": "tcp",
     "network.peer.port": 443,
@@ -1911,12 +1860,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.6",
+    "telemetry.sdk.version": "5.24.4",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3110,
-    "process.parent_pid": 2353,
+    "process.pid": 3102,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1934,14 +1883,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "14b668cd590fa04bde55d26762695d4f",
-  "span_id": "e3371ada1f94137f",
-  "parent_span_id": "ab5e675884b5ff16",
+  "trace_id": "c5f5d1e07e8243ddcf8a226854d10c97",
+  "span_id": "960a434558d701fd",
+  "parent_span_id": "d9fa0513d2e08aac",
   "name": "seq 1 4",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754729840281897216,
-  "time_end": 1754729840298879744,
+  "time_start": 1755852654020703488,
+  "time_end": 1755852654038052096,
   "attributes": {
     "shell.command_line": "seq 1 4",
     "shell.command": "seq",
@@ -1957,12 +1906,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.6",
+    "telemetry.sdk.version": "5.24.4",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 5303,
-    "process.parent_pid": 4561,
+    "process.pid": 5273,
+    "process.parent_pid": 4490,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs seq 1",
@@ -1980,14 +1929,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "14b668cd590fa04bde55d26762695d4f",
-  "span_id": "8b8d4a2ed336cafc",
-  "parent_span_id": "f846f6de2b2abf09",
+  "trace_id": "c5f5d1e07e8243ddcf8a226854d10c97",
+  "span_id": "dfbea515f98317dc",
+  "parent_span_id": "576a2a489bc41827",
   "name": "tr & \\n",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754729835979134208,
-  "time_end": 1754729839671136512,
+  "time_start": 1755852649642468864,
+  "time_end": 1755852653417101056,
   "attributes": {
     "shell.command_line": "tr & \\n",
     "shell.command": "tr",
@@ -2002,12 +1951,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.6",
+    "telemetry.sdk.version": "5.24.4",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3110,
-    "process.parent_pid": 2353,
+    "process.pid": 3102,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2025,14 +1974,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "14b668cd590fa04bde55d26762695d4f",
-  "span_id": "5c6e1e4b10054031",
-  "parent_span_id": "f846f6de2b2abf09",
+  "trace_id": "c5f5d1e07e8243ddcf8a226854d10c97",
+  "span_id": "43a73635e76672fc",
+  "parent_span_id": "576a2a489bc41827",
   "name": "tr , \\n",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754729835974567424,
-  "time_end": 1754729839661465600,
+  "time_start": 1755852649632252672,
+  "time_end": 1755852653407388416,
   "attributes": {
     "shell.command_line": "tr , \\n",
     "shell.command": "tr",
@@ -2047,12 +1996,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.6",
+    "telemetry.sdk.version": "5.24.4",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3110,
-    "process.parent_pid": 2353,
+    "process.pid": 3102,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2070,14 +2019,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "14b668cd590fa04bde55d26762695d4f",
-  "span_id": "9bdfe43a97b313a0",
-  "parent_span_id": "f846f6de2b2abf09",
+  "trace_id": "c5f5d1e07e8243ddcf8a226854d10c97",
+  "span_id": "567bdf3ea902443c",
+  "parent_span_id": "576a2a489bc41827",
   "name": "tr -d  <>",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754729835989558272,
-  "time_end": 1754729839659100928,
+  "time_start": 1755852649640845824,
+  "time_end": 1755852653405036032,
   "attributes": {
     "shell.command_line": "tr -d  <>",
     "shell.command": "tr",
@@ -2092,12 +2041,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.6",
+    "telemetry.sdk.version": "5.24.4",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3110,
-    "process.parent_pid": 2353,
+    "process.pid": 3102,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2115,14 +2064,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "14b668cd590fa04bde55d26762695d4f",
-  "span_id": "72854abd8274d578",
-  "parent_span_id": "f846f6de2b2abf09",
+  "trace_id": "c5f5d1e07e8243ddcf8a226854d10c97",
+  "span_id": "50d5657d10305517",
+  "parent_span_id": "576a2a489bc41827",
   "name": "tr [:upper:] [:lower:]",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754729835952380928,
-  "time_end": 1754729839651956992,
+  "time_start": 1755852649628960768,
+  "time_end": 1755852653397635072,
   "attributes": {
     "shell.command_line": "tr [:upper:] [:lower:]",
     "shell.command": "tr",
@@ -2137,12 +2086,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.6",
+    "telemetry.sdk.version": "5.24.4",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3110,
-    "process.parent_pid": 2353,
+    "process.pid": 3102,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2160,14 +2109,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "14b668cd590fa04bde55d26762695d4f",
-  "span_id": "89255ec6b55f4c1c",
-  "parent_span_id": "5a6d5241525c91a1",
+  "trace_id": "c5f5d1e07e8243ddcf8a226854d10c97",
+  "span_id": "0823f4ef39eebd32",
+  "parent_span_id": "cb212b9572d69270",
   "name": "wget https://github.com/plengauer/Thoth/releases/download/v1.13.7/opentelemetry-shell_1.13.7.deb https://github.com/plengauer/Thoth/releases/download/v1.13.6/opentelemetry-shell_1.13.6.deb https://github.com/plengauer/Thoth/releases/download/v1.13.5/opentelemetry-shell_1.13.5.deb",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754729844065551104,
-  "time_end": 1754729847339300096,
+  "time_start": 1755852659034165248,
+  "time_end": 1755852662440358400,
   "attributes": {
     "shell.command_line": "wget https://github.com/plengauer/Thoth/releases/download/v1.13.7/opentelemetry-shell_1.13.7.deb https://github.com/plengauer/Thoth/releases/download/v1.13.6/opentelemetry-shell_1.13.6.deb https://github.com/plengauer/Thoth/releases/download/v1.13.5/opentelemetry-shell_1.13.5.deb",
     "shell.command": "wget",
@@ -2183,12 +2132,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.6",
+    "telemetry.sdk.version": "5.24.4",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 12953,
-    "process.parent_pid": 4539,
+    "process.pid": 10034,
+    "process.parent_pid": 4529,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs wget",
@@ -2206,16 +2155,16 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "14b668cd590fa04bde55d26762695d4f",
-  "span_id": "bb1925737f4e1f80",
-  "parent_span_id": "f846f6de2b2abf09",
-  "name": "xargs parallel -q curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={} :::",
+  "trace_id": "c5f5d1e07e8243ddcf8a226854d10c97",
+  "span_id": "657422e18ac9097f",
+  "parent_span_id": "576a2a489bc41827",
+  "name": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754729835985930496,
-  "time_end": 1754729843508994560,
+  "time_start": 1755852649647260416,
+  "time_end": 1755852658309583360,
   "attributes": {
-    "shell.command_line": "xargs parallel -q curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={} :::",
+    "shell.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
     "shell.command": "xargs",
     "shell.command.type": "file",
     "shell.command.name": "xargs",
@@ -2228,12 +2177,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.6",
+    "telemetry.sdk.version": "5.24.4",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3110,
-    "process.parent_pid": 2353,
+    "process.pid": 3102,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2251,14 +2200,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "14b668cd590fa04bde55d26762695d4f",
-  "span_id": "ab5e675884b5ff16",
-  "parent_span_id": "f846f6de2b2abf09",
+  "trace_id": "c5f5d1e07e8243ddcf8a226854d10c97",
+  "span_id": "d9fa0513d2e08aac",
+  "parent_span_id": "576a2a489bc41827",
   "name": "xargs seq 1",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754729835989933568,
-  "time_end": 1754729840331309056,
+  "time_start": 1755852649617814272,
+  "time_end": 1755852654079128320,
   "attributes": {
     "shell.command_line": "xargs seq 1",
     "shell.command": "xargs",
@@ -2273,12 +2222,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.6",
+    "telemetry.sdk.version": "5.24.4",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3110,
-    "process.parent_pid": 2353,
+    "process.pid": 3102,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2296,14 +2245,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "14b668cd590fa04bde55d26762695d4f",
-  "span_id": "5a6d5241525c91a1",
-  "parent_span_id": "f846f6de2b2abf09",
+  "trace_id": "c5f5d1e07e8243ddcf8a226854d10c97",
+  "span_id": "cb212b9572d69270",
+  "parent_span_id": "576a2a489bc41827",
   "name": "xargs wget",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1754729835990231040,
-  "time_end": 1754729847375367680,
+  "time_start": 1755852649638106112,
+  "time_end": 1755852662476240128,
   "attributes": {
     "shell.command_line": "xargs wget",
     "shell.command": "xargs",
@@ -2318,12 +2267,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.22.6",
+    "telemetry.sdk.version": "5.24.4",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 3110,
-    "process.parent_pid": 2353,
+    "process.pid": 3102,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",

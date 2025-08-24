@@ -20,13 +20,13 @@ jobs:
     outputs:
       dirs: ${{ steps.demos.outputs.dirs }}
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.22.6
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.24.4
         with:
           secrets_to_redact: '["${{ github.token }}"]'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v5.0.0
       - run: |
           cd demos && echo */ | tr ' ' '\n' | tr -d / | while read -r dir; do echo \""$dir"\"; done | jq -s | tr -d ' ' | tr -d '\n' | xargs -0 -I {} echo 'dirs={}' >> "$GITHUB_OUTPUT"
         id: demos
@@ -44,7 +44,7 @@ jobs:
       - run: |
           ([ "$GITHUB_EVENT" = release ] && cat "$GITHUB_EVENT_PATH" || curl --header "Authorization: Bearer ${{ github.token }}" https://api.github.com/repos/"$GITHUB_REPOSITORY"/releases/latest) | jq -r '.assets[] | select(.name | endswith(".deb")) | .url' | xargs wget --header "Authorization: Bearer ${{ github.token }}" --header "Accept: application/octet-stream" -O package.deb
       - run: sudo apt-get -y install ./package.deb
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v5.0.0
       - id: demo
         env:
           GITHUB_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
@@ -176,7 +176,7 @@ jobs:
           pretty_print_trace() {
             cat otlp.json | jq -r '. | select(.resourceSpans != null) | .resourceSpans[].scopeSpans[].spans[]' | jq -r -s '. | sort_by(.startTimeUnixNano) | .[].spanId' | while read -r span_id; do
               span="$(spans | jq 'select(.spanId == "'$span_id'")')"
-              resource_attributes="$(cat otlp.json | jq '. | select(.resourceSpans != null) | .resourceSpans[] | select(.scopeSpans[].spans[].spanId == "'$span_id'") | .resource.attributes')"
+              resource_attributes="$(cat otlp.json | jq --sort-keys '. | select(.resourceSpans != null) | .resourceSpans[] | select(.scopeSpans[].spans[].spanId == "'$span_id'") | .resource.attributes')"
               jq -n \
                 --argjson trace_id "$(printf '%s' "$span" | jq .traceId)" \
                 --argjson span_id "$(printf '%s' "$span" | jq .spanId)" \
@@ -186,7 +186,7 @@ jobs:
                 --argjson status "$(printf '%s' "$span" | jq -r .status.code)" \
                 --argjson time_start "$(printf '%s' "$span" | jq -r .startTimeUnixNano)" \
                 --argjson time_end "$(printf '%s' "$span" | jq -r .endTimeUnixNano)" \
-                --argjson attributes "$(printf '%s' "$span" | jq .attributes | pretty_print_attributes)" \
+                --argjson attributes "$(printf '%s' "$span" | jq --sort-keys .attributes | pretty_print_attributes)" \
                 --argjson resource_attributes "$(printf '%s' "$resource_attributes" | pretty_print_attributes)" \
                 --argjson links "$(printf '%s' "$span" | jq .links | pretty_print_links)" \
                 --argjson events "$(printf '%s' "$span" | jq .events | pretty_print_events)" \
