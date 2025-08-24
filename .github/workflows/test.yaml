@@ -459,7 +459,7 @@ jobs:
             done
           }
           dependencies_content_deb_to_apk() {
-            cat
+            sed 's/^dpkg$/apk/g'
           }
           {
             echo pkgname="$(read_deb_control_value Package)"
