@@ -450,12 +450,23 @@ jobs:
           read_deb_control_value() {
             cat DEBIAN/control | grep '^'"$1"': ' | cut -d ' ' -f 2-
           }
+          dependencies_format_deb_to_apk() {
+            cut -sd '(' -f 1 | while read -r package; do
+              case "$package" in
+                *'|'*) ;;
+                *) echo "$package";;
+              esac
+            done
+          }
+          dependencies_content_deb_to_apk() {
+            cat
+          }
           {
             echo pkgname="$(read_deb_control_value Package)"
             echo pkgver="$(read_deb_control_value Version)"
             echo pkgrel=0
             echo arch=all
-            echo depends="$({ read_deb_control_value Pre-Depends; read_deb_control_value Depends; read_deb_control_value Recommends; } | tr '\n' ',' | tr ',' ' ')"
+            echo depends=\""$({ read_deb_control_value Pre-Depends; read_deb_control_value Depends; read_deb_control_value Recommends; } | tr ',' '\n' | tr -d ' ' | dependencies_content_deb_to_apk | dependencies_format_deb_to_apk | tr '\n' ' ')"\"
             # TODO install
             # TODO triggers
             echo license=MIT # TODO
