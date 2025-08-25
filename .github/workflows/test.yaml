@@ -444,6 +444,44 @@ jobs:
           } > rpm.spec && rm "$rpm_dir"/*.spec
           rpmbuild -bb --buildroot="$(cat rpm.spec | grep '^Buildroot: ' | cut -d ' ' -f 2)" rpm.spec
           mv ../*.rpm ../package.rpm
+          rm rpm.spec
+      - run: |
+          workspace="$(mktemp -d)"
+          read_deb_control_value() {
+            cat src/DEBIAN/control | grep '^'"$1"': ' | cut -d ' ' -f 2-
+          }
+          dependencies_format_deb_to_apk() {
+            cut -sd '(' -f 1 | while read -r package; do
+              case "$package" in
+                *'|'*) ;;
+                *) echo "$package";;
+              esac
+            done
+          }
+          dependencies_content_deb_to_apk() {
+            sed 's/^dpkg$/apk/g'
+          }
+          {
+            echo pkgname="$(read_deb_control_value Package)"
+            echo pkgver="$(read_deb_control_value Version)"
+            echo pkgrel=0
+            echo arch=all
+            echo depends=\""$({ read_deb_control_value Pre-Depends; read_deb_control_value Depends; read_deb_control_value Recommends; } | tr ',' '\n' | tr -d ' ' | dependencies_content_deb_to_apk | dependencies_format_deb_to_apk | tr '\n' ' ')"\"
+            # TODO install
+            # TODO triggers
+            echo license=MIT # TODO
+            echo maintainer=\""$(read_deb_control_value Maintainer)"\"
+            echo url=\""$(read_deb_control_value Homepage)"\"
+            echo pkgdesc=\""$(read_deb_control_value Description)"\"
+            echo 'package() { mkdir -p "$pkgdir" && cp -r my_src/* "$pkdir"; }'
+            echo 'check() { true; }'
+          } | tee /dev/stderr > "$workspace"/APKBUILD
+          cat APKBUILD | grep '^pkgname' | cut -d = -f 2- | xargs -I {} cp src/DEBIAN/postinst '{}'.post-install
+          cat APKBUILD | grep '^pkgname' | cut -d = -f 2- | xargs -I {} cp src/DEBIAN/postinst '{}'.post-upgrade
+          cat APKBUILD | grep '^pkgname' | cut -d = -f 2- | xargs -I {} cp src/DEBIAN/prerm '{}'.pre-deinstall
+          cat APKBUILD | grep '^pkgname' | cut -d = -f 2- | xargs -I {} cp src/DEBIAN/prerm '{}'.pre-upgrade
+          cp -r src "$workspace"/my_src && rm -rf "$workspace"/my_src/DEBIAN
+          echo 'cd ~/workspace && apk add abuild doas && abuild-keygen -a -i -n && abuild -F -r' | \sudo docker run --rm --network host -v "$workspace":/root/workspace -i alpine:latest
       - uses: actions/upload-artifact@v4.6.2
         with:
           name: packages
