@@ -481,7 +481,7 @@ jobs:
           cat APKBUILD | grep '^pkgname' | cut -d = -f 2- | xargs -I {} cp src/DEBIAN/prerm '{}'.pre-deinstall
           cat APKBUILD | grep '^pkgname' | cut -d = -f 2- | xargs -I {} cp src/DEBIAN/prerm '{}'.pre-upgrade
           cp -r src "$workspace"/my_src && rm -rf "$workspace"/my_src/DEBIAN
-          echo 'cd ~/workspace && apk add abuild && abuild-keygen -a -n && abuild -F -r' | \sudo docker run --rm --network host -v "$workspace":/root/workspace -i alpine:latest
+          echo 'cd ~/workspace && apk add abuild && abuild-keygen -a -i -n && abuild -F -r' | \sudo docker run --rm --network host -v "$workspace":/root/workspace -i alpine:latest
       - uses: actions/upload-artifact@v4.6.2
         with:
           name: packages
