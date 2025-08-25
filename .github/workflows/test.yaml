@@ -446,6 +446,7 @@ jobs:
           mv ../*.rpm ../package.rpm
           rm rpm.spec
       - run: |
+          workspace="$(mktemp -d)"
           read_deb_control_value() {
             cat src/DEBIAN/control | grep '^'"$1"': ' | cut -d ' ' -f 2-
           }
@@ -472,17 +473,16 @@ jobs:
             echo maintainer=\""$(read_deb_control_value Maintainer)"\"
             echo url=\""$(read_deb_control_value Homepage)"\"
             echo pkgdesc=\""$(read_deb_control_value Description)"\"
-
             echo 'package() { echo DEBUG 2 >&2; find >&2; mkdir -p "$pkgdir" && cp src/* "$pkdir"; }'
             echo 'check() { true; }'
-          } | tee /dev/stderr > APKBUILD
+          } | tee /dev/stderr > "$workspace"/APKBUILD
           cat APKBUILD | grep '^pkgname' | cut -d = -f 2- | xargs -I {} cp src/DEBIAN/postinst '{}'.post-install
           cat APKBUILD | grep '^pkgname' | cut -d = -f 2- | xargs -I {} cp src/DEBIAN/postinst '{}'.post-upgrade
           cat APKBUILD | grep '^pkgname' | cut -d = -f 2- | xargs -I {} cp src/DEBIAN/prerm '{}'.pre-deinstall
           cat APKBUILD | grep '^pkgname' | cut -d = -f 2- | xargs -I {} cp src/DEBIAN/prerm '{}'.pre-upgrade
-          rm -rf src/DEBIAN
+          cp src "$workspace"
           echo DEBUG 0 >&2 && find >&2
-          echo 'cd ~/workspace && apk add abuild && echo DEBUG 1 >&2 && find >&2 && abuild-keygen -a -n && abuild -F -r' | \sudo docker run --rm --network host -v $(pwd):/root/workspace -i alpine:latest
+          echo 'cd ~/workspace && apk add abuild && echo DEBUG 1 >&2 && find >&2 && abuild-keygen -a -n && abuild -F -r' | \sudo docker run --rm --network host -v "$workspace":/root/workspace -i alpine:latest
       - uses: actions/upload-artifact@v4.6.2
         with:
           name: packages
