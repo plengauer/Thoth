@@ -101,7 +101,7 @@ action_duration_counter_handle="$(otel_counter_create counter github.actions.act
 link="${GITHUB_SERVER_URL:-https://github.com}"/"$(jq < "$workflow_json" -r .repository.owner.login)"/"$(jq < "$workflow_json" -r .repository.name)"/actions/runs/"$(jq < "$workflow_json" -r .id)"
 workflow_started_at="$(jq < "$workflow_json" -r .run_started_at)"
 workflow_ended_at="$(jq < "$jobs_json" -r .completed_at | sort -r | head -n 1)"
-last_log_timestamp="$(read_log_file '.txt' | cut -d ' ' -f 1 | sort | tail -n 1)"
+last_log_timestamp="$(read_log_file '.txt' | cut -d ' ' -f 1 | sort | tail -n 1 || true)"
 if [ "$last_log_timestamp" > "$workflow_ended_at" ]; then workflow_ended_at="$last_log_timestamp"; fi
 
 observation_handle="$(otel_observation_create 1)"
