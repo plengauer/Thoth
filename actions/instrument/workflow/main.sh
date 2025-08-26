@@ -1,9 +1,9 @@
 #/bin/bash
-set -e
+set -e -o pipefail
 . ../shared/config_validation.sh
 . ../shared/github.sh
 . ../shared/id_printer.sh
-bash -e ../shared/install.sh
+bash -e -o pipefail ../shared/install.sh
 
 # selfmonitoring
 if ([ "$INPUT_SELF_MONITORING" = true ] || ([ "$INPUT_SELF_MONITORING" = auto ] && [ "$GITHUB_API_URL" = 'https://api.github.com' ])); then
