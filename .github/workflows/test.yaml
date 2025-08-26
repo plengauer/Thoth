@@ -482,7 +482,7 @@ jobs:
           cat "$workspace"/APKBUILD | grep '^pkgname' | cut -d = -f 2- | xargs -I {} cp src/DEBIAN/prerm "$workspace"/'{}'.pre-upgrade
           cp -r src "$workspace"/my_src && rm -rf "$workspace"/my_src/DEBIAN
           echo 'cd ~/workspace && apk add abuild doas && SUDO=env abuild-keygen -a -i -n && abuild -F -r' | \sudo docker run --rm --network host -v "$workspace":/root/workspace -i alpine:latest
-          mv "$workspace"/package.apk .
+          mv "$workspace"/*.apk package.apk
       - uses: actions/upload-artifact@v4.6.2
         with:
           name: packages
