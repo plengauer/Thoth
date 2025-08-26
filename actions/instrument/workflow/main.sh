@@ -156,7 +156,7 @@ jq < "$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .s
   if [ "$job_conclusion" = skipped ]; then continue; fi
   if [[ "$job_started_at" < "$workflow_started_at" ]] || jq < "$artifacts_json" -r .name | grep -q '^opentelemetry_job_'"$job_id"'$'; then continue; fi
   job_log_file="$(printf '%s' "${job_name//\//_}" | tr -d ':')"
-  last_log_timestamp="$(read_log_file "$job_log_file" | tail -n 1 | cut -d ' ' -f 1)"
+  last_log_timestamp="$(read_log_file "$job_log_file" | tail -n 1 | cut -d ' ' -f 1 || true)"
   if [ -n "$last_log_timestamp" ] && [ "$last_log_timestamp" > "$job_completed_at" ]; then job_completed_at="$last_log_timestamp"; fi
   
   observation_handle="$(otel_observation_create 1)"
@@ -207,7 +207,7 @@ done | sed 's/\t/ /g' | while read -r TRACEPARENT job_id step_number step_conclu
     if [ "$step_started_at" > "$step_completed_at" ]; then step_completed_at="$step_started_at"; fi
   fi
   step_log_file="$(printf '%s' "${job_name//\//_}"/"$step_number"_ | tr -d ':')"
-  last_log_timestamp="$(read_log_file "$step_log_file" | tail -n 1 | cut -d ' ' -f 1)"
+  last_log_timestamp="$(read_log_file "$step_log_file" | tail -n 1 | cut -d ' ' -f 1 || true)"
   if [ -n "$last_log_timestamp" ] && [ "$last_log_timestamp" > "$step_completed_at" ]; then step_completed_at="$last_log_timestamp"; fi
 
   action_name="$step_name"
