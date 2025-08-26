@@ -465,7 +465,7 @@ jobs:
             echo pkgname="$(read_deb_control_value Package)"
             echo pkgver="$(read_deb_control_value Version)"
             echo pkgrel=0
-            echo arch=all
+            echo arch=noarch
             echo depends=\""$({ read_deb_control_value Pre-Depends; read_deb_control_value Depends; read_deb_control_value Recommends; } | tr ',' '\n' | tr -d ' ' | dependencies_content_deb_to_apk | dependencies_format_deb_to_apk | tr '\n' ' ')"\"
             # TODO install
             # TODO triggers
