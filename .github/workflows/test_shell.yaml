@@ -214,7 +214,7 @@ jobs:
             else
               exit 1
             fi
-          ' | sudo -E docker run -v $(pwd)/package.deb:/root/package.deb -v $(pwd)/package.rpm:/root/package.rpm --rm --network=host -e DEPENDENCY -i --entrypoint=/bin/sh ${{ matrix.image }} -e
+          ' | sudo -E docker run -v $(pwd)/package.deb:/root/package.deb -v $(pwd)/package.rpm:/root/package.rpm -v $(pwd)/package.apk:/root/package.apk --rm --network=host -e DEPENDENCY -i --entrypoint=/bin/sh ${{ matrix.image }} -e
   install-manual-user:
     needs: [smoke]
     runs-on: ubuntu-latest
