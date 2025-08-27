@@ -9,7 +9,7 @@ WORKDIR /tests
 COPY . ./
 
 RUN <<EOF
-  packages_mandatory="jq psmisc wget curl time sudo"
+  packages_mandatory="jq psmisc wget curl time sudo bash"
   packages_optional="parallel moreutils ncat wget2 nodejs npm python3 python3-pip gcc default-jdk-headless jdk"
   if type apt-get; then
     apt-get update
