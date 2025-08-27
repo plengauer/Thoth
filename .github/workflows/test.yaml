@@ -478,6 +478,7 @@ jobs:
             echo url=\""$(read_deb_control_value Homepage)"\"
             echo pkgdesc=\""$(read_deb_control_value Description)"\"
             echo options=\""!fhs !archcheck"\"
+            install=\"$(read_deb_control_value Package).post-install\"
             echo 'package() { mkdir -p "$pkgdir" && cp -r my_src/* "$pkgdir"; }'
             echo 'check() { true; }'
           } | tee /dev/stderr > "$workspace"/APKBUILD
