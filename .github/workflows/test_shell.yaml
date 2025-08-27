@@ -240,10 +240,10 @@ jobs:
       - run: |
           {
             echo '
-              if type apt-get; then apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install curl wget curl jq gawk sudo findutils
-              elif type dnf; then dnf -y install curl wget jq gawk sudo findutils
-              elif type yum; then yum -y install curl wget jq gawk sudo findutils
-              elif type zypper; then zypper --non-interactive install curl wget jq gawk sudo findutils
+              if type apt-get; then apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install wget curl jq gawk sudo findutils
+              elif type dnf; then dnf -y install wget jq gawk sudo findutils
+              elif type yum; then yum -y install wget jq gawk sudo findutils
+              elif type zypper; then zypper --non-interactive install wget jq gawk sudo findutils
               elif type apk; then apk add curl wget jq gawk sudo findutils
               else exit 1
               fi
