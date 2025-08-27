@@ -477,7 +477,7 @@ jobs:
             echo maintainer=\""$(read_deb_control_value Maintainer)"\"
             echo url=\""$(read_deb_control_value Homepage)"\"
             echo pkgdesc=\""$(read_deb_control_value Description)"\"
-            echo 'package() { mkdir -p "$pkgdir" && cp -r my_src/* "$pkdir"; }'
+            echo 'package() { mkdir -p "$pkgdir" && cp -r my_src/* "$pkgdir"; }'
             echo 'check() { true; }'
           } | tee /dev/stderr > "$workspace"/APKBUILD
           cat "$workspace"/APKBUILD | grep '^pkgname' | cut -d = -f 2- | xargs -I {} cp src/DEBIAN/postinst "$workspace"/'{}'.post-install
