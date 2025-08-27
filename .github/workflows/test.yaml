@@ -477,6 +477,7 @@ jobs:
             echo maintainer=\""$(read_deb_control_value Maintainer)"\"
             echo url=\""$(read_deb_control_value Homepage)"\"
             echo pkgdesc=\""$(read_deb_control_value Description)"\"
+            echo options="!fhs"
             echo 'package() { mkdir -p "$pkgdir" && cp -r my_src/* "$pkgdir"; }'
             echo 'check() { true; }'
           } | tee /dev/stderr > "$workspace"/APKBUILD
