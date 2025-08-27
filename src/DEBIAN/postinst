@@ -1,6 +1,6 @@
 #!/bin/sh -e
 rm -rf /opt/opentelemetry_bash 1> /dev/null 2> /dev/null || true # clean the old install directory
-if [ -z "${1:-}" ] && ( [ "${0%.post-install}" != "$0" ] || [ "${0%.post-upgrade}" != "$0" ] ); then set -- configure; fi
+if [ "${0%.post-install}" != "$0" ] || [ "${0%.post-upgrade}" != "$0" ]; then set -- configure "$@"; fi
 if [ "$1" = 0 ] || [ "$1" = 1 ] || [ "$1" = 2 ]; then set -- configure; fi
 if [ "$1" = 'abort-configure' ] || [ "$1" = 'abort-upgrade' ] || [ "$1" = 'abort-remove' ] || [ "$1" = 'abort-deconfigure' ]; then
   true
