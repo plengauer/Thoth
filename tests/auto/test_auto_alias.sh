@@ -12,7 +12,7 @@ alias grep='grep --color=auto'
 count_1=$(alias | wc -l)
 unalias grep
 count_2=$(alias | wc -l)
-if [ "$count_0" -ne "$count_1" ] || [ "$count_1" -ne "$count_2" ]; then echo "1: $count_0 $count_1 $count_2"; exit 1; fi
+if [ "$count_0" -ne "$count_1" ] || [ "$count_1" -ne "$count_2" ]; then echo "1: $count_0 $count_1 $count_2"; alias; exit 1; fi
 
 count_0=$(alias | wc -l)
 unalias -a
