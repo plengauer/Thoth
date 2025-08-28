@@ -79,8 +79,8 @@ _otel_pipe_curl_stderr() {
       local port="$(\printf '%s' "$line" | \cut -d ' ' -f 7)"
     elif _otel_string_starts_with "$line" "* Established connection to "; then # * Established connection to www.google.com (172.217.18.4 port 443) from 172.31.41.64 port 39476
       local host="$(\printf '%s' "$line" | \cut -d ' ' -f 5)"
-      local ip="$(\printf '%s' "$line" | \cut -d ' ' -f 6 | \tr -d '()' | \cut -d ' ' -f 1)"
-      local port="$(\printf '%s' "$line" | \cut -d ' ' -f 6 | \tr -d '()' | \cut -d ' ' -f 3)"
+      local ip="$(\printf '%s' "$line" | \cut -d ' ' -f 6 | \tr -d '()')"
+      local port="$(\printf '%s' "$line" | \cut -d ' ' -f 8 | \tr -d '()')"
     fi
     if \[ -n "$span_handle" ] && _otel_string_starts_with "$line" "* processing: "; then otel_span_end "$span_handle"; local span_handle=""; fi
     if \[ -n "$span_handle" ] && _otel_string_starts_with "$line" "* Connected to "; then otel_span_end "$span_handle"; local span_handle=""; fi
