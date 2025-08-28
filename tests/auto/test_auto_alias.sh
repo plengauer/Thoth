@@ -1,9 +1,6 @@
-set -x
-. /usr/bin/opentelemetry_shell.sh
-set +x
-alias
-
 type grep
+
+. /usr/bin/opentelemetry_shell.sh
 
 count_0=$(alias | wc -l)
 alias la='ls -a'
