@@ -3,6 +3,8 @@ set -x
 set +x
 alias
 
+type grep
+
 count_0=$(alias | wc -l)
 alias la='ls -a'
 count_1=$(alias | wc -l)
