@@ -471,7 +471,6 @@ jobs:
             echo pkgrel=0
             echo arch=noarch
             echo depends=\""$({ read_deb_control_value Pre-Depends; read_deb_control_value Depends; read_deb_control_value Recommends; } | tr ',' '\n' | tr -d ' ' | dependencies_content_deb_to_apk | dependencies_format_deb_to_apk | tr '\n' ' ')"\"
-            # TODO install
             # TODO triggers
             echo license=MIT # TODO
             echo maintainer=\""$(read_deb_control_value Maintainer)"\"
