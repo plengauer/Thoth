@@ -94,6 +94,7 @@ def observed_subprocess_Popen___init__(self, *args, **kwargs):
     if kwargs.get('shell', False):
         kwargs['env']['OTEL_SHELL_AUTO_INJECTED'] = 'FALSE'
         kwargs['shell'] = False
+    print("DEBUG DEBUG DEBUG " + kwargs['executable'] + " " + str(args))
     return original_subprocess_Popen___init__(self, args, **kwargs);
 
 os.execv = observed_os_execv
