@@ -154,8 +154,12 @@ jobs:
           /usr/bin/env node --version
           sudo sed -i 's~^// lets wrap~opentelemetry_api.diag.setLogger(new opentelemetry_api.DiagConsoleLogger(), opentelemetry_api.DiagLogLevel.DEBUG)\n// lets wrap~g' /usr/share/opentelemetry_shell/agent.instrumentation.node/*/deep.instrument.js
           cat /usr/share/opentelemetry_shell/agent.instrumentation.node/20/deep.instrument.js
+          while sleep 1; do ps -ef | grep node | grep -v grep; done &
+          pid=$!
+          cd src/usr/share/opentelemetry_shell/agent.instrumentation.node && npm install
+          kill -9 $!
+          wait
       - run: cd src/usr/share/opentelemetry_shell/agent.instrumentation.node && npm install
-      - run: exit 1
       - id: dynamic
         run: |
           seq "$(cat src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules/@opentelemetry/*/package.json | jq -r .engines.node | grep -v null | cut -d ' ' -f 1 | tr -d ^ | cut -d = -f 2 | cut -d . -f 1 | sort -n -u | tail -n 1)" "$(cat src/usr/share/opentelemetry_shell/agent.instrumentation.node/Dockerfile | grep '^FROM ' | cut -d ' ' -f 2 | cut -d : -f 2)" \
