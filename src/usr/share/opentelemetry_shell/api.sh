@@ -155,7 +155,7 @@ else
 fi
 
 _otel_resolve_package_version() {
-  (\dpkg -s "$1" || \rpm -qi "$1") 2> /dev/null | \grep Version | \cut -d : -f 2 | tr -d ' '
+  (\dpkg -s "$1" || \rpm -qi "$1" || \apk version "$1" | \cut -d - -f 2 | { \echo -n 'Version: '; \cat; }) 2> /dev/null | \grep Version | \cut -d : -f 2 | tr -d ' ' || \true
 }
 
 otel_span_current() {
