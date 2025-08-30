@@ -15,6 +15,7 @@ deactivate
 python3 --version
 python3 --help
 
+export DEBUG_DEBUG_DEBUG=TRUE
 echo '
 import os
 os.execl("/bin/echo", "echo", "hello", "world", "0")
