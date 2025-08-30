@@ -171,7 +171,7 @@ jobs:
               \eval "set -- $instrumentation $(_otel_escape_args "$@")"
             fi
             \eval "$(_otel_escape_args "$@")"
-          }' | sudo tee /usr/share/opentelemetry_shell/agent.sh > /dev/null
+          }' | sudo tee --append /usr/share/opentelemetry_shell/agent.sh > /dev/null
           cat /usr/share/opentelemetry_shell/agent.instrumentation.node/20/deep.instrument.js
           while sleep 1; do ps -ef | grep -- /npm | grep -v grep; done &
           pid=$!
