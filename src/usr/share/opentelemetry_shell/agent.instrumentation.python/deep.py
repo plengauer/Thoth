@@ -66,7 +66,8 @@ def observed_os_execv(file, args):
     env = inject_env(os.environ.copy(), file, args)
     args = [ args[0] ] + inject_arguments(file, args[1:])
     file = inject_file(file)
-    # print("DEBUG DEBUG DEBUG " + file + " " + str(args), file=sys.stderr)
+    if os.environ.get('DEBUG DEBUG DEBUG') != None:
+      print("DEBUG DEBUG DEBUG " + file + " " + str(args), file=sys.stderr)
     return original_os_execve(file, args, env)
 
 def observed_os_execve(file, args, env):
@@ -75,7 +76,8 @@ def observed_os_execve(file, args, env):
     env = inject_env(env, file, args)
     args = [ args[0] ] + inject_arguments(file, args[1:])
     file = inject_file(file)
-    # print("DEBUG DEBUG DEBUG " + file + " " + str(args), file=sys.stderr)
+    if os.environ.get('DEBUG DEBUG DEBUG') != None:
+      print("DEBUG DEBUG DEBUG " + file + " " + str(args), file=sys.stderr)
     return original_os_execve(file, args, env)
 
 def observed_subprocess_Popen___init__(self, *args, **kwargs):
@@ -94,7 +96,8 @@ def observed_subprocess_Popen___init__(self, *args, **kwargs):
     if kwargs.get('shell', False):
         kwargs['env']['OTEL_SHELL_AUTO_INJECTED'] = 'FALSE'
         kwargs['shell'] = False
-    # print("DEBUG DEBUG DEBUG " + kwargs['executable'] + " " + str(args), file=sys.stderr)
+    if os.environ.get('DEBUG DEBUG DEBUG') != None:
+      print("DEBUG DEBUG DEBUG " + kwargs['executable'] + " " + str(args), file=sys.stderr)
     return original_subprocess_Popen___init__(self, args, **kwargs);
 
 os.execv = observed_os_execv
