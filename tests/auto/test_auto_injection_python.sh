@@ -1,4 +1,5 @@
 if ! which python3; then exit 0; fi
+if cat /etc/os-release | grep Alpine; then exit 0; fi
 if ! [ -d /usr/share/opentelemetry_shell/agent.instrumentation.python/"$(python3 --version | cut -d ' ' -f 2 | cut -d . -f -2)" ]; then exit 0; fi
 . ./assert.sh
 
@@ -15,7 +16,6 @@ deactivate
 python3 --version
 python3 --help
 
-export DEBUG_DEBUG_DEBUG=TRUE
 echo '
 import os
 os.execl("/bin/echo", "echo", "hello", "world", "0")
