@@ -237,7 +237,8 @@ jobs:
       actions: read
     steps:
       - uses: actions/checkout@v5.0.0
-      - run: |
+      - if: ${{ matrix.image != 'alpine:latest' }}
+        run: |
           {
             echo '
               if type apt-get; then apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install wget curl jq gawk sudo findutils
