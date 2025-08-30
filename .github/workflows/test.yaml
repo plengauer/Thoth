@@ -471,8 +471,7 @@ jobs:
             echo pkgrel=0
             echo arch=noarch
             echo depends=\""$({ read_deb_control_value Pre-Depends; read_deb_control_value Depends; read_deb_control_value Recommends; } | tr ',' '\n' | tr -d ' ' | dependencies_content_deb_to_apk | dependencies_format_deb_to_apk | tr '\n' ' ')"\"
-            # TODO triggers
-            echo license=MIT # TODO
+            echo license=\""Apache License 2.0"\"
             echo maintainer=\""$(read_deb_control_value Maintainer)"\"
             echo url=\""$(read_deb_control_value Homepage)"\"
             echo pkgdesc=\""$(read_deb_control_value Description)"\"
@@ -480,7 +479,7 @@ jobs:
             echo install=\"$(read_deb_control_value Package).post-install $(read_deb_control_value Package).post-upgrade $(read_deb_control_value Package).pre-deinstall $(read_deb_control_value Package).pre-upgrade\"
             echo 'package() { mkdir -p "$pkgdir" && cp -r my_src/* "$pkgdir"; }'
             echo 'check() { true; }'
-          } | tee /dev/stderr > "$workspace"/APKBUILD
+          } > "$workspace"/APKBUILD
           cat "$workspace"/APKBUILD | grep '^pkgname' | cut -d = -f 2- | xargs -I {} cp src/DEBIAN/postinst "$workspace"/'{}'.post-install
           cat "$workspace"/APKBUILD | grep '^pkgname' | cut -d = -f 2- | xargs -I {} cp src/DEBIAN/postinst "$workspace"/'{}'.post-upgrade
           cat "$workspace"/APKBUILD | grep '^pkgname' | cut -d = -f 2- | xargs -I {} cp src/DEBIAN/prerm "$workspace"/'{}'.pre-deinstall
