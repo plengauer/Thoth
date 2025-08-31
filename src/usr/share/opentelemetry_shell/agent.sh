@@ -129,7 +129,7 @@ _otel_list_path_commands() {
 }
 
 _otel_list_path_executables() {
-  \echo "$PATH" | \tr ':' '\n' | while \read dir; do if \[ "$_otel_shell" = 'busybox sh' ]; then "$(\which find)" "$dir" -maxdepth 1 -type f,l -executable 2> /dev/null || \true; else \find "$dir" -maxdepth 1 -type f,l -executable 2> /dev/null || \true; fi; done
+  \echo "$PATH" | \tr ':' '\n' | while \read dir; do \find "$dir" -maxdepth 1 -type f -executable 2> /dev/null || \true; \find "$dir" -maxdepth 1 -type l -executable 2> /dev/null || \true; done
 }
 
 _otel_list_alias_commands() {

@@ -63,7 +63,7 @@ _otel_call_and_record_pipes() {
     \tee "$stdin_bytes" "$stdin_lines" 2> /dev/null | {
       local inner_exit_code=0
       $call_command "$@" || local inner_exit_code="$?"
-      local stdin_pid="$(\ps -o 'pid,command' | \grep -F "tee $stdin_bytes $stdin_lines" | \grep -vF grep | \awk '{ print $1 }')"
+      local stdin_pid="$(\ps -o 'pid,comm' | \grep -F "tee $stdin_bytes $stdin_lines" | \grep -vF grep | \awk '{ print $1 }')"
       if \[ -n "$stdin_pid" ]; then \kill -2 "$stdin_pid" 2> /dev/null || \true; fi
       \echo -n "$inner_exit_code" > "$exit_code_file"
     } 1> "$stdout" 2> "$stderr" || \true

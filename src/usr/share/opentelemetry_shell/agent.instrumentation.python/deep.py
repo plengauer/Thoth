@@ -64,7 +64,7 @@ def observed_os_execv(file, args):
     if type(args) is tuple:
         args = list(args)
     env = inject_env(os.environ.copy(), file, args)
-    args = [ args[0] ] + inject_arguments(file, args[1:])
+    args = [ 'sh' ] + inject_arguments(file, args[1:])
     file = inject_file(file)
     return original_os_execve(file, args, env)
 
@@ -72,7 +72,7 @@ def observed_os_execve(file, args, env):
     if type(args) is tuple:
         args = list(args)
     env = inject_env(env, file, args)
-    args = [ args[0] ] + inject_arguments(file, args[1:])
+    args = [ 'sh' ] + inject_arguments(file, args[1:])
     file = inject_file(file)
     return original_os_execve(file, args, env)
 

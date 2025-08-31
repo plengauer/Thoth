@@ -9,7 +9,7 @@ WORKDIR /tests
 COPY . ./
 
 RUN <<EOF
-  packages_mandatory="jq psmisc wget curl time sudo"
+  packages_mandatory="jq psmisc wget curl time sudo bash"
   packages_optional="parallel moreutils ncat wget2 nodejs npm python3 python3-pip gcc default-jdk-headless jdk"
   if type apt-get; then
     apt-get update
@@ -36,6 +36,12 @@ RUN <<EOF
     zypper --non-interactive install $packages_mandatory
     for package in $packages_optional; do zypper --non-interactive install $package || true; done
     zypper --non-interactive install --allow-unsigned-rpm ./package.rpm
+  elif type apk; then
+    [ "$update" = TRUE ] && apk upgrade
+    type "$shell" || apk add "$shell"
+    apk add $packages_mandatory
+    for package in $packages_optional; do apk add $package || true; done
+    apk add --allow-untrusted ./package.apk
   else
     exit 1
   fi
