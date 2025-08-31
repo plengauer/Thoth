@@ -85,9 +85,11 @@ jobs:
         with:
           name: images
       - run: |
+          echo ${{ secrets.ACTIONS_GITHUB_TOKEN }} | docker login ghcr.io -u "$(GH_TOKEN=${{ secrets.ACTIONS_GITHUB_TOKEN }} gh api user -q .login)" --password-stdin
           find . -iname '*.image' | while read -r image_file; do
             image_name="${image_file%.image}"
+            tag=ghcr.io/"${GITHUB_REPOSITORY%-*}"/"$image_name":${{ steps.version.outputs.version }}
             sudo docker load < "$image_file"
-            sudo docker image tag "$image_name" ghcr.io/"$GITHUB_REPOSITORY"/"$image_name"
-            sudo docker push ghrc.io/"$GITHUB_REPOSITORY"/"$image_name"
+            sudo docker image tag "$image_name" "$tag"
+            sudo docker push "$tag"
           done
