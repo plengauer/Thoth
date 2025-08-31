@@ -3,15 +3,41 @@ export GITHUB_ACTION_REPOSITORY="${GITHUB_ACTION_REPOSITORY:-"$GITHUB_REPOSITORY
 
 if ! type sudo; then
   if [ "$(id -u)" != 0 ]; then exit 0; fi
-  sudo() { if [ "$1" = -E ]; then shift; fi; if [ "$1" = -H ]; then shift; fi;eval "$@"; }
+  sudo() { if [ "$1" = -E ]; then shift; fi; if [ "$1" = -H ]; then shift; fi; eval "$@"; }
   sudo apt-get update
 fi
-ensure_installed() { for item in "$@"; do type "${item%%;*}" 1> /dev/null 2> /dev/null || echo "${item#*;}"; done | (type eatmydata 1> /dev/null 2> /dev/null && sudo xargs -r eatmydata apt-get -y install || sudo xargs -r apt-get -y install); }
+if type dpkg; then
+  package_extension=deb
+  if type apt-get; then
+    my_install() { sudo DEBIAN_FRONTEND=noninteractive apt-get install -y "$@"; }
+  else
+    exit 1 # TODO
+  fi
+elif type rpm; then
+  package_extension=rpm
+  if type yum; then
+    my_install() { sudo yum -y install "$@"; }
+  elif type dnf; then
+    my_install() { sudo dnf -y install "$@"; }
+  elif type zypper; then
+    my_install() { sudo zypper --non-interactive install "$@"; }
+  else
+    exit 1; # TODO
+  fi
+elif type apk; then
+  package_extension=apk
+  my_install() { sudo apk install "$@"; }
+else
+  exit 1
+fi
+export -f my_install
+ensure_installed() { for item in "$@"; do type "${item%%;*}" 1> /dev/null 2> /dev/null || echo "${item#*;}"; done | (type eatmydata 1> /dev/null 2> /dev/null && sudo xargs -r eatmydata my_install || sudo xargs -r my_install); }
 ensure_installed eatmydata
 ensure_installed curl wget jq sed unzip 'node;nodejs' gcc npm 'docker;docker.io'
 
 cp ../shared/package.json . && npm install && rm package.json
 
+# TODO there is a lot of assumptions in the code below about this running on a debian-based OS
 if ! type otel.sh 2> /dev/null; then
   action_tag_name="$(echo "$GITHUB_ACTION_REF" | cut -sd @ -f 2-)"
   if [ -z "$action_tag_name" ]; then action_tag_name="v$(cat ../../../VERSION)"; fi
