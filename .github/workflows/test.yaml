@@ -452,6 +452,14 @@ jobs:
         with:
           name: packages
           path: package.*
+      - run: |
+          cd actions/instrument/workflow
+          sudo docker build --network host --tag opentelemetry-github-workflow
+          sudo docker save > opentelemetry-github-workflow.image
+      - uses: actions/upload-artifact@v4.6.2
+        with:
+          name: images
+          path: '*.image'
   shell:
     needs: build
     permissions:
