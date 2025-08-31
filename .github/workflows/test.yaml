@@ -448,6 +448,45 @@ jobs:
           } > rpm.spec && rm "$rpm_dir"/*.spec
           rpmbuild -bb --buildroot="$(cat rpm.spec | grep '^Buildroot: ' | cut -d ' ' -f 2)" rpm.spec
           mv ../*.rpm ../package.rpm
+          rm rpm.spec
+      - run: |
+          workspace="$(mktemp -d)"
+          read_deb_control_value() {
+            cat src/DEBIAN/control | grep '^'"$1"': ' | cut -d ' ' -f 2-
+          }
+          dependencies_format_deb_to_apk() {
+            cut -d '(' -f 1 | while read -r package; do
+              case "$package" in
+                *'|'*) ;;
+                *) echo "$package";;
+              esac
+            done
+          }
+          dependencies_content_deb_to_apk() {
+            grep -v '^python3-pip$' | grep -v '^python3-venv$' | grep -v '^apk$' | sed 's/^awk$/gawk/g' | sed 's/^libc-bin$/musl-utils/g'
+          }
+          {
+            echo pkgname="$(read_deb_control_value Package)"
+            echo pkgver="$(read_deb_control_value Version)"
+            echo pkgrel=0
+            echo arch=noarch
+            echo depends=\""$({ read_deb_control_value Pre-Depends; read_deb_control_value Depends; read_deb_control_value Recommends; } | tr ',' '\n' | tr -d ' ' | dependencies_content_deb_to_apk | dependencies_format_deb_to_apk | tr '\n' ' ')"\"
+            echo license=\""Apache License 2.0"\"
+            echo maintainer=\""$(read_deb_control_value Maintainer)"\"
+            echo url=\""$(read_deb_control_value Homepage)"\"
+            echo pkgdesc=\""$(read_deb_control_value Description)"\"
+            echo options=\""!fhs !archcheck"\"
+            echo install=\"$(read_deb_control_value Package).post-install $(read_deb_control_value Package).post-upgrade $(read_deb_control_value Package).pre-deinstall $(read_deb_control_value Package).pre-upgrade\"
+            echo 'package() { mkdir -p "$pkgdir" && cp -r my_src/* "$pkgdir"; }'
+            echo 'check() { true; }'
+          } > "$workspace"/APKBUILD
+          cat "$workspace"/APKBUILD | grep '^pkgname' | cut -d = -f 2- | xargs -I {} cp src/DEBIAN/postinst "$workspace"/'{}'.post-install
+          cat "$workspace"/APKBUILD | grep '^pkgname' | cut -d = -f 2- | xargs -I {} cp src/DEBIAN/postinst "$workspace"/'{}'.post-upgrade
+          cat "$workspace"/APKBUILD | grep '^pkgname' | cut -d = -f 2- | xargs -I {} cp src/DEBIAN/prerm "$workspace"/'{}'.pre-deinstall
+          cat "$workspace"/APKBUILD | grep '^pkgname' | cut -d = -f 2- | xargs -I {} cp src/DEBIAN/prerm "$workspace"/'{}'.pre-upgrade
+          cp -r src "$workspace"/my_src && rm -rf "$workspace"/my_src/DEBIAN
+          echo 'cd ~/workspace && apk add abuild && SUDO=env abuild-keygen -a -i -n && abuild -F -r && find ~/packages -iname '\''*.apk'\'' | xargs -I "{}" mv "{}" .' | \sudo docker run --rm --network host -v "$workspace":/root/workspace -i alpine:latest
+          mv "$workspace"/*.apk package.apk
       - uses: actions/upload-artifact@v4.6.2
         with:
           name: packages
