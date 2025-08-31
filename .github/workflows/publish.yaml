@@ -51,6 +51,10 @@ jobs:
         with:
           subject-path: ./package.rpm
           subject-name: opentelemetry-shell_${{ steps.version.outputs.version }}.rpm
+      - uses: actions/attest-build-provenance@v2.4.0
+        with:
+          subject-path: ./package.apk
+          subject-name: opentelemetry-shell_${{ steps.version.outputs.version }}.apk
       - uses: actions/create-release@v1.1.4
         id: create_release
         env:
@@ -75,6 +79,14 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./package.rpm
           asset_name: opentelemetry-shell_${{ steps.version.outputs.version }}.rpm
+          asset_content_type: application/octet-stream
+      - uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./package.apk
+          asset_name: opentelemetry-shell_${{ steps.version.outputs.version }}.apk
           asset_content_type: application/octet-stream
       - uses: eregon/publish-release@v1.0.6
         env:
