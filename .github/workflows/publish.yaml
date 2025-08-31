@@ -51,7 +51,7 @@ jobs:
         with:
           subject-path: ./package.rpm
           subject-name: opentelemetry-shell_${{ steps.version.outputs.version }}.rpm
-      - uses: actions/attest-build-provenance@v2.4.0
+      - uses: actions/attest-build-provenance@v3.0.0
         with:
           subject-path: ./package.apk
           subject-name: opentelemetry-shell_${{ steps.version.outputs.version }}.apk
