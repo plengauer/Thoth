@@ -5,7 +5,7 @@ ensure_installed() { for item in "$@"; do type "${item%%;*}" 1> /dev/null 2> /de
 ensure_installed eatmydata
 ensure_installed curl wget jq sed unzip 'node;nodejs' npm 'docker;docker.io'
 
-cp ../shared/package.json . && npm install && rm package.json
+[ -d node_modules ] || cp ../shared/package.json . && npm install && rm package.json
 
 if ! type otel.sh 2> /dev/null; then
   action_tag_name="$(echo "$GITHUB_ACTION_REF" | cut -sd @ -f 2-)"
