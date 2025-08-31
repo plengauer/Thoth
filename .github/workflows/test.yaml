@@ -494,7 +494,7 @@ jobs:
       - run: |
           cp package.deb actions/instrument/shared/package.json actions/instrument/workflow
           pushd actions/instrument/workflow
-          sudo docker build --build-arg=repository="$GITHUB_REPOSITORY" --network host --tag opentelemetry-github-workflow
+          sudo docker build --build-arg=repository="$GITHUB_REPOSITORY" --network host --tag opentelemetry-github-workflow .
           popd
           sudo docker save > opentelemetry-github-workflow.image
           rm actions/instrument/workflow/package.deb actions/instrument/workflow/package.json
