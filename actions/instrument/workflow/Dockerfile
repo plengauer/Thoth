@@ -2,5 +2,6 @@ FROM debian-slim:13.0-slim
 ARG repository
 LABEL org.opencontainers.image.source https://github.com/$repository
 COPY ./package.deb /root/package.deb
-RUN apt-get update && apt-get -y install sed curl wget jq nodejs /root/package.deb && rm /root/package.deb /usr/share/opentelemetry_shell/*/xz
+COPY ./package.json /root/package.json
+RUN cd /root && apt-get update && apt-get -y install sed curl wget jq nodejs npm /root/package.deb && npm install && rm -rf /root/package.deb /usr/share/opentelemetry_shell/*/xz package.json node_modules
 CMD [ "bash", "-c", "exit 1" ]
