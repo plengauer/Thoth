@@ -84,6 +84,11 @@ runs:
           value="$(cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/deploy*") | .env.'"$key")"
           yq -i '.jobs[].steps[0].env.'"$key"' = "'"$value"'"' "${{ inputs.workflows_directory }}/${{ inputs.workflow_level_instrumentation_file_name }}"
         done
+    - name: "Deploy workflow-level startup optimization"
+      shell: bash
+      run: |
+        if [ -w "${{ steps.find-workflow-level-instrumentation.outputs.path }}" ]; then path="${{ steps.find-workflow-level-instrumentation.outputs.path }}"; else path="${{ inputs.workflows_directory }}/${{ inputs.workflow_level_instrumentation_file_name }}"; fi
+        yq -i ".jobs.export.container = \"ghcr.io/$GITHUB_REPOSITORY/opentelemetry-github-workflow:${{ steps.determine-instrumentation-version.outputs.version }}\"" "$path"
     - name: "Update workflow-level observability triggers"
       shell: bash
       run: |
