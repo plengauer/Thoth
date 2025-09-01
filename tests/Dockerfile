@@ -39,7 +39,7 @@ RUN <<EOF
   elif type apk; then
     [ "$update" = TRUE ] && apk upgrade
     type "$shell" || apk add "$shell"
-    apk add $packages_mandatory
+    for package in $packages_mandatory; do apk add $package || true; done
     for package in $packages_optional; do apk add $package || true; done
     apk add --allow-untrusted ./package.apk
   else
