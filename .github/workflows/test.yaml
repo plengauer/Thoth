@@ -10,6 +10,7 @@ concurrency:
 jobs:
   build:
     permissions:
+      actions: read
       contents: read
     uses: ./.github/workflows/build.yaml
     secrets: inherit
