@@ -3,6 +3,41 @@ description: 'Automatically Deploy OpenTelemetry for GitHub Actions to all workf
 branding:
   icon: 'activity'
   color: 'blue'
+inputs:
+  github_token:
+    description: 'A GitHub token for API access (read/write)'
+    default: '${{ github.token }}'
+    required: true
+  workflows_directory:
+    default: '.github/workflows'
+  workflow_level_instrumentation_file_name:
+    default: 'observability.yaml'
+  workflow_level_instrumentation_workflow_name:
+    default: 'OpenTelemetry'
+  workflow_level_instrumentation_exclude:
+    description: 'Comma-separated list of workflow names to exclude from workflow-level instrumentation.'
+    default: ''
+  workflow_level_instrumentation_use_container:
+    description: 'Use a container image to avoid repeated installation on every run.'
+    default: false
+  job_level_instrumentation_exclude:
+    description: 'Comma-separated list of workflow names to exclude from job-level instrumentation.'
+    default: ''
+  job_level_instrumentation_secret_redaction_strategy:
+    description: 'Whether to (1) redact no secrets at all, to (2) list them explicitly based on content of the workflow, or to (3) proactively redact all secrets (one of "none", "list", "all").'
+    default: 'list'
+  action_repository:
+    default: plengauer/opentelemetry-github
+  action_version:
+    default: same
+  dry_run:
+    default: false
+  debug:
+    description: 'Enable debug logging'
+    default: ${{ runner.debug }}
+  __repository_level_instrumentation_file_name_override:
+    description: 'INTERNAL ONLY - DO NOT SET MANUALLY'
+    default: ''
 runs:
   using: composite
   steps:
@@ -192,38 +227,3 @@ runs:
         pull-request-number: ${{ steps.open-pr.outputs.pull-request-number }}
         merge-method: squash
       continue-on-error: true
-inputs:
-  github_token:
-    description: 'A GitHub token for API access (read/write)'
-    default: '${{ github.token }}'
-    required: true
-  workflows_directory:
-    default: '.github/workflows'
-  workflow_level_instrumentation_file_name:
-    default: 'observability.yaml'
-  workflow_level_instrumentation_workflow_name:
-    default: 'OpenTelemetry'
-  workflow_level_instrumentation_exclude:
-    description: 'Comma-separated list of workflow names to exclude from workflow-level instrumentation.'
-    default: ''
-  workflow_level_instrumentation_use_container:
-    description: 'Use a container image to avoid repeated installation on every run.'
-    default: false
-  job_level_instrumentation_exclude:
-    description: 'Comma-separated list of workflow names to exclude from job-level instrumentation.'
-    default: ''
-  job_level_instrumentation_secret_redaction_strategy:
-    description: 'Whether to (1) redact no secrets at all, to (2) list them explicitly based on content of the workflow, or to (3) proactively redact all secrets (one of "none", "list", "all").'
-    default: 'list'
-  action_repository:
-    default: plengauer/opentelemetry-github
-  action_version:
-    default: same
-  dry_run:
-    default: false
-  debug:
-    description: 'Enable debug logging'
-    default: ${{ runner.debug }}
-  __repository_level_instrumentation_file_name_override:
-    description: 'INTERNAL ONLY - DO NOT SET MANUALLY'
-    default: ''
