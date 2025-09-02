@@ -3,11 +3,6 @@ description: 'Observe Github Jobs with OpenTelemetry'
 branding:
   icon: 'activity'
   color: 'blue'
-runs:
-  using: 'node20'
-  pre: 'inject_and_init.js'
-  main: 'nop.js'
-  post: 'shutdown.js'
 inputs:
   github_token:
     description: 'A GitHub token for API access, needs read access to the scopes repo and actions. Do not set manually unless you know exactly what you are doing, the default token should always be enough.'
@@ -39,3 +34,8 @@ inputs:
   __job_matrix:
     description: 'INTERNAL ONLY - DO NOT SET MANUALLY'
     default: '${{ toJSON(matrix) }}'
+runs:
+  using: 'node20'
+  pre: 'inject_and_init.js'
+  main: 'nop.js'
+  post: 'shutdown.js'
