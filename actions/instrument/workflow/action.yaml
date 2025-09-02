@@ -3,9 +3,6 @@ description: 'Observe Github Workflows with OpenTelemetry'
 branding:
   icon: 'activity'
   color: 'blue'
-runs:
-  using: 'node20'
-  main: 'main.js'
 inputs:
   github_token:
     description: 'A GitHub token for API access (read-only)'
@@ -31,3 +28,6 @@ inputs:
   __kill_switch:
     description: 'INTERNAL ONLY - DO NOT SET MANUALLY' # 'Set OTEL_GITHUB_KILL_SWITCH variable for the repository or organization to any non-empty value to disable all monitoring in case of an emergency. DO NOT SET MANUALLY.'
     default: '' # '${{ vars.OTEL_GITHUB_KILL_SWITCH }}'
+runs:
+  using: 'node20'
+  main: 'main.js'

@@ -30,7 +30,7 @@ jobs:
           - language: actions
             build-mode: none
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.24.4
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.25.1
         with:
           secrets_to_redact: '["${{ github.token }}"]'
         env:
@@ -39,11 +39,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5.0.0
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3.29.11
+        uses: github/codeql-action/init@v3.30.0
         with:
           languages: ${{ matrix.language }}
           build-mode: ${{ matrix.build-mode }}
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3.29.11
+        uses: github/codeql-action/analyze@v3.30.0
         with:
           category: "/language:${{matrix.language}}"
