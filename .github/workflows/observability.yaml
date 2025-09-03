@@ -1,7 +1,7 @@
 name: OpenTelemetry
 on:
   workflow_run:
-    workflows: [Analyze, Autoapprove, Autorerun, Autoversion, Experiment, Greetings, Publish, Refresh Demos, Renovate, Test, GitHub, Shell, Workflow Example]
+    workflows: [Analyze, Autoapprove, Autorerun, Autoversion, Build, Experiment, Greetings, Publish, Refresh Demos, Renovate, Test, GitHub, Shell, Workflow Example]
     types:
       - completed
 jobs:
@@ -15,3 +15,4 @@ jobs:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: '/dev/stderr'
+    container: ghcr.io/plengauer/opentelemetry/opentelemetry-github-workflow:v5.25.1
