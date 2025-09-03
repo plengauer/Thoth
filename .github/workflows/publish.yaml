@@ -64,7 +64,7 @@ jobs:
             image_name="$image_file"
             image_name="${image_name#./}"
             image_name="${image_name%.image}"
-            tag=ghcr.io/"${GITHUB_REPOSITORY%/*}"/"$image_name":${{ steps.version.outputs.version }}
+            tag=ghcr.io/"${GITHUB_REPOSITORY%/*}"/"$image_name":v${{ steps.version.outputs.version }}
             sudo docker load < "$image_file"
             sudo docker image tag "$image_name" "$tag"
             sudo docker push "$tag"
