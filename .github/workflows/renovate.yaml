@@ -6,7 +6,7 @@ on:
 concurrency:
   group: renovate
 jobs:
-  renovate:
+  renovate-dependencies:
     runs-on: ubuntu-latest
     permissions:
       contents: none
@@ -23,7 +23,7 @@ jobs:
           RENOVATE_REPOSITORIES: ${{ github.repository }}
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
-  renovate-python-dependency:
+  renovate-debian-dependency-python:
     runs-on: ubuntu-latest
     permissions:
       contents: read
