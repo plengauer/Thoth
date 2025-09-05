@@ -486,7 +486,6 @@ jobs:
           name: packages
           path: package.*
       - run: |
-          cp package.deb actions/instrument/shared/package.json actions/instrument/workflow
           pushd actions/instrument/workflow
           sudo docker build --build-arg=repository="$GITHUB_REPOSITORY" --network host --tag opentelemetry-github-workflow .
           popd
