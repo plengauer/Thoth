@@ -1,6 +1,4 @@
 #!/bin/sh -e
-if [ "${0%.pre-deinstall}" != "$0" ]; then set -- remove "$@"; fi
-if [ "${0%.pre-upgrade}" != "$0" ]; then set -- upgrade "$@"; fi
 if [ "$1" = 0 ]; then set -- remove; fi
 if [ "$1" = 1 ]; then set -- upgrade; fi
 if [ "$1" = 'remove' ] || [ "$1" = 'deconfigure' ] || [ "$1" = 'upgrade' ]; then
