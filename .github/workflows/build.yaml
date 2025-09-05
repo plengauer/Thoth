@@ -512,11 +512,10 @@ jobs:
         with:
           name: java
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.java
-      - run: sed -i "s/__VERSION__/$(cat VERSION)/g" src/DEBIAN/control
-      # TODO triggers
       - run: |
           workspace="$(mktemp -d)"
           cp meta/apk/* "$workspace"/
+          sed -i "s/__VERSION__/$(cat VERSION)/g" "$workspace"/APKBUILD
           cat meta/debian/postinst >> "$workspace"/opentelemetry-shell.post-install
           cat meta/debian/postinst >> "$workspace"/opentelemetry-shell.post-upgrade
           cat meta/debian/prerm >> "$workspace"/opentelemetry-shell.pre-deinstall
