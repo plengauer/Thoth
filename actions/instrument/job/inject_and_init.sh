@@ -23,8 +23,26 @@ echo "log_file=$log_file" >> "$GITHUB_STATE"
 
 # install dependencies
 . ../shared/github.sh
-. ../shared/id_printer.sh
-. ../shared/install.sh
+. ../shared/id_printer.
+npm install
+action_tag_name="$(echo "$GITHUB_ACTION_REF" | cut -sd @ -f 2-)"
+if [ -z "$action_tag_name" ]; then action_tag_name="v$(cat ../../../VERSION)"; fi
+if [ "$INPUT_CACHE" = "true" ]; then
+  cache_key="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} $({ cat /etc/os-release; python3 --version || true; node --version || true; printenv | grep -E '^OTEL_SHELL_CONFIG_INSTALL_'; } | md5sum | cut -d ' ' -f 1)"
+  sudo -E -H eatmydata node -e "require('@actions/cache').restoreCache(['/var/cache/apt/archives/*.deb', '/opt/opentelemetry_shell/venv', '/opt/opentelemetry_shell/collector.image'], '$cache_key');"
+  [ "$(find /var/cache/apt/archives/ -name '*.deb' | wc -l)" -gt 0 ] && [ -d /opt/opentelemetry_shell/venv ] && [ -r /opt/opentelemetry_shell/collector.image ] || write_back_cache=TRUE
+fi
+bash -e -o pipefail ../shared/install.sh curl wget jq sed unzip 'node;nodejs' npm 'docker;docker.io' build-essential
+export OTEL_SHELL_COLLECTOR_IMAGE="$(cat Dockerfile | grep '^FROM ' | cut -d ' ' -f 2-)"
+if [ -r /opt/opentelemetry_shell/collector.image ]; then
+  sudo docker load < /opt/opentelemetry_shell/collector.image
+else
+  sudo docker pull "$OTEL_SHELL_COLLECTOR_IMAGE"
+  write_back_cache=TRUE
+fi
+if [ "${write_back_cache:-FALSE}" = TRUE ] && [ -n "${cache_key:-}" ]; then
+  sudo docker save "$OTEL_SHELL_COLLECTOR_IMAGE" | sudo tee /opt/opentelemetry_shell/collector.image > /dev/null && sudo -E -H node -e "require('@actions/cache').saveCache(['/var/cache/apt/archives/*.deb', '/opt/opentelemetry_shell/venv', '/opt/opentelemetry_shell/collector.image'], '$cache_key');" &
+fi
 
 # configure collector if required
 backup_otel_exporter_otlp_traces_endpoint="${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT:-}}"
