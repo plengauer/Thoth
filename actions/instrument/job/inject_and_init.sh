@@ -23,7 +23,7 @@ echo "log_file=$log_file" >> "$GITHUB_STATE"
 
 # install dependencies
 . ../shared/github.sh
-. ../shared/id_printer.
+. ../shared/id_printer.sh
 npm install
 action_tag_name="$(echo "$GITHUB_ACTION_REF" | cut -sd @ -f 2-)"
 if [ -z "$action_tag_name" ]; then action_tag_name="v$(cat ../../../VERSION)"; fi
