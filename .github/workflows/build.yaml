@@ -481,7 +481,7 @@ jobs:
           } >> src/opentelemetry-shell.spec
           pushd src
           cat opentelemetry-shell.spec
-          rpmbuild -bb --buildroot=. opentelemetry-shell.spec
+          rpmbuild -bb --buildroot="$(pwd)" opentelemetry-shell.spec
           mv ../*.rpm ../package.rpm
           popd
       - uses: actions/upload-artifact@v4.6.2
