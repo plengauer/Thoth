@@ -440,7 +440,6 @@ jobs:
               printf '%s\n' "$line"
             done
           } > rpm.spec && rm "$rpm_dir"/*.spec
-          cat rpm.spec
           rpmbuild -bb --buildroot="$(cat rpm.spec | grep '^Buildroot: ' | cut -d ' ' -f 2)" rpm.spec
           mv ../*.rpm ../package.rpm
           rm rpm.spec
