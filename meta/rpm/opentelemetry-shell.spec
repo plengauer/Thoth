@@ -1,4 +1,4 @@
-Summary:  Generate open telemetry traces, metrics, and logs from shell scripts fully automatically
+Summary: Generate open telemetry traces, metrics, and logs from shell scripts fully automatically
 Name: opentelemetry-shell
 Version: __VERSION__
 Release: 1
