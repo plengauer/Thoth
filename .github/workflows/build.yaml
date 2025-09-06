@@ -471,10 +471,14 @@ jobs:
             cat meta/debian/postinst
             echo
           } >> src/opentelemetry-shell.spec
-          # {
-            # if [ "$1" = 0 ]; then set -- remove; fi
-            # if [ "$1" = 1 ]; then set -- upgrade; fi
-          # } >> src/opentelemetry-shell.spec
+          {
+            echo "%preun"
+            echo '#!/bin/sh -e'
+            echo 'if [ "$1" = 0 ]; then set -- remove; fi'
+            echo 'if [ "$1" = 1 ]; then set -- upgrade; fi'
+            cat meta/debian/prerm
+            echo
+          } >> src/opentelemetry-shell.spec
           {
             echo '%files'
             (cd src && find . | grep -v '.spec$' | while read -r file; do echo "${file#.}"; done)
