@@ -484,6 +484,7 @@ jobs:
             (cd src && find . | grep -v '.spec$' ) # | while read -r file; do echo "${file#.}"; done)
           } >> src/opentelemetry-shell.spec
           pushd src
+          cat opentelemetry-shell.spec
           rpmbuild -bb --buildroot=. opentelemetry-shell.spec
           mv ../*.rpm ../package.rpm
           popd
