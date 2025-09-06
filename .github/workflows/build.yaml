@@ -449,8 +449,8 @@ jobs:
         with:
           name: java
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.java
-      - run: cp meta/rpm/rpm.spec src/
-      - run: sed -i "s/__VERSION__/$(cat VERSION)/g" src/rpm.spec
+      - run: cp meta/rpm/opentelemetry-shell.spec src/
+      - run: sed -i "s/__VERSION__/$(cat VERSION)/g" src/opentelemetry-shell.spec
       - run: |
           cat meta/debian/triggers | grep -v '^$' | cut -d ' ' -f 2 | rev | cut -d / -f 1 | rev | sort -u | grep -v python3 | while read -r package; do
             echo "%triggerin -- $package" 
@@ -463,20 +463,24 @@ jobs:
             echo 'if [ "$1" = 0 ] || [ "$1" = 1 ] || [ "$1" = 2 ]; then set -- configure; fi'
             cat meta/debian/postinst
             echo
-          done >> src/rpm.spec
+          done >> src/opentelemetry-shell.spec
           {
             echo "%post"
             echo '#/bin/sh -e'
             echo 'if [ "$1" = 0 ] || [ "$1" = 1 ] || [ "$1" = 2 ]; then set -- configure; fi'
             cat meta/debian/postinst
             echo
-          } >> src/rpm.spec
+          } >> src/opentelemetry-shell.spec
           # {
             # if [ "$1" = 0 ]; then set -- remove; fi
             # if [ "$1" = 1 ]; then set -- upgrade; fi
-          # } >> src/rpm.spec
+          # } >> src/opentelemetry-shell.spec
+          {
+            echo '%files'
+            (cd src && find . | grep -v '.spec$' | while read -r file; do echo "${file#.}"; done)
+          } >> src/opentelemetry-shell.spec
           pushd src
-          rpmbuild -bb rpm.spec
+          rpmbuild -bb opentelemetry-shell.spec
           mv ../*.rpm ../package.rpm
           popd
       - uses: actions/upload-artifact@v4.6.2
