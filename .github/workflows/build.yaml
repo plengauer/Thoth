@@ -477,7 +477,7 @@ jobs:
           } >> src/opentelemetry-shell.spec
           {
             echo '%files'
-            (cd src && find . | grep -v '.spec$' | while read -r file; do echo "${file#.}" | grep -v '^$' | while read -r file; do if [ -d "$file" ]; then echo -n '%dir '; fi; echo \""$file"\"; done )
+            ( cd src && find . | grep -v '.spec$' | while read -r file; do echo "${file#.}"; done | grep -v '^$' | while read -r file; do if [ -d "$file" ]; then echo -n '%dir '; fi; echo \""$file"\"; done )
           } >> src/opentelemetry-shell.spec
           pushd src
           cat opentelemetry-shell.spec
