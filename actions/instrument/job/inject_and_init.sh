@@ -24,6 +24,7 @@ echo "log_file=$log_file" >> "$GITHUB_STATE"
 # install dependencies
 . ../shared/github.sh
 . ../shared/id_printer.sh
+set -x
 export GITHUB_ACTION_REPOSITORY="${GITHUB_ACTION_REPOSITORY:-"$GITHUB_REPOSITORY"}"
 npm install
 action_tag_name="$(echo "$GITHUB_ACTION_REF" | cut -sd @ -f 2-)"
