@@ -7,3 +7,6 @@ URL: https://github.com/plengauer/opentelemetry-shell
 Requires: coreutils util-linux findutils python3>=3.9 python3-pip tar grep sed (gawk or mawk) rpm procps jq (xxd or vim-common or vim) glibc-common strace
 AutoReq: no
 BuildArch: noarch
+
+%description
+Generate open telemetry traces, metrics, and logs from shell scripts fully automatically
