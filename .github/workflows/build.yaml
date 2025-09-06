@@ -471,11 +471,10 @@ jobs:
             cat meta/debian/postinst
             echo
           } >> src/rpm.spec
-          {
+          # {
             # if [ "$1" = 0 ]; then set -- remove; fi
             # if [ "$1" = 1 ]; then set -- upgrade; fi
-            ;
-          } >> src/rpm.spec
+          # } >> src/rpm.spec
           pushd src
           rpmbuild -bb rpm.spec
           mv ../*.rpm ../package.rpm
