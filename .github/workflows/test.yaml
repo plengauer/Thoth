@@ -23,8 +23,8 @@ jobs:
           build-mode: none
       - run: |
           /opt/hostedtoolcache/CodeQL/2.23.0/x64/codeql/tools/linux64/java/bin/java --version
-          /opt/hostedtoolcache/CodeQL/2.23.0/x64/codeql/tools/linux64/java/bin/java -cp /usr/share/opentelemetry_shell/agent.instrumentation/java SystemPropertiesPrinter
-          /opt/hostedtoolcache/CodeQL/2.23.0/x64/codeql/tools/linux64/java/bin/java -cp /usr/share/opentelemetry_shell/agent.instrumentation/java SystemPropertiesPrinter | \grep '^java.version=' | \cut -d = -f 2 | \cut -d . -f 1
+          /opt/hostedtoolcache/CodeQL/2.23.0/x64/codeql/tools/linux64/java/bin/java -cp /usr/share/opentelemetry_shell/agent.instrumentation.java SystemPropertiesPrinter
+          /opt/hostedtoolcache/CodeQL/2.23.0/x64/codeql/tools/linux64/java/bin/java -cp /usr/share/opentelemetry_shell/agent.instrumentation.java SystemPropertiesPrinter | \grep '^java.version=' | \cut -d = -f 2 | \cut -d . -f 1
       # - uses: github/codeql-action/analyze@v3.30.1
       #   with:
       #     category: "/language:java"
