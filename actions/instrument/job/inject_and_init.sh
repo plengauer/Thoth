@@ -33,7 +33,7 @@ if [ "$INPUT_CACHE" = "true" ]; then
   export OTEL_SHELL_CONFIG_INSTALL_ASSUME=TRUE
   sudo -E -H eatmydata node -e "require('@actions/cache').restoreCache(['/var/cache/apt/archives/*.deb', '/opt/opentelemetry_shell/venv', '/opt/opentelemetry_shell/collector.image'], '$cache_key');"
   [ "$(find /var/cache/apt/archives/ -name '*.deb' | wc -l)" -gt 0 ] && [ -d /opt/opentelemetry_shell/venv ] && [ -r /opt/opentelemetry_shell/collector.image ] || write_back_cache=TRUE
-  if [ "$RUNNER_ENVIRONMENT" = github-hosted ] &&  [ -r /var/cache/apt/archives/opentelemetry-shell*.deb ]; then # fast track install, what could possibly go wrong
+  if ! type otel.sh && [ "$RUNNER_ENVIRONMENT" = github-hosted ] &&  [ -r /var/cache/apt/archives/opentelemetry-shell*.deb ]; then # fast track install, what could possibly go wrong
     sudo dpkg-deb --extract /var/cache/apt/archives/opentelemetry-shell*.deb /
     control_dir="$(mktemp -d)"
     dpkg-deb --control /var/cache/apt/archives/opentelemetry-shell*.deb "$control_dir"
