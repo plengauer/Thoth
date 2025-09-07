@@ -33,13 +33,15 @@ if [ "$INPUT_CACHE" = "true" ]; then
   export OTEL_SHELL_CONFIG_INSTALL_ASSUME=TRUE
   sudo -E -H eatmydata node -e "require('@actions/cache').restoreCache(['/var/cache/apt/archives/*.deb', '/opt/opentelemetry_shell/venv', '/opt/opentelemetry_shell/collector.image'], '$cache_key');"
   [ "$(find /var/cache/apt/archives/ -name '*.deb' | wc -l)" -gt 0 ] && [ -d /opt/opentelemetry_shell/venv ] && [ -r /opt/opentelemetry_shell/collector.image ] || write_back_cache=TRUE
-  if ! type otel.sh && [ "$RUNNER_ENVIRONMENT" = github-hosted ] &&  [ -r /var/cache/apt/archives/opentelemetry-shell*.deb ]; then # fast track install, what could possibly go wrong
-    sudo dpkg-deb --extract /var/cache/apt/archives/opentelemetry-shell*.deb /
+  if ! type otel.sh &&  [ -r /var/cache/apt/archives/opentelemetry-shell*.deb ]; then # fast track install, what could possibly go wrong
     control_dir="$(mktemp -d)"
     dpkg-deb --control /var/cache/apt/archives/opentelemetry-shell*.deb "$control_dir"
-    sudo "$control_dir"/postinst configure
+    if cat "$control_dir"/control | grep -E '^Pre-Depends:|^Depends:' | cut -d ':' -f 2 - | tr ',' '\n' | grep -v '|' | tr -d ' ' | cut -d '(' -f 1 | sed 's/awk/gawk/g' | xargs -I '{}' [ -r /var/lib/dpkg/info/'{}'.list ]; then
+      sudo dpkg-deb --extract /var/cache/apt/archives/opentelemetry-shell*.deb /
+      sudo "$control_dir"/postinst configure
+      export OTEL_SHELL_PACKAGE_VERSION_CACHE_opentelemetry_shell="$(cat ../../../VERSION)"
+    fi
     rm -rf "$control_dir"
-    export OTEL_SHELL_PACKAGE_VERSION_CACHE_opentelemetry_shell="$(cat ../../../VERSION)"
   fi
 fi
 bash -e -o pipefail ../shared/install.sh curl wget jq sed unzip 'node;nodejs' npm 'docker;docker.io' 'gcc;build-essential'
