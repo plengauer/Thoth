@@ -20,7 +20,11 @@ jobs:
           languages: c-cpp
           build-mode: none
       - run: cat /opt/hostedtoolcache/CodeQL/2.23.0/x64/codeql/codeql
+      - run: sed -i 's/_otel_inject/set -x; _otel_inject/g' /opt/hostedtoolcache/CodeQL/2.23.0/x64/codeql/codeql
       - run: /opt/hostedtoolcache/CodeQL/2.23.0/x64/codeql/tools/linux64/java/bin/java --version
+      - uses: github/codeql-action/analyze@v3.30.1
+        with:
+          category: "/language:c-cpp"
   build:
     permissions:
       actions: read
