@@ -479,12 +479,9 @@ jobs:
             echo '%files'
             ( cd src && find . | grep -v '.spec$' | while read -r file; do echo "${file#.}"; done | grep -v '^$' | while read -r file; do if [ -d "$file" ]; then echo -n '%dir '; fi; echo \""$file"\"; done )
           } >> opentelemetry-shell.spec
-          # pushd src
           cat opentelemetry-shell.spec
           rpmbuild -bb --buildroot="$(pwd)/src" opentelemetry-shell.spec
-          find . -iname '*.rpm' # THIS IS JUST TO MAKE THE NEXT LINE WORK
-          mv *.rpm package.rpm # mv ../*.rpm ../package.rpm
-          # popd
+          mv /home/runner/rpmbuild/RPMS/noarch/opentelemetry-shell-*.noarch.rpm package.rpm
       - uses: actions/upload-artifact@v4.6.2
         with:
           name: package.rpm
