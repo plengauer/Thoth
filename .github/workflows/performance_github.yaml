@@ -1,8 +1,6 @@
 name: 'Performance GitHub Job'
 
 on:
-  release:
-    types: [ published ]
   push:
     paths:
       - .github/workflows/performance_github.yaml
