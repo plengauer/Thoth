@@ -3,6 +3,8 @@ on:
   release:
     types: [ published ]
   push:
+    paths:
+      - .github/workflows/performance_github.yaml
 jobs:
   performance:
     runs-on: ubuntu-latest
