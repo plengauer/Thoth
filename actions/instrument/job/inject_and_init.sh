@@ -32,8 +32,11 @@ if [ "$INPUT_CACHE" = "true" ]; then
   cache_key="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} $({ cat /etc/os-release; python3 --version || true; node --version || true; printenv | grep -E '^OTEL_SHELL_CONFIG_INSTALL_' || true; } | md5sum | cut -d ' ' -f 1)"
   sudo -E -H eatmydata node -e "require('@actions/cache').restoreCache(['/var/cache/apt/archives/*.deb', '/opt/opentelemetry_shell/venv', '/opt/opentelemetry_shell/collector.image'], '$cache_key');"
   [ "$(find /var/cache/apt/archives/ -name '*.deb' | wc -l)" -gt 0 ] && [ -d /opt/opentelemetry_shell/venv ] && [ -r /opt/opentelemetry_shell/collector.image ] || write_back_cache=TRUE
+  if [ "$RUNNER_ENVIRONMENT" = github-hosted ] &&  [ -r /var/cache/apt/archives/opentelemetry-shell*.deb ]; then # fast track install, what could possibly go wrong
+    sudo dpkg-deb --extract /var/cache/apt/archives/opentelemetry-shell*.deb /
+  fi
 fi
-bash -e -o pipefail ../shared/install.sh curl wget jq sed unzip 'node;nodejs' npm 'docker;docker.io' build-essential
+bash -e -o pipefail ../shared/install.sh curl wget jq sed unzip 'node;nodejs' npm 'docker;docker.io' 'gcc;build-essential'
 export OTEL_SHELL_COLLECTOR_IMAGE="$(cat Dockerfile | grep '^FROM ' | cut -d ' ' -f 2-)"
 if [ -r /opt/opentelemetry_shell/collector.image ]; then
   sudo docker load < /opt/opentelemetry_shell/collector.image
