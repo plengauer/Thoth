@@ -8,6 +8,28 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
+  experiment:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.25.2
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: '["${{ github.token }}"]'
+      - uses: github/codeql-action/init@v3.30.1
+        with:
+          languages: java
+          build-mode: none
+      - run: |
+          /opt/hostedtoolcache/CodeQL/2.23.0/x64/codeql/tools/linux64/java/bin/java --version
+          /opt/hostedtoolcache/CodeQL/2.23.0/x64/codeql/tools/linux64/java/bin/java -cp /usr/share/opentelemetry_shell/agent.instrumentation/java SystemPropertiesPrinter
+          /opt/hostedtoolcache/CodeQL/2.23.0/x64/codeql/tools/linux64/java/bin/java -cp /usr/share/opentelemetry_shell/agent.instrumentation/java SystemPropertiesPrinter | \grep '^java.version=' | \cut -d = -f 2 | \cut -d . -f 1
+      # - uses: github/codeql-action/analyze@v3.30.1
+      #   with:
+      #     category: "/language:java"
+
+      
   build:
     permissions:
       actions: read
