@@ -410,7 +410,6 @@ jobs:
           printf '%s' "${{ needs.list-python-versions.outputs.versions }}" | jq -r '.[]' | while read -r version; do
             cat src/DEBIAN/triggers | grep 'python3$' | sed "s~/python3~/python$version~g" >> src/DEBIAN/triggers
           done
-      - run: sudo apt-get update && sudo apt-get install devscripts debhelper
       - run: cd src && dpkg-deb --root-owner-group -Zgzip --build . ../package.deb
       - uses: actions/upload-artifact@v4.6.2
         with:
