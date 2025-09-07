@@ -34,6 +34,10 @@ if [ "$INPUT_CACHE" = "true" ]; then
   [ "$(find /var/cache/apt/archives/ -name '*.deb' | wc -l)" -gt 0 ] && [ -d /opt/opentelemetry_shell/venv ] && [ -r /opt/opentelemetry_shell/collector.image ] || write_back_cache=TRUE
   if [ "$RUNNER_ENVIRONMENT" = github-hosted ] &&  [ -r /var/cache/apt/archives/opentelemetry-shell*.deb ]; then # fast track install, what could possibly go wrong
     sudo dpkg-deb --extract /var/cache/apt/archives/opentelemetry-shell*.deb /
+    control_dir="$(mktemp -d)"
+    dpkg-deb --control /var/cache/apt/archives/opentelemetry-shell*.deb "$control_dir"
+    sudo "$control_dir"/postinst configure
+    rm -rf "$control_dir"
   fi
 fi
 bash -e -o pipefail ../shared/install.sh curl wget jq sed unzip 'node;nodejs' npm 'docker;docker.io' 'gcc;build-essential'
