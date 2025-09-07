@@ -39,7 +39,7 @@ if [ "$INPUT_CACHE" = "true" ]; then
     dpkg-deb --control /var/cache/apt/archives/opentelemetry-shell*.deb "$control_dir"
     sudo "$control_dir"/postinst configure
     rm -rf "$control_dir"
-    export OTEL_SHELL_PACKAGE_VERSION_CACHE_opentelemetry-shell="$(cat ../../../VERSION)"
+    export OTEL_SHELL_PACKAGE_VERSION_CACHE_opentelemetry_shell="$(cat ../../../VERSION)"
   fi
 fi
 bash -e -o pipefail ../shared/install.sh curl wget jq sed unzip 'node;nodejs' npm 'docker;docker.io' 'gcc;build-essential'
