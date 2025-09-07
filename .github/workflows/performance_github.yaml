@@ -1,12 +1,42 @@
 name: 'Performance GitHub Job'
+
 on:
   release:
     types: [ published ]
   push:
     paths:
       - .github/workflows/performance_github.yaml
+      
+env:
+  OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
+  OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
+
 jobs:
+
+  warmup:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.25.2
+        with:
+          secrets_to_redact: '["${{ github.token }}"]'
+      - run: echo hello world
+
+  baseline:
+    needs: [ warmup ]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.25.2
+        with:
+          secrets_to_redact: '["${{ github.token }}"]'
+      - uses: actions/checkout@v5.0.0
+      - run: echo hello world | cat
+
   performance:
+    needs: [ warmup ]
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -25,8 +55,6 @@ jobs:
           secrets_to_redact: '["${{ github.token }}"]'
           cache: '${{ matrix.cache }}'
         env:
-          OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
-          OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
           OTEL_SHELL_CONFIG_OBSERVE_PIPES: '${{ matrix.observe-pipes }}'
           OTEL_SHELL_CONFIG_MUTE_INTERNALS: '${{ matrix.mute-internals }}'
           OTEL_SHELL_CONFIG_MUTE_BUILTINS: '${{ matrix.mute-builtins }}'
