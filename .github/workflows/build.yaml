@@ -476,7 +476,7 @@ jobs:
           } >> opentelemetry-shell.spec
           {
             echo '%files'
-            ( cd src && find . | grep -v '.spec$' | while read -r file; do echo "${file#.}"; done | grep -v '^$' | while read -r file; do if [ -d "$file" ]; then echo -n '%dir '; fi; echo \""$file"\"; done )
+            ( cd src && find . | grep -v '.spec$' | while read -r file; do echo "${file#.}"; done | grep -v '^$' | while read -r file; do if [ -d "$file" ]; then if ! echo "$file" | grep opentelemetry-shell; then continue; fi; echo -n '%dir '; fi; echo \""$file"\"; done )
           } >> opentelemetry-shell.spec
           cat opentelemetry-shell.spec
           rpmbuild -bb --buildroot="$(pwd)/src" opentelemetry-shell.spec
