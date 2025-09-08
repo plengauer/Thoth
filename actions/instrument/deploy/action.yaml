@@ -149,7 +149,8 @@ runs:
           [ "$workflow_file" != "${{ steps.find-workflow-level-instrumentation.outputs.path }}" ] || continue
           [ "$workflow_file" != "${{ inputs.workflows_directory }}/${{ inputs.workflow_level_instrumentation_file_name }}" ] || continue
           cat "$workflow_file" | yq '.jobs | keys[]' | while read -r job_name; do
-            cat "$workflow_file" | yq ".jobs.$job_name.steps" | grep -qvF null || continue
+            cat "$workflow_file" | yq ".jobs.$job_name.steps" | grep -qF '^null$' || continue
+            cat "$workflow_file" | yq ".jobs.$job_name.container" | grep -qF '^null$' || continue
             if [ -n "$(cat "$workflow_file" | yq ".jobs.$job_name.steps[] | select(.uses == \"${{ steps.determine-repository.outputs.repository }}/actions/instrument/workflow@*\") | .uses")" ]; then continue; fi
             if [ -n "$(cat "$workflow_file" | yq ".jobs.$job_name.steps[] | select(.uses == \"${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*\") | .uses")" ]; then continue; fi
             if ! cat "$workflow_file" | yq ".jobs.$job_name.container" | grep -q '^null$'; then continue; fi
