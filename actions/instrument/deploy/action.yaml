@@ -124,7 +124,9 @@ runs:
       shell: bash
       run: |
         if [ -w "${{ steps.find-workflow-level-instrumentation.outputs.path }}" ]; then path="${{ steps.find-workflow-level-instrumentation.outputs.path }}"; else path="${{ inputs.workflows_directory }}/${{ inputs.workflow_level_instrumentation_file_name }}"; fi
-        yq -i ".jobs.export.container = \"ghcr.io/"$(echo ${{ steps.determine-repository.outputs.repository }} | cut -d / -f 1)"/opentelemetry-github-workflow:${{ steps.determine-instrumentation-version.outputs.version }}\"" "$path"
+        if cat "$path" | yq '.jobs.export.container' | grep -q '^null$'; then
+          yq -i ".jobs.export.container = \"ghcr.io/"$(echo ${{ steps.determine-repository.outputs.repository }} | cut -d / -f 1)"/opentelemetry-github-workflow:${{ steps.determine-instrumentation-version.outputs.version }}\"" "$path"
+        fi
     - name: "Update workflow-level observability triggers"
       shell: bash
       run: |
