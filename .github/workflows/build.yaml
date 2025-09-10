@@ -452,11 +452,11 @@ jobs:
       - run: sed -i "s/__VERSION__/$(cat VERSION)/g" opentelemetry-shell.spec
       - run: |
           cat meta/debian/triggers | grep -v '^$' | cut -d ' ' -f 2 | rev | cut -d / -f 1 | rev | sort -u | grep -v python3 | while read -r package; do
-            echo "%triggerin -- $package" 
+            echo "%triggerin -- $package"
             echo '#/bin/sh -e'
             echo 'if [ "$1" = 0 ] || [ "$1" = 1 ] || [ "$1" = 2 ]; then set -- configure; fi'
             cat meta/debian/postinst
-            echo "%triggerun -- $package" 
+            echo "%triggerun -- $package"
             echo '#/bin/sh -e'
             echo 'if [ "$1" = 0 ] || [ "$1" = 1 ] || [ "$1" = 2 ]; then set -- configure; fi'
             cat meta/debian/postinst
