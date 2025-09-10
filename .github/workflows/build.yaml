@@ -1,64 +1,9 @@
 name: 'Build'
 on:
   workflow_call:
+
 jobs:
-  verify-python-dependency:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      actions: read
-    steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.25.2
-        with:
-          secrets_to_redact: '["${{ github.token }}"]'
-        env:
-          OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
-          OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - uses: actions/checkout@v5.0.0
-      - run: |
-          python3 -m venv venv
-          . venv/bin/activate
-          pip3 install -r src/opt/opentelemetry_shell/requirements.txt
-          deactivate
-          min_version_otel="$(cat venv/lib/python*/site-packages/opentelemetry_api-*.dist-info/METADATA | grep '^Requires-Python: ' | cut -d ' ' -f 2 | cut -d . -f 2-)"
-          min_version_otel="${min_version_otel:-9}"
-          min_version_shell="$(cat src/DEBIAN/control | grep '^Pre-Depends:' | tr ',' '\n' | grep -F -- 'python3 (>=' | cut -d '(' -f 2- | cut -d ')' -f 1 | cut -d ' ' -f 2 | cut -d . -f 2)"
-          [ "$min_version_shell" -ge "$min_version_otel" ] || (echo "::error::Minimum version is $min_version_shell but otel requires at least $min_version_otel!" && exit 1)
-  verify-debian-dependencies:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      actions: read
-    steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.25.2
-        env:
-          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
-          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
-        with:
-          secrets_to_redact: '["${{ github.token }}"]'
-      - uses: actions/checkout@v5.0.0
-      - run: sudo apt-get update && sudo apt-get -y install apt-file
-      - run: sudo apt-file update
-      - run: |
-          process_packages() { sed 's/^awk$/gawk/g' | sed 's/^python3$/python3-minimal/g'; }
-          process_commands() { sed 's/^awk$/gawk/g' | grep -vE '^which$' | grep -vE '^print$' | grep -vE '^rpm$';  }
-          patternify() { grep -v '^$' | grep -P '^[a-zA-Z0-9/_.-]+$' | while read -r pattern; do echo '^'"$pattern"'$'; done }
-          check_command() {
-            local dependencies="$1"
-            local command="$2"
-            apt-file search /"$command" | grep -E "/$command\$" | grep -E ': /bin/|: /sbin/|: /usr/bin/|: /usr/sbin/|: /usr/local/bin/|: /usr/local/sbin/' | cut -d : -f 1 | grep -q "$dependencies" && echo "$command OK" || echo "$command UNAVAILABLE"
-          }
-          export -f check_command
-          verify() {
-            local dependencies="$(cat src/DEBIAN/control | grep -E "$1" | cut -d : -f 2- | tr '|' ',' | tr ',' '\n' | cut -d '(' -f 1 | tr -d ' ' | process_packages | patternify)"
-            cat | while read -r file; do echo "Verifying $file" >&2; echo "$file"; done | xargs cat \
-              | grep -v 'SKIP_DEPENDENCY_CHECK' | while read -r line; do line="${line%%#*}"; printf '%s\n' "$line"; done \
-              | grep -oP '(^[[:space:]]*|\$\()\\?[a-zA-Z/][a-zA-Z0-9/_.-]*($|[[:space:]])' \
-              | while read -r command; do command="${command% }"; command="${command# }"; command="${command#\$\(}"; command="${command#\\}"; [ "${#command}" -gt 1 ] && printf '%s\n' "$command" || true; done \
-              | grep -vE '^_otel|^otel_|^OTEL_' | grep -vE "$(compgen -b | patternify)" | grep -vE "$(compgen -k | patternify)" | process_commands \
-              | sort -u | xargs -d '\n' -r parallel -q check_command "$dependencies" ::: | tee /dev/stderr | grep -q 'UNAVAILABLE' && return 1 || return 0
-          }
-          find src/DEBIAN | grep -vE '^src/DEBIAN$|^src/DEBIAN/control$|^src/DEBIAN/triggers$' | verify '^Pre-Depends:' && find src -iname '*.sh' | grep -vE '^src/DEBIAN/' | verify '^Pre-Depends:|^Depends:|^Recommends:|^Suggests:'
+
   build-http:
     runs-on: ubuntu-latest
     strategy:
@@ -127,6 +72,7 @@ jobs:
         with:
           name: http
           path: bin/
+
   list-node-versions:
     runs-on: ubuntu-latest
     outputs:
@@ -164,7 +110,7 @@ jobs:
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
         with:
           secrets_to_redact: '["${{ github.token }}"]'
-      - uses: actions/setup-node@v4.4.0
+      - uses: actions/setup-node@v5.0.0
         with:
           node-version: ${{ matrix.version }}
       - uses: actions/checkout@v5.0.0
@@ -206,6 +152,7 @@ jobs:
         with:
           name: node_modules
           path: node_modules.tar.xz
+
   list-python-versions:
     runs-on: ubuntu-latest
     outputs:
@@ -247,7 +194,7 @@ jobs:
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
         with:
           secrets_to_redact: '["${{ github.token }}"]'
-      - uses: actions/setup-python@v5.6.0
+      - uses: actions/setup-python@v6.0.0
         with:
           python-version: ${{ matrix.version }}
       - uses: actions/checkout@v5.0.0
@@ -303,6 +250,7 @@ jobs:
         with:
           name: python_site_packages
           path: python_site_packages.tar.xz
+
   build-java-agents:
     runs-on: ubuntu-latest
     steps:
@@ -366,8 +314,8 @@ jobs:
             src/usr/share/opentelemetry_shell/agent.instrumentation.java/version
     permissions:
       actions: read
-  build:
-    needs: [verify-python-dependency, verify-debian-dependencies, merge-http, merge-node-modules, merge-python-site-packages, build-java-agents, list-python-versions]
+      
+  verify-debian-python-dependency:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -379,7 +327,58 @@ jobs:
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - run: sudo apt-get update && sudo apt-get install devscripts debhelper alien
+      - uses: actions/checkout@v5.0.0
+      - run: |
+          python3 -m venv venv
+          . venv/bin/activate
+          pip3 install -r src/opt/opentelemetry_shell/requirements.txt
+          deactivate
+          min_version_otel="$(cat venv/lib/python*/site-packages/opentelemetry_api-*.dist-info/METADATA | grep '^Requires-Python: ' | cut -d ' ' -f 2 | cut -d . -f 2-)"
+          min_version_otel="${min_version_otel:-9}"
+          min_version_shell="$(cat meta/debian/control | grep '^Pre-Depends:' | tr ',' '\n' | grep -F -- 'python3 (>=' | cut -d '(' -f 2- | cut -d ')' -f 1 | cut -d ' ' -f 2 | cut -d . -f 2)"
+          [ "$min_version_shell" -ge "$min_version_otel" ] || (echo "::error::Minimum version is $min_version_shell but otel requires at least $min_version_otel!" && exit 1)
+  verify-debian-dependencies:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.25.2
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: '["${{ github.token }}"]'
+      - uses: actions/checkout@v5.0.0
+      - run: sudo apt-get update && sudo apt-get -y install apt-file
+      - run: sudo apt-file update
+      - run: |
+          process_packages() { sed 's/^awk$/gawk/g' | sed 's/^python3$/python3-minimal/g'; }
+          process_commands() { sed 's/^awk$/gawk/g' | grep -vE '^which$' | grep -vE '^print$' | grep -vE '^rpm$';  }
+          patternify() { grep -v '^$' | grep -P '^[a-zA-Z0-9/_.-]+$' | while read -r pattern; do echo '^'"$pattern"'$'; done }
+          check_command() {
+            local dependencies="$1"
+            local command="$2"
+            apt-file search /"$command" | grep -E "/$command\$" | grep -E ': /bin/|: /sbin/|: /usr/bin/|: /usr/sbin/|: /usr/local/bin/|: /usr/local/sbin/' | cut -d : -f 1 | grep -q "$dependencies" && echo "$command OK" || echo "$command UNAVAILABLE"
+          }
+          export -f check_command
+          verify() {
+            local dependencies="$(cat meta/debian/control | grep -E "$1" | cut -d : -f 2- | tr '|' ',' | tr ',' '\n' | cut -d '(' -f 1 | tr -d ' ' | process_packages | patternify)"
+            cat | while read -r file; do echo "Verifying $file" >&2; echo "$file"; done | xargs cat \
+              | grep -v 'SKIP_DEPENDENCY_CHECK' | while read -r line; do line="${line%%#*}"; printf '%s\n' "$line"; done \
+              | grep -oP '(^[[:space:]]*|\$\()\\?[a-zA-Z/][a-zA-Z0-9/_.-]*($|[[:space:]])' \
+              | while read -r command; do command="${command% }"; command="${command# }"; command="${command#\$\(}"; command="${command#\\}"; [ "${#command}" -gt 1 ] && printf '%s\n' "$command" || true; done \
+              | grep -vE '^_otel|^otel_|^OTEL_' | grep -vE "$(compgen -b | patternify)" | grep -vE "$(compgen -k | patternify)" | process_commands \
+              | sort -u | xargs -d '\n' -r parallel -q check_command "$dependencies" ::: | tee /dev/stderr | grep -q 'UNAVAILABLE' && return 1 || return 0
+          }
+          find meta/debian | grep -vE '^meta/debian$|^meta/debian/control$|^meta/debian/triggers$' | verify '^Pre-Depends:' && find src -iname '*.sh' | verify '^Pre-Depends:|^Depends:|^Recommends:|^Suggests:'
+  build-debian:
+    needs: [verify-debian-dependencies, verify-debian-python-dependency, merge-http, merge-node-modules, merge-python-site-packages, build-java-agents]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+    steps:
       - uses: actions/checkout@v5.0.0
       - run: |
           {
@@ -405,86 +404,158 @@ jobs:
         with:
           name: java
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.java
+      - run: cp -r meta/debian src/DEBIAN
       - run: sed -i "s/__VERSION__/$(cat VERSION)/g" src/DEBIAN/control
       - run: |
           printf '%s' "${{ needs.list-python-versions.outputs.versions }}" | jq -r '.[]' | while read -r version; do
             cat src/DEBIAN/triggers | grep 'python3$' | sed "s~/python3~/python$version~g" >> src/DEBIAN/triggers
           done
       - run: cd src && dpkg-deb --root-owner-group -Zgzip --build . ../package.deb
+      - uses: actions/upload-artifact@v4.6.2
+        with:
+          name: package.deb
+          path: package.deb
+
+  build-rpm:
+    needs: [merge-http, merge-node-modules, merge-python-site-packages, build-java-agents]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v5.0.0
       - run: |
-          cd src
-          alien --to-rpm --scripts --keep-version --generate ../package.deb
-          rpm_dir=$(echo */*.spec | rev | cut -d / -f 2- | rev)
           {
-            dependencies_format_deb_to_rpm() {
-              tr '(' ' ' | tr -d ')' | sed 's/=/= /g' | sed 's/|/ or /g' | sed 's/.*/(&)/g'
-            }
+            find src -iname 'Dockerfile' -type f
+            find src -iname '*.c' -type f
+            find src -iname '*.java' -type f
+            find src -iname 'manifest.txt' -type f
+            find src -iname 'pom.xml' -type f
+          } | xargs -r rm
+      - uses: actions/download-artifact@v5.0.0
+        with:
+          name: http
+          path: src/usr/share/opentelemetry_shell/agent.instrumentation.http
+      - uses: actions/download-artifact@v5.0.0
+        with:
+          name: node_modules
+          path: src/usr/share/opentelemetry_shell/agent.instrumentation.node
+      - uses: actions/download-artifact@v5.0.0
+        with:
+          name: python_site_packages
+          path: src/usr/share/opentelemetry_shell/agent.instrumentation.python
+      - uses: actions/download-artifact@v5.0.0
+        with:
+          name: java
+          path: src/usr/share/opentelemetry_shell/agent.instrumentation.java
+      - run: cp meta/rpm/opentelemetry-shell.spec .
+      - run: sed -i "s/__VERSION__/$(cat VERSION)/g" opentelemetry-shell.spec
+      - run: |
+          cat meta/debian/triggers | grep -v '^$' | cut -d ' ' -f 2 | rev | cut -d / -f 1 | rev | sort -u | grep -v python3 | while read -r package; do
+            echo "%triggerin -- $package" 
+            echo '#/bin/sh -e'
+            echo 'if [ "$1" = 0 ] || [ "$1" = 1 ] || [ "$1" = 2 ]; then set -- configure; fi'
+            cat meta/debian/postinst
+            echo "%triggerun -- $package" 
+            echo '#/bin/sh -e'
+            echo 'if [ "$1" = 0 ] || [ "$1" = 1 ] || [ "$1" = 2 ]; then set -- configure; fi'
+            cat meta/debian/postinst
+          done >> opentelemetry-shell.spec
+          {
+            echo "%post"
+            echo '#/bin/sh -e'
+            echo 'if [ "$1" = 0 ] || [ "$1" = 1 ] || [ "$1" = 2 ]; then set -- configure; fi'
+            cat meta/debian/postinst
+          } >> opentelemetry-shell.spec
+          {
+            echo "%preun"
+            echo '#!/bin/sh -e'
+            echo 'if [ "$1" = 0 ]; then set -- remove; fi'
+            echo 'if [ "$1" = 1 ]; then set -- upgrade; fi'
+            cat meta/debian/prerm
+          } >> opentelemetry-shell.spec
+          {
+            echo '%files'
+            ( cd src && find . | grep -v '.spec$' | while read -r file; do echo "${file#.}"; done | grep -v '^$' | while read -r file; do if [ -d "$file" ]; then if ! echo "$file" | grep opentelemetry-shell; then continue; fi; echo -n '%dir '; fi; echo \""$file"\"; done )
+          } >> opentelemetry-shell.spec
+          cat opentelemetry-shell.spec
+          rpmbuild -bb --buildroot="$(pwd)/src" opentelemetry-shell.spec
+          mv /home/runner/rpmbuild/RPMS/noarch/opentelemetry-shell-*.noarch.rpm package.rpm
+      - uses: actions/upload-artifact@v4.6.2
+        with:
+          name: package.rpm
+          path: package.rpm
 
-            dependencies_content_deb_to_rpm() {
-              grep -v 'python3-venv' | sed 's/^awk$/gawk | mawk/g' | sed 's/^dpkg$/rpm/g' | sed 's/^xxd$/xxd | vim-common | vim/g' | sed 's/^libc-bin$/glibc-common/g'
-            }
-
-            echo -n 'Requires: ' && cat DEBIAN/control | grep -E '^Pre-Depends:|^Depends:|^Recommends:' | cut -d ' ' -f 2- | tr ',' '\n' | tr -d ' ' | grep -v '^$' | dependencies_content_deb_to_rpm | dependencies_format_deb_to_rpm | tr '\n' ' ' && echo
-            echo "AutoReq: no"
-            echo "BuildArch: noarch"
-            cat "$rpm_dir"/*.spec | while read -r line; do
-              case "$line" in
-                '%post'*)
-                  cat DEBIAN/triggers | grep -v '^$' | cut -d ' ' -f 2 | rev | cut -d / -f 1 | rev | sort -u | grep -v python3 | while read -r package; do
-                    cat "$rpm_dir"/*.spec | sed -n '/^%post/,/^$/p' | sed 's/^%post/%triggerin -- '"$package"'/g'
-                    cat "$rpm_dir"/*.spec | sed -n '/^%post/,/^$/p' | sed 's/^%post/%triggerun -- '"$package"'/g'
-                  done
-                  ;;
-                *) ;;
-              esac
-              printf '%s\n' "$line"
-            done
-          } > rpm.spec && rm "$rpm_dir"/*.spec
-          rpmbuild -bb --buildroot="$(cat rpm.spec | grep '^Buildroot: ' | cut -d ' ' -f 2)" rpm.spec
-          mv ../*.rpm ../package.rpm
-          rm rpm.spec
+  build-apk:
+    needs: [merge-node-modules, merge-python-site-packages, build-java-agents]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v5.0.0
+      - run: |
+          {
+            find src -iname 'Dockerfile' -type f
+            find src -iname '*.c' -type f
+            find src -iname '*.java' -type f
+            find src -iname 'manifest.txt' -type f
+            find src -iname 'pom.xml' -type f
+          } | xargs -r rm
+      - uses: actions/download-artifact@v5.0.0
+        with:
+          name: node_modules
+          path: src/usr/share/opentelemetry_shell/agent.instrumentation.node
+      - uses: actions/download-artifact@v5.0.0
+        with:
+          name: python_site_packages
+          path: src/usr/share/opentelemetry_shell/agent.instrumentation.python
+      - uses: actions/download-artifact@v5.0.0
+        with:
+          name: java
+          path: src/usr/share/opentelemetry_shell/agent.instrumentation.java
       - run: |
           workspace="$(mktemp -d)"
-          read_deb_control_value() {
-            cat src/DEBIAN/control | grep '^'"$1"': ' | cut -d ' ' -f 2-
-          }
-          dependencies_format_deb_to_apk() {
-            cut -d '(' -f 1 | while read -r package; do
-              case "$package" in
-                *'|'*) ;;
-                *) echo "$package";;
-              esac
-            done
-          }
-          dependencies_content_deb_to_apk() {
-            grep -v '^python3-pip$' | grep -v '^python3-venv$' | grep -v '^apk$' | sed 's/^awk$/gawk/g' | sed 's/^libc-bin$/musl-utils/g'
-          }
-          {
-            echo pkgname="$(read_deb_control_value Package)"
-            echo pkgver="$(read_deb_control_value Version)"
-            echo pkgrel=0
-            echo arch=noarch
-            echo depends=\""$({ read_deb_control_value Pre-Depends; read_deb_control_value Depends; read_deb_control_value Recommends; } | tr ',' '\n' | tr -d ' ' | dependencies_content_deb_to_apk | dependencies_format_deb_to_apk | tr '\n' ' ')"\"
-            echo license=\""Apache License 2.0"\"
-            echo maintainer=\""$(read_deb_control_value Maintainer)"\"
-            echo url=\""$(read_deb_control_value Homepage)"\"
-            echo pkgdesc=\""$(read_deb_control_value Description)"\"
-            echo options=\""!fhs !archcheck"\"
-            echo install=\"$(read_deb_control_value Package).post-install $(read_deb_control_value Package).post-upgrade $(read_deb_control_value Package).pre-deinstall $(read_deb_control_value Package).pre-upgrade\"
-            echo 'package() { mkdir -p "$pkgdir" && cp -r my_src/* "$pkgdir"; }'
-            echo 'check() { true; }'
-          } > "$workspace"/APKBUILD
-          cat "$workspace"/APKBUILD | grep '^pkgname' | cut -d = -f 2- | xargs -I {} cp src/DEBIAN/postinst "$workspace"/'{}'.post-install
-          cat "$workspace"/APKBUILD | grep '^pkgname' | cut -d = -f 2- | xargs -I {} cp src/DEBIAN/postinst "$workspace"/'{}'.post-upgrade
-          cat "$workspace"/APKBUILD | grep '^pkgname' | cut -d = -f 2- | xargs -I {} cp src/DEBIAN/prerm "$workspace"/'{}'.pre-deinstall
-          cat "$workspace"/APKBUILD | grep '^pkgname' | cut -d = -f 2- | xargs -I {} cp src/DEBIAN/prerm "$workspace"/'{}'.pre-upgrade
-          cp -r src "$workspace"/my_src && rm -rf "$workspace"/my_src/DEBIAN
+          cp meta/apk/* "$workspace"/
+          sed -i "s/__VERSION__/$(cat VERSION)/g" "$workspace"/APKBUILD
+          cat meta/debian/postinst >> "$workspace"/opentelemetry-shell.post-install
+          cat meta/debian/postinst >> "$workspace"/opentelemetry-shell.post-upgrade
+          cat meta/debian/prerm >> "$workspace"/opentelemetry-shell.pre-deinstall
+          cat meta/debian/prerm >> "$workspace"/opentelemetry-shell.pre-upgrade
+          cp -r src "$workspace"/my_src
           echo 'cd ~/workspace && apk add abuild && SUDO=env abuild-keygen -a -i -n && abuild -F -r && find ~/packages -iname '\''*.apk'\'' | xargs -I "{}" mv "{}" .' | \sudo docker run --rm --network host -v "$workspace":/root/workspace -i alpine:latest
           mv "$workspace"/*.apk package.apk
       - uses: actions/upload-artifact@v4.6.2
         with:
+          name: package.apk
+          path: package.apk
+  merge-packages:
+    needs: [build-debian, build-rpm, build-apk]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/download-artifact@v5.0.0
+        with:
+          pattern: package.*
+          merge-multiple: true
+      - uses: actions/upload-artifact@v4.6.2
+        with:
           name: packages
           path: package.*
+
+  build-workflow-image:
+    needs: [build-debian]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v5.0.0
+      - uses: actions/download-artifact@v5.0.0
+        with:
+          name: package.deb
       - run: |
           cp package.deb actions/instrument/workflow
           pushd actions/instrument/workflow

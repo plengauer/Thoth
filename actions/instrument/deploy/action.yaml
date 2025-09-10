@@ -62,12 +62,9 @@ runs:
       shell: bash
       run: |
         (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
-          sed -i 's~plengauer/opentelemetry-github~${{ steps.determine-repository.outputs.repository }}~g' "$workflow_file"
-          sed -i 's~plengauer/opentelemetry-bash~${{ steps.determine-repository.outputs.repository }}~g' "$workflow_file"
-          sed -i 's~plengauer/opentelemetry-shell~${{ steps.determine-repository.outputs.repository }}~g' "$workflow_file"
-          sed -i 's~plengauer/opentelemetry-thoth~${{ steps.determine-repository.outputs.repository }}~g' "$workflow_file"
-          sed -i 's~plengauer/Thoth~${{ steps.determine-repository.outputs.repository }}~g' "$workflow_file"
-          sed -i 's~plengauer/thoth~${{ steps.determine-repository.outputs.repository }}~g' "$workflow_file"
+          for repository in plengauer/opentelemetry-github plengauer/opentelemetry-bash plengauer/opentelemetry-shell plengauer/opentelemetry-thoth plengauer/thoth plengauer/Thoth; do
+            sed -i 's~'"$repository"'~${{ steps.determine-repository.outputs.repository }}~g' "$workflow_file"
+          done
         done
     - name: "Find self"
       id: find-self
@@ -124,7 +121,9 @@ runs:
       shell: bash
       run: |
         if [ -w "${{ steps.find-workflow-level-instrumentation.outputs.path }}" ]; then path="${{ steps.find-workflow-level-instrumentation.outputs.path }}"; else path="${{ inputs.workflows_directory }}/${{ inputs.workflow_level_instrumentation_file_name }}"; fi
-        yq -i ".jobs.export.container = \"ghcr.io/"$(echo ${{ steps.determine-repository.outputs.repository }} | cut -d / -f 1)"/opentelemetry-github-workflow:${{ steps.determine-instrumentation-version.outputs.version }}\"" "$path"
+        if cat "$path" | yq '.jobs.export.container' | grep -q '^null$'; then
+          yq -i ".jobs.export.container = \"ghcr.io/"$(echo ${{ steps.determine-repository.outputs.repository }} | cut -d / -f 1)"/opentelemetry-github-workflow:${{ steps.determine-instrumentation-version.outputs.version }}\"" "$path"
+        fi
     - name: "Update workflow-level observability triggers"
       shell: bash
       run: |
@@ -149,7 +148,8 @@ runs:
           [ "$workflow_file" != "${{ steps.find-workflow-level-instrumentation.outputs.path }}" ] || continue
           [ "$workflow_file" != "${{ inputs.workflows_directory }}/${{ inputs.workflow_level_instrumentation_file_name }}" ] || continue
           cat "$workflow_file" | yq '.jobs | keys[]' | while read -r job_name; do
-            cat "$workflow_file" | yq ".jobs.$job_name.steps" | grep -qvF null || continue
+            cat "$workflow_file" | yq ".jobs.$job_name.steps" | grep -q '^null$' && continue || true
+            cat "$workflow_file" | yq ".jobs.$job_name.container" | grep -q '^null$' || continue
             if [ -n "$(cat "$workflow_file" | yq ".jobs.$job_name.steps[] | select(.uses == \"${{ steps.determine-repository.outputs.repository }}/actions/instrument/workflow@*\") | .uses")" ]; then continue; fi
             if [ -n "$(cat "$workflow_file" | yq ".jobs.$job_name.steps[] | select(.uses == \"${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*\") | .uses")" ]; then continue; fi
             yq -i ".jobs.$job_name.steps |= ([{ \"uses\": \"${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@${{ steps.determine-instrumentation-version.outputs.version }}\" }] + .)" "$workflow_file"

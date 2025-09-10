@@ -78,7 +78,7 @@ jobs:
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
       - uses: actions/checkout@v5.0.0
       - id: key
-        run: cat .github/workflows/images.json .github/workflows/test_shell.yaml src/DEBIAN/control | md5sum | cut -d ' ' -f 1 | xargs -I '{}' echo "key={}" >> "$GITHUB_OUTPUT"
+        run: cat .github/workflows/images.json .github/workflows/test_shell.yaml meta/*/* | md5sum | cut -d ' ' -f 1 | xargs -I '{}' echo "key={}" >> "$GITHUB_OUTPUT"
       - uses: actions/cache@v4.2.4
         with:
           path: images.json
@@ -124,7 +124,7 @@ jobs:
       - run: |
           {
             echo sh
-            cat src/DEBIAN/control | grep '^Enhances: ' | tr ' ' '\n' | tr ',' '\n' | grep -v -F 'Enhances:' | grep -v '^$'
+            cat meta/debian/control | grep '^Enhances: ' | tr ' ' '\n' | tr ',' '\n' | grep -v -F 'Enhances:' | grep -v '^$'
           } | sort -u | while read -r shell; do echo "\"$shell\""; done | jq -s | tr -d '\n' | tr -d ' ' | xargs -0 -I {} echo 'shells={}' | tee /dev/stderr >> "$GITHUB_OUTPUT"
         id: dynamic
   system-upgrade:
@@ -159,8 +159,8 @@ jobs:
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
       - uses: actions/checkout@v5.0.0
       - run: |
-          cat src/DEBIAN/triggers | cut -sd ' ' -f 2- | rev | cut -sd / -f 1 | rev | grep -v '^$' | sed 's/node/nodejs/g' \
-           | grep -vF "$(cat src/DEBIAN/control | grep '^Pre-Depends:' | cut -d : -f 2- | tr '|' ',' | tr , '\n' | tr -d ' ' | cut -d '(' -f 1 | sed 's/python3-pip/pip3/g')" \
+          cat meta/debian/triggers | cut -sd ' ' -f 2- | rev | cut -sd / -f 1 | rev | grep -v '^$' | sed 's/node/nodejs/g' \
+           | grep -vF "$(cat meta/debian/control | grep '^Pre-Depends:' | cut -d : -f 2- | tr '|' ',' | tr , '\n' | tr -d ' ' | cut -d '(' -f 1 | sed 's/python3-pip/pip3/g')" \
            | sort -u | while read -r dependency; do echo "\"$dependency\""; done | jq -s | tr -d '\n' | tr -d ' ' | xargs -0 -I {} echo 'dependencies={}' >> "$GITHUB_OUTPUT"
         id: dynamic
   dependency:
@@ -387,8 +387,8 @@ jobs:
             version=$(echo $file | cut -d . -f 2- | rev | cut -d . -f 3- | rev)
             cat "$file" | grep -v 'No such file or directory' | sort -n | head -n 1 | xargs echo "$version" >> "$type".list
           done
+      - run: sudo apt-get update && sudo apt-get install -y gnuplot-nox
       - run: |
-          sudo apt-get update && sudo apt-get install -y gnuplot-nox
           echo '
             set terminal pngcairo enhanced font "Verdana,10" size 1024,1024
             set output "performance.png"

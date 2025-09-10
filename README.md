@@ -183,7 +183,7 @@ jobs:
     concurrency:
       group: otel-deploy-job
     steps:
-      - uses: plengauer/Thoth/actions/instrument/deploy@v5.25.1
+      - uses: plengauer/Thoth/actions/instrument/deploy@v5.25.2
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -213,7 +213,7 @@ jobs:
 
 To deploy job-level instrumentation, add the following step as first in every job you want to observe. You can configure the SDK as described <a href="https://opentelemetry.io/docs/languages/sdk-configuration/">here</a> by adding according environment variables to the setup step. Job-level instrumentation can be combined arbitrarily with workflow-level instrumentation.
 ```yaml
-- uses: plengauer/opentelemetry-github/actions/instrument/job@v5.25.1
+- uses: plengauer/opentelemetry-github/actions/instrument/job@v5.25.2
   env:
     OTEL_SERVICE_NAME: 'Test'
     # ...
@@ -221,7 +221,7 @@ To deploy job-level instrumentation, add the following step as first in every jo
 ```
 Depending on the actions in use, GitHub `secrets` or other sensitive information could appear in commandlines or action inputs/states which may captured as attributes on spans, metrics, or logs recorded by job-level instrumentation. To redact these secrets, use the following parameter to redact their values from any attribute. The value of the parameter must be a `json` object, whereas every value of every field is considered a secret to be redacted. By default, if left unset, the implicit GitHub token is redacted.
 ```yaml
-- uses: plengauer/opentelemetry-github/actions/instrument/job@v5.25.1
+- uses: plengauer/opentelemetry-github/actions/instrument/job@v5.25.2
   with:
     secrets_to_redact: '${{ toJSON(secrets) }}' # Redact all secrets from any attribute, span name, or log body.
 ```
@@ -255,7 +255,7 @@ You can configure the underlying SDK with the same variables as any other OpenTe
 | OTEL_SHELL_CONFIG_OBSERVE_PIPES             | `TRUE`, `FALSE` | `TRUE` for GitHub Actions, `FALSE` otherwise | Count bytes and lines on stdout, and stderr and add counts as attributes on spans.          | stable       |
 | OTEL_SHELL_CONFIG_OBSERVE_PIPES_STDIN       | `TRUE`, `FALSE` | `FALSE`                                      | Count bytes and lines on stdin and add counts as attributes on spans.                       | unsafe       |
 | OTEL_SHELL_CONFIG_MUTE_INTERNALS            | `TRUE`, `FALSE` | `FALSE`                                      | Only create `SERVER`, `CONSUMER`, `CLIENT` and `PRODUCER` spans, mute all `INTERNAL` spans. | stable       |
-| OTEL_SHELL_CONFIG_MUTE_BUILTINs             | `TRUE`, `FALSE` | `TRUE` for GitHub Actions, `FALSE` otherwise | Do not create spans for built-in commands like `echo`, `printf`, `[`, ...                   | stable       |
+| OTEL_SHELL_CONFIG_MUTE_BUILTINS             | `TRUE`, `FALSE` | `TRUE` for GitHub Actions, `FALSE` otherwise | Do not create spans for built-in commands like `echo`, `printf`, `[`, ...                   | stable       |
 | OTEL_SHELL_CONFIG_INJECT_DEEP               | `TRUE`, `FALSE` | `TRUE` for GitHub Actions, `FALSE` otherwise | Inject native OpenTelemetry into scripting languages like node.js, python or java.          | stable       |
 | OTEL_SHELL_CONFIG_INSTRUMENT_ABSOLUTE_PATHS | `TRUE`, `FALSE` | `FALSE`                                      | Create spans for commands with an absolute path to the executable.                          | experimental |
 | OTEL_SHELL_CONFIG_OBSERVE_SIGNALS           | `TRUE`, `FALSE` | `TRUE` for GitHub Actions, `FALSE` otherwise | Create events for received signals.                                                         | stable       |
