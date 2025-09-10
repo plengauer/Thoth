@@ -62,12 +62,9 @@ runs:
       shell: bash
       run: |
         (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
-          sed -i 's~plengauer/opentelemetry-github~${{ steps.determine-repository.outputs.repository }}~g' "$workflow_file"
-          sed -i 's~plengauer/opentelemetry-bash~${{ steps.determine-repository.outputs.repository }}~g' "$workflow_file"
-          sed -i 's~plengauer/opentelemetry-shell~${{ steps.determine-repository.outputs.repository }}~g' "$workflow_file"
-          sed -i 's~plengauer/opentelemetry-thoth~${{ steps.determine-repository.outputs.repository }}~g' "$workflow_file"
-          sed -i 's~plengauer/Thoth~${{ steps.determine-repository.outputs.repository }}~g' "$workflow_file"
-          sed -i 's~plengauer/thoth~${{ steps.determine-repository.outputs.repository }}~g' "$workflow_file"
+          for repository in plengauer/opentelemetry-github plengauer/opentelemetry-bash plengauer/opentelemetry-shell plengauer/opentelemetry-thoth plengauer/thoth plengauer/Thoth; do
+            sed -i 's~'"$repository"'~${{ steps.determine-repository.outputs.repository }}~g' "$workflow_file"
+          done
         done
     - name: "Find self"
       id: find-self
