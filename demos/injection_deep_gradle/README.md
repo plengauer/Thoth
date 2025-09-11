@@ -15,10 +15,10 @@ HEAD
 GET
 GET
 GET
-/usr/lib/jvm/java-21-openjdk-amd64/bin/java -Xmx32m -Xms32m -cp . JavaProbe
-/usr/lib/jvm/temurin-21-jdk-amd64/bin/java -Xmx32m -Xms32m -cp . JavaProbe
-/usr/lib/jvm/temurin-11-jdk-amd64/bin/java -Xmx32m -Xms32m -cp . JavaProbe
 /usr/lib/jvm/temurin-8-jdk-amd64/bin/java -Xmx32m -Xms32m -cp . JavaProbe
+/usr/lib/jvm/temurin-11-jdk-amd64/bin/java -Xmx32m -Xms32m -cp . JavaProbe
+/usr/lib/jvm/temurin-21-jdk-amd64/bin/java -Xmx32m -Xms32m -cp . JavaProbe
+/usr/lib/jvm/java-21-openjdk-amd64/bin/java -Xmx32m -Xms32m -cp . JavaProbe
 GET
 GET
 GET
@@ -67,8 +67,8 @@ GET
 GET
 GET
 GET
-/usr/lib/jvm/temurin-21-jdk-amd64/bin/java -Dorg.gradle.internal.worker.tmpdir=/home/runner/work/Thoth/Thoth/demos/injection_deep_gradle/app/build/tmp/test/work @/home/runner/.gradle/.tmp/gradle-worker-classpath14940174767816919668txt -Xmx512m -Dfile.encoding=UTF-8 -Duser.country -Duser.language=en -Duser.variant -ea worker.org.gradle.process.internal.worker.GradleWorkerMain 'Gradle Test Executor 2'
-/usr/lib/jvm/temurin-21-jdk-amd64/bin/java --add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED @/home/runner/.gradle/.tmp/gradle-worker-classpath14114249520168853225txt -Xmx512m -Dfile.encoding=UTF-8 -Duser.country -Duser.language=en -Duser.variant worker.org.gradle.process.internal.worker.GradleWorkerMain 'Gradle Worker Daemon 1'
+/usr/lib/jvm/temurin-21-jdk-amd64/bin/java -Dorg.gradle.internal.worker.tmpdir=/home/runner/work/Thoth/Thoth/demos/injection_deep_gradle/app/build/tmp/test/work @/home/runner/.gradle/.tmp/gradle-worker-classpath3483280003517583295txt -Xmx512m -Dfile.encoding=UTF-8 -Duser.country -Duser.language=en -Duser.variant -ea worker.org.gradle.process.internal.worker.GradleWorkerMain 'Gradle Test Executor 2'
+/usr/lib/jvm/temurin-21-jdk-amd64/bin/java --add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED @/home/runner/.gradle/.tmp/gradle-worker-classpath5562249721395106974txt -Xmx512m -Dfile.encoding=UTF-8 -Duser.country -Duser.language=en -Duser.variant worker.org.gradle.process.internal.worker.GradleWorkerMain 'Gradle Worker Daemon 1'
 bash -e demo.sh
   /bin/sh /home/runner/work/Thoth/Thoth/demos/injection_deep_gradle/gradlew build
     [ -h /home/runner/work/Thoth/Thoth/demos/injection_deep_gradle/gradlew ]
@@ -92,14 +92,14 @@ bash -e demo.sh
 ## Full Trace
 ```
 {
-  "trace_id": "35e93934fcf0bc15bef226ee9ff2abac",
-  "span_id": "2e32358823a9234b",
-  "parent_span_id": "67e0cf89700af0e2",
+  "trace_id": "5d7271625ae0ed3dea6585d272b40816",
+  "span_id": "4bb5064016bacd01",
+  "parent_span_id": "23252b5d2f78e2e1",
   "name": "/bin/sh /home/runner/work/Thoth/Thoth/demos/injection_deep_gradle/gradlew build",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1757076366145049344,
-  "time_end": 1757076438239261440,
+  "time_start": 1757583408800524288,
+  "time_end": 1757583493631945984,
   "attributes": {
     "shell.command_line": "/bin/sh /home/runner/work/Thoth/Thoth/demos/injection_deep_gradle/gradlew build",
     "shell.command": "/bin/sh",
@@ -114,12 +114,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.25.2",
+    "telemetry.sdk.version": "5.26.0",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 4027,
-    "process.parent_pid": 2394,
+    "process.pid": 3996,
+    "process.parent_pid": 2349,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -137,14 +137,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "7a608813259d826b5b6db9ab40a210e5",
-  "span_id": "caf3e47351aeff20",
+  "trace_id": "e2106060a2fa0f888fd716ac90363da7",
+  "span_id": "c3e1d204dab54aa3",
   "parent_span_id": null,
   "name": "/usr/lib/jvm/java-21-openjdk-amd64/bin/java -Xmx32m -Xms32m -cp . JavaProbe",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1757076407060814848,
-  "time_end": 1757076409870941184,
+  "time_start": 1757583476319808768,
+  "time_end": 1757583479318049024,
   "attributes": {
     "shell.command_line": "/usr/lib/jvm/java-21-openjdk-amd64/bin/java -Xmx32m -Xms32m -cp . JavaProbe",
     "shell.command": "/usr/lib/jvm/java-21-openjdk-amd64/bin/java",
@@ -157,12 +157,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.25.2",
+    "telemetry.sdk.version": "5.26.0",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 9596,
-    "process.parent_pid": 9492,
+    "process.pid": 12546,
+    "process.parent_pid": 9462,
     "process.executable.name": "dash",
     "process.executable.path": "/usr/bin/dash",
     "process.command_line": "/usr/lib/jvm/java-21-openjdk-amd64/bin/java -Xmx32m -Xms32m -cp . JavaProbe",
@@ -180,14 +180,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "c8d324614f230245334764c4e4b96c32",
-  "span_id": "fe7bdc41024ae908",
+  "trace_id": "b8e726a93d3146fbd90413b95557b88a",
+  "span_id": "7097c9ced8e33521",
   "parent_span_id": null,
   "name": "/usr/lib/jvm/temurin-11-jdk-amd64/bin/java -Xmx32m -Xms32m -cp . JavaProbe",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1757076417011927040,
-  "time_end": 1757076423477147392,
+  "time_start": 1757583458327016448,
+  "time_end": 1757583466956653568,
   "attributes": {
     "shell.command_line": "/usr/lib/jvm/temurin-11-jdk-amd64/bin/java -Xmx32m -Xms32m -cp . JavaProbe",
     "shell.command": "/usr/lib/jvm/temurin-11-jdk-amd64/bin/java",
@@ -200,12 +200,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.25.2",
+    "telemetry.sdk.version": "5.26.0",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 11616,
-    "process.parent_pid": 9492,
+    "process.pid": 10530,
+    "process.parent_pid": 9462,
     "process.executable.name": "dash",
     "process.executable.path": "/usr/bin/dash",
     "process.command_line": "/usr/lib/jvm/temurin-11-jdk-amd64/bin/java -Xmx32m -Xms32m -cp . JavaProbe",
@@ -223,14 +223,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "35e93934fcf0bc15bef226ee9ff2abac",
-  "span_id": "5adfdccb3b202467",
-  "parent_span_id": "63ec7b91c04c584a",
+  "trace_id": "5d7271625ae0ed3dea6585d272b40816",
+  "span_id": "a221b079d743f403",
+  "parent_span_id": "f4357754bf8ff8b7",
   "name": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Xmx64m -Xms64m -Dorg.gradle.appname=gradlew -classpath /home/runner/work/Thoth/Thoth/demos/injection_deep_gradle/gradle/wrapper/gradle-wrapper.jar org.gradle.wrapper.GradleWrapperMain build",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1757076367837910016,
-  "time_end": 1757076438184198400,
+  "time_start": 1757583410549520896,
+  "time_end": 1757583493569659392,
   "attributes": {
     "shell.command_line": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Xmx64m -Xms64m -Dorg.gradle.appname=gradlew -classpath /home/runner/work/Thoth/Thoth/demos/injection_deep_gradle/gradle/wrapper/gradle-wrapper.jar org.gradle.wrapper.GradleWrapperMain build",
     "shell.command": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
@@ -243,12 +243,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.25.2",
+    "telemetry.sdk.version": "5.26.0",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 4965,
-    "process.parent_pid": 4027,
+    "process.pid": 4934,
+    "process.parent_pid": 3996,
     "process.executable.name": "dash",
     "process.executable.path": "/usr/bin/dash",
     "process.command_line": "/bin/sh /home/runner/work/Thoth/Thoth/demos/injection_deep_gradle/gradlew build",
@@ -266,16 +266,16 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "33452ffd7d225795eb0e3561fda5b1f1",
-  "span_id": "2c502f4a85e8c80f",
+  "trace_id": "167320b58251ecb5c8740c28a30d7ae6",
+  "span_id": "c624441e58f20753",
   "parent_span_id": null,
-  "name": "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java --add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED @/home/runner/.gradle/.tmp/gradle-worker-classpath14114249520168853225txt -Xmx512m -Dfile.encoding=UTF-8 -Duser.country -Duser.language=en -Duser.variant worker.org.gradle.process.internal.worker.GradleWorkerMain 'Gradle Worker Daemon 1'",
+  "name": "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java --add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED @/home/runner/.gradle/.tmp/gradle-worker-classpath5562249721395106974txt -Xmx512m -Dfile.encoding=UTF-8 -Duser.country -Duser.language=en -Duser.variant worker.org.gradle.process.internal.worker.GradleWorkerMain 'Gradle Worker Daemon 1'",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1757076427706814208,
-  "time_end": 1757076438059661312,
+  "time_start": 1757583482081355776,
+  "time_end": 1757583493436416256,
   "attributes": {
-    "shell.command_line": "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java --add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED @/home/runner/.gradle/.tmp/gradle-worker-classpath14114249520168853225txt -Xmx512m -Dfile.encoding=UTF-8 -Duser.country -Duser.language=en -Duser.variant worker.org.gradle.process.internal.worker.GradleWorkerMain 'Gradle Worker Daemon 1'",
+    "shell.command_line": "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java --add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED @/home/runner/.gradle/.tmp/gradle-worker-classpath5562249721395106974txt -Xmx512m -Dfile.encoding=UTF-8 -Duser.country -Duser.language=en -Duser.variant worker.org.gradle.process.internal.worker.GradleWorkerMain 'Gradle Worker Daemon 1'",
     "shell.command": "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
     "shell.command.type": "file",
     "shell.command.name": "java",
@@ -286,15 +286,15 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.25.2",
+    "telemetry.sdk.version": "5.26.0",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 13630,
-    "process.parent_pid": 9492,
+    "process.pid": 13580,
+    "process.parent_pid": 9462,
     "process.executable.name": "dash",
     "process.executable.path": "/usr/bin/dash",
-    "process.command_line": "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java --add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED @/home/runner/.gradle/.tmp/gradle-worker-classpath14114249520168853225txt -Xmx512m -Dfile.encoding=UTF-8 -Duser.country -Duser.language=en -Duser.variant worker.org.gradle.process.internal.worker.GradleWorkerMain 'Gradle Worker Daemon 1'",
+    "process.command_line": "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java --add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED @/home/runner/.gradle/.tmp/gradle-worker-classpath5562249721395106974txt -Xmx512m -Dfile.encoding=UTF-8 -Duser.country -Duser.language=en -Duser.variant worker.org.gradle.process.internal.worker.GradleWorkerMain 'Gradle Worker Daemon 1'",
     "process.command": "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
     "process.owner": "runner",
     "process.runtime.name": "dash",
@@ -309,16 +309,16 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "9fabcde21b2e3b359ab23e5aa0342359",
-  "span_id": "b902a7e2fcd03596",
+  "trace_id": "39a96653039bfab7cf3c33715c70f4b2",
+  "span_id": "fad06fe648f5f786",
   "parent_span_id": null,
-  "name": "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java -Dorg.gradle.internal.worker.tmpdir=/home/runner/work/Thoth/Thoth/demos/injection_deep_gradle/app/build/tmp/test/work @/home/runner/.gradle/.tmp/gradle-worker-classpath14940174767816919668txt -Xmx512m -Dfile.encoding=UTF-8 -Duser.country -Duser.language=en -Duser.variant -ea worker.org.gradle.process.internal.worker.GradleWorkerMain 'Gradle Test Executor 2'",
+  "name": "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java -Dorg.gradle.internal.worker.tmpdir=/home/runner/work/Thoth/Thoth/demos/injection_deep_gradle/app/build/tmp/test/work @/home/runner/.gradle/.tmp/gradle-worker-classpath3483280003517583295txt -Xmx512m -Dfile.encoding=UTF-8 -Duser.country -Duser.language=en -Duser.variant -ea worker.org.gradle.process.internal.worker.GradleWorkerMain 'Gradle Test Executor 2'",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1757076434370994944,
-  "time_end": 1757076437748815360,
+  "time_start": 1757583489476081152,
+  "time_end": 1757583493120122368,
   "attributes": {
-    "shell.command_line": "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java -Dorg.gradle.internal.worker.tmpdir=/home/runner/work/Thoth/Thoth/demos/injection_deep_gradle/app/build/tmp/test/work @/home/runner/.gradle/.tmp/gradle-worker-classpath14940174767816919668txt -Xmx512m -Dfile.encoding=UTF-8 -Duser.country -Duser.language=en -Duser.variant -ea worker.org.gradle.process.internal.worker.GradleWorkerMain 'Gradle Test Executor 2'",
+    "shell.command_line": "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java -Dorg.gradle.internal.worker.tmpdir=/home/runner/work/Thoth/Thoth/demos/injection_deep_gradle/app/build/tmp/test/work @/home/runner/.gradle/.tmp/gradle-worker-classpath3483280003517583295txt -Xmx512m -Dfile.encoding=UTF-8 -Duser.country -Duser.language=en -Duser.variant -ea worker.org.gradle.process.internal.worker.GradleWorkerMain 'Gradle Test Executor 2'",
     "shell.command": "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
     "shell.command.type": "file",
     "shell.command.name": "java",
@@ -329,15 +329,15 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.25.2",
+    "telemetry.sdk.version": "5.26.0",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 14062,
-    "process.parent_pid": 9492,
+    "process.pid": 14012,
+    "process.parent_pid": 9462,
     "process.executable.name": "dash",
     "process.executable.path": "/usr/bin/dash",
-    "process.command_line": "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java -Dorg.gradle.internal.worker.tmpdir=/home/runner/work/Thoth/Thoth/demos/injection_deep_gradle/app/build/tmp/test/work @/home/runner/.gradle/.tmp/gradle-worker-classpath14940174767816919668txt -Xmx512m -Dfile.encoding=UTF-8 -Duser.country -Duser.language=en -Duser.variant -ea worker.org.gradle.process.internal.worker.GradleWorkerMain 'Gradle Test Executor 2'",
+    "process.command_line": "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java -Dorg.gradle.internal.worker.tmpdir=/home/runner/work/Thoth/Thoth/demos/injection_deep_gradle/app/build/tmp/test/work @/home/runner/.gradle/.tmp/gradle-worker-classpath3483280003517583295txt -Xmx512m -Dfile.encoding=UTF-8 -Duser.country -Duser.language=en -Duser.variant -ea worker.org.gradle.process.internal.worker.GradleWorkerMain 'Gradle Test Executor 2'",
     "process.command": "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
     "process.owner": "runner",
     "process.runtime.name": "dash",
@@ -352,14 +352,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "0b4358a560620d5bce0ca33afe66c386",
-  "span_id": "a613c1b672f94dac",
+  "trace_id": "9ddf18f9624cc67993e7cf714332a84a",
+  "span_id": "906657168362979a",
   "parent_span_id": null,
   "name": "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java -Xmx32m -Xms32m -cp . JavaProbe",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1757076410435818752,
-  "time_end": 1757076416461424384,
+  "time_start": 1757583467532361728,
+  "time_end": 1757583475745977600,
   "attributes": {
     "shell.command_line": "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java -Xmx32m -Xms32m -cp . JavaProbe",
     "shell.command": "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
@@ -372,12 +372,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.25.2",
+    "telemetry.sdk.version": "5.26.0",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 10605,
-    "process.parent_pid": 9492,
+    "process.pid": 11534,
+    "process.parent_pid": 9462,
     "process.executable.name": "dash",
     "process.executable.path": "/usr/bin/dash",
     "process.command_line": "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java -Xmx32m -Xms32m -cp . JavaProbe",
@@ -395,14 +395,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5059e9c150b4249d4c197675ce55c42b",
-  "span_id": "b2bfc4fd2148a05f",
+  "trace_id": "cc1aeec5ba480b8801dc0c4046c64498",
+  "span_id": "197f50aa9e5541c7",
   "parent_span_id": null,
   "name": "/usr/lib/jvm/temurin-8-jdk-amd64/bin/java -Xmx32m -Xms32m -cp . JavaProbe",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1757076424029554176,
-  "time_end": 1757076425599527936,
+  "time_start": 1757583454549032704,
+  "time_end": 1757583457747588864,
   "attributes": {
     "shell.command_line": "/usr/lib/jvm/temurin-8-jdk-amd64/bin/java -Xmx32m -Xms32m -cp . JavaProbe",
     "shell.command": "/usr/lib/jvm/temurin-8-jdk-amd64/bin/java",
@@ -415,12 +415,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.25.2",
+    "telemetry.sdk.version": "5.26.0",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 12622,
-    "process.parent_pid": 9492,
+    "process.pid": 9547,
+    "process.parent_pid": 9462,
     "process.executable.name": "dash",
     "process.executable.path": "/usr/bin/dash",
     "process.command_line": "/usr/lib/jvm/temurin-8-jdk-amd64/bin/java -Xmx32m -Xms32m -cp . JavaProbe",
@@ -438,14 +438,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "35e93934fcf0bc15bef226ee9ff2abac",
-  "span_id": "a3b1be65a12fb210",
-  "parent_span_id": "5adfdccb3b202467",
+  "trace_id": "5d7271625ae0ed3dea6585d272b40816",
+  "span_id": "5a5a099ef2e4ba30",
+  "parent_span_id": "a221b079d743f403",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076372331516177,
-  "time_end": 1757076372952976117,
+  "time_start": 1757583416357791087,
+  "time_end": 1757583417602317643,
   "attributes": {
     "thread.name": "main",
     "url.full": "https://services.gradle.org/distributions/gradle-9.0.0-bin.zip",
@@ -457,7 +457,7 @@ bash -e demo.sh
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -474,11 +474,11 @@ bash -e demo.sh
       "build"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 7791,
+    "process.pid": 7760,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "cb6132d0-336f-4bd8-9529-986e60adc6c6",
+    "service.instance.id": "32239563-c37b-40bf-b937-20e43b3f7419",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -490,14 +490,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "6ca090e85e5d1f0bd56d8679ec0dc825",
-  "span_id": "a37a43b642967cf6",
+  "trace_id": "86c455be34ec81a93537e8f05e2ebb93",
+  "span_id": "6387abfc44d8e0f7",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076395099630081,
-  "time_end": 1757076395389712772,
+  "time_start": 1757583440882953920,
+  "time_end": 1757583441202354884,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
@@ -509,7 +509,7 @@ bash -e demo.sh
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -545,11 +545,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -561,14 +561,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "7fcaaadf2c807c6c221a8a395d6f2383",
-  "span_id": "1c3f8efaf82cc59e",
+  "trace_id": "63cd8e6175e6a3ca984928dc317a31c8",
+  "span_id": "9a2568f4d6611106",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076395847470293,
-  "time_end": 1757076396223380772,
+  "time_start": 1757583441934262340,
+  "time_end": 1757583442267138440,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
@@ -580,7 +580,7 @@ bash -e demo.sh
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -616,11 +616,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -632,14 +632,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "67ae6cabbaafd4679d2e9129a007879c",
-  "span_id": "d4666219f5de6ca0",
+  "trace_id": "7bc1de691f238cbaa872f200d1a01bff",
+  "span_id": "0ff383f0205f48ba",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076396239253486,
-  "time_end": 1757076396369089658,
+  "time_start": 1757583442284832254,
+  "time_end": 1757583442407160752,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
@@ -651,7 +651,7 @@ bash -e demo.sh
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -687,11 +687,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -703,14 +703,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "1545a7bc29b463079ce5cf97dc814060",
-  "span_id": "13f76ab685f81a64",
+  "trace_id": "eb15f6aa1f39d48ef5e2759b5c4935ab",
+  "span_id": "9ceef4dafdb76760",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076396387217666,
-  "time_end": 1757076396455770244,
+  "time_start": 1757583442431677823,
+  "time_end": 1757583442526814029,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
@@ -722,7 +722,7 @@ bash -e demo.sh
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -758,11 +758,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -774,14 +774,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "fd3156e03f348646ebcf79460605ac25",
-  "span_id": "63739deeced3ec22",
+  "trace_id": "864734442a2a93cf4e75fd545a9ceddf",
+  "span_id": "aa774e504fb7cbbb",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076425890757279,
-  "time_end": 1757076425924684539,
+  "time_start": 1757583479645477588,
+  "time_end": 1757583479758119516,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
@@ -793,7 +793,7 @@ bash -e demo.sh
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -829,11 +829,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -845,14 +845,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "0eff4239a28fc3bddba4e5a54333ad63",
-  "span_id": "bfeed046949fdcef",
+  "trace_id": "403906c2d14f9388dc99dcd65dfacb0f",
+  "span_id": "c4e298f81f5a1933",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076425941637505,
-  "time_end": 1757076425944994570,
+  "time_start": 1757583479774215819,
+  "time_end": 1757583479792365891,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
@@ -864,7 +864,7 @@ bash -e demo.sh
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -900,11 +900,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -916,14 +916,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "85791182efae384deea45e99a0b7f3c1",
-  "span_id": "8037197b4f7a5b42",
+  "trace_id": "2c03850ecbdd3e24220ddfa600021c7c",
+  "span_id": "c87cf3ab02d9144b",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426011708730,
-  "time_end": 1757076426015907511,
+  "time_start": 1757583479834410696,
+  "time_end": 1757583479853340151,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
@@ -935,7 +935,7 @@ bash -e demo.sh
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -971,11 +971,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -987,14 +987,85 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "67b4da09777ae12644ed4957f4645372",
-  "span_id": "13967ca293018053",
+  "trace_id": "17d75c3ab5ea95e415af445af8695a83",
+  "span_id": "376ae6da2483ff3b",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426040671930,
-  "time_end": 1757076426045437281,
+  "time_start": 1757583479868075154,
+  "time_end": 1757583479927245002,
+  "attributes": {
+    "http.request.method": "GET",
+    "network.protocol.version": "1.1",
+    "server.address": "repo.maven.apache.org",
+    "thread.name": "Unconstrained build operations Thread 5",
+    "url.full": "https://repo.maven.apache.org/maven2/com/google/errorprone/error_prone_annotations/2.36.0/error_prone_annotations-2.36.0.pom",
+    "http.response.status_code": 200,
+    "thread.id": 65
+  },
+  "resource_attributes": {
+    "host.arch": "amd64",
+    "host.name": "runnervmf4ws1",
+    "os.description": "Linux 6.11.0-1018-azure",
+    "os.type": "linux",
+    "process.command_args": [
+      "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
+      "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/opentelemetry-javaagent.jar",
+      "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/rootcontextagent.jar",
+      "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/subprocessinjectionagent.jar",
+      "--add-opens=java.base/java.lang=ALL-UNNAMED",
+      "--add-opens=java.base/java.lang.invoke=ALL-UNNAMED",
+      "--add-opens=java.base/java.util=ALL-UNNAMED",
+      "--add-opens=java.prefs/java.util.prefs=ALL-UNNAMED",
+      "--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
+      "--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
+      "--add-opens=java.base/java.util=ALL-UNNAMED",
+      "--add-opens=java.prefs/java.util.prefs=ALL-UNNAMED",
+      "--add-opens=java.base/java.nio.charset=ALL-UNNAMED",
+      "--add-opens=java.base/java.net=ALL-UNNAMED",
+      "--add-opens=java.base/java.util.concurrent=ALL-UNNAMED",
+      "--add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED",
+      "--add-opens=java.xml/javax.xml.namespace=ALL-UNNAMED",
+      "-XX:MaxMetaspaceSize=384m",
+      "-XX:+HeapDumpOnOutOfMemoryError",
+      "-Xms256m",
+      "-Xmx512m",
+      "-Dfile.encoding=UTF-8",
+      "-Duser.country",
+      "-Duser.language=en",
+      "-Duser.variant",
+      "-cp",
+      "/home/runner/.gradle/wrapper/dists/gradle-9.0.0-bin/d6wjpkvcgsg3oed0qlfss3wgl/gradle-9.0.0/lib/gradle-daemon-main-9.0.0.jar",
+      "-javaagent:/home/runner/.gradle/wrapper/dists/gradle-9.0.0-bin/d6wjpkvcgsg3oed0qlfss3wgl/gradle-9.0.0/lib/agents/gradle-instrumentation-agent-9.0.0.jar",
+      "org.gradle.launcher.daemon.bootstrap.GradleDaemon",
+      "9.0.0"
+    ],
+    "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
+    "process.pid": 9462,
+    "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
+    "process.runtime.name": "OpenJDK Runtime Environment",
+    "process.runtime.version": "17.0.16+8",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
+    "service.name": "unknown_service:java",
+    "telemetry.distro.name": "opentelemetry-java-instrumentation",
+    "telemetry.distro.version": "2.19.0",
+    "telemetry.sdk.language": "java",
+    "telemetry.sdk.name": "opentelemetry",
+    "telemetry.sdk.version": "1.53.0"
+  },
+  "links": [],
+  "events": []
+}
+{
+  "trace_id": "8074a9e1aa57d86000bd6abac0dd9ce9",
+  "span_id": "6bb8cb1d3ccbc1ff",
+  "parent_span_id": null,
+  "name": "GET",
+  "kind": "CLIENT",
+  "status": "UNSET",
+  "time_start": 1757583479868075175,
+  "time_end": 1757583479886560232,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
@@ -1006,7 +1077,7 @@ bash -e demo.sh
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -1042,11 +1113,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -1058,14 +1129,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f2ec58fafb4967794f2aeeb95cc46620",
-  "span_id": "d82a4d323eb5866a",
+  "trace_id": "a434b7868e60df82441bb46b5fbe3b62",
+  "span_id": "904a1a04d7e26009",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426042138869,
-  "time_end": 1757076426064963617,
+  "time_start": 1757583479868196295,
+  "time_end": 1757583479927626894,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
@@ -1077,7 +1148,7 @@ bash -e demo.sh
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -1113,11 +1184,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -1129,97 +1200,26 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "fbf307a8e8c74ceded1901f9f4a38882",
-  "span_id": "9029cf8698264905",
+  "trace_id": "07ffc128839034a2cee4fb9fb397d5e6",
+  "span_id": "0c8a00edf6433eb9",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426043335525,
-  "time_end": 1757076426060518745,
-  "attributes": {
-    "http.request.method": "GET",
-    "network.protocol.version": "1.1",
-    "server.address": "repo.maven.apache.org",
-    "thread.name": "Unconstrained build operations Thread 5",
-    "url.full": "https://repo.maven.apache.org/maven2/org/jspecify/jspecify/1.0.0/jspecify-1.0.0.pom",
-    "http.response.status_code": 200,
-    "thread.id": 65
-  },
-  "resource_attributes": {
-    "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
-    "os.description": "Linux 6.11.0-1018-azure",
-    "os.type": "linux",
-    "process.command_args": [
-      "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-      "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/opentelemetry-javaagent.jar",
-      "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/rootcontextagent.jar",
-      "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/subprocessinjectionagent.jar",
-      "--add-opens=java.base/java.lang=ALL-UNNAMED",
-      "--add-opens=java.base/java.lang.invoke=ALL-UNNAMED",
-      "--add-opens=java.base/java.util=ALL-UNNAMED",
-      "--add-opens=java.prefs/java.util.prefs=ALL-UNNAMED",
-      "--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
-      "--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
-      "--add-opens=java.base/java.util=ALL-UNNAMED",
-      "--add-opens=java.prefs/java.util.prefs=ALL-UNNAMED",
-      "--add-opens=java.base/java.nio.charset=ALL-UNNAMED",
-      "--add-opens=java.base/java.net=ALL-UNNAMED",
-      "--add-opens=java.base/java.util.concurrent=ALL-UNNAMED",
-      "--add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED",
-      "--add-opens=java.xml/javax.xml.namespace=ALL-UNNAMED",
-      "-XX:MaxMetaspaceSize=384m",
-      "-XX:+HeapDumpOnOutOfMemoryError",
-      "-Xms256m",
-      "-Xmx512m",
-      "-Dfile.encoding=UTF-8",
-      "-Duser.country",
-      "-Duser.language=en",
-      "-Duser.variant",
-      "-cp",
-      "/home/runner/.gradle/wrapper/dists/gradle-9.0.0-bin/d6wjpkvcgsg3oed0qlfss3wgl/gradle-9.0.0/lib/gradle-daemon-main-9.0.0.jar",
-      "-javaagent:/home/runner/.gradle/wrapper/dists/gradle-9.0.0-bin/d6wjpkvcgsg3oed0qlfss3wgl/gradle-9.0.0/lib/agents/gradle-instrumentation-agent-9.0.0.jar",
-      "org.gradle.launcher.daemon.bootstrap.GradleDaemon",
-      "9.0.0"
-    ],
-    "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
-    "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
-    "process.runtime.name": "OpenJDK Runtime Environment",
-    "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
-    "service.name": "unknown_service:java",
-    "telemetry.distro.name": "opentelemetry-java-instrumentation",
-    "telemetry.distro.version": "2.19.0",
-    "telemetry.sdk.language": "java",
-    "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "1.53.0"
-  },
-  "links": [],
-  "events": []
-}
-{
-  "trace_id": "045b0443322e9aaa3f7514d51f75f306",
-  "span_id": "c5a70f56a3173425",
-  "parent_span_id": null,
-  "name": "GET",
-  "kind": "CLIENT",
-  "status": "UNSET",
-  "time_start": 1757076426044398212,
-  "time_end": 1757076426060518759,
+  "time_start": 1757583479869255796,
+  "time_end": 1757583479927248048,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
     "server.address": "repo.maven.apache.org",
     "thread.name": "Unconstrained build operations Thread 6",
-    "url.full": "https://repo.maven.apache.org/maven2/com/google/errorprone/error_prone_annotations/2.36.0/error_prone_annotations-2.36.0.pom",
+    "url.full": "https://repo.maven.apache.org/maven2/org/jspecify/jspecify/1.0.0/jspecify-1.0.0.pom",
     "http.response.status_code": 200,
     "thread.id": 66
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -1255,11 +1255,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -1271,14 +1271,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "3f20cd8715233b7929cb3d045cb1565f",
-  "span_id": "3543b4e6e70b6c59",
+  "trace_id": "131d8189b57c2c6c5dc975f83a65f309",
+  "span_id": "436599d79cbe73a0",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426064293487,
-  "time_end": 1757076426067356154,
+  "time_start": 1757583479896301744,
+  "time_end": 1757583479917698359,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
@@ -1290,7 +1290,7 @@ bash -e demo.sh
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -1326,11 +1326,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -1342,26 +1342,26 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "9b53184a0ce074cc88490ce521ab7d0a",
-  "span_id": "06fe7556b966cbf2",
+  "trace_id": "a42993ef12cd0bd7cac25a0f2ad19513",
+  "span_id": "5c876dfd34547cad",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426073646198,
-  "time_end": 1757076426078787788,
+  "time_start": 1757583479936526538,
+  "time_end": 1757583479954997247,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
     "server.address": "repo.maven.apache.org",
     "thread.name": "Unconstrained build operations Thread 5",
-    "url.full": "https://repo.maven.apache.org/maven2/org/jspecify/jspecify/1.0.0/jspecify-1.0.0.module",
+    "url.full": "https://repo.maven.apache.org/maven2/com/google/errorprone/error_prone_parent/2.36.0/error_prone_parent-2.36.0.pom",
     "http.response.status_code": 200,
     "thread.id": 65
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -1397,11 +1397,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -1413,14 +1413,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "0a5365e70918d9161cef8ba87d21c713",
-  "span_id": "8c64f92cc1112822",
+  "trace_id": "31f6b106ad6ef65d36790554c8707dff",
+  "span_id": "cfda4b1be7d82d91",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426076879459,
-  "time_end": 1757076426080372036,
+  "time_start": 1757583479936927304,
+  "time_end": 1757583479954998799,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
@@ -1432,7 +1432,7 @@ bash -e demo.sh
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -1468,11 +1468,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -1484,26 +1484,26 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "57082d6b9808c4c5cad058ace03e4aa7",
-  "span_id": "c1d1deab06514398",
+  "trace_id": "4c5f03873c8ad921c137d0ab5d1c6f02",
+  "span_id": "ce578712e9e84c71",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426077949189,
-  "time_end": 1757076426082399941,
+  "time_start": 1757583479938776874,
+  "time_end": 1757583479958042045,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
     "server.address": "repo.maven.apache.org",
     "thread.name": "Unconstrained build operations Thread 6",
-    "url.full": "https://repo.maven.apache.org/maven2/com/google/errorprone/error_prone_parent/2.36.0/error_prone_parent-2.36.0.pom",
+    "url.full": "https://repo.maven.apache.org/maven2/org/jspecify/jspecify/1.0.0/jspecify-1.0.0.module",
     "http.response.status_code": 200,
     "thread.id": 66
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -1539,11 +1539,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -1555,26 +1555,26 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "1b58006c9e7dddf4546224691396474e",
-  "span_id": "650fb82f422ea903",
+  "trace_id": "6fc462845356c01efc3641e7767b1e81",
+  "span_id": "3889123c4d79ce77",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426091952628,
-  "time_end": 1757076426094467587,
+  "time_start": 1757583479945270962,
+  "time_end": 1757583479964632223,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
     "server.address": "repo.maven.apache.org",
-    "thread.name": "Unconstrained build operations Thread 5",
+    "thread.name": "Daemon worker",
     "url.full": "https://repo.maven.apache.org/maven2/com/google/j2objc/j2objc-annotations/3.0.0/j2objc-annotations-3.0.0.pom",
     "http.response.status_code": 200,
-    "thread.id": 65
+    "thread.id": 28
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -1610,11 +1610,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -1626,14 +1626,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "0501ad30605dcb8cb58d24926cc8d9da",
-  "span_id": "228e4088aa700f14",
+  "trace_id": "6df57c3651f9651f8f39a4d8a8daa44c",
+  "span_id": "b004de10a121a63a",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426096481301,
-  "time_end": 1757076426101480741,
+  "time_start": 1757583479975098347,
+  "time_end": 1757583479993502032,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
@@ -1645,7 +1645,7 @@ bash -e demo.sh
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -1681,11 +1681,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -1697,14 +1697,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "6409e7e6629d85fdc9c1c17757fd1ee1",
-  "span_id": "1f2f0d027f5f66a8",
+  "trace_id": "a02c5f98868f315d8f13468b2e91e903",
+  "span_id": "53a94e39629c401a",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426131812905,
-  "time_end": 1757076426138058132,
+  "time_start": 1757583480016489993,
+  "time_end": 1757583480036222410,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
@@ -1716,7 +1716,7 @@ bash -e demo.sh
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -1752,11 +1752,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -1768,14 +1768,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "a9dad6bc57002502170ab4ca771fca49",
-  "span_id": "f66167209ced5221",
+  "trace_id": "95124172b30daa74eca8c4b1249136a0",
+  "span_id": "52aa337ee3f13837",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426133266499,
-  "time_end": 1757076426140400695,
+  "time_start": 1757583480016490064,
+  "time_end": 1757583480039434479,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
@@ -1787,7 +1787,7 @@ bash -e demo.sh
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -1823,11 +1823,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -1839,85 +1839,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "cb6f6d2f70027899cc8d198fa6806645",
-  "span_id": "7d8956052b72a070",
+  "trace_id": "c15602c99ee4925fe25c0f7ff1baeef5",
+  "span_id": "d7b2f9eeb131a822",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426134556839,
-  "time_end": 1757076426139969917,
-  "attributes": {
-    "http.request.method": "GET",
-    "network.protocol.version": "1.1",
-    "server.address": "repo.maven.apache.org",
-    "thread.name": "Unconstrained build operations Thread 7",
-    "url.full": "https://repo.maven.apache.org/maven2/com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar",
-    "http.response.status_code": 200,
-    "thread.id": 67
-  },
-  "resource_attributes": {
-    "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
-    "os.description": "Linux 6.11.0-1018-azure",
-    "os.type": "linux",
-    "process.command_args": [
-      "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-      "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/opentelemetry-javaagent.jar",
-      "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/rootcontextagent.jar",
-      "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/subprocessinjectionagent.jar",
-      "--add-opens=java.base/java.lang=ALL-UNNAMED",
-      "--add-opens=java.base/java.lang.invoke=ALL-UNNAMED",
-      "--add-opens=java.base/java.util=ALL-UNNAMED",
-      "--add-opens=java.prefs/java.util.prefs=ALL-UNNAMED",
-      "--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
-      "--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
-      "--add-opens=java.base/java.util=ALL-UNNAMED",
-      "--add-opens=java.prefs/java.util.prefs=ALL-UNNAMED",
-      "--add-opens=java.base/java.nio.charset=ALL-UNNAMED",
-      "--add-opens=java.base/java.net=ALL-UNNAMED",
-      "--add-opens=java.base/java.util.concurrent=ALL-UNNAMED",
-      "--add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED",
-      "--add-opens=java.xml/javax.xml.namespace=ALL-UNNAMED",
-      "-XX:MaxMetaspaceSize=384m",
-      "-XX:+HeapDumpOnOutOfMemoryError",
-      "-Xms256m",
-      "-Xmx512m",
-      "-Dfile.encoding=UTF-8",
-      "-Duser.country",
-      "-Duser.language=en",
-      "-Duser.variant",
-      "-cp",
-      "/home/runner/.gradle/wrapper/dists/gradle-9.0.0-bin/d6wjpkvcgsg3oed0qlfss3wgl/gradle-9.0.0/lib/gradle-daemon-main-9.0.0.jar",
-      "-javaagent:/home/runner/.gradle/wrapper/dists/gradle-9.0.0-bin/d6wjpkvcgsg3oed0qlfss3wgl/gradle-9.0.0/lib/agents/gradle-instrumentation-agent-9.0.0.jar",
-      "org.gradle.launcher.daemon.bootstrap.GradleDaemon",
-      "9.0.0"
-    ],
-    "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
-    "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
-    "process.runtime.name": "OpenJDK Runtime Environment",
-    "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
-    "service.name": "unknown_service:java",
-    "telemetry.distro.name": "opentelemetry-java-instrumentation",
-    "telemetry.distro.version": "2.19.0",
-    "telemetry.sdk.language": "java",
-    "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "1.53.0"
-  },
-  "links": [],
-  "events": []
-}
-{
-  "trace_id": "9eff8ccee21a8315aedf8e1c15207cf1",
-  "span_id": "f3b0bccf0a44f14e",
-  "parent_span_id": null,
-  "name": "GET",
-  "kind": "CLIENT",
-  "status": "UNSET",
-  "time_start": 1757076426135587877,
-  "time_end": 1757076426138850686,
+  "time_start": 1757583480017667609,
+  "time_end": 1757583480036223488,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
@@ -1929,7 +1858,7 @@ bash -e demo.sh
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -1965,11 +1894,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -1981,97 +1910,26 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "d086e4e629653abae147f97e59913d9d",
-  "span_id": "1f15070b0147b613",
+  "trace_id": "2c6f4bc8cda02d74681afe56bdfb9d0f",
+  "span_id": "4c0aec879694324b",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426146046853,
-  "time_end": 1757076426149827972,
-  "attributes": {
-    "http.request.method": "GET",
-    "network.protocol.version": "1.1",
-    "server.address": "repo.maven.apache.org",
-    "thread.name": "Unconstrained build operations Thread 8",
-    "url.full": "https://repo.maven.apache.org/maven2/com/google/errorprone/error_prone_annotations/2.36.0/error_prone_annotations-2.36.0.jar",
-    "http.response.status_code": 200,
-    "thread.id": 68
-  },
-  "resource_attributes": {
-    "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
-    "os.description": "Linux 6.11.0-1018-azure",
-    "os.type": "linux",
-    "process.command_args": [
-      "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-      "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/opentelemetry-javaagent.jar",
-      "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/rootcontextagent.jar",
-      "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/subprocessinjectionagent.jar",
-      "--add-opens=java.base/java.lang=ALL-UNNAMED",
-      "--add-opens=java.base/java.lang.invoke=ALL-UNNAMED",
-      "--add-opens=java.base/java.util=ALL-UNNAMED",
-      "--add-opens=java.prefs/java.util.prefs=ALL-UNNAMED",
-      "--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
-      "--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
-      "--add-opens=java.base/java.util=ALL-UNNAMED",
-      "--add-opens=java.prefs/java.util.prefs=ALL-UNNAMED",
-      "--add-opens=java.base/java.nio.charset=ALL-UNNAMED",
-      "--add-opens=java.base/java.net=ALL-UNNAMED",
-      "--add-opens=java.base/java.util.concurrent=ALL-UNNAMED",
-      "--add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED",
-      "--add-opens=java.xml/javax.xml.namespace=ALL-UNNAMED",
-      "-XX:MaxMetaspaceSize=384m",
-      "-XX:+HeapDumpOnOutOfMemoryError",
-      "-Xms256m",
-      "-Xmx512m",
-      "-Dfile.encoding=UTF-8",
-      "-Duser.country",
-      "-Duser.language=en",
-      "-Duser.variant",
-      "-cp",
-      "/home/runner/.gradle/wrapper/dists/gradle-9.0.0-bin/d6wjpkvcgsg3oed0qlfss3wgl/gradle-9.0.0/lib/gradle-daemon-main-9.0.0.jar",
-      "-javaagent:/home/runner/.gradle/wrapper/dists/gradle-9.0.0-bin/d6wjpkvcgsg3oed0qlfss3wgl/gradle-9.0.0/lib/agents/gradle-instrumentation-agent-9.0.0.jar",
-      "org.gradle.launcher.daemon.bootstrap.GradleDaemon",
-      "9.0.0"
-    ],
-    "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
-    "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
-    "process.runtime.name": "OpenJDK Runtime Environment",
-    "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
-    "service.name": "unknown_service:java",
-    "telemetry.distro.name": "opentelemetry-java-instrumentation",
-    "telemetry.distro.version": "2.19.0",
-    "telemetry.sdk.language": "java",
-    "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "1.53.0"
-  },
-  "links": [],
-  "events": []
-}
-{
-  "trace_id": "09fcfd5dfab63c1883a0fd9eb2e937cc",
-  "span_id": "3c8f655442bfa20c",
-  "parent_span_id": null,
-  "name": "GET",
-  "kind": "CLIENT",
-  "status": "UNSET",
-  "time_start": 1757076426149240753,
-  "time_end": 1757076426155917804,
+  "time_start": 1757583480018649972,
+  "time_end": 1757583480037991626,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
     "server.address": "repo.maven.apache.org",
     "thread.name": "Unconstrained build operations Thread 7",
-    "url.full": "https://repo.maven.apache.org/maven2/com/google/j2objc/j2objc-annotations/3.0.0/j2objc-annotations-3.0.0.jar",
+    "url.full": "https://repo.maven.apache.org/maven2/com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar",
     "http.response.status_code": 200,
     "thread.id": 67
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -2107,11 +1965,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -2123,14 +1981,156 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "c459949a606bc14052e19b787e59eae8",
-  "span_id": "5f581a4bcbdfa9cc",
+  "trace_id": "ec310fd35bbfa91aa90f9365e354f044",
+  "span_id": "78f73a0f6e978a2f",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426320138467,
-  "time_end": 1757076426332818664,
+  "time_start": 1757583480043402133,
+  "time_end": 1757583480061552886,
+  "attributes": {
+    "http.request.method": "GET",
+    "network.protocol.version": "1.1",
+    "server.address": "repo.maven.apache.org",
+    "thread.name": "Unconstrained build operations Thread 7",
+    "url.full": "https://repo.maven.apache.org/maven2/com/google/errorprone/error_prone_annotations/2.36.0/error_prone_annotations-2.36.0.jar",
+    "http.response.status_code": 200,
+    "thread.id": 67
+  },
+  "resource_attributes": {
+    "host.arch": "amd64",
+    "host.name": "runnervmf4ws1",
+    "os.description": "Linux 6.11.0-1018-azure",
+    "os.type": "linux",
+    "process.command_args": [
+      "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
+      "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/opentelemetry-javaagent.jar",
+      "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/rootcontextagent.jar",
+      "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/subprocessinjectionagent.jar",
+      "--add-opens=java.base/java.lang=ALL-UNNAMED",
+      "--add-opens=java.base/java.lang.invoke=ALL-UNNAMED",
+      "--add-opens=java.base/java.util=ALL-UNNAMED",
+      "--add-opens=java.prefs/java.util.prefs=ALL-UNNAMED",
+      "--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
+      "--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
+      "--add-opens=java.base/java.util=ALL-UNNAMED",
+      "--add-opens=java.prefs/java.util.prefs=ALL-UNNAMED",
+      "--add-opens=java.base/java.nio.charset=ALL-UNNAMED",
+      "--add-opens=java.base/java.net=ALL-UNNAMED",
+      "--add-opens=java.base/java.util.concurrent=ALL-UNNAMED",
+      "--add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED",
+      "--add-opens=java.xml/javax.xml.namespace=ALL-UNNAMED",
+      "-XX:MaxMetaspaceSize=384m",
+      "-XX:+HeapDumpOnOutOfMemoryError",
+      "-Xms256m",
+      "-Xmx512m",
+      "-Dfile.encoding=UTF-8",
+      "-Duser.country",
+      "-Duser.language=en",
+      "-Duser.variant",
+      "-cp",
+      "/home/runner/.gradle/wrapper/dists/gradle-9.0.0-bin/d6wjpkvcgsg3oed0qlfss3wgl/gradle-9.0.0/lib/gradle-daemon-main-9.0.0.jar",
+      "-javaagent:/home/runner/.gradle/wrapper/dists/gradle-9.0.0-bin/d6wjpkvcgsg3oed0qlfss3wgl/gradle-9.0.0/lib/agents/gradle-instrumentation-agent-9.0.0.jar",
+      "org.gradle.launcher.daemon.bootstrap.GradleDaemon",
+      "9.0.0"
+    ],
+    "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
+    "process.pid": 9462,
+    "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
+    "process.runtime.name": "OpenJDK Runtime Environment",
+    "process.runtime.version": "17.0.16+8",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
+    "service.name": "unknown_service:java",
+    "telemetry.distro.name": "opentelemetry-java-instrumentation",
+    "telemetry.distro.version": "2.19.0",
+    "telemetry.sdk.language": "java",
+    "telemetry.sdk.name": "opentelemetry",
+    "telemetry.sdk.version": "1.53.0"
+  },
+  "links": [],
+  "events": []
+}
+{
+  "trace_id": "3a68d76c2fdafad411db92e9a7880e3b",
+  "span_id": "1dbc7c122399f223",
+  "parent_span_id": null,
+  "name": "GET",
+  "kind": "CLIENT",
+  "status": "UNSET",
+  "time_start": 1757583480043703479,
+  "time_end": 1757583480061626707,
+  "attributes": {
+    "http.request.method": "GET",
+    "network.protocol.version": "1.1",
+    "server.address": "repo.maven.apache.org",
+    "thread.name": "Unconstrained build operations Thread 8",
+    "url.full": "https://repo.maven.apache.org/maven2/com/google/j2objc/j2objc-annotations/3.0.0/j2objc-annotations-3.0.0.jar",
+    "http.response.status_code": 200,
+    "thread.id": 68
+  },
+  "resource_attributes": {
+    "host.arch": "amd64",
+    "host.name": "runnervmf4ws1",
+    "os.description": "Linux 6.11.0-1018-azure",
+    "os.type": "linux",
+    "process.command_args": [
+      "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
+      "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/opentelemetry-javaagent.jar",
+      "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/rootcontextagent.jar",
+      "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/subprocessinjectionagent.jar",
+      "--add-opens=java.base/java.lang=ALL-UNNAMED",
+      "--add-opens=java.base/java.lang.invoke=ALL-UNNAMED",
+      "--add-opens=java.base/java.util=ALL-UNNAMED",
+      "--add-opens=java.prefs/java.util.prefs=ALL-UNNAMED",
+      "--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
+      "--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
+      "--add-opens=java.base/java.util=ALL-UNNAMED",
+      "--add-opens=java.prefs/java.util.prefs=ALL-UNNAMED",
+      "--add-opens=java.base/java.nio.charset=ALL-UNNAMED",
+      "--add-opens=java.base/java.net=ALL-UNNAMED",
+      "--add-opens=java.base/java.util.concurrent=ALL-UNNAMED",
+      "--add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED",
+      "--add-opens=java.xml/javax.xml.namespace=ALL-UNNAMED",
+      "-XX:MaxMetaspaceSize=384m",
+      "-XX:+HeapDumpOnOutOfMemoryError",
+      "-Xms256m",
+      "-Xmx512m",
+      "-Dfile.encoding=UTF-8",
+      "-Duser.country",
+      "-Duser.language=en",
+      "-Duser.variant",
+      "-cp",
+      "/home/runner/.gradle/wrapper/dists/gradle-9.0.0-bin/d6wjpkvcgsg3oed0qlfss3wgl/gradle-9.0.0/lib/gradle-daemon-main-9.0.0.jar",
+      "-javaagent:/home/runner/.gradle/wrapper/dists/gradle-9.0.0-bin/d6wjpkvcgsg3oed0qlfss3wgl/gradle-9.0.0/lib/agents/gradle-instrumentation-agent-9.0.0.jar",
+      "org.gradle.launcher.daemon.bootstrap.GradleDaemon",
+      "9.0.0"
+    ],
+    "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
+    "process.pid": 9462,
+    "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
+    "process.runtime.name": "OpenJDK Runtime Environment",
+    "process.runtime.version": "17.0.16+8",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
+    "service.name": "unknown_service:java",
+    "telemetry.distro.name": "opentelemetry-java-instrumentation",
+    "telemetry.distro.version": "2.19.0",
+    "telemetry.sdk.language": "java",
+    "telemetry.sdk.name": "opentelemetry",
+    "telemetry.sdk.version": "1.53.0"
+  },
+  "links": [],
+  "events": []
+}
+{
+  "trace_id": "fa10102a2192a3692a1c0dfc21ff581f",
+  "span_id": "6d137741b02a1a31",
+  "parent_span_id": null,
+  "name": "GET",
+  "kind": "CLIENT",
+  "status": "UNSET",
+  "time_start": 1757583480193878527,
+  "time_end": 1757583480251765241,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
@@ -2142,7 +2142,7 @@ bash -e demo.sh
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -2178,11 +2178,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -2194,14 +2194,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "437a621f49ee1ae35b188965790d3555",
-  "span_id": "f6cfaad4cae48596",
+  "trace_id": "e19484a559476b8ac849b13ee81ddaa9",
+  "span_id": "949082353f56d2ca",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426341121108,
-  "time_end": 1757076426343585302,
+  "time_start": 1757583480257149459,
+  "time_end": 1757583480275350446,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
@@ -2213,7 +2213,7 @@ bash -e demo.sh
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -2249,11 +2249,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -2265,14 +2265,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "052d847bb1e8d317a0312a7bbb2e01d1",
-  "span_id": "6ac57bbc3f976c36",
+  "trace_id": "1b8f411da0b376e9ef70ee3ef9d3ca2f",
+  "span_id": "97b1036491b56b87",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426351848144,
-  "time_end": 1757076426354681895,
+  "time_start": 1757583480281133108,
+  "time_end": 1757583480299319327,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
@@ -2284,7 +2284,7 @@ bash -e demo.sh
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -2320,11 +2320,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -2336,14 +2336,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "56610d535212b80f1775ee26d6e50842",
-  "span_id": "91e9052c196234b7",
+  "trace_id": "bab8d816598ea2d49f04e0456ba32c20",
+  "span_id": "3dda96d11161d081",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426366163744,
-  "time_end": 1757076426368992877,
+  "time_start": 1757583480311358997,
+  "time_end": 1757583480330579425,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
@@ -2355,7 +2355,7 @@ bash -e demo.sh
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -2391,11 +2391,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -2407,14 +2407,85 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "93ef636ac013576312b13d0b58491e86",
-  "span_id": "f4a7fefd23329fc5",
+  "trace_id": "6743c5dee18294dbddc0e145f7893b8e",
+  "span_id": "2c05c8abf62ae4bf",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426375257113,
-  "time_end": 1757076426377612344,
+  "time_start": 1757583480338143802,
+  "time_end": 1757583480356337806,
+  "attributes": {
+    "http.request.method": "GET",
+    "network.protocol.version": "1.1",
+    "server.address": "repo.maven.apache.org",
+    "thread.name": "Unconstrained build operations Thread 11",
+    "url.full": "https://repo.maven.apache.org/maven2/org/junit/jupiter/junit-jupiter-params/5.13.4/junit-jupiter-params-5.13.4.pom",
+    "http.response.status_code": 200,
+    "thread.id": 71
+  },
+  "resource_attributes": {
+    "host.arch": "amd64",
+    "host.name": "runnervmf4ws1",
+    "os.description": "Linux 6.11.0-1018-azure",
+    "os.type": "linux",
+    "process.command_args": [
+      "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
+      "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/opentelemetry-javaagent.jar",
+      "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/rootcontextagent.jar",
+      "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/subprocessinjectionagent.jar",
+      "--add-opens=java.base/java.lang=ALL-UNNAMED",
+      "--add-opens=java.base/java.lang.invoke=ALL-UNNAMED",
+      "--add-opens=java.base/java.util=ALL-UNNAMED",
+      "--add-opens=java.prefs/java.util.prefs=ALL-UNNAMED",
+      "--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
+      "--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
+      "--add-opens=java.base/java.util=ALL-UNNAMED",
+      "--add-opens=java.prefs/java.util.prefs=ALL-UNNAMED",
+      "--add-opens=java.base/java.nio.charset=ALL-UNNAMED",
+      "--add-opens=java.base/java.net=ALL-UNNAMED",
+      "--add-opens=java.base/java.util.concurrent=ALL-UNNAMED",
+      "--add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED",
+      "--add-opens=java.xml/javax.xml.namespace=ALL-UNNAMED",
+      "-XX:MaxMetaspaceSize=384m",
+      "-XX:+HeapDumpOnOutOfMemoryError",
+      "-Xms256m",
+      "-Xmx512m",
+      "-Dfile.encoding=UTF-8",
+      "-Duser.country",
+      "-Duser.language=en",
+      "-Duser.variant",
+      "-cp",
+      "/home/runner/.gradle/wrapper/dists/gradle-9.0.0-bin/d6wjpkvcgsg3oed0qlfss3wgl/gradle-9.0.0/lib/gradle-daemon-main-9.0.0.jar",
+      "-javaagent:/home/runner/.gradle/wrapper/dists/gradle-9.0.0-bin/d6wjpkvcgsg3oed0qlfss3wgl/gradle-9.0.0/lib/agents/gradle-instrumentation-agent-9.0.0.jar",
+      "org.gradle.launcher.daemon.bootstrap.GradleDaemon",
+      "9.0.0"
+    ],
+    "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
+    "process.pid": 9462,
+    "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
+    "process.runtime.name": "OpenJDK Runtime Environment",
+    "process.runtime.version": "17.0.16+8",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
+    "service.name": "unknown_service:java",
+    "telemetry.distro.name": "opentelemetry-java-instrumentation",
+    "telemetry.distro.version": "2.19.0",
+    "telemetry.sdk.language": "java",
+    "telemetry.sdk.name": "opentelemetry",
+    "telemetry.sdk.version": "1.53.0"
+  },
+  "links": [],
+  "events": []
+}
+{
+  "trace_id": "f33c312020d24c7987c2da328c348eb5",
+  "span_id": "c9194e21de7ddf49",
+  "parent_span_id": null,
+  "name": "GET",
+  "kind": "CLIENT",
+  "status": "UNSET",
+  "time_start": 1757583480338143899,
+  "time_end": 1757583480397008425,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
@@ -2426,7 +2497,7 @@ bash -e demo.sh
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -2462,11 +2533,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -2478,26 +2549,26 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "19428f5cc2b9bf7ed1207ef1f9cffa08",
-  "span_id": "85a170a149a8ce18",
+  "trace_id": "9a61a441e507d943fc1d3b4fa0d61de0",
+  "span_id": "040f4abf09a64f43",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426375258389,
-  "time_end": 1757076426386799497,
+  "time_start": 1757583480364624687,
+  "time_end": 1757583480383673916,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
     "server.address": "repo.maven.apache.org",
-    "thread.name": "Unconstrained build operations Thread 10",
-    "url.full": "https://repo.maven.apache.org/maven2/org/junit/jupiter/junit-jupiter-params/5.13.4/junit-jupiter-params-5.13.4.pom",
+    "thread.name": "Unconstrained build operations Thread 11",
+    "url.full": "https://repo.maven.apache.org/maven2/org/junit/jupiter/junit-jupiter-params/5.13.4/junit-jupiter-params-5.13.4.module",
     "http.response.status_code": 200,
-    "thread.id": 70
+    "thread.id": 71
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -2533,11 +2604,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -2549,14 +2620,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "7ec7e7b46cd89082b0302d415ad2a330",
-  "span_id": "fed22449c067c74b",
+  "trace_id": "8c5a1c8ebdc15b637e447d0751eb975e",
+  "span_id": "748482c8420bd9cf",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426385733124,
-  "time_end": 1757076426388657350,
+  "time_start": 1757583480404882145,
+  "time_end": 1757583480422995649,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
@@ -2568,7 +2639,7 @@ bash -e demo.sh
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -2604,11 +2675,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -2620,85 +2691,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "e39a734f6bccd52db2f7302b9897ec5e",
-  "span_id": "647ee7307261c68d",
+  "trace_id": "08cb6b91cef4a4b1e0931c73dd136992",
+  "span_id": "6527ab3d0df727cb",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426393771934,
-  "time_end": 1757076426396345321,
-  "attributes": {
-    "http.request.method": "GET",
-    "network.protocol.version": "1.1",
-    "server.address": "repo.maven.apache.org",
-    "thread.name": "Unconstrained build operations Thread 10",
-    "url.full": "https://repo.maven.apache.org/maven2/org/junit/jupiter/junit-jupiter-params/5.13.4/junit-jupiter-params-5.13.4.module",
-    "http.response.status_code": 200,
-    "thread.id": 70
-  },
-  "resource_attributes": {
-    "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
-    "os.description": "Linux 6.11.0-1018-azure",
-    "os.type": "linux",
-    "process.command_args": [
-      "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-      "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/opentelemetry-javaagent.jar",
-      "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/rootcontextagent.jar",
-      "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/subprocessinjectionagent.jar",
-      "--add-opens=java.base/java.lang=ALL-UNNAMED",
-      "--add-opens=java.base/java.lang.invoke=ALL-UNNAMED",
-      "--add-opens=java.base/java.util=ALL-UNNAMED",
-      "--add-opens=java.prefs/java.util.prefs=ALL-UNNAMED",
-      "--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
-      "--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
-      "--add-opens=java.base/java.util=ALL-UNNAMED",
-      "--add-opens=java.prefs/java.util.prefs=ALL-UNNAMED",
-      "--add-opens=java.base/java.nio.charset=ALL-UNNAMED",
-      "--add-opens=java.base/java.net=ALL-UNNAMED",
-      "--add-opens=java.base/java.util.concurrent=ALL-UNNAMED",
-      "--add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED",
-      "--add-opens=java.xml/javax.xml.namespace=ALL-UNNAMED",
-      "-XX:MaxMetaspaceSize=384m",
-      "-XX:+HeapDumpOnOutOfMemoryError",
-      "-Xms256m",
-      "-Xmx512m",
-      "-Dfile.encoding=UTF-8",
-      "-Duser.country",
-      "-Duser.language=en",
-      "-Duser.variant",
-      "-cp",
-      "/home/runner/.gradle/wrapper/dists/gradle-9.0.0-bin/d6wjpkvcgsg3oed0qlfss3wgl/gradle-9.0.0/lib/gradle-daemon-main-9.0.0.jar",
-      "-javaagent:/home/runner/.gradle/wrapper/dists/gradle-9.0.0-bin/d6wjpkvcgsg3oed0qlfss3wgl/gradle-9.0.0/lib/agents/gradle-instrumentation-agent-9.0.0.jar",
-      "org.gradle.launcher.daemon.bootstrap.GradleDaemon",
-      "9.0.0"
-    ],
-    "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
-    "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
-    "process.runtime.name": "OpenJDK Runtime Environment",
-    "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
-    "service.name": "unknown_service:java",
-    "telemetry.distro.name": "opentelemetry-java-instrumentation",
-    "telemetry.distro.version": "2.19.0",
-    "telemetry.sdk.language": "java",
-    "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "1.53.0"
-  },
-  "links": [],
-  "events": []
-}
-{
-  "trace_id": "e12320bf392b77224f23e0d6b46cf38e",
-  "span_id": "d1c5fbc3f9d359c9",
-  "parent_span_id": null,
-  "name": "GET",
-  "kind": "CLIENT",
-  "status": "UNSET",
-  "time_start": 1757076426402537380,
-  "time_end": 1757076426405551766,
+  "time_start": 1757583480430101400,
+  "time_end": 1757583480448089991,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
@@ -2710,7 +2710,7 @@ bash -e demo.sh
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -2746,11 +2746,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -2762,14 +2762,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "b04dd71fcfb09236e7aa3267b9d54d79",
-  "span_id": "af240a1ee5d1d88c",
+  "trace_id": "1e2b6252da80c396d1d5ef3d19a9a6c0",
+  "span_id": "10662880f216d1cc",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426402892910,
-  "time_end": 1757076426406735207,
+  "time_start": 1757583480431141760,
+  "time_end": 1757583480448911911,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
@@ -2781,7 +2781,7 @@ bash -e demo.sh
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -2817,11 +2817,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -2833,14 +2833,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "dd627767d9cc428d685162bcd3f4980b",
-  "span_id": "d8d114b439a1e3b0",
+  "trace_id": "7509d21c25f30fe97086c0e089e5470f",
+  "span_id": "df7150c997b65791",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426413074901,
-  "time_end": 1757076426415949688,
+  "time_start": 1757583480452896182,
+  "time_end": 1757583480470801467,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
@@ -2852,7 +2852,7 @@ bash -e demo.sh
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -2888,11 +2888,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -2904,14 +2904,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "e6401206d943094e2ed9851185555b33",
-  "span_id": "876c8ee89fc005ed",
+  "trace_id": "ad0728e2e0c8477a648401e734ac6515",
+  "span_id": "a9dd06133755564c",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426414001153,
-  "time_end": 1757076426418436214,
+  "time_start": 1757583480454171259,
+  "time_end": 1757583480471878940,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
@@ -2923,7 +2923,7 @@ bash -e demo.sh
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -2959,11 +2959,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -2975,14 +2975,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "b006ed4bb5a384db886f89d7ccb2b7fc",
-  "span_id": "4bca2029951ee28c",
+  "trace_id": "1ddaa9020d9ac574f1b5fe08ab8393bd",
+  "span_id": "3490eb43c74dafe9",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426421863710,
-  "time_end": 1757076426424407853,
+  "time_start": 1757583480477342474,
+  "time_end": 1757583480496584011,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
@@ -2994,7 +2994,7 @@ bash -e demo.sh
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -3030,11 +3030,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -3046,14 +3046,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "ff70a3a3584768fdec93eaeb6271a606",
-  "span_id": "cba3198fbf1d424a",
+  "trace_id": "28e53f4a96a6cab3ed3a2571e85eb8b0",
+  "span_id": "03fe7d60e73bcc27",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426430750441,
-  "time_end": 1757076426433820472,
+  "time_start": 1757583480503361508,
+  "time_end": 1757583480521416312,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
@@ -3065,7 +3065,7 @@ bash -e demo.sh
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -3101,11 +3101,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -3117,26 +3117,26 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "84faec40e67f60259414a9ed44c9ebb0",
-  "span_id": "4745d1e50860df81",
+  "trace_id": "9851667eea636b361c38e48096cc674d",
+  "span_id": "b24e27185ac2a487",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426444944633,
-  "time_end": 1757076426452340700,
+  "time_start": 1757583480531048201,
+  "time_end": 1757583480590360626,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
     "server.address": "repo.maven.apache.org",
-    "thread.name": "Unconstrained build operations Thread 15",
-    "url.full": "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-commons/1.13.4/junit-platform-commons-1.13.4.jar",
+    "thread.name": "Unconstrained build operations Thread 16",
+    "url.full": "https://repo.maven.apache.org/maven2/org/junit/jupiter/junit-jupiter-api/5.13.4/junit-jupiter-api-5.13.4.jar",
     "http.response.status_code": 200,
-    "thread.id": 75
+    "thread.id": 76
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -3172,11 +3172,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -3188,14 +3188,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f2bfe2bda0d297831b663260a9043576",
-  "span_id": "e6eb3d29e64e0911",
+  "trace_id": "6f85b8fd0c304aa4bb32b31c42f92415",
+  "span_id": "b22dd99a94343865",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426445616123,
-  "time_end": 1757076426448285989,
+  "time_start": 1757583480531048210,
+  "time_end": 1757583480550370913,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
@@ -3207,7 +3207,7 @@ bash -e demo.sh
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -3243,11 +3243,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -3259,97 +3259,26 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "01188d0c7d25ce1a49138c96e9b1c5ed",
-  "span_id": "5ea4f3e97d8762c8",
+  "trace_id": "60ae18c95f0da4b3038db8604cdda10c",
+  "span_id": "0912eeb71a304d19",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426446567573,
-  "time_end": 1757076426462286888,
-  "attributes": {
-    "http.request.method": "GET",
-    "network.protocol.version": "1.1",
-    "server.address": "repo.maven.apache.org",
-    "thread.name": "Unconstrained build operations Thread 16",
-    "url.full": "https://repo.maven.apache.org/maven2/org/junit/jupiter/junit-jupiter/5.13.4/junit-jupiter-5.13.4.jar",
-    "http.response.status_code": 200,
-    "thread.id": 76
-  },
-  "resource_attributes": {
-    "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
-    "os.description": "Linux 6.11.0-1018-azure",
-    "os.type": "linux",
-    "process.command_args": [
-      "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-      "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/opentelemetry-javaagent.jar",
-      "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/rootcontextagent.jar",
-      "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/subprocessinjectionagent.jar",
-      "--add-opens=java.base/java.lang=ALL-UNNAMED",
-      "--add-opens=java.base/java.lang.invoke=ALL-UNNAMED",
-      "--add-opens=java.base/java.util=ALL-UNNAMED",
-      "--add-opens=java.prefs/java.util.prefs=ALL-UNNAMED",
-      "--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
-      "--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
-      "--add-opens=java.base/java.util=ALL-UNNAMED",
-      "--add-opens=java.prefs/java.util.prefs=ALL-UNNAMED",
-      "--add-opens=java.base/java.nio.charset=ALL-UNNAMED",
-      "--add-opens=java.base/java.net=ALL-UNNAMED",
-      "--add-opens=java.base/java.util.concurrent=ALL-UNNAMED",
-      "--add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED",
-      "--add-opens=java.xml/javax.xml.namespace=ALL-UNNAMED",
-      "-XX:MaxMetaspaceSize=384m",
-      "-XX:+HeapDumpOnOutOfMemoryError",
-      "-Xms256m",
-      "-Xmx512m",
-      "-Dfile.encoding=UTF-8",
-      "-Duser.country",
-      "-Duser.language=en",
-      "-Duser.variant",
-      "-cp",
-      "/home/runner/.gradle/wrapper/dists/gradle-9.0.0-bin/d6wjpkvcgsg3oed0qlfss3wgl/gradle-9.0.0/lib/gradle-daemon-main-9.0.0.jar",
-      "-javaagent:/home/runner/.gradle/wrapper/dists/gradle-9.0.0-bin/d6wjpkvcgsg3oed0qlfss3wgl/gradle-9.0.0/lib/agents/gradle-instrumentation-agent-9.0.0.jar",
-      "org.gradle.launcher.daemon.bootstrap.GradleDaemon",
-      "9.0.0"
-    ],
-    "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
-    "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
-    "process.runtime.name": "OpenJDK Runtime Environment",
-    "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
-    "service.name": "unknown_service:java",
-    "telemetry.distro.name": "opentelemetry-java-instrumentation",
-    "telemetry.distro.version": "2.19.0",
-    "telemetry.sdk.language": "java",
-    "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "1.53.0"
-  },
-  "links": [],
-  "events": []
-}
-{
-  "trace_id": "feedafbb84a7fdbcf037a67df346722e",
-  "span_id": "e83fcc1cbd8cceb3",
-  "parent_span_id": null,
-  "name": "GET",
-  "kind": "CLIENT",
-  "status": "UNSET",
-  "time_start": 1757076426447124098,
-  "time_end": 1757076426458215610,
+  "time_start": 1757583480532278844,
+  "time_end": 1757583480550373112,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
     "server.address": "repo.maven.apache.org",
     "thread.name": "Unconstrained build operations Thread 14",
-    "url.full": "https://repo.maven.apache.org/maven2/org/junit/jupiter/junit-jupiter-api/5.13.4/junit-jupiter-api-5.13.4.jar",
+    "url.full": "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-commons/1.13.4/junit-platform-commons-1.13.4.jar",
     "http.response.status_code": 200,
     "thread.id": 74
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -3385,11 +3314,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -3401,26 +3330,26 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "273dedc29daca05e86e7fd1198b37e43",
-  "span_id": "e213945975a295c4",
+  "trace_id": "96e06d77d705bdfc612adbe4df5131e5",
+  "span_id": "80eecd83cec0a3d1",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426457494248,
-  "time_end": 1757076426461267568,
+  "time_start": 1757583480533583467,
+  "time_end": 1757583480589706323,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
     "server.address": "repo.maven.apache.org",
     "thread.name": "Unconstrained build operations Thread 15",
-    "url.full": "https://repo.maven.apache.org/maven2/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar",
+    "url.full": "https://repo.maven.apache.org/maven2/org/junit/jupiter/junit-jupiter/5.13.4/junit-jupiter-5.13.4.jar",
     "http.response.status_code": 200,
     "thread.id": 75
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -3456,11 +3385,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -3472,14 +3401,85 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "2b801656c37285a48bb5f617fa12aef4",
-  "span_id": "a4b773455a648814",
+  "trace_id": "c178316750d1e0e7a44928090ea58fbd",
+  "span_id": "217f95e7413083e0",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426469473332,
-  "time_end": 1757076426472136586,
+  "time_start": 1757583480589253528,
+  "time_end": 1757583480607267245,
+  "attributes": {
+    "http.request.method": "GET",
+    "network.protocol.version": "1.1",
+    "server.address": "repo.maven.apache.org",
+    "thread.name": "Unconstrained build operations Thread 14",
+    "url.full": "https://repo.maven.apache.org/maven2/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar",
+    "http.response.status_code": 200,
+    "thread.id": 74
+  },
+  "resource_attributes": {
+    "host.arch": "amd64",
+    "host.name": "runnervmf4ws1",
+    "os.description": "Linux 6.11.0-1018-azure",
+    "os.type": "linux",
+    "process.command_args": [
+      "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
+      "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/opentelemetry-javaagent.jar",
+      "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/rootcontextagent.jar",
+      "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/subprocessinjectionagent.jar",
+      "--add-opens=java.base/java.lang=ALL-UNNAMED",
+      "--add-opens=java.base/java.lang.invoke=ALL-UNNAMED",
+      "--add-opens=java.base/java.util=ALL-UNNAMED",
+      "--add-opens=java.prefs/java.util.prefs=ALL-UNNAMED",
+      "--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
+      "--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
+      "--add-opens=java.base/java.util=ALL-UNNAMED",
+      "--add-opens=java.prefs/java.util.prefs=ALL-UNNAMED",
+      "--add-opens=java.base/java.nio.charset=ALL-UNNAMED",
+      "--add-opens=java.base/java.net=ALL-UNNAMED",
+      "--add-opens=java.base/java.util.concurrent=ALL-UNNAMED",
+      "--add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED",
+      "--add-opens=java.xml/javax.xml.namespace=ALL-UNNAMED",
+      "-XX:MaxMetaspaceSize=384m",
+      "-XX:+HeapDumpOnOutOfMemoryError",
+      "-Xms256m",
+      "-Xmx512m",
+      "-Dfile.encoding=UTF-8",
+      "-Duser.country",
+      "-Duser.language=en",
+      "-Duser.variant",
+      "-cp",
+      "/home/runner/.gradle/wrapper/dists/gradle-9.0.0-bin/d6wjpkvcgsg3oed0qlfss3wgl/gradle-9.0.0/lib/gradle-daemon-main-9.0.0.jar",
+      "-javaagent:/home/runner/.gradle/wrapper/dists/gradle-9.0.0-bin/d6wjpkvcgsg3oed0qlfss3wgl/gradle-9.0.0/lib/agents/gradle-instrumentation-agent-9.0.0.jar",
+      "org.gradle.launcher.daemon.bootstrap.GradleDaemon",
+      "9.0.0"
+    ],
+    "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
+    "process.pid": 9462,
+    "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
+    "process.runtime.name": "OpenJDK Runtime Environment",
+    "process.runtime.version": "17.0.16+8",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
+    "service.name": "unknown_service:java",
+    "telemetry.distro.name": "opentelemetry-java-instrumentation",
+    "telemetry.distro.version": "2.19.0",
+    "telemetry.sdk.language": "java",
+    "telemetry.sdk.name": "opentelemetry",
+    "telemetry.sdk.version": "1.53.0"
+  },
+  "links": [],
+  "events": []
+}
+{
+  "trace_id": "f80c77a1065f1fb676909960bc3380db",
+  "span_id": "d37656da62dcfe7e",
+  "parent_span_id": null,
+  "name": "GET",
+  "kind": "CLIENT",
+  "status": "UNSET",
+  "time_start": 1757583480592015298,
+  "time_end": 1757583480610472421,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
@@ -3491,7 +3491,7 @@ bash -e demo.sh
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -3527,11 +3527,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -3543,14 +3543,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "11f6b36e251922abe9444efd349cdcf0",
-  "span_id": "f36bb0b9292d9f95",
+  "trace_id": "ceb67b2441068a2b3bf4203015c7b8f2",
+  "span_id": "3d4d5dda10d9aa84",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426485513449,
-  "time_end": 1757076426495007459,
+  "time_start": 1757583480644879280,
+  "time_end": 1757583480701205444,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
@@ -3562,7 +3562,7 @@ bash -e demo.sh
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -3598,11 +3598,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -3614,14 +3614,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "40149b16a4a4d88b43f1f570b402da0e",
-  "span_id": "ec7d2760e0645d07",
+  "trace_id": "1c50ab199f64c0eb7ef1c1a15a4231b1",
+  "span_id": "622063b18eb0a452",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426502423244,
-  "time_end": 1757076426505365317,
+  "time_start": 1757583480708655490,
+  "time_end": 1757583480726848051,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
@@ -3633,7 +3633,7 @@ bash -e demo.sh
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -3669,11 +3669,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -3685,14 +3685,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "33fff65a535cee74c75779edf7dd98fb",
-  "span_id": "7c8e4456a151eb52",
+  "trace_id": "0423d55f711527ae23fd8244a6d06b6c",
+  "span_id": "134a245749d44927",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426510957780,
-  "time_end": 1757076426513396707,
+  "time_start": 1757583480733985610,
+  "time_end": 1757583480752199361,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
@@ -3704,7 +3704,7 @@ bash -e demo.sh
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -3740,11 +3740,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -3756,14 +3756,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "46e72b07087cb26771555b6568c81dba",
-  "span_id": "dd33a1a76bf545bc",
+  "trace_id": "65a41b552174de0148793f2a56bd959e",
+  "span_id": "948a12074c3edb03",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426519527741,
-  "time_end": 1757076426522122287,
+  "time_start": 1757583480759319788,
+  "time_end": 1757583480777574274,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
@@ -3775,7 +3775,7 @@ bash -e demo.sh
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -3811,11 +3811,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -3827,14 +3827,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "b4365123a7a21893353c82ebb8848e58",
-  "span_id": "e69c86082a6d91f0",
+  "trace_id": "0b79e2369d00cf979eaf0039742ebf7d",
+  "span_id": "bdcf7b7f29027082",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426527636946,
-  "time_end": 1757076426531754605,
+  "time_start": 1757583480782848272,
+  "time_end": 1757583480801071491,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
@@ -3846,7 +3846,7 @@ bash -e demo.sh
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -3882,11 +3882,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -3898,14 +3898,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "277b73350a7d55f0de017a436a79bc0e",
-  "span_id": "bf66e71635ce3708",
+  "trace_id": "8430943407db3bea7580e6163efe4ca6",
+  "span_id": "0fe87b8c573f8468",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426538363098,
-  "time_end": 1757076426540668967,
+  "time_start": 1757583480807799725,
+  "time_end": 1757583480826159368,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
@@ -3917,7 +3917,7 @@ bash -e demo.sh
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -3953,11 +3953,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -3969,26 +3969,26 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "5e8a4b184d223f13108003c3f28a2e68",
-  "span_id": "2831d17ab6a6ead8",
+  "trace_id": "6b3f1db5e7630ce04c348012f21d50de",
+  "span_id": "8f2632cdf13ee8b5",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426549502199,
-  "time_end": 1757076426557907634,
+  "time_start": 1757583480834648747,
+  "time_end": 1757583480889729315,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
     "server.address": "repo.maven.apache.org",
-    "thread.name": "Daemon worker",
-    "url.full": "https://repo.maven.apache.org/maven2/org/junit/jupiter/junit-jupiter-engine/5.13.4/junit-jupiter-engine-5.13.4.jar",
+    "thread.name": "Unconstrained build operations Thread 18",
+    "url.full": "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-launcher/1.13.4/junit-platform-launcher-1.13.4.jar",
     "http.response.status_code": 200,
-    "thread.id": 28
+    "thread.id": 78
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -4024,11 +4024,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -4040,26 +4040,26 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "a7105b2e9ada257fe35277b44cf6285b",
-  "span_id": "9d0a60b522815c7f",
+  "trace_id": "2a3561396b8dfbc719ccd282695c4b6d",
+  "span_id": "591aa4cc2bde030f",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426549902374,
-  "time_end": 1757076426561761801,
+  "time_start": 1757583480834648892,
+  "time_end": 1757583480854980932,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
     "server.address": "repo.maven.apache.org",
     "thread.name": "Unconstrained build operations Thread 19",
-    "url.full": "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-launcher/1.13.4/junit-platform-launcher-1.13.4.jar",
+    "url.full": "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-engine/1.13.4/junit-platform-engine-1.13.4.jar",
     "http.response.status_code": 200,
     "thread.id": 79
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -4095,11 +4095,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -4111,26 +4111,26 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "80b6258fe3cf65d84f7055337c5cc658",
-  "span_id": "530edee805196ea5",
+  "trace_id": "65e6d00508d27536fc6828b2468cfaa6",
+  "span_id": "3de1741e62c757af",
   "parent_span_id": null,
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1757076426549937509,
-  "time_end": 1757076426560255764,
+  "time_start": 1757583480835364952,
+  "time_end": 1757583480891260880,
   "attributes": {
     "http.request.method": "GET",
     "network.protocol.version": "1.1",
     "server.address": "repo.maven.apache.org",
     "thread.name": "Unconstrained build operations Thread 17",
-    "url.full": "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-engine/1.13.4/junit-platform-engine-1.13.4.jar",
+    "url.full": "https://repo.maven.apache.org/maven2/org/junit/jupiter/junit-jupiter-engine/5.13.4/junit-jupiter-engine-5.13.4.jar",
     "http.response.status_code": 200,
     "thread.id": 77
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -4166,11 +4166,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -4182,14 +4182,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "cb1edeb96a97a540b2e09ccd20531e31",
-  "span_id": "c51a77c46a67e51d",
+  "trace_id": "f7f937c0f7a2843b0c128900ffea16d1",
+  "span_id": "1fe176037795489c",
   "parent_span_id": null,
   "name": "HEAD",
   "kind": "CLIENT",
   "status": "ERROR",
-  "time_start": 1757076395778508948,
-  "time_end": 1757076395809126573,
+  "time_start": 1757583441850063053,
+  "time_end": 1757583441891350035,
   "attributes": {
     "http.request.method": "HEAD",
     "network.protocol.version": "1.1",
@@ -4202,7 +4202,7 @@ bash -e demo.sh
   },
   "resource_attributes": {
     "host.arch": "amd64",
-    "host.name": "pkrvm7jw40e0xgp",
+    "host.name": "runnervmf4ws1",
     "os.description": "Linux 6.11.0-1018-azure",
     "os.type": "linux",
     "process.command_args": [
@@ -4238,11 +4238,11 @@ bash -e demo.sh
       "9.0.0"
     ],
     "process.executable.path": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java",
-    "process.pid": 9492,
+    "process.pid": 9462,
     "process.runtime.description": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.16+8",
     "process.runtime.name": "OpenJDK Runtime Environment",
     "process.runtime.version": "17.0.16+8",
-    "service.instance.id": "2a33cdbb-2d4f-464c-a9f1-a922a1699c62",
+    "service.instance.id": "55f581f8-a579-42f4-91c5-ba98f66f75e3",
     "service.name": "unknown_service:java",
     "telemetry.distro.name": "opentelemetry-java-instrumentation",
     "telemetry.distro.version": "2.19.0",
@@ -4254,14 +4254,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "35e93934fcf0bc15bef226ee9ff2abac",
-  "span_id": "dc709f08f3565e6f",
-  "parent_span_id": "2e32358823a9234b",
+  "trace_id": "5d7271625ae0ed3dea6585d272b40816",
+  "span_id": "7b587575591c80b7",
+  "parent_span_id": "4bb5064016bacd01",
   "name": "[ ! -x /usr/lib/jvm/temurin-17-jdk-amd64/bin/java ]",
   "kind": "INTERNAL",
   "status": "ERROR",
-  "time_start": 1757076367058345728,
-  "time_end": 1757076367073766656,
+  "time_start": 1757583409741108736,
+  "time_end": 1757583409756858880,
   "attributes": {
     "shell.command_line": "[ ! -x /usr/lib/jvm/temurin-17-jdk-amd64/bin/java ]",
     "shell.command": "[",
@@ -4273,12 +4273,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.25.2",
+    "telemetry.sdk.version": "5.26.0",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 4965,
-    "process.parent_pid": 4027,
+    "process.pid": 4934,
+    "process.parent_pid": 3996,
     "process.executable.name": "dash",
     "process.executable.path": "/usr/bin/dash",
     "process.command_line": "/bin/sh /home/runner/work/Thoth/Thoth/demos/injection_deep_gradle/gradlew build",
@@ -4296,14 +4296,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "35e93934fcf0bc15bef226ee9ff2abac",
-  "span_id": "1ee775b1710efd22",
-  "parent_span_id": "2e32358823a9234b",
+  "trace_id": "5d7271625ae0ed3dea6585d272b40816",
+  "span_id": "6a99fa9211858743",
+  "parent_span_id": "4bb5064016bacd01",
   "name": "[ -h /home/runner/work/Thoth/Thoth/demos/injection_deep_gradle/gradlew ]",
   "kind": "INTERNAL",
   "status": "ERROR",
-  "time_start": 1757076366957300224,
-  "time_end": 1757076366970839808,
+  "time_start": 1757583409637597184,
+  "time_end": 1757583409652165632,
   "attributes": {
     "shell.command_line": "[ -h /home/runner/work/Thoth/Thoth/demos/injection_deep_gradle/gradlew ]",
     "shell.command": "[",
@@ -4315,12 +4315,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.25.2",
+    "telemetry.sdk.version": "5.26.0",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 4965,
-    "process.parent_pid": 4027,
+    "process.pid": 4934,
+    "process.parent_pid": 3996,
     "process.executable.name": "dash",
     "process.executable.path": "/usr/bin/dash",
     "process.command_line": "/bin/sh /home/runner/work/Thoth/Thoth/demos/injection_deep_gradle/gradlew build",
@@ -4338,14 +4338,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "35e93934fcf0bc15bef226ee9ff2abac",
-  "span_id": "1cc7bbc3833d3f31",
-  "parent_span_id": "2e32358823a9234b",
+  "trace_id": "5d7271625ae0ed3dea6585d272b40816",
+  "span_id": "4ea082223a4154e3",
+  "parent_span_id": "4bb5064016bacd01",
   "name": "[ -n /usr/lib/jvm/temurin-17-jdk-amd64 ]",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1757076367024705024,
-  "time_end": 1757076367039980032,
+  "time_start": 1757583409706719488,
+  "time_end": 1757583409722091264,
   "attributes": {
     "shell.command_line": "[ -n /usr/lib/jvm/temurin-17-jdk-amd64 ]",
     "shell.command": "[",
@@ -4357,12 +4357,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.25.2",
+    "telemetry.sdk.version": "5.26.0",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 4965,
-    "process.parent_pid": 4027,
+    "process.pid": 4934,
+    "process.parent_pid": 3996,
     "process.executable.name": "dash",
     "process.executable.path": "/usr/bin/dash",
     "process.command_line": "/bin/sh /home/runner/work/Thoth/Thoth/demos/injection_deep_gradle/gradlew build",
@@ -4380,14 +4380,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "35e93934fcf0bc15bef226ee9ff2abac",
-  "span_id": "b3aa2324a2a6949b",
-  "parent_span_id": "2e32358823a9234b",
+  "trace_id": "5d7271625ae0ed3dea6585d272b40816",
+  "span_id": "dd5e97bf857dae15",
+  "parent_span_id": "4bb5064016bacd01",
   "name": "[ -x /usr/lib/jvm/temurin-17-jdk-amd64/jre/sh/java ]",
   "kind": "INTERNAL",
   "status": "ERROR",
-  "time_start": 1757076367042448640,
-  "time_end": 1757076367055834368,
+  "time_start": 1757583409724577792,
+  "time_end": 1757583409738510848,
   "attributes": {
     "shell.command_line": "[ -x /usr/lib/jvm/temurin-17-jdk-amd64/jre/sh/java ]",
     "shell.command": "[",
@@ -4399,12 +4399,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.25.2",
+    "telemetry.sdk.version": "5.26.0",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 4965,
-    "process.parent_pid": 4027,
+    "process.pid": 4934,
+    "process.parent_pid": 3996,
     "process.executable.name": "dash",
     "process.executable.path": "/usr/bin/dash",
     "process.command_line": "/bin/sh /home/runner/work/Thoth/Thoth/demos/injection_deep_gradle/gradlew build",
@@ -4422,24 +4422,24 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "35e93934fcf0bc15bef226ee9ff2abac",
-  "span_id": "67e0cf89700af0e2",
+  "trace_id": "5d7271625ae0ed3dea6585d272b40816",
+  "span_id": "23252b5d2f78e2e1",
   "parent_span_id": null,
   "name": "bash -e demo.sh",
   "kind": "SERVER",
   "status": "UNSET",
-  "time_start": 1757076366133172736,
-  "time_end": 1757076438239439872,
+  "time_start": 1757583408788183552,
+  "time_end": 1757583493632087552,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.25.2",
+    "telemetry.sdk.version": "5.26.0",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 4027,
-    "process.parent_pid": 2394,
+    "process.pid": 3996,
+    "process.parent_pid": 2349,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -4457,14 +4457,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "35e93934fcf0bc15bef226ee9ff2abac",
-  "span_id": "6b05a5f350c879c2",
-  "parent_span_id": "2e32358823a9234b",
+  "trace_id": "5d7271625ae0ed3dea6585d272b40816",
+  "span_id": "ea14a1786e7911e3",
+  "parent_span_id": "4bb5064016bacd01",
   "name": "cd -P /home/runner/work/Thoth/Thoth/demos/injection_deep_gradle/",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1757076366973469184,
-  "time_end": 1757076366987512064,
+  "time_start": 1757583409654928128,
+  "time_end": 1757583409668718336,
   "attributes": {
     "shell.command_line": "cd -P /home/runner/work/Thoth/Thoth/demos/injection_deep_gradle/",
     "shell.command": "cd",
@@ -4476,12 +4476,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.25.2",
+    "telemetry.sdk.version": "5.26.0",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 4965,
-    "process.parent_pid": 4027,
+    "process.pid": 4934,
+    "process.parent_pid": 3996,
     "process.executable.name": "dash",
     "process.executable.path": "/usr/bin/dash",
     "process.command_line": "/bin/sh /home/runner/work/Thoth/Thoth/demos/injection_deep_gradle/gradlew build",
@@ -4499,14 +4499,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "35e93934fcf0bc15bef226ee9ff2abac",
-  "span_id": "fdd357bc803da111",
-  "parent_span_id": "5adfdccb3b202467",
+  "trace_id": "5d7271625ae0ed3dea6585d272b40816",
+  "span_id": "cc51476344d60cd5",
+  "parent_span_id": "a221b079d743f403",
   "name": "chmod 755 /home/runner/.gradle/wrapper/dists/gradle-9.0.0-bin/d6wjpkvcgsg3oed0qlfss3wgl/gradle-9.0.0/bin/gradle",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1757076375344689920,
-  "time_end": 1757076375360637184,
+  "time_start": 1757583420110106624,
+  "time_end": 1757583420125790464,
   "attributes": {
     "shell.command_line": "chmod 755 /home/runner/.gradle/wrapper/dists/gradle-9.0.0-bin/d6wjpkvcgsg3oed0qlfss3wgl/gradle-9.0.0/bin/gradle",
     "shell.command": "chmod",
@@ -4520,12 +4520,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.25.2",
+    "telemetry.sdk.version": "5.26.0",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 7832,
-    "process.parent_pid": 7791,
+    "process.pid": 7806,
+    "process.parent_pid": 7760,
     "process.executable.name": "dash",
     "process.executable.path": "/usr/bin/dash",
     "process.command_line": "chmod 755 /home/runner/.gradle/wrapper/dists/gradle-9.0.0-bin/d6wjpkvcgsg3oed0qlfss3wgl/gradle-9.0.0/bin/gradle",
@@ -4543,24 +4543,24 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "35e93934fcf0bc15bef226ee9ff2abac",
-  "span_id": "63ec7b91c04c584a",
-  "parent_span_id": "2e32358823a9234b",
+  "trace_id": "5d7271625ae0ed3dea6585d272b40816",
+  "span_id": "f4357754bf8ff8b7",
+  "parent_span_id": "4bb5064016bacd01",
   "name": "exec",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1757076367162632192,
-  "time_end": 1757076367168051200,
+  "time_start": 1757583409847530240,
+  "time_end": 1757583409853171968,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.25.2",
+    "telemetry.sdk.version": "5.26.0",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 4965,
-    "process.parent_pid": 4027,
+    "process.pid": 4934,
+    "process.parent_pid": 3996,
     "process.executable.name": "dash",
     "process.executable.path": "/usr/bin/dash",
     "process.command_line": "/bin/sh /home/runner/work/Thoth/Thoth/demos/injection_deep_gradle/gradlew build",
@@ -4578,14 +4578,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "35e93934fcf0bc15bef226ee9ff2abac",
-  "span_id": "d764273be37c6a50",
-  "parent_span_id": "2e32358823a9234b",
+  "trace_id": "5d7271625ae0ed3dea6585d272b40816",
+  "span_id": "085f2e4acbb5ea63",
+  "parent_span_id": "4bb5064016bacd01",
   "name": "printf %s",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1757076366989916416,
-  "time_end": 1757076367004815872,
+  "time_start": 1757583409671162368,
+  "time_end": 1757583409686204160,
   "attributes": {
     "shell.command_line": "printf %s",
     "shell.command": "printf",
@@ -4597,12 +4597,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.25.2",
+    "telemetry.sdk.version": "5.26.0",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 4965,
-    "process.parent_pid": 4027,
+    "process.pid": 4934,
+    "process.parent_pid": 3996,
     "process.executable.name": "dash",
     "process.executable.path": "/usr/bin/dash",
     "process.command_line": "/bin/sh /home/runner/work/Thoth/Thoth/demos/injection_deep_gradle/gradlew build",
@@ -4620,14 +4620,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "35e93934fcf0bc15bef226ee9ff2abac",
-  "span_id": "b09837347385ad5b",
-  "parent_span_id": "2e32358823a9234b",
+  "trace_id": "5d7271625ae0ed3dea6585d272b40816",
+  "span_id": "780cd425188fcc7d",
+  "parent_span_id": "4bb5064016bacd01",
   "name": "printf %s",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1757076367114369280,
-  "time_end": 1757076367144224512,
+  "time_start": 1757583409797341696,
+  "time_end": 1757583409828018432,
   "attributes": {
     "shell.command_line": "printf %s",
     "shell.command": "printf",
@@ -4639,12 +4639,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.25.2",
+    "telemetry.sdk.version": "5.26.0",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 4965,
-    "process.parent_pid": 4027,
+    "process.pid": 4934,
+    "process.parent_pid": 3996,
     "process.executable.name": "dash",
     "process.executable.path": "/usr/bin/dash",
     "process.command_line": "/bin/sh /home/runner/work/Thoth/Thoth/demos/injection_deep_gradle/gradlew build",
@@ -4662,14 +4662,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "35e93934fcf0bc15bef226ee9ff2abac",
-  "span_id": "7fd8657dc35aac69",
-  "parent_span_id": "2e32358823a9234b",
+  "trace_id": "5d7271625ae0ed3dea6585d272b40816",
+  "span_id": "6dc3be96a3f0f36b",
+  "parent_span_id": "4bb5064016bacd01",
   "name": "sed  s~[^-[:alnum:]+,./:=@_]~\\&~g;",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1757076367114527232,
-  "time_end": 1757076367158822656,
+  "time_start": 1757583409798474752,
+  "time_end": 1757583409843721728,
   "attributes": {
     "shell.command_line": "sed  s~[^-[:alnum:]+,./:=@_]~\\&~g;",
     "shell.command": "sed",
@@ -4683,12 +4683,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.25.2",
+    "telemetry.sdk.version": "5.26.0",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 4965,
-    "process.parent_pid": 4027,
+    "process.pid": 4934,
+    "process.parent_pid": 3996,
     "process.executable.name": "dash",
     "process.executable.path": "/usr/bin/dash",
     "process.command_line": "/bin/sh /home/runner/work/Thoth/Thoth/demos/injection_deep_gradle/gradlew build",
@@ -4706,14 +4706,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "35e93934fcf0bc15bef226ee9ff2abac",
-  "span_id": "7a96278dfdcaf60a",
-  "parent_span_id": "2e32358823a9234b",
+  "trace_id": "5d7271625ae0ed3dea6585d272b40816",
+  "span_id": "7c73b3d07bd562ff",
+  "parent_span_id": "4bb5064016bacd01",
   "name": "tr",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1757076367114806528,
-  "time_end": 1757076367160167680,
+  "time_start": 1757583409798667776,
+  "time_end": 1757583409845011968,
   "attributes": {
     "shell.command_line": "tr",
     "shell.command": "tr",
@@ -4727,12 +4727,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.25.2",
+    "telemetry.sdk.version": "5.26.0",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 4965,
-    "process.parent_pid": 4027,
+    "process.pid": 4934,
+    "process.parent_pid": 3996,
     "process.executable.name": "dash",
     "process.executable.path": "/usr/bin/dash",
     "process.command_line": "/bin/sh /home/runner/work/Thoth/Thoth/demos/injection_deep_gradle/gradlew build",
@@ -4750,14 +4750,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "35e93934fcf0bc15bef226ee9ff2abac",
-  "span_id": "5ebc70b2e1617adb",
-  "parent_span_id": "2e32358823a9234b",
+  "trace_id": "5d7271625ae0ed3dea6585d272b40816",
+  "span_id": "4a279f6e293e990c",
+  "parent_span_id": "4bb5064016bacd01",
   "name": "ulimit -H -n",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1757076367076407552,
-  "time_end": 1757076367091247360,
+  "time_start": 1757583409759532800,
+  "time_end": 1757583409774778880,
   "attributes": {
     "shell.command_line": "ulimit -H -n",
     "shell.command": "ulimit",
@@ -4769,12 +4769,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.25.2",
+    "telemetry.sdk.version": "5.26.0",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 4965,
-    "process.parent_pid": 4027,
+    "process.pid": 4934,
+    "process.parent_pid": 3996,
     "process.executable.name": "dash",
     "process.executable.path": "/usr/bin/dash",
     "process.command_line": "/bin/sh /home/runner/work/Thoth/Thoth/demos/injection_deep_gradle/gradlew build",
@@ -4792,14 +4792,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "35e93934fcf0bc15bef226ee9ff2abac",
-  "span_id": "0fb66da2d203793b",
-  "parent_span_id": "2e32358823a9234b",
+  "trace_id": "5d7271625ae0ed3dea6585d272b40816",
+  "span_id": "8ffddf6612a80abd",
+  "parent_span_id": "4bb5064016bacd01",
   "name": "ulimit -n 65536",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1757076367093772544,
-  "time_end": 1757076367108901376,
+  "time_start": 1757583409777379328,
+  "time_end": 1757583409792594944,
   "attributes": {
     "shell.command_line": "ulimit -n 65536",
     "shell.command": "ulimit",
@@ -4811,12 +4811,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.25.2",
+    "telemetry.sdk.version": "5.26.0",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 4965,
-    "process.parent_pid": 4027,
+    "process.pid": 4934,
+    "process.parent_pid": 3996,
     "process.executable.name": "dash",
     "process.executable.path": "/usr/bin/dash",
     "process.command_line": "/bin/sh /home/runner/work/Thoth/Thoth/demos/injection_deep_gradle/gradlew build",
@@ -4834,14 +4834,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "35e93934fcf0bc15bef226ee9ff2abac",
-  "span_id": "dea5842de5f55b6a",
-  "parent_span_id": "2e32358823a9234b",
+  "trace_id": "5d7271625ae0ed3dea6585d272b40816",
+  "span_id": "c4d34c1f3da53af8",
+  "parent_span_id": "4bb5064016bacd01",
   "name": "uname",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1757076367007587840,
-  "time_end": 1757076367022111744,
+  "time_start": 1757583409689124608,
+  "time_end": 1757583409703959552,
   "attributes": {
     "shell.command_line": "uname",
     "shell.command": "uname",
@@ -4855,12 +4855,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.25.2",
+    "telemetry.sdk.version": "5.26.0",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 4965,
-    "process.parent_pid": 4027,
+    "process.pid": 4934,
+    "process.parent_pid": 3996,
     "process.executable.name": "dash",
     "process.executable.path": "/usr/bin/dash",
     "process.command_line": "/bin/sh /home/runner/work/Thoth/Thoth/demos/injection_deep_gradle/gradlew build",
@@ -4878,14 +4878,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "35e93934fcf0bc15bef226ee9ff2abac",
-  "span_id": "ede6d514e6217c37",
-  "parent_span_id": "2e32358823a9234b",
+  "trace_id": "5d7271625ae0ed3dea6585d272b40816",
+  "span_id": "4ba75b040fd806aa",
+  "parent_span_id": "4bb5064016bacd01",
   "name": "xargs -n1",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1757076367113515776,
-  "time_end": 1757076367157527296,
+  "time_start": 1757583409798299904,
+  "time_end": 1757583409842360064,
   "attributes": {
     "shell.command_line": "xargs -n1",
     "shell.command": "xargs",
@@ -4899,12 +4899,12 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.25.2",
+    "telemetry.sdk.version": "5.26.0",
     "service.name": "unknown_service",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "process.pid": 4965,
-    "process.parent_pid": 4027,
+    "process.pid": 4934,
+    "process.parent_pid": 3996,
     "process.executable.name": "dash",
     "process.executable.path": "/usr/bin/dash",
     "process.command_line": "/bin/sh /home/runner/work/Thoth/Thoth/demos/injection_deep_gradle/gradlew build",
