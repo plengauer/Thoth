@@ -24,7 +24,36 @@ echo "log_file=$log_file" >> "$GITHUB_STATE"
 # install dependencies
 . ../shared/github.sh
 . ../shared/id_printer.sh
-. ../shared/install.sh
+export GITHUB_ACTION_REPOSITORY="${GITHUB_ACTION_REPOSITORY:-"$GITHUB_REPOSITORY"}"
+npm install
+action_tag_name="$(echo "$GITHUB_ACTION_REF" | cut -sd @ -f 2-)"
+if [ -z "$action_tag_name" ]; then action_tag_name="v$(cat ../../../VERSION)"; fi
+if [ "$INPUT_CACHE" = "true" ]; then
+  cache_key="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} $({ cat /etc/os-release; python3 --version || true; node --version || true; printenv | grep -E '^OTEL_SHELL_CONFIG_INSTALL_' || true; } | md5sum | cut -d ' ' -f 1)"
+  export OTEL_SHELL_CONFIG_INSTALL_ASSUME=TRUE
+  sudo -E -H eatmydata node -e "require('@actions/cache').restoreCache(['/var/cache/apt/archives/*.deb', '/opt/opentelemetry_shell/venv', '/opt/opentelemetry_shell/collector.image'], '$cache_key');"
+  [ "$(find /var/cache/apt/archives/ -name '*.deb' | wc -l)" -gt 0 ] && [ -d /opt/opentelemetry_shell/venv ] && [ -r /opt/opentelemetry_shell/collector.image ] || write_back_cache=TRUE
+  if ! type otel.sh &&  [ -r /var/cache/apt/archives/opentelemetry-shell*.deb ]; then # fast track install, what could possibly go wrong
+    control_dir="$(mktemp -d)"
+    dpkg-deb --control /var/cache/apt/archives/opentelemetry-shell*.deb "$control_dir"
+    if cat "$control_dir"/control | grep -E '^Pre-Depends:|^Depends:' | cut -d ':' -f 2 - | tr ',' '\n' | grep -v '|' | tr -d ' ' | cut -d '(' -f 1 | sed 's/awk/gawk/g' | xargs -I '{}' [ -r /var/lib/dpkg/info/'{}'.list ]; then
+      sudo dpkg-deb --extract /var/cache/apt/archives/opentelemetry-shell*.deb /
+      sudo "$control_dir"/postinst configure
+      export OTEL_SHELL_PACKAGE_VERSION_CACHE_opentelemetry_shell="$(cat ../../../VERSION)"
+    fi
+    rm -rf "$control_dir"
+  fi
+fi
+bash -e -o pipefail ../shared/install.sh curl wget jq sed unzip 'node;nodejs' npm 'docker;docker.io' 'gcc;build-essential'
+export OTEL_SHELL_COLLECTOR_IMAGE="$(cat Dockerfile | grep '^FROM ' | cut -d ' ' -f 2-)"
+if [ -r /opt/opentelemetry_shell/collector.image ]; then
+  sudo docker load < /opt/opentelemetry_shell/collector.image
+else
+  sudo docker pull "$OTEL_SHELL_COLLECTOR_IMAGE"
+fi
+if [ "${write_back_cache:-FALSE}" = TRUE ] && [ -n "${cache_key:-}" ]; then
+  sudo docker save "$OTEL_SHELL_COLLECTOR_IMAGE" | sudo tee /opt/opentelemetry_shell/collector.image > /dev/null && sudo -E -H node -e "require('@actions/cache').saveCache(['/var/cache/apt/archives/*.deb', '/opt/opentelemetry_shell/venv', '/opt/opentelemetry_shell/collector.image'], '$cache_key');" &
+fi
 
 # configure collector if required
 backup_otel_exporter_otlp_traces_endpoint="${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT:-}}"
