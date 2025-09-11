@@ -15,6 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      actions: read
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.25.2
         with:
@@ -26,6 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      actions: read
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.25.2
         with:
@@ -47,6 +49,7 @@ jobs:
         observe-subprocesses: [ 'FALSE', 'TRUE' ]
     permissions:
       contents: read
+      actions: read
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.25.2
         with:
