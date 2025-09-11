@@ -23,7 +23,7 @@ jobs:
           RENOVATE_REPOSITORIES: ${{ github.repository }}
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
-  renovate-debian-dependency-python:
+  renovate-package-dependency-python:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -41,10 +41,12 @@ jobs:
           . venv/bin/activate
           pip3 install -r src/opt/opentelemetry_shell/requirements.txt
           deactivate
-          min_version_otel="$(cat venv/lib/python*/site-packages/opentelemetry_api-*.dist-info/METADATA | grep '^Requires-Python: ' | cut -d ' ' -f 2 | cut -d . -f 2-)"
-          min_version_shell="$(cat meta/debian/control | grep '^Pre-Depends:' | tr ',' '\n' | grep -F -- 'python3 (>=' | cut -d '(' -f 2- | cut -d ')' -f 1 | cut -d ' ' -f 2 | cut -d . -f 2)"
-          [ "$min_version_shell" -ge "$min_version_otel" ] || sed -i "s/python3 (>= $min_version_shell/python3 (>= $min_version_otel/g" meta/debian/control
+          min_version_otel="$(cat venv/lib/python*/site-packages/opentelemetry_api-*.dist-info/METADATA | grep '^Requires-Python: ' | cut -d ' ' -f 2 | cut -d . -f 2)"
           rm -rf venv
+          min_version_debian="$(cat meta/debian/control | grep '^Pre-Depends:' | tr ',' '\n' | grep -F -- 'python3 (>=' | cut -d '(' -f 2- | cut -d ')' -f 1 | cut -d ' ' -f 2 | cut -d . -f 2)"
+          [ "$min_version_debian" -ge "$min_version_otel" ] || sed -i "s/python3 (>= $min_version_debian/python3 (>= 3.$min_version_otel/g" meta/debian/control
+          min_version_rpm="$(cat meta/debian/*.spec | grep '^Requires:' | tr ',' '\n' | grep -F -- 'python3 >=' | cut = -f 2- | cut -d . -f 2)"
+          [ "$min_version_debian" -ge "$min_version_otel" ] || sed -i "s/python3 >= $min_version_rpm/python3 >= 3.$min_version_otel/g" meta/rpm/*.spec          
       - id: open-pr
         uses: peter-evans/create-pull-request@v7.0.8
         with:
