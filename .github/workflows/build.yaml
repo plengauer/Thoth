@@ -379,6 +379,12 @@ jobs:
       contents: read
       actions: read
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.25.2
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: '["${{ github.token }}"]'
       - uses: actions/checkout@v5.0.0
       - run: |
           {
@@ -423,6 +429,12 @@ jobs:
       contents: read
       actions: read
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.25.2
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: '["${{ github.token }}"]'
       - uses: actions/checkout@v5.0.0
       - run: |
           {
@@ -493,6 +505,12 @@ jobs:
       contents: read
       actions: read
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.25.2
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: '["${{ github.token }}"]'
       - uses: actions/checkout@v5.0.0
       - run: |
           {
@@ -536,6 +554,12 @@ jobs:
       contents: read
       actions: read
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.25.2
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: '["${{ github.token }}"]'
       - uses: actions/download-artifact@v5.0.0
         with:
           pattern: package.*
@@ -552,6 +576,12 @@ jobs:
       contents: read
       actions: read
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.25.2
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: '["${{ github.token }}"]'
       - uses: actions/checkout@v5.0.0
       - uses: actions/download-artifact@v5.0.0
         with:
