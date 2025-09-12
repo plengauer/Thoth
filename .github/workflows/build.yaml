@@ -38,7 +38,7 @@ jobs:
             echo "no debian found supporting the architecture ${{ matrix.architecture }}"
             exit 1
           fi
-          # sudo sed -i 's///g' /usr/share/opentelemetry_shell/agent.instrumentation.docker.sh 
+          sudo sed -i 's/-c/-xc/g' /usr/share/opentelemetry_shell/agent.instrumentation.docker.sh 
           sudo sh -c '_otel_inject_docker_args "$@"' sh docker run -i --rm --network host -v "$(pwd)"/src:/home/root/src -w /home/root --platform linux/${{ matrix.architecture }} docker.io/"$(echo ${{ matrix.architecture }} | tr -d /)"/"$image"
           echo 'cd src/usr/share/opentelemetry_shell/agent.instrumentation.http/ && apt-get update 1>&2 && yes | apt-get install build-essential 1>&2 && gcc -shared -fPIC -o libinjecthttpheader.so agent.injection.http_header.c -ldl 1>&2 && arch' \
            | sudo docker run -i --rm --network host -v "$(pwd)"/src:/home/root/src -w /home/root --platform linux/${{ matrix.architecture }} docker.io/"$(echo ${{ matrix.architecture }} | tr -d /)"/"$image" | xargs -0 -I {} echo 'architecture={}' >> "$GITHUB_OUTPUT"
