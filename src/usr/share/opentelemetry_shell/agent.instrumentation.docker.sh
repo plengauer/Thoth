@@ -85,7 +85,7 @@ _otel_inject_docker_args() {
   local image="$1"
   if _otel_is_docker_image_injectable "$executable" "$image" && ! _otel_is_docker_image_injected "$executable" "$image" && _otel_is_docker_image_github_input_injectable "$executable" "$image"; then
     \echo -n ' '; _otel_escape_args --env TRACEPARENT="$TRACEPARENT" --env TRACESTATE="$TRACESTATE"
-    for file in $(\dpkg -L opentelemetry-shell | \grep -E '^/usr/bin/'); do \echo -n ' '; _otel_escape_args --mount type=bind,source="$file",target="$file",readonly; done
+    for file in /usr/bin/otel*.sh /usr/bin/opentelemetry_shell*.sh; do \echo -n ' '; _otel_escape_args --mount type=bind,source="$file",target="$file",readonly; done
     \echo -n ' '; _otel_escape_args --mount type=bind,source=/usr/share/opentelemetry_shell,target=/usr/share/opentelemetry_shell
     \echo -n ' '; _otel_escape_args --mount type=bind,source=/opt/opentelemetry_shell,target=/opt/opentelemetry_shell
     for kvp in $(\printenv | \grep '^OTEL_' | \cut -d = -f 1); do \echo -n ' '; _otel_escape_args --env "$kvp"; done
