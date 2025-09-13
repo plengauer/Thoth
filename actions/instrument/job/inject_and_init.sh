@@ -171,6 +171,7 @@ gcc -o "$new_binary_dir"/sh forward.c -DEXECUTABLE="$(which sh)" -DARG1="$GITHUB
 gcc -o "$new_binary_dir"/dash forward.c -DEXECUTABLE="$(which dash)" -DARG1="$GITHUB_ACTION_PATH"/decorate_action_run.sh -DARG2="$(which dash)"
 gcc -o "$new_binary_dir"/bash forward.c -DEXECUTABLE="$(which bash)" -DARG1="$GITHUB_ACTION_PATH"/decorate_action_run.sh -DARG2="$(which bash)"
 ## setup injections into node actions
+set -x
 for node_path in "$(readlink -f /proc/*/exe | grep '/Runner.Worker$' | rev | cut -d / -f 4- | rev)"/*/externals/node*/bin/node; do
   dir_path_new="$relocated_binary_dir"/"$(echo "$node_path" | rev | cut -d / -f 3 | rev)"
   mkdir "$dir_path_new"
@@ -178,10 +179,12 @@ for node_path in "$(readlink -f /proc/*/exe | grep '/Runner.Worker$' | rev | cut
   mv "$node_path" "$node_path_new"
   gcc -o "$node_path" forward.c -DEXECUTABLE=/bin/bash -DARG1="$GITHUB_ACTION_PATH"/decorate_action_node.sh -DARG2="$node_path_new" # path is hardcoded in the runners
 done
+set +x
 ## setup injections into docker actions
 docker_path="$(which docker)"
 sudo mv "$docker_path" "$relocated_binary_dir"
 sudo gcc -o "$docker_path" forward.c -DEXECUTABLE=/bin/bash -DARG1="$GITHUB_ACTION_PATH"/decorate_action_docker.sh -DARG2="$relocated_binary_dir"/docker
+find "$relocated_binary_dir"
 
 # resolve parent (does not exist yet - see workflow action) and make sure all jobs are of the same trace and have the same deferred parent 
 opentelemetry_root_dir="$(mktemp -d)"
