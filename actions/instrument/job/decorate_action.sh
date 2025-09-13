@@ -44,7 +44,12 @@ _otel_resource_attributes_custom() {
 }
 eval "$(cat "$_OTEL_GITHUB_STEP_AGENT_INSTRUMENTATION_FILE" | grep -v '_otel_alias_prepend ')"
 
-find /home/runner/work/Thoth/Thoth/actions/instrument/job >&2
+echo "DEBUG DEBUG DEBUG $*"
+ls -la "$1"
+ls -la /home/runner/work/Thoth/Thoth/actions/instrument/job/relocated_bin/node20/node
+ls -la /home/runner/work/Thoth/Thoth/actions/instrument/job/relocated_bin/node24/node
+find /home/runner/work/Thoth/Thoth/actions/instrument/job/relocated_bin
+
 
 otel_init
 time_start="$(date +%s.%N)"
