@@ -422,8 +422,30 @@ jobs:
           name: package.deb
           path: package.deb
 
+  verify-rpm-python-dependency:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.25.2
+        with:
+          secrets_to_redact: '["${{ github.token }}"]'
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
+          OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
+      - uses: actions/checkout@v5.0.0
+      - run: |
+          python3 -m venv venv
+          . venv/bin/activate
+          pip3 install -r src/opt/opentelemetry_shell/requirements.txt
+          deactivate
+          min_version_otel="$(cat venv/lib/python*/site-packages/opentelemetry_api-*.dist-info/METADATA | grep '^Requires-Python: ' | cut -d ' ' -f 2 | cut -d . -f 2-)"
+          min_version_otel="${min_version_otel:-9}"
+          min_version_shell="$(cat meta/rpm/*.spec | grep '^Requires:' | tr ',' '\n' | grep -F -- 'python3 >=' | cut = -f 2- | cut -d . -f 2)"
+          [ "$min_version_shell" -ge "$min_version_otel" ] || (echo "::error::Minimum version is $min_version_shell but otel requires at least $min_version_otel!" && exit 1)
   build-rpm:
-    needs: [merge-http, merge-node-modules, merge-python-site-packages, build-java-agents]
+    needs: [verify-rpm-python-dependency, merge-http, merge-node-modules, merge-python-site-packages, build-java-agents]
     runs-on: ubuntu-latest
     permissions:
       contents: read
