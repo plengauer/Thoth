@@ -548,7 +548,7 @@ jobs:
           name: package.apk
           path: package.apk
   merge-packages:
-    needs: [build-debian, build-rpm, build-apk]
+    needs: [build-deb, build-rpm, build-apk]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -570,7 +570,7 @@ jobs:
           path: package.*
 
   build-workflow-image:
-    needs: [build-debian]
+    needs: [build-deb]
     runs-on: ubuntu-latest
     permissions:
       contents: read
