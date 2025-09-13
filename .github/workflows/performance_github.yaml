@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - .github/workflows/performance_github.yaml
+    branches:
+      - main
       
 env:
   OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
