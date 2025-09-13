@@ -129,6 +129,7 @@ jobs:
         with:
           github_token: ${{ github.token }}
           path_exclude: ./
+          working_directory: /tmp/autoversion
   job-integration:
     needs: job-smoke
     runs-on: ubuntu-latest
