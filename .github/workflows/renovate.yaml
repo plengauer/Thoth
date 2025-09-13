@@ -45,7 +45,7 @@ jobs:
           rm -rf venv
           min_version_debian="$(cat meta/debian/control | grep '^Pre-Depends:' | tr ',' '\n' | grep -F -- 'python3 (>=' | cut -d '(' -f 2- | cut -d ')' -f 1 | cut -d ' ' -f 2 | cut -d . -f 2)"
           [ "$min_version_debian" -ge "$min_version_otel" ] || sed -i "s/python3 (>= $min_version_debian/python3 (>= 3.$min_version_otel/g" meta/debian/control
-          min_version_rpm="$(cat meta/debian/*.spec | grep '^Requires:' | tr ',' '\n' | grep -F -- 'python3 >=' | cut = -f 2- | cut -d . -f 2)"
+          min_version_rpm="$(cat meta/rpm/*.spec | grep '^Requires:' | tr ',' '\n' | grep -F -- 'python3 >=' | cut = -f 2- | cut -d . -f 2)"
           [ "$min_version_debian" -ge "$min_version_otel" ] || sed -i "s/python3 >= $min_version_rpm/python3 >= 3.$min_version_otel/g" meta/rpm/*.spec
       - id: open-pr
         uses: peter-evans/create-pull-request@v7.0.8
