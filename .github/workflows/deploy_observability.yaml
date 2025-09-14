@@ -21,7 +21,6 @@ jobs:
       - uses: plengauer/opentelemetry-github/actions/instrument/deploy@v5.27.0
         with:
           github_token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
-          workflow_level_instrumentation_use_container: true
           job_level_instrumentation_exclude: 'Refresh Demos,Shell,GitHub,Workflow Example,Experiment'
           job_level_instrumentation_secret_redaction_strategy: list
         env:
