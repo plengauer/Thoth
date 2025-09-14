@@ -18,7 +18,7 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "5.26.0"
+              "stringValue": "5.27.0"
             }
           },
           {
@@ -42,13 +42,13 @@
           {
             "key": "process.pid",
             "value": {
-              "intValue": "5357"
+              "intValue": "5317"
             }
           },
           {
             "key": "process.parent_pid",
             "value": {
-              "intValue": "4613"
+              "intValue": "4563"
             }
           },
           {
@@ -129,18 +129,18 @@
         {
           "scope": {
             "name": "shell",
-            "version": "5.26.0"
+            "version": "5.27.0"
           },
           "spans": [
             {
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "2fbc6f0cc1cc4dbc",
-              "parentSpanId": "ead93731ebb067e6",
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "1ca82e7d2d3c3612",
+              "parentSpanId": "b78865189593f1e3",
               "flags": 768,
               "name": "seq 1 4",
               "kind": 1,
-              "startTimeUnixNano": "1757583380047795200",
-              "endTimeUnixNano": "1757583380064791040",
+              "startTimeUnixNano": "1757822445272102656",
+              "endTimeUnixNano": "1757822445289617664",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -231,7 +231,7 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "5.26.0"
+              "stringValue": "5.27.0"
             }
           },
           {
@@ -255,7 +255,7 @@
           {
             "key": "process.pid",
             "value": {
-              "intValue": "3137"
+              "intValue": "3096"
             }
           },
           {
@@ -342,19 +342,19 @@
         {
           "scope": {
             "name": "shell",
-            "version": "5.26.0"
+            "version": "5.27.0"
           },
           "logRecords": [
             {
-              "timeUnixNano": "1757583379365452288",
-              "observedTimeUnixNano": "1757583379365487890",
+              "timeUnixNano": "1757822444585262848",
+              "observedTimeUnixNano": "1757822444585300519",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "Ncat: Idle timeout expired (3000 ms)."
               },
               "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "0ad94ed1482bf0c0"
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "449b9755db9605b4"
             }
           ]
         }
@@ -382,7 +382,7 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "5.26.0"
+              "stringValue": "5.27.0"
             }
           },
           {
@@ -406,7 +406,7 @@
           {
             "key": "process.pid",
             "value": {
-              "intValue": "3137"
+              "intValue": "3096"
             }
           },
           {
@@ -493,18 +493,18 @@
         {
           "scope": {
             "name": "shell",
-            "version": "5.26.0"
+            "version": "5.27.0"
           },
           "spans": [
             {
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "3a429b300e18a6de",
-              "parentSpanId": "821eb30f3f38ae23",
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "10cdb0b5f91b1fe5",
+              "parentSpanId": "972b504c035dca1e",
               "flags": 768,
               "name": "printf HEAD /repos/plengauer/Thoth/releases?per_page=100 HTTP/1.1\\r\\nConnection: close\\r\\nUser-Agent: ncat\\r\\nHost: api.github.com\\r\\n\\r\\n",
               "kind": 1,
-              "startTimeUnixNano": "1757583375732922112",
-              "endTimeUnixNano": "1757583375805582080",
+              "startTimeUnixNano": "1757822440926530304",
+              "endTimeUnixNano": "1757822441025669632",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -552,14 +552,14 @@
               "status": {}
             },
             {
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "da1a4ebc8cd62bd7",
-              "parentSpanId": "e166dad480baaa37",
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "36719d9c720ee8ce",
+              "parentSpanId": "72ec2a1bd0e79bf4",
               "flags": 768,
               "name": "HEAD",
               "kind": 3,
-              "startTimeUnixNano": "1757583376054982912",
-              "endTimeUnixNano": "1757583379369309440",
+              "startTimeUnixNano": "1757822441255754496",
+              "endTimeUnixNano": "1757822444589093632",
               "attributes": [
                 {
                   "key": "network.transport",
@@ -687,7 +687,7 @@
                     "arrayValue": {
                       "values": [
                         {
-                          "stringValue": "Thu, 11 Sep 2025 09:36:16 GMT"
+                          "stringValue": "Sun, 14 Sep 2025 04:00:41 GMT"
                         }
                       ]
                     }
@@ -735,7 +735,7 @@
                     "arrayValue": {
                       "values": [
                         {
-                          "stringValue": "W/\"3d07b84c4bdb521f4d5601d5febf1bcad7505dc51c187647e0196e06a82099ae\""
+                          "stringValue": "W/\"78b675415e67f57e556f2abef9ce5393e831ca71550239900ef0df378d6c6d74\""
                         }
                       ]
                     }
@@ -915,7 +915,7 @@
                     "arrayValue": {
                       "values": [
                         {
-                          "stringValue": "57"
+                          "stringValue": "53"
                         }
                       ]
                     }
@@ -927,7 +927,7 @@
                     "arrayValue": {
                       "values": [
                         {
-                          "stringValue": "1757586775"
+                          "stringValue": "1757824282"
                         }
                       ]
                     }
@@ -951,7 +951,7 @@
                     "arrayValue": {
                       "values": [
                         {
-                          "stringValue": "3"
+                          "stringValue": "7"
                         }
                       ]
                     }
@@ -963,7 +963,7 @@
                     "arrayValue": {
                       "values": [
                         {
-                          "stringValue": "B840:7C02E:EB4D1:356517:68C2980F"
+                          "stringValue": "A800:1814A1:3B108EF:D613B1D:68C63DE9"
                         }
                       ]
                     }
@@ -991,14 +991,14 @@
               "status": {}
             },
             {
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "e166dad480baaa37",
-              "parentSpanId": "0ad94ed1482bf0c0",
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "72ec2a1bd0e79bf4",
+              "parentSpanId": "449b9755db9605b4",
               "flags": 768,
               "name": "send/receive",
               "kind": 4,
-              "startTimeUnixNano": "1757583375857352704",
-              "endTimeUnixNano": "1757583379369811968",
+              "startTimeUnixNano": "1757822441053213440",
+              "endTimeUnixNano": "1757822444589623296",
               "attributes": [
                 {
                   "key": "network.transport",
@@ -1028,14 +1028,14 @@
               "status": {}
             },
             {
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "0ad94ed1482bf0c0",
-              "parentSpanId": "821eb30f3f38ae23",
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "449b9755db9605b4",
+              "parentSpanId": "972b504c035dca1e",
               "flags": 768,
               "name": "ncat --ssl -i 3 --no-shutdown api.github.com 443",
               "kind": 1,
-              "startTimeUnixNano": "1757583375723512576",
-              "endTimeUnixNano": "1757583379374037504",
+              "startTimeUnixNano": "1757822440923136000",
+              "endTimeUnixNano": "1757822444594070272",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -1097,14 +1097,14 @@
               }
             },
             {
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "f8c41a61e06d3256",
-              "parentSpanId": "821eb30f3f38ae23",
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "c36515fb2193ac8a",
+              "parentSpanId": "972b504c035dca1e",
               "flags": 768,
               "name": "tr [:upper:] [:lower:]",
               "kind": 1,
-              "startTimeUnixNano": "1757583375717465088",
-              "endTimeUnixNano": "1757583379376442624",
+              "startTimeUnixNano": "1757822440915869696",
+              "endTimeUnixNano": "1757822444596453632",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -1164,14 +1164,14 @@
               "status": {}
             },
             {
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "b9b12fbc45070777",
-              "parentSpanId": "821eb30f3f38ae23",
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "4466598d0980f5f1",
+              "parentSpanId": "972b504c035dca1e",
               "flags": 768,
               "name": "grep ^link:",
               "kind": 1,
-              "startTimeUnixNano": "1757583375738847232",
-              "endTimeUnixNano": "1757583379378947840",
+              "startTimeUnixNano": "1757822440923279360",
+              "endTimeUnixNano": "1757822444598852864",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -1231,14 +1231,14 @@
               "status": {}
             },
             {
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ef0fbad0b61131f3",
-              "parentSpanId": "821eb30f3f38ae23",
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "f940a8b9257ccd98",
+              "parentSpanId": "972b504c035dca1e",
               "flags": 768,
               "name": "cut -d   -f 2-",
               "kind": 1,
-              "startTimeUnixNano": "1757583375739260416",
-              "endTimeUnixNano": "1757583379381467648",
+              "startTimeUnixNano": "1757822440938826240",
+              "endTimeUnixNano": "1757822444601190656",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -1298,14 +1298,14 @@
               "status": {}
             },
             {
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "fc89b13435c48af9",
-              "parentSpanId": "821eb30f3f38ae23",
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "38867a01295f0e6f",
+              "parentSpanId": "972b504c035dca1e",
               "flags": 768,
               "name": "tr -d  <>",
               "kind": 1,
-              "startTimeUnixNano": "1757583375750262272",
-              "endTimeUnixNano": "1757583379383846400",
+              "startTimeUnixNano": "1757822440939231744",
+              "endTimeUnixNano": "1757822444603546368",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -1365,14 +1365,14 @@
               "status": {}
             },
             {
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ec9493c8fb6ba106",
-              "parentSpanId": "821eb30f3f38ae23",
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "1ecd1276d924c24e",
+              "parentSpanId": "972b504c035dca1e",
               "flags": 768,
               "name": "tr , \\n",
               "kind": 1,
-              "startTimeUnixNano": "1757583375738713856",
-              "endTimeUnixNano": "1757583379386310656",
+              "startTimeUnixNano": "1757822440939075328",
+              "endTimeUnixNano": "1757822444605969664",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -1432,14 +1432,14 @@
               "status": {}
             },
             {
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "49be5e6e987c1011",
-              "parentSpanId": "821eb30f3f38ae23",
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "3ad067906d4e5dd6",
+              "parentSpanId": "972b504c035dca1e",
               "flags": 768,
               "name": "grep rel=\"last\"",
               "kind": 1,
-              "startTimeUnixNano": "1757583375753435136",
-              "endTimeUnixNano": "1757583379388766976",
+              "startTimeUnixNano": "1757822440953981440",
+              "endTimeUnixNano": "1757822444608393216",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -1499,14 +1499,14 @@
               "status": {}
             },
             {
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "b41521606465b836",
-              "parentSpanId": "821eb30f3f38ae23",
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "e2be9c372fa3f2d7",
+              "parentSpanId": "972b504c035dca1e",
               "flags": 768,
               "name": "cut -d ; -f1",
               "kind": 1,
-              "startTimeUnixNano": "1757583375732520960",
-              "endTimeUnixNano": "1757583379391228416",
+              "startTimeUnixNano": "1757822440932338944",
+              "endTimeUnixNano": "1757822444610789376",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -1566,14 +1566,14 @@
               "status": {}
             },
             {
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "891569cdfd800358",
-              "parentSpanId": "821eb30f3f38ae23",
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "ed856a711b0b3537",
+              "parentSpanId": "972b504c035dca1e",
               "flags": 768,
               "name": "cut -d ? -f 2-",
               "kind": 1,
-              "startTimeUnixNano": "1757583375732657920",
-              "endTimeUnixNano": "1757583379393570560",
+              "startTimeUnixNano": "1757822440941516288",
+              "endTimeUnixNano": "1757822444613150720",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -1633,14 +1633,14 @@
               "status": {}
             },
             {
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "dfb1861057db33c6",
-              "parentSpanId": "821eb30f3f38ae23",
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "e35c53309de27216",
+              "parentSpanId": "972b504c035dca1e",
               "flags": 768,
               "name": "tr & \\n",
               "kind": 1,
-              "startTimeUnixNano": "1757583375732794880",
-              "endTimeUnixNano": "1757583379395928832",
+              "startTimeUnixNano": "1757822440930128128",
+              "endTimeUnixNano": "1757822444615470848",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -1700,14 +1700,14 @@
               "status": {}
             },
             {
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "c03cef678d6594be",
-              "parentSpanId": "821eb30f3f38ae23",
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "0de6cfd25e20d374",
+              "parentSpanId": "972b504c035dca1e",
               "flags": 768,
               "name": "grep ^page=",
               "kind": 1,
-              "startTimeUnixNano": "1757583375753604352",
-              "endTimeUnixNano": "1757583379398321408",
+              "startTimeUnixNano": "1757822440948361472",
+              "endTimeUnixNano": "1757822444617967360",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -1767,14 +1767,14 @@
               "status": {}
             },
             {
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "b57111991767f83a",
-              "parentSpanId": "821eb30f3f38ae23",
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "0cb483c036ab32d0",
+              "parentSpanId": "972b504c035dca1e",
               "flags": 768,
               "name": "cut -d = -f 2",
               "kind": 1,
-              "startTimeUnixNano": "1757583375754094336",
-              "endTimeUnixNano": "1757583379400625664",
+              "startTimeUnixNano": "1757822440953775616",
+              "endTimeUnixNano": "1757822444620409088",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -1834,14 +1834,14 @@
               "status": {}
             },
             {
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ead93731ebb067e6",
-              "parentSpanId": "821eb30f3f38ae23",
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "b78865189593f1e3",
+              "parentSpanId": "972b504c035dca1e",
               "flags": 768,
               "name": "xargs seq 1",
               "kind": 1,
-              "startTimeUnixNano": "1757583375743304448",
-              "endTimeUnixNano": "1757583380099487232",
+              "startTimeUnixNano": "1757822440944792832",
+              "endTimeUnixNano": "1757822445328114432",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -1926,7 +1926,7 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "5.26.0"
+              "stringValue": "5.27.0"
             }
           },
           {
@@ -1950,13 +1950,13 @@
           {
             "key": "process.pid",
             "value": {
-              "intValue": "6036"
+              "intValue": "5996"
             }
           },
           {
             "key": "process.parent_pid",
             "value": {
-              "intValue": "4661"
+              "intValue": "4629"
             }
           },
           {
@@ -2037,18 +2037,18 @@
         {
           "scope": {
             "name": "shell",
-            "version": "5.26.0"
+            "version": "5.27.0"
           },
           "spans": [
             {
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "88236333137f9946",
-              "parentSpanId": "9c6410082767ac4f",
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "1978b8a748a601fa",
+              "parentSpanId": "fec1512bd81b90be",
               "flags": 768,
               "name": "GET",
               "kind": 3,
-              "startTimeUnixNano": "1757583380802023680",
-              "endTimeUnixNano": "1757583381441167872",
+              "startTimeUnixNano": "1757822446045372160",
+              "endTimeUnixNano": "1757822446827030016",
               "attributes": [
                 {
                   "key": "network.transport",
@@ -2170,7 +2170,7 @@
                     "arrayValue": {
                       "values": [
                         {
-                          "stringValue": "00-87e8aa46c017bd1efb89175372abd647-9c6410082767ac4f-01"
+                          "stringValue": "00-2828fa57bbb6d3711d4d606bda125220-fec1512bd81b90be-01"
                         }
                       ]
                     }
@@ -2188,7 +2188,7 @@
                     "arrayValue": {
                       "values": [
                         {
-                          "stringValue": "Thu, 11 Sep 2025 09:36:21 GMT"
+                          "stringValue": "Sun, 14 Sep 2025 04:00:46 GMT"
                         }
                       ]
                     }
@@ -2236,7 +2236,7 @@
                     "arrayValue": {
                       "values": [
                         {
-                          "stringValue": "W/\"22271fb7420a5fd27917bdb1f6afd8f5d6624c1a11ab41e1d5aa7eec7e027e34\""
+                          "stringValue": "W/\"84227d4243cc09288f6b5b7e5e20eba68465ba2a8113684c56b2966c9c965f4f\""
                         }
                       ]
                     }
@@ -2416,7 +2416,7 @@
                     "arrayValue": {
                       "values": [
                         {
-                          "stringValue": "56"
+                          "stringValue": "52"
                         }
                       ]
                     }
@@ -2428,7 +2428,7 @@
                     "arrayValue": {
                       "values": [
                         {
-                          "stringValue": "1757586775"
+                          "stringValue": "1757824282"
                         }
                       ]
                     }
@@ -2452,7 +2452,7 @@
                     "arrayValue": {
                       "values": [
                         {
-                          "stringValue": "4"
+                          "stringValue": "8"
                         }
                       ]
                     }
@@ -2464,7 +2464,7 @@
                     "arrayValue": {
                       "values": [
                         {
-                          "stringValue": "B841:378355:10D9A4:3CDCA9:68C29814"
+                          "stringValue": "A801:379F7A:38726AF:CCFBBBE:68C63DEE"
                         }
                       ]
                     }
@@ -2474,14 +2474,14 @@
               "status": {}
             },
             {
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "9c6410082767ac4f",
-              "parentSpanId": "ed5b528e35f8c361",
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "fec1512bd81b90be",
+              "parentSpanId": "b5f6d250c13bda20",
               "flags": 768,
               "name": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=1",
               "kind": 1,
-              "startTimeUnixNano": "1757583380722614272",
-              "endTimeUnixNano": "1757583381444814336",
+              "startTimeUnixNano": "1757822445955976704",
+              "endTimeUnixNano": "1757822446830578688",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -2572,7 +2572,7 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "5.26.0"
+              "stringValue": "5.27.0"
             }
           },
           {
@@ -2596,13 +2596,13 @@
           {
             "key": "process.pid",
             "value": {
-              "intValue": "7531"
+              "intValue": "7491"
             }
           },
           {
             "key": "process.parent_pid",
             "value": {
-              "intValue": "4661"
+              "intValue": "4629"
             }
           },
           {
@@ -2683,18 +2683,18 @@
         {
           "scope": {
             "name": "shell",
-            "version": "5.26.0"
+            "version": "5.27.0"
           },
           "spans": [
             {
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "24f51e121090b28d",
-              "parentSpanId": "da0e26e991b01ea5",
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "e8aaa893b23ae9bd",
+              "parentSpanId": "d8d0cae101b75ba3",
               "flags": 768,
               "name": "GET",
               "kind": 3,
-              "startTimeUnixNano": "1757583381795246848",
-              "endTimeUnixNano": "1757583382363766272",
+              "startTimeUnixNano": "1757822447192837376",
+              "endTimeUnixNano": "1757822447672879872",
               "attributes": [
                 {
                   "key": "network.transport",
@@ -2816,7 +2816,7 @@
                     "arrayValue": {
                       "values": [
                         {
-                          "stringValue": "00-87e8aa46c017bd1efb89175372abd647-da0e26e991b01ea5-01"
+                          "stringValue": "00-2828fa57bbb6d3711d4d606bda125220-d8d0cae101b75ba3-01"
                         }
                       ]
                     }
@@ -2834,7 +2834,7 @@
                     "arrayValue": {
                       "values": [
                         {
-                          "stringValue": "Thu, 11 Sep 2025 09:36:22 GMT"
+                          "stringValue": "Sun, 14 Sep 2025 04:00:47 GMT"
                         }
                       ]
                     }
@@ -2882,7 +2882,7 @@
                     "arrayValue": {
                       "values": [
                         {
-                          "stringValue": "W/\"96c289eb6d17ff191cc10b30df0612e8ac05d338b64c9006cc7f4200e7cdb135\""
+                          "stringValue": "W/\"e686f17801fc76b038bdb55f61b52091ee7f4c5442217c378a74b6d1562054e2\""
                         }
                       ]
                     }
@@ -3062,7 +3062,7 @@
                     "arrayValue": {
                       "values": [
                         {
-                          "stringValue": "55"
+                          "stringValue": "51"
                         }
                       ]
                     }
@@ -3074,7 +3074,7 @@
                     "arrayValue": {
                       "values": [
                         {
-                          "stringValue": "1757586775"
+                          "stringValue": "1757824282"
                         }
                       ]
                     }
@@ -3098,7 +3098,7 @@
                     "arrayValue": {
                       "values": [
                         {
-                          "stringValue": "5"
+                          "stringValue": "9"
                         }
                       ]
                     }
@@ -3110,7 +3110,7 @@
                     "arrayValue": {
                       "values": [
                         {
-                          "stringValue": "B842:3D113A:D4110:3034F8:68C29815"
+                          "stringValue": "A802:11C51F:3A44A83:D3AF85D:68C63DEF"
                         }
                       ]
                     }
@@ -3120,14 +3120,14 @@
               "status": {}
             },
             {
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "da0e26e991b01ea5",
-              "parentSpanId": "ed5b528e35f8c361",
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "d8d0cae101b75ba3",
+              "parentSpanId": "b5f6d250c13bda20",
               "flags": 768,
               "name": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=2",
               "kind": 1,
-              "startTimeUnixNano": "1757583381718889728",
-              "endTimeUnixNano": "1757583382367261696",
+              "startTimeUnixNano": "1757822447106214656",
+              "endTimeUnixNano": "1757822447676408832",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -3218,7 +3218,7 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "5.26.0"
+              "stringValue": "5.27.0"
             }
           },
           {
@@ -3242,13 +3242,13 @@
           {
             "key": "process.pid",
             "value": {
-              "intValue": "8441"
+              "intValue": "8399"
             }
           },
           {
             "key": "process.parent_pid",
             "value": {
-              "intValue": "4661"
+              "intValue": "4629"
             }
           },
           {
@@ -3329,18 +3329,18 @@
         {
           "scope": {
             "name": "shell",
-            "version": "5.26.0"
+            "version": "5.27.0"
           },
           "spans": [
             {
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "a92c856b39d1a799",
-              "parentSpanId": "3392160d7b1c31f8",
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "7c06a19d933cb843",
+              "parentSpanId": "408604b2dd4b6630",
               "flags": 768,
               "name": "GET",
               "kind": 3,
-              "startTimeUnixNano": "1757583382719854848",
-              "endTimeUnixNano": "1757583383346771200",
+              "startTimeUnixNano": "1757822448045790720",
+              "endTimeUnixNano": "1757822448619168768",
               "attributes": [
                 {
                   "key": "network.transport",
@@ -3462,7 +3462,7 @@
                     "arrayValue": {
                       "values": [
                         {
-                          "stringValue": "00-87e8aa46c017bd1efb89175372abd647-3392160d7b1c31f8-01"
+                          "stringValue": "00-2828fa57bbb6d3711d4d606bda125220-408604b2dd4b6630-01"
                         }
                       ]
                     }
@@ -3480,7 +3480,7 @@
                     "arrayValue": {
                       "values": [
                         {
-                          "stringValue": "Thu, 11 Sep 2025 09:36:23 GMT"
+                          "stringValue": "Sun, 14 Sep 2025 04:00:48 GMT"
                         }
                       ]
                     }
@@ -3528,7 +3528,7 @@
                     "arrayValue": {
                       "values": [
                         {
-                          "stringValue": "W/\"dfe5166c7a5fbb3f2b0210c0432ac3b122a6a24a17def0209dff91cb69f8313c\""
+                          "stringValue": "W/\"dc212201208b3893c2aba24e7483ba8ed8d62fdbbc7066e9c599166533a7ad67\""
                         }
                       ]
                     }
@@ -3708,7 +3708,7 @@
                     "arrayValue": {
                       "values": [
                         {
-                          "stringValue": "54"
+                          "stringValue": "50"
                         }
                       ]
                     }
@@ -3720,7 +3720,7 @@
                     "arrayValue": {
                       "values": [
                         {
-                          "stringValue": "1757586775"
+                          "stringValue": "1757824282"
                         }
                       ]
                     }
@@ -3744,7 +3744,7 @@
                     "arrayValue": {
                       "values": [
                         {
-                          "stringValue": "6"
+                          "stringValue": "10"
                         }
                       ]
                     }
@@ -3756,7 +3756,7 @@
                     "arrayValue": {
                       "values": [
                         {
-                          "stringValue": "B843:378355:10E3B0:3D018A:68C29816"
+                          "stringValue": "A803:27B52A:38CC9BE:CEAED6B:68C63DF0"
                         }
                       ]
                     }
@@ -3766,14 +3766,14 @@
               "status": {}
             },
             {
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "3392160d7b1c31f8",
-              "parentSpanId": "ed5b528e35f8c361",
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "408604b2dd4b6630",
+              "parentSpanId": "b5f6d250c13bda20",
               "flags": 768,
               "name": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=3",
               "kind": 1,
-              "startTimeUnixNano": "1757583382641912064",
-              "endTimeUnixNano": "1757583383350307840",
+              "startTimeUnixNano": "1757822447950339328",
+              "endTimeUnixNano": "1757822448622805504",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -3864,7 +3864,7 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "5.26.0"
+              "stringValue": "5.27.0"
             }
           },
           {
@@ -3888,13 +3888,13 @@
           {
             "key": "process.pid",
             "value": {
-              "intValue": "9350"
+              "intValue": "9308"
             }
           },
           {
             "key": "process.parent_pid",
             "value": {
-              "intValue": "4661"
+              "intValue": "4629"
             }
           },
           {
@@ -3975,18 +3975,18 @@
         {
           "scope": {
             "name": "shell",
-            "version": "5.26.0"
+            "version": "5.27.0"
           },
           "spans": [
             {
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "dae8bdfa982cacff",
-              "parentSpanId": "9a38963d67c7a961",
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "13a63382ab225786",
+              "parentSpanId": "5f7fb146d6d4dfaf",
               "flags": 768,
               "name": "GET",
               "kind": 3,
-              "startTimeUnixNano": "1757583383699010560",
-              "endTimeUnixNano": "1757583384323031808",
+              "startTimeUnixNano": "1757822448986333184",
+              "endTimeUnixNano": "1757822449415145984",
               "attributes": [
                 {
                   "key": "network.transport",
@@ -4108,7 +4108,7 @@
                     "arrayValue": {
                       "values": [
                         {
-                          "stringValue": "00-87e8aa46c017bd1efb89175372abd647-9a38963d67c7a961-01"
+                          "stringValue": "00-2828fa57bbb6d3711d4d606bda125220-5f7fb146d6d4dfaf-01"
                         }
                       ]
                     }
@@ -4126,7 +4126,7 @@
                     "arrayValue": {
                       "values": [
                         {
-                          "stringValue": "Thu, 11 Sep 2025 09:36:24 GMT"
+                          "stringValue": "Sun, 14 Sep 2025 04:00:49 GMT"
                         }
                       ]
                     }
@@ -4174,7 +4174,7 @@
                     "arrayValue": {
                       "values": [
                         {
-                          "stringValue": "W/\"8a94af6272bfd60175ff950f3ddbb804d8852e21a2ac435dcee116aaefaa5abf\""
+                          "stringValue": "W/\"cd4edc9929de808ab9c343a900a1f741a52c4d71a1155d840d96da89c1c99f57\""
                         }
                       ]
                     }
@@ -4354,7 +4354,7 @@
                     "arrayValue": {
                       "values": [
                         {
-                          "stringValue": "53"
+                          "stringValue": "49"
                         }
                       ]
                     }
@@ -4366,7 +4366,7 @@
                     "arrayValue": {
                       "values": [
                         {
-                          "stringValue": "1757586775"
+                          "stringValue": "1757824282"
                         }
                       ]
                     }
@@ -4390,7 +4390,7 @@
                     "arrayValue": {
                       "values": [
                         {
-                          "stringValue": "7"
+                          "stringValue": "11"
                         }
                       ]
                     }
@@ -4402,7 +4402,7 @@
                     "arrayValue": {
                       "values": [
                         {
-                          "stringValue": "B844:2D8EA3:FB498:38E0CB:68C29817"
+                          "stringValue": "A804:187993:387B829:CD00A56:68C63DF0"
                         }
                       ]
                     }
@@ -4412,14 +4412,14 @@
               "status": {}
             },
             {
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "9a38963d67c7a961",
-              "parentSpanId": "ed5b528e35f8c361",
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "5f7fb146d6d4dfaf",
+              "parentSpanId": "b5f6d250c13bda20",
               "flags": 768,
               "name": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=4",
               "kind": 1,
-              "startTimeUnixNano": "1757583383622661376",
-              "endTimeUnixNano": "1757583384326608128",
+              "startTimeUnixNano": "1757822448898550784",
+              "endTimeUnixNano": "1757822449418617600",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -4491,7 +4491,7 @@
   ]
 }
 {
-  "resourceSpans": [
+  "resourceLogs": [
     {
       "resource": {
         "attributes": [
@@ -4510,7 +4510,7 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "5.26.0"
+              "stringValue": "5.27.0"
             }
           },
           {
@@ -4534,13 +4534,1219 @@
           {
             "key": "process.pid",
             "value": {
-              "intValue": "10262"
+              "intValue": "3096"
             }
           },
           {
             "key": "process.parent_pid",
             "value": {
-              "intValue": "4583"
+              "intValue": "2353"
+            }
+          },
+          {
+            "key": "process.executable.name",
+            "value": {
+              "stringValue": "bash"
+            }
+          },
+          {
+            "key": "process.executable.path",
+            "value": {
+              "stringValue": "/usr/bin/bash"
+            }
+          },
+          {
+            "key": "process.command_line",
+            "value": {
+              "stringValue": "bash -e demo.sh"
+            }
+          },
+          {
+            "key": "process.command",
+            "value": {
+              "stringValue": "bash"
+            }
+          },
+          {
+            "key": "process.owner",
+            "value": {
+              "stringValue": "runner"
+            }
+          },
+          {
+            "key": "process.runtime.name",
+            "value": {
+              "stringValue": "bash"
+            }
+          },
+          {
+            "key": "process.runtime.description",
+            "value": {
+              "stringValue": "Bourne Again Shell"
+            }
+          },
+          {
+            "key": "process.runtime.version",
+            "value": {
+              "stringValue": "5.2.21-2ubuntu4"
+            }
+          },
+          {
+            "key": "process.runtime.options",
+            "value": {
+              "stringValue": "ehB"
+            }
+          },
+          {
+            "key": "service.version",
+            "value": {
+              "stringValue": ""
+            }
+          },
+          {
+            "key": "service.namespace",
+            "value": {
+              "stringValue": ""
+            }
+          },
+          {
+            "key": "service.instance.id",
+            "value": {
+              "stringValue": ""
+            }
+          }
+        ]
+      },
+      "scopeLogs": [
+        {
+          "scope": {
+            "name": "shell",
+            "version": "5.27.0"
+          },
+          "logRecords": [
+            {
+              "timeUnixNano": "1757822450157854720",
+              "observedTimeUnixNano": "1757822450157897365",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "--2025-09-14 04:00:50--  https://github.com/plengauer/Thoth/releases/download/v1.13.7/opentelemetry-shell_1.13.7.deb"
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "46a82307f1f23af1"
+            },
+            {
+              "timeUnixNano": "1757822450183972864",
+              "observedTimeUnixNano": "1757822450183994968",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "Resolving github.com (github.com)... 140.82.112.3"
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "46a82307f1f23af1"
+            },
+            {
+              "timeUnixNano": "1757822450199809280",
+              "observedTimeUnixNano": "1757822450199827000",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "Connecting to github.com (github.com)|140.82.112.3|:443... connected."
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "46a82307f1f23af1"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+{
+  "resourceSpans": [
+    {
+      "resource": {
+        "attributes": [
+          {
+            "key": "telemetry.sdk.language",
+            "value": {
+              "stringValue": "shell"
+            }
+          },
+          {
+            "key": "telemetry.sdk.name",
+            "value": {
+              "stringValue": "opentelemetry"
+            }
+          },
+          {
+            "key": "telemetry.sdk.version",
+            "value": {
+              "stringValue": "5.27.0"
+            }
+          },
+          {
+            "key": "service.name",
+            "value": {
+              "stringValue": "unknown_service"
+            }
+          },
+          {
+            "key": "os.type",
+            "value": {
+              "stringValue": "linux"
+            }
+          },
+          {
+            "key": "os.version",
+            "value": {
+              "stringValue": "6.11.0-1018-azure"
+            }
+          },
+          {
+            "key": "process.pid",
+            "value": {
+              "intValue": "3096"
+            }
+          },
+          {
+            "key": "process.parent_pid",
+            "value": {
+              "intValue": "2353"
+            }
+          },
+          {
+            "key": "process.executable.name",
+            "value": {
+              "stringValue": "bash"
+            }
+          },
+          {
+            "key": "process.executable.path",
+            "value": {
+              "stringValue": "/usr/bin/bash"
+            }
+          },
+          {
+            "key": "process.command_line",
+            "value": {
+              "stringValue": "bash -e demo.sh"
+            }
+          },
+          {
+            "key": "process.command",
+            "value": {
+              "stringValue": "bash"
+            }
+          },
+          {
+            "key": "process.owner",
+            "value": {
+              "stringValue": "runner"
+            }
+          },
+          {
+            "key": "process.runtime.name",
+            "value": {
+              "stringValue": "bash"
+            }
+          },
+          {
+            "key": "process.runtime.description",
+            "value": {
+              "stringValue": "Bourne Again Shell"
+            }
+          },
+          {
+            "key": "process.runtime.version",
+            "value": {
+              "stringValue": "5.2.21-2ubuntu4"
+            }
+          },
+          {
+            "key": "process.runtime.options",
+            "value": {
+              "stringValue": "ehB"
+            }
+          },
+          {
+            "key": "service.version",
+            "value": {
+              "stringValue": ""
+            }
+          },
+          {
+            "key": "service.namespace",
+            "value": {
+              "stringValue": ""
+            }
+          },
+          {
+            "key": "service.instance.id",
+            "value": {
+              "stringValue": ""
+            }
+          }
+        ]
+      },
+      "scopeSpans": [
+        {
+          "scope": {
+            "name": "shell",
+            "version": "5.27.0"
+          },
+          "spans": [
+            {
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "b5f6d250c13bda20",
+              "parentSpanId": "972b504c035dca1e",
+              "flags": 768,
+              "name": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
+              "kind": 1,
+              "startTimeUnixNano": "1757822440938957056",
+              "endTimeUnixNano": "1757822449452349440",
+              "attributes": [
+                {
+                  "key": "shell.command_line",
+                  "value": {
+                    "stringValue": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}"
+                  }
+                },
+                {
+                  "key": "shell.command",
+                  "value": {
+                    "stringValue": "xargs"
+                  }
+                },
+                {
+                  "key": "shell.command.type",
+                  "value": {
+                    "stringValue": "file"
+                  }
+                },
+                {
+                  "key": "shell.command.name",
+                  "value": {
+                    "stringValue": "xargs"
+                  }
+                },
+                {
+                  "key": "subprocess.executable.path",
+                  "value": {
+                    "stringValue": "/usr/bin/xargs"
+                  }
+                },
+                {
+                  "key": "subprocess.executable.name",
+                  "value": {
+                    "stringValue": "xargs"
+                  }
+                },
+                {
+                  "key": "shell.command.exit_code",
+                  "value": {
+                    "intValue": "0"
+                  }
+                },
+                {
+                  "key": "code.filepath",
+                  "value": {
+                    "stringValue": "demo.sh"
+                  }
+                },
+                {
+                  "key": "code.lineno",
+                  "value": {
+                    "intValue": "11"
+                  }
+                }
+              ],
+              "status": {}
+            },
+            {
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "61504e4e49e8899f",
+              "parentSpanId": "972b504c035dca1e",
+              "flags": 768,
+              "name": "jq .[].assets[].browser_download_url -r",
+              "kind": 1,
+              "startTimeUnixNano": "1757822440943119360",
+              "endTimeUnixNano": "1757822449455003136",
+              "attributes": [
+                {
+                  "key": "shell.command_line",
+                  "value": {
+                    "stringValue": "jq .[].assets[].browser_download_url -r"
+                  }
+                },
+                {
+                  "key": "shell.command",
+                  "value": {
+                    "stringValue": "jq"
+                  }
+                },
+                {
+                  "key": "shell.command.type",
+                  "value": {
+                    "stringValue": "file"
+                  }
+                },
+                {
+                  "key": "shell.command.name",
+                  "value": {
+                    "stringValue": "jq"
+                  }
+                },
+                {
+                  "key": "subprocess.executable.path",
+                  "value": {
+                    "stringValue": "/usr/bin/jq"
+                  }
+                },
+                {
+                  "key": "subprocess.executable.name",
+                  "value": {
+                    "stringValue": "jq"
+                  }
+                },
+                {
+                  "key": "shell.command.exit_code",
+                  "value": {
+                    "intValue": "0"
+                  }
+                },
+                {
+                  "key": "code.filepath",
+                  "value": {
+                    "stringValue": "demo.sh"
+                  }
+                },
+                {
+                  "key": "code.lineno",
+                  "value": {
+                    "intValue": "12"
+                  }
+                }
+              ],
+              "status": {}
+            },
+            {
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "e88b0214447dfe66",
+              "parentSpanId": "972b504c035dca1e",
+              "flags": 768,
+              "name": "grep .deb$",
+              "kind": 1,
+              "startTimeUnixNano": "1757822440964061696",
+              "endTimeUnixNano": "1757822449458013184",
+              "attributes": [
+                {
+                  "key": "shell.command_line",
+                  "value": {
+                    "stringValue": "grep .deb$"
+                  }
+                },
+                {
+                  "key": "shell.command",
+                  "value": {
+                    "stringValue": "grep"
+                  }
+                },
+                {
+                  "key": "shell.command.type",
+                  "value": {
+                    "stringValue": "file"
+                  }
+                },
+                {
+                  "key": "shell.command.name",
+                  "value": {
+                    "stringValue": "grep"
+                  }
+                },
+                {
+                  "key": "subprocess.executable.path",
+                  "value": {
+                    "stringValue": "/usr/bin/grep"
+                  }
+                },
+                {
+                  "key": "subprocess.executable.name",
+                  "value": {
+                    "stringValue": "grep"
+                  }
+                },
+                {
+                  "key": "shell.command.exit_code",
+                  "value": {
+                    "intValue": "0"
+                  }
+                },
+                {
+                  "key": "code.filepath",
+                  "value": {
+                    "stringValue": "demo.sh"
+                  }
+                },
+                {
+                  "key": "code.lineno",
+                  "value": {
+                    "intValue": "12"
+                  }
+                }
+              ],
+              "status": {}
+            },
+            {
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "e19f412c3fc9dfc1",
+              "parentSpanId": "972b504c035dca1e",
+              "flags": 768,
+              "name": "head --lines=3",
+              "kind": 1,
+              "startTimeUnixNano": "1757822440959475712",
+              "endTimeUnixNano": "1757822449458085376",
+              "attributes": [
+                {
+                  "key": "shell.command_line",
+                  "value": {
+                    "stringValue": "head --lines=3"
+                  }
+                },
+                {
+                  "key": "shell.command",
+                  "value": {
+                    "stringValue": "head"
+                  }
+                },
+                {
+                  "key": "shell.command.type",
+                  "value": {
+                    "stringValue": "file"
+                  }
+                },
+                {
+                  "key": "shell.command.name",
+                  "value": {
+                    "stringValue": "head"
+                  }
+                },
+                {
+                  "key": "subprocess.executable.path",
+                  "value": {
+                    "stringValue": "/usr/bin/head"
+                  }
+                },
+                {
+                  "key": "subprocess.executable.name",
+                  "value": {
+                    "stringValue": "head"
+                  }
+                },
+                {
+                  "key": "shell.command.exit_code",
+                  "value": {
+                    "intValue": "0"
+                  }
+                },
+                {
+                  "key": "code.filepath",
+                  "value": {
+                    "stringValue": "demo.sh"
+                  }
+                },
+                {
+                  "key": "code.lineno",
+                  "value": {
+                    "intValue": "12"
+                  }
+                }
+              ],
+              "status": {}
+            },
+            {
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "96fbb926f269ab6c",
+              "parentSpanId": "972b504c035dca1e",
+              "flags": 768,
+              "name": "grep _1.",
+              "kind": 1,
+              "startTimeUnixNano": "1757822440944958976",
+              "endTimeUnixNano": "1757822449460755712",
+              "attributes": [
+                {
+                  "key": "shell.command_line",
+                  "value": {
+                    "stringValue": "grep _1."
+                  }
+                },
+                {
+                  "key": "shell.command",
+                  "value": {
+                    "stringValue": "grep"
+                  }
+                },
+                {
+                  "key": "shell.command.type",
+                  "value": {
+                    "stringValue": "file"
+                  }
+                },
+                {
+                  "key": "shell.command.name",
+                  "value": {
+                    "stringValue": "grep"
+                  }
+                },
+                {
+                  "key": "subprocess.executable.path",
+                  "value": {
+                    "stringValue": "/usr/bin/grep"
+                  }
+                },
+                {
+                  "key": "subprocess.executable.name",
+                  "value": {
+                    "stringValue": "grep"
+                  }
+                },
+                {
+                  "key": "shell.command.exit_code",
+                  "value": {
+                    "intValue": "0"
+                  }
+                },
+                {
+                  "key": "code.filepath",
+                  "value": {
+                    "stringValue": "demo.sh"
+                  }
+                },
+                {
+                  "key": "code.lineno",
+                  "value": {
+                    "intValue": "12"
+                  }
+                }
+              ],
+              "status": {}
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+{
+  "resourceLogs": [
+    {
+      "resource": {
+        "attributes": [
+          {
+            "key": "telemetry.sdk.language",
+            "value": {
+              "stringValue": "shell"
+            }
+          },
+          {
+            "key": "telemetry.sdk.name",
+            "value": {
+              "stringValue": "opentelemetry"
+            }
+          },
+          {
+            "key": "telemetry.sdk.version",
+            "value": {
+              "stringValue": "5.27.0"
+            }
+          },
+          {
+            "key": "service.name",
+            "value": {
+              "stringValue": "unknown_service"
+            }
+          },
+          {
+            "key": "os.type",
+            "value": {
+              "stringValue": "linux"
+            }
+          },
+          {
+            "key": "os.version",
+            "value": {
+              "stringValue": "6.11.0-1018-azure"
+            }
+          },
+          {
+            "key": "process.pid",
+            "value": {
+              "intValue": "10220"
+            }
+          },
+          {
+            "key": "process.parent_pid",
+            "value": {
+              "intValue": "4572"
+            }
+          },
+          {
+            "key": "process.executable.name",
+            "value": {
+              "stringValue": "bash"
+            }
+          },
+          {
+            "key": "process.executable.path",
+            "value": {
+              "stringValue": "/usr/bin/bash"
+            }
+          },
+          {
+            "key": "process.command_line",
+            "value": {
+              "stringValue": "xargs wget"
+            }
+          },
+          {
+            "key": "process.command",
+            "value": {
+              "stringValue": "xargs"
+            }
+          },
+          {
+            "key": "process.owner",
+            "value": {
+              "stringValue": "runner"
+            }
+          },
+          {
+            "key": "process.runtime.name",
+            "value": {
+              "stringValue": "bash"
+            }
+          },
+          {
+            "key": "process.runtime.description",
+            "value": {
+              "stringValue": "Bourne Again Shell"
+            }
+          },
+          {
+            "key": "process.runtime.version",
+            "value": {
+              "stringValue": "5.2.21-2ubuntu4"
+            }
+          },
+          {
+            "key": "process.runtime.options",
+            "value": {
+              "stringValue": "hBc"
+            }
+          },
+          {
+            "key": "service.version",
+            "value": {
+              "stringValue": ""
+            }
+          },
+          {
+            "key": "service.namespace",
+            "value": {
+              "stringValue": ""
+            }
+          },
+          {
+            "key": "service.instance.id",
+            "value": {
+              "stringValue": ""
+            }
+          }
+        ]
+      },
+      "scopeLogs": [
+        {
+          "scope": {
+            "name": "shell",
+            "version": "5.27.0"
+          },
+          "logRecords": [
+            {
+              "timeUnixNano": "1757822450156540672",
+              "observedTimeUnixNano": "1757822450156580655",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "--2025-09-14 04:00:50--  https://github.com/plengauer/Thoth/releases/download/v1.13.7/opentelemetry-shell_1.13.7.deb"
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "5b17b0f0fb96b888"
+            },
+            {
+              "timeUnixNano": "1757822450183110656",
+              "observedTimeUnixNano": "1757822450183137945",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "Resolving github.com (github.com)... 140.82.112.3"
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "5b17b0f0fb96b888"
+            },
+            {
+              "timeUnixNano": "1757822450198876160",
+              "observedTimeUnixNano": "1757822450198894624",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "Connecting to github.com (github.com)|140.82.112.3|:443... connected."
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "5b17b0f0fb96b888"
+            },
+            {
+              "timeUnixNano": "1757822451217877248",
+              "observedTimeUnixNano": "1757822451217904948",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "HTTP request sent, awaiting response... 302 Found"
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "5b17b0f0fb96b888"
+            },
+            {
+              "timeUnixNano": "1757822451221204224",
+              "observedTimeUnixNano": "1757822451221224886",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "Location: https://release-assets.githubusercontent.com/github-production-release-asset/692042935/5544a935-3cf9-4f9b-b6ed-d668fd012e99?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-09-14T04%3A37%3A15Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.7.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-09-14T03%3A36%3A23Z&ske=2025-09-14T04%3A37%3A15Z&sks=b&skv=2018-11-09&sig=AyoFNs4UWRqUO%2F%2F5kCNjaRANisYECbkCV%2BaRNWLFwCQ%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NzgyMjc1MCwibmJmIjoxNzU3ODIyNDUwLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.2wtX7ykhP1nIsfXI_xfDJrTxBIC00O3hE5uhAs9Yg0w&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.7.deb&response-content-type=application%2Foctet-stream [following]"
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "5b17b0f0fb96b888"
+            },
+            {
+              "timeUnixNano": "1757822451223049216",
+              "observedTimeUnixNano": "1757822451223067960",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "--2025-09-14 04:00:50--  https://release-assets.githubusercontent.com/github-production-release-asset/692042935/5544a935-3cf9-4f9b-b6ed-d668fd012e99?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-09-14T04%3A37%3A15Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.7.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-09-14T03%3A36%3A23Z&ske=2025-09-14T04%3A37%3A15Z&sks=b&skv=2018-11-09&sig=AyoFNs4UWRqUO%2F%2F5kCNjaRANisYECbkCV%2BaRNWLFwCQ%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NzgyMjc1MCwibmJmIjoxNzU3ODIyNDUwLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.2wtX7ykhP1nIsfXI_xfDJrTxBIC00O3hE5uhAs9Yg0w&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.7.deb&response-content-type=application%2Foctet-stream"
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "5b17b0f0fb96b888"
+            },
+            {
+              "timeUnixNano": "1757822451229166848",
+              "observedTimeUnixNano": "1757822451229191048",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "Resolving release-assets.githubusercontent.com (release-assets.githubusercontent.com)... 185.199.109.133, 185.199.108.133, 185.199.110.133, ..."
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "5b17b0f0fb96b888"
+            },
+            {
+              "timeUnixNano": "1757822451230382080",
+              "observedTimeUnixNano": "1757822451230402965",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "Connecting to release-assets.githubusercontent.com (release-assets.githubusercontent.com)|185.199.109.133|:443... connected."
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "5b17b0f0fb96b888"
+            },
+            {
+              "timeUnixNano": "1757822451251899904",
+              "observedTimeUnixNano": "1757822451251922735",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "HTTP request sent, awaiting response... 200 OK"
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "5b17b0f0fb96b888"
+            },
+            {
+              "timeUnixNano": "1757822451254000384",
+              "observedTimeUnixNano": "1757822451254018006",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "Length: 7202 (7.0K) [application/octet-stream]"
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "5b17b0f0fb96b888"
+            },
+            {
+              "timeUnixNano": "1757822451258492416",
+              "observedTimeUnixNano": "1757822451258510100",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "Saving to: ‘opentelemetry-shell_1.13.7.deb’"
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "5b17b0f0fb96b888"
+            },
+            {
+              "timeUnixNano": "1757822451260610560",
+              "observedTimeUnixNano": "1757822451260628967",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "0K .......                                               100% 74.7M=0s"
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "5b17b0f0fb96b888"
+            },
+            {
+              "timeUnixNano": "1757822451262797568",
+              "observedTimeUnixNano": "1757822451262814414",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "2025-09-14 04:00:51 (74.7 MB/s) - ‘opentelemetry-shell_1.13.7.deb’ saved [7202/7202]"
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "5b17b0f0fb96b888"
+            },
+            {
+              "timeUnixNano": "1757822451264936448",
+              "observedTimeUnixNano": "1757822451264952395",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "--2025-09-14 04:00:51--  https://github.com/plengauer/Thoth/releases/download/v1.13.6/opentelemetry-shell_1.13.6.deb"
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "5b17b0f0fb96b888"
+            },
+            {
+              "timeUnixNano": "1757822451269911296",
+              "observedTimeUnixNano": "1757822451269927589",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "Connecting to github.com (github.com)|140.82.112.3|:443... connected."
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "5b17b0f0fb96b888"
+            },
+            {
+              "timeUnixNano": "1757822452288435968",
+              "observedTimeUnixNano": "1757822452288464811",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "HTTP request sent, awaiting response... 302 Found"
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "5b17b0f0fb96b888"
+            },
+            {
+              "timeUnixNano": "1757822452291941376",
+              "observedTimeUnixNano": "1757822452291955080",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "Location: https://release-assets.githubusercontent.com/github-production-release-asset/692042935/e8091cbc-915a-4ba7-bca7-308817fe26c4?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-09-14T04%3A42%3A55Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.6.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-09-14T03%3A42%3A04Z&ske=2025-09-14T04%3A42%3A55Z&sks=b&skv=2018-11-09&sig=UBuliu49STR6G9sfG%2Faac9c6M2%2Fqir9%2BtMCAJ9ryQ8I%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NzgyMjc1MSwibmJmIjoxNzU3ODIyNDUxLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.lsxVehDB8PoOgYhPy5rG8uDUANdHRaObv-UObEzRjDc&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.6.deb&response-content-type=application%2Foctet-stream [following]"
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "5b17b0f0fb96b888"
+            },
+            {
+              "timeUnixNano": "1757822452293901824",
+              "observedTimeUnixNano": "1757822452293918739",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "--2025-09-14 04:00:51--  https://release-assets.githubusercontent.com/github-production-release-asset/692042935/e8091cbc-915a-4ba7-bca7-308817fe26c4?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-09-14T04%3A42%3A55Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.6.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-09-14T03%3A42%3A04Z&ske=2025-09-14T04%3A42%3A55Z&sks=b&skv=2018-11-09&sig=UBuliu49STR6G9sfG%2Faac9c6M2%2Fqir9%2BtMCAJ9ryQ8I%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NzgyMjc1MSwibmJmIjoxNzU3ODIyNDUxLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.lsxVehDB8PoOgYhPy5rG8uDUANdHRaObv-UObEzRjDc&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.6.deb&response-content-type=application%2Foctet-stream"
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "5b17b0f0fb96b888"
+            },
+            {
+              "timeUnixNano": "1757822452300248832",
+              "observedTimeUnixNano": "1757822452300266725",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "Connecting to release-assets.githubusercontent.com (release-assets.githubusercontent.com)|185.199.109.133|:443... connected."
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "5b17b0f0fb96b888"
+            },
+            {
+              "timeUnixNano": "1757822452317573376",
+              "observedTimeUnixNano": "1757822452317599479",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "HTTP request sent, awaiting response... 200 OK"
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "5b17b0f0fb96b888"
+            },
+            {
+              "timeUnixNano": "1757822452319892224",
+              "observedTimeUnixNano": "1757822452319914018",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "Length: 7184 (7.0K) [application/octet-stream]"
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "5b17b0f0fb96b888"
+            },
+            {
+              "timeUnixNano": "1757822452324552960",
+              "observedTimeUnixNano": "1757822452324571941",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "Saving to: ‘opentelemetry-shell_1.13.6.deb’"
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "5b17b0f0fb96b888"
+            },
+            {
+              "timeUnixNano": "1757822452326836992",
+              "observedTimeUnixNano": "1757822452326855776",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "0K .......                                               100% 94.4M=0s"
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "5b17b0f0fb96b888"
+            },
+            {
+              "timeUnixNano": "1757822452328861184",
+              "observedTimeUnixNano": "1757822452328879963",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "2025-09-14 04:00:52 (94.4 MB/s) - ‘opentelemetry-shell_1.13.6.deb’ saved [7184/7184]"
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "5b17b0f0fb96b888"
+            },
+            {
+              "timeUnixNano": "1757822452331049728",
+              "observedTimeUnixNano": "1757822452331064924",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "--2025-09-14 04:00:52--  https://github.com/plengauer/Thoth/releases/download/v1.13.5/opentelemetry-shell_1.13.5.deb"
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "5b17b0f0fb96b888"
+            },
+            {
+              "timeUnixNano": "1757822452336485120",
+              "observedTimeUnixNano": "1757822452336503330",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "Connecting to github.com (github.com)|140.82.112.3|:443... connected."
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "5b17b0f0fb96b888"
+            },
+            {
+              "timeUnixNano": "1757822453355492608",
+              "observedTimeUnixNano": "1757822453355524501",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "HTTP request sent, awaiting response... 302 Found"
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "5b17b0f0fb96b888"
+            },
+            {
+              "timeUnixNano": "1757822453358860800",
+              "observedTimeUnixNano": "1757822453358876716",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "Location: https://release-assets.githubusercontent.com/github-production-release-asset/692042935/25d95ab9-56aa-4a77-8e84-d4947ecef0fc?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-09-14T04%3A43%3A34Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.5.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-09-14T03%3A43%3A12Z&ske=2025-09-14T04%3A43%3A34Z&sks=b&skv=2018-11-09&sig=ND%2F35LlZveYrFA3b5k2505J%2BSbo2m3yMNRIdACQ2iD8%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NzgyMjc1MiwibmJmIjoxNzU3ODIyNDUyLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.C7VgKO7qVRBkM4TvK-KIcmlEdas7Gq0tWzzAPiyGTNQ&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.5.deb&response-content-type=application%2Foctet-stream [following]"
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "5b17b0f0fb96b888"
+            },
+            {
+              "timeUnixNano": "1757822453360861696",
+              "observedTimeUnixNano": "1757822453360872503",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "--2025-09-14 04:00:52--  https://release-assets.githubusercontent.com/github-production-release-asset/692042935/25d95ab9-56aa-4a77-8e84-d4947ecef0fc?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-09-14T04%3A43%3A34Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.5.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-09-14T03%3A43%3A12Z&ske=2025-09-14T04%3A43%3A34Z&sks=b&skv=2018-11-09&sig=ND%2F35LlZveYrFA3b5k2505J%2BSbo2m3yMNRIdACQ2iD8%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NzgyMjc1MiwibmJmIjoxNzU3ODIyNDUyLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.C7VgKO7qVRBkM4TvK-KIcmlEdas7Gq0tWzzAPiyGTNQ&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.5.deb&response-content-type=application%2Foctet-stream"
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "5b17b0f0fb96b888"
+            },
+            {
+              "timeUnixNano": "1757822453366609408",
+              "observedTimeUnixNano": "1757822453366627107",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "Connecting to release-assets.githubusercontent.com (release-assets.githubusercontent.com)|185.199.109.133|:443... connected."
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "5b17b0f0fb96b888"
+            },
+            {
+              "timeUnixNano": "1757822453383912960",
+              "observedTimeUnixNano": "1757822453383933859",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "HTTP request sent, awaiting response... 200 OK"
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "5b17b0f0fb96b888"
+            },
+            {
+              "timeUnixNano": "1757822453386276352",
+              "observedTimeUnixNano": "1757822453386291432",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "Length: 7176 (7.0K) [application/octet-stream]"
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "5b17b0f0fb96b888"
+            },
+            {
+              "timeUnixNano": "1757822453390835712",
+              "observedTimeUnixNano": "1757822453390852274",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "Saving to: ‘opentelemetry-shell_1.13.5.deb’"
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "5b17b0f0fb96b888"
+            },
+            {
+              "timeUnixNano": "1757822453392927488",
+              "observedTimeUnixNano": "1757822453392943398",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "0K .......                                               100% 96.3M=0s"
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "5b17b0f0fb96b888"
+            },
+            {
+              "timeUnixNano": "1757822453394960128",
+              "observedTimeUnixNano": "1757822453394975678",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "2025-09-14 04:00:53 (96.3 MB/s) - ‘opentelemetry-shell_1.13.5.deb’ saved [7176/7176]"
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "5b17b0f0fb96b888"
+            },
+            {
+              "timeUnixNano": "1757822453396811776",
+              "observedTimeUnixNano": "1757822453396827779",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "FINISHED --2025-09-14 04:00:53--"
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "5b17b0f0fb96b888"
+            },
+            {
+              "timeUnixNano": "1757822453397816064",
+              "observedTimeUnixNano": "1757822453397832471",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "Total wall clock time: 3.2s"
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "5b17b0f0fb96b888"
+            },
+            {
+              "timeUnixNano": "1757822453398713088",
+              "observedTimeUnixNano": "1757822453398728109",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "Downloaded: 3 files, 21K in 0s (87.3 MB/s)"
+              },
+              "flags": 1,
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "5b17b0f0fb96b888"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+{
+  "resourceSpans": [
+    {
+      "resource": {
+        "attributes": [
+          {
+            "key": "telemetry.sdk.language",
+            "value": {
+              "stringValue": "shell"
+            }
+          },
+          {
+            "key": "telemetry.sdk.name",
+            "value": {
+              "stringValue": "opentelemetry"
+            }
+          },
+          {
+            "key": "telemetry.sdk.version",
+            "value": {
+              "stringValue": "5.27.0"
+            }
+          },
+          {
+            "key": "service.name",
+            "value": {
+              "stringValue": "unknown_service"
+            }
+          },
+          {
+            "key": "os.type",
+            "value": {
+              "stringValue": "linux"
+            }
+          },
+          {
+            "key": "os.version",
+            "value": {
+              "stringValue": "6.11.0-1018-azure"
+            }
+          },
+          {
+            "key": "process.pid",
+            "value": {
+              "intValue": "10220"
+            }
+          },
+          {
+            "key": "process.parent_pid",
+            "value": {
+              "intValue": "4572"
             }
           },
           {
@@ -4621,18 +5827,18 @@
         {
           "scope": {
             "name": "shell",
-            "version": "5.26.0"
+            "version": "5.27.0"
           },
           "spans": [
             {
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "dd7f855fe8926747",
-              "parentSpanId": "ca615308f6df209b",
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "fc2c4d1bcd6442c8",
+              "parentSpanId": "5b17b0f0fb96b888",
               "flags": 768,
               "name": "GET",
               "kind": 3,
-              "startTimeUnixNano": "1757583385103071232",
-              "endTimeUnixNano": "1757583385222045952",
+              "startTimeUnixNano": "1757822450216476160",
+              "endTimeUnixNano": "1757822451238016256",
               "attributes": [
                 {
                   "key": "network.protocol.name",
@@ -4649,7 +5855,7 @@
                 {
                   "key": "network.peer.address",
                   "value": {
-                    "stringValue": "140.82.113.3"
+                    "stringValue": "140.82.112.3"
                   }
                 },
                 {
@@ -4710,14 +5916,14 @@
               "status": {}
             },
             {
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "0e3a56392139a5cd",
-              "parentSpanId": "ca615308f6df209b",
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "c6d6991b6fc501bc",
+              "parentSpanId": "5b17b0f0fb96b888",
               "flags": 768,
               "name": "GET",
               "kind": 3,
-              "startTimeUnixNano": "1757583385217546240",
-              "endTimeUnixNano": "1757583385268646144",
+              "startTimeUnixNano": "1757822450313220608",
+              "endTimeUnixNano": "1757822451278044928",
               "attributes": [
                 {
                   "key": "network.protocol.name",
@@ -4734,7 +5940,7 @@
                 {
                   "key": "network.peer.address",
                   "value": {
-                    "stringValue": "185.199.110.133"
+                    "stringValue": "185.199.109.133"
                   }
                 },
                 {
@@ -4758,7 +5964,7 @@
                 {
                   "key": "url.full",
                   "value": {
-                    "stringValue": "https://release-assets.githubusercontent.com/github-production-release-asset/692042935/5544a935-3cf9-4f9b-b6ed-d668fd012e99?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-09-11T10%3A16%3A35Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.7.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-09-11T09%3A15%3A37Z&ske=2025-09-11T10%3A16%3A35Z&sks=b&skv=2018-11-09&sig=VXyKmvHEZV0g3jAurdPpe9CKlo0zOF1ztes5LfvRB5U%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NzU4MzY4NSwibmJmIjoxNzU3NTgzMzg1LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.s29R5eOX7qtCgRzMCOWlWsx4TodJeSHgZ_1OHXDiCRk&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.7.deb&response-content-type=application%2Foctet-stream"
+                    "stringValue": "https://release-assets.githubusercontent.com/github-production-release-asset/692042935/5544a935-3cf9-4f9b-b6ed-d668fd012e99?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-09-14T04%3A37%3A15Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.7.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-09-14T03%3A36%3A23Z&ske=2025-09-14T04%3A37%3A15Z&sks=b&skv=2018-11-09&sig=AyoFNs4UWRqUO%2F%2F5kCNjaRANisYECbkCV%2BaRNWLFwCQ%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NzgyMjc1MCwibmJmIjoxNzU3ODIyNDUwLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.2wtX7ykhP1nIsfXI_xfDJrTxBIC00O3hE5uhAs9Yg0w&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.7.deb&response-content-type=application%2Foctet-stream"
                   }
                 },
                 {
@@ -4770,7 +5976,7 @@
                 {
                   "key": "url.query",
                   "value": {
-                    "stringValue": "sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-09-11T10%3A16%3A35Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.7.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-09-11T09%3A15%3A37Z&ske=2025-09-11T10%3A16%3A35Z&sks=b&skv=2018-11-09&sig=VXyKmvHEZV0g3jAurdPpe9CKlo0zOF1ztes5LfvRB5U%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NzU4MzY4NSwibmJmIjoxNzU3NTgzMzg1LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.s29R5eOX7qtCgRzMCOWlWsx4TodJeSHgZ_1OHXDiCRk&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.7.deb&response-content-type=application%2Foctet-stream"
+                    "stringValue": "sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-09-14T04%3A37%3A15Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.7.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-09-14T03%3A36%3A23Z&ske=2025-09-14T04%3A37%3A15Z&sks=b&skv=2018-11-09&sig=AyoFNs4UWRqUO%2F%2F5kCNjaRANisYECbkCV%2BaRNWLFwCQ%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NzgyMjc1MCwibmJmIjoxNzU3ODIyNDUwLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.2wtX7ykhP1nIsfXI_xfDJrTxBIC00O3hE5uhAs9Yg0w&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.7.deb&response-content-type=application%2Foctet-stream"
                   }
                 },
                 {
@@ -4825,14 +6031,14 @@
               "status": {}
             },
             {
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "922da6f00a104cc8",
-              "parentSpanId": "ca615308f6df209b",
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "f3c76855d884eec3",
+              "parentSpanId": "5b17b0f0fb96b888",
               "flags": 768,
               "name": "GET",
               "kind": 3,
-              "startTimeUnixNano": "1757583385255670272",
-              "endTimeUnixNano": "1757583385361289728",
+              "startTimeUnixNano": "1757822451286561280",
+              "endTimeUnixNano": "1757822452308828928",
               "attributes": [
                 {
                   "key": "network.protocol.name",
@@ -4849,7 +6055,7 @@
                 {
                   "key": "network.peer.address",
                   "value": {
-                    "stringValue": "140.82.113.3"
+                    "stringValue": "140.82.112.3"
                   }
                 },
                 {
@@ -4910,14 +6116,14 @@
               "status": {}
             },
             {
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "cf26a031b2da347e",
-              "parentSpanId": "ca615308f6df209b",
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "3266ca0bc09c16d9",
+              "parentSpanId": "5b17b0f0fb96b888",
               "flags": 768,
               "name": "GET",
               "kind": 3,
-              "startTimeUnixNano": "1757583385355661056",
-              "endTimeUnixNano": "1757583385396603392",
+              "startTimeUnixNano": "1757822451396609792",
+              "endTimeUnixNano": "1757822452345016576",
               "attributes": [
                 {
                   "key": "network.protocol.name",
@@ -4934,7 +6140,7 @@
                 {
                   "key": "network.peer.address",
                   "value": {
-                    "stringValue": "185.199.110.133"
+                    "stringValue": "185.199.109.133"
                   }
                 },
                 {
@@ -4958,7 +6164,7 @@
                 {
                   "key": "url.full",
                   "value": {
-                    "stringValue": "https://release-assets.githubusercontent.com/github-production-release-asset/692042935/e8091cbc-915a-4ba7-bca7-308817fe26c4?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-09-11T10%3A14%3A08Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.6.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-09-11T09%3A13%3A48Z&ske=2025-09-11T10%3A14%3A08Z&sks=b&skv=2018-11-09&sig=zKjc6Aug23nKzMTo9OtvyNNae4AiIHPvOUESRBOOt8U%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NzU4MzY4NSwibmJmIjoxNzU3NTgzMzg1LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.s29R5eOX7qtCgRzMCOWlWsx4TodJeSHgZ_1OHXDiCRk&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.6.deb&response-content-type=application%2Foctet-stream"
+                    "stringValue": "https://release-assets.githubusercontent.com/github-production-release-asset/692042935/e8091cbc-915a-4ba7-bca7-308817fe26c4?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-09-14T04%3A42%3A55Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.6.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-09-14T03%3A42%3A04Z&ske=2025-09-14T04%3A42%3A55Z&sks=b&skv=2018-11-09&sig=UBuliu49STR6G9sfG%2Faac9c6M2%2Fqir9%2BtMCAJ9ryQ8I%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NzgyMjc1MSwibmJmIjoxNzU3ODIyNDUxLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.lsxVehDB8PoOgYhPy5rG8uDUANdHRaObv-UObEzRjDc&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.6.deb&response-content-type=application%2Foctet-stream"
                   }
                 },
                 {
@@ -4970,7 +6176,7 @@
                 {
                   "key": "url.query",
                   "value": {
-                    "stringValue": "sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-09-11T10%3A14%3A08Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.6.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-09-11T09%3A13%3A48Z&ske=2025-09-11T10%3A14%3A08Z&sks=b&skv=2018-11-09&sig=zKjc6Aug23nKzMTo9OtvyNNae4AiIHPvOUESRBOOt8U%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NzU4MzY4NSwibmJmIjoxNzU3NTgzMzg1LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.s29R5eOX7qtCgRzMCOWlWsx4TodJeSHgZ_1OHXDiCRk&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.6.deb&response-content-type=application%2Foctet-stream"
+                    "stringValue": "sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-09-14T04%3A42%3A55Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.6.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-09-14T03%3A42%3A04Z&ske=2025-09-14T04%3A42%3A55Z&sks=b&skv=2018-11-09&sig=UBuliu49STR6G9sfG%2Faac9c6M2%2Fqir9%2BtMCAJ9ryQ8I%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NzgyMjc1MSwibmJmIjoxNzU3ODIyNDUxLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.lsxVehDB8PoOgYhPy5rG8uDUANdHRaObv-UObEzRjDc&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.6.deb&response-content-type=application%2Foctet-stream"
                   }
                 },
                 {
@@ -5025,14 +6231,14 @@
               "status": {}
             },
             {
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "0673427f16187e16",
-              "parentSpanId": "ca615308f6df209b",
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "4de4d8efefb808cf",
+              "parentSpanId": "5b17b0f0fb96b888",
               "flags": 768,
               "name": "GET",
               "kind": 3,
-              "startTimeUnixNano": "1757583385383049216",
-              "endTimeUnixNano": "1757583385499453440",
+              "startTimeUnixNano": "1757822452348828672",
+              "endTimeUnixNano": "1757822453375069440",
               "attributes": [
                 {
                   "key": "network.protocol.name",
@@ -5049,7 +6255,7 @@
                 {
                   "key": "network.peer.address",
                   "value": {
-                    "stringValue": "140.82.113.3"
+                    "stringValue": "140.82.112.3"
                   }
                 },
                 {
@@ -5110,14 +6316,14 @@
               "status": {}
             },
             {
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "52499bc3926bc4b7",
-              "parentSpanId": "ca615308f6df209b",
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "935572122a287683",
+              "parentSpanId": "5b17b0f0fb96b888",
               "flags": 768,
               "name": "GET",
               "kind": 3,
-              "startTimeUnixNano": "1757583385493254400",
-              "endTimeUnixNano": "1757583385526016256",
+              "startTimeUnixNano": "1757822452468315904",
+              "endTimeUnixNano": "1757822453395663872",
               "attributes": [
                 {
                   "key": "network.protocol.name",
@@ -5134,7 +6340,7 @@
                 {
                   "key": "network.peer.address",
                   "value": {
-                    "stringValue": "185.199.110.133"
+                    "stringValue": "185.199.109.133"
                   }
                 },
                 {
@@ -5158,7 +6364,7 @@
                 {
                   "key": "url.full",
                   "value": {
-                    "stringValue": "https://release-assets.githubusercontent.com/github-production-release-asset/692042935/25d95ab9-56aa-4a77-8e84-d4947ecef0fc?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-09-11T10%3A14%3A52Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.5.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-09-11T09%3A14%3A03Z&ske=2025-09-11T10%3A14%3A52Z&sks=b&skv=2018-11-09&sig=EPjlTWDuJI5jOUPI8Wzhn5kDm4mEURCQtnZix%2BRrElU%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NzU4MzY4NSwibmJmIjoxNzU3NTgzMzg1LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.s29R5eOX7qtCgRzMCOWlWsx4TodJeSHgZ_1OHXDiCRk&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.5.deb&response-content-type=application%2Foctet-stream"
+                    "stringValue": "https://release-assets.githubusercontent.com/github-production-release-asset/692042935/25d95ab9-56aa-4a77-8e84-d4947ecef0fc?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-09-14T04%3A43%3A34Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.5.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-09-14T03%3A43%3A12Z&ske=2025-09-14T04%3A43%3A34Z&sks=b&skv=2018-11-09&sig=ND%2F35LlZveYrFA3b5k2505J%2BSbo2m3yMNRIdACQ2iD8%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NzgyMjc1MiwibmJmIjoxNzU3ODIyNDUyLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.C7VgKO7qVRBkM4TvK-KIcmlEdas7Gq0tWzzAPiyGTNQ&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.5.deb&response-content-type=application%2Foctet-stream"
                   }
                 },
                 {
@@ -5170,7 +6376,7 @@
                 {
                   "key": "url.query",
                   "value": {
-                    "stringValue": "sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-09-11T10%3A14%3A52Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.5.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-09-11T09%3A14%3A03Z&ske=2025-09-11T10%3A14%3A52Z&sks=b&skv=2018-11-09&sig=EPjlTWDuJI5jOUPI8Wzhn5kDm4mEURCQtnZix%2BRrElU%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NzU4MzY4NSwibmJmIjoxNzU3NTgzMzg1LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.s29R5eOX7qtCgRzMCOWlWsx4TodJeSHgZ_1OHXDiCRk&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.5.deb&response-content-type=application%2Foctet-stream"
+                    "stringValue": "sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-09-14T04%3A43%3A34Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.5.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-09-14T03%3A43%3A12Z&ske=2025-09-14T04%3A43%3A34Z&sks=b&skv=2018-11-09&sig=ND%2F35LlZveYrFA3b5k2505J%2BSbo2m3yMNRIdACQ2iD8%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NzgyMjc1MiwibmJmIjoxNzU3ODIyNDUyLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.C7VgKO7qVRBkM4TvK-KIcmlEdas7Gq0tWzzAPiyGTNQ&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.5.deb&response-content-type=application%2Foctet-stream"
                   }
                 },
                 {
@@ -5225,14 +6431,14 @@
               "status": {}
             },
             {
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ca615308f6df209b",
-              "parentSpanId": "e234e234a1633a05",
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "5b17b0f0fb96b888",
+              "parentSpanId": "46a82307f1f23af1",
               "flags": 768,
               "name": "wget https://github.com/plengauer/Thoth/releases/download/v1.13.7/opentelemetry-shell_1.13.7.deb https://github.com/plengauer/Thoth/releases/download/v1.13.6/opentelemetry-shell_1.13.6.deb https://github.com/plengauer/Thoth/releases/download/v1.13.5/opentelemetry-shell_1.13.5.deb",
               "kind": 1,
-              "startTimeUnixNano": "1757583385022846976",
-              "endTimeUnixNano": "1757583385531001344",
+              "startTimeUnixNano": "1757822450120154112",
+              "endTimeUnixNano": "1757822453400634368",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -5304,564 +6510,6 @@
   ]
 }
 {
-  "resourceLogs": [
-    {
-      "resource": {
-        "attributes": [
-          {
-            "key": "telemetry.sdk.language",
-            "value": {
-              "stringValue": "shell"
-            }
-          },
-          {
-            "key": "telemetry.sdk.name",
-            "value": {
-              "stringValue": "opentelemetry"
-            }
-          },
-          {
-            "key": "telemetry.sdk.version",
-            "value": {
-              "stringValue": "5.26.0"
-            }
-          },
-          {
-            "key": "service.name",
-            "value": {
-              "stringValue": "unknown_service"
-            }
-          },
-          {
-            "key": "os.type",
-            "value": {
-              "stringValue": "linux"
-            }
-          },
-          {
-            "key": "os.version",
-            "value": {
-              "stringValue": "6.11.0-1018-azure"
-            }
-          },
-          {
-            "key": "process.pid",
-            "value": {
-              "intValue": "10262"
-            }
-          },
-          {
-            "key": "process.parent_pid",
-            "value": {
-              "intValue": "4583"
-            }
-          },
-          {
-            "key": "process.executable.name",
-            "value": {
-              "stringValue": "bash"
-            }
-          },
-          {
-            "key": "process.executable.path",
-            "value": {
-              "stringValue": "/usr/bin/bash"
-            }
-          },
-          {
-            "key": "process.command_line",
-            "value": {
-              "stringValue": "xargs wget"
-            }
-          },
-          {
-            "key": "process.command",
-            "value": {
-              "stringValue": "xargs"
-            }
-          },
-          {
-            "key": "process.owner",
-            "value": {
-              "stringValue": "runner"
-            }
-          },
-          {
-            "key": "process.runtime.name",
-            "value": {
-              "stringValue": "bash"
-            }
-          },
-          {
-            "key": "process.runtime.description",
-            "value": {
-              "stringValue": "Bourne Again Shell"
-            }
-          },
-          {
-            "key": "process.runtime.version",
-            "value": {
-              "stringValue": "5.2.21-2ubuntu4"
-            }
-          },
-          {
-            "key": "process.runtime.options",
-            "value": {
-              "stringValue": "hBc"
-            }
-          },
-          {
-            "key": "service.version",
-            "value": {
-              "stringValue": ""
-            }
-          },
-          {
-            "key": "service.namespace",
-            "value": {
-              "stringValue": ""
-            }
-          },
-          {
-            "key": "service.instance.id",
-            "value": {
-              "stringValue": ""
-            }
-          }
-        ]
-      },
-      "scopeLogs": [
-        {
-          "scope": {
-            "name": "shell",
-            "version": "5.26.0"
-          },
-          "logRecords": [
-            {
-              "timeUnixNano": "1757583385058468096",
-              "observedTimeUnixNano": "1757583385058490488",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "--2025-09-11 09:36:25--  https://github.com/plengauer/Thoth/releases/download/v1.13.7/opentelemetry-shell_1.13.7.deb"
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ca615308f6df209b"
-            },
-            {
-              "timeUnixNano": "1757583385089826304",
-              "observedTimeUnixNano": "1757583385089848677",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "Resolving github.com (github.com)... 140.82.113.3"
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ca615308f6df209b"
-            },
-            {
-              "timeUnixNano": "1757583385095359744",
-              "observedTimeUnixNano": "1757583385095375507",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "Connecting to github.com (github.com)|140.82.113.3|:443... connected."
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ca615308f6df209b"
-            },
-            {
-              "timeUnixNano": "1757583385202687488",
-              "observedTimeUnixNano": "1757583385202703011",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "HTTP request sent, awaiting response... 302 Found"
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ca615308f6df209b"
-            },
-            {
-              "timeUnixNano": "1757583385205787136",
-              "observedTimeUnixNano": "1757583385205803837",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "Location: https://release-assets.githubusercontent.com/github-production-release-asset/692042935/5544a935-3cf9-4f9b-b6ed-d668fd012e99?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-09-11T10%3A16%3A35Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.7.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-09-11T09%3A15%3A37Z&ske=2025-09-11T10%3A16%3A35Z&sks=b&skv=2018-11-09&sig=VXyKmvHEZV0g3jAurdPpe9CKlo0zOF1ztes5LfvRB5U%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NzU4MzY4NSwibmJmIjoxNzU3NTgzMzg1LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.s29R5eOX7qtCgRzMCOWlWsx4TodJeSHgZ_1OHXDiCRk&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.7.deb&response-content-type=application%2Foctet-stream [following]"
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ca615308f6df209b"
-            },
-            {
-              "timeUnixNano": "1757583385207607296",
-              "observedTimeUnixNano": "1757583385207620969",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "--2025-09-11 09:36:25--  https://release-assets.githubusercontent.com/github-production-release-asset/692042935/5544a935-3cf9-4f9b-b6ed-d668fd012e99?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-09-11T10%3A16%3A35Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.7.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-09-11T09%3A15%3A37Z&ske=2025-09-11T10%3A16%3A35Z&sks=b&skv=2018-11-09&sig=VXyKmvHEZV0g3jAurdPpe9CKlo0zOF1ztes5LfvRB5U%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NzU4MzY4NSwibmJmIjoxNzU3NTgzMzg1LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.s29R5eOX7qtCgRzMCOWlWsx4TodJeSHgZ_1OHXDiCRk&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.7.deb&response-content-type=application%2Foctet-stream"
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ca615308f6df209b"
-            },
-            {
-              "timeUnixNano": "1757583385213166848",
-              "observedTimeUnixNano": "1757583385213183372",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "Resolving release-assets.githubusercontent.com (release-assets.githubusercontent.com)... 185.199.110.133, 185.199.111.133, 185.199.108.133, ..."
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ca615308f6df209b"
-            },
-            {
-              "timeUnixNano": "1757583385214212352",
-              "observedTimeUnixNano": "1757583385214228540",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "Connecting to release-assets.githubusercontent.com (release-assets.githubusercontent.com)|185.199.110.133|:443... connected."
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ca615308f6df209b"
-            },
-            {
-              "timeUnixNano": "1757583385241840384",
-              "observedTimeUnixNano": "1757583385241856221",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "HTTP request sent, awaiting response... 200 OK"
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ca615308f6df209b"
-            },
-            {
-              "timeUnixNano": "1757583385243992832",
-              "observedTimeUnixNano": "1757583385244007517",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "Length: 7202 (7.0K) [application/octet-stream]"
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ca615308f6df209b"
-            },
-            {
-              "timeUnixNano": "1757583385248376320",
-              "observedTimeUnixNano": "1757583385248392571",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "Saving to: ‘opentelemetry-shell_1.13.7.deb’"
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ca615308f6df209b"
-            },
-            {
-              "timeUnixNano": "1757583385250406400",
-              "observedTimeUnixNano": "1757583385250423175",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "0K .......                                               100% 38.5M=0s"
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ca615308f6df209b"
-            },
-            {
-              "timeUnixNano": "1757583385252460544",
-              "observedTimeUnixNano": "1757583385252477106",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "2025-09-11 09:36:25 (38.5 MB/s) - ‘opentelemetry-shell_1.13.7.deb’ saved [7202/7202]"
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ca615308f6df209b"
-            },
-            {
-              "timeUnixNano": "1757583385254510592",
-              "observedTimeUnixNano": "1757583385254526757",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "--2025-09-11 09:36:25--  https://github.com/plengauer/Thoth/releases/download/v1.13.6/opentelemetry-shell_1.13.6.deb"
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ca615308f6df209b"
-            },
-            {
-              "timeUnixNano": "1757583385260362496",
-              "observedTimeUnixNano": "1757583385260380212",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "Connecting to github.com (github.com)|140.82.113.3|:443... connected."
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ca615308f6df209b"
-            },
-            {
-              "timeUnixNano": "1757583385342485248",
-              "observedTimeUnixNano": "1757583385342504502",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "HTTP request sent, awaiting response... 302 Found"
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ca615308f6df209b"
-            },
-            {
-              "timeUnixNano": "1757583385345729536",
-              "observedTimeUnixNano": "1757583385345744119",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "Location: https://release-assets.githubusercontent.com/github-production-release-asset/692042935/e8091cbc-915a-4ba7-bca7-308817fe26c4?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-09-11T10%3A14%3A08Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.6.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-09-11T09%3A13%3A48Z&ske=2025-09-11T10%3A14%3A08Z&sks=b&skv=2018-11-09&sig=zKjc6Aug23nKzMTo9OtvyNNae4AiIHPvOUESRBOOt8U%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NzU4MzY4NSwibmJmIjoxNzU3NTgzMzg1LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.s29R5eOX7qtCgRzMCOWlWsx4TodJeSHgZ_1OHXDiCRk&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.6.deb&response-content-type=application%2Foctet-stream [following]"
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ca615308f6df209b"
-            },
-            {
-              "timeUnixNano": "1757583385347574016",
-              "observedTimeUnixNano": "1757583385347588829",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "--2025-09-11 09:36:25--  https://release-assets.githubusercontent.com/github-production-release-asset/692042935/e8091cbc-915a-4ba7-bca7-308817fe26c4?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-09-11T10%3A14%3A08Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.6.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-09-11T09%3A13%3A48Z&ske=2025-09-11T10%3A14%3A08Z&sks=b&skv=2018-11-09&sig=zKjc6Aug23nKzMTo9OtvyNNae4AiIHPvOUESRBOOt8U%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NzU4MzY4NSwibmJmIjoxNzU3NTgzMzg1LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.s29R5eOX7qtCgRzMCOWlWsx4TodJeSHgZ_1OHXDiCRk&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.6.deb&response-content-type=application%2Foctet-stream"
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ca615308f6df209b"
-            },
-            {
-              "timeUnixNano": "1757583385352944896",
-              "observedTimeUnixNano": "1757583385352961226",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "Connecting to release-assets.githubusercontent.com (release-assets.githubusercontent.com)|185.199.110.133|:443... connected."
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ca615308f6df209b"
-            },
-            {
-              "timeUnixNano": "1757583385369555968",
-              "observedTimeUnixNano": "1757583385369573678",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "HTTP request sent, awaiting response... 200 OK"
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ca615308f6df209b"
-            },
-            {
-              "timeUnixNano": "1757583385371801856",
-              "observedTimeUnixNano": "1757583385371816775",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "Length: 7184 (7.0K) [application/octet-stream]"
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ca615308f6df209b"
-            },
-            {
-              "timeUnixNano": "1757583385376338944",
-              "observedTimeUnixNano": "1757583385376355364",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "Saving to: ‘opentelemetry-shell_1.13.6.deb’"
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ca615308f6df209b"
-            },
-            {
-              "timeUnixNano": "1757583385378364160",
-              "observedTimeUnixNano": "1757583385378379906",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "0K .......                                               100% 84.3M=0s"
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ca615308f6df209b"
-            },
-            {
-              "timeUnixNano": "1757583385380813568",
-              "observedTimeUnixNano": "1757583385380828888",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "2025-09-11 09:36:25 (84.3 MB/s) - ‘opentelemetry-shell_1.13.6.deb’ saved [7184/7184]"
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ca615308f6df209b"
-            },
-            {
-              "timeUnixNano": "1757583385382921472",
-              "observedTimeUnixNano": "1757583385382937533",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "--2025-09-11 09:36:25--  https://github.com/plengauer/Thoth/releases/download/v1.13.5/opentelemetry-shell_1.13.5.deb"
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ca615308f6df209b"
-            },
-            {
-              "timeUnixNano": "1757583385388460288",
-              "observedTimeUnixNano": "1757583385388475060",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "Connecting to github.com (github.com)|140.82.113.3|:443... connected."
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ca615308f6df209b"
-            },
-            {
-              "timeUnixNano": "1757583385480410880",
-              "observedTimeUnixNano": "1757583385480432309",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "HTTP request sent, awaiting response... 302 Found"
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ca615308f6df209b"
-            },
-            {
-              "timeUnixNano": "1757583385483623168",
-              "observedTimeUnixNano": "1757583385483637478",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "Location: https://release-assets.githubusercontent.com/github-production-release-asset/692042935/25d95ab9-56aa-4a77-8e84-d4947ecef0fc?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-09-11T10%3A14%3A52Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.5.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-09-11T09%3A14%3A03Z&ske=2025-09-11T10%3A14%3A52Z&sks=b&skv=2018-11-09&sig=EPjlTWDuJI5jOUPI8Wzhn5kDm4mEURCQtnZix%2BRrElU%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NzU4MzY4NSwibmJmIjoxNzU3NTgzMzg1LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.s29R5eOX7qtCgRzMCOWlWsx4TodJeSHgZ_1OHXDiCRk&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.5.deb&response-content-type=application%2Foctet-stream [following]"
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ca615308f6df209b"
-            },
-            {
-              "timeUnixNano": "1757583385485540352",
-              "observedTimeUnixNano": "1757583385485555025",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "--2025-09-11 09:36:25--  https://release-assets.githubusercontent.com/github-production-release-asset/692042935/25d95ab9-56aa-4a77-8e84-d4947ecef0fc?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-09-11T10%3A14%3A52Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.5.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-09-11T09%3A14%3A03Z&ske=2025-09-11T10%3A14%3A52Z&sks=b&skv=2018-11-09&sig=EPjlTWDuJI5jOUPI8Wzhn5kDm4mEURCQtnZix%2BRrElU%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NzU4MzY4NSwibmJmIjoxNzU3NTgzMzg1LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.s29R5eOX7qtCgRzMCOWlWsx4TodJeSHgZ_1OHXDiCRk&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.5.deb&response-content-type=application%2Foctet-stream"
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ca615308f6df209b"
-            },
-            {
-              "timeUnixNano": "1757583385491067392",
-              "observedTimeUnixNano": "1757583385491085041",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "Connecting to release-assets.githubusercontent.com (release-assets.githubusercontent.com)|185.199.110.133|:443... connected."
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ca615308f6df209b"
-            },
-            {
-              "timeUnixNano": "1757583385514427392",
-              "observedTimeUnixNano": "1757583385514445400",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "HTTP request sent, awaiting response... 200 OK"
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ca615308f6df209b"
-            },
-            {
-              "timeUnixNano": "1757583385516680704",
-              "observedTimeUnixNano": "1757583385516699698",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "Length: 7176 (7.0K) [application/octet-stream]"
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ca615308f6df209b"
-            },
-            {
-              "timeUnixNano": "1757583385521332224",
-              "observedTimeUnixNano": "1757583385521348824",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "Saving to: ‘opentelemetry-shell_1.13.5.deb’"
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ca615308f6df209b"
-            },
-            {
-              "timeUnixNano": "1757583385523365888",
-              "observedTimeUnixNano": "1757583385523381792",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "0K .......                                               100% 87.0M=0s"
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ca615308f6df209b"
-            },
-            {
-              "timeUnixNano": "1757583385525427968",
-              "observedTimeUnixNano": "1757583385525444880",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "2025-09-11 09:36:25 (87.0 MB/s) - ‘opentelemetry-shell_1.13.5.deb’ saved [7176/7176]"
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ca615308f6df209b"
-            },
-            {
-              "timeUnixNano": "1757583385527330816",
-              "observedTimeUnixNano": "1757583385527345787",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "FINISHED --2025-09-11 09:36:25--"
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ca615308f6df209b"
-            },
-            {
-              "timeUnixNano": "1757583385528285696",
-              "observedTimeUnixNano": "1757583385528300989",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "Total wall clock time: 0.5s"
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ca615308f6df209b"
-            },
-            {
-              "timeUnixNano": "1757583385529100800",
-              "observedTimeUnixNano": "1757583385529115186",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "Downloaded: 3 files, 21K in 0s (60.8 MB/s)"
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ca615308f6df209b"
-            }
-          ]
-        }
-      ]
-    }
-  ]
-}
-{
   "resourceSpans": [
     {
       "resource": {
@@ -5881,7 +6529,7 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "5.26.0"
+              "stringValue": "5.27.0"
             }
           },
           {
@@ -5905,7 +6553,7 @@
           {
             "key": "process.pid",
             "value": {
-              "intValue": "3137"
+              "intValue": "3096"
             }
           },
           {
@@ -5992,353 +6640,18 @@
         {
           "scope": {
             "name": "shell",
-            "version": "5.26.0"
+            "version": "5.27.0"
           },
           "spans": [
             {
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "ed5b528e35f8c361",
-              "parentSpanId": "821eb30f3f38ae23",
-              "flags": 768,
-              "name": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
-              "kind": 1,
-              "startTimeUnixNano": "1757583375753947648",
-              "endTimeUnixNano": "1757583384358570752",
-              "attributes": [
-                {
-                  "key": "shell.command_line",
-                  "value": {
-                    "stringValue": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}"
-                  }
-                },
-                {
-                  "key": "shell.command",
-                  "value": {
-                    "stringValue": "xargs"
-                  }
-                },
-                {
-                  "key": "shell.command.type",
-                  "value": {
-                    "stringValue": "file"
-                  }
-                },
-                {
-                  "key": "shell.command.name",
-                  "value": {
-                    "stringValue": "xargs"
-                  }
-                },
-                {
-                  "key": "subprocess.executable.path",
-                  "value": {
-                    "stringValue": "/usr/bin/xargs"
-                  }
-                },
-                {
-                  "key": "subprocess.executable.name",
-                  "value": {
-                    "stringValue": "xargs"
-                  }
-                },
-                {
-                  "key": "shell.command.exit_code",
-                  "value": {
-                    "intValue": "0"
-                  }
-                },
-                {
-                  "key": "code.filepath",
-                  "value": {
-                    "stringValue": "demo.sh"
-                  }
-                },
-                {
-                  "key": "code.lineno",
-                  "value": {
-                    "intValue": "11"
-                  }
-                }
-              ],
-              "status": {}
-            },
-            {
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "95e195557ae2c584",
-              "parentSpanId": "821eb30f3f38ae23",
-              "flags": 768,
-              "name": "jq .[].assets[].browser_download_url -r",
-              "kind": 1,
-              "startTimeUnixNano": "1757583375750403328",
-              "endTimeUnixNano": "1757583384361320192",
-              "attributes": [
-                {
-                  "key": "shell.command_line",
-                  "value": {
-                    "stringValue": "jq .[].assets[].browser_download_url -r"
-                  }
-                },
-                {
-                  "key": "shell.command",
-                  "value": {
-                    "stringValue": "jq"
-                  }
-                },
-                {
-                  "key": "shell.command.type",
-                  "value": {
-                    "stringValue": "file"
-                  }
-                },
-                {
-                  "key": "shell.command.name",
-                  "value": {
-                    "stringValue": "jq"
-                  }
-                },
-                {
-                  "key": "subprocess.executable.path",
-                  "value": {
-                    "stringValue": "/usr/bin/jq"
-                  }
-                },
-                {
-                  "key": "subprocess.executable.name",
-                  "value": {
-                    "stringValue": "jq"
-                  }
-                },
-                {
-                  "key": "shell.command.exit_code",
-                  "value": {
-                    "intValue": "0"
-                  }
-                },
-                {
-                  "key": "code.filepath",
-                  "value": {
-                    "stringValue": "demo.sh"
-                  }
-                },
-                {
-                  "key": "code.lineno",
-                  "value": {
-                    "intValue": "12"
-                  }
-                }
-              ],
-              "status": {}
-            },
-            {
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "325290e48c8b1f55",
-              "parentSpanId": "821eb30f3f38ae23",
-              "flags": 768,
-              "name": "grep .deb$",
-              "kind": 1,
-              "startTimeUnixNano": "1757583375750522880",
-              "endTimeUnixNano": "1757583384364399872",
-              "attributes": [
-                {
-                  "key": "shell.command_line",
-                  "value": {
-                    "stringValue": "grep .deb$"
-                  }
-                },
-                {
-                  "key": "shell.command",
-                  "value": {
-                    "stringValue": "grep"
-                  }
-                },
-                {
-                  "key": "shell.command.type",
-                  "value": {
-                    "stringValue": "file"
-                  }
-                },
-                {
-                  "key": "shell.command.name",
-                  "value": {
-                    "stringValue": "grep"
-                  }
-                },
-                {
-                  "key": "subprocess.executable.path",
-                  "value": {
-                    "stringValue": "/usr/bin/grep"
-                  }
-                },
-                {
-                  "key": "subprocess.executable.name",
-                  "value": {
-                    "stringValue": "grep"
-                  }
-                },
-                {
-                  "key": "shell.command.exit_code",
-                  "value": {
-                    "intValue": "0"
-                  }
-                },
-                {
-                  "key": "code.filepath",
-                  "value": {
-                    "stringValue": "demo.sh"
-                  }
-                },
-                {
-                  "key": "code.lineno",
-                  "value": {
-                    "intValue": "12"
-                  }
-                }
-              ],
-              "status": {}
-            },
-            {
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "5675ca0a8b2f8491",
-              "parentSpanId": "821eb30f3f38ae23",
-              "flags": 768,
-              "name": "head --lines=3",
-              "kind": 1,
-              "startTimeUnixNano": "1757583375753743872",
-              "endTimeUnixNano": "1757583384364488192",
-              "attributes": [
-                {
-                  "key": "shell.command_line",
-                  "value": {
-                    "stringValue": "head --lines=3"
-                  }
-                },
-                {
-                  "key": "shell.command",
-                  "value": {
-                    "stringValue": "head"
-                  }
-                },
-                {
-                  "key": "shell.command.type",
-                  "value": {
-                    "stringValue": "file"
-                  }
-                },
-                {
-                  "key": "shell.command.name",
-                  "value": {
-                    "stringValue": "head"
-                  }
-                },
-                {
-                  "key": "subprocess.executable.path",
-                  "value": {
-                    "stringValue": "/usr/bin/head"
-                  }
-                },
-                {
-                  "key": "subprocess.executable.name",
-                  "value": {
-                    "stringValue": "head"
-                  }
-                },
-                {
-                  "key": "shell.command.exit_code",
-                  "value": {
-                    "intValue": "0"
-                  }
-                },
-                {
-                  "key": "code.filepath",
-                  "value": {
-                    "stringValue": "demo.sh"
-                  }
-                },
-                {
-                  "key": "code.lineno",
-                  "value": {
-                    "intValue": "12"
-                  }
-                }
-              ],
-              "status": {}
-            },
-            {
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "f74b0ce0a737f4f0",
-              "parentSpanId": "821eb30f3f38ae23",
-              "flags": 768,
-              "name": "grep _1.",
-              "kind": 1,
-              "startTimeUnixNano": "1757583375754262016",
-              "endTimeUnixNano": "1757583384367033856",
-              "attributes": [
-                {
-                  "key": "shell.command_line",
-                  "value": {
-                    "stringValue": "grep _1."
-                  }
-                },
-                {
-                  "key": "shell.command",
-                  "value": {
-                    "stringValue": "grep"
-                  }
-                },
-                {
-                  "key": "shell.command.type",
-                  "value": {
-                    "stringValue": "file"
-                  }
-                },
-                {
-                  "key": "shell.command.name",
-                  "value": {
-                    "stringValue": "grep"
-                  }
-                },
-                {
-                  "key": "subprocess.executable.path",
-                  "value": {
-                    "stringValue": "/usr/bin/grep"
-                  }
-                },
-                {
-                  "key": "subprocess.executable.name",
-                  "value": {
-                    "stringValue": "grep"
-                  }
-                },
-                {
-                  "key": "shell.command.exit_code",
-                  "value": {
-                    "intValue": "0"
-                  }
-                },
-                {
-                  "key": "code.filepath",
-                  "value": {
-                    "stringValue": "demo.sh"
-                  }
-                },
-                {
-                  "key": "code.lineno",
-                  "value": {
-                    "intValue": "12"
-                  }
-                }
-              ],
-              "status": {}
-            },
-            {
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "e234e234a1633a05",
-              "parentSpanId": "821eb30f3f38ae23",
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "46a82307f1f23af1",
+              "parentSpanId": "972b504c035dca1e",
               "flags": 768,
               "name": "xargs wget",
               "kind": 1,
-              "startTimeUnixNano": "1757583375739050752",
-              "endTimeUnixNano": "1757583385565173248",
+              "startTimeUnixNano": "1757822440959309568",
+              "endTimeUnixNano": "1757822453436342784",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -6398,13 +6711,13 @@
               "status": {}
             },
             {
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "821eb30f3f38ae23",
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "972b504c035dca1e",
               "flags": 256,
               "name": "bash -e demo.sh",
               "kind": 2,
-              "startTimeUnixNano": "1757583375699130624",
-              "endTimeUnixNano": "1757583385565813760",
+              "startTimeUnixNano": "1757822440899488768",
+              "endTimeUnixNano": "1757822453437025024",
               "status": {}
             }
           ]
@@ -6433,7 +6746,7 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "5.26.0"
+              "stringValue": "5.27.0"
             }
           },
           {
@@ -6457,7 +6770,7 @@
           {
             "key": "process.pid",
             "value": {
-              "intValue": "3137"
+              "intValue": "3096"
             }
           },
           {
@@ -6544,426 +6857,393 @@
         {
           "scope": {
             "name": "shell",
-            "version": "5.26.0"
+            "version": "5.27.0"
           },
           "logRecords": [
             {
-              "timeUnixNano": "1757583385059581440",
-              "observedTimeUnixNano": "1757583385059617806",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "--2025-09-11 09:36:25--  https://github.com/plengauer/Thoth/releases/download/v1.13.7/opentelemetry-shell_1.13.7.deb"
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "e234e234a1633a05"
-            },
-            {
-              "timeUnixNano": "1757583385090670080",
-              "observedTimeUnixNano": "1757583385090684608",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "Resolving github.com (github.com)... 140.82.113.3"
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "e234e234a1633a05"
-            },
-            {
-              "timeUnixNano": "1757583385096174336",
-              "observedTimeUnixNano": "1757583385096189010",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "Connecting to github.com (github.com)|140.82.113.3|:443... connected."
-              },
-              "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "e234e234a1633a05"
-            },
-            {
-              "timeUnixNano": "1757583385203557888",
-              "observedTimeUnixNano": "1757583385203570718",
+              "timeUnixNano": "1757822451219002368",
+              "observedTimeUnixNano": "1757822451219029812",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "HTTP request sent, awaiting response... 302 Found"
               },
               "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "e234e234a1633a05"
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "46a82307f1f23af1"
             },
             {
-              "timeUnixNano": "1757583385207443712",
-              "observedTimeUnixNano": "1757583385207459887",
+              "timeUnixNano": "1757822451223275776",
+              "observedTimeUnixNano": "1757822451223294609",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "Location: https://release-assets.githubusercontent.com/github-production-release-asset/692042935/5544a935-3cf9-4f9b-b6ed-d668fd012e99?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-09-11T10%3A16%3A35Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.7.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-09-11T09%3A15%3A37Z&ske=2025-09-11T10%3A16%3A35Z&sks=b&skv=2018-11-09&sig=VXyKmvHEZV0g3jAurdPpe9CKlo0zOF1ztes5LfvRB5U%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NzU4MzY4NSwibmJmIjoxNzU3NTgzMzg1LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.s29R5eOX7qtCgRzMCOWlWsx4TodJeSHgZ_1OHXDiCRk&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.7.deb&response-content-type=application%2Foctet-stream [following]"
+                "stringValue": "Location: https://release-assets.githubusercontent.com/github-production-release-asset/692042935/5544a935-3cf9-4f9b-b6ed-d668fd012e99?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-09-14T04%3A37%3A15Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.7.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-09-14T03%3A36%3A23Z&ske=2025-09-14T04%3A37%3A15Z&sks=b&skv=2018-11-09&sig=AyoFNs4UWRqUO%2F%2F5kCNjaRANisYECbkCV%2BaRNWLFwCQ%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NzgyMjc1MCwibmJmIjoxNzU3ODIyNDUwLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.2wtX7ykhP1nIsfXI_xfDJrTxBIC00O3hE5uhAs9Yg0w&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.7.deb&response-content-type=application%2Foctet-stream [following]"
               },
               "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "e234e234a1633a05"
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "46a82307f1f23af1"
             },
             {
-              "timeUnixNano": "1757583385209292288",
-              "observedTimeUnixNano": "1757583385209303695",
+              "timeUnixNano": "1757822451224918528",
+              "observedTimeUnixNano": "1757822451224935946",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "--2025-09-11 09:36:25--  https://release-assets.githubusercontent.com/github-production-release-asset/692042935/5544a935-3cf9-4f9b-b6ed-d668fd012e99?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-09-11T10%3A16%3A35Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.7.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-09-11T09%3A15%3A37Z&ske=2025-09-11T10%3A16%3A35Z&sks=b&skv=2018-11-09&sig=VXyKmvHEZV0g3jAurdPpe9CKlo0zOF1ztes5LfvRB5U%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NzU4MzY4NSwibmJmIjoxNzU3NTgzMzg1LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.s29R5eOX7qtCgRzMCOWlWsx4TodJeSHgZ_1OHXDiCRk&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.7.deb&response-content-type=application%2Foctet-stream"
+                "stringValue": "--2025-09-14 04:00:50--  https://release-assets.githubusercontent.com/github-production-release-asset/692042935/5544a935-3cf9-4f9b-b6ed-d668fd012e99?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-09-14T04%3A37%3A15Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.7.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-09-14T03%3A36%3A23Z&ske=2025-09-14T04%3A37%3A15Z&sks=b&skv=2018-11-09&sig=AyoFNs4UWRqUO%2F%2F5kCNjaRANisYECbkCV%2BaRNWLFwCQ%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NzgyMjc1MCwibmJmIjoxNzU3ODIyNDUwLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.2wtX7ykhP1nIsfXI_xfDJrTxBIC00O3hE5uhAs9Yg0w&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.7.deb&response-content-type=application%2Foctet-stream"
               },
               "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "e234e234a1633a05"
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "46a82307f1f23af1"
             },
             {
-              "timeUnixNano": "1757583385214334208",
-              "observedTimeUnixNano": "1757583385214348595",
+              "timeUnixNano": "1757822451230369536",
+              "observedTimeUnixNano": "1757822451230391313",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "Resolving release-assets.githubusercontent.com (release-assets.githubusercontent.com)... 185.199.110.133, 185.199.111.133, 185.199.108.133, ..."
+                "stringValue": "Resolving release-assets.githubusercontent.com (release-assets.githubusercontent.com)... 185.199.109.133, 185.199.108.133, 185.199.110.133, ..."
               },
               "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "e234e234a1633a05"
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "46a82307f1f23af1"
             },
             {
-              "timeUnixNano": "1757583385215175936",
-              "observedTimeUnixNano": "1757583385215192591",
+              "timeUnixNano": "1757822451231342080",
+              "observedTimeUnixNano": "1757822451231359547",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "Connecting to release-assets.githubusercontent.com (release-assets.githubusercontent.com)|185.199.110.133|:443... connected."
+                "stringValue": "Connecting to release-assets.githubusercontent.com (release-assets.githubusercontent.com)|185.199.109.133|:443... connected."
               },
               "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "e234e234a1633a05"
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "46a82307f1f23af1"
             },
             {
-              "timeUnixNano": "1757583385242657792",
-              "observedTimeUnixNano": "1757583385242672132",
+              "timeUnixNano": "1757822451252852992",
+              "observedTimeUnixNano": "1757822451252871300",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "HTTP request sent, awaiting response... 200 OK"
               },
               "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "e234e234a1633a05"
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "46a82307f1f23af1"
             },
             {
-              "timeUnixNano": "1757583385244994816",
-              "observedTimeUnixNano": "1757583385245012154",
+              "timeUnixNano": "1757822451255069440",
+              "observedTimeUnixNano": "1757822451255087857",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "Length: 7202 (7.0K) [application/octet-stream]"
               },
               "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "e234e234a1633a05"
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "46a82307f1f23af1"
             },
             {
-              "timeUnixNano": "1757583385249658112",
-              "observedTimeUnixNano": "1757583385249675100",
+              "timeUnixNano": "1757822451259722752",
+              "observedTimeUnixNano": "1757822451259739518",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "Saving to: ‘opentelemetry-shell_1.13.7.deb’"
               },
               "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "e234e234a1633a05"
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "46a82307f1f23af1"
             },
             {
-              "timeUnixNano": "1757583385251396864",
-              "observedTimeUnixNano": "1757583385251412927",
+              "timeUnixNano": "1757822451261681408",
+              "observedTimeUnixNano": "1757822451261698560",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "0K .......                                               100% 38.5M=0s"
+                "stringValue": "0K .......                                               100% 74.7M=0s"
               },
               "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "e234e234a1633a05"
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "46a82307f1f23af1"
             },
             {
-              "timeUnixNano": "1757583385253793536",
-              "observedTimeUnixNano": "1757583385253808944",
+              "timeUnixNano": "1757822451263886848",
+              "observedTimeUnixNano": "1757822451263905626",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "2025-09-11 09:36:25 (38.5 MB/s) - ‘opentelemetry-shell_1.13.7.deb’ saved [7202/7202]"
+                "stringValue": "2025-09-14 04:00:51 (74.7 MB/s) - ‘opentelemetry-shell_1.13.7.deb’ saved [7202/7202]"
               },
               "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "e234e234a1633a05"
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "46a82307f1f23af1"
             },
             {
-              "timeUnixNano": "1757583385255445760",
-              "observedTimeUnixNano": "1757583385255462227",
+              "timeUnixNano": "1757822451265934592",
+              "observedTimeUnixNano": "1757822451265949561",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "--2025-09-11 09:36:25--  https://github.com/plengauer/Thoth/releases/download/v1.13.6/opentelemetry-shell_1.13.6.deb"
+                "stringValue": "--2025-09-14 04:00:51--  https://github.com/plengauer/Thoth/releases/download/v1.13.6/opentelemetry-shell_1.13.6.deb"
               },
               "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "e234e234a1633a05"
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "46a82307f1f23af1"
             },
             {
-              "timeUnixNano": "1757583385261376256",
-              "observedTimeUnixNano": "1757583385261391727",
+              "timeUnixNano": "1757822451270811904",
+              "observedTimeUnixNano": "1757822451270827484",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "Connecting to github.com (github.com)|140.82.113.3|:443... connected."
+                "stringValue": "Connecting to github.com (github.com)|140.82.112.3|:443... connected."
               },
               "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "e234e234a1633a05"
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "46a82307f1f23af1"
             },
             {
-              "timeUnixNano": "1757583385343389952",
-              "observedTimeUnixNano": "1757583385343404780",
+              "timeUnixNano": "1757822452289478656",
+              "observedTimeUnixNano": "1757822452289505372",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "HTTP request sent, awaiting response... 302 Found"
               },
               "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "e234e234a1633a05"
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "46a82307f1f23af1"
             },
             {
-              "timeUnixNano": "1757583385347725824",
-              "observedTimeUnixNano": "1757583385347741061",
+              "timeUnixNano": "1757822452293814528",
+              "observedTimeUnixNano": "1757822452293837384",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "Location: https://release-assets.githubusercontent.com/github-production-release-asset/692042935/e8091cbc-915a-4ba7-bca7-308817fe26c4?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-09-11T10%3A14%3A08Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.6.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-09-11T09%3A13%3A48Z&ske=2025-09-11T10%3A14%3A08Z&sks=b&skv=2018-11-09&sig=zKjc6Aug23nKzMTo9OtvyNNae4AiIHPvOUESRBOOt8U%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NzU4MzY4NSwibmJmIjoxNzU3NTgzMzg1LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.s29R5eOX7qtCgRzMCOWlWsx4TodJeSHgZ_1OHXDiCRk&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.6.deb&response-content-type=application%2Foctet-stream [following]"
+                "stringValue": "Location: https://release-assets.githubusercontent.com/github-production-release-asset/692042935/e8091cbc-915a-4ba7-bca7-308817fe26c4?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-09-14T04%3A42%3A55Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.6.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-09-14T03%3A42%3A04Z&ske=2025-09-14T04%3A42%3A55Z&sks=b&skv=2018-11-09&sig=UBuliu49STR6G9sfG%2Faac9c6M2%2Fqir9%2BtMCAJ9ryQ8I%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NzgyMjc1MSwibmJmIjoxNzU3ODIyNDUxLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.lsxVehDB8PoOgYhPy5rG8uDUANdHRaObv-UObEzRjDc&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.6.deb&response-content-type=application%2Foctet-stream [following]"
               },
               "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "e234e234a1633a05"
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "46a82307f1f23af1"
             },
             {
-              "timeUnixNano": "1757583385349266944",
-              "observedTimeUnixNano": "1757583385349280800",
+              "timeUnixNano": "1757822452295553280",
+              "observedTimeUnixNano": "1757822452295571413",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "--2025-09-11 09:36:25--  https://release-assets.githubusercontent.com/github-production-release-asset/692042935/e8091cbc-915a-4ba7-bca7-308817fe26c4?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-09-11T10%3A14%3A08Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.6.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-09-11T09%3A13%3A48Z&ske=2025-09-11T10%3A14%3A08Z&sks=b&skv=2018-11-09&sig=zKjc6Aug23nKzMTo9OtvyNNae4AiIHPvOUESRBOOt8U%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NzU4MzY4NSwibmJmIjoxNzU3NTgzMzg1LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.s29R5eOX7qtCgRzMCOWlWsx4TodJeSHgZ_1OHXDiCRk&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.6.deb&response-content-type=application%2Foctet-stream"
+                "stringValue": "--2025-09-14 04:00:51--  https://release-assets.githubusercontent.com/github-production-release-asset/692042935/e8091cbc-915a-4ba7-bca7-308817fe26c4?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-09-14T04%3A42%3A55Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.6.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-09-14T03%3A42%3A04Z&ske=2025-09-14T04%3A42%3A55Z&sks=b&skv=2018-11-09&sig=UBuliu49STR6G9sfG%2Faac9c6M2%2Fqir9%2BtMCAJ9ryQ8I%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NzgyMjc1MSwibmJmIjoxNzU3ODIyNDUxLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.lsxVehDB8PoOgYhPy5rG8uDUANdHRaObv-UObEzRjDc&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.6.deb&response-content-type=application%2Foctet-stream"
               },
               "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "e234e234a1633a05"
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "46a82307f1f23af1"
             },
             {
-              "timeUnixNano": "1757583385353791744",
-              "observedTimeUnixNano": "1757583385353803776",
+              "timeUnixNano": "1757822452301285120",
+              "observedTimeUnixNano": "1757822452301307394",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "Connecting to release-assets.githubusercontent.com (release-assets.githubusercontent.com)|185.199.110.133|:443... connected."
+                "stringValue": "Connecting to release-assets.githubusercontent.com (release-assets.githubusercontent.com)|185.199.109.133|:443... connected."
               },
               "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "e234e234a1633a05"
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "46a82307f1f23af1"
             },
             {
-              "timeUnixNano": "1757583385370456576",
-              "observedTimeUnixNano": "1757583385370468154",
+              "timeUnixNano": "1757822452318701824",
+              "observedTimeUnixNano": "1757822452318736816",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "HTTP request sent, awaiting response... 200 OK"
               },
               "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "e234e234a1633a05"
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "46a82307f1f23af1"
             },
             {
-              "timeUnixNano": "1757583385372859648",
-              "observedTimeUnixNano": "1757583385372871692",
+              "timeUnixNano": "1757822452321055744",
+              "observedTimeUnixNano": "1757822452321075972",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "Length: 7184 (7.0K) [application/octet-stream]"
               },
               "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "e234e234a1633a05"
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "46a82307f1f23af1"
             },
             {
-              "timeUnixNano": "1757583385377636352",
-              "observedTimeUnixNano": "1757583385377652440",
+              "timeUnixNano": "1757822452327050752",
+              "observedTimeUnixNano": "1757822452327071485",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "Saving to: ‘opentelemetry-shell_1.13.6.deb’"
               },
               "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "e234e234a1633a05"
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "46a82307f1f23af1"
             },
             {
-              "timeUnixNano": "1757583385380610816",
-              "observedTimeUnixNano": "1757583385380627712",
+              "timeUnixNano": "1757822452327708928",
+              "observedTimeUnixNano": "1757822452327724501",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "0K .......                                               100% 84.3M=0s"
+                "stringValue": "0K .......                                               100% 94.4M=0s"
               },
               "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "e234e234a1633a05"
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "46a82307f1f23af1"
             },
             {
-              "timeUnixNano": "1757583385382739968",
-              "observedTimeUnixNano": "1757583385382756355",
+              "timeUnixNano": "1757822452330069760",
+              "observedTimeUnixNano": "1757822452330089315",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "2025-09-11 09:36:25 (84.3 MB/s) - ‘opentelemetry-shell_1.13.6.deb’ saved [7184/7184]"
+                "stringValue": "2025-09-14 04:00:52 (94.4 MB/s) - ‘opentelemetry-shell_1.13.6.deb’ saved [7184/7184]"
               },
               "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "e234e234a1633a05"
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "46a82307f1f23af1"
             },
             {
-              "timeUnixNano": "1757583385384648192",
-              "observedTimeUnixNano": "1757583385384664893",
+              "timeUnixNano": "1757822452332013568",
+              "observedTimeUnixNano": "1757822452332029822",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "--2025-09-11 09:36:25--  https://github.com/plengauer/Thoth/releases/download/v1.13.5/opentelemetry-shell_1.13.5.deb"
+                "stringValue": "--2025-09-14 04:00:52--  https://github.com/plengauer/Thoth/releases/download/v1.13.5/opentelemetry-shell_1.13.5.deb"
               },
               "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "e234e234a1633a05"
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "46a82307f1f23af1"
             },
             {
-              "timeUnixNano": "1757583385389349632",
-              "observedTimeUnixNano": "1757583385389364595",
+              "timeUnixNano": "1757822452337475584",
+              "observedTimeUnixNano": "1757822452337494325",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "Connecting to github.com (github.com)|140.82.113.3|:443... connected."
+                "stringValue": "Connecting to github.com (github.com)|140.82.112.3|:443... connected."
               },
               "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "e234e234a1633a05"
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "46a82307f1f23af1"
             },
             {
-              "timeUnixNano": "1757583385481272832",
-              "observedTimeUnixNano": "1757583385481288165",
+              "timeUnixNano": "1757822453356763392",
+              "observedTimeUnixNano": "1757822453356798704",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "HTTP request sent, awaiting response... 302 Found"
               },
               "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "e234e234a1633a05"
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "46a82307f1f23af1"
             },
             {
-              "timeUnixNano": "1757583385485464832",
-              "observedTimeUnixNano": "1757583385485479573",
+              "timeUnixNano": "1757822453360755968",
+              "observedTimeUnixNano": "1757822453360769742",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "Location: https://release-assets.githubusercontent.com/github-production-release-asset/692042935/25d95ab9-56aa-4a77-8e84-d4947ecef0fc?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-09-11T10%3A14%3A52Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.5.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-09-11T09%3A14%3A03Z&ske=2025-09-11T10%3A14%3A52Z&sks=b&skv=2018-11-09&sig=EPjlTWDuJI5jOUPI8Wzhn5kDm4mEURCQtnZix%2BRrElU%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NzU4MzY4NSwibmJmIjoxNzU3NTgzMzg1LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.s29R5eOX7qtCgRzMCOWlWsx4TodJeSHgZ_1OHXDiCRk&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.5.deb&response-content-type=application%2Foctet-stream [following]"
+                "stringValue": "Location: https://release-assets.githubusercontent.com/github-production-release-asset/692042935/25d95ab9-56aa-4a77-8e84-d4947ecef0fc?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-09-14T04%3A43%3A34Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.5.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-09-14T03%3A43%3A12Z&ske=2025-09-14T04%3A43%3A34Z&sks=b&skv=2018-11-09&sig=ND%2F35LlZveYrFA3b5k2505J%2BSbo2m3yMNRIdACQ2iD8%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NzgyMjc1MiwibmJmIjoxNzU3ODIyNDUyLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.C7VgKO7qVRBkM4TvK-KIcmlEdas7Gq0tWzzAPiyGTNQ&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.5.deb&response-content-type=application%2Foctet-stream [following]"
               },
               "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "e234e234a1633a05"
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "46a82307f1f23af1"
             },
             {
-              "timeUnixNano": "1757583385486982144",
-              "observedTimeUnixNano": "1757583385486995747",
+              "timeUnixNano": "1757822453362459136",
+              "observedTimeUnixNano": "1757822453362472518",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "--2025-09-11 09:36:25--  https://release-assets.githubusercontent.com/github-production-release-asset/692042935/25d95ab9-56aa-4a77-8e84-d4947ecef0fc?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-09-11T10%3A14%3A52Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.5.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-09-11T09%3A14%3A03Z&ske=2025-09-11T10%3A14%3A52Z&sks=b&skv=2018-11-09&sig=EPjlTWDuJI5jOUPI8Wzhn5kDm4mEURCQtnZix%2BRrElU%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NzU4MzY4NSwibmJmIjoxNzU3NTgzMzg1LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.s29R5eOX7qtCgRzMCOWlWsx4TodJeSHgZ_1OHXDiCRk&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.5.deb&response-content-type=application%2Foctet-stream"
+                "stringValue": "--2025-09-14 04:00:52--  https://release-assets.githubusercontent.com/github-production-release-asset/692042935/25d95ab9-56aa-4a77-8e84-d4947ecef0fc?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-09-14T04%3A43%3A34Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.5.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-09-14T03%3A43%3A12Z&ske=2025-09-14T04%3A43%3A34Z&sks=b&skv=2018-11-09&sig=ND%2F35LlZveYrFA3b5k2505J%2BSbo2m3yMNRIdACQ2iD8%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1NzgyMjc1MiwibmJmIjoxNzU3ODIyNDUyLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.C7VgKO7qVRBkM4TvK-KIcmlEdas7Gq0tWzzAPiyGTNQ&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.5.deb&response-content-type=application%2Foctet-stream"
               },
               "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "e234e234a1633a05"
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "46a82307f1f23af1"
             },
             {
-              "timeUnixNano": "1757583385492106240",
-              "observedTimeUnixNano": "1757583385492122086",
+              "timeUnixNano": "1757822453367606528",
+              "observedTimeUnixNano": "1757822453367624625",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "Connecting to release-assets.githubusercontent.com (release-assets.githubusercontent.com)|185.199.110.133|:443... connected."
+                "stringValue": "Connecting to release-assets.githubusercontent.com (release-assets.githubusercontent.com)|185.199.109.133|:443... connected."
               },
               "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "e234e234a1633a05"
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "46a82307f1f23af1"
             },
             {
-              "timeUnixNano": "1757583385515286528",
-              "observedTimeUnixNano": "1757583385515303069",
+              "timeUnixNano": "1757822453384780544",
+              "observedTimeUnixNano": "1757822453384797287",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "HTTP request sent, awaiting response... 200 OK"
               },
               "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "e234e234a1633a05"
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "46a82307f1f23af1"
             },
             {
-              "timeUnixNano": "1757583385517723648",
-              "observedTimeUnixNano": "1757583385517736071",
+              "timeUnixNano": "1757822453387396864",
+              "observedTimeUnixNano": "1757822453387412636",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "Length: 7176 (7.0K) [application/octet-stream]"
               },
               "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "e234e234a1633a05"
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "46a82307f1f23af1"
             },
             {
-              "timeUnixNano": "1757583385522618880",
-              "observedTimeUnixNano": "1757583385522634629",
+              "timeUnixNano": "1757822453392120320",
+              "observedTimeUnixNano": "1757822453392137768",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "Saving to: ‘opentelemetry-shell_1.13.5.deb’"
               },
               "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "e234e234a1633a05"
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "46a82307f1f23af1"
             },
             {
-              "timeUnixNano": "1757583385524626688",
-              "observedTimeUnixNano": "1757583385524642336",
+              "timeUnixNano": "1757822453394201088",
+              "observedTimeUnixNano": "1757822453394218368",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "0K .......                                               100% 87.0M=0s"
+                "stringValue": "0K .......                                               100% 96.3M=0s"
               },
               "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "e234e234a1633a05"
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "46a82307f1f23af1"
             },
             {
-              "timeUnixNano": "1757583385526513920",
-              "observedTimeUnixNano": "1757583385526528883",
+              "timeUnixNano": "1757822453396289536",
+              "observedTimeUnixNano": "1757822453396304733",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "2025-09-11 09:36:25 (87.0 MB/s) - ‘opentelemetry-shell_1.13.5.deb’ saved [7176/7176]"
+                "stringValue": "2025-09-14 04:00:53 (96.3 MB/s) - ‘opentelemetry-shell_1.13.5.deb’ saved [7176/7176]"
               },
               "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "e234e234a1633a05"
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "46a82307f1f23af1"
             },
             {
-              "timeUnixNano": "1757583385528334592",
-              "observedTimeUnixNano": "1757583385528351659",
+              "timeUnixNano": "1757822453398198784",
+              "observedTimeUnixNano": "1757822453398213648",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "FINISHED --2025-09-11 09:36:25--"
+                "stringValue": "FINISHED --2025-09-14 04:00:53--"
               },
               "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "e234e234a1633a05"
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "46a82307f1f23af1"
             },
             {
-              "timeUnixNano": "1757583385529096960",
-              "observedTimeUnixNano": "1757583385529111515",
+              "timeUnixNano": "1757822453399007744",
+              "observedTimeUnixNano": "1757822453399021021",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "Total wall clock time: 0.5s"
+                "stringValue": "Total wall clock time: 3.2s"
               },
               "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "e234e234a1633a05"
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "46a82307f1f23af1"
             },
             {
-              "timeUnixNano": "1757583385529914368",
-              "observedTimeUnixNano": "1757583385529929679",
+              "timeUnixNano": "1757822453399771392",
+              "observedTimeUnixNano": "1757822453399790697",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "Downloaded: 3 files, 21K in 0s (60.8 MB/s)"
+                "stringValue": "Downloaded: 3 files, 21K in 0s (87.3 MB/s)"
               },
               "flags": 1,
-              "traceId": "87e8aa46c017bd1efb89175372abd647",
-              "spanId": "e234e234a1633a05"
+              "traceId": "2828fa57bbb6d3711d4d606bda125220",
+              "spanId": "46a82307f1f23af1"
             }
           ]
         }
