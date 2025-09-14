@@ -125,11 +125,12 @@ jobs:
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
-      - uses: plengauer/autoversion@v1.1.0
+      - uses: plengauer/autoversion@v1.2.0
         with:
           github_token: ${{ github.token }}
           path_exclude: ./
           working_directory: ./autoversion
+          dry_run: 'true'
   job-integration:
     needs: job-smoke
     runs-on: ubuntu-latest
