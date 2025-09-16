@@ -96,6 +96,7 @@ jobs:
             echo "$latest" "$name" latest
             echo "$dev" "$name" dev
           done | while read -r image os type; do
+            sudo docker pull "$image" # make sure we fail on pull if image is not available
             echo 'cat /etc/os-release | grep PRETTY >&2 && ((apt-get update && apt-get -y install /package.deb) || dnf -y install /package.rpm || yum -y install /package.rpm || zypper --non-interactive install --allow-unsigned-rpm /package.rpm || apk add --allow-untrusted /package.apk)' \
               | OTEL_SHELL_CONFIG_INJECT_DEEP=FALSE \sudo docker run --rm --network=host --mount type=bind,src="$(pwd)"/package.deb,dst=/package.deb --mount type=bind,src="$(pwd)"/package.rpm,dst=/package.rpm --mount type=bind,src="$(pwd)"/package.apk,dst=/package.apk -i "$image" >&2 \
               && echo "{\"image\":\"$image\",\"os\":\"$os\",\"type\":\"$type\"}" || true
