@@ -96,8 +96,8 @@ jobs:
           cat .github/workflows/images.json | jq ".ubuntu.oldest = \"$oldest\"" | jq ".ubuntu.stable = \"$stable\"" | jq ".ubuntu.latest = \"$latest\"" | jq ".ubuntu.dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/workflows/images.json
       - run: |
           curl -s --fail https://fedoraproject.org/releases.json > /tmp/fedora_releases.json
-          oldest="fedora:$(jq < /tmp/fedora_releases.json '.[].version' -r | sort -u | tail -n 2 | head -n 1)"
-          stable="fedora:$(jq < /tmp/fedora_releases.json '.[].version' -r | sort -u | tail -n 1)"
+          oldest="fedora:$(jq < /tmp/fedora_releases.json '.[].version' -r | cut -d ' ' -f 1 | sort -u | tail -n 2 | head -n 1)"
+          stable="fedora:$(jq < /tmp/fedora_releases.json '.[].version' -r | cut -d ' ' -f 1 | sort -u | tail -n 1)"
           latest=fedora:rawhide
           dev=fedora:rawhide
           cat .github/workflows/images.json | jq ".fedora.oldest = \"$oldest\"" | jq ".fedora.stable = \"$stable\"" | jq ".fedora.latest = \"$latest\"" | jq ".fedora.dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/workflows/images.json
