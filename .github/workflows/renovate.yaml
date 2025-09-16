@@ -84,7 +84,7 @@ jobs:
           oldest="debian:$(jq < /tmp/launchpad.debian.json '.entries[] | select(.active == true) | select(.status == "Supported") | .name' -r | head -n 2 | tail -n 1)"
           stable="debian:$(jq < /tmp/launchpad.debian.json '.entries[] | select(.active == true) | select(.status == "Supported") | .name' -r | head -n 1)"
           latest="debian:$(jq < /tmp/launchpad.debian.json '.entries[] | select(.active == true) | select(.status == "Current Stable Release") | .name' -r)"
-          dev="debian:$(jq < /tmp/launchpad.debian.json '.entries[] | select(.active == true) | select(.status == "Active Development") | .name' -r | head -n 1)"
+          dev="debian:$(jq < /tmp/launchpad.debian.json '.entries[] | select(.active == true) | select(.status == "Active Development" or .status == "Pre-release Freeze") | .name' -r | head -n 1)"
           cat .github/workflows/images.json | jq ".debian.oldest = \"$oldest\"" | jq ".debian.stable = \"$stable\"" | jq ".debian.latest = \"$latest\"" | jq ".debian.dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/workflows/images.json
           cat .github/workflows/images.json | jq ".\"debian-slim\".oldest = \"$oldest-slim\"" | jq ".\"debian-slim\".stable = \"$stable-slim\"" | jq ".\"debian-slim\".latest = \"$latest-slim\"" | jq ".\"debian-slim\".dev = \"$dev-slim\"" > /tmp/images.json && cat < /tmp/images.json > .github/workflows/images.json
       - run: |
@@ -92,7 +92,7 @@ jobs:
           oldest="ubuntu:$(jq < /tmp/launchpad.ubuntu.json '.entries[] | select(.active == true) | select(.status == "Supported") | .name' -r | head -n 2 | tail -n 1)"
           stable="ubuntu:$(jq < /tmp/launchpad.ubuntu.json '.entries[] | select(.active == true) | select(.status == "Supported") | .name' -r | head -n 1)"
           latest="ubuntu:$(jq < /tmp/launchpad.ubuntu.json '.entries[] | select(.active == true) | select(.status == "Current Stable Release") | .name' -r)"
-          dev="ubuntu:$(jq < /tmp/launchpad.ubuntu.json '.entries[] | select(.active == true) | select(.status == "Active Development") | .name' -r | head -n 1)"
+          dev="ubuntu:$(jq < /tmp/launchpad.ubuntu.json '.entries[] | select(.active == true) | select(.status == "Active Development" or .status == "Pre-release Freeze") | .name' -r | head -n 1)"
           cat .github/workflows/images.json | jq ".ubuntu.oldest = \"$oldest\"" | jq ".ubuntu.stable = \"$stable\"" | jq ".ubuntu.latest = \"$latest\"" | jq ".ubuntu.dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/workflows/images.json
       - run: |
           curl -s --fail https://fedoraproject.org/releases.json > /tmp/fedora_releases.json
