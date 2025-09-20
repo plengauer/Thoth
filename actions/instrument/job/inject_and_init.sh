@@ -30,7 +30,7 @@ action_tag_name="$(echo "$GITHUB_ACTION_REF" | cut -sd @ -f 2-)"
 if [ -z "$action_tag_name" ]; then action_tag_name="v$(cat ../../../VERSION)"; fi
 if [ "$INPUT_CACHE" = "true" ]; then
   cache_key="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} $({ cat /etc/os-release; python3 --version || true; node --version || true; printenv | grep -E '^OTEL_SHELL_CONFIG_INSTALL_' || true; } | md5sum | cut -d ' ' -f 1)"
-  sudo -E -H eatmydata node -e "require('@actions/cache').restoreCache(['/var/cache/apt/archives/*.deb', '$HOME/.cache/pip', '/opt/opentelemetry_shell/collector.image'], '$cache_key');"
+  sudo -E -H eatmydata node -e "require('@actions/cache').restoreCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip', '/opt/opentelemetry_shell/collector.image'], '$cache_key');"
   [ "$(find /var/cache/apt/archives/ -name '*.deb' | wc -l)" -gt 0 ] && [ -r /opt/opentelemetry_shell/collector.image ] || write_back_cache=TRUE
   if ! type otel.sh &&  [ -r /var/cache/apt/archives/opentelemetry-shell*.deb ]; then # fast track install, what could possibly go wrong
     control_dir="$(mktemp -d)"
@@ -51,7 +51,7 @@ else
   sudo docker pull "$OTEL_SHELL_COLLECTOR_IMAGE"
 fi
 if [ "${write_back_cache:-FALSE}" = TRUE ] && [ -n "${cache_key:-}" ]; then
-  sudo docker save "$OTEL_SHELL_COLLECTOR_IMAGE" | sudo tee /opt/opentelemetry_shell/collector.image > /dev/null && sudo -E -H node -e "require('@actions/cache').saveCache(['/var/cache/apt/archives/*.deb', '$HOME/.cache/pip', '/opt/opentelemetry_shell/collector.image'], '$cache_key');" &
+  sudo docker save "$OTEL_SHELL_COLLECTOR_IMAGE" | sudo tee /opt/opentelemetry_shell/collector.image > /dev/null && sudo -E -H node -e "require('@actions/cache').saveCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip', '/opt/opentelemetry_shell/collector.image'], '$cache_key');" &
 fi
 
 # configure collector if required
