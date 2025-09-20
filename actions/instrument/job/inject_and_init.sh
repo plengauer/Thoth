@@ -327,15 +327,13 @@ root4job_end() {
   
   if [ -n "${OTEL_SHELL_COLLECTOR_CONTAINER:-}" ]; then
     sudo docker stop "$OTEL_SHELL_COLLECTOR_CONTAINER"
-    if [ -n "$INPUT_DEBUG" ]; then
-      sudo docker logs "$OTEL_SHELL_COLLECTOR_CONTAINER"
-    fi
-    sudo docker logs "$OTEL_SHELL_COLLECTOR_CONTAINER" 2>&1 | tr '\t' ' ' | cut -d ' ' -f 2- | grep '^warn ' | cut -d ' ' -f 2- | sort -u | while read -r line; do
-      echo ::warning::"$line"
-    done
-    sudo docker logs "$OTEL_SHELL_COLLECTOR_CONTAINER" 2>&1 | tr '\t' ' ' | cut -d ' ' -f 2- | grep '^err '  | cut -d ' ' -f 2- | sort -u | while read -r line; do
-      echo ::error::"$line"
-    done
+    local collector_pipe_warning="$(mktemp -u)"
+    local collector_pipe_error="$(mktemp -u)"
+    mkfifo "$collector_pipe_warning" "$collector_pipe_error"
+    cat "$collector_pipe_warning" | grep '^warn ' | cut -d ' ' -f 2- | sort -u | while read -r line; do echo ::warning::"$line"; done &
+    cat "$collector_pipe_error" | grep '^err ' | cut -d ' ' -f 2- | sort -u | while read -r line; do echo ::error::"$line"; done &
+    sudo docker logs "$OTEL_SHELL_COLLECTOR_CONTAINER" 2>&1 | tr '\t' ' ' | cut -d ' ' -f 2- | tee "$collector_pipe_warning" | tee "$collector_pipe_error" | { [ -n "$INPUT_DEBUG" ]; then cat; else cat > /dev/null; fi; }
+    wait
   fi
   exit 0
 }
