@@ -57,7 +57,6 @@ fi
 
 # configure collector if required
 backup_otel_exporter_otlp_traces_endpoint="${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT:-}}"
-if ! type docker; then echo "::error ::Cannot use collector because docker is unavailable." && false; fi
 section_exporter_logs="$(mktemp)"; section_exporter_metrics="$(mktemp)"; section_exporter_traces="$(mktemp)"
 section_pipeline_logs="$(mktemp)"; section_pipeline_metrics="$(mktemp)"; section_pipeline_traces="$(mktemp)"
 if [ "${OTEL_LOGS_EXPORTER:-otlp}" = otlp ]; then
