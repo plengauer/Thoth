@@ -10,9 +10,6 @@ inputs:
   cache:
     description: 'Whether to use GitHub Actions Cache to cache dependencies'
     default: true
-  collector:
-    description: 'Whether to use a collector to process data before leaving a job runner. It is used to buffer data and to redact GitHub secrets. Disabling the collector will disable these features.'
-    default: auto
   secrets_to_redact:
     description: 'A JSON object containing all secrets to redact from any attribute.'
     default: '{ "github_token": "${{ github.token }}" }'
