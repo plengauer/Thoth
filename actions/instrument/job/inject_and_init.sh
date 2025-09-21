@@ -62,18 +62,18 @@ section_pipeline_logs="$(mktemp)"; section_pipeline_metrics="$(mktemp)"; section
 if [ "${OTEL_LOGS_EXPORTER:-otlp}" = otlp ]; then
   if [ "${OTEL_EXPORTER_OTLP_LOGS_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/protobuf ] || [ "${OTEL_EXPORTER_OTLP_LOGS_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/json ]; then collector_exporter=otlphttp; else collector_exporter=otlp; fi
   cat > "$section_exporter_logs" <<EOF
-$collector_exporter/logs:
-  endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:-${OTEL_EXPORTER_OTLP_LOGS_ENDPOINT%/v1/logs}}
-  $([ -z "${OTEL_EXPORTER_OTLP_LOGS_ENDPOINT:-}" ] || echo "logs_endpoint: $OTEL_EXPORTER_OTLP_LOGS_ENDPOINT")
-  headers:
-$(echo "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_LOGS_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /g' | sed 's/^/      /g')
-$([ "${OTEL_EXPORTER_OTLP_LOGS_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/json ] && echo '    encoding: json' || true)
+  $collector_exporter/logs:
+    endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:-${OTEL_EXPORTER_OTLP_LOGS_ENDPOINT%/v1/logs}}
+    $([ -z "${OTEL_EXPORTER_OTLP_LOGS_ENDPOINT:-}" ] || echo "logs_endpoint: $OTEL_EXPORTER_OTLP_LOGS_ENDPOINT")
+    headers:
+  $(echo "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_LOGS_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /g' | sed 's/^/      /g')
+  $([ "${OTEL_EXPORTER_OTLP_LOGS_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/json ] && echo '    encoding: json' || true)
 EOF
   cat > "$section_pipeline_logs" <<EOF
-  logs:
-    receivers: [otlp]
-    exporters: [$collector_exporter/logs]
-    processors: [transform, batch]
+    logs:
+      receivers: [otlp]
+      exporters: [$collector_exporter/logs]
+      processors: [transform, batch]
 EOF
   unset OTEL_EXPORTER_OTLP_LOGS_HEADERS
   export OTEL_LOGS_EXPORTER=otlp
@@ -83,18 +83,18 @@ fi
 if [ "${OTEL_METRICS_EXPORTER:-otlp}" = otlp ]; then
   if [ "${OTEL_EXPORTER_OTLP_METRICS_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/protobuf ] || [ "${OTEL_EXPORTER_OTLP_METRICS_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/json ]; then collector_exporter=otlphttp; else collector_exporter=otlp; fi
   cat > "$section_exporter_metrics" <<EOF
-$collector_exporter/metrics:
-  endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:-${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT%/v1/metrics}}
-  $([ -z "${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT:-}" ] || echo "metrics_endpoint: $OTEL_EXPORTER_OTLP_METRICS_ENDPOINT")
-  headers:
-$(echo "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_METRICS_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /g' | sed 's/^/      /g')
-$([ "${OTEL_EXPORTER_OTLP_METRICS_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/json ] && echo '    encoding: json' || true)
+  $collector_exporter/metrics:
+    endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:-${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT%/v1/metrics}}
+    $([ -z "${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT:-}" ] || echo "metrics_endpoint: $OTEL_EXPORTER_OTLP_METRICS_ENDPOINT")
+    headers:
+  $(echo "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_METRICS_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /g' | sed 's/^/      /g')
+  $([ "${OTEL_EXPORTER_OTLP_METRICS_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/json ] && echo '    encoding: json' || true)
 EOF
   cat > "$section_pipeline_metrics" <<EOF
-  metrics:
-    receivers: [otlp]
-    exporters: [$collector_exporter/metrics]
-    processors: [transform, batch]
+    metrics:
+      receivers: [otlp]
+      exporters: [$collector_exporter/metrics]
+      processors: [transform, batch]
 EOF
   unset OTEL_EXPORTER_OTLP_METRICS_HEADERS
   export OTEL_METRICS_EXPORTER=otlp
@@ -104,18 +104,18 @@ fi
 if [ "${OTEL_TRACES_EXPORTER:-otlp}" = otlp ]; then
   if [ "${OTEL_EXPORTER_OTLP_TRACES_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/protobuf ] || [ "${OTEL_EXPORTER_OTLP_TRACES_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/json ]; then collector_exporter=otlphttp; else collector_exporter=otlp; fi
   cat > "$section_exporter_traces" <<EOF
-$collector_exporter/traces:
-  endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:-${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT%/v1/traces}}
-  $([ -z "${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-}" ] || echo "traces_endpoint: $OTEL_EXPORTER_OTLP_TRACES_ENDPOINT")
-  headers:
-$(echo "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_TRACES_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /g' | sed 's/^/      /g')
-$([ "${OTEL_EXPORTER_OTLP_TRACES_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/json ] && echo '    encoding: json' || true)
+  $collector_exporter/traces:
+    endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:-${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT%/v1/traces}}
+    $([ -z "${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-}" ] || echo "traces_endpoint: $OTEL_EXPORTER_OTLP_TRACES_ENDPOINT")
+    headers:
+  $(echo "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_TRACES_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /g' | sed 's/^/      /g')
+  $([ "${OTEL_EXPORTER_OTLP_TRACES_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/json ] && echo '    encoding: json' || true)
 EOF
   cat > "$section_pipeline_traces" <<EOF
-  traces:
-    receivers: [otlp]
-    exporters: [$collector_exporter/traces]
-    processors: [transform, batch]
+    traces:
+      receivers: [otlp]
+      exporters: [$collector_exporter/traces]
+      processors: [transform, batch]
 EOF
   unset OTEL_EXPORTER_OTLP_TRACES_HEADERS
   export OTEL_TRACES_EXPORTER=otlp
@@ -125,28 +125,28 @@ fi
 unset OTEL_EXPORTER_OTLP_HEADERS OTEL_EXPORTER_OTLP_ENDPOINT
 cat > collector.yaml <<EOF
 receivers:
-otlp:
-  protocols:
-    http:
-      endpoint: localhost:4318
+  otlp:
+    protocols:
+      http:
+        endpoint: localhost:4318
 exporters:
 $(cat $section_exporter_logs)
 $(cat $section_exporter_metrics)
 $(cat $section_exporter_traces)
 processors:
-batch:
-transform:
-  error_mode: ignore
-  log_statements:
+  batch:
+  transform:
+    error_mode: ignore
+    log_statements:
 $(echo "$INPUT_SECRETS_TO_REDACT" | jq -r '. | to_entries[].value' | sed 's/[.[\(*^$+?{|]/\\\\&/g' | xargs -d '\n' -I '{}' printf '%s\n' 'replace_all_patterns(log.attributes, "value", "{}", "***")' | sed 's/^/      - /g')
 $(echo "$INPUT_SECRETS_TO_REDACT" | jq -r '. | to_entries[].value' | sed 's/[.[\(*^$+?{|]/\\\\&/g' | xargs -d '\n' -I '{}' printf '%s\n' 'replace_pattern(log.body, "{}", "***")' | sed 's/^/      - /g')
-  metric_statements:
+    metric_statements:
 $(echo "$INPUT_SECRETS_TO_REDACT" | jq -r '. | to_entries[].value' | sed 's/[.[\(*^$+?{|]/\\\\&/g' | xargs -d '\n' -I '{}' printf '%s\n' 'replace_all_patterns(datapoint.attributes, "value", "{}", "***")' | sed 's/^/      - /g')
-  trace_statements:
+    trace_statements:
 $(echo "$INPUT_SECRETS_TO_REDACT" | jq -r '. | to_entries[].value' | sed 's/[.[\(*^$+?{|]/\\\\&/g' | xargs -d '\n' -I '{}' printf '%s\n' 'replace_all_patterns(span.attributes, "value", "{}", "***")' | sed 's/^/      - /g')
 $(echo "$INPUT_SECRETS_TO_REDACT" | jq -r '. | to_entries[].value' | sed 's/[.[\(*^$+?{|]/\\\\&/g' | xargs -d '\n' -I '{}' printf '%s\n' 'replace_pattern(span.name, "{}", "***")' | sed 's/^/      - /g')
 service:
-pipelines:
+  pipelines:
 $(cat $section_pipeline_logs)
 $(cat $section_pipeline_metrics)
 $(cat $section_pipeline_traces)
