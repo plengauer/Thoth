@@ -19,7 +19,7 @@ inputs:
     default: ''
   workflow_level_instrumentation_use_container:
     description: 'Use a container image to avoid repeated installation on every run.'
-    default: false
+    default: true
   job_level_instrumentation_exclude:
     description: 'Comma-separated list of workflow names to exclude from job-level instrumentation.'
     default: ''
