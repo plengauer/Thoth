@@ -428,7 +428,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.25.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.27.0
         with:
           secrets_to_redact: '["${{ github.token }}"]'
         env:
