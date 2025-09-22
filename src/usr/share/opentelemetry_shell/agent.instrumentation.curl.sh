@@ -82,8 +82,11 @@ _otel_pipe_curl_stderr() {
       local ip="$(\printf '%s' "$line" | \cut -d ' ' -f 6 | \tr -d '()')"
       local port="$(\printf '%s' "$line" | \cut -d ' ' -f 8 | \tr -d '()')"
     fi
-    if \[ -n "$span_handle" ] && _otel_string_starts_with "$line" "* processing: "; then otel_span_end "$span_handle"; local span_handle=""; fi
+    if \[ -n "$span_handle" ] && _otel_string_starts_with "$line" "* shutting down connection "; then otel_span_end "$span_handle"; local span_handle=""; fi
+    if \[ -n "$span_handle" ] && _otel_string_starts_with "$line" "* closing connection "; then otel_span_end "$span_handle"; local span_handle=""; fi
+    if \[ -n "$span_handle" ] && _otel_string_starts_with "$line" "* Connection " && _otel_string_ends_with "$line" " left intact"; then otel_span_end "$span_handle"; local span_handle=""; fi
     if \[ -n "$span_handle" ] && _otel_string_starts_with "$line" "* Connected to "; then otel_span_end "$span_handle"; local span_handle=""; fi
+    if \[ -n "$span_handle" ] && _otel_string_starts_with "$line" "* processing: "; then otel_span_end "$span_handle"; local span_handle=""; fi
     if \[ -n "$span_handle" ] && \[ "$is_receiving" = 1 ] && _otel_string_starts_with "$line" "> "; then otel_span_end "$span_handle"; local span_handle=""; fi
     if \[ -z "$span_handle" ] && \[ -n "$host" ] && \[ -n "$ip" ] && \[ -n "$port" ] && _otel_string_starts_with "$line" "> " && \[ "$is_receiving" = 1 ]; then
       local is_receiving=0
