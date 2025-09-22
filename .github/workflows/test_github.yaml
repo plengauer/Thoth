@@ -251,7 +251,6 @@ jobs:
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
-          collector: auto
           secrets_to_redact: '{"github.token": "${{ github.token }}", "url": "https://example.com/foo/bar", "regex": "[a-zA-Z]*"}'
         env:
           OTEL_LOGS_EXPORTER: otlp
@@ -274,7 +273,6 @@ jobs:
     timeout-minutes: 60
     strategy:
       matrix:
-        collector: ['false', 'true', 'auto']
         exporter_logs: ['otlp', 'console']
         exporter_metrics: ['otlp', 'console']
         exporter_traces: ['otlp', 'console']
@@ -293,7 +291,6 @@ jobs:
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
-          collector: ${{ matrix.collector }}
           secrets_to_redact: '{"github.token": "${{ github.token }}", "url": "https://example.com/foo/bar", "regex": "[a-zA-Z]*"}'
         env:
           OTEL_LOGS_EXPORTER: ${{ matrix.exporter_logs }}
