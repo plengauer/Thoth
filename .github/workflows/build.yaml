@@ -611,9 +611,9 @@ jobs:
       - run: |
           cp package.deb actions/instrument/workflow
           pushd actions/instrument/workflow
-          sudo docker build --build-arg=repository="$GITHUB_REPOSITORY" --network host --tag opentelemetry-github-workflow .
+          sudo docker build --build-arg=repository="$GITHUB_REPOSITORY" --network host --tag opentelemetry-github-workflow-instrumentation-runner .
           popd
-          sudo docker save opentelemetry-github-workflow > opentelemetry-github-workflow.image
+          sudo docker save opentelemetry-github-workflow-instrumentation-runner > opentelemetry-github-workflow-instrumentation-runner.image
           rm actions/instrument/workflow/package.deb
       - uses: actions/upload-artifact@v4.6.2
         with:
