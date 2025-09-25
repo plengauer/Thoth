@@ -155,19 +155,19 @@ jobs:
           RENOVATE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RENOVATE_REPOSITORIES: ${{ github.repository }}
           LOG_LEVEL: debug
-      - uses: github/codeql-action/init@v3.30.3 # node action will call java will call node
+      - uses: github/codeql-action/init@v3.30.4 # node action will call java will call node
         with:
           languages: javascript-typescript
           build-mode: none
-      - uses: github/codeql-action/analyze@v3.30.3 # node action will call java will call node
+      - uses: github/codeql-action/analyze@v3.30.4 # node action will call java will call node
         with:
           category: "/language:javascript-typescript"
           upload: never
-      - uses: github/codeql-action/init@v3.30.3
+      - uses: github/codeql-action/init@v3.30.4
         with:
           languages: python
           build-mode: none
-      - uses: github/codeql-action/analyze@v3.30.3 # node action will call java will call python
+      - uses: github/codeql-action/analyze@v3.30.4 # node action will call java will call python
         with:
           category: "/language:python"
           upload: never
