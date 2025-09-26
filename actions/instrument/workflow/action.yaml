@@ -29,5 +29,5 @@ inputs:
     description: 'INTERNAL ONLY - DO NOT SET MANUALLY' # 'Set OTEL_GITHUB_KILL_SWITCH variable for the repository or organization to any non-empty value to disable all monitoring in case of an emergency. DO NOT SET MANUALLY.'
     default: '' # '${{ vars.OTEL_GITHUB_KILL_SWITCH }}'
 runs:
-  using: 'node20'
+  using: 'node24'
   main: 'main.js'
