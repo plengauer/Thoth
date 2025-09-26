@@ -32,7 +32,7 @@ inputs:
     description: 'INTERNAL ONLY - DO NOT SET MANUALLY'
     default: '${{ toJSON(matrix) }}'
 runs:
-  using: 'node20'
+  using: 'node24'
   pre: 'inject_and_init.js'
   main: 'nop.js'
   post: 'shutdown.js'
