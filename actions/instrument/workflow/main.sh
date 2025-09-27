@@ -197,17 +197,20 @@ jq < "$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .s
   otel_span_end "$job_span_handle" @"$job_completed_at"
 
 done | sed 's/\t/ /g' | while read -r TRACEPARENT job_id step_number step_conclusion step_started_at step_completed_at step_name; do
+  echo DEBUG 0 "$TRACEPARENT $job_id $step_number $step_conclusion $step_started_at $step_completed_at $step_name" >&2
   set -x
   if [ "$step_conclusion" = skipped ]; then continue; fi
   job_name="$(jq < "$jobs_json" -r '. | select(.id == '"$job_id"') | .name')"
   if [ -r "$times_dir"/"$TRACEPARENT" ]; then
     previous_step_completed_at="$(cat "$times_dir"/"$TRACEPARENT")"
-    if [ "$previous_step_completed_at" > "$step_started_at" ]; then step_started_at="$previous_step_completed_at"; fi
-    if [ "$step_started_at" > "$step_completed_at" ]; then step_completed_at="$step_started_at"; fi
+    if [ "$previous_step_completed_at" '>' "$step_started_at" ]; then step_started_at="$previous_step_completed_at"; fi
+    if [ "$step_started_at" '>' "$step_completed_at" ]; then step_completed_at="$step_started_at"; fi
   fi
   step_log_file="$(printf '%s' "${job_name//\//_}"/"$step_number"_ | tr -d ':')"
   last_log_timestamp="$(read_log_file "$step_log_file" | tail -n 1 | cut -d ' ' -f 1 || true)"
   if [ -n "$last_log_timestamp" ] && [ "$last_log_timestamp" > "$step_completed_at" ]; then step_completed_at="$last_log_timestamp"; fi
+  set +x
+  echo DEBUG 1 "$TRACEPARENT $job_id $step_number $step_conclusion $step_started_at $step_completed_at $step_name" >&2
 
   action_name="$step_name"
   case "$action_name" in
