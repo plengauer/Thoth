@@ -422,6 +422,22 @@ jobs:
           OTEL_LOGS_EXPORTER: console
           OTEL_TRACES_EXPORTER: console
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
+  workflow-experiment:
+    needs: workflow-smoke
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v5.0.0
+      - uses: ./actions/instrument/workflow
+        with:
+          debug: 1
+          workflow_run_id: 17994277562
+          workflow_run_attempt: 2
+          self_monitoring: auto
+          self_monitoring_anonymize: true
+          cache: false
   workflow:
     needs: workflow-smoke
     runs-on: ubuntu-latest
