@@ -197,6 +197,7 @@ jq < "$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .s
   otel_span_end "$job_span_handle" @"$job_completed_at"
 
 done | sed 's/\t/ /g' | while read -r TRACEPARENT job_id step_number step_conclusion step_started_at step_completed_at step_name; do
+  set -x
   if [ "$step_conclusion" = skipped ]; then continue; fi
   job_name="$(jq < "$jobs_json" -r '. | select(.id == '"$job_id"') | .name')"
   if [ -r "$times_dir"/"$TRACEPARENT" ]; then
