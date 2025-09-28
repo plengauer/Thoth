@@ -246,6 +246,9 @@ def handle(scope, version, command, arguments):
             opentelemetry._logs.set_logger_provider(logger_provider)
 
     elif command == 'SHUTDOWN':
+        if not auto_end:
+            for span in spans.values():
+                console.log("DEBUG DEBUG DEBUG still active span: " + span.name)
         if auto_end:
             for span in spans.values():
                 span.end()
