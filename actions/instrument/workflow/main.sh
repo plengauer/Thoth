@@ -155,7 +155,7 @@ jq < "$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .s
   if [ "$job_started_at" '<' "$workflow_started_at" ] || jq < "$artifacts_json" -r .name | grep -q '^opentelemetry_job_'"$job_id"'$'; then continue; fi
   job_log_file="$(printf '%s' "${job_name//\//_}" | tr -d ':')"
   last_log_timestamp="$(read_log_file "$job_log_file" | tail -n 1 | cut -d ' ' -f 1 || true)"
-  if [ -n "$last_log_timestamp" ] && [ "$last_log_timestamp" > "$job_completed_at" ]; then job_completed_at="$last_log_timestamp"; fi
+  if [ -n "$last_log_timestamp" ] && [ "$last_log_timestamp" '>' "$job_completed_at" ]; then job_completed_at="$last_log_timestamp"; fi
   
   observation_handle="$(otel_observation_create 1)"
   otel_observation_attribute_typed "$observation_handle" string github.actions.workflow.name="$(jq < "$workflow_json" -r .name)"
@@ -197,7 +197,6 @@ jq < "$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .s
   otel_span_end "$job_span_handle" @"$job_completed_at"
 
 done | sed 's/\t/ /g' | while read -r TRACEPARENT job_id step_number step_conclusion step_started_at step_completed_at step_name; do
-  set -x
   if [ "$step_conclusion" = skipped ]; then continue; fi
   if [ "$step_started_at" = null ]; then continue; fi; 
   if [ "$step_completed_at" = null ]; then step_completed_at="$step_started_at"; fi
@@ -209,8 +208,7 @@ done | sed 's/\t/ /g' | while read -r TRACEPARENT job_id step_number step_conclu
   job_name="$(jq < "$jobs_json" -r '. | select(.id == '"$job_id"') | .name')"
   step_log_file="$(printf '%s' "${job_name//\//_}"/"$step_number"_ | tr -d ':')"
   last_log_timestamp="$(read_log_file "$step_log_file" | tail -n 1 | cut -d ' ' -f 1 || true)"
-  if [ -n "$last_log_timestamp" ] && [ "$last_log_timestamp" > "$step_completed_at" ]; then step_completed_at="$last_log_timestamp"; fi
-  set +x
+  if [ -n "$last_log_timestamp" ] && [ "$last_log_timestamp" '>' "$step_completed_at" ]; then step_completed_at="$last_log_timestamp"; fi
 
   action_name="$step_name"
   case "$action_name" in
