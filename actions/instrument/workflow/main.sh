@@ -191,7 +191,7 @@ jq < "$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .s
   otel_span_attribute_typed "$job_span_handle" string github.actions.job.conclusion="$job_conclusion"
   otel_span_activate "$job_span_handle"
   [ -z "${INPUT_DEBUG}" ] || echo "span job $TRACEPARENT $job_name" >&2
-  jq < "$jobs_json" -r --unbuffered '. | select(.id == '"$job_id"') | .steps[] | ["'"$TRACEPARENT"'", "'"$job_id"'", .number, .conclusion, .started_at, if .completed_at == null or .completed_at == "" then "null" else .completed_at end, .name] | @tsv'
+  jq < "$jobs_json" -r --unbuffered '. | select(.id == '"$job_id"') | .steps[] | ["'"$TRACEPARENT"'", "'"$job_id"'", .number, .conclusion, if .started_at == null or .started_at == "" then "null" else .started_at end, if .completed_at == null or .completed_at == "" then "null" else .completed_at end, .name] | @tsv'
   otel_span_deactivate "$job_span_handle"
   if [ "$job_conclusion" = failure ]; then otel_span_error "$job_span_handle"; fi
   otel_span_end "$job_span_handle" @"$job_completed_at"
@@ -199,13 +199,14 @@ jq < "$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .s
 done | sed 's/\t/ /g' | while read -r TRACEPARENT job_id step_number step_conclusion step_started_at step_completed_at step_name; do
   set -x
   if [ "$step_conclusion" = skipped ]; then continue; fi
-  job_name="$(jq < "$jobs_json" -r '. | select(.id == '"$job_id"') | .name')"
+  if [ "$step_started_at" = null ]; then continue; fi; 
   if [ "$step_completed_at" = null ]; then step_completed_at="$step_started_at"; fi
   if [ -r "$times_dir"/"$TRACEPARENT" ]; then
     previous_step_completed_at="$(cat "$times_dir"/"$TRACEPARENT")"
     if [ "$previous_step_completed_at" '>' "$step_started_at" ]; then step_started_at="$previous_step_completed_at"; fi
     if [ "$step_started_at" '>' "$step_completed_at" ]; then step_completed_at="$step_started_at"; fi
   fi
+  job_name="$(jq < "$jobs_json" -r '. | select(.id == '"$job_id"') | .name')"
   step_log_file="$(printf '%s' "${job_name//\//_}"/"$step_number"_ | tr -d ':')"
   last_log_timestamp="$(read_log_file "$step_log_file" | tail -n 1 | cut -d ' ' -f 1 || true)"
   if [ -n "$last_log_timestamp" ] && [ "$last_log_timestamp" > "$step_completed_at" ]; then step_completed_at="$last_log_timestamp"; fi
