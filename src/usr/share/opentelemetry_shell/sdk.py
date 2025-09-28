@@ -248,7 +248,7 @@ def handle(scope, version, command, arguments):
     elif command == 'SHUTDOWN':
         if not auto_end:
             for span in spans.values():
-                console.log("DEBUG DEBUG DEBUG still active span: " + span.name)
+                print("DEBUG DEBUG DEBUG still active span: " + span.name, file=sys.stderr)
         if auto_end:
             for span in spans.values():
                 span.end()
