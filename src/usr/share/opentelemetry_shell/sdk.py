@@ -13,6 +13,8 @@ import opentelemetry
 from opentelemetry.sdk.resources import Resource, ResourceDetector, OTELResourceDetector, OsResourceDetector, get_aggregated_resources
 from opentelemetry_resourcedetector_docker import DockerResourceDetector
 from opentelemetry_resourcedetector_kubernetes import KubernetesResourceDetector
+from opentelemetry.resource.detector.azure.app_service import AzureAppServiceResourceDetector
+from opentelemetry.resource.detector.azure.vm import AzureVMResourceDetector
 
 from opentelemetry.trace import SpanKind
 from opentelemetry.sdk.trace import Span, StatusCode, TracerProvider, sampling, id_generator
@@ -166,6 +168,8 @@ def handle(scope, version, command, arguments):
         resource[key] = convert_type(type, value)
     elif command == 'INIT':
         final_resources = get_aggregated_resources([
+                AzureAppServiceResourceDetector(),
+                AzureVMResourceDetector(),
                 AwsEC2ResourceDetector(),
                 OracleResourceDetector(),
                 KubernetesResourceDetector(),
