@@ -49,12 +49,11 @@ const sdk = new opentelemetry_sdk.NodeSDK({
   resourceDetectors: [
     opentelemetry_resources_alibaba_cloud.alibabaCloudEcsDetector,
     opentelemetry_resources_azure.azureAppServiceDetector,
-    // opentelemetry_resources_gcp.gcpDetector, // TODO makes noisy spans!
+    opentelemetry_resources_gcp.gcpDetector,
     opentelemetry_resources_aws.awsBeanstalkDetector,
     opentelemetry_resources_aws.awsEc2Detector,
     opentelemetry_resources_aws.awsEcsDetector,
     opentelemetry_resources_aws.awsEksDetector,
-    // TODO k8s detector
     opentelemetry_resources_container.containerDetector,
     opentelemetry_resources_git.gitSyncDetector,
     opentelemetry_resources_github.gitHubDetector,
