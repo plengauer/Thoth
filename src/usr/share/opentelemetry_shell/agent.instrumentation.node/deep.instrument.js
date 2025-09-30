@@ -6,6 +6,7 @@ const opentelemetry_resources_git = require('opentelemetry-resource-detector-git
 const opentelemetry_resources_github = require('@opentelemetry/resource-detector-github');
 const opentelemetry_resources_container = require('@opentelemetry/resource-detector-container');
 const opentelemetry_resources_aws = require('@opentelemetry/resource-detector-aws');
+const opentelemetry_resources_azure = require('@opentelemetry/resource-detector-azure');
 const opentelemetry_resources_gcp = require('@opentelemetry/resource-detector-gcp');
 const opentelemetry_resources_alibaba_cloud = require('@opentelemetry/resource-detector-alibaba-cloud');
 const context_async_hooks = require("@opentelemetry/context-async-hooks");
@@ -47,12 +48,14 @@ const sdk = new opentelemetry_sdk.NodeSDK({
   instrumentations: [ opentelemetry_auto_instrumentations.getNodeAutoInstrumentations() ],
   resourceDetectors: [
     opentelemetry_resources_alibaba_cloud.alibabaCloudEcsDetector,
+    opentelemetry_resources_azure.azureAppServiceDetector,
+    opentelemetry_resources_azure.azureFunctionsDetector,
+    opentelemetry_resources_azure.azureVmDetector,
     // opentelemetry_resources_gcp.gcpDetector, // TODO makes noisy spans!
     opentelemetry_resources_aws.awsBeanstalkDetector,
     opentelemetry_resources_aws.awsEc2Detector,
     opentelemetry_resources_aws.awsEcsDetector,
     opentelemetry_resources_aws.awsEksDetector,
-    // TODO k8s detector
     opentelemetry_resources_container.containerDetector,
     opentelemetry_resources_git.gitSyncDetector,
     opentelemetry_resources_github.gitHubDetector,
