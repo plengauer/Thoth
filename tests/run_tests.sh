@@ -16,6 +16,7 @@ for dir in unit sdk auto integration; do
     rm /tmp/opentelemetry_shell_*_instrumentation_cache_*.aliases 2> /dev/null || true
     export OTEL_EXPORT_LOCATION="$(mktemp -u)".sdk.out
     export OTEL_SHELL_SDK_STDOUT_REDIRECT="$(mktemp -u -p "$(mktemp -d)")".pipe
+    export OTEL_SHELL_SDK_STDERR_REDIRECT=/dev/null
     export OTEL_TRACES_EXPORTER=console
     export OTEL_METRICS_EXPORTER=console
     export OTEL_LOGS_EXPORTER=console
