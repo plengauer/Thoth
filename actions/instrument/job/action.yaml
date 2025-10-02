@@ -31,6 +31,9 @@ inputs:
   __job_matrix:
     description: 'INTERNAL ONLY - DO NOT SET MANUALLY'
     default: '${{ toJSON(matrix) }}'
+  __job_id:
+    description: 'INTERNAL ONLY - DO NOT SET MANUALLY'
+    default: '${{ job.check_run_id }}'
 runs:
   using: 'node24'
   pre: 'inject_and_init.js'
