@@ -19,6 +19,7 @@ from opentelemetry.sdk.extension.aws.resource.ecs import AwsEcsResourceDetector
 from opentelemetry.sdk.extension.aws.resource.eks import AwsEksResourceDetector
 from opentelemetry.resource.detector.azure.app_service import AzureAppServiceResourceDetector
 from opentelemetry.resource.detector.azure.vm import AzureVMResourceDetector
+from opentelemetry.resourcedetector.gcp_resource_detector import GoogleCloudResourceDetector
 
 from opentelemetry.trace import SpanKind
 from opentelemetry.sdk.trace import Span, StatusCode, TracerProvider, sampling, id_generator
@@ -153,9 +154,9 @@ def handle(scope, version, command, arguments):
         resource[key] = convert_type(type, value)
     elif command == 'INIT':
         final_resources = get_aggregated_resources([
-                # TODO Alibaba
-                # TODO GCP
                 OracleResourceDetector(),
+                # TODO Alibaba
+                GoogleCloudResourceDetector(),
                 AzureAppServiceResourceDetector(),
                 AzureVMResourceDetector(),
                 AwsBeanstalkResourceDetector(),
