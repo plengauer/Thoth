@@ -25,8 +25,8 @@ _otel_remote_sdk_pipe="${OTEL_REMOTE_SDK_PIPE:-$(\mktemp -u -p "$_otel_shell_pip
 _otel_remote_sdk_fd="${OTEL_REMOTE_SDK_FD:-7}"
 _otel_remote_sdk_stdout_redirect="${OTEL_SHELL_SDK_STDOUT_REDIRECT:-${OTEL_SHELL_SDK_OUTPUT_REDIRECT:-/dev/stderr}}"
 _otel_remote_sdk_stderr_redirect="${OTEL_SHELL_SDK_STDERR_REDIRECT:-${OTEL_SHELL_SDK_OUTPUT_REDIRECT:-/dev/stderr}}"
-if ! \[ -r "$_otel_remote_sdk_stdout_redirect" ]; then _otel_remote_sdk_stdout_redirect=/dev/null; fi
-if ! \[ -r "$_otel_remote_sdk_stderr_redirect" ]; then _otel_remote_sdk_stderr_redirect=/dev/null; fi
+if ! \[ -w "$_otel_remote_sdk_stdout_redirect" ]; then _otel_remote_sdk_stdout_redirect=/dev/null; fi
+if ! \[ -w "$_otel_remote_sdk_stderr_redirect" ]; then _otel_remote_sdk_stderr_redirect=/dev/null; fi
 _otel_shell="$(\readlink "/proc/$$/exe")"
 _otel_shell="${_otel_shell##*/}"
 if \[ "$_otel_shell" = busybox ]; then _otel_shell="busybox sh"; fi
