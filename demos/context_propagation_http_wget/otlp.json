@@ -18,13 +18,67 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "5.23.0"
+              "stringValue": "5.28.1"
             }
           },
           {
             "key": "service.name",
             "value": {
               "stringValue": "unknown_service"
+            }
+          },
+          {
+            "key": "azure.vm.scaleset.name",
+            "value": {
+              "stringValue": ""
+            }
+          },
+          {
+            "key": "azure.vm.sku",
+            "value": {
+              "stringValue": ""
+            }
+          },
+          {
+            "key": "cloud.platform",
+            "value": {
+              "stringValue": "azure_vm"
+            }
+          },
+          {
+            "key": "cloud.provider",
+            "value": {
+              "stringValue": "azure"
+            }
+          },
+          {
+            "key": "cloud.region",
+            "value": {
+              "stringValue": "westus"
+            }
+          },
+          {
+            "key": "cloud.resource_id",
+            "value": {
+              "stringValue": "/subscriptions/a1237abf-850f-45a0-bfa1-b95b8f788c41/resourceGroups/azure-westus-general-a1237abf-850f-45a0-bfa1-b95b8f788c41/providers/Microsoft.Compute/virtualMachines/JBG54NItOaMdG5"
+            }
+          },
+          {
+            "key": "host.id",
+            "value": {
+              "stringValue": "bdab0efa-5c07-4377-8dec-eb8f530609fa"
+            }
+          },
+          {
+            "key": "host.name",
+            "value": {
+              "stringValue": "JBG54NItOaMdG5"
+            }
+          },
+          {
+            "key": "host.type",
+            "value": {
+              "stringValue": "Standard_D4ads_v5"
             }
           },
           {
@@ -40,15 +94,21 @@
             }
           },
           {
+            "key": "service.instance.id",
+            "value": {
+              "stringValue": ""
+            }
+          },
+          {
             "key": "process.pid",
             "value": {
-              "intValue": "4448"
+              "intValue": "4539"
             }
           },
           {
             "key": "process.parent_pid",
             "value": {
-              "intValue": "4444"
+              "intValue": "4535"
             }
           },
           {
@@ -116,12 +176,6 @@
             "value": {
               "stringValue": ""
             }
-          },
-          {
-            "key": "service.instance.id",
-            "value": {
-              "stringValue": ""
-            }
           }
         ]
       },
@@ -129,18 +183,18 @@
         {
           "scope": {
             "name": "shell",
-            "version": "5.23.0"
+            "version": "5.28.1"
           },
           "spans": [
             {
-              "traceId": "b478c3b7066b6148ec12e7fe9ad21c88",
-              "spanId": "991290886837cdd8",
-              "parentSpanId": "6f508b88def2e19d",
-              "name": "printf HTTP/1.1 418 I'm a teapot",
+              "traceId": "da228f6e328534b5fa31055bd65447cf",
+              "spanId": "a5b048580f590361",
+              "parentSpanId": "e17cdbda19352d0d",
               "flags": 768,
+              "name": "printf HTTP/1.1 418 I'm a teapot",
               "kind": 1,
-              "startTimeUnixNano": "1754949977440919040",
-              "endTimeUnixNano": "1754949977459318016",
+              "startTimeUnixNano": "1759515810649907200",
+              "endTimeUnixNano": "1759515810667718912",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -182,14 +236,14 @@
               "status": {}
             },
             {
-              "traceId": "b478c3b7066b6148ec12e7fe9ad21c88",
-              "spanId": "6f508b88def2e19d",
-              "parentSpanId": "53cdcf8e6cc126e0",
-              "name": "GET",
+              "traceId": "da228f6e328534b5fa31055bd65447cf",
+              "spanId": "e17cdbda19352d0d",
+              "parentSpanId": "58bc1e366838a612",
               "flags": 768,
+              "name": "GET",
               "kind": 2,
-              "startTimeUnixNano": "1754949977429392128",
-              "endTimeUnixNano": "1754949977529145344",
+              "startTimeUnixNano": "1759515810638512384",
+              "endTimeUnixNano": "1759515810737533952",
               "attributes": [
                 {
                   "key": "network.transport",
@@ -206,7 +260,7 @@
                 {
                   "key": "network.peer.port",
                   "value": {
-                    "intValue": "49314"
+                    "intValue": "48518"
                   }
                 },
                 {
@@ -230,7 +284,7 @@
                 {
                   "key": "client.port",
                   "value": {
-                    "intValue": "49314"
+                    "intValue": "48518"
                   }
                 },
                 {
@@ -314,21 +368,21 @@
               ],
               "links": [
                 {
-                  "traceId": "2c2a1286e03a53185bce6ae7df3bc86a",
-                  "spanId": "ab7c9ce9809011c2",
+                  "traceId": "f1e908aca59a99de9387a30c8c389fe0",
+                  "spanId": "c6e0839f81d290ff",
                   "flags": 768
                 }
               ],
               "status": {}
             },
             {
-              "traceId": "2c2a1286e03a53185bce6ae7df3bc86a",
-              "spanId": "ab7c9ce9809011c2",
-              "name": "send/receive",
+              "traceId": "f1e908aca59a99de9387a30c8c389fe0",
+              "spanId": "c6e0839f81d290ff",
               "flags": 256,
+              "name": "send/receive",
               "kind": 5,
-              "startTimeUnixNano": "1754949977336378368",
-              "endTimeUnixNano": "1754949977531286272",
+              "startTimeUnixNano": "1759515810546877440",
+              "endTimeUnixNano": "1759515810739569664",
               "attributes": [
                 {
                   "key": "network.transport",
@@ -345,7 +399,7 @@
                 {
                   "key": "network.peer.port",
                   "value": {
-                    "intValue": "49314"
+                    "intValue": "48518"
                   }
                 },
                 {
@@ -369,14 +423,14 @@
                 {
                   "key": "client.port",
                   "value": {
-                    "intValue": "49314"
+                    "intValue": "48518"
                   }
                 }
               ],
               "links": [
                 {
-                  "traceId": "b478c3b7066b6148ec12e7fe9ad21c88",
-                  "spanId": "6f508b88def2e19d",
+                  "traceId": "da228f6e328534b5fa31055bd65447cf",
+                  "spanId": "e17cdbda19352d0d",
                   "flags": 768
                 }
               ],
@@ -404,13 +458,67 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "5.23.0"
+              "stringValue": "5.28.1"
             }
           },
           {
             "key": "service.name",
             "value": {
               "stringValue": "unknown_service"
+            }
+          },
+          {
+            "key": "azure.vm.scaleset.name",
+            "value": {
+              "stringValue": ""
+            }
+          },
+          {
+            "key": "azure.vm.sku",
+            "value": {
+              "stringValue": ""
+            }
+          },
+          {
+            "key": "cloud.platform",
+            "value": {
+              "stringValue": "azure_vm"
+            }
+          },
+          {
+            "key": "cloud.provider",
+            "value": {
+              "stringValue": "azure"
+            }
+          },
+          {
+            "key": "cloud.region",
+            "value": {
+              "stringValue": "westus"
+            }
+          },
+          {
+            "key": "cloud.resource_id",
+            "value": {
+              "stringValue": "/subscriptions/a1237abf-850f-45a0-bfa1-b95b8f788c41/resourceGroups/azure-westus-general-a1237abf-850f-45a0-bfa1-b95b8f788c41/providers/Microsoft.Compute/virtualMachines/JBG54NItOaMdG5"
+            }
+          },
+          {
+            "key": "host.id",
+            "value": {
+              "stringValue": "bdab0efa-5c07-4377-8dec-eb8f530609fa"
+            }
+          },
+          {
+            "key": "host.name",
+            "value": {
+              "stringValue": "JBG54NItOaMdG5"
+            }
+          },
+          {
+            "key": "host.type",
+            "value": {
+              "stringValue": "Standard_D4ads_v5"
             }
           },
           {
@@ -426,15 +534,21 @@
             }
           },
           {
+            "key": "service.instance.id",
+            "value": {
+              "stringValue": ""
+            }
+          },
+          {
             "key": "process.pid",
             "value": {
-              "intValue": "3460"
+              "intValue": "3503"
             }
           },
           {
             "key": "process.parent_pid",
             "value": {
-              "intValue": "2359"
+              "intValue": "2347"
             }
           },
           {
@@ -502,12 +616,6 @@
             "value": {
               "stringValue": ""
             }
-          },
-          {
-            "key": "service.instance.id",
-            "value": {
-              "stringValue": ""
-            }
           }
         ]
       },
@@ -515,18 +623,18 @@
         {
           "scope": {
             "name": "shell",
-            "version": "5.23.0"
+            "version": "5.28.1"
           },
           "spans": [
             {
-              "traceId": "b478c3b7066b6148ec12e7fe9ad21c88",
-              "spanId": "53cdcf8e6cc126e0",
-              "parentSpanId": "b96f658aa5342725",
-              "name": "GET",
+              "traceId": "da228f6e328534b5fa31055bd65447cf",
+              "spanId": "58bc1e366838a612",
+              "parentSpanId": "9eb7d88b52ea63e0",
               "flags": 768,
+              "name": "GET",
               "kind": 3,
-              "startTimeUnixNano": "1754949976778805760",
-              "endTimeUnixNano": "1754949977525202176",
+              "startTimeUnixNano": "1759515809935083264",
+              "endTimeUnixNano": "1759515810733650944",
               "attributes": [
                 {
                   "key": "network.protocol.name",
@@ -606,14 +714,14 @@
               }
             },
             {
-              "traceId": "b478c3b7066b6148ec12e7fe9ad21c88",
-              "spanId": "b96f658aa5342725",
-              "parentSpanId": "2885d8dfe550d5e8",
-              "name": "wget http://127.0.0.1:12345",
+              "traceId": "da228f6e328534b5fa31055bd65447cf",
+              "spanId": "9eb7d88b52ea63e0",
+              "parentSpanId": "acb55c55874dbaf3",
               "flags": 768,
+              "name": "wget http://127.0.0.1:12345",
               "kind": 1,
-              "startTimeUnixNano": "1754949976743780096",
-              "endTimeUnixNano": "1754949977529474048",
+              "startTimeUnixNano": "1759515809899034880",
+              "endTimeUnixNano": "1759515810737645056",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -675,14 +783,14 @@
               }
             },
             {
-              "traceId": "b478c3b7066b6148ec12e7fe9ad21c88",
-              "spanId": "65f7d69b461dce9b",
-              "parentSpanId": "2885d8dfe550d5e8",
-              "name": "true",
+              "traceId": "da228f6e328534b5fa31055bd65447cf",
+              "spanId": "dc652b0599b77a9a",
+              "parentSpanId": "acb55c55874dbaf3",
               "flags": 768,
+              "name": "true",
               "kind": 1,
-              "startTimeUnixNano": "1754949977534673408",
-              "endTimeUnixNano": "1754949977551051776",
+              "startTimeUnixNano": "1759515810742464768",
+              "endTimeUnixNano": "1759515810758219776",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -730,13 +838,13 @@
               "status": {}
             },
             {
-              "traceId": "b478c3b7066b6148ec12e7fe9ad21c88",
-              "spanId": "2885d8dfe550d5e8",
-              "name": "bash -e demo.sh",
+              "traceId": "da228f6e328534b5fa31055bd65447cf",
+              "spanId": "acb55c55874dbaf3",
               "flags": 256,
+              "name": "bash -e demo.sh",
               "kind": 2,
-              "startTimeUnixNano": "1754949976731760896",
-              "endTimeUnixNano": "1754949977551297280",
+              "startTimeUnixNano": "1759515809886867200",
+              "endTimeUnixNano": "1759515810758424064",
               "status": {}
             }
           ]
@@ -765,13 +873,67 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "5.23.0"
+              "stringValue": "5.28.1"
             }
           },
           {
             "key": "service.name",
             "value": {
               "stringValue": "unknown_service"
+            }
+          },
+          {
+            "key": "azure.vm.scaleset.name",
+            "value": {
+              "stringValue": ""
+            }
+          },
+          {
+            "key": "azure.vm.sku",
+            "value": {
+              "stringValue": ""
+            }
+          },
+          {
+            "key": "cloud.platform",
+            "value": {
+              "stringValue": "azure_vm"
+            }
+          },
+          {
+            "key": "cloud.provider",
+            "value": {
+              "stringValue": "azure"
+            }
+          },
+          {
+            "key": "cloud.region",
+            "value": {
+              "stringValue": "westus"
+            }
+          },
+          {
+            "key": "cloud.resource_id",
+            "value": {
+              "stringValue": "/subscriptions/a1237abf-850f-45a0-bfa1-b95b8f788c41/resourceGroups/azure-westus-general-a1237abf-850f-45a0-bfa1-b95b8f788c41/providers/Microsoft.Compute/virtualMachines/JBG54NItOaMdG5"
+            }
+          },
+          {
+            "key": "host.id",
+            "value": {
+              "stringValue": "bdab0efa-5c07-4377-8dec-eb8f530609fa"
+            }
+          },
+          {
+            "key": "host.name",
+            "value": {
+              "stringValue": "JBG54NItOaMdG5"
+            }
+          },
+          {
+            "key": "host.type",
+            "value": {
+              "stringValue": "Standard_D4ads_v5"
             }
           },
           {
@@ -787,15 +949,21 @@
             }
           },
           {
+            "key": "service.instance.id",
+            "value": {
+              "stringValue": ""
+            }
+          },
+          {
             "key": "process.pid",
             "value": {
-              "intValue": "3460"
+              "intValue": "3503"
             }
           },
           {
             "key": "process.parent_pid",
             "value": {
-              "intValue": "2359"
+              "intValue": "2347"
             }
           },
           {
@@ -863,12 +1031,6 @@
             "value": {
               "stringValue": ""
             }
-          },
-          {
-            "key": "service.instance.id",
-            "value": {
-              "stringValue": ""
-            }
           }
         ]
       },
@@ -876,52 +1038,52 @@
         {
           "scope": {
             "name": "shell",
-            "version": "5.23.0"
+            "version": "5.28.1"
           },
           "logRecords": [
             {
-              "observedTimeUnixNano": "1754949976779916883",
-              "timeUnixNano": "1754949976779886336",
-              "traceId": "b478c3b7066b6148ec12e7fe9ad21c88",
-              "spanId": "b96f658aa5342725",
-              "flags": 1,
+              "timeUnixNano": "1759515809936101632",
+              "observedTimeUnixNano": "1759515809936154373",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "--2025-08-11 22:06:16--  http://127.0.0.1:12345/"
-              }
+                "stringValue": "--2025-10-03 18:23:29--  http://127.0.0.1:12345/"
+              },
+              "flags": 1,
+              "traceId": "da228f6e328534b5fa31055bd65447cf",
+              "spanId": "9eb7d88b52ea63e0"
             },
             {
-              "observedTimeUnixNano": "1754949976786463237",
-              "timeUnixNano": "1754949976786432512",
-              "traceId": "b478c3b7066b6148ec12e7fe9ad21c88",
-              "spanId": "b96f658aa5342725",
-              "flags": 1,
+              "timeUnixNano": "1759515809942303488",
+              "observedTimeUnixNano": "1759515809942340379",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "Connecting to 127.0.0.1:12345... connected."
-              }
+              },
+              "flags": 1,
+              "traceId": "da228f6e328534b5fa31055bd65447cf",
+              "spanId": "9eb7d88b52ea63e0"
             },
             {
-              "observedTimeUnixNano": "1754949977523260840",
-              "timeUnixNano": "1754949977523224320",
-              "traceId": "b478c3b7066b6148ec12e7fe9ad21c88",
-              "spanId": "b96f658aa5342725",
-              "flags": 1,
+              "timeUnixNano": "1759515810731442176",
+              "observedTimeUnixNano": "1759515810731493405",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "HTTP request sent, awaiting response... 418 I'm a teapot"
-              }
+              },
+              "flags": 1,
+              "traceId": "da228f6e328534b5fa31055bd65447cf",
+              "spanId": "9eb7d88b52ea63e0"
             },
             {
-              "observedTimeUnixNano": "1754949977526351785",
-              "timeUnixNano": "1754949977526332160",
-              "traceId": "b478c3b7066b6148ec12e7fe9ad21c88",
-              "spanId": "b96f658aa5342725",
-              "flags": 1,
+              "timeUnixNano": "1759515810734471680",
+              "observedTimeUnixNano": "1759515810734498278",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "2025-08-11 22:06:17 ERROR 418: I'm a teapot."
-              }
+                "stringValue": "2025-10-03 18:23:30 ERROR 418: I'm a teapot."
+              },
+              "flags": 1,
+              "traceId": "da228f6e328534b5fa31055bd65447cf",
+              "spanId": "9eb7d88b52ea63e0"
             }
           ]
         }
