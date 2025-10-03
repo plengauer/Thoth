@@ -13,8 +13,13 @@ import opentelemetry
 from opentelemetry.sdk.resources import Resource, ResourceDetector, OTELResourceDetector, OsResourceDetector, get_aggregated_resources
 from opentelemetry_resourcedetector_docker import DockerResourceDetector
 from opentelemetry_resourcedetector_kubernetes import KubernetesResourceDetector
+from opentelemetry.sdk.extension.aws.resource.ec2 import AwsEc2ResourceDetector
+from opentelemetry.sdk.extension.aws.resource.beanstalk import AwsBeanstalkResourceDetector
+from opentelemetry.sdk.extension.aws.resource.ecs import AwsEcsResourceDetector
+from opentelemetry.sdk.extension.aws.resource.eks import AwsEksResourceDetector
 from opentelemetry.resource.detector.azure.app_service import AzureAppServiceResourceDetector
 from opentelemetry.resource.detector.azure.vm import AzureVMResourceDetector
+from opentelemetry.resourcedetector.gcp_resource_detector import GoogleCloudResourceDetector
 
 from opentelemetry.trace import SpanKind
 from opentelemetry.sdk.trace import Span, StatusCode, TracerProvider, sampling, id_generator
@@ -45,25 +50,6 @@ class GithubActionResourceDetector(ResourceDetector):
                 'github.actions.workflow.ref': os.environ.get('GITHUB_WORKFLOW_REF', ''),
                 'github.actions.workflow.sha': os.environ.get('GITHUB_WORKFLOW_SHA', ''),
                 'github.actions.workflow.name': os.environ.get('GITHUB_WORKFLOW', ''),
-            })
-        except:
-            return Resource.create({})
-
-class AwsEC2ResourceDetector(ResourceDetector):
-    def detect(self) -> Resource:
-        try:
-            token = requests.put('http://169.254.169.254/latest/api/token', headers={ 'X-aws-ec2-metadata-token-ttl-seconds': '60' }, timeout=5).text
-            identity = requests.get('http://169.254.169.254/latest/dynamic/instance-identity/document', headers={ 'X-aws-ec2-metadata-token': token }, timeout=5).json()
-            hostname = requests.get('http://169.254.169.254/latest/meta-data/hostname', headers={ 'X-aws-ec2-metadata-token': token }, timeout=5).text
-            return Resource.create({
-                'cloud.provider': 'aws',
-                'cloud.platform': 'aws_ec2',
-                'cloud.account.id': identity['accountId'],
-                'cloud.region': identity['region'],
-                'cloud.availability_zone': identity['availabilityZone'],
-                'host.id': identity['instanceId'],
-                'host.type': identity['instanceType'],
-                'host.name': hostname
             })
         except:
             return Resource.create({})
@@ -168,10 +154,15 @@ def handle(scope, version, command, arguments):
         resource[key] = convert_type(type, value)
     elif command == 'INIT':
         final_resources = get_aggregated_resources([
+                OracleResourceDetector(),
+                # TODO Alibaba
+                GoogleCloudResourceDetector(),
                 AzureAppServiceResourceDetector(),
                 AzureVMResourceDetector(),
-                AwsEC2ResourceDetector(),
-                OracleResourceDetector(),
+                AwsBeanstalkResourceDetector(),
+                AwsEcsResourceDetector(),
+                AwsEksResourceDetector(),
+                AwsEc2ResourceDetector(),
                 KubernetesResourceDetector(),
                 DockerResourceDetector(),
                 GithubActionResourceDetector(),
