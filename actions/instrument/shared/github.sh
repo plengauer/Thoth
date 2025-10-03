@@ -41,7 +41,7 @@ gh_workflow_run_logs() {
 export -f gh_workflow_run_logs
 
 gh_jobs() {
-  gh_curl_paginated /actions/runs/"$1"/attempts/"$2"/jobs'?per_page=100'
+  gh_curl_paginated /actions/runs/"$1"/attempts/"$2"/jobs'?per_page=50'
 }
 export -f gh_jobs
 
