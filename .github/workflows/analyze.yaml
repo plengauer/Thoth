@@ -39,11 +39,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5.0.0
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3.30.5
+        uses: github/codeql-action/init@v3.30.6
         with:
           languages: ${{ matrix.language }}
           build-mode: ${{ matrix.build-mode }}
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3.30.5
+        uses: github/codeql-action/analyze@v3.30.6
         with:
           category: "/language:${{matrix.language}}"
