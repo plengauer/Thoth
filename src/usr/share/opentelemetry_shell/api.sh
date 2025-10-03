@@ -23,8 +23,10 @@ if \[ -z "${TMPDIR:-}" ]; then TMPDIR=/tmp; fi
 _otel_shell_pipe_dir="${OTEL_SHELL_PIPE_DIR:-$TMPDIR}"
 _otel_remote_sdk_pipe="${OTEL_REMOTE_SDK_PIPE:-$(\mktemp -u -p "$_otel_shell_pipe_dir")_opentelemetry_shell_$$.pipe}"
 _otel_remote_sdk_fd="${OTEL_REMOTE_SDK_FD:-7}"
-_otel_remote_sdk_output_redirect="${OTEL_SHELL_SDK_OUTPUT_REDIRECT:-/dev/stderr}"
-if ! \[ -r "$_otel_remote_sdk_output_redirect" ]; then _otel_remote_sdk_output_redirect=/dev/null; fi
+_otel_remote_sdk_stdout_redirect="${OTEL_SHELL_SDK_STDOUT_REDIRECT:-${OTEL_SHELL_SDK_OUTPUT_REDIRECT:-/dev/stderr}}"
+_otel_remote_sdk_stderr_redirect="${OTEL_SHELL_SDK_STDERR_REDIRECT:-${OTEL_SHELL_SDK_OUTPUT_REDIRECT:-/dev/stderr}}"
+if ! \[ -w "$_otel_remote_sdk_stdout_redirect" ]; then _otel_remote_sdk_stdout_redirect=/dev/null; fi
+if ! \[ -w "$_otel_remote_sdk_stderr_redirect" ]; then _otel_remote_sdk_stderr_redirect=/dev/null; fi
 _otel_shell="$(\readlink "/proc/$$/exe")"
 _otel_shell="${_otel_shell##*/}"
 if \[ "$_otel_shell" = busybox ]; then _otel_shell="busybox sh"; fi
@@ -50,7 +52,7 @@ else
     _otel_package_version "$_otel_shell" > /dev/null
     # several weird things going on in the next line, (1) using '((' fucks up the syntax highlighting in github while '( (' does not, and (2) &> causes weird buffering / late flushing behavior
     if \env --help 2>&1 | \grep -q 'ignore-signal'; then local extra_env_flags='--ignore-signal=INT --ignore-signal=HUP'; fi
-    ( \exec \env ${extra_env_flags:-} /opt/opentelemetry_shell/venv/bin/python /usr/share/opentelemetry_shell/sdk.py "shell" "$(_otel_package_version opentelemetry-shell)" < "$_otel_remote_sdk_pipe" 1> "$_otel_remote_sdk_output_redirect" 2> "$_otel_remote_sdk_output_redirect" &)
+    ( \exec \env ${extra_env_flags:-} /opt/opentelemetry_shell/venv/bin/python /usr/share/opentelemetry_shell/sdk.py "shell" "$(_otel_package_version opentelemetry-shell)" < "$_otel_remote_sdk_pipe" 1> "$_otel_remote_sdk_stdout_redirect" 2> "$_otel_remote_sdk_stderr_redirect" &)
     \eval "\\exec ${_otel_remote_sdk_fd}> \"$_otel_remote_sdk_pipe\""
     _otel_resource_attributes
     _otel_sdk_communicate "INIT"
