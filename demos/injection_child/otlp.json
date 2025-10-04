@@ -18,7 +18,7 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "4.42.1"
+              "stringValue": "5.28.1"
             }
           },
           {
@@ -28,117 +28,57 @@
             }
           },
           {
-            "key": "github.sha",
-            "value": {
-              "stringValue": "b28a4d8db186c3ddcf3b3807a72dbc1a21094898"
-            }
-          },
-          {
-            "key": "github.repository.id",
-            "value": {
-              "stringValue": "692042935"
-            }
-          },
-          {
-            "key": "github.repository.name",
-            "value": {
-              "stringValue": "plengauer/opentelemetry-bash"
-            }
-          },
-          {
-            "key": "github.repository.owner.id",
-            "value": {
-              "stringValue": "100447901"
-            }
-          },
-          {
-            "key": "github.repository.owner.name",
-            "value": {
-              "stringValue": "plengauer"
-            }
-          },
-          {
-            "key": "github.event.ref",
-            "value": {
-              "stringValue": "refs/heads/main"
-            }
-          },
-          {
-            "key": "github.event.ref.sha",
-            "value": {
-              "stringValue": "b28a4d8db186c3ddcf3b3807a72dbc1a21094898"
-            }
-          },
-          {
-            "key": "github.event.ref.name",
-            "value": {
-              "stringValue": "main"
-            }
-          },
-          {
-            "key": "github.event.actor.id",
-            "value": {
-              "stringValue": "100447901"
-            }
-          },
-          {
-            "key": "github.event.actor.name",
-            "value": {
-              "stringValue": "plengauer"
-            }
-          },
-          {
-            "key": "github.event.name",
-            "value": {
-              "stringValue": "workflow_dispatch"
-            }
-          },
-          {
-            "key": "github.workflow.run.id",
-            "value": {
-              "stringValue": "12338760964"
-            }
-          },
-          {
-            "key": "github.workflow.run.attempt",
-            "value": {
-              "stringValue": "1"
-            }
-          },
-          {
-            "key": "github.workflow.ref",
-            "value": {
-              "stringValue": "plengauer/opentelemetry-bash/.github/workflows/publish_main.yaml@refs/heads/main"
-            }
-          },
-          {
-            "key": "github.workflow.sha",
-            "value": {
-              "stringValue": "b28a4d8db186c3ddcf3b3807a72dbc1a21094898"
-            }
-          },
-          {
-            "key": "github.workflow.name",
-            "value": {
-              "stringValue": "Publish"
-            }
-          },
-          {
-            "key": "github.job.name",
-            "value": {
-              "stringValue": "demo-generate"
-            }
-          },
-          {
-            "key": "github.step.name",
+            "key": "azure.vm.scaleset.name",
             "value": {
               "stringValue": ""
             }
           },
           {
-            "key": "github.action.name",
+            "key": "azure.vm.sku",
             "value": {
-              "stringValue": "demo"
+              "stringValue": ""
+            }
+          },
+          {
+            "key": "cloud.platform",
+            "value": {
+              "stringValue": "azure_vm"
+            }
+          },
+          {
+            "key": "cloud.provider",
+            "value": {
+              "stringValue": "azure"
+            }
+          },
+          {
+            "key": "cloud.region",
+            "value": {
+              "stringValue": "eastus2"
+            }
+          },
+          {
+            "key": "cloud.resource_id",
+            "value": {
+              "stringValue": "/subscriptions/da741beb-40d9-40e9-b54e-e80ce233c985/resourceGroups/azure-eastus2-general-da741beb-40d9-40e9-b54e-e80ce233c985/providers/Microsoft.Compute/virtualMachines/HpQFDG9PooBcDx"
+            }
+          },
+          {
+            "key": "host.id",
+            "value": {
+              "stringValue": "a1d3471b-1b72-4bfe-bdb9-d20346a6648f"
+            }
+          },
+          {
+            "key": "host.name",
+            "value": {
+              "stringValue": "HpQFDG9PooBcDx"
+            }
+          },
+          {
+            "key": "host.type",
+            "value": {
+              "stringValue": "Standard_D4ads_v5"
             }
           },
           {
@@ -150,19 +90,25 @@
           {
             "key": "os.version",
             "value": {
-              "stringValue": "6.8.0-1017-azure"
+              "stringValue": "6.11.0-1018-azure"
+            }
+          },
+          {
+            "key": "service.instance.id",
+            "value": {
+              "stringValue": ""
             }
           },
           {
             "key": "process.pid",
             "value": {
-              "intValue": "3432"
+              "intValue": "3255"
             }
           },
           {
             "key": "process.parent_pid",
             "value": {
-              "intValue": "2687"
+              "intValue": "2457"
             }
           },
           {
@@ -230,12 +176,6 @@
             "value": {
               "stringValue": ""
             }
-          },
-          {
-            "key": "service.instance.id",
-            "value": {
-              "stringValue": ""
-            }
           }
         ]
       },
@@ -243,18 +183,18 @@
         {
           "scope": {
             "name": "shell",
-            "version": "4.42.1"
+            "version": "5.28.1"
           },
           "spans": [
             {
-              "traceId": "a5311424721cd565f212f755f56e9836",
-              "spanId": "6a9c63df01001843",
-              "parentSpanId": "f8a0c6d08a85c9af",
+              "traceId": "d1cf8fb6c5db608d8a4b214101d4e06b",
+              "spanId": "c4b1920518c99397",
+              "parentSpanId": "8cd13616e2aa54f2",
               "flags": 768,
               "name": "echo hello world from child",
               "kind": 1,
-              "startTimeUnixNano": "1734305741046523023",
-              "endTimeUnixNano": "1734305741061539894",
+              "startTimeUnixNano": "1759515202152197632",
+              "endTimeUnixNano": "1759515202167082240",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -321,7 +261,7 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "4.42.1"
+              "stringValue": "5.28.1"
             }
           },
           {
@@ -331,117 +271,57 @@
             }
           },
           {
-            "key": "github.sha",
-            "value": {
-              "stringValue": "b28a4d8db186c3ddcf3b3807a72dbc1a21094898"
-            }
-          },
-          {
-            "key": "github.repository.id",
-            "value": {
-              "stringValue": "692042935"
-            }
-          },
-          {
-            "key": "github.repository.name",
-            "value": {
-              "stringValue": "plengauer/opentelemetry-bash"
-            }
-          },
-          {
-            "key": "github.repository.owner.id",
-            "value": {
-              "stringValue": "100447901"
-            }
-          },
-          {
-            "key": "github.repository.owner.name",
-            "value": {
-              "stringValue": "plengauer"
-            }
-          },
-          {
-            "key": "github.event.ref",
-            "value": {
-              "stringValue": "refs/heads/main"
-            }
-          },
-          {
-            "key": "github.event.ref.sha",
-            "value": {
-              "stringValue": "b28a4d8db186c3ddcf3b3807a72dbc1a21094898"
-            }
-          },
-          {
-            "key": "github.event.ref.name",
-            "value": {
-              "stringValue": "main"
-            }
-          },
-          {
-            "key": "github.event.actor.id",
-            "value": {
-              "stringValue": "100447901"
-            }
-          },
-          {
-            "key": "github.event.actor.name",
-            "value": {
-              "stringValue": "plengauer"
-            }
-          },
-          {
-            "key": "github.event.name",
-            "value": {
-              "stringValue": "workflow_dispatch"
-            }
-          },
-          {
-            "key": "github.workflow.run.id",
-            "value": {
-              "stringValue": "12338760964"
-            }
-          },
-          {
-            "key": "github.workflow.run.attempt",
-            "value": {
-              "stringValue": "1"
-            }
-          },
-          {
-            "key": "github.workflow.ref",
-            "value": {
-              "stringValue": "plengauer/opentelemetry-bash/.github/workflows/publish_main.yaml@refs/heads/main"
-            }
-          },
-          {
-            "key": "github.workflow.sha",
-            "value": {
-              "stringValue": "b28a4d8db186c3ddcf3b3807a72dbc1a21094898"
-            }
-          },
-          {
-            "key": "github.workflow.name",
-            "value": {
-              "stringValue": "Publish"
-            }
-          },
-          {
-            "key": "github.job.name",
-            "value": {
-              "stringValue": "demo-generate"
-            }
-          },
-          {
-            "key": "github.step.name",
+            "key": "azure.vm.scaleset.name",
             "value": {
               "stringValue": ""
             }
           },
           {
-            "key": "github.action.name",
+            "key": "azure.vm.sku",
             "value": {
-              "stringValue": "demo"
+              "stringValue": ""
+            }
+          },
+          {
+            "key": "cloud.platform",
+            "value": {
+              "stringValue": "azure_vm"
+            }
+          },
+          {
+            "key": "cloud.provider",
+            "value": {
+              "stringValue": "azure"
+            }
+          },
+          {
+            "key": "cloud.region",
+            "value": {
+              "stringValue": "eastus2"
+            }
+          },
+          {
+            "key": "cloud.resource_id",
+            "value": {
+              "stringValue": "/subscriptions/da741beb-40d9-40e9-b54e-e80ce233c985/resourceGroups/azure-eastus2-general-da741beb-40d9-40e9-b54e-e80ce233c985/providers/Microsoft.Compute/virtualMachines/HpQFDG9PooBcDx"
+            }
+          },
+          {
+            "key": "host.id",
+            "value": {
+              "stringValue": "a1d3471b-1b72-4bfe-bdb9-d20346a6648f"
+            }
+          },
+          {
+            "key": "host.name",
+            "value": {
+              "stringValue": "HpQFDG9PooBcDx"
+            }
+          },
+          {
+            "key": "host.type",
+            "value": {
+              "stringValue": "Standard_D4ads_v5"
             }
           },
           {
@@ -453,19 +333,25 @@
           {
             "key": "os.version",
             "value": {
-              "stringValue": "6.8.0-1017-azure"
+              "stringValue": "6.11.0-1018-azure"
+            }
+          },
+          {
+            "key": "service.instance.id",
+            "value": {
+              "stringValue": ""
             }
           },
           {
             "key": "process.pid",
             "value": {
-              "intValue": "2687"
+              "intValue": "2457"
             }
           },
           {
             "key": "process.parent_pid",
             "value": {
-              "intValue": "2586"
+              "intValue": "2361"
             }
           },
           {
@@ -533,12 +419,6 @@
             "value": {
               "stringValue": ""
             }
-          },
-          {
-            "key": "service.instance.id",
-            "value": {
-              "stringValue": ""
-            }
           }
         ]
       },
@@ -546,18 +426,18 @@
         {
           "scope": {
             "name": "shell",
-            "version": "4.42.1"
+            "version": "5.28.1"
           },
           "spans": [
             {
-              "traceId": "a5311424721cd565f212f755f56e9836",
-              "spanId": "f8a0c6d08a85c9af",
-              "parentSpanId": "69d724b193bfbede",
+              "traceId": "d1cf8fb6c5db608d8a4b214101d4e06b",
+              "spanId": "8cd13616e2aa54f2",
+              "parentSpanId": "9c8ba5171e2cf762",
               "flags": 768,
               "name": "sh ./child.sh hello world from child",
               "kind": 1,
-              "startTimeUnixNano": "1734305740446569849",
-              "endTimeUnixNano": "1734305741093270063",
+              "startTimeUnixNano": "1759515201461855232",
+              "endTimeUnixNano": "1759515202204688128",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -617,14 +497,14 @@
               "status": {}
             },
             {
-              "traceId": "a5311424721cd565f212f755f56e9836",
-              "spanId": "21e19dc7d2ba50da",
-              "parentSpanId": "69d724b193bfbede",
+              "traceId": "d1cf8fb6c5db608d8a4b214101d4e06b",
+              "spanId": "3bcc286caf6e48db",
+              "parentSpanId": "9c8ba5171e2cf762",
               "flags": 768,
               "name": "printf echo hello world from stdin",
               "kind": 1,
-              "startTimeUnixNano": "1734305741098366614",
-              "endTimeUnixNano": "1734305741114041652",
+              "startTimeUnixNano": "1759515202210927616",
+              "endTimeUnixNano": "1759515202225939968",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -678,6 +558,211 @@
   ]
 }
 {
+  "resourceLogs": [
+    {
+      "resource": {
+        "attributes": [
+          {
+            "key": "telemetry.sdk.language",
+            "value": {
+              "stringValue": "shell"
+            }
+          },
+          {
+            "key": "telemetry.sdk.name",
+            "value": {
+              "stringValue": "opentelemetry"
+            }
+          },
+          {
+            "key": "telemetry.sdk.version",
+            "value": {
+              "stringValue": "5.28.1"
+            }
+          },
+          {
+            "key": "service.name",
+            "value": {
+              "stringValue": "unknown_service"
+            }
+          },
+          {
+            "key": "azure.vm.scaleset.name",
+            "value": {
+              "stringValue": ""
+            }
+          },
+          {
+            "key": "azure.vm.sku",
+            "value": {
+              "stringValue": ""
+            }
+          },
+          {
+            "key": "cloud.platform",
+            "value": {
+              "stringValue": "azure_vm"
+            }
+          },
+          {
+            "key": "cloud.provider",
+            "value": {
+              "stringValue": "azure"
+            }
+          },
+          {
+            "key": "cloud.region",
+            "value": {
+              "stringValue": "eastus2"
+            }
+          },
+          {
+            "key": "cloud.resource_id",
+            "value": {
+              "stringValue": "/subscriptions/da741beb-40d9-40e9-b54e-e80ce233c985/resourceGroups/azure-eastus2-general-da741beb-40d9-40e9-b54e-e80ce233c985/providers/Microsoft.Compute/virtualMachines/HpQFDG9PooBcDx"
+            }
+          },
+          {
+            "key": "host.id",
+            "value": {
+              "stringValue": "a1d3471b-1b72-4bfe-bdb9-d20346a6648f"
+            }
+          },
+          {
+            "key": "host.name",
+            "value": {
+              "stringValue": "HpQFDG9PooBcDx"
+            }
+          },
+          {
+            "key": "host.type",
+            "value": {
+              "stringValue": "Standard_D4ads_v5"
+            }
+          },
+          {
+            "key": "os.type",
+            "value": {
+              "stringValue": "linux"
+            }
+          },
+          {
+            "key": "os.version",
+            "value": {
+              "stringValue": "6.11.0-1018-azure"
+            }
+          },
+          {
+            "key": "service.instance.id",
+            "value": {
+              "stringValue": ""
+            }
+          },
+          {
+            "key": "process.pid",
+            "value": {
+              "intValue": "2457"
+            }
+          },
+          {
+            "key": "process.parent_pid",
+            "value": {
+              "intValue": "2361"
+            }
+          },
+          {
+            "key": "process.executable.name",
+            "value": {
+              "stringValue": "bash"
+            }
+          },
+          {
+            "key": "process.executable.path",
+            "value": {
+              "stringValue": "/usr/bin/bash"
+            }
+          },
+          {
+            "key": "process.command_line",
+            "value": {
+              "stringValue": "bash -e demo.sh"
+            }
+          },
+          {
+            "key": "process.command",
+            "value": {
+              "stringValue": "bash"
+            }
+          },
+          {
+            "key": "process.owner",
+            "value": {
+              "stringValue": "runner"
+            }
+          },
+          {
+            "key": "process.runtime.name",
+            "value": {
+              "stringValue": "bash"
+            }
+          },
+          {
+            "key": "process.runtime.description",
+            "value": {
+              "stringValue": "Bourne Again Shell"
+            }
+          },
+          {
+            "key": "process.runtime.version",
+            "value": {
+              "stringValue": "5.2.21-2ubuntu4"
+            }
+          },
+          {
+            "key": "process.runtime.options",
+            "value": {
+              "stringValue": "ehB"
+            }
+          },
+          {
+            "key": "service.version",
+            "value": {
+              "stringValue": ""
+            }
+          },
+          {
+            "key": "service.namespace",
+            "value": {
+              "stringValue": ""
+            }
+          }
+        ]
+      },
+      "scopeLogs": [
+        {
+          "scope": {
+            "name": "shell",
+            "version": "5.28.1"
+          },
+          "logRecords": [
+            {
+              "timeUnixNano": "1759515202114306816",
+              "observedTimeUnixNano": "1759515202114354232",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "Exception HTTPConnectionPool(host='metadata.google.internal', port=80): Max retries exceeded with url: /computeMetadata/v1/?recursive=true (Caused by NameResolutionError(\"<urllib3.connection.HTTPConnection object at 0x7f5ea02c7e60>: Failed to resolve 'metadata.google.internal' ([Errno -2] Name or service not known)\")) occured attempting gce_instance resource detection"
+              },
+              "flags": 1,
+              "traceId": "d1cf8fb6c5db608d8a4b214101d4e06b",
+              "spanId": "8cd13616e2aa54f2"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+{
   "resourceSpans": [
     {
       "resource": {
@@ -697,7 +782,7 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "4.42.1"
+              "stringValue": "5.28.1"
             }
           },
           {
@@ -707,117 +792,57 @@
             }
           },
           {
-            "key": "github.sha",
-            "value": {
-              "stringValue": "b28a4d8db186c3ddcf3b3807a72dbc1a21094898"
-            }
-          },
-          {
-            "key": "github.repository.id",
-            "value": {
-              "stringValue": "692042935"
-            }
-          },
-          {
-            "key": "github.repository.name",
-            "value": {
-              "stringValue": "plengauer/opentelemetry-bash"
-            }
-          },
-          {
-            "key": "github.repository.owner.id",
-            "value": {
-              "stringValue": "100447901"
-            }
-          },
-          {
-            "key": "github.repository.owner.name",
-            "value": {
-              "stringValue": "plengauer"
-            }
-          },
-          {
-            "key": "github.event.ref",
-            "value": {
-              "stringValue": "refs/heads/main"
-            }
-          },
-          {
-            "key": "github.event.ref.sha",
-            "value": {
-              "stringValue": "b28a4d8db186c3ddcf3b3807a72dbc1a21094898"
-            }
-          },
-          {
-            "key": "github.event.ref.name",
-            "value": {
-              "stringValue": "main"
-            }
-          },
-          {
-            "key": "github.event.actor.id",
-            "value": {
-              "stringValue": "100447901"
-            }
-          },
-          {
-            "key": "github.event.actor.name",
-            "value": {
-              "stringValue": "plengauer"
-            }
-          },
-          {
-            "key": "github.event.name",
-            "value": {
-              "stringValue": "workflow_dispatch"
-            }
-          },
-          {
-            "key": "github.workflow.run.id",
-            "value": {
-              "stringValue": "12338760964"
-            }
-          },
-          {
-            "key": "github.workflow.run.attempt",
-            "value": {
-              "stringValue": "1"
-            }
-          },
-          {
-            "key": "github.workflow.ref",
-            "value": {
-              "stringValue": "plengauer/opentelemetry-bash/.github/workflows/publish_main.yaml@refs/heads/main"
-            }
-          },
-          {
-            "key": "github.workflow.sha",
-            "value": {
-              "stringValue": "b28a4d8db186c3ddcf3b3807a72dbc1a21094898"
-            }
-          },
-          {
-            "key": "github.workflow.name",
-            "value": {
-              "stringValue": "Publish"
-            }
-          },
-          {
-            "key": "github.job.name",
-            "value": {
-              "stringValue": "demo-generate"
-            }
-          },
-          {
-            "key": "github.step.name",
+            "key": "azure.vm.scaleset.name",
             "value": {
               "stringValue": ""
             }
           },
           {
-            "key": "github.action.name",
+            "key": "azure.vm.sku",
             "value": {
-              "stringValue": "demo"
+              "stringValue": ""
+            }
+          },
+          {
+            "key": "cloud.platform",
+            "value": {
+              "stringValue": "azure_vm"
+            }
+          },
+          {
+            "key": "cloud.provider",
+            "value": {
+              "stringValue": "azure"
+            }
+          },
+          {
+            "key": "cloud.region",
+            "value": {
+              "stringValue": "eastus2"
+            }
+          },
+          {
+            "key": "cloud.resource_id",
+            "value": {
+              "stringValue": "/subscriptions/da741beb-40d9-40e9-b54e-e80ce233c985/resourceGroups/azure-eastus2-general-da741beb-40d9-40e9-b54e-e80ce233c985/providers/Microsoft.Compute/virtualMachines/HpQFDG9PooBcDx"
+            }
+          },
+          {
+            "key": "host.id",
+            "value": {
+              "stringValue": "a1d3471b-1b72-4bfe-bdb9-d20346a6648f"
+            }
+          },
+          {
+            "key": "host.name",
+            "value": {
+              "stringValue": "HpQFDG9PooBcDx"
+            }
+          },
+          {
+            "key": "host.type",
+            "value": {
+              "stringValue": "Standard_D4ads_v5"
             }
           },
           {
@@ -829,19 +854,25 @@
           {
             "key": "os.version",
             "value": {
-              "stringValue": "6.8.0-1017-azure"
+              "stringValue": "6.11.0-1018-azure"
+            }
+          },
+          {
+            "key": "service.instance.id",
+            "value": {
+              "stringValue": ""
             }
           },
           {
             "key": "process.pid",
             "value": {
-              "intValue": "4242"
+              "intValue": "4116"
             }
           },
           {
             "key": "process.parent_pid",
             "value": {
-              "intValue": "4239"
+              "intValue": "4113"
             }
           },
           {
@@ -909,12 +940,6 @@
             "value": {
               "stringValue": ""
             }
-          },
-          {
-            "key": "service.instance.id",
-            "value": {
-              "stringValue": ""
-            }
           }
         ]
       },
@@ -922,18 +947,18 @@
         {
           "scope": {
             "name": "shell",
-            "version": "4.42.1"
+            "version": "5.28.1"
           },
           "spans": [
             {
-              "traceId": "a5311424721cd565f212f755f56e9836",
-              "spanId": "8823ec160971db8f",
-              "parentSpanId": "6ac4466651c16d7c",
+              "traceId": "d1cf8fb6c5db608d8a4b214101d4e06b",
+              "spanId": "aa5c0b6011d071c1",
+              "parentSpanId": "20e9e867ee4e8c8a",
               "flags": 768,
               "name": "echo hello world from stdin",
               "kind": 1,
-              "startTimeUnixNano": "1734305792395647869",
-              "endTimeUnixNano": "1734305792410635271",
+              "startTimeUnixNano": "1759515248930307328",
+              "endTimeUnixNano": "1759515248945739264",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -1000,7 +1025,7 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "4.42.1"
+              "stringValue": "5.28.1"
             }
           },
           {
@@ -1010,117 +1035,57 @@
             }
           },
           {
-            "key": "github.sha",
-            "value": {
-              "stringValue": "b28a4d8db186c3ddcf3b3807a72dbc1a21094898"
-            }
-          },
-          {
-            "key": "github.repository.id",
-            "value": {
-              "stringValue": "692042935"
-            }
-          },
-          {
-            "key": "github.repository.name",
-            "value": {
-              "stringValue": "plengauer/opentelemetry-bash"
-            }
-          },
-          {
-            "key": "github.repository.owner.id",
-            "value": {
-              "stringValue": "100447901"
-            }
-          },
-          {
-            "key": "github.repository.owner.name",
-            "value": {
-              "stringValue": "plengauer"
-            }
-          },
-          {
-            "key": "github.event.ref",
-            "value": {
-              "stringValue": "refs/heads/main"
-            }
-          },
-          {
-            "key": "github.event.ref.sha",
-            "value": {
-              "stringValue": "b28a4d8db186c3ddcf3b3807a72dbc1a21094898"
-            }
-          },
-          {
-            "key": "github.event.ref.name",
-            "value": {
-              "stringValue": "main"
-            }
-          },
-          {
-            "key": "github.event.actor.id",
-            "value": {
-              "stringValue": "100447901"
-            }
-          },
-          {
-            "key": "github.event.actor.name",
-            "value": {
-              "stringValue": "plengauer"
-            }
-          },
-          {
-            "key": "github.event.name",
-            "value": {
-              "stringValue": "workflow_dispatch"
-            }
-          },
-          {
-            "key": "github.workflow.run.id",
-            "value": {
-              "stringValue": "12338760964"
-            }
-          },
-          {
-            "key": "github.workflow.run.attempt",
-            "value": {
-              "stringValue": "1"
-            }
-          },
-          {
-            "key": "github.workflow.ref",
-            "value": {
-              "stringValue": "plengauer/opentelemetry-bash/.github/workflows/publish_main.yaml@refs/heads/main"
-            }
-          },
-          {
-            "key": "github.workflow.sha",
-            "value": {
-              "stringValue": "b28a4d8db186c3ddcf3b3807a72dbc1a21094898"
-            }
-          },
-          {
-            "key": "github.workflow.name",
-            "value": {
-              "stringValue": "Publish"
-            }
-          },
-          {
-            "key": "github.job.name",
-            "value": {
-              "stringValue": "demo-generate"
-            }
-          },
-          {
-            "key": "github.step.name",
+            "key": "azure.vm.scaleset.name",
             "value": {
               "stringValue": ""
             }
           },
           {
-            "key": "github.action.name",
+            "key": "azure.vm.sku",
             "value": {
-              "stringValue": "demo"
+              "stringValue": ""
+            }
+          },
+          {
+            "key": "cloud.platform",
+            "value": {
+              "stringValue": "azure_vm"
+            }
+          },
+          {
+            "key": "cloud.provider",
+            "value": {
+              "stringValue": "azure"
+            }
+          },
+          {
+            "key": "cloud.region",
+            "value": {
+              "stringValue": "eastus2"
+            }
+          },
+          {
+            "key": "cloud.resource_id",
+            "value": {
+              "stringValue": "/subscriptions/da741beb-40d9-40e9-b54e-e80ce233c985/resourceGroups/azure-eastus2-general-da741beb-40d9-40e9-b54e-e80ce233c985/providers/Microsoft.Compute/virtualMachines/HpQFDG9PooBcDx"
+            }
+          },
+          {
+            "key": "host.id",
+            "value": {
+              "stringValue": "a1d3471b-1b72-4bfe-bdb9-d20346a6648f"
+            }
+          },
+          {
+            "key": "host.name",
+            "value": {
+              "stringValue": "HpQFDG9PooBcDx"
+            }
+          },
+          {
+            "key": "host.type",
+            "value": {
+              "stringValue": "Standard_D4ads_v5"
             }
           },
           {
@@ -1132,19 +1097,25 @@
           {
             "key": "os.version",
             "value": {
-              "stringValue": "6.8.0-1017-azure"
+              "stringValue": "6.11.0-1018-azure"
+            }
+          },
+          {
+            "key": "service.instance.id",
+            "value": {
+              "stringValue": ""
             }
           },
           {
             "key": "process.pid",
             "value": {
-              "intValue": "92340"
+              "intValue": "92328"
             }
           },
           {
             "key": "process.parent_pid",
             "value": {
-              "intValue": "2687"
+              "intValue": "2457"
             }
           },
           {
@@ -1212,12 +1183,6 @@
             "value": {
               "stringValue": ""
             }
-          },
-          {
-            "key": "service.instance.id",
-            "value": {
-              "stringValue": ""
-            }
           }
         ]
       },
@@ -1225,18 +1190,18 @@
         {
           "scope": {
             "name": "shell",
-            "version": "4.42.1"
+            "version": "5.28.1"
           },
           "spans": [
             {
-              "traceId": "a5311424721cd565f212f755f56e9836",
-              "spanId": "27d12b58345f252f",
-              "parentSpanId": "68cfca11c8456e77",
+              "traceId": "d1cf8fb6c5db608d8a4b214101d4e06b",
+              "spanId": "0a51c9c459fa8f04",
+              "parentSpanId": "5edd1001cf293904",
               "flags": 768,
               "name": "echo hello world from -c",
               "kind": 1,
-              "startTimeUnixNano": "1734305792798994238",
-              "endTimeUnixNano": "1734305792813818107",
+              "startTimeUnixNano": "1759515249382807296",
+              "endTimeUnixNano": "1759515249397496576",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -1280,7 +1245,11 @@
           ]
         }
       ]
-    },
+    }
+  ]
+}
+{
+  "resourceLogs": [
     {
       "resource": {
         "attributes": [
@@ -1299,7 +1268,7 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "4.42.1"
+              "stringValue": "5.28.1"
             }
           },
           {
@@ -1309,117 +1278,57 @@
             }
           },
           {
-            "key": "github.sha",
-            "value": {
-              "stringValue": "b28a4d8db186c3ddcf3b3807a72dbc1a21094898"
-            }
-          },
-          {
-            "key": "github.repository.id",
-            "value": {
-              "stringValue": "692042935"
-            }
-          },
-          {
-            "key": "github.repository.name",
-            "value": {
-              "stringValue": "plengauer/opentelemetry-bash"
-            }
-          },
-          {
-            "key": "github.repository.owner.id",
-            "value": {
-              "stringValue": "100447901"
-            }
-          },
-          {
-            "key": "github.repository.owner.name",
-            "value": {
-              "stringValue": "plengauer"
-            }
-          },
-          {
-            "key": "github.event.ref",
-            "value": {
-              "stringValue": "refs/heads/main"
-            }
-          },
-          {
-            "key": "github.event.ref.sha",
-            "value": {
-              "stringValue": "b28a4d8db186c3ddcf3b3807a72dbc1a21094898"
-            }
-          },
-          {
-            "key": "github.event.ref.name",
-            "value": {
-              "stringValue": "main"
-            }
-          },
-          {
-            "key": "github.event.actor.id",
-            "value": {
-              "stringValue": "100447901"
-            }
-          },
-          {
-            "key": "github.event.actor.name",
-            "value": {
-              "stringValue": "plengauer"
-            }
-          },
-          {
-            "key": "github.event.name",
-            "value": {
-              "stringValue": "workflow_dispatch"
-            }
-          },
-          {
-            "key": "github.workflow.run.id",
-            "value": {
-              "stringValue": "12338760964"
-            }
-          },
-          {
-            "key": "github.workflow.run.attempt",
-            "value": {
-              "stringValue": "1"
-            }
-          },
-          {
-            "key": "github.workflow.ref",
-            "value": {
-              "stringValue": "plengauer/opentelemetry-bash/.github/workflows/publish_main.yaml@refs/heads/main"
-            }
-          },
-          {
-            "key": "github.workflow.sha",
-            "value": {
-              "stringValue": "b28a4d8db186c3ddcf3b3807a72dbc1a21094898"
-            }
-          },
-          {
-            "key": "github.workflow.name",
-            "value": {
-              "stringValue": "Publish"
-            }
-          },
-          {
-            "key": "github.job.name",
-            "value": {
-              "stringValue": "demo-generate"
-            }
-          },
-          {
-            "key": "github.step.name",
+            "key": "azure.vm.scaleset.name",
             "value": {
               "stringValue": ""
             }
           },
           {
-            "key": "github.action.name",
+            "key": "azure.vm.sku",
             "value": {
-              "stringValue": "demo"
+              "stringValue": ""
+            }
+          },
+          {
+            "key": "cloud.platform",
+            "value": {
+              "stringValue": "azure_vm"
+            }
+          },
+          {
+            "key": "cloud.provider",
+            "value": {
+              "stringValue": "azure"
+            }
+          },
+          {
+            "key": "cloud.region",
+            "value": {
+              "stringValue": "eastus2"
+            }
+          },
+          {
+            "key": "cloud.resource_id",
+            "value": {
+              "stringValue": "/subscriptions/da741beb-40d9-40e9-b54e-e80ce233c985/resourceGroups/azure-eastus2-general-da741beb-40d9-40e9-b54e-e80ce233c985/providers/Microsoft.Compute/virtualMachines/HpQFDG9PooBcDx"
+            }
+          },
+          {
+            "key": "host.id",
+            "value": {
+              "stringValue": "a1d3471b-1b72-4bfe-bdb9-d20346a6648f"
+            }
+          },
+          {
+            "key": "host.name",
+            "value": {
+              "stringValue": "HpQFDG9PooBcDx"
+            }
+          },
+          {
+            "key": "host.type",
+            "value": {
+              "stringValue": "Standard_D4ads_v5"
             }
           },
           {
@@ -1431,19 +1340,25 @@
           {
             "key": "os.version",
             "value": {
-              "stringValue": "6.8.0-1017-azure"
+              "stringValue": "6.11.0-1018-azure"
+            }
+          },
+          {
+            "key": "service.instance.id",
+            "value": {
+              "stringValue": ""
             }
           },
           {
             "key": "process.pid",
             "value": {
-              "intValue": "2687"
+              "intValue": "2457"
             }
           },
           {
             "key": "process.parent_pid",
             "value": {
-              "intValue": "2586"
+              "intValue": "2361"
             }
           },
           {
@@ -1511,9 +1426,219 @@
             "value": {
               "stringValue": ""
             }
+          }
+        ]
+      },
+      "scopeLogs": [
+        {
+          "scope": {
+            "name": "shell",
+            "version": "5.28.1"
+          },
+          "logRecords": [
+            {
+              "timeUnixNano": "1759515248887127296",
+              "observedTimeUnixNano": "1759515248887177416",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "Exception HTTPConnectionPool(host='metadata.google.internal', port=80): Max retries exceeded with url: /computeMetadata/v1/?recursive=true (Caused by NameResolutionError(\"<urllib3.connection.HTTPConnection object at 0x7f77bf4c7dd0>: Failed to resolve 'metadata.google.internal' ([Errno -2] Name or service not known)\")) occured attempting gce_instance resource detection"
+              },
+              "flags": 1,
+              "traceId": "d1cf8fb6c5db608d8a4b214101d4e06b",
+              "spanId": "20e9e867ee4e8c8a"
+            },
+            {
+              "timeUnixNano": "1759515249342215936",
+              "observedTimeUnixNano": "1759515249342254194",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "Exception HTTPConnectionPool(host='metadata.google.internal', port=80): Max retries exceeded with url: /computeMetadata/v1/?recursive=true (Caused by NameResolutionError(\"<urllib3.connection.HTTPConnection object at 0x7ffa402b07a0>: Failed to resolve 'metadata.google.internal' ([Errno -2] Name or service not known)\")) occured attempting gce_instance resource detection"
+              },
+              "flags": 1,
+              "traceId": "d1cf8fb6c5db608d8a4b214101d4e06b",
+              "spanId": "5edd1001cf293904"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+{
+  "resourceSpans": [
+    {
+      "resource": {
+        "attributes": [
+          {
+            "key": "telemetry.sdk.language",
+            "value": {
+              "stringValue": "shell"
+            }
+          },
+          {
+            "key": "telemetry.sdk.name",
+            "value": {
+              "stringValue": "opentelemetry"
+            }
+          },
+          {
+            "key": "telemetry.sdk.version",
+            "value": {
+              "stringValue": "5.28.1"
+            }
+          },
+          {
+            "key": "service.name",
+            "value": {
+              "stringValue": "unknown_service"
+            }
+          },
+          {
+            "key": "azure.vm.scaleset.name",
+            "value": {
+              "stringValue": ""
+            }
+          },
+          {
+            "key": "azure.vm.sku",
+            "value": {
+              "stringValue": ""
+            }
+          },
+          {
+            "key": "cloud.platform",
+            "value": {
+              "stringValue": "azure_vm"
+            }
+          },
+          {
+            "key": "cloud.provider",
+            "value": {
+              "stringValue": "azure"
+            }
+          },
+          {
+            "key": "cloud.region",
+            "value": {
+              "stringValue": "eastus2"
+            }
+          },
+          {
+            "key": "cloud.resource_id",
+            "value": {
+              "stringValue": "/subscriptions/da741beb-40d9-40e9-b54e-e80ce233c985/resourceGroups/azure-eastus2-general-da741beb-40d9-40e9-b54e-e80ce233c985/providers/Microsoft.Compute/virtualMachines/HpQFDG9PooBcDx"
+            }
+          },
+          {
+            "key": "host.id",
+            "value": {
+              "stringValue": "a1d3471b-1b72-4bfe-bdb9-d20346a6648f"
+            }
+          },
+          {
+            "key": "host.name",
+            "value": {
+              "stringValue": "HpQFDG9PooBcDx"
+            }
+          },
+          {
+            "key": "host.type",
+            "value": {
+              "stringValue": "Standard_D4ads_v5"
+            }
+          },
+          {
+            "key": "os.type",
+            "value": {
+              "stringValue": "linux"
+            }
+          },
+          {
+            "key": "os.version",
+            "value": {
+              "stringValue": "6.11.0-1018-azure"
+            }
           },
           {
             "key": "service.instance.id",
+            "value": {
+              "stringValue": ""
+            }
+          },
+          {
+            "key": "process.pid",
+            "value": {
+              "intValue": "2457"
+            }
+          },
+          {
+            "key": "process.parent_pid",
+            "value": {
+              "intValue": "2361"
+            }
+          },
+          {
+            "key": "process.executable.name",
+            "value": {
+              "stringValue": "bash"
+            }
+          },
+          {
+            "key": "process.executable.path",
+            "value": {
+              "stringValue": "/usr/bin/bash"
+            }
+          },
+          {
+            "key": "process.command_line",
+            "value": {
+              "stringValue": "bash -e demo.sh"
+            }
+          },
+          {
+            "key": "process.command",
+            "value": {
+              "stringValue": "bash"
+            }
+          },
+          {
+            "key": "process.owner",
+            "value": {
+              "stringValue": "runner"
+            }
+          },
+          {
+            "key": "process.runtime.name",
+            "value": {
+              "stringValue": "bash"
+            }
+          },
+          {
+            "key": "process.runtime.description",
+            "value": {
+              "stringValue": "Bourne Again Shell"
+            }
+          },
+          {
+            "key": "process.runtime.version",
+            "value": {
+              "stringValue": "5.2.21-2ubuntu4"
+            }
+          },
+          {
+            "key": "process.runtime.options",
+            "value": {
+              "stringValue": "ehB"
+            }
+          },
+          {
+            "key": "service.version",
+            "value": {
+              "stringValue": ""
+            }
+          },
+          {
+            "key": "service.namespace",
             "value": {
               "stringValue": ""
             }
@@ -1524,18 +1649,18 @@
         {
           "scope": {
             "name": "shell",
-            "version": "4.42.1"
+            "version": "5.28.1"
           },
           "spans": [
             {
-              "traceId": "a5311424721cd565f212f755f56e9836",
-              "spanId": "6ac4466651c16d7c",
-              "parentSpanId": "69d724b193bfbede",
+              "traceId": "d1cf8fb6c5db608d8a4b214101d4e06b",
+              "spanId": "20e9e867ee4e8c8a",
+              "parentSpanId": "9c8ba5171e2cf762",
               "flags": 768,
               "name": "sh",
               "kind": 1,
-              "startTimeUnixNano": "1734305741099399561",
-              "endTimeUnixNano": "1734305792443347918",
+              "startTimeUnixNano": "1759515202209958400",
+              "endTimeUnixNano": "1759515248984658432",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -1595,14 +1720,14 @@
               "status": {}
             },
             {
-              "traceId": "a5311424721cd565f212f755f56e9836",
-              "spanId": "68cfca11c8456e77",
-              "parentSpanId": "69d724b193bfbede",
+              "traceId": "d1cf8fb6c5db608d8a4b214101d4e06b",
+              "spanId": "5edd1001cf293904",
+              "parentSpanId": "9c8ba5171e2cf762",
               "flags": 768,
               "name": "sh -c echo \"$@\" sh hello world from -c",
               "kind": 1,
-              "startTimeUnixNano": "1734305792448224955",
-              "endTimeUnixNano": "1734305792846528619",
+              "startTimeUnixNano": "1759515248989570560",
+              "endTimeUnixNano": "1759515249435017216",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -1662,14 +1787,13 @@
               "status": {}
             },
             {
-              "traceId": "a5311424721cd565f212f755f56e9836",
-              "spanId": "69d724b193bfbede",
-              "parentSpanId": "",
+              "traceId": "d1cf8fb6c5db608d8a4b214101d4e06b",
+              "spanId": "9c8ba5171e2cf762",
               "flags": 256,
               "name": "bash -e demo.sh",
               "kind": 2,
-              "startTimeUnixNano": "1734305740433824864",
-              "endTimeUnixNano": "1734305792846729722",
+              "startTimeUnixNano": "1759515201449185536",
+              "endTimeUnixNano": "1759515249435181056",
               "status": {}
             }
           ]
