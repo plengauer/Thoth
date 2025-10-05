@@ -125,6 +125,9 @@ EOF
   export OTEL_EXPORTER_OTLP_TRACES_PROTOCOL=http/protobuf
 fi
 unset OTEL_EXPORTER_OTLP_HEADERS OTEL_EXPORTER_OTLP_ENDPOINT
+if [ -n "$INPUT_DEBUG" ]; then set +x; fi
+echo "$INPUT_SECRETS_TO_REDACT" | jq -r '. | to_entries[].value' | sed 's/[.[\(*^$+?{|]/\\\\&/g' | xargs -I '{}' echo '::add-mask::{}'
+if [ -n "$INPUT_DEBUG" ]; then set -x; fi
 cat > collector.yaml <<EOF
 receivers:
   otlp:
@@ -153,10 +156,7 @@ $(cat $section_pipeline_logs)
 $(cat $section_pipeline_metrics)
 $(cat $section_pipeline_traces)
 EOF
-if [ -n "$INPUT_DEBUG" ]; then
-  echo "$INPUT_SECRETS_TO_REDACT" | jq -r '. | to_entries[].value' | sed 's/[.[\(*^$+?{|]/\\\\&/g' | xargs -I '{}' echo '::add-mask::{}'
-  cat collector.yaml
-fi
+if [ -n "$INPUT_DEBUG" ]; then cat collector.yaml; fi
 
 # setup injections
 echo "$GITHUB_ACTION" > /tmp/opentelemetry_shell_action_name # to avoid recursions
