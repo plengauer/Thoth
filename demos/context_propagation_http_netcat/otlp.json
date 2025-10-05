@@ -18,7 +18,7 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "5.28.1"
+              "stringValue": "5.28.0"
             }
           },
           {
@@ -54,25 +54,25 @@
           {
             "key": "cloud.region",
             "value": {
-              "stringValue": "centralus"
+              "stringValue": "northcentralus"
             }
           },
           {
             "key": "cloud.resource_id",
             "value": {
-              "stringValue": "/subscriptions/1b81a300-6f1d-4a2a-8639-a65857d71bc5/resourceGroups/azure-centralus-general-1b81a300-6f1d-4a2a-8639-a65857d71bc5/providers/Microsoft.Compute/virtualMachines/Lp1RGCWOi7fU5E"
+              "stringValue": "/subscriptions/2ceef434-b1b5-4f4d-9032-bdf6492f11f8/resourceGroups/azure-northcentralus-general-2ceef434-b1b5-4f4d-9032-bdf6492f11f8/providers/Microsoft.Compute/virtualMachines/fQJov3o2fYQaiS"
             }
           },
           {
             "key": "host.id",
             "value": {
-              "stringValue": "d6580b57-5e40-4a26-a22d-655599f3f542"
+              "stringValue": "733fdcfb-83a3-4e04-903a-820df7954fb2"
             }
           },
           {
             "key": "host.name",
             "value": {
-              "stringValue": "Lp1RGCWOi7fU5E"
+              "stringValue": "fQJov3o2fYQaiS"
             }
           },
           {
@@ -102,13 +102,13 @@
           {
             "key": "process.pid",
             "value": {
-              "intValue": "4601"
+              "intValue": "4704"
             }
           },
           {
             "key": "process.parent_pid",
             "value": {
-              "intValue": "4599"
+              "intValue": "4701"
             }
           },
           {
@@ -183,18 +183,18 @@
         {
           "scope": {
             "name": "shell",
-            "version": "5.28.1"
+            "version": "5.28.0"
           },
           "spans": [
             {
-              "traceId": "7493932093d70cef6d7a31ce8d5f91b3",
-              "spanId": "9719e665d86b8484",
-              "parentSpanId": "b45372e9e38629c8",
+              "traceId": "8e8ea70720a1be8ed1c286174e8dd70a",
+              "spanId": "3f86785fe68494dc",
+              "parentSpanId": "59c573cb7c2858fb",
               "flags": 768,
               "name": "printf HTTP/1.1 418 I'm a teapot",
               "kind": 1,
-              "startTimeUnixNano": "1759515403693584640",
-              "endTimeUnixNano": "1759515403711731456",
+              "startTimeUnixNano": "1759628460789061632",
+              "endTimeUnixNano": "1759628460807193088",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -236,14 +236,14 @@
               "status": {}
             },
             {
-              "traceId": "7493932093d70cef6d7a31ce8d5f91b3",
-              "spanId": "b45372e9e38629c8",
-              "parentSpanId": "f3280ba7260aaeda",
+              "traceId": "8e8ea70720a1be8ed1c286174e8dd70a",
+              "spanId": "59c573cb7c2858fb",
+              "parentSpanId": "ff7a5d36a42a3c5c",
               "flags": 768,
               "name": "GET",
               "kind": 2,
-              "startTimeUnixNano": "1759515403682427392",
-              "endTimeUnixNano": "1759515403781637888",
+              "startTimeUnixNano": "1759628460777708800",
+              "endTimeUnixNano": "1759628460876156672",
               "attributes": [
                 {
                   "key": "network.transport",
@@ -260,7 +260,7 @@
                 {
                   "key": "network.peer.port",
                   "value": {
-                    "intValue": "43600"
+                    "intValue": "50646"
                   }
                 },
                 {
@@ -284,7 +284,7 @@
                 {
                   "key": "client.port",
                   "value": {
-                    "intValue": "43600"
+                    "intValue": "50646"
                   }
                 },
                 {
@@ -335,19 +335,7 @@
                     "arrayValue": {
                       "values": [
                         {
-                          "stringValue": "00-7493932093d70cef6d7a31ce8d5f91b3-f3280ba7260aaeda-01"
-                        }
-                      ]
-                    }
-                  }
-                },
-                {
-                  "key": "http.request.header.tracestate",
-                  "value": {
-                    "arrayValue": {
-                      "values": [
-                        {
-                          "stringValue": "tracestate:"
+                          "stringValue": "00-8e8ea70720a1be8ed1c286174e8dd70a-ff7a5d36a42a3c5c-01"
                         }
                       ]
                     }
@@ -368,21 +356,21 @@
               ],
               "links": [
                 {
-                  "traceId": "4146c9643251f1667fd5e25a80fc5e28",
-                  "spanId": "756aa145ae1f5b5a",
+                  "traceId": "b6636bfaa2415df2e9416e375b21bdde",
+                  "spanId": "5dddde5b1bbc8af2",
                   "flags": 768
                 }
               ],
               "status": {}
             },
             {
-              "traceId": "4146c9643251f1667fd5e25a80fc5e28",
-              "spanId": "756aa145ae1f5b5a",
+              "traceId": "b6636bfaa2415df2e9416e375b21bdde",
+              "spanId": "5dddde5b1bbc8af2",
               "flags": 256,
               "name": "send/receive",
               "kind": 5,
-              "startTimeUnixNano": "1759515403614458880",
-              "endTimeUnixNano": "1759515403784030720",
+              "startTimeUnixNano": "1759628460707741440",
+              "endTimeUnixNano": "1759628460878495488",
               "attributes": [
                 {
                   "key": "network.transport",
@@ -399,7 +387,7 @@
                 {
                   "key": "network.peer.port",
                   "value": {
-                    "intValue": "43600"
+                    "intValue": "50646"
                   }
                 },
                 {
@@ -423,491 +411,17 @@
                 {
                   "key": "client.port",
                   "value": {
-                    "intValue": "43600"
+                    "intValue": "50646"
                   }
                 }
               ],
               "links": [
                 {
-                  "traceId": "7493932093d70cef6d7a31ce8d5f91b3",
-                  "spanId": "b45372e9e38629c8",
+                  "traceId": "8e8ea70720a1be8ed1c286174e8dd70a",
+                  "spanId": "59c573cb7c2858fb",
                   "flags": 768
                 }
               ],
-              "status": {}
-            }
-          ]
-        }
-      ]
-    }
-  ]
-}
-{
-  "resourceSpans": [
-    {
-      "resource": {
-        "attributes": [
-          {
-            "key": "telemetry.sdk.language",
-            "value": {
-              "stringValue": "shell"
-            }
-          },
-          {
-            "key": "telemetry.sdk.name",
-            "value": {
-              "stringValue": "opentelemetry"
-            }
-          },
-          {
-            "key": "telemetry.sdk.version",
-            "value": {
-              "stringValue": "5.28.1"
-            }
-          },
-          {
-            "key": "service.name",
-            "value": {
-              "stringValue": "unknown_service"
-            }
-          },
-          {
-            "key": "azure.vm.scaleset.name",
-            "value": {
-              "stringValue": ""
-            }
-          },
-          {
-            "key": "azure.vm.sku",
-            "value": {
-              "stringValue": ""
-            }
-          },
-          {
-            "key": "cloud.platform",
-            "value": {
-              "stringValue": "azure_vm"
-            }
-          },
-          {
-            "key": "cloud.provider",
-            "value": {
-              "stringValue": "azure"
-            }
-          },
-          {
-            "key": "cloud.region",
-            "value": {
-              "stringValue": "centralus"
-            }
-          },
-          {
-            "key": "cloud.resource_id",
-            "value": {
-              "stringValue": "/subscriptions/1b81a300-6f1d-4a2a-8639-a65857d71bc5/resourceGroups/azure-centralus-general-1b81a300-6f1d-4a2a-8639-a65857d71bc5/providers/Microsoft.Compute/virtualMachines/Lp1RGCWOi7fU5E"
-            }
-          },
-          {
-            "key": "host.id",
-            "value": {
-              "stringValue": "d6580b57-5e40-4a26-a22d-655599f3f542"
-            }
-          },
-          {
-            "key": "host.name",
-            "value": {
-              "stringValue": "Lp1RGCWOi7fU5E"
-            }
-          },
-          {
-            "key": "host.type",
-            "value": {
-              "stringValue": "Standard_D4ads_v5"
-            }
-          },
-          {
-            "key": "os.type",
-            "value": {
-              "stringValue": "linux"
-            }
-          },
-          {
-            "key": "os.version",
-            "value": {
-              "stringValue": "6.11.0-1018-azure"
-            }
-          },
-          {
-            "key": "service.instance.id",
-            "value": {
-              "stringValue": ""
-            }
-          },
-          {
-            "key": "process.pid",
-            "value": {
-              "intValue": "3478"
-            }
-          },
-          {
-            "key": "process.parent_pid",
-            "value": {
-              "intValue": "2359"
-            }
-          },
-          {
-            "key": "process.executable.name",
-            "value": {
-              "stringValue": "bash"
-            }
-          },
-          {
-            "key": "process.executable.path",
-            "value": {
-              "stringValue": "/usr/bin/bash"
-            }
-          },
-          {
-            "key": "process.command_line",
-            "value": {
-              "stringValue": "bash -e demo.sh"
-            }
-          },
-          {
-            "key": "process.command",
-            "value": {
-              "stringValue": "bash"
-            }
-          },
-          {
-            "key": "process.owner",
-            "value": {
-              "stringValue": "runner"
-            }
-          },
-          {
-            "key": "process.runtime.name",
-            "value": {
-              "stringValue": "bash"
-            }
-          },
-          {
-            "key": "process.runtime.description",
-            "value": {
-              "stringValue": "Bourne Again Shell"
-            }
-          },
-          {
-            "key": "process.runtime.version",
-            "value": {
-              "stringValue": "5.2.21-2ubuntu4"
-            }
-          },
-          {
-            "key": "process.runtime.options",
-            "value": {
-              "stringValue": "ehB"
-            }
-          },
-          {
-            "key": "service.version",
-            "value": {
-              "stringValue": ""
-            }
-          },
-          {
-            "key": "service.namespace",
-            "value": {
-              "stringValue": ""
-            }
-          }
-        ]
-      },
-      "scopeSpans": [
-        {
-          "scope": {
-            "name": "shell",
-            "version": "5.28.1"
-          },
-          "spans": [
-            {
-              "traceId": "7493932093d70cef6d7a31ce8d5f91b3",
-              "spanId": "7446e75907c00dae",
-              "parentSpanId": "1ae378896623a881",
-              "flags": 768,
-              "name": "printf GET / HTTP/1.1\\r\\n\\r\\n",
-              "kind": 1,
-              "startTimeUnixNano": "1759515402904666624",
-              "endTimeUnixNano": "1759515402919574272",
-              "attributes": [
-                {
-                  "key": "shell.command_line",
-                  "value": {
-                    "stringValue": "printf GET / HTTP/1.1\\r\\n\\r\\n"
-                  }
-                },
-                {
-                  "key": "shell.command",
-                  "value": {
-                    "stringValue": "printf"
-                  }
-                },
-                {
-                  "key": "shell.command.type",
-                  "value": {
-                    "stringValue": "builtin"
-                  }
-                },
-                {
-                  "key": "shell.command.name",
-                  "value": {
-                    "stringValue": "printf"
-                  }
-                },
-                {
-                  "key": "shell.command.exit_code",
-                  "value": {
-                    "intValue": "0"
-                  }
-                },
-                {
-                  "key": "code.filepath",
-                  "value": {
-                    "stringValue": "demo.sh"
-                  }
-                },
-                {
-                  "key": "code.lineno",
-                  "value": {
-                    "intValue": "4"
-                  }
-                }
-              ],
-              "status": {}
-            },
-            {
-              "traceId": "7493932093d70cef6d7a31ce8d5f91b3",
-              "spanId": "f3280ba7260aaeda",
-              "parentSpanId": "8087fd4a539dde5d",
-              "flags": 768,
-              "name": "GET",
-              "kind": 3,
-              "startTimeUnixNano": "1759515403005574912",
-              "endTimeUnixNano": "1759515403866458112",
-              "attributes": [
-                {
-                  "key": "network.transport",
-                  "value": {
-                    "stringValue": "tcp"
-                  }
-                },
-                {
-                  "key": "network.peer.address",
-                  "value": {
-                    "stringValue": "127.0.0.1"
-                  }
-                },
-                {
-                  "key": "network.peer.port",
-                  "value": {
-                    "intValue": "12345"
-                  }
-                },
-                {
-                  "key": "server.address",
-                  "value": {
-                    "stringValue": "127.0.0.1"
-                  }
-                },
-                {
-                  "key": "server.port",
-                  "value": {
-                    "intValue": "12345"
-                  }
-                },
-                {
-                  "key": "network.protocol.name",
-                  "value": {
-                    "stringValue": "http"
-                  }
-                },
-                {
-                  "key": "network.protocol.version",
-                  "value": {
-                    "stringValue": "1.1"
-                  }
-                },
-                {
-                  "key": "url.full",
-                  "value": {
-                    "stringValue": "http://127.0.0.1:12345/"
-                  }
-                },
-                {
-                  "key": "url.path",
-                  "value": {
-                    "stringValue": "/"
-                  }
-                },
-                {
-                  "key": "url.scheme",
-                  "value": {
-                    "stringValue": "http"
-                  }
-                },
-                {
-                  "key": "http.request.method",
-                  "value": {
-                    "stringValue": "GET"
-                  }
-                },
-                {
-                  "key": "http.request.body.size",
-                  "value": {
-                    "intValue": "0"
-                  }
-                },
-                {
-                  "key": "user_agent.original",
-                  "value": {
-                    "stringValue": "netcat"
-                  }
-                },
-                {
-                  "key": "http.response.status_code",
-                  "value": {
-                    "intValue": "418"
-                  }
-                },
-                {
-                  "key": "http.response.body.size",
-                  "value": {
-                    "intValue": "0"
-                  }
-                }
-              ],
-              "status": {
-                "code": 2
-              }
-            },
-            {
-              "traceId": "7493932093d70cef6d7a31ce8d5f91b3",
-              "spanId": "8087fd4a539dde5d",
-              "parentSpanId": "0a40aa0225d5a28f",
-              "flags": 768,
-              "name": "send/receive",
-              "kind": 4,
-              "startTimeUnixNano": "1759515402926804480",
-              "endTimeUnixNano": "1759515403866944512",
-              "attributes": [
-                {
-                  "key": "network.transport",
-                  "value": {
-                    "stringValue": "tcp"
-                  }
-                },
-                {
-                  "key": "network.peer.address",
-                  "value": {
-                    "stringValue": "127.0.0.1"
-                  }
-                },
-                {
-                  "key": "network.peer.port",
-                  "value": {
-                    "intValue": "12345"
-                  }
-                },
-                {
-                  "key": "server.address",
-                  "value": {
-                    "stringValue": "127.0.0.1"
-                  }
-                },
-                {
-                  "key": "server.port",
-                  "value": {
-                    "intValue": "12345"
-                  }
-                }
-              ],
-              "status": {}
-            },
-            {
-              "traceId": "7493932093d70cef6d7a31ce8d5f91b3",
-              "spanId": "0a40aa0225d5a28f",
-              "parentSpanId": "1ae378896623a881",
-              "flags": 768,
-              "name": "ncat --no-shutdown 127.0.0.1 12345",
-              "kind": 1,
-              "startTimeUnixNano": "1759515402905416704",
-              "endTimeUnixNano": "1759515403871199744",
-              "attributes": [
-                {
-                  "key": "shell.command_line",
-                  "value": {
-                    "stringValue": "ncat --no-shutdown 127.0.0.1 12345"
-                  }
-                },
-                {
-                  "key": "shell.command",
-                  "value": {
-                    "stringValue": "ncat"
-                  }
-                },
-                {
-                  "key": "shell.command.type",
-                  "value": {
-                    "stringValue": "file"
-                  }
-                },
-                {
-                  "key": "shell.command.name",
-                  "value": {
-                    "stringValue": "ncat"
-                  }
-                },
-                {
-                  "key": "subprocess.executable.path",
-                  "value": {
-                    "stringValue": "/usr/bin/ncat"
-                  }
-                },
-                {
-                  "key": "subprocess.executable.name",
-                  "value": {
-                    "stringValue": "ncat"
-                  }
-                },
-                {
-                  "key": "shell.command.exit_code",
-                  "value": {
-                    "intValue": "0"
-                  }
-                },
-                {
-                  "key": "code.filepath",
-                  "value": {
-                    "stringValue": "demo.sh"
-                  }
-                },
-                {
-                  "key": "code.lineno",
-                  "value": {
-                    "intValue": "4"
-                  }
-                }
-              ],
-              "status": {}
-            },
-            {
-              "traceId": "7493932093d70cef6d7a31ce8d5f91b3",
-              "spanId": "1ae378896623a881",
-              "flags": 256,
-              "name": "bash -e demo.sh",
-              "kind": 2,
-              "startTimeUnixNano": "1759515402891919616",
-              "endTimeUnixNano": "1759515403871809024",
               "status": {}
             }
           ]
