@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e -o pipefail
+set -m
 
 # some default configurations
 export OTEL_SHELL_CONFIG_MUTE_BUILTINS="${OTEL_SHELL_CONFIG_MUTE_BUILTINS:-TRUE}"
