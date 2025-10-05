@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e -o pipefail
-if [ -n "$INPUT_DEBUG" ]; then set -m; fi
+if [ -n "$INPUT_DEBUG" ]; then set -mx; fi
 
 # some default configurations
 export OTEL_SHELL_CONFIG_MUTE_BUILTINS="${OTEL_SHELL_CONFIG_MUTE_BUILTINS:-TRUE}"
