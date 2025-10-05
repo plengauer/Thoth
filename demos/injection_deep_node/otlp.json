@@ -6,7 +6,7 @@
           {
             "key": "process.pid",
             "value": {
-              "intValue": "8200"
+              "intValue": "8332"
             }
           },
           {
@@ -87,7 +87,7 @@
           {
             "key": "vcs.commit.id",
             "value": {
-              "stringValue": "eb8a05bf4179dfa66c5f14a439f41a41893eb292"
+              "stringValue": "31fc2218d60e7238d896afe72ac3f631967e361a"
             }
           },
           {
@@ -123,25 +123,25 @@
           {
             "key": "cloud.region",
             "value": {
-              "stringValue": "northcentralus"
+              "stringValue": "eastus"
             }
           },
           {
             "key": "cloud.resource_id",
             "value": {
-              "stringValue": "/subscriptions/99a88d45-f2de-4e5e-9d53-5eb3fedf68bd/resourceGroups/azure-northcentralus-general-99a88d45-f2de-4e5e-9d53-5eb3fedf68bd/providers/Microsoft.Compute/virtualMachines/rgnZKnxogJaUdV"
+              "stringValue": "/subscriptions/89e93311-e5b3-4fdf-9625-4c5eabe92b63/resourceGroups/azure-eastus-general-89e93311-e5b3-4fdf-9625-4c5eabe92b63/providers/Microsoft.Compute/virtualMachines/Qph7gVf9TbrX4N"
             }
           },
           {
             "key": "host.id",
             "value": {
-              "stringValue": "5bdc2028-0ef1-474c-bb58-622c60d5d601"
+              "stringValue": "139caf48-dbed-45e7-a9e9-b32a2ff4caa2"
             }
           },
           {
             "key": "host.name",
             "value": {
-              "stringValue": "rgnZKnxogJaUdV"
+              "stringValue": "Qph7gVf9TbrX4N"
             }
           },
           {
@@ -153,7 +153,7 @@
           {
             "key": "os.version",
             "value": {
-              "stringValue": "20250922.53.1"
+              "stringValue": "20250929.60.1"
             }
           },
           {
@@ -190,13 +190,13 @@
           },
           "spans": [
             {
-              "traceId": "a2eb0d74f0e1c79215f07db5c4b3465d",
-              "spanId": "09d28f63204b0e78",
-              "parentSpanId": "6fb7de03d61b3d6d",
+              "traceId": "3db18148ad4ddfb27f1589340dd23440",
+              "spanId": "da19f0aff42cd18d",
+              "parentSpanId": "e301287b79f864a4",
               "name": "GET",
               "kind": 3,
-              "startTimeUnixNano": "1759515760662000000",
-              "endTimeUnixNano": "1759515760977114287",
+              "startTimeUnixNano": "1759628664613000000",
+              "endTimeUnixNano": "1759628664756803214",
               "attributes": [
                 {
                   "key": "http.url",
@@ -231,7 +231,7 @@
                 {
                   "key": "net.peer.ip",
                   "value": {
-                    "stringValue": "23.192.228.80"
+                    "stringValue": "23.215.0.136"
                   }
                 },
                 {
@@ -295,7 +295,7 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "5.28.1"
+              "stringValue": "5.28.0"
             }
           },
           {
@@ -331,25 +331,25 @@
           {
             "key": "cloud.region",
             "value": {
-              "stringValue": "northcentralus"
+              "stringValue": "eastus"
             }
           },
           {
             "key": "cloud.resource_id",
             "value": {
-              "stringValue": "/subscriptions/99a88d45-f2de-4e5e-9d53-5eb3fedf68bd/resourceGroups/azure-northcentralus-general-99a88d45-f2de-4e5e-9d53-5eb3fedf68bd/providers/Microsoft.Compute/virtualMachines/rgnZKnxogJaUdV"
+              "stringValue": "/subscriptions/89e93311-e5b3-4fdf-9625-4c5eabe92b63/resourceGroups/azure-eastus-general-89e93311-e5b3-4fdf-9625-4c5eabe92b63/providers/Microsoft.Compute/virtualMachines/Qph7gVf9TbrX4N"
             }
           },
           {
             "key": "host.id",
             "value": {
-              "stringValue": "5bdc2028-0ef1-474c-bb58-622c60d5d601"
+              "stringValue": "139caf48-dbed-45e7-a9e9-b32a2ff4caa2"
             }
           },
           {
             "key": "host.name",
             "value": {
-              "stringValue": "rgnZKnxogJaUdV"
+              "stringValue": "Qph7gVf9TbrX4N"
             }
           },
           {
@@ -379,13 +379,13 @@
           {
             "key": "process.pid",
             "value": {
-              "intValue": "7387"
+              "intValue": "7518"
             }
           },
           {
             "key": "process.parent_pid",
             "value": {
-              "intValue": "2377"
+              "intValue": "2356"
             }
           },
           {
@@ -460,18 +460,18 @@
         {
           "scope": {
             "name": "shell",
-            "version": "5.28.1"
+            "version": "5.28.0"
           },
           "spans": [
             {
-              "traceId": "a2eb0d74f0e1c79215f07db5c4b3465d",
-              "spanId": "6fb7de03d61b3d6d",
-              "parentSpanId": "05c3d007313341db",
+              "traceId": "3db18148ad4ddfb27f1589340dd23440",
+              "spanId": "e301287b79f864a4",
+              "parentSpanId": "fac21cdba8b99620",
               "flags": 768,
               "name": "node index.js",
               "kind": 1,
-              "startTimeUnixNano": "1759515757415572480",
-              "endTimeUnixNano": "1759515761405767424",
+              "startTimeUnixNano": "1759628661447179264",
+              "endTimeUnixNano": "1759628665355858944",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -531,13 +531,13 @@
               "status": {}
             },
             {
-              "traceId": "a2eb0d74f0e1c79215f07db5c4b3465d",
-              "spanId": "05c3d007313341db",
+              "traceId": "3db18148ad4ddfb27f1589340dd23440",
+              "spanId": "fac21cdba8b99620",
               "flags": 256,
               "name": "bash -e demo.sh",
               "kind": 2,
-              "startTimeUnixNano": "1759515757403041024",
-              "endTimeUnixNano": "1759515761405921024",
+              "startTimeUnixNano": "1759628661434580992",
+              "endTimeUnixNano": "1759628665356005888",
               "status": {}
             }
           ]
