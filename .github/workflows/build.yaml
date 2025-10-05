@@ -592,7 +592,7 @@ jobs:
           path: package.*
 
   build-workflow-image:
-    needs: [build-deb]
+    needs: [build-apk]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -607,7 +607,7 @@ jobs:
       - uses: actions/checkout@v5.0.0
       - uses: actions/download-artifact@v5.0.0
         with:
-          name: package.deb
+          name: package.apk
       - run: |
           cp package.deb actions/instrument/workflow
           pushd actions/instrument/workflow
