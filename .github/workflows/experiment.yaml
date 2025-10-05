@@ -20,7 +20,7 @@ jobs:
     runs-on: ${{ matrix.runner }}
     permissions: {}
     steps:
-      - run: sudo find / | grep -F '/node_modules/' | grep actions
+      - run: sudo find /
   experiment:
     runs-on: ubuntu-latest
     permissions:
