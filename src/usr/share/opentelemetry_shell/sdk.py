@@ -7,6 +7,7 @@ import requests
 from datetime import datetime, timezone
 import functools
 import hashlib
+import socket
 
 import opentelemetry
 
@@ -53,6 +54,14 @@ class GithubActionResourceDetector(ResourceDetector):
             })
         except:
             return Resource.create({})
+
+class SafeGoogleCloudResourceDetector(GoogleCloudResourceDetector):
+  def detect(self) -> Resource:
+    try:
+      socket.gethostbyname('metadata.google.internal')
+      return super.detect()
+    except socket.error:
+      return Resource.create({})
 
 class OracleResourceDetector(ResourceDetector):
     def detect(self) -> Resource:
@@ -156,7 +165,7 @@ def handle(scope, version, command, arguments):
         final_resources = get_aggregated_resources([
                 OracleResourceDetector(),
                 # TODO Alibaba
-                GoogleCloudResourceDetector(),
+                SafeGoogleCloudResourceDetector(),
                 AzureAppServiceResourceDetector(),
                 AzureVMResourceDetector(),
                 AwsBeanstalkResourceDetector(),
