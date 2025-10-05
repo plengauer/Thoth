@@ -20,7 +20,7 @@ mkfifo "$OTEL_SHELL_SDK_OUTPUT_REDIRECT"
 chmod 777 "$OTEL_SHELL_SDK_OUTPUT_REDIRECT"
 log_file="$(mktemp -u -p "$tmp_dir")"
 echo "log_file=$log_file" >> "$GITHUB_STATE"
-( ( while true; do cat "$OTEL_SHELL_SDK_OUTPUT_REDIRECT"; done >> "$log_file" ) 1> /dev/null 2> /dev/null & )
+( while true; do cat "$OTEL_SHELL_SDK_OUTPUT_REDIRECT"; done >> "$log_file" 2> /dev/null & )
 
 # install dependencies
 . ../shared/github.sh
@@ -186,7 +186,7 @@ opentelemetry_root_dir="$(mktemp -d)"
 count=0
 while [ "$count" -lt 60 ] && ! gh_artifact_download "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_workflow_run_"$GITHUB_RUN_ATTEMPT" "$opentelemetry_root_dir" || ! [ -r "$opentelemetry_root_dir"/traceparent ]; do
   if [ "$count" -gt 0 ]; then sleep $count; fi
-  if [ -n "$INPUT_DEBUG" ]; then jobs; fi && wait # only join within this loop, because we need to make sure everything is installed properly at this point, in most cases, it is unnecessary though and we can join later
+  wait # only join within this loop, because we need to make sure everything is installed properly at this point, in most cases, it is unnecessary though and we can join later
   . otelapi.sh
   otel_init
   otel_span_traceparent "$(otel_span_start INTERNAL dummy)" > "$opentelemetry_root_dir"/traceparent
@@ -386,7 +386,7 @@ export -f root4job
 
 traceparent_file="$(mktemp -u)"
 mkfifo /tmp/opentelemetry_shell.github.debug.log
-if [ -n "$INPUT_DEBUG" ]; then jobs; fi && wait # make sure we wait for all background jobs before we actually start
+wait # make sure we wait for all background jobs before we actually start
 nohup bash -c 'root4job "$@"' bash "$traceparent_file" &> /dev/null &
 echo "pid=$!" >> "$GITHUB_STATE"
 cat /tmp/opentelemetry_shell.github.debug.log
