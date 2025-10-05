@@ -1,8 +1,26 @@
 name: Experiment
 on:
   workflow_dispatch:
-  # push:
+  push:
+    paths:
+      - .github/workflows/experiment.yaml
 jobs:
+  env:
+    strategy:
+      matrix:
+        runner: [ ubuntu-latest, maxos-latest ]
+    runs-on: ${{ matrix.runner }}
+    permissions: {}
+    steps:
+      - run: printenv
+  filesystem:
+    strategy:
+      matrix:
+        runner: [ ubuntu-latest, maxos-latest ]
+    runs-on: ${{ matrix.runner }}
+    permissions: {}
+    steps:
+      - run: sudo find / | grep -F '/node_modules/'
   experiment:
     runs-on: ubuntu-latest
     permissions:
