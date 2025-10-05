@@ -8,7 +8,7 @@ jobs:
   env:
     strategy:
       matrix:
-        runner: [ ubuntu-latest, maxos-latest ]
+        runner: [ ubuntu-latest, macos-latest ]
     runs-on: ${{ matrix.runner }}
     permissions: {}
     steps:
@@ -16,11 +16,11 @@ jobs:
   filesystem:
     strategy:
       matrix:
-        runner: [ ubuntu-latest, maxos-latest ]
+        runner: [ ubuntu-latest, macos-latest ]
     runs-on: ${{ matrix.runner }}
     permissions: {}
     steps:
-      - run: sudo find / | grep -F '/node_modules/'
+      - run: sudo find / | grep -F '/node_modules/' | grep actions
   experiment:
     runs-on: ubuntu-latest
     permissions:
