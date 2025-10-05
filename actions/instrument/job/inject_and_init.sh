@@ -20,7 +20,7 @@ mkfifo "$OTEL_SHELL_SDK_OUTPUT_REDIRECT"
 chmod 777 "$OTEL_SHELL_SDK_OUTPUT_REDIRECT"
 log_file="$(mktemp -u -p "$tmp_dir")"
 echo "log_file=$log_file" >> "$GITHUB_STATE"
-( while true; do cat "$OTEL_SHELL_SDK_OUTPUT_REDIRECT"; done >> "$log_file" ) 1> /dev/null 2> /dev/null &
+( ( while true; do cat "$OTEL_SHELL_SDK_OUTPUT_REDIRECT"; done >> "$log_file" ) 1> /dev/null 2> /dev/null & )
 
 # install dependencies
 . ../shared/github.sh
