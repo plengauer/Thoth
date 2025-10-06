@@ -10,7 +10,8 @@ jobs:
       matrix:
         runner: [ ubuntu-latest, macos-latest ]
     runs-on: ${{ matrix.runner }}
-    permissions: {}
+    permissions:
+      actions: read
     steps:
       - run: printenv
   filesystem:
@@ -18,7 +19,8 @@ jobs:
       matrix:
         runner: [ ubuntu-latest, macos-latest ]
     runs-on: ${{ matrix.runner }}
-    permissions: {}
+    permissions:
+      actions: read
     steps:
       - run: sudo find /
   experiment:
