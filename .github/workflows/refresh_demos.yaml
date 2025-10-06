@@ -226,7 +226,7 @@ jobs:
       - run: |
           cd demos/${{ matrix.demo_directory }}
           git add --intent-to-add README.md output.stdout output.stderr otlp.json
-          git diff README.md | grep -v '^+++' | grep -v '^---' | grep -v '/tmp' | grep -v Id | grep -v _id | grep -v .id | grep -v Time | grep -v time | grep -v timestamp | grep -v github. | grep -v vcs. | grep -v .version | grep -v .ip | grep -v .port | grep -v peer. | grep -v process.pid | grep -v process.parent_pid | grep -v http.user_agent | grep -v host.name | grep -v '"00-' | grep -q '^+' && echo dirty=true >> "$GITHUB_OUTPUT" || true
+          git diff README.md | grep -v '^+++' | grep -v '^---' | grep -v '/tmp' | grep -v Id | grep -v _id | grep -v .id | grep -v Time | grep -v time | grep -v timestamp | grep -v github. | grep -v vcs. | grep -v .version | grep -v .ip | grep -v .port | grep -v peer. | grep -v process.pid | grep -v process.parent_pid | grep -v http.user_agent | grep -v host.name | grep -v cloud.region | grep -v '"00-' | grep -q '^+' && echo dirty=true >> "$GITHUB_OUTPUT" || true
         id: diff
       - name: "Resolve Reviewers"
         if: steps.diff.outputs.dirty
