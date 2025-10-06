@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e -o pipefail
+if [ -n "$INPUT_DEBUG" ]; then set -mx; fi
 
 # some default configurations
 export OTEL_SHELL_CONFIG_MUTE_BUILTINS="${OTEL_SHELL_CONFIG_MUTE_BUILTINS:-TRUE}"
@@ -19,7 +20,7 @@ mkfifo "$OTEL_SHELL_SDK_OUTPUT_REDIRECT"
 chmod 777 "$OTEL_SHELL_SDK_OUTPUT_REDIRECT"
 log_file="$(mktemp -u -p "$tmp_dir")"
 echo "log_file=$log_file" >> "$GITHUB_STATE"
-( while true; do cat "$OTEL_SHELL_SDK_OUTPUT_REDIRECT"; done >> "$log_file" ) 1> /dev/null 2> /dev/null &
+( while true; do cat "$OTEL_SHELL_SDK_OUTPUT_REDIRECT"; done >> "$log_file" 2> /dev/null & )
 
 # install dependencies
 . ../shared/github.sh
@@ -37,10 +38,11 @@ if [ "$INPUT_CACHE" = "true" ]; then
     dpkg-deb --control /var/cache/apt/archives/opentelemetry-shell*.deb "$control_dir"
     if cat "$control_dir"/control | grep -E '^Pre-Depends:|^Depends:' | cut -d ':' -f 2 - | tr ',' '\n' | grep -v '|' | tr -d ' ' | cut -d '(' -f 1 | sed 's/awk/gawk/g' | xargs -I '{}' [ -r /var/lib/dpkg/info/'{}'.list ]; then
       sudo dpkg-deb --extract /var/cache/apt/archives/opentelemetry-shell*.deb /
-      sudo "$control_dir"/postinst configure
+      ( sudo "$control_dir"/postinst configure && rm -rf "$control_dir" ) &
       export OTEL_SHELL_PACKAGE_VERSION_CACHE_opentelemetry_shell="$(cat ../../../VERSION)"
+    else
+      rm -rf "$control_dir"
     fi
-    rm -rf "$control_dir"
   fi
 fi
 bash -e -o pipefail ../shared/install.sh curl wget jq sed unzip 'node;nodejs' npm 'docker;docker.io' 'gcc;build-essential'
@@ -49,12 +51,13 @@ if [ -r /opt/opentelemetry_shell/collector.image ]; then
   sudo docker load < /opt/opentelemetry_shell/collector.image
 else
   sudo docker pull "$OTEL_SHELL_COLLECTOR_IMAGE"
-fi
+fi &
 if [ "${write_back_cache:-FALSE}" = TRUE ] && [ -n "${cache_key:-}" ]; then
-  sudo docker save "$OTEL_SHELL_COLLECTOR_IMAGE" | sudo tee /opt/opentelemetry_shell/collector.image > /dev/null && sudo -E -H node -e "require('@actions/cache').saveCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip', '/opt/opentelemetry_shell/collector.image'], '$cache_key');" &
+  wait # only join in case we wanna write back, this will be rare and is necessary to have a good cache
+  ( sudo docker save "$OTEL_SHELL_COLLECTOR_IMAGE" | sudo tee /opt/opentelemetry_shell/collector.image > /dev/null && sudo -E -H node -e "require('@actions/cache').saveCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip', '/opt/opentelemetry_shell/collector.image'], '$cache_key');" & )
 fi
 
-# configure collector if required
+# configure collector
 backup_otel_exporter_otlp_traces_endpoint="${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT:-}}"
 section_exporter_logs="$(mktemp)"; section_exporter_metrics="$(mktemp)"; section_exporter_traces="$(mktemp)"
 section_pipeline_logs="$(mktemp)"; section_pipeline_metrics="$(mktemp)"; section_pipeline_traces="$(mktemp)"
@@ -122,6 +125,9 @@ EOF
   export OTEL_EXPORTER_OTLP_TRACES_PROTOCOL=http/protobuf
 fi
 unset OTEL_EXPORTER_OTLP_HEADERS OTEL_EXPORTER_OTLP_ENDPOINT
+if [ -n "$INPUT_DEBUG" ]; then set +x; fi
+echo "$INPUT_SECRETS_TO_REDACT" | jq -r '. | to_entries[].value' | sed 's/[.[\(*^$+?{|]/\\\\&/g' | xargs -I '{}' echo '::add-mask::{}'
+if [ -n "$INPUT_DEBUG" ]; then set -x; fi
 cat > collector.yaml <<EOF
 receivers:
   otlp:
@@ -150,10 +156,7 @@ $(cat $section_pipeline_logs)
 $(cat $section_pipeline_metrics)
 $(cat $section_pipeline_traces)
 EOF
-if [ -n "$INPUT_DEBUG" ]; then
-  echo "$INPUT_SECRETS_TO_REDACT" | jq -r '. | to_entries[].value' | sed 's/[.[\(*^$+?{|]/\\\\&/g' | xargs -I '{}' echo '::add-mask::{}'
-  cat collector.yaml
-fi
+if [ -n "$INPUT_DEBUG" ]; then cat collector.yaml; fi
 
 # setup injections
 echo "$GITHUB_ACTION" > /tmp/opentelemetry_shell_action_name # to avoid recursions
@@ -163,27 +166,27 @@ relocated_binary_dir="$GITHUB_ACTION_PATH/relocated_bin"
 mkdir -p "$new_binary_dir" "$relocated_binary_dir"
 echo "$new_binary_dir" >> "$GITHUB_PATH"
 ## setup injection for shell actions
-gcc -o "$new_binary_dir"/sh forward.c -DEXECUTABLE="$(which sh)" -DARG1="$GITHUB_ACTION_PATH"/decorate_action_run.sh -DARG2="$(which sh)"
-gcc -o "$new_binary_dir"/dash forward.c -DEXECUTABLE="$(which dash)" -DARG1="$GITHUB_ACTION_PATH"/decorate_action_run.sh -DARG2="$(which dash)"
-gcc -o "$new_binary_dir"/bash forward.c -DEXECUTABLE="$(which bash)" -DARG1="$GITHUB_ACTION_PATH"/decorate_action_run.sh -DARG2="$(which bash)"
+( if type sh;   then gcc -o "$new_binary_dir"/sh forward.c -DEXECUTABLE="$(which sh)" -DARG1="$GITHUB_ACTION_PATH"/decorate_action_run.sh -DARG2="$(which sh)"; fi ) &
+( if type ash;  then gcc -o "$new_binary_dir"/dash forward.c -DEXECUTABLE="$(which ash)" -DARG1="$GITHUB_ACTION_PATH"/decorate_action_run.sh -DARG2="$(which ash)"; fi ) &
+( if type dash; then gcc -o "$new_binary_dir"/dash forward.c -DEXECUTABLE="$(which dash)" -DARG1="$GITHUB_ACTION_PATH"/decorate_action_run.sh -DARG2="$(which dash)"; fi ) &
+( if type bash; then gcc -o "$new_binary_dir"/bash forward.c -DEXECUTABLE="$(which bash)" -DARG1="$GITHUB_ACTION_PATH"/decorate_action_run.sh -DARG2="$(which bash)"; fi ) &
 ## setup injections into node actions
 for node_path in "$(readlink -f /proc/*/exe | grep '/Runner.Worker$' | rev | cut -d / -f 4- | rev)"/*/externals/node*/bin/node; do
   dir_path_new="$relocated_binary_dir"/"$(echo "$node_path" | rev | cut -d / -f 3 | rev)"
   mkdir "$dir_path_new"
   node_path_new="$dir_path_new"/node
   mv "$node_path" "$node_path_new"
-  gcc -o "$node_path" forward.c -DEXECUTABLE=/bin/bash -DARG1="$GITHUB_ACTION_PATH"/decorate_action_node.sh -DARG2="$node_path_new" # path is hardcoded in the runners
+  gcc -o "$node_path" forward.c -DEXECUTABLE=/bin/bash -DARG1="$GITHUB_ACTION_PATH"/decorate_action_node.sh -DARG2="$node_path_new" & # path is hardcoded in the runners
 done
 ## setup injections into docker actions
-docker_path="$(which docker)"
-sudo mv "$docker_path" "$relocated_binary_dir"
-sudo gcc -o "$docker_path" forward.c -DEXECUTABLE=/bin/bash -DARG1="$GITHUB_ACTION_PATH"/decorate_action_docker.sh -DARG2="$relocated_binary_dir"/docker
+( if type docker; then docker_path="$(which docker)" && sudo mv "$docker_path" "$relocated_binary_dir" && sudo gcc -o "$docker_path" forward.c -DEXECUTABLE=/bin/bash -DARG1="$GITHUB_ACTION_PATH"/decorate_action_docker.sh -DARG2="$relocated_binary_dir"/docker; fi ) &
 
 # resolve parent (does not exist yet - see workflow action) and make sure all jobs are of the same trace and have the same deferred parent 
 opentelemetry_root_dir="$(mktemp -d)"
 count=0
 while [ "$count" -lt 60 ] && ! gh_artifact_download "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_workflow_run_"$GITHUB_RUN_ATTEMPT" "$opentelemetry_root_dir" || ! [ -r "$opentelemetry_root_dir"/traceparent ]; do
   if [ "$count" -gt 0 ]; then sleep $count; fi
+  wait # only join within this loop, because we need to make sure everything is installed properly at this point, in most cases, it is unnecessary though and we can join later
   . otelapi.sh
   otel_init
   otel_span_traceparent "$(otel_span_start INTERNAL dummy)" > "$opentelemetry_root_dir"/traceparent
@@ -387,6 +390,7 @@ export -f root4job
 
 traceparent_file="$(mktemp -u)"
 mkfifo /tmp/opentelemetry_shell.github.debug.log
+wait # make sure we wait for all background jobs before we actually start
 nohup bash -c 'root4job "$@"' bash "$traceparent_file" &> /dev/null &
 echo "pid=$!" >> "$GITHUB_STATE"
 cat /tmp/opentelemetry_shell.github.debug.log
