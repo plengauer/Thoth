@@ -28,12 +28,14 @@ span="$(resolve_span '.name == "echo hello world 3"')"
 assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
 assert_equals "xargs -i{} echo {}" "$(\echo "$span" | jq -r '.resource.attributes."process.command_line"')"
 
-printf '%s' 'hello world 4' | xargs --replace='{}' echo '{}'
-span="$(resolve_span '.name == "xargs --replace='{}' echo '{}'"')"
-assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
-span="$(resolve_span '.name == "echo hello world 4"')"
-assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
-assert_equals "xargs --replace={} echo {}" "$(\echo "$span" | jq -r '.resource.attributes."process.command_line"')"
+if xargs --help | grep -F -- --replace; then
+  printf '%s' 'hello world 4' | xargs --replace='{}' echo '{}'
+  span="$(resolve_span '.name == "xargs --replace='{}' echo '{}'"')"
+  assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
+  span="$(resolve_span '.name == "echo hello world 4"')"
+  assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
+  assert_equals "xargs --replace={} echo {}" "$(\echo "$span" | jq -r '.resource.attributes."process.command_line"')"
+fi
 
 assert_equals 'hello
 world
