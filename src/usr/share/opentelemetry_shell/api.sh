@@ -452,7 +452,7 @@ if \[ "$_otel_shell" = bash ]; then
   }
 else
   _otel_command_type() {
-    case "$(\type "$1")" in
+    case "$(\type "$1" 2> /dev/null)" in
       "$1 is a shell keyword") \echo keyword;;
       "$1 is a shell alias for "*) \echo alias;;
       "$1 is an alias for "*) \echo alias;;
