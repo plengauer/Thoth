@@ -221,6 +221,7 @@ runs:
       run: sleep 60
     - name: "Enable auto-merge"
       if: steps.open-pr.outputs.pull-request-number != null
+      shell: bash
       run: gh pr merge --squash --auto ${{ steps.open-pr.outputs.pull-request-number }}
       env:
         GH_TOKEN: ${{ inputs.github_token }}
