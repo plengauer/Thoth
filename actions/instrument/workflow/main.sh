@@ -1,9 +1,16 @@
 #/bin/bash
 set -e -o pipefail
+
+echo "::group::Validate Configuration"
 . ../shared/config_validation.sh
+echo "::endgroup::"
+
 . ../shared/github.sh
 . ../shared/id_printer.sh
+
+echo "::group::Install Dependencies"
 bash -e -o pipefail ../shared/install.sh curl wget jq sed unzip
+echo "::endgroup::"
 
 # selfmonitoring
 if ([ "$INPUT_SELF_MONITORING" = true ] || ([ "$INPUT_SELF_MONITORING" = auto ] && [ "$GITHUB_API_URL" = 'https://api.github.com' ])); then
@@ -38,17 +45,24 @@ fi
 
 export OTEL_SERVICE_NAME="${OTEL_SERVICE_NAME:-"$(echo "$GITHUB_REPOSITORY" | cut -d / -f 2-) CI"}"
 
+echo "::group::Resolve Workflow Run Attempt"
 workflow_json="$(mktemp)"
 jq < "$GITHUB_EVENT_PATH" > "$workflow_json" .workflow_run
 if [ "$INPUT_WORKFLOW_RUN_ID" != "$(jq < "$workflow_json" .id)" ] || [ "$INPUT_WORKFLOW_RUN_ATTEMPT" != "$(jq < "$workflow_json" .run_attempt)" ]; then gh_workflow_run "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" > "$workflow_json"; fi
 if [ "$(jq < "$workflow_json" -r .status)" != completed ]; then echo "::error ::Workflow not completed yet."; exit 1; fi
+echo "::endgroup::"
 
+echo "::group::Resolve Jobs"
 jobs_json="$(mktemp)"
 gh_jobs "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" | jq .jobs[] > "$jobs_json"
+echo "::endgroup::"
 
+echo "::group::Resolve Artifacts Metadata"
 artifacts_json="$(mktemp)"
 gh_artifacts "$INPUT_WORKFLOW_RUN_ID" | jq -r .artifacts[] > "$artifacts_json"
+echo "::endgroup::"
 
+echo "::group::Resolve Logs"
 logs_zip="$(mktemp)"
 count=1
 while [ "$count" -lt 60 ] && !(gh_workflow_run_logs "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" "$logs_zip" && unzip -t "$logs_zip" 1> /dev/null 2> /dev/null); do # sometimes downloads fail
@@ -63,9 +77,12 @@ else
   read_log_file() { true; }
   rm -rf "$logs_zip"
   echo '::warning::Downloading logs failed, zip file was corrupt!'
-fi 
+fi
+echo "::endgroup::"
 
 times_dir="$(mktemp -d)"
+
+echo "::group::Export"
 
 . otelapi.sh
 export OTEL_DISABLE_RESOURCE_DETECTION=TRUE
@@ -341,6 +358,8 @@ done | sed 's/\t/ /g' | while read -r TRACEPARENT job_id step_number step_conclu
   echo "$step_completed_at" > "$times_dir"/"$TRACEPARENT"
   
 done
+
+echo "::endgroup::"
 
 otel_shutdown
 while pgrep -f /opt/opentelemetry_shell/; do sleep 1; done
