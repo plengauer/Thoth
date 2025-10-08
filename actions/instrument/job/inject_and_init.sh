@@ -40,14 +40,14 @@ if [ "$INPUT_CACHE" = "true" ]; then
     dpkg-deb --control /var/cache/apt/archives/opentelemetry-shell*.deb "$control_dir"
     if cat "$control_dir"/control | grep -E '^Pre-Depends:|^Depends:' | cut -d ':' -f 2 - | tr ',' '\n' | grep -v '|' | tr -d ' ' | cut -d '(' -f 1 | sed 's/awk/gawk/g' | xargs -I '{}' [ -r /var/lib/dpkg/info/'{}'.list ]; then
       sudo dpkg-deb --extract /var/cache/apt/archives/opentelemetry-shell*.deb /
-      ( sudo "$control_dir"/postinst configure && rm -rf "$control_dir" ) 2>&1 | perl -0777 -pe '' &
+      ( sudo "$control_dir"/postinst configure && rm -rf "$control_dir" ) 2>&1 | { type perl && perl -0777 -pe '' || cat > /dev/null; } &
       export OTEL_SHELL_PACKAGE_VERSION_CACHE_opentelemetry_shell="$(cat ../../../VERSION)"
     else
       rm -rf "$control_dir"
     fi
   fi
 fi
-bash -e -o pipefail ../shared/install.sh curl wget jq sed unzip 'node;nodejs' npm 'docker;docker.io' 'gcc;build-essential'
+bash -e -o pipefail ../shared/install.sh perl curl wget jq sed unzip 'node;nodejs' npm 'docker;docker.io' 'gcc;build-essential'
 export OTEL_SHELL_COLLECTOR_IMAGE="$(cat Dockerfile | grep '^FROM ' | cut -d ' ' -f 2-)"
 if [ -r /opt/opentelemetry_shell/collector.image ]; then
   sudo docker load < /opt/opentelemetry_shell/collector.image
