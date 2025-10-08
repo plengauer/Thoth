@@ -10,7 +10,7 @@ export OTEL_SHELL_CONFIG_OBSERVE_SIGNALS="${OTEL_SHELL_CONFIG_OBSERVE_SIGNALS:-T
 export OTEL_SHELL_CONFIG_OBSERVE_PIPES="${OTEL_SHELL_CONFIG_OBSERVE_PIPES:-TRUE}"
 export OTEL_SERVICE_NAME="${OTEL_SERVICE_NAME:-"$(echo "$GITHUB_REPOSITORY" | cut -d / -f 2-) CI"}"
 . ../shared/config_validation.sh
-echo "::endgroup::" && jobs
+echo "::endgroup::"
 
 echo "::group::Setup SDK Output Redirect"
 tmp_dir="$(mktemp -d)"
@@ -22,7 +22,7 @@ chmod 777 "$OTEL_SHELL_SDK_OUTPUT_REDIRECT"
 log_file="$(mktemp -u -p "$tmp_dir")"
 echo "log_file=$log_file" >> "$GITHUB_STATE"
 ( while true; do cat "$OTEL_SHELL_SDK_OUTPUT_REDIRECT"; done >> "$log_file" 2> /dev/null & )
-echo "::endgroup::" && jobs
+echo "::endgroup::"
 
 echo "::group::Install Dependencies"
 . ../shared/github.sh
@@ -58,7 +58,7 @@ if [ "${write_back_cache:-FALSE}" = TRUE ] && [ -n "${cache_key:-}" ]; then
   wait # only join in case we wanna write back, this will be rare and is necessary to have a good cache
   ( ( sudo docker save "$OTEL_SHELL_COLLECTOR_IMAGE" | sudo tee /opt/opentelemetry_shell/collector.image > /dev/null && sudo -E -H node -e "require('@actions/cache').saveCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip', '/opt/opentelemetry_shell/collector.image'], '$cache_key');" ) &> /dev/null & )
 fi
-echo "::endgroup::" && jobs
+echo "::endgroup::"
 
 echo "::group::Build Collector Configuration"
 backup_otel_exporter_otlp_traces_endpoint="${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT:-}}"
@@ -160,7 +160,7 @@ $(cat $section_pipeline_metrics)
 $(cat $section_pipeline_traces)
 EOF
 if [ -n "$INPUT_DEBUG" ]; then cat collector.yaml; fi
-echo "::endgroup::" && jobs
+echo "::endgroup::"
 
 echo "::group::Instrument shell/javascript/docker actions"
 echo "$GITHUB_ACTION" > /tmp/opentelemetry_shell_action_name # to avoid recursions
@@ -181,7 +181,7 @@ for node_path in "$(readlink -f /proc/*/exe | grep '/Runner.Worker$' | rev | cut
   gcc -o "$node_path" forward.c -DEXECUTABLE=/bin/bash -DARG1="$GITHUB_ACTION_PATH"/decorate_action_node.sh -DARG2="$node_path_new" 2>&1 | perl -0777 -pe '' & # path is hardcoded in the runners
 done
 ( if type docker; then docker_path="$(which docker)" && sudo mv "$docker_path" "$relocated_binary_dir" && sudo gcc -o "$docker_path" forward.c -DEXECUTABLE=/bin/bash -DARG1="$GITHUB_ACTION_PATH"/decorate_action_docker.sh -DARG2="$relocated_binary_dir"/docker; fi 2>&1 | perl -0777 -pe '' ) &
-echo "::endgroup::" && jobs
+echo "::endgroup::"
 
 echo "::group::Resolve W3C Tracecontext"
 opentelemetry_root_dir="$(mktemp -d)"
@@ -200,11 +200,12 @@ done
 [ -r "$opentelemetry_root_dir"/traceparent ] || (echo "::error ::Cannot sync trace id via artifacts. This is most likely a token permission issue, please consult the README." && false)
 export TRACEPARENT="$(cat "$opentelemetry_root_dir"/traceparent)"
 rm -rf "$opentelemetry_root_dir"
-echo "::endgroup::" && jobs
+echo "::endgroup::"
 
 echo "::group::Resolve Job ID and Job name"
 if [ -n "$INPUT___JOB_ID" ]; then
   export GITHUB_JOB_ID="$INPUT___JOB_ID"
+  echo "Resolved GitHub job id to $GITHUB_JOB_ID"
 else
   OTEL_SHELL_GITHUB_JOB="$GITHUB_JOB"
   job_arguments="$(printf '%s' "$INPUT___JOB_MATRIX" | jq -r '. | [.. | scalars] | @tsv' | sed 's/\t/, /g')"
@@ -213,7 +214,7 @@ else
   GITHUB_JOB_ID="$(gh_jobs "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" | jq --unbuffered -r '. | .jobs[] | [.id, .name] | @tsv' | sed 's/\t/ /g' | grep " $OTEL_SHELL_GITHUB_JOB"'$' | cut -d ' ' -f 1)"
   if [ "$(printf '%s' "$GITHUB_JOB_ID" | wc -l)" -le 1 ]; then echo "Guessing GitHub job id to be $GITHUB_JOB_ID" >&2; export GITHUB_JOB_ID; else echo ::warning ::Could not guess GitHub job id.; fi
 fi
-echo "::endgroup::" && jobs
+echo "::endgroup::"
 
 # observe ...
 
@@ -398,12 +399,12 @@ wait # make sure we wait for all background jobs before we actually start
 nohup bash -c 'root4job "$@"' bash "$traceparent_file" &> /dev/null &
 echo "pid=$!" >> "$GITHUB_STATE"
 cat /tmp/opentelemetry_shell.github.debug.log
-echo "::endgroup::" && jobs
+echo "::endgroup::"
 
 echo "::group::Propagate W3C Tracecontext to Steps"
 export TRACEPARENT="$(cat "$traceparent_file")"
 rm "$traceparent_file"
 printenv | grep -E '^OTEL_|^TRACEPARENT=|^TRACESTATE=' >> "$GITHUB_ENV"
-echo "::endgroup::" && jobs
+echo "::endgroup::"
 
 echo ::notice title=Observability Information for ${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}::"Trace ID: $(echo "$TRACEPARENT" | cut -d - -f 2), Span ID: $(echo "$TRACEPARENT" | cut -d - -f 3), Trace Deep Link: $(OTEL_EXPORTER_OTLP_TRACES_ENDPOINT="$backup_otel_exporter_otlp_traces_endpoint" print_trace_link "$(date +%Y-%M-%dT%H:%M:%S.%N%:z | jq -sRr @uri)" || echo unavailable)"
