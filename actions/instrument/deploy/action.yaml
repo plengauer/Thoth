@@ -11,7 +11,7 @@ inputs:
   workflows_directory:
     default: '.github/workflows'
   workflow_level_instrumentation_file_name:
-    default: 'observability.yaml'
+    default: 'observability.yml'
   workflow_level_instrumentation_workflow_name:
     default: 'OpenTelemetry'
   workflow_level_instrumentation_exclude:
@@ -58,6 +58,23 @@ runs:
       uses: actions/checkout@v5.0.0
       with:
         token: ${{ inputs.github_token }}
+    - name: Deploy Copilot Setup
+      shell: bash
+      run: |
+        if [ -r "${{ inputs.workflows_directory }}"/copilot-setup-steps.yml ]; then exit 0; fi
+        echo '
+        on:
+          push:
+            paths:
+              - .github/workflows/copilot-setup-steps.yml
+          pull_request:
+            paths:
+              - .github/workflows/copilot-setup-steps.yml
+        jobs:
+          copilot-setup-steps:
+            runs-on: ubuntu-latest
+            steps:
+              - run: ;' > "${{ inputs.workflows_directory }}"/copilot-setup-steps.yml
     - name: Canonicalize
       shell: bash
       run: |
