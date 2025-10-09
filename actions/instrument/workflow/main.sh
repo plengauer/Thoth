@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 set -e -o pipefail
 
 echo "::group::Validate Configuration"
