@@ -10,8 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          for script_file in /home/runner/work/_temp/*-action-main/script/*.sh; do            
-            echo "$script_file >>>>>"
+          for script_file in /home/runner/work/_temp/*-action-main/*/*.sh; do
+            echo
+            echo
+            echo ">>>>> $script_file"
             cat "$script_file"
             echo "<<<<<"
           done
