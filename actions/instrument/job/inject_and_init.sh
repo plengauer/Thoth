@@ -180,6 +180,12 @@ for node_path in "$(readlink -f /proc/*/exe | grep '/Runner.Worker$' | rev | cut
 done
 ## setup injections into docker actions
 ( if type docker; then docker_path="$(which docker)" && sudo mv "$docker_path" "$relocated_binary_dir" && sudo gcc -o "$docker_path" forward.c -DEXECUTABLE=/bin/bash -DARG1="$GITHUB_ACTION_PATH"/decorate_action_docker.sh -DARG2="$relocated_binary_dir"/docker; fi ) &
+if [ "$GITHUB_JOB" = copilot-setup-steps ] && [ "$(echo "$GITHUB_WORKFLOW_REF" | cut -d '@' -f 1 | cut -d / -f 3-)" = .github/workflows/copilot-setup-steps.yml ]; then
+  for script_file in /home/runner/work/_temp/*-action-main/*/*.sh; do
+    sed -i 's/#!/bin/sh\n/#!/bin/sh\n. otel.sh\n/g' "$script_file"
+    sed -i 's/#!/bin/bash\n/#!/bin/bash\n. otel.sh\n/g' "$script_file"
+  done
+fi
 
 # resolve parent (does not exist yet - see workflow action) and make sure all jobs are of the same trace and have the same deferred parent 
 opentelemetry_root_dir="$(mktemp -d)"
@@ -209,11 +215,6 @@ if [ -n "$INPUT___JOB_ID" ]; then
 else
   GITHUB_JOB_ID="$(gh_jobs "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" | jq --unbuffered -r '. | .jobs[] | [.id, .name] | @tsv' | sed 's/\t/ /g' | grep " $OTEL_SHELL_GITHUB_JOB"'$' | cut -d ' ' -f 1)"
   if [ "$(printf '%s' "$GITHUB_JOB_ID" | wc -l)" -le 1 ]; then echo "Guessing GitHub job id to be $GITHUB_JOB_ID" >&2; export GITHUB_JOB_ID; else echo ::warning ::Could not guess GitHub job id.; fi
-fi
-if [ "$GITHUB_JOB" = copilot-setup-steps ] && [ "$(echo "$GITHUB_WORKFLOW_REF" | cut -d '@' -f 1 | cut -d / -f 3-)" = .github/workflows/copilot-setup-steps.yml ]; then
-  export GITHUB_WORKFLOW=Copilot
-  export GITHUB_JOB=copilot
-  export OTEL_SHELL_GITHUB_JOB="$GITHUB_JOB"
 fi
 
 # observe ...
