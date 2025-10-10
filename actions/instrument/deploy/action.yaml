@@ -130,7 +130,12 @@ runs:
         if [ -w "${{ steps.find-workflow-level-instrumentation.outputs.path }}" ]; then path="${{ steps.find-workflow-level-instrumentation.outputs.path }}"; else path="${{ inputs.workflows_directory }}/${{ inputs.workflow_level_instrumentation_file_name }}"; fi
         names_file="$(mktemp)"
         (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
-          cat "$workflow_file" | yq .name || true
+          name="$(cat "$workflow_file" | yq .name)"
+          if [ "$name" = "null" ] || [ -z "$name" ]; then
+            basename "$workflow_file" .yaml | sed 's/\.yml$//'
+          else
+            echo "$name"
+          fi
         done \
           | ([ -n "${{ inputs.workflow_level_instrumentation_exclude }}" ] && grep -qvF "$(echo "${{ inputs.workflow_level_instrumentation_exclude }}" | tr ',' '\n' | tr ':' '\n' | tr ';' '\n')" || cat) \
           | grep -vF "$([ -r "${{ steps.find-workflow-level-instrumentation.outputs.path }}" ] && cat "${{ steps.find-workflow-level-instrumentation.outputs.path }}" | yq .name || cat "${{ inputs.workflows_directory }}/${{ inputs.workflow_level_instrumentation_file_name }}" | yq .name)" > "$names_file"
@@ -144,7 +149,13 @@ runs:
       shell: bash
       run: |
         (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
-          [ -n "${{ inputs.job_level_instrumentation_exclude }}" ] && cat "$workflow_file" | yq .name | grep -qF "$(echo "${{ inputs.job_level_instrumentation_exclude }}" | tr ',' '\n' | tr ':' '\n' | tr ';' '\n')" && continue || true
+          if [ -n "${{ inputs.job_level_instrumentation_exclude }}" ]; then
+            workflow_name="$(cat "$workflow_file" | yq .name)"
+            if [ "$workflow_name" = "null" ] || [ -z "$workflow_name" ]; then
+              workflow_name="$(basename "$workflow_file" .yaml | sed 's/\.yml$//')"
+            fi
+            echo "$workflow_name" | grep -qF "$(echo "${{ inputs.job_level_instrumentation_exclude }}" | tr ',' '\n' | tr ':' '\n' | tr ';' '\n')" && continue || true
+          fi
           [ "$workflow_file" != "${{ steps.find-workflow-level-instrumentation.outputs.path }}" ] || continue
           [ "$workflow_file" != "${{ inputs.workflows_directory }}/${{ inputs.workflow_level_instrumentation_file_name }}" ] || continue
           cat "$workflow_file" | yq '.jobs | keys[]' | while read -r job_name; do
