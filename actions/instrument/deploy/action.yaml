@@ -74,7 +74,8 @@ runs:
           copilot-setup-steps:
             runs-on: ubuntu-latest
             steps:
-              - run: ;' > "${{ inputs.workflows_directory }}"/copilot-setup-steps.yml
+              - run: |
+                  :' > "${{ inputs.workflows_directory }}"/copilot-setup-steps.yml
     - name: Canonicalize
       shell: bash
       run: |
