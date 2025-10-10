@@ -1,7 +1,7 @@
 name: OpenTelemetry
 on:
   workflow_run:
-    workflows: [Analyze, Autoapprove, Autorerun, Autoversion, Build, Experiment, Greetings, Performance GitHub Job, Publish, Refresh Demos, Renovate, Test, GitHub, Shell, Workflow Example]
+    workflows: [Analyze, Autoapprove, Autorerun, Autoversion, Build, "null", Experiment, Greetings, Performance GitHub Job, Publish, Refresh Demos, Renovate, Test, GitHub, Shell, Workflow Example]
     types:
       - completed
 jobs:
@@ -10,7 +10,7 @@ jobs:
     permissions:
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/workflow@v5.28.1
+      - uses: plengauer/opentelemetry-github/actions/instrument/workflow@v5.29.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
