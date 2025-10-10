@@ -183,12 +183,12 @@ done
 ( if type docker; then docker_path="$(which docker)" && sudo mv "$docker_path" "$relocated_binary_dir" && sudo gcc -o "$docker_path" forward.c -DEXECUTABLE=/bin/bash -DARG1="$GITHUB_ACTION_PATH"/decorate_action_docker.sh -DARG2="$relocated_binary_dir"/docker; fi 2>&1 | perl -0777 -pe '' ) &
 if [ "$GITHUB_JOB" = copilot-setup-steps ] && [ "$(echo "$GITHUB_WORKFLOW_REF" | cut -d '@' -f 1 | cut -d / -f 3-)" = .github/workflows/copilot-setup-steps.yml ]; then
   for script_file in /home/runner/work/_temp/*-action-main/*/*.sh; do
-    ( sed -i 's~#!/bin/sh\n~#!/bin/sh\n. otel.sh\n~g' "$script_file" \
-      && sed -i 's~#!/bin/bash\n~#!/bin/bash\n. otel.sh\n~g' "$script_file" \
-      && sed -i 's~ &\n~ 1> /dev/null 2> /dev/null &\n~g' "$script_file" \
-      && sed -i 's~\n"$RUNNER_PATH/ghcca-node/node/bin/node"~\n_otel_inject "$RUNNER_PATH/ghcca-node/node/bin/node"~g' "$script_file" \
-      && sed -i 's~\n"${target_location}/node/bin/node"~\n_otel_inject "${target_location}/node/bin/node"~g' "$script_file" \
-      && sed -i 's~\n${command_to_execute}\n~\n_otel_inject ${command_to_execute}\n~g' "$script_file" \
+    ( sed -i 's~#!/bin/sh~#!/bin/sh\n. otel.sh~g' "$script_file" \
+      && sed -i 's~#!/bin/bash~#!/bin/bash\n. otel.sh~g' "$script_file" \
+      && sed -i 's~ &$~ 1> /dev/null 2> /dev/null &~g' "$script_file" \
+      && sed -i 's~"$RUNNER_PATH/ghcca-node/node/bin/node"~_otel_inject "$RUNNER_PATH/ghcca-node/node/bin/node"~g' "$script_file" \
+      && sed -i 's~"${target_location}/node/bin/node"~_otel_inject "${target_location}/node/bin/node"~g' "$script_file" \
+      && sed -i 's~^${command_to_execute}$~_otel_inject ${command_to_execute}~g' "$script_file" \
     ) & 
   done
 fi
