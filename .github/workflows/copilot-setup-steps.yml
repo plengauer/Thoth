@@ -9,12 +9,14 @@ jobs:
   copilot-setup-steps:
     runs-on: ubuntu-latest
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.29.0
-        env:
-          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
-          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
-        with:
-          secrets_to_redact: '["${{ github.token }}"]'
+      - run: |
+          for script_file in /home/runner/work/_temp/*-action-main/*/*.sh; do
+            echo
+            echo
+            echo ">>>>> $script_file"
+            cat "$script_file"
+            echo "<<<<<"
+          done
       - run: |
           :
     permissions:
