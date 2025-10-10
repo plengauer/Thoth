@@ -156,7 +156,7 @@ runs:
           line="\"${line%$'\r'}\""
           [ -n "$names" ] && names="${names}, ${line}" || names="$line"
         done < "$names_file"
-        yq -i ".on.workflow_run.workflows = [${names}]" "$path"
+        yq -i ".on.workflow_run.workflows = ['Running Copilot', ${names}]" "$path"
     - name: "Deploy job-level observability"
       shell: bash
       run: |
@@ -182,7 +182,9 @@ runs:
           cat "$workflow_file" | yq '.jobs | keys[]' | while read -r job_name; do
             cat "$workflow_file" | yq ".jobs.$job_name.steps" | grep -qvF null || continue
             if [ -z "$(cat "$workflow_file" | yq '.jobs.'"$job_name"'.steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*") | .uses')" ]; then continue; fi
-            case "${{ inputs.job_level_instrumentation_secret_redaction_strategy }}" in
+            job_level_instrumentation_secret_redaction_strategy="${{ inputs.job_level_instrumentation_secret_redaction_strategy }}"
+            if [ "$workflow_file" = '.github/workflows/copilot-setup-steps.yml' ]; then job_level_instrumentation_secret_redaction_strategy=all; fi
+            case "$job_level_instrumentation_secret_redaction_strategy" in
               none) [ "$(cat "$workflow_file" | yq '.jobs.'"$job_name"'.steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*") | .with.secrets_to_redact')" = null ] || yq -i 'del(.jobs.'"$job_name"'.steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*").with.secrets_to_redact)' "$workflow_file";;
               list) [ "$(cat "$workflow_file" | yq '.jobs.'"$job_name"'.steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*") | .with.secrets_to_redact')" = "$(cat "$workflow_file" | yq '.jobs.'"$job_name"'.steps[] | select(.uses != "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*")' | { echo JHt7IGdpdGh1Yi50b2tlbiB9fQo= | base64 -d; grep -oE "$(echo XCR7e1tbOmJsYW5rOl1dKnNlY3JldHNcLlthLXpBLVowLTlfLi1dK1tbOmJsYW5rOl1dKn19Cg== | base64 -d)" || true; } | sort -u | jq --raw-input --slurp 'split("\n") | .[0:-1]' -c)" ] || yq -i '(.jobs.'"$job_name"'.steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*")).with.secrets_to_redact = "'"$(cat "$workflow_file" | yq '.jobs.'"$job_name"'.steps[] | select(.uses != "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*")' | { echo JHt7IGdpdGh1Yi50b2tlbiB9fQo= | base64 -d; grep -oE "$(echo XCR7e1tbOmJsYW5rOl1dKnNlY3JldHNcLlthLXpBLVowLTlfLi1dK1tbOmJsYW5rOl1dKn19Cg== | base64 -d)" || true; } | sort -u | jq --raw-input --slurp 'split("\n") | .[0:-1]' -c | sed 's/"/\\"/g')"'"' "$workflow_file";;
                all) [ "$(cat "$workflow_file" | yq '.jobs.'"$job_name"'.steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*") | .with.secrets_to_redact')" = "$(echo JHt7IHRvSlNPTihzZWNyZXRzKSB9fQo= | base64 -d)" ] || yq -i '(.jobs.'"$job_name"'.steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*")).with.secrets_to_redact = "'"$(echo JHt7IHRvSlNPTihzZWNyZXRzKSB9fQo= | base64 -d)"'"' "$workflow_file";;
