@@ -189,7 +189,7 @@ if [ "$GITHUB_JOB" = copilot-setup-steps ] && [ "$(echo "$GITHUB_WORKFLOW_REF" |
       && sed -i 's~"$RUNNER_PATH/ghcca-node/node/bin/node"~_otel_inject "$RUNNER_PATH/ghcca-node/node/bin/node"~g' "$script_file" \
       && sed -i 's~"${target_location}/node/bin/node"~_otel_inject "${target_location}/node/bin/node"~g' "$script_file" \
       && sed -i 's~^${command_to_execute}$~_otel_inject ${command_to_execute}~g' "$script_file" \
-    ) & 
+    ) &
   done
 fi
 echo "::endgroup::"
