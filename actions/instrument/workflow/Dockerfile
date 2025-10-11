@@ -1,4 +1,4 @@
-FROM alpine:3.22.1
+FROM alpine:3.22.2
 ARG repository
 LABEL org.opencontainers.image.source=https://github.com/$repository
 COPY ./package.apk /root/package.apk
