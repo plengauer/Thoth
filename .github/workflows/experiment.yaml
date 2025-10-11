@@ -14,15 +14,6 @@ jobs:
       actions: read
     steps:
       - run: printenv
-  filesystem:
-    strategy:
-      matrix:
-        runner: [ ubuntu-latest, macos-latest ]
-    runs-on: ${{ matrix.runner }}
-    permissions:
-      actions: read
-    steps:
-      - run: sudo find /
   experiment:
     runs-on: ubuntu-latest
     permissions:
