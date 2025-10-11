@@ -34,6 +34,60 @@ github_properties_to_kvps() {
     fi
   done
 }
+record_github_logs() {
+  commands_mute_token_file="$(mktemp -u)"
+  while read -r line; do
+    printf '%s\n' "$line"
+    if [ -r "$commands_mute_token_file" ]; then
+      if [ "$line" = ::"$(cat "$commands_mute_token_file")":: ]; then
+        rm "$commands_mute_token_file"
+      fi
+      continue
+    fi
+    case "$line" in
+      ::stop-commands::*)
+        echo "${line#::stop-commands::}" > "$commands_mute_token_file"
+        continue
+        ;;
+      ::endgroup::) continue;;
+      ::group*) continue;;
+      ::save-state' 'name=*::*)
+        line="${line#::save-state name=}"
+        otel_span_attribute_typed $span_handle string github.actions.step.state.after."$(variable_name_2_attribute_key "${line%%::*}")"="${line#*::}"
+        continue
+        ;;
+      ::set-output' 'name=*::*)
+        line="${line#::set-output name=}"
+        otel_span_attribute_typed $span_handle string github.actions.step.output."$(variable_name_2_attribute_key "${line%%::*}")"="${line#*::}"
+        continue
+        ;;
+      ::add-mask::)
+        # in theory we should adjust the collector config and restart
+        # in reality, the first commands using the unsmasked value (including the echo writing it) are already out ...
+        continue;;
+      ::*::*)
+        line="${line#::}"
+        severity="${line%%::*}"
+        severity="${severity%% *}"
+        line="${line#*::}"
+        ;;
+      [command]*)
+        severity=trace
+        line="${line#[command]}"
+        ;;
+      *) continue;;
+    esac
+    case "$severity" in
+      trace) severity=1;;
+      debug) severity=5;;
+      notice) severity=9;;
+      warning) severity=13;;
+      error) severity=17;;
+      *) continue;;
+    esac
+    _otel_log_record "$TRACEPARENT" auto "$severity" "$line"
+  done
+}
 
 . otelapi.sh
 _otel_resource_attributes_process() {
@@ -43,6 +97,10 @@ _otel_resource_attributes_custom() {
   _otel_resource_attribute string telemetry.sdk.language=github
 }
 eval "$(cat "$_OTEL_GITHUB_STEP_AGENT_INSTRUMENTATION_FILE" | grep -v '_otel_alias_prepend ')"
+
+log_0_pipe="$(mktemp -u)"
+log_1_pipe="$(mktemp -u)"
+mkfifo "$log_0_pipe" "$log_1_pipe"
 
 otel_init
 time_start="$(date +%s.%N)"
@@ -58,60 +116,14 @@ otel_span_attribute_typed $span_handle string github.actions.action.name="$GITHU
 otel_span_attribute_typed $span_handle string github.actions.action.ref="$GITHUB_ACTION_REF"
 [ -z "${_OTEL_GITHUB_STEP_ACTION_PHASE:-}" ] || otel_span_attribute_typed $span_handle string github.actions.action.phase="$_OTEL_GITHUB_STEP_ACTION_PHASE"
 otel_span_activate "$span_handle"
-commands_mute_token="$(mktemp -u)"
-exit_code_file="$(mktemp)"
-{ otel_observe "$_OTEL_GITHUB_STEP_AGENT_INJECTION_FUNCTION" "$@"; echo "$?" > "$exit_code_file"; } | while IFS=$'\n' read -r line; do
-  printf '%s\n' "$line"
-  if [ -r "$commands_mute_token_file" ]; then
-    if [ "$line" = ::"$(cat "$commands_mute_token_file")":: ]; then
-      rm "$commands_mute_token_file"
-    fi
-    continue
-  fi
-  case "$line" in
-    ::stop-commands::*)
-      echo "${line#::stop-commands::}" > "$commands_mute_token_file"
-      continue
-      ;;
-    ::endgroup::) continue;;
-    ::group*) continue;;
-    ::save-state' 'name=*::*)
-      line="${line#::save-state name=}"
-      otel_span_attribute_typed $span_handle string github.actions.step.state.after."$(variable_name_2_attribute_key "${line%%::*}")"="${line#*::}"
-      continue
-      ;;
-    ::set-output' 'name=*::*)
-      line="${line#::set-output name=}"
-      otel_span_attribute_typed $span_handle string github.actions.step.output."$(variable_name_2_attribute_key "${line%%::*}")"="${line#*::}"
-      continue
-      ;;
-    ::add-mask::)
-      # in theory we should adjust the collector config and restart
-      # in reality, the first commands using the unsmasked value (including the echo writing it) are already out ...
-      continue;;
-    ::*::*)
-      line="${line#::}"
-      severity="${line%%::*}"
-      severity="${severity%% *}"
-      line="${line#*::}"
-      ;;
-    [command]*)
-      severity=trace
-      line="${line#[command]}"
-      ;;
-    *) continue;;
-  esac
-  case "$severity" in
-    trace) severity=1;;
-    debug) severity=5;;
-    notice) severity=9;;
-    warning) severity=13;;
-    error) severity=17;;
-    *) continue;;
-  esac
-  _otel_log_record "$TRACEPARENT" auto "$severity" "$line"
-done
-exit_code="$(cat "$exit_code_file")"
+
+record_github_logs < "$log_1_pipe" &
+record_github_logs_pid="$!"
+cat < "$log_0_pipe" > "$log_1_pipe" &
+redirect_github_logs_pid="$!"
+exit_code=0
+otel_observe "$_OTEL_GITHUB_STEP_AGENT_INJECTION_FUNCTION" "$@" 1>> "$log_pipe" 2>> "$log_pipe" || exit_code="$?"
+
 otel_span_deactivate "$span_handle"
 ! [ -r "$GITHUB_STATE" ] || cat "$GITHUB_STATE" | github_properties_to_kvps | while read -r kvp; do otel_span_attribute_typed $span_handle string github.actions.step.state.after."$(variable_name_2_attribute_key "${kvp%%=*}")"="${kvp#*=}"; done
 ! [ -r "$GITHUB_OUTPUT" ] || cat "$GITHUB_OUTPUT" | github_properties_to_kvps | while read -r kvp; do otel_span_attribute_typed $span_handle string github.actions.step.output."$(variable_name_2_attribute_key "${kvp%%=*}")"="${kvp#*=}"; done
@@ -187,6 +199,10 @@ if [ -n "${GITHUB_ACTION_REPOSITORY:-}" ]; then
   otel_observation_attribute_typed "$observation_handle" string github.actions.action.conclusion="$conclusion"
   otel_counter_observe "$counter_handle" "$observation_handle"
 fi
+
+kill -9 "$redirect_github_logs_pid" &> /dev/null
+wait "$record_github_logs_pid"
+rm "$log_0_pipe" "$log_1_pipe"
 
 otel_shutdown
 echo "$_OTEL_GITHUB_STEP_ACTION_TYPE" "$GITHUB_ACTION_REPOSITORY" >> /tmp/opentelemetry_shell.github.step.log
