@@ -11,10 +11,6 @@ _otel_call_and_record_pipes() {
   # (*) tee for stdin does ONLY terminate when it writes something and realizes the process has terminated
   # (**) so in cases where stdin is open but nobody every writes to it and the process doesnt expect input, tee hangs forever
   # (**) this is different to output streams, because they get properly terminated with SIGPIPE on read
-  case "$-" in
-    *m*) local job_control=1; \set +m;;
-    *) local job_control=0;;
-  esac
   local span_handle="$1"; shift
   local command_type="$1"; shift
   local call_command="$1"; shift
@@ -70,7 +66,7 @@ _otel_call_and_record_pipes() {
     local exit_code="$(\cat "$exit_code_file")"
     \rm "$exit_code_file" 2> /dev/null
   fi
-  \wait "$stdin_bytes_pid" "$stdin_lines_pid" "$stdout_bytes_pid" "$stdout_lines_pid" "$stderr_bytes_pid" "$stderr_lines_pid" "$stdout_pid" "$stderr_pid"
+  \wait "$stdin_bytes_pid" "$stdin_lines_pid" "$stdout_bytes_pid" "$stdout_lines_pid" "$stderr_bytes_pid" "$stderr_lines_pid" "$stdout_pid" "$stderr_pid" # this is wait is a problem, it will block execution if the process was a shell or some other process that forked a subprocess that inherited stdout or stderr and didnt terminate with its parent
   \rm "$stdout" "$stderr" "$stdin_bytes" "$stdin_lines" "$stdout_bytes" "$stdout_lines" "$stderr_bytes" "$stderr_lines" 2> /dev/null
   if \[ "$observe_stdin" = TRUE ]; then
     _otel_record_pipes "$span_handle" stdin 0 "$stdin_bytes_result" "$stdin_lines_result"
@@ -78,7 +74,6 @@ _otel_call_and_record_pipes() {
   _otel_record_pipes "$span_handle" stdout 1 "$stdout_bytes_result" "$stdout_lines_result"
   _otel_record_pipes "$span_handle" stderr 2 "$stderr_bytes_result" "$stderr_lines_result"
   \rm "$stdin_bytes_result" "$stdin_lines_result" "$stdout_bytes_result" "$stdout_lines_result" "$stderr_bytes_result" "$stderr_lines_result" 2> /dev/null
-  if \[ "$job_control" = 1 ]; then \set -m; fi
   return "$exit_code"
 }
 
