@@ -30,6 +30,9 @@ inputs:
     default: plengauer/opentelemetry-github
   action_version:
     default: same
+  job_level_instrumentation_copilot:
+    description: 'Instrument Copilot'
+    default: false
   dry_run:
     default: false
   debug:
@@ -59,15 +62,13 @@ runs:
       with:
         token: ${{ inputs.github_token }}
     - name: Deploy Copilot Setup
+      if: ${{ inputs.job_level_instrumentation_copilot == 'true' }}
       shell: bash
       run: |
         if [ -r "${{ inputs.workflows_directory }}"/copilot-setup-steps.yml ]; then exit 0; fi
         echo '
         on:
           push:
-            paths:
-              - .github/workflows/copilot-setup-steps.yml
-          pull_request:
             paths:
               - .github/workflows/copilot-setup-steps.yml
         jobs:
