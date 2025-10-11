@@ -1,10 +1,6 @@
 #!/bin/false
 
 _otel_call_and_record_subprocesses() {
-  case "$-" in
-    *m*) local job_control=1; \set +m;;
-    *) local job_control=0;;
-  esac
   local span_handle="$1"; shift
   local call_command="$1"; shift
   local command="$1"; shift
@@ -15,7 +11,6 @@ _otel_call_and_record_subprocesses() {
   local exit_code=0
   $call_command '\strace' -D -ttt -f -e trace=process -o "$strace" -s 8192 "${command#\\}" "$@" || local exit_code="$?"
   \rm "$strace" 2> /dev/null
-  if \[ "$job_control" = 1 ]; then \set -m; fi
   return "$exit_code"
 }
 
