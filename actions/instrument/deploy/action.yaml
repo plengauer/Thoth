@@ -153,12 +153,13 @@ runs:
         done \
           | ([ -n "${{ inputs.workflow_level_instrumentation_exclude }}" ] && grep -qvF "$(echo "${{ inputs.workflow_level_instrumentation_exclude }}" | tr ',' '\n' | tr ':' '\n' | tr ';' '\n')" || cat) \
           | grep -vF "$([ -r "${{ steps.find-workflow-level-instrumentation.outputs.path }}" ] && cat "${{ steps.find-workflow-level-instrumentation.outputs.path }}" | yq .name || cat "${{ inputs.workflows_directory }}/${{ inputs.workflow_level_instrumentation_file_name }}" | yq .name)" > "$names_file"
+        echo Running Copilot >> "$names_file"
         names=""
         while IFS= read -r line; do
           line="\"${line%$'\r'}\""
           [ -n "$names" ] && names="${names}, ${line}" || names="$line"
         done < "$names_file"
-        yq -i ".on.workflow_run.workflows = ['Running Copilot', ${names}]" "$path"
+        yq -i ".on.workflow_run.workflows = [${names}]" "$path"
     - name: "Deploy job-level observability"
       shell: bash
       run: |
