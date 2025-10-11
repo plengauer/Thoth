@@ -1,10 +1,8 @@
 #!/bin/false
 
 _otel_call_and_record_logs() {
-  case "$-" in
-    *m*) local job_control=1; \set +m;;
-    *) local job_control=0;;
-  esac
+  local IFS=' 
+'
   local call_command="$1"; shift
   local traceparent="$TRACEPARENT"
   local stderr_logs="$(\mktemp -u -p "$_otel_shell_pipe_dir")_opentelemetry_shell_$$.stderr.logs.pipe"
@@ -13,9 +11,7 @@ _otel_call_and_record_logs() {
   local stderr_pid="$!"
   local exit_code=0
   $call_command "$@" 2> "$stderr_logs" || local exit_code="$?"
-  \wait "$stderr_pid"
   \rm "$stderr_logs" 2> /dev/null
-  if \[ "$job_control" = 1 ]; then \set -m; fi
   return "$exit_code"
 }
 
