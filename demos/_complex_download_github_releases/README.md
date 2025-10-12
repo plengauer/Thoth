@@ -36,6 +36,7 @@ bash -e demo.sh
   cut -d = -f 2
   xargs seq 1
     seq 1 4
+  head --lines=3
   xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}
     curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=1
       GET
@@ -46,7 +47,6 @@ bash -e demo.sh
     curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=4
       GET
   jq .[].assets[].browser_download_url -r
-  head --lines=3
   grep .deb$
   grep _1.
   xargs wget
@@ -61,19 +61,19 @@ bash -e demo.sh
 ## Full Trace
 ```
 {
-  "trace_id": "36277a7a4b0b83776da280d5cdffcb76",
-  "span_id": "8f59ce5849d75563",
-  "parent_span_id": "09813f1db306255f",
+  "trace_id": "a115f18cec1f42381aa665654ffa3a81",
+  "span_id": "422903be1a5d7126",
+  "parent_span_id": "1641e8232df4e4b3",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1759882929638429184,
-  "time_end": 1759882930230080000,
+  "time_start": 1760297073100201728,
+  "time_end": 1760297073665601024,
   "attributes": {
     "network.transport": "tcp",
     "network.protocol.name": "https",
     "network.protocol.version": "2",
-    "network.peer.address": "140.82.114.5",
+    "network.peer.address": "140.82.116.6",
     "network.peer.port": 443,
     "server.address": "api.github.com",
     "server.port": 443,
@@ -93,11 +93,11 @@ bash -e demo.sh
       "*/*"
     ],
     "http.request.header.traceparent": [
-      "00-36277a7a4b0b83776da280d5cdffcb76-09813f1db306255f-01"
+      "00-a115f18cec1f42381aa665654ffa3a81-1641e8232df4e4b3-01"
     ],
     "http.response.status_code": 200,
     "http.response.header.date": [
-      "Wed, 08 Oct 2025 00:22:09 GMT"
+      "Sun, 12 Oct 2025 19:24:33 GMT"
     ],
     "http.response.header.content-type": [
       "application/json; charset=utf-8"
@@ -109,7 +109,7 @@ bash -e demo.sh
       "Accept,Accept-Encoding, Accept, X-Requested-With"
     ],
     "http.response.header.etag": [
-      "W/\"52f943bf1265ac27c5c3329cff27d6efd74dc85303da4fe0f5c499bcae3cd11a\""
+      "W/\"55fca23ad3eecf4a65a63b7d3740d7d070d73c1c437b10635f577ead87aa783a\""
     ],
     "http.response.header.x-github-media-type": [
       "github.v3; format=json"
@@ -154,39 +154,39 @@ bash -e demo.sh
       "60"
     ],
     "http.response.header.x-ratelimit-remaining": [
-      "53"
+      "58"
     ],
     "http.response.header.x-ratelimit-reset": [
-      "1759885112"
+      "1760300668"
     ],
     "http.response.header.x-ratelimit-resource": [
       "core"
     ],
     "http.response.header.x-ratelimit-used": [
-      "7"
+      "2"
     ],
     "http.response.header.x-github-request-id": [
-      "7401:165D46:692B25:1C8E020:68E5AEB1"
+      "4C01:2EBA2B:4AB8D10:4D99CDB:68EC0071"
     ]
   },
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.29.0",
+    "telemetry.sdk.version": "5.30.1",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "centralus",
-    "cloud.resource_id": "/subscriptions/932855b2-72b4-49a9-af3b-44800410cd65/resourceGroups/azure-centralus-general-932855b2-72b4-49a9-af3b-44800410cd65/providers/Microsoft.Compute/virtualMachines/9GFWyl01fROhlA",
-    "host.id": "250ba197-88c7-44e6-b58b-94942ce6d7c3",
-    "host.name": "9GFWyl01fROhlA",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/resourceGroups/azure-westus-general-73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/providers/Microsoft.Compute/virtualMachines/nMeLE6rW18uoGa",
+    "host.id": "c64a380f-be6e-4176-9264-1b5988d53d43",
+    "host.name": "nMeLE6rW18uoGa",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
     "service.instance.id": "",
-    "process.pid": 6021,
+    "process.pid": 6014,
     "process.parent_pid": 4651,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
@@ -204,19 +204,19 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "36277a7a4b0b83776da280d5cdffcb76",
-  "span_id": "36f1f6bcb71fdfbe",
-  "parent_span_id": "bf71bfd9f9b16f8f",
+  "trace_id": "a115f18cec1f42381aa665654ffa3a81",
+  "span_id": "5636c91fb7864129",
+  "parent_span_id": "b58587912b50e7d4",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1759882930655673600,
-  "time_end": 1759882931246400000,
+  "time_start": 1760297074078310400,
+  "time_end": 1760297074837811712,
   "attributes": {
     "network.transport": "tcp",
     "network.protocol.name": "https",
     "network.protocol.version": "2",
-    "network.peer.address": "140.82.114.5",
+    "network.peer.address": "140.82.116.6",
     "network.peer.port": 443,
     "server.address": "api.github.com",
     "server.port": 443,
@@ -236,11 +236,11 @@ bash -e demo.sh
       "*/*"
     ],
     "http.request.header.traceparent": [
-      "00-36277a7a4b0b83776da280d5cdffcb76-bf71bfd9f9b16f8f-01"
+      "00-a115f18cec1f42381aa665654ffa3a81-b58587912b50e7d4-01"
     ],
     "http.response.status_code": 200,
     "http.response.header.date": [
-      "Wed, 08 Oct 2025 00:22:10 GMT"
+      "Sun, 12 Oct 2025 19:24:34 GMT"
     ],
     "http.response.header.content-type": [
       "application/json; charset=utf-8"
@@ -252,7 +252,7 @@ bash -e demo.sh
       "Accept,Accept-Encoding, Accept, X-Requested-With"
     ],
     "http.response.header.etag": [
-      "W/\"91feef9b8dc7004b21f64d54013b3ec7dca5fc4b7eed769b038ac4244da95f25\""
+      "W/\"90cf2db4c5fbaa5604c95754c8915961563fa47860e059452b96e537d8cbe011\""
     ],
     "http.response.header.x-github-media-type": [
       "github.v3; format=json"
@@ -297,39 +297,39 @@ bash -e demo.sh
       "60"
     ],
     "http.response.header.x-ratelimit-remaining": [
-      "52"
+      "57"
     ],
     "http.response.header.x-ratelimit-reset": [
-      "1759885112"
+      "1760300668"
     ],
     "http.response.header.x-ratelimit-resource": [
       "core"
     ],
     "http.response.header.x-ratelimit-used": [
-      "8"
+      "3"
     ],
     "http.response.header.x-github-request-id": [
-      "7402:F1B6C:67ABA5:1C3CA92:68E5AEB2"
+      "4C02:2B2E1:8621469:8A9A058:68EC0072"
     ]
   },
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.29.0",
+    "telemetry.sdk.version": "5.30.1",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "centralus",
-    "cloud.resource_id": "/subscriptions/932855b2-72b4-49a9-af3b-44800410cd65/resourceGroups/azure-centralus-general-932855b2-72b4-49a9-af3b-44800410cd65/providers/Microsoft.Compute/virtualMachines/9GFWyl01fROhlA",
-    "host.id": "250ba197-88c7-44e6-b58b-94942ce6d7c3",
-    "host.name": "9GFWyl01fROhlA",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/resourceGroups/azure-westus-general-73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/providers/Microsoft.Compute/virtualMachines/nMeLE6rW18uoGa",
+    "host.id": "c64a380f-be6e-4176-9264-1b5988d53d43",
+    "host.name": "nMeLE6rW18uoGa",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
     "service.instance.id": "",
-    "process.pid": 7507,
+    "process.pid": 7503,
     "process.parent_pid": 4651,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
@@ -347,19 +347,19 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "36277a7a4b0b83776da280d5cdffcb76",
-  "span_id": "164b27b8af4efc39",
-  "parent_span_id": "70b1ab19af2b1142",
+  "trace_id": "a115f18cec1f42381aa665654ffa3a81",
+  "span_id": "f2f0d9742927202b",
+  "parent_span_id": "9a9d32cea64ba7bd",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1759882931683409152,
-  "time_end": 1759882932360260864,
+  "time_start": 1760297075248210176,
+  "time_end": 1760297075794458880,
   "attributes": {
     "network.transport": "tcp",
     "network.protocol.name": "https",
     "network.protocol.version": "2",
-    "network.peer.address": "140.82.114.5",
+    "network.peer.address": "140.82.116.6",
     "network.peer.port": 443,
     "server.address": "api.github.com",
     "server.port": 443,
@@ -379,11 +379,11 @@ bash -e demo.sh
       "*/*"
     ],
     "http.request.header.traceparent": [
-      "00-36277a7a4b0b83776da280d5cdffcb76-70b1ab19af2b1142-01"
+      "00-a115f18cec1f42381aa665654ffa3a81-9a9d32cea64ba7bd-01"
     ],
     "http.response.status_code": 200,
     "http.response.header.date": [
-      "Wed, 08 Oct 2025 00:22:12 GMT"
+      "Sun, 12 Oct 2025 19:24:35 GMT"
     ],
     "http.response.header.content-type": [
       "application/json; charset=utf-8"
@@ -395,7 +395,7 @@ bash -e demo.sh
       "Accept,Accept-Encoding, Accept, X-Requested-With"
     ],
     "http.response.header.etag": [
-      "W/\"344d1bdc2ac2494b9c3c9fc5308de68d9eb266c8d46ae0263fe26b1df0d5ddac\""
+      "W/\"a1f44ca90b20ff0589bba31ae8b88cf2664816ecec7d8c2ac57e452df60941fd\""
     ],
     "http.response.header.x-github-media-type": [
       "github.v3; format=json"
@@ -440,39 +440,39 @@ bash -e demo.sh
       "60"
     ],
     "http.response.header.x-ratelimit-remaining": [
-      "51"
+      "56"
     ],
     "http.response.header.x-ratelimit-reset": [
-      "1759885112"
+      "1760300668"
     ],
     "http.response.header.x-ratelimit-resource": [
       "core"
     ],
     "http.response.header.x-ratelimit-used": [
-      "9"
+      "4"
     ],
     "http.response.header.x-github-request-id": [
-      "7403:23EEF7:6C7017:1D7B924:68E5AEB3"
+      "4C03:3FE088:844B9B9:88C718B:68EC0073"
     ]
   },
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.29.0",
+    "telemetry.sdk.version": "5.30.1",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "centralus",
-    "cloud.resource_id": "/subscriptions/932855b2-72b4-49a9-af3b-44800410cd65/resourceGroups/azure-centralus-general-932855b2-72b4-49a9-af3b-44800410cd65/providers/Microsoft.Compute/virtualMachines/9GFWyl01fROhlA",
-    "host.id": "250ba197-88c7-44e6-b58b-94942ce6d7c3",
-    "host.name": "9GFWyl01fROhlA",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/resourceGroups/azure-westus-general-73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/providers/Microsoft.Compute/virtualMachines/nMeLE6rW18uoGa",
+    "host.id": "c64a380f-be6e-4176-9264-1b5988d53d43",
+    "host.name": "nMeLE6rW18uoGa",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
     "service.instance.id": "",
-    "process.pid": 8406,
+    "process.pid": 8402,
     "process.parent_pid": 4651,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
@@ -490,19 +490,19 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "36277a7a4b0b83776da280d5cdffcb76",
-  "span_id": "00ac85d132857c6c",
-  "parent_span_id": "4fbd3dcf192d22ee",
+  "trace_id": "a115f18cec1f42381aa665654ffa3a81",
+  "span_id": "5f957b1cf944e407",
+  "parent_span_id": "7c7d4046112db429",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1759882932793249792,
-  "time_end": 1759882933249395968,
+  "time_start": 1760297076203415040,
+  "time_end": 1760297076727075584,
   "attributes": {
     "network.transport": "tcp",
     "network.protocol.name": "https",
     "network.protocol.version": "2",
-    "network.peer.address": "140.82.114.5",
+    "network.peer.address": "140.82.116.6",
     "network.peer.port": 443,
     "server.address": "api.github.com",
     "server.port": 443,
@@ -522,11 +522,11 @@ bash -e demo.sh
       "*/*"
     ],
     "http.request.header.traceparent": [
-      "00-36277a7a4b0b83776da280d5cdffcb76-4fbd3dcf192d22ee-01"
+      "00-a115f18cec1f42381aa665654ffa3a81-7c7d4046112db429-01"
     ],
     "http.response.status_code": 200,
     "http.response.header.date": [
-      "Wed, 08 Oct 2025 00:22:12 GMT"
+      "Sun, 12 Oct 2025 19:24:36 GMT"
     ],
     "http.response.header.content-type": [
       "application/json; charset=utf-8"
@@ -538,7 +538,7 @@ bash -e demo.sh
       "Accept,Accept-Encoding, Accept, X-Requested-With"
     ],
     "http.response.header.etag": [
-      "W/\"43ee99e5f60485bcf750727f2bbc7556674ef0253a5ddcb1cbb31bb363c50a22\""
+      "W/\"ca13195fff020266ff2d2b43cbe2e8f071a148279ca5482c41570ca3f6395a2d\""
     ],
     "http.response.header.x-github-media-type": [
       "github.v3; format=json"
@@ -583,39 +583,39 @@ bash -e demo.sh
       "60"
     ],
     "http.response.header.x-ratelimit-remaining": [
-      "50"
+      "55"
     ],
     "http.response.header.x-ratelimit-reset": [
-      "1759885112"
+      "1760300668"
     ],
     "http.response.header.x-ratelimit-resource": [
       "core"
     ],
     "http.response.header.x-ratelimit-used": [
-      "10"
+      "5"
     ],
     "http.response.header.x-github-request-id": [
-      "7404:E17DC:6790A1:1C2233E:68E5AEB4"
+      "4C04:1CF558:822BA0F:86A8D52:68EC0074"
     ]
   },
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.29.0",
+    "telemetry.sdk.version": "5.30.1",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "centralus",
-    "cloud.resource_id": "/subscriptions/932855b2-72b4-49a9-af3b-44800410cd65/resourceGroups/azure-centralus-general-932855b2-72b4-49a9-af3b-44800410cd65/providers/Microsoft.Compute/virtualMachines/9GFWyl01fROhlA",
-    "host.id": "250ba197-88c7-44e6-b58b-94942ce6d7c3",
-    "host.name": "9GFWyl01fROhlA",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/resourceGroups/azure-westus-general-73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/providers/Microsoft.Compute/virtualMachines/nMeLE6rW18uoGa",
+    "host.id": "c64a380f-be6e-4176-9264-1b5988d53d43",
+    "host.name": "nMeLE6rW18uoGa",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
     "service.instance.id": "",
-    "process.pid": 9305,
+    "process.pid": 9301,
     "process.parent_pid": 4651,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
@@ -633,18 +633,18 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "36277a7a4b0b83776da280d5cdffcb76",
-  "span_id": "c2765ca31ac1cd54",
-  "parent_span_id": "672994993eee84f3",
+  "trace_id": "a115f18cec1f42381aa665654ffa3a81",
+  "span_id": "621112a1b2318f97",
+  "parent_span_id": "f7389cfd148e8235",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1759882934134765312,
-  "time_end": 1759882935143604224,
+  "time_start": 1760297077317161216,
+  "time_end": 1760297078336272896,
   "attributes": {
     "network.protocol.name": "https",
     "network.transport": "tcp",
-    "network.peer.address": "140.82.112.3",
+    "network.peer.address": "140.82.116.4",
     "network.peer.port": 443,
     "server.address": "github.com",
     "server.port": 443,
@@ -658,22 +658,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.29.0",
+    "telemetry.sdk.version": "5.30.1",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "centralus",
-    "cloud.resource_id": "/subscriptions/932855b2-72b4-49a9-af3b-44800410cd65/resourceGroups/azure-centralus-general-932855b2-72b4-49a9-af3b-44800410cd65/providers/Microsoft.Compute/virtualMachines/9GFWyl01fROhlA",
-    "host.id": "250ba197-88c7-44e6-b58b-94942ce6d7c3",
-    "host.name": "9GFWyl01fROhlA",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/resourceGroups/azure-westus-general-73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/providers/Microsoft.Compute/virtualMachines/nMeLE6rW18uoGa",
+    "host.id": "c64a380f-be6e-4176-9264-1b5988d53d43",
+    "host.name": "nMeLE6rW18uoGa",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
     "service.instance.id": "",
-    "process.pid": 10207,
-    "process.parent_pid": 4585,
+    "process.pid": 9808,
+    "process.parent_pid": 4591,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs wget",
@@ -690,24 +690,24 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "36277a7a4b0b83776da280d5cdffcb76",
-  "span_id": "b276b98320857704",
-  "parent_span_id": "672994993eee84f3",
+  "trace_id": "a115f18cec1f42381aa665654ffa3a81",
+  "span_id": "103ce9a7fed7555f",
+  "parent_span_id": "f7389cfd148e8235",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1759882934334190848,
-  "time_end": 1759882935218447872,
+  "time_start": 1760297077493349376,
+  "time_end": 1760297078416771584,
   "attributes": {
     "network.protocol.name": "https",
     "network.transport": "tcp",
-    "network.peer.address": "185.199.109.133",
+    "network.peer.address": "185.199.110.133",
     "network.peer.port": 443,
     "server.address": "release-assets.githubusercontent.com",
     "server.port": 443,
-    "url.full": "https://release-assets.githubusercontent.com/github-production-release-asset/692042935/5544a935-3cf9-4f9b-b6ed-d668fd012e99?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-10-08T01%3A12%3A07Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.7.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-10-08T00%3A11%3A15Z&ske=2025-10-08T01%3A12%3A07Z&sks=b&skv=2018-11-09&sig=FWe2vlB10TUG9n913uew8zMFx7ke1AMTVowl3QYuXxw%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1OTg4MzIzNCwibmJmIjoxNzU5ODgyOTM0LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.Zp9blqp4fikoSSwkR2K18xx_UQwpI5oqnqJhgWzgcmQ&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.7.deb&response-content-type=application%2Foctet-stream",
+    "url.full": "https://release-assets.githubusercontent.com/github-production-release-asset/692042935/5544a935-3cf9-4f9b-b6ed-d668fd012e99?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-10-12T20%3A24%3A23Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.7.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-10-12T19%3A23%3A29Z&ske=2025-10-12T20%3A24%3A23Z&sks=b&skv=2018-11-09&sig=ITDZmbAPJAGLSffIL69ZJkofrabuqv8%2FywE7HX9CAH8%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc2MDI5NzM3NywibmJmIjoxNzYwMjk3MDc3LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.mAtuTlFOpCEIn-14tn5ls4zWW1lAVVKUUAJ_xBWLrng&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.7.deb&response-content-type=application%2Foctet-stream",
     "url.path": "/github-production-release-asset/692042935/5544a935-3cf9-4f9b-b6ed-d668fd012e99",
-    "url.query": "sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-10-08T01%3A12%3A07Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.7.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-10-08T00%3A11%3A15Z&ske=2025-10-08T01%3A12%3A07Z&sks=b&skv=2018-11-09&sig=FWe2vlB10TUG9n913uew8zMFx7ke1AMTVowl3QYuXxw%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1OTg4MzIzNCwibmJmIjoxNzU5ODgyOTM0LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.Zp9blqp4fikoSSwkR2K18xx_UQwpI5oqnqJhgWzgcmQ&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.7.deb&response-content-type=application%2Foctet-stream",
+    "url.query": "sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-10-12T20%3A24%3A23Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.7.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-10-12T19%3A23%3A29Z&ske=2025-10-12T20%3A24%3A23Z&sks=b&skv=2018-11-09&sig=ITDZmbAPJAGLSffIL69ZJkofrabuqv8%2FywE7HX9CAH8%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc2MDI5NzM3NywibmJmIjoxNzYwMjk3MDc3LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.mAtuTlFOpCEIn-14tn5ls4zWW1lAVVKUUAJ_xBWLrng&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.7.deb&response-content-type=application%2Foctet-stream",
     "url.scheme": "https",
     "user_agent.original": "wget",
     "http.request.method": "GET",
@@ -722,22 +722,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.29.0",
+    "telemetry.sdk.version": "5.30.1",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "centralus",
-    "cloud.resource_id": "/subscriptions/932855b2-72b4-49a9-af3b-44800410cd65/resourceGroups/azure-centralus-general-932855b2-72b4-49a9-af3b-44800410cd65/providers/Microsoft.Compute/virtualMachines/9GFWyl01fROhlA",
-    "host.id": "250ba197-88c7-44e6-b58b-94942ce6d7c3",
-    "host.name": "9GFWyl01fROhlA",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/resourceGroups/azure-westus-general-73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/providers/Microsoft.Compute/virtualMachines/nMeLE6rW18uoGa",
+    "host.id": "c64a380f-be6e-4176-9264-1b5988d53d43",
+    "host.name": "nMeLE6rW18uoGa",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
     "service.instance.id": "",
-    "process.pid": 10207,
-    "process.parent_pid": 4585,
+    "process.pid": 9808,
+    "process.parent_pid": 4591,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs wget",
@@ -754,18 +754,18 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "36277a7a4b0b83776da280d5cdffcb76",
-  "span_id": "0483b27f08e7f2ac",
-  "parent_span_id": "672994993eee84f3",
+  "trace_id": "a115f18cec1f42381aa665654ffa3a81",
+  "span_id": "6f2dd21ea637d8f5",
+  "parent_span_id": "f7389cfd148e8235",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1759882935237919232,
-  "time_end": 1759882936248755712,
+  "time_start": 1760297078430075904,
+  "time_end": 1760297079446358016,
   "attributes": {
     "network.protocol.name": "https",
     "network.transport": "tcp",
-    "network.peer.address": "140.82.112.3",
+    "network.peer.address": "140.82.116.4",
     "network.peer.port": 443,
     "server.address": "github.com",
     "server.port": 443,
@@ -779,22 +779,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.29.0",
+    "telemetry.sdk.version": "5.30.1",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "centralus",
-    "cloud.resource_id": "/subscriptions/932855b2-72b4-49a9-af3b-44800410cd65/resourceGroups/azure-centralus-general-932855b2-72b4-49a9-af3b-44800410cd65/providers/Microsoft.Compute/virtualMachines/9GFWyl01fROhlA",
-    "host.id": "250ba197-88c7-44e6-b58b-94942ce6d7c3",
-    "host.name": "9GFWyl01fROhlA",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/resourceGroups/azure-westus-general-73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/providers/Microsoft.Compute/virtualMachines/nMeLE6rW18uoGa",
+    "host.id": "c64a380f-be6e-4176-9264-1b5988d53d43",
+    "host.name": "nMeLE6rW18uoGa",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
     "service.instance.id": "",
-    "process.pid": 10207,
-    "process.parent_pid": 4585,
+    "process.pid": 9808,
+    "process.parent_pid": 4591,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs wget",
@@ -811,24 +811,24 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "36277a7a4b0b83776da280d5cdffcb76",
-  "span_id": "e3714d52d4d25ddd",
-  "parent_span_id": "672994993eee84f3",
+  "trace_id": "a115f18cec1f42381aa665654ffa3a81",
+  "span_id": "d4596f26bfa7cc78",
+  "parent_span_id": "f7389cfd148e8235",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1759882935397469696,
-  "time_end": 1759882936285623552,
+  "time_start": 1760297078597267968,
+  "time_end": 1760297079529808640,
   "attributes": {
     "network.protocol.name": "https",
     "network.transport": "tcp",
-    "network.peer.address": "185.199.109.133",
+    "network.peer.address": "185.199.110.133",
     "network.peer.port": 443,
     "server.address": "release-assets.githubusercontent.com",
     "server.port": 443,
-    "url.full": "https://release-assets.githubusercontent.com/github-production-release-asset/692042935/e8091cbc-915a-4ba7-bca7-308817fe26c4?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-10-08T01%3A09%3A19Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.6.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-10-08T00%3A08%3A51Z&ske=2025-10-08T01%3A09%3A19Z&sks=b&skv=2018-11-09&sig=3R9yaR99jCRVWu9NbFGY6QHio3GooN6bT5i8Yt1tMQ8%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1OTg4MzIzNSwibmJmIjoxNzU5ODgyOTM1LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.nDZZ_ZvxfBif9VUZ2zs0I5O2Zss9Bgm9QTGGSBLtV2c&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.6.deb&response-content-type=application%2Foctet-stream",
+    "url.full": "https://release-assets.githubusercontent.com/github-production-release-asset/692042935/e8091cbc-915a-4ba7-bca7-308817fe26c4?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-10-12T20%3A04%3A22Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.6.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-10-12T19%3A04%3A12Z&ske=2025-10-12T20%3A04%3A22Z&sks=b&skv=2018-11-09&sig=MSeoZT8XC3jHCFn%2BvOKpOxlDLkzbVW7sWATMAtylFFM%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc2MDI5NzM3OCwibmJmIjoxNzYwMjk3MDc4LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.52QllLkFFnBCA56C94Cg761kBU6a46I7DWDEW0un4_o&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.6.deb&response-content-type=application%2Foctet-stream",
     "url.path": "/github-production-release-asset/692042935/e8091cbc-915a-4ba7-bca7-308817fe26c4",
-    "url.query": "sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-10-08T01%3A09%3A19Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.6.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-10-08T00%3A08%3A51Z&ske=2025-10-08T01%3A09%3A19Z&sks=b&skv=2018-11-09&sig=3R9yaR99jCRVWu9NbFGY6QHio3GooN6bT5i8Yt1tMQ8%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1OTg4MzIzNSwibmJmIjoxNzU5ODgyOTM1LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.nDZZ_ZvxfBif9VUZ2zs0I5O2Zss9Bgm9QTGGSBLtV2c&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.6.deb&response-content-type=application%2Foctet-stream",
+    "url.query": "sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-10-12T20%3A04%3A22Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.6.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-10-12T19%3A04%3A12Z&ske=2025-10-12T20%3A04%3A22Z&sks=b&skv=2018-11-09&sig=MSeoZT8XC3jHCFn%2BvOKpOxlDLkzbVW7sWATMAtylFFM%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc2MDI5NzM3OCwibmJmIjoxNzYwMjk3MDc4LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.52QllLkFFnBCA56C94Cg761kBU6a46I7DWDEW0un4_o&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.6.deb&response-content-type=application%2Foctet-stream",
     "url.scheme": "https",
     "user_agent.original": "wget",
     "http.request.method": "GET",
@@ -843,22 +843,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.29.0",
+    "telemetry.sdk.version": "5.30.1",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "centralus",
-    "cloud.resource_id": "/subscriptions/932855b2-72b4-49a9-af3b-44800410cd65/resourceGroups/azure-centralus-general-932855b2-72b4-49a9-af3b-44800410cd65/providers/Microsoft.Compute/virtualMachines/9GFWyl01fROhlA",
-    "host.id": "250ba197-88c7-44e6-b58b-94942ce6d7c3",
-    "host.name": "9GFWyl01fROhlA",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/resourceGroups/azure-westus-general-73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/providers/Microsoft.Compute/virtualMachines/nMeLE6rW18uoGa",
+    "host.id": "c64a380f-be6e-4176-9264-1b5988d53d43",
+    "host.name": "nMeLE6rW18uoGa",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
     "service.instance.id": "",
-    "process.pid": 10207,
-    "process.parent_pid": 4585,
+    "process.pid": 9808,
+    "process.parent_pid": 4591,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs wget",
@@ -875,18 +875,18 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "36277a7a4b0b83776da280d5cdffcb76",
-  "span_id": "3ca95d9cbdcd5f7e",
-  "parent_span_id": "672994993eee84f3",
+  "trace_id": "a115f18cec1f42381aa665654ffa3a81",
+  "span_id": "485c55ab6fcab769",
+  "parent_span_id": "f7389cfd148e8235",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1759882936298284544,
-  "time_end": 1759882937315751168,
+  "time_start": 1760297079541479168,
+  "time_end": 1760297080559105280,
   "attributes": {
     "network.protocol.name": "https",
     "network.transport": "tcp",
-    "network.peer.address": "140.82.112.3",
+    "network.peer.address": "140.82.116.4",
     "network.peer.port": 443,
     "server.address": "github.com",
     "server.port": 443,
@@ -900,22 +900,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.29.0",
+    "telemetry.sdk.version": "5.30.1",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "centralus",
-    "cloud.resource_id": "/subscriptions/932855b2-72b4-49a9-af3b-44800410cd65/resourceGroups/azure-centralus-general-932855b2-72b4-49a9-af3b-44800410cd65/providers/Microsoft.Compute/virtualMachines/9GFWyl01fROhlA",
-    "host.id": "250ba197-88c7-44e6-b58b-94942ce6d7c3",
-    "host.name": "9GFWyl01fROhlA",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/resourceGroups/azure-westus-general-73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/providers/Microsoft.Compute/virtualMachines/nMeLE6rW18uoGa",
+    "host.id": "c64a380f-be6e-4176-9264-1b5988d53d43",
+    "host.name": "nMeLE6rW18uoGa",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
     "service.instance.id": "",
-    "process.pid": 10207,
-    "process.parent_pid": 4585,
+    "process.pid": 9808,
+    "process.parent_pid": 4591,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs wget",
@@ -932,24 +932,24 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "36277a7a4b0b83776da280d5cdffcb76",
-  "span_id": "8ab293c495ff367a",
-  "parent_span_id": "672994993eee84f3",
+  "trace_id": "a115f18cec1f42381aa665654ffa3a81",
+  "span_id": "c2f24ead70f63861",
+  "parent_span_id": "f7389cfd148e8235",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1759882936446872832,
-  "time_end": 1759882937340252672,
+  "time_start": 1760297079731164416,
+  "time_end": 1760297080633260800,
   "attributes": {
     "network.protocol.name": "https",
     "network.transport": "tcp",
-    "network.peer.address": "185.199.109.133",
+    "network.peer.address": "185.199.110.133",
     "network.peer.port": 443,
     "server.address": "release-assets.githubusercontent.com",
     "server.port": 443,
-    "url.full": "https://release-assets.githubusercontent.com/github-production-release-asset/692042935/25d95ab9-56aa-4a77-8e84-d4947ecef0fc?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-10-08T01%3A16%3A58Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.5.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-10-08T00%3A16%3A31Z&ske=2025-10-08T01%3A16%3A58Z&sks=b&skv=2018-11-09&sig=LcgePO5jfbZHcHT9pOPlK976z%2BjwMj9xEkRhYmHAaws%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1OTg4MzIzNiwibmJmIjoxNzU5ODgyOTM2LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.n2M9BnJQle038QwouL2nEMsA66coYTuwyWcCypGdEW8&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.5.deb&response-content-type=application%2Foctet-stream",
+    "url.full": "https://release-assets.githubusercontent.com/github-production-release-asset/692042935/25d95ab9-56aa-4a77-8e84-d4947ecef0fc?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-10-12T20%3A16%3A32Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.5.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-10-12T19%3A15%3A43Z&ske=2025-10-12T20%3A16%3A32Z&sks=b&skv=2018-11-09&sig=JHw2tjBP6qh%2BSWHO2HpC29h%2B5Cvo1jbzsf8mq3vRG8k%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc2MDI5NzM3OSwibmJmIjoxNzYwMjk3MDc5LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.pzS0cRLaHAeigwxLKe3l5g0Jlh3k84BT8OW9t8gI-FU&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.5.deb&response-content-type=application%2Foctet-stream",
     "url.path": "/github-production-release-asset/692042935/25d95ab9-56aa-4a77-8e84-d4947ecef0fc",
-    "url.query": "sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-10-08T01%3A16%3A58Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.5.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-10-08T00%3A16%3A31Z&ske=2025-10-08T01%3A16%3A58Z&sks=b&skv=2018-11-09&sig=LcgePO5jfbZHcHT9pOPlK976z%2BjwMj9xEkRhYmHAaws%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1OTg4MzIzNiwibmJmIjoxNzU5ODgyOTM2LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.n2M9BnJQle038QwouL2nEMsA66coYTuwyWcCypGdEW8&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.5.deb&response-content-type=application%2Foctet-stream",
+    "url.query": "sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-10-12T20%3A16%3A32Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.5.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-10-12T19%3A15%3A43Z&ske=2025-10-12T20%3A16%3A32Z&sks=b&skv=2018-11-09&sig=JHw2tjBP6qh%2BSWHO2HpC29h%2B5Cvo1jbzsf8mq3vRG8k%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc2MDI5NzM3OSwibmJmIjoxNzYwMjk3MDc5LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.pzS0cRLaHAeigwxLKe3l5g0Jlh3k84BT8OW9t8gI-FU&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.5.deb&response-content-type=application%2Foctet-stream",
     "url.scheme": "https",
     "user_agent.original": "wget",
     "http.request.method": "GET",
@@ -964,22 +964,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.29.0",
+    "telemetry.sdk.version": "5.30.1",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "centralus",
-    "cloud.resource_id": "/subscriptions/932855b2-72b4-49a9-af3b-44800410cd65/resourceGroups/azure-centralus-general-932855b2-72b4-49a9-af3b-44800410cd65/providers/Microsoft.Compute/virtualMachines/9GFWyl01fROhlA",
-    "host.id": "250ba197-88c7-44e6-b58b-94942ce6d7c3",
-    "host.name": "9GFWyl01fROhlA",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/resourceGroups/azure-westus-general-73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/providers/Microsoft.Compute/virtualMachines/nMeLE6rW18uoGa",
+    "host.id": "c64a380f-be6e-4176-9264-1b5988d53d43",
+    "host.name": "nMeLE6rW18uoGa",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
     "service.instance.id": "",
-    "process.pid": 10207,
-    "process.parent_pid": 4585,
+    "process.pid": 9808,
+    "process.parent_pid": 4591,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs wget",
@@ -996,14 +996,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "36277a7a4b0b83776da280d5cdffcb76",
-  "span_id": "f207665d660296c6",
-  "parent_span_id": "783352346325b8e1",
+  "trace_id": "a115f18cec1f42381aa665654ffa3a81",
+  "span_id": "fcca5073dae0cfe5",
+  "parent_span_id": "d99d5b3db5325f0c",
   "name": "HEAD",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1759882924661461248,
-  "time_end": 1759882928057940736,
+  "time_start": 1760297068044783872,
+  "time_end": 1760297071534839808,
   "attributes": {
     "network.transport": "tcp",
     "network.peer.port": 443,
@@ -1029,7 +1029,7 @@ bash -e demo.sh
     ],
     "http.response.status_code": 200,
     "http.response.header.date": [
-      "Wed, 08 Oct 2025 00:22:05 GMT"
+      "Sun, 12 Oct 2025 19:24:28 GMT"
     ],
     "http.response.header.content-type": [
       "application/json; charset=utf-8"
@@ -1041,7 +1041,7 @@ bash -e demo.sh
       "Accept,Accept-Encoding, Accept, X-Requested-With"
     ],
     "http.response.header.etag": [
-      "W/\"0094ee30052f58ef2497c283113a58369e8535f12a1b026517b775509b587024\""
+      "W/\"df4055426daf00f226c127e5e03930792147dd96212299a521bf8e4c0d854780\""
     ],
     "http.response.header.x-github-media-type": [
       "github.v3; format=json"
@@ -1086,19 +1086,19 @@ bash -e demo.sh
       "60"
     ],
     "http.response.header.x-ratelimit-remaining": [
-      "54"
+      "59"
     ],
     "http.response.header.x-ratelimit-reset": [
-      "1759885112"
+      "1760300668"
     ],
     "http.response.header.x-ratelimit-resource": [
       "core"
     ],
     "http.response.header.x-ratelimit-used": [
-      "6"
+      "1"
     ],
     "http.response.header.x-github-request-id": [
-      "7400:1CF5E1:6A665B:1D05C08:68E5AEAC"
+      "4C00:898CD:5A46C86:5D96624:68EC006B"
     ],
     "http.response.header.connection": [
       "close"
@@ -1108,22 +1108,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.29.0",
+    "telemetry.sdk.version": "5.30.1",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "centralus",
-    "cloud.resource_id": "/subscriptions/932855b2-72b4-49a9-af3b-44800410cd65/resourceGroups/azure-centralus-general-932855b2-72b4-49a9-af3b-44800410cd65/providers/Microsoft.Compute/virtualMachines/9GFWyl01fROhlA",
-    "host.id": "250ba197-88c7-44e6-b58b-94942ce6d7c3",
-    "host.name": "9GFWyl01fROhlA",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/resourceGroups/azure-westus-general-73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/providers/Microsoft.Compute/virtualMachines/nMeLE6rW18uoGa",
+    "host.id": "c64a380f-be6e-4176-9264-1b5988d53d43",
+    "host.name": "nMeLE6rW18uoGa",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
     "service.instance.id": "",
-    "process.pid": 3123,
-    "process.parent_pid": 2356,
+    "process.pid": 3116,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1140,34 +1140,34 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "36277a7a4b0b83776da280d5cdffcb76",
-  "span_id": "6619d4b318025bbe",
+  "trace_id": "a115f18cec1f42381aa665654ffa3a81",
+  "span_id": "665e479cf428b16d",
   "parent_span_id": null,
   "name": "bash -e demo.sh",
   "kind": "SERVER",
   "status": "UNSET",
-  "time_start": 1759882924288986112,
-  "time_end": 1759882937384085248,
+  "time_start": 1760297067685428736,
+  "time_end": 1760297080672608512,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.29.0",
+    "telemetry.sdk.version": "5.30.1",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "centralus",
-    "cloud.resource_id": "/subscriptions/932855b2-72b4-49a9-af3b-44800410cd65/resourceGroups/azure-centralus-general-932855b2-72b4-49a9-af3b-44800410cd65/providers/Microsoft.Compute/virtualMachines/9GFWyl01fROhlA",
-    "host.id": "250ba197-88c7-44e6-b58b-94942ce6d7c3",
-    "host.name": "9GFWyl01fROhlA",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/resourceGroups/azure-westus-general-73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/providers/Microsoft.Compute/virtualMachines/nMeLE6rW18uoGa",
+    "host.id": "c64a380f-be6e-4176-9264-1b5988d53d43",
+    "host.name": "nMeLE6rW18uoGa",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
     "service.instance.id": "",
-    "process.pid": 3123,
-    "process.parent_pid": 2356,
+    "process.pid": 3116,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1184,14 +1184,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "36277a7a4b0b83776da280d5cdffcb76",
-  "span_id": "09813f1db306255f",
-  "parent_span_id": "dea7b858225ae105",
+  "trace_id": "a115f18cec1f42381aa665654ffa3a81",
+  "span_id": "1641e8232df4e4b3",
+  "parent_span_id": "6f849d04116c9e88",
   "name": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=1",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1759882929533872128,
-  "time_end": 1759882930234262528,
+  "time_start": 1760297073007353344,
+  "time_end": 1760297073670014464,
   "attributes": {
     "shell.command_line": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=1",
     "shell.command": "curl",
@@ -1207,21 +1207,21 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.29.0",
+    "telemetry.sdk.version": "5.30.1",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "centralus",
-    "cloud.resource_id": "/subscriptions/932855b2-72b4-49a9-af3b-44800410cd65/resourceGroups/azure-centralus-general-932855b2-72b4-49a9-af3b-44800410cd65/providers/Microsoft.Compute/virtualMachines/9GFWyl01fROhlA",
-    "host.id": "250ba197-88c7-44e6-b58b-94942ce6d7c3",
-    "host.name": "9GFWyl01fROhlA",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/resourceGroups/azure-westus-general-73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/providers/Microsoft.Compute/virtualMachines/nMeLE6rW18uoGa",
+    "host.id": "c64a380f-be6e-4176-9264-1b5988d53d43",
+    "host.name": "nMeLE6rW18uoGa",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
     "service.instance.id": "",
-    "process.pid": 6021,
+    "process.pid": 6014,
     "process.parent_pid": 4651,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
@@ -1239,14 +1239,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "36277a7a4b0b83776da280d5cdffcb76",
-  "span_id": "bf71bfd9f9b16f8f",
-  "parent_span_id": "dea7b858225ae105",
+  "trace_id": "a115f18cec1f42381aa665654ffa3a81",
+  "span_id": "b58587912b50e7d4",
+  "parent_span_id": "6f849d04116c9e88",
   "name": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=2",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1759882930559130880,
-  "time_end": 1759882931250492160,
+  "time_start": 1760297073989099776,
+  "time_end": 1760297074842003968,
   "attributes": {
     "shell.command_line": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=2",
     "shell.command": "curl",
@@ -1262,21 +1262,21 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.29.0",
+    "telemetry.sdk.version": "5.30.1",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "centralus",
-    "cloud.resource_id": "/subscriptions/932855b2-72b4-49a9-af3b-44800410cd65/resourceGroups/azure-centralus-general-932855b2-72b4-49a9-af3b-44800410cd65/providers/Microsoft.Compute/virtualMachines/9GFWyl01fROhlA",
-    "host.id": "250ba197-88c7-44e6-b58b-94942ce6d7c3",
-    "host.name": "9GFWyl01fROhlA",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/resourceGroups/azure-westus-general-73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/providers/Microsoft.Compute/virtualMachines/nMeLE6rW18uoGa",
+    "host.id": "c64a380f-be6e-4176-9264-1b5988d53d43",
+    "host.name": "nMeLE6rW18uoGa",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
     "service.instance.id": "",
-    "process.pid": 7507,
+    "process.pid": 7503,
     "process.parent_pid": 4651,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
@@ -1294,14 +1294,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "36277a7a4b0b83776da280d5cdffcb76",
-  "span_id": "70b1ab19af2b1142",
-  "parent_span_id": "dea7b858225ae105",
+  "trace_id": "a115f18cec1f42381aa665654ffa3a81",
+  "span_id": "9a9d32cea64ba7bd",
+  "parent_span_id": "6f849d04116c9e88",
   "name": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=3",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1759882931575602176,
-  "time_end": 1759882932364500736,
+  "time_start": 1760297075158964480,
+  "time_end": 1760297075798477056,
   "attributes": {
     "shell.command_line": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=3",
     "shell.command": "curl",
@@ -1317,21 +1317,21 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.29.0",
+    "telemetry.sdk.version": "5.30.1",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "centralus",
-    "cloud.resource_id": "/subscriptions/932855b2-72b4-49a9-af3b-44800410cd65/resourceGroups/azure-centralus-general-932855b2-72b4-49a9-af3b-44800410cd65/providers/Microsoft.Compute/virtualMachines/9GFWyl01fROhlA",
-    "host.id": "250ba197-88c7-44e6-b58b-94942ce6d7c3",
-    "host.name": "9GFWyl01fROhlA",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/resourceGroups/azure-westus-general-73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/providers/Microsoft.Compute/virtualMachines/nMeLE6rW18uoGa",
+    "host.id": "c64a380f-be6e-4176-9264-1b5988d53d43",
+    "host.name": "nMeLE6rW18uoGa",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
     "service.instance.id": "",
-    "process.pid": 8406,
+    "process.pid": 8402,
     "process.parent_pid": 4651,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
@@ -1349,14 +1349,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "36277a7a4b0b83776da280d5cdffcb76",
-  "span_id": "4fbd3dcf192d22ee",
-  "parent_span_id": "dea7b858225ae105",
+  "trace_id": "a115f18cec1f42381aa665654ffa3a81",
+  "span_id": "7c7d4046112db429",
+  "parent_span_id": "6f849d04116c9e88",
   "name": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=4",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1759882932692430592,
-  "time_end": 1759882933253579776,
+  "time_start": 1760297076114639616,
+  "time_end": 1760297076731760384,
   "attributes": {
     "shell.command_line": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=4",
     "shell.command": "curl",
@@ -1372,21 +1372,21 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.29.0",
+    "telemetry.sdk.version": "5.30.1",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "centralus",
-    "cloud.resource_id": "/subscriptions/932855b2-72b4-49a9-af3b-44800410cd65/resourceGroups/azure-centralus-general-932855b2-72b4-49a9-af3b-44800410cd65/providers/Microsoft.Compute/virtualMachines/9GFWyl01fROhlA",
-    "host.id": "250ba197-88c7-44e6-b58b-94942ce6d7c3",
-    "host.name": "9GFWyl01fROhlA",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/resourceGroups/azure-westus-general-73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/providers/Microsoft.Compute/virtualMachines/nMeLE6rW18uoGa",
+    "host.id": "c64a380f-be6e-4176-9264-1b5988d53d43",
+    "host.name": "nMeLE6rW18uoGa",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
     "service.instance.id": "",
-    "process.pid": 9305,
+    "process.pid": 9301,
     "process.parent_pid": 4651,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
@@ -1404,14 +1404,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "36277a7a4b0b83776da280d5cdffcb76",
-  "span_id": "60397c339933498b",
-  "parent_span_id": "6619d4b318025bbe",
+  "trace_id": "a115f18cec1f42381aa665654ffa3a81",
+  "span_id": "b179aa392a823ee5",
+  "parent_span_id": "665e479cf428b16d",
   "name": "cut -d   -f 2-",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1759882924327654144,
-  "time_end": 1759882928070070272,
+  "time_start": 1760297067724167680,
+  "time_end": 1760297071546814464,
   "attributes": {
     "shell.command_line": "cut -d   -f 2-",
     "shell.command": "cut",
@@ -1426,22 +1426,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.29.0",
+    "telemetry.sdk.version": "5.30.1",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "centralus",
-    "cloud.resource_id": "/subscriptions/932855b2-72b4-49a9-af3b-44800410cd65/resourceGroups/azure-centralus-general-932855b2-72b4-49a9-af3b-44800410cd65/providers/Microsoft.Compute/virtualMachines/9GFWyl01fROhlA",
-    "host.id": "250ba197-88c7-44e6-b58b-94942ce6d7c3",
-    "host.name": "9GFWyl01fROhlA",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/resourceGroups/azure-westus-general-73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/providers/Microsoft.Compute/virtualMachines/nMeLE6rW18uoGa",
+    "host.id": "c64a380f-be6e-4176-9264-1b5988d53d43",
+    "host.name": "nMeLE6rW18uoGa",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
     "service.instance.id": "",
-    "process.pid": 3123,
-    "process.parent_pid": 2356,
+    "process.pid": 3116,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1458,14 +1458,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "36277a7a4b0b83776da280d5cdffcb76",
-  "span_id": "1b8ac117224573cf",
-  "parent_span_id": "6619d4b318025bbe",
+  "trace_id": "a115f18cec1f42381aa665654ffa3a81",
+  "span_id": "4d55a507c03d06b9",
+  "parent_span_id": "665e479cf428b16d",
   "name": "cut -d ; -f1",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1759882924324679424,
-  "time_end": 1759882928079524864,
+  "time_start": 1760297067718338560,
+  "time_end": 1760297071556670464,
   "attributes": {
     "shell.command_line": "cut -d ; -f1",
     "shell.command": "cut",
@@ -1480,22 +1480,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.29.0",
+    "telemetry.sdk.version": "5.30.1",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "centralus",
-    "cloud.resource_id": "/subscriptions/932855b2-72b4-49a9-af3b-44800410cd65/resourceGroups/azure-centralus-general-932855b2-72b4-49a9-af3b-44800410cd65/providers/Microsoft.Compute/virtualMachines/9GFWyl01fROhlA",
-    "host.id": "250ba197-88c7-44e6-b58b-94942ce6d7c3",
-    "host.name": "9GFWyl01fROhlA",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/resourceGroups/azure-westus-general-73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/providers/Microsoft.Compute/virtualMachines/nMeLE6rW18uoGa",
+    "host.id": "c64a380f-be6e-4176-9264-1b5988d53d43",
+    "host.name": "nMeLE6rW18uoGa",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
     "service.instance.id": "",
-    "process.pid": 3123,
-    "process.parent_pid": 2356,
+    "process.pid": 3116,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1512,14 +1512,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "36277a7a4b0b83776da280d5cdffcb76",
-  "span_id": "d86f7e1f6f4b3613",
-  "parent_span_id": "6619d4b318025bbe",
+  "trace_id": "a115f18cec1f42381aa665654ffa3a81",
+  "span_id": "fa5d136a74bd8663",
+  "parent_span_id": "665e479cf428b16d",
   "name": "cut -d = -f 2",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1759882924340802560,
-  "time_end": 1759882928088963584,
+  "time_start": 1760297067734744064,
+  "time_end": 1760297071566208000,
   "attributes": {
     "shell.command_line": "cut -d = -f 2",
     "shell.command": "cut",
@@ -1534,22 +1534,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.29.0",
+    "telemetry.sdk.version": "5.30.1",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "centralus",
-    "cloud.resource_id": "/subscriptions/932855b2-72b4-49a9-af3b-44800410cd65/resourceGroups/azure-centralus-general-932855b2-72b4-49a9-af3b-44800410cd65/providers/Microsoft.Compute/virtualMachines/9GFWyl01fROhlA",
-    "host.id": "250ba197-88c7-44e6-b58b-94942ce6d7c3",
-    "host.name": "9GFWyl01fROhlA",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/resourceGroups/azure-westus-general-73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/providers/Microsoft.Compute/virtualMachines/nMeLE6rW18uoGa",
+    "host.id": "c64a380f-be6e-4176-9264-1b5988d53d43",
+    "host.name": "nMeLE6rW18uoGa",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
     "service.instance.id": "",
-    "process.pid": 3123,
-    "process.parent_pid": 2356,
+    "process.pid": 3116,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1566,14 +1566,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "36277a7a4b0b83776da280d5cdffcb76",
-  "span_id": "bc561950b6b66955",
-  "parent_span_id": "6619d4b318025bbe",
+  "trace_id": "a115f18cec1f42381aa665654ffa3a81",
+  "span_id": "1e479a399bda118f",
+  "parent_span_id": "665e479cf428b16d",
   "name": "cut -d ? -f 2-",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1759882924324951552,
-  "time_end": 1759882928081873408,
+  "time_start": 1760297067731060736,
+  "time_end": 1760297071559124224,
   "attributes": {
     "shell.command_line": "cut -d ? -f 2-",
     "shell.command": "cut",
@@ -1588,22 +1588,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.29.0",
+    "telemetry.sdk.version": "5.30.1",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "centralus",
-    "cloud.resource_id": "/subscriptions/932855b2-72b4-49a9-af3b-44800410cd65/resourceGroups/azure-centralus-general-932855b2-72b4-49a9-af3b-44800410cd65/providers/Microsoft.Compute/virtualMachines/9GFWyl01fROhlA",
-    "host.id": "250ba197-88c7-44e6-b58b-94942ce6d7c3",
-    "host.name": "9GFWyl01fROhlA",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/resourceGroups/azure-westus-general-73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/providers/Microsoft.Compute/virtualMachines/nMeLE6rW18uoGa",
+    "host.id": "c64a380f-be6e-4176-9264-1b5988d53d43",
+    "host.name": "nMeLE6rW18uoGa",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
     "service.instance.id": "",
-    "process.pid": 3123,
-    "process.parent_pid": 2356,
+    "process.pid": 3116,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1620,14 +1620,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "36277a7a4b0b83776da280d5cdffcb76",
-  "span_id": "71f4210626196dc5",
-  "parent_span_id": "6619d4b318025bbe",
+  "trace_id": "a115f18cec1f42381aa665654ffa3a81",
+  "span_id": "91a30a157ff7c26c",
+  "parent_span_id": "665e479cf428b16d",
   "name": "grep .deb$",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1759882924358939648,
-  "time_end": 1759882933299228160,
+  "time_start": 1760297067734429952,
+  "time_end": 1760297076778601216,
   "attributes": {
     "shell.command_line": "grep .deb$",
     "shell.command": "grep",
@@ -1642,22 +1642,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.29.0",
+    "telemetry.sdk.version": "5.30.1",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "centralus",
-    "cloud.resource_id": "/subscriptions/932855b2-72b4-49a9-af3b-44800410cd65/resourceGroups/azure-centralus-general-932855b2-72b4-49a9-af3b-44800410cd65/providers/Microsoft.Compute/virtualMachines/9GFWyl01fROhlA",
-    "host.id": "250ba197-88c7-44e6-b58b-94942ce6d7c3",
-    "host.name": "9GFWyl01fROhlA",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/resourceGroups/azure-westus-general-73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/providers/Microsoft.Compute/virtualMachines/nMeLE6rW18uoGa",
+    "host.id": "c64a380f-be6e-4176-9264-1b5988d53d43",
+    "host.name": "nMeLE6rW18uoGa",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
     "service.instance.id": "",
-    "process.pid": 3123,
-    "process.parent_pid": 2356,
+    "process.pid": 3116,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1674,14 +1674,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "36277a7a4b0b83776da280d5cdffcb76",
-  "span_id": "132b5cb20ae245ae",
-  "parent_span_id": "6619d4b318025bbe",
+  "trace_id": "a115f18cec1f42381aa665654ffa3a81",
+  "span_id": "b235b1f5502e11dd",
+  "parent_span_id": "665e479cf428b16d",
   "name": "grep ^link:",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1759882924319084800,
-  "time_end": 1759882928067694592,
+  "time_start": 1760297067724296192,
+  "time_end": 1760297071544340480,
   "attributes": {
     "shell.command_line": "grep ^link:",
     "shell.command": "grep",
@@ -1696,22 +1696,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.29.0",
+    "telemetry.sdk.version": "5.30.1",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "centralus",
-    "cloud.resource_id": "/subscriptions/932855b2-72b4-49a9-af3b-44800410cd65/resourceGroups/azure-centralus-general-932855b2-72b4-49a9-af3b-44800410cd65/providers/Microsoft.Compute/virtualMachines/9GFWyl01fROhlA",
-    "host.id": "250ba197-88c7-44e6-b58b-94942ce6d7c3",
-    "host.name": "9GFWyl01fROhlA",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/resourceGroups/azure-westus-general-73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/providers/Microsoft.Compute/virtualMachines/nMeLE6rW18uoGa",
+    "host.id": "c64a380f-be6e-4176-9264-1b5988d53d43",
+    "host.name": "nMeLE6rW18uoGa",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
     "service.instance.id": "",
-    "process.pid": 3123,
-    "process.parent_pid": 2356,
+    "process.pid": 3116,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1728,14 +1728,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "36277a7a4b0b83776da280d5cdffcb76",
-  "span_id": "fc7dafbd051ac825",
-  "parent_span_id": "6619d4b318025bbe",
+  "trace_id": "a115f18cec1f42381aa665654ffa3a81",
+  "span_id": "b13f949fc85b3315",
+  "parent_span_id": "665e479cf428b16d",
   "name": "grep ^page=",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1759882924337875712,
-  "time_end": 1759882928086650880,
+  "time_start": 1760297067724642048,
+  "time_end": 1760297071563898624,
   "attributes": {
     "shell.command_line": "grep ^page=",
     "shell.command": "grep",
@@ -1750,22 +1750,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.29.0",
+    "telemetry.sdk.version": "5.30.1",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "centralus",
-    "cloud.resource_id": "/subscriptions/932855b2-72b4-49a9-af3b-44800410cd65/resourceGroups/azure-centralus-general-932855b2-72b4-49a9-af3b-44800410cd65/providers/Microsoft.Compute/virtualMachines/9GFWyl01fROhlA",
-    "host.id": "250ba197-88c7-44e6-b58b-94942ce6d7c3",
-    "host.name": "9GFWyl01fROhlA",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/resourceGroups/azure-westus-general-73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/providers/Microsoft.Compute/virtualMachines/nMeLE6rW18uoGa",
+    "host.id": "c64a380f-be6e-4176-9264-1b5988d53d43",
+    "host.name": "nMeLE6rW18uoGa",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
     "service.instance.id": "",
-    "process.pid": 3123,
-    "process.parent_pid": 2356,
+    "process.pid": 3116,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1782,14 +1782,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "36277a7a4b0b83776da280d5cdffcb76",
-  "span_id": "b779aa7c73d55f09",
-  "parent_span_id": "6619d4b318025bbe",
+  "trace_id": "a115f18cec1f42381aa665654ffa3a81",
+  "span_id": "15aa0f417ec94bb7",
+  "parent_span_id": "665e479cf428b16d",
   "name": "grep _1.",
   "kind": "INTERNAL",
   "status": "ERROR",
-  "time_start": 1759882924334996224,
-  "time_end": 1759882933302785024,
+  "time_start": 1760297067728707328,
+  "time_end": 1760297076782197504,
   "attributes": {
     "shell.command_line": "grep _1.",
     "shell.command": "grep",
@@ -1804,22 +1804,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.29.0",
+    "telemetry.sdk.version": "5.30.1",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "centralus",
-    "cloud.resource_id": "/subscriptions/932855b2-72b4-49a9-af3b-44800410cd65/resourceGroups/azure-centralus-general-932855b2-72b4-49a9-af3b-44800410cd65/providers/Microsoft.Compute/virtualMachines/9GFWyl01fROhlA",
-    "host.id": "250ba197-88c7-44e6-b58b-94942ce6d7c3",
-    "host.name": "9GFWyl01fROhlA",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/resourceGroups/azure-westus-general-73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/providers/Microsoft.Compute/virtualMachines/nMeLE6rW18uoGa",
+    "host.id": "c64a380f-be6e-4176-9264-1b5988d53d43",
+    "host.name": "nMeLE6rW18uoGa",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
     "service.instance.id": "",
-    "process.pid": 3123,
-    "process.parent_pid": 2356,
+    "process.pid": 3116,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1836,14 +1836,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "36277a7a4b0b83776da280d5cdffcb76",
-  "span_id": "2367e7f9bd6f9d69",
-  "parent_span_id": "6619d4b318025bbe",
+  "trace_id": "a115f18cec1f42381aa665654ffa3a81",
+  "span_id": "9c192561124994d1",
+  "parent_span_id": "665e479cf428b16d",
   "name": "grep rel=\"last\"",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1759882924323583744,
-  "time_end": 1759882928077166080,
+  "time_start": 1760297067724410880,
+  "time_end": 1760297071554225152,
   "attributes": {
     "shell.command_line": "grep rel=\"last\"",
     "shell.command": "grep",
@@ -1858,22 +1858,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.29.0",
+    "telemetry.sdk.version": "5.30.1",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "centralus",
-    "cloud.resource_id": "/subscriptions/932855b2-72b4-49a9-af3b-44800410cd65/resourceGroups/azure-centralus-general-932855b2-72b4-49a9-af3b-44800410cd65/providers/Microsoft.Compute/virtualMachines/9GFWyl01fROhlA",
-    "host.id": "250ba197-88c7-44e6-b58b-94942ce6d7c3",
-    "host.name": "9GFWyl01fROhlA",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/resourceGroups/azure-westus-general-73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/providers/Microsoft.Compute/virtualMachines/nMeLE6rW18uoGa",
+    "host.id": "c64a380f-be6e-4176-9264-1b5988d53d43",
+    "host.name": "nMeLE6rW18uoGa",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
     "service.instance.id": "",
-    "process.pid": 3123,
-    "process.parent_pid": 2356,
+    "process.pid": 3116,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1890,14 +1890,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "36277a7a4b0b83776da280d5cdffcb76",
-  "span_id": "e8d13845087d8cc7",
-  "parent_span_id": "6619d4b318025bbe",
+  "trace_id": "a115f18cec1f42381aa665654ffa3a81",
+  "span_id": "9a04f17cd70c462e",
+  "parent_span_id": "665e479cf428b16d",
   "name": "head --lines=3",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1759882924334164224,
-  "time_end": 1759882933296514560,
+  "time_start": 1760297067735039488,
+  "time_end": 1760297076461760256,
   "attributes": {
     "shell.command_line": "head --lines=3",
     "shell.command": "head",
@@ -1912,22 +1912,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.29.0",
+    "telemetry.sdk.version": "5.30.1",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "centralus",
-    "cloud.resource_id": "/subscriptions/932855b2-72b4-49a9-af3b-44800410cd65/resourceGroups/azure-centralus-general-932855b2-72b4-49a9-af3b-44800410cd65/providers/Microsoft.Compute/virtualMachines/9GFWyl01fROhlA",
-    "host.id": "250ba197-88c7-44e6-b58b-94942ce6d7c3",
-    "host.name": "9GFWyl01fROhlA",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/resourceGroups/azure-westus-general-73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/providers/Microsoft.Compute/virtualMachines/nMeLE6rW18uoGa",
+    "host.id": "c64a380f-be6e-4176-9264-1b5988d53d43",
+    "host.name": "nMeLE6rW18uoGa",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
     "service.instance.id": "",
-    "process.pid": 3123,
-    "process.parent_pid": 2356,
+    "process.pid": 3116,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1944,14 +1944,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "36277a7a4b0b83776da280d5cdffcb76",
-  "span_id": "c48b07c51fc4f351",
-  "parent_span_id": "6619d4b318025bbe",
+  "trace_id": "a115f18cec1f42381aa665654ffa3a81",
+  "span_id": "b76c698bc0fe23b1",
+  "parent_span_id": "665e479cf428b16d",
   "name": "jq .[].assets[].browser_download_url -r",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1759882924343637760,
-  "time_end": 1759882933296498688,
+  "time_start": 1760297067734172672,
+  "time_end": 1760297076775757824,
   "attributes": {
     "shell.command_line": "jq .[].assets[].browser_download_url -r",
     "shell.command": "jq",
@@ -1966,22 +1966,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.29.0",
+    "telemetry.sdk.version": "5.30.1",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "centralus",
-    "cloud.resource_id": "/subscriptions/932855b2-72b4-49a9-af3b-44800410cd65/resourceGroups/azure-centralus-general-932855b2-72b4-49a9-af3b-44800410cd65/providers/Microsoft.Compute/virtualMachines/9GFWyl01fROhlA",
-    "host.id": "250ba197-88c7-44e6-b58b-94942ce6d7c3",
-    "host.name": "9GFWyl01fROhlA",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/resourceGroups/azure-westus-general-73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/providers/Microsoft.Compute/virtualMachines/nMeLE6rW18uoGa",
+    "host.id": "c64a380f-be6e-4176-9264-1b5988d53d43",
+    "host.name": "nMeLE6rW18uoGa",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
     "service.instance.id": "",
-    "process.pid": 3123,
-    "process.parent_pid": 2356,
+    "process.pid": 3116,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1998,14 +1998,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "36277a7a4b0b83776da280d5cdffcb76",
-  "span_id": "6a0dfcde3c326f46",
-  "parent_span_id": "6619d4b318025bbe",
+  "trace_id": "a115f18cec1f42381aa665654ffa3a81",
+  "span_id": "f3578661d939d675",
+  "parent_span_id": "665e479cf428b16d",
   "name": "ncat --ssl -i 3 --no-shutdown api.github.com 443",
   "kind": "INTERNAL",
   "status": "ERROR",
-  "time_start": 1759882924325191424,
-  "time_end": 1759882928062786560,
+  "time_start": 1760297067718173440,
+  "time_end": 1760297071539609344,
   "attributes": {
     "shell.command_line": "ncat --ssl -i 3 --no-shutdown api.github.com 443",
     "shell.command": "ncat",
@@ -2020,22 +2020,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.29.0",
+    "telemetry.sdk.version": "5.30.1",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "centralus",
-    "cloud.resource_id": "/subscriptions/932855b2-72b4-49a9-af3b-44800410cd65/resourceGroups/azure-centralus-general-932855b2-72b4-49a9-af3b-44800410cd65/providers/Microsoft.Compute/virtualMachines/9GFWyl01fROhlA",
-    "host.id": "250ba197-88c7-44e6-b58b-94942ce6d7c3",
-    "host.name": "9GFWyl01fROhlA",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/resourceGroups/azure-westus-general-73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/providers/Microsoft.Compute/virtualMachines/nMeLE6rW18uoGa",
+    "host.id": "c64a380f-be6e-4176-9264-1b5988d53d43",
+    "host.name": "nMeLE6rW18uoGa",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
     "service.instance.id": "",
-    "process.pid": 3123,
-    "process.parent_pid": 2356,
+    "process.pid": 3116,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2052,14 +2052,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "36277a7a4b0b83776da280d5cdffcb76",
-  "span_id": "60aeb06a57c8768a",
-  "parent_span_id": "6619d4b318025bbe",
+  "trace_id": "a115f18cec1f42381aa665654ffa3a81",
+  "span_id": "eb218385ed561f62",
+  "parent_span_id": "665e479cf428b16d",
   "name": "printf HEAD /repos/plengauer/Thoth/releases?per_page=100 HTTP/1.1\\r\\nConnection: close\\r\\nUser-Agent: ncat\\r\\nHost: api.github.com\\r\\n\\r\\n",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1759882924310613760,
-  "time_end": 1759882924423510784,
+  "time_start": 1760297067710308096,
+  "time_end": 1760297067838050816,
   "attributes": {
     "shell.command_line": "printf HEAD /repos/plengauer/Thoth/releases?per_page=100 HTTP/1.1\\r\\nConnection: close\\r\\nUser-Agent: ncat\\r\\nHost: api.github.com\\r\\n\\r\\n",
     "shell.command": "printf",
@@ -2072,22 +2072,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.29.0",
+    "telemetry.sdk.version": "5.30.1",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "centralus",
-    "cloud.resource_id": "/subscriptions/932855b2-72b4-49a9-af3b-44800410cd65/resourceGroups/azure-centralus-general-932855b2-72b4-49a9-af3b-44800410cd65/providers/Microsoft.Compute/virtualMachines/9GFWyl01fROhlA",
-    "host.id": "250ba197-88c7-44e6-b58b-94942ce6d7c3",
-    "host.name": "9GFWyl01fROhlA",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/resourceGroups/azure-westus-general-73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/providers/Microsoft.Compute/virtualMachines/nMeLE6rW18uoGa",
+    "host.id": "c64a380f-be6e-4176-9264-1b5988d53d43",
+    "host.name": "nMeLE6rW18uoGa",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
     "service.instance.id": "",
-    "process.pid": 3123,
-    "process.parent_pid": 2356,
+    "process.pid": 3116,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2104,14 +2104,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "36277a7a4b0b83776da280d5cdffcb76",
-  "span_id": "783352346325b8e1",
-  "parent_span_id": "6a0dfcde3c326f46",
+  "trace_id": "a115f18cec1f42381aa665654ffa3a81",
+  "span_id": "d99d5b3db5325f0c",
+  "parent_span_id": "f3578661d939d675",
   "name": "send/receive",
   "kind": "PRODUCER",
   "status": "UNSET",
-  "time_start": 1759882924453930496,
-  "time_end": 1759882928058457600,
+  "time_start": 1760297067834749952,
+  "time_end": 1760297071535344384,
   "attributes": {
     "network.transport": "tcp",
     "network.peer.port": 443,
@@ -2121,22 +2121,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.29.0",
+    "telemetry.sdk.version": "5.30.1",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "centralus",
-    "cloud.resource_id": "/subscriptions/932855b2-72b4-49a9-af3b-44800410cd65/resourceGroups/azure-centralus-general-932855b2-72b4-49a9-af3b-44800410cd65/providers/Microsoft.Compute/virtualMachines/9GFWyl01fROhlA",
-    "host.id": "250ba197-88c7-44e6-b58b-94942ce6d7c3",
-    "host.name": "9GFWyl01fROhlA",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/resourceGroups/azure-westus-general-73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/providers/Microsoft.Compute/virtualMachines/nMeLE6rW18uoGa",
+    "host.id": "c64a380f-be6e-4176-9264-1b5988d53d43",
+    "host.name": "nMeLE6rW18uoGa",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
     "service.instance.id": "",
-    "process.pid": 3123,
-    "process.parent_pid": 2356,
+    "process.pid": 3116,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2153,14 +2153,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "36277a7a4b0b83776da280d5cdffcb76",
-  "span_id": "efaac04110dd54f8",
-  "parent_span_id": "41bb4cd4e67da347",
+  "trace_id": "a115f18cec1f42381aa665654ffa3a81",
+  "span_id": "b7ea21636ae18002",
+  "parent_span_id": "be304208b3dc0afb",
   "name": "seq 1 4",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1759882928797630464,
-  "time_end": 1759882928819149568,
+  "time_start": 1760297072270492160,
+  "time_end": 1760297072290985728,
   "attributes": {
     "shell.command_line": "seq 1 4",
     "shell.command": "seq",
@@ -2176,22 +2176,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.29.0",
+    "telemetry.sdk.version": "5.30.1",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "centralus",
-    "cloud.resource_id": "/subscriptions/932855b2-72b4-49a9-af3b-44800410cd65/resourceGroups/azure-centralus-general-932855b2-72b4-49a9-af3b-44800410cd65/providers/Microsoft.Compute/virtualMachines/9GFWyl01fROhlA",
-    "host.id": "250ba197-88c7-44e6-b58b-94942ce6d7c3",
-    "host.name": "9GFWyl01fROhlA",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/resourceGroups/azure-westus-general-73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/providers/Microsoft.Compute/virtualMachines/nMeLE6rW18uoGa",
+    "host.id": "c64a380f-be6e-4176-9264-1b5988d53d43",
+    "host.name": "nMeLE6rW18uoGa",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
     "service.instance.id": "",
-    "process.pid": 5342,
-    "process.parent_pid": 4567,
+    "process.pid": 5335,
+    "process.parent_pid": 4589,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs seq 1",
@@ -2208,14 +2208,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "36277a7a4b0b83776da280d5cdffcb76",
-  "span_id": "6532952f491c2933",
-  "parent_span_id": "6619d4b318025bbe",
+  "trace_id": "a115f18cec1f42381aa665654ffa3a81",
+  "span_id": "a12243496a48e528",
+  "parent_span_id": "665e479cf428b16d",
   "name": "tr & \\n",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1759882924342042112,
-  "time_end": 1759882928084217088,
+  "time_start": 1760297067724752896,
+  "time_end": 1760297071561481216,
   "attributes": {
     "shell.command_line": "tr & \\n",
     "shell.command": "tr",
@@ -2230,22 +2230,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.29.0",
+    "telemetry.sdk.version": "5.30.1",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "centralus",
-    "cloud.resource_id": "/subscriptions/932855b2-72b4-49a9-af3b-44800410cd65/resourceGroups/azure-centralus-general-932855b2-72b4-49a9-af3b-44800410cd65/providers/Microsoft.Compute/virtualMachines/9GFWyl01fROhlA",
-    "host.id": "250ba197-88c7-44e6-b58b-94942ce6d7c3",
-    "host.name": "9GFWyl01fROhlA",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/resourceGroups/azure-westus-general-73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/providers/Microsoft.Compute/virtualMachines/nMeLE6rW18uoGa",
+    "host.id": "c64a380f-be6e-4176-9264-1b5988d53d43",
+    "host.name": "nMeLE6rW18uoGa",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
     "service.instance.id": "",
-    "process.pid": 3123,
-    "process.parent_pid": 2356,
+    "process.pid": 3116,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2262,14 +2262,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "36277a7a4b0b83776da280d5cdffcb76",
-  "span_id": "f22a316f855f7a6b",
-  "parent_span_id": "6619d4b318025bbe",
+  "trace_id": "a115f18cec1f42381aa665654ffa3a81",
+  "span_id": "e689e00c6111a3ae",
+  "parent_span_id": "665e479cf428b16d",
   "name": "tr , \\n",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1759882924330189312,
-  "time_end": 1759882928074795008,
+  "time_start": 1760297067734304256,
+  "time_end": 1760297071551742208,
   "attributes": {
     "shell.command_line": "tr , \\n",
     "shell.command": "tr",
@@ -2284,22 +2284,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.29.0",
+    "telemetry.sdk.version": "5.30.1",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "centralus",
-    "cloud.resource_id": "/subscriptions/932855b2-72b4-49a9-af3b-44800410cd65/resourceGroups/azure-centralus-general-932855b2-72b4-49a9-af3b-44800410cd65/providers/Microsoft.Compute/virtualMachines/9GFWyl01fROhlA",
-    "host.id": "250ba197-88c7-44e6-b58b-94942ce6d7c3",
-    "host.name": "9GFWyl01fROhlA",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/resourceGroups/azure-westus-general-73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/providers/Microsoft.Compute/virtualMachines/nMeLE6rW18uoGa",
+    "host.id": "c64a380f-be6e-4176-9264-1b5988d53d43",
+    "host.name": "nMeLE6rW18uoGa",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
     "service.instance.id": "",
-    "process.pid": 3123,
-    "process.parent_pid": 2356,
+    "process.pid": 3116,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2316,14 +2316,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "36277a7a4b0b83776da280d5cdffcb76",
-  "span_id": "1a672c62405a962e",
-  "parent_span_id": "6619d4b318025bbe",
+  "trace_id": "a115f18cec1f42381aa665654ffa3a81",
+  "span_id": "733fe27db63e8ec4",
+  "parent_span_id": "665e479cf428b16d",
   "name": "tr -d  <>",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1759882924324817408,
-  "time_end": 1759882928072433664,
+  "time_start": 1760297067724021760,
+  "time_end": 1760297071549312000,
   "attributes": {
     "shell.command_line": "tr -d  <>",
     "shell.command": "tr",
@@ -2338,22 +2338,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.29.0",
+    "telemetry.sdk.version": "5.30.1",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "centralus",
-    "cloud.resource_id": "/subscriptions/932855b2-72b4-49a9-af3b-44800410cd65/resourceGroups/azure-centralus-general-932855b2-72b4-49a9-af3b-44800410cd65/providers/Microsoft.Compute/virtualMachines/9GFWyl01fROhlA",
-    "host.id": "250ba197-88c7-44e6-b58b-94942ce6d7c3",
-    "host.name": "9GFWyl01fROhlA",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/resourceGroups/azure-westus-general-73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/providers/Microsoft.Compute/virtualMachines/nMeLE6rW18uoGa",
+    "host.id": "c64a380f-be6e-4176-9264-1b5988d53d43",
+    "host.name": "nMeLE6rW18uoGa",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
     "service.instance.id": "",
-    "process.pid": 3123,
-    "process.parent_pid": 2356,
+    "process.pid": 3116,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2370,14 +2370,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "36277a7a4b0b83776da280d5cdffcb76",
-  "span_id": "070ee5c7efaae097",
-  "parent_span_id": "6619d4b318025bbe",
+  "trace_id": "a115f18cec1f42381aa665654ffa3a81",
+  "span_id": "a456a9fe96dadc09",
+  "parent_span_id": "665e479cf428b16d",
   "name": "tr [:upper:] [:lower:]",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1759882924323778816,
-  "time_end": 1759882928065143552,
+  "time_start": 1760297067718466560,
+  "time_end": 1760297071542001152,
   "attributes": {
     "shell.command_line": "tr [:upper:] [:lower:]",
     "shell.command": "tr",
@@ -2392,22 +2392,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.29.0",
+    "telemetry.sdk.version": "5.30.1",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "centralus",
-    "cloud.resource_id": "/subscriptions/932855b2-72b4-49a9-af3b-44800410cd65/resourceGroups/azure-centralus-general-932855b2-72b4-49a9-af3b-44800410cd65/providers/Microsoft.Compute/virtualMachines/9GFWyl01fROhlA",
-    "host.id": "250ba197-88c7-44e6-b58b-94942ce6d7c3",
-    "host.name": "9GFWyl01fROhlA",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/resourceGroups/azure-westus-general-73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/providers/Microsoft.Compute/virtualMachines/nMeLE6rW18uoGa",
+    "host.id": "c64a380f-be6e-4176-9264-1b5988d53d43",
+    "host.name": "nMeLE6rW18uoGa",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
     "service.instance.id": "",
-    "process.pid": 3123,
-    "process.parent_pid": 2356,
+    "process.pid": 3116,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2424,14 +2424,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "36277a7a4b0b83776da280d5cdffcb76",
-  "span_id": "672994993eee84f3",
-  "parent_span_id": "2443060c761e8d7e",
+  "trace_id": "a115f18cec1f42381aa665654ffa3a81",
+  "span_id": "f7389cfd148e8235",
+  "parent_span_id": "6842c8ac28f240ff",
   "name": "wget https://github.com/plengauer/Thoth/releases/download/v1.13.7/opentelemetry-shell_1.13.7.deb https://github.com/plengauer/Thoth/releases/download/v1.13.6/opentelemetry-shell_1.13.6.deb https://github.com/plengauer/Thoth/releases/download/v1.13.5/opentelemetry-shell_1.13.5.deb",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1759882934013957632,
-  "time_end": 1759882937345352192,
+  "time_start": 1760297077213775104,
+  "time_end": 1760297080638104576,
   "attributes": {
     "shell.command_line": "wget https://github.com/plengauer/Thoth/releases/download/v1.13.7/opentelemetry-shell_1.13.7.deb https://github.com/plengauer/Thoth/releases/download/v1.13.6/opentelemetry-shell_1.13.6.deb https://github.com/plengauer/Thoth/releases/download/v1.13.5/opentelemetry-shell_1.13.5.deb",
     "shell.command": "wget",
@@ -2447,22 +2447,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.29.0",
+    "telemetry.sdk.version": "5.30.1",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "centralus",
-    "cloud.resource_id": "/subscriptions/932855b2-72b4-49a9-af3b-44800410cd65/resourceGroups/azure-centralus-general-932855b2-72b4-49a9-af3b-44800410cd65/providers/Microsoft.Compute/virtualMachines/9GFWyl01fROhlA",
-    "host.id": "250ba197-88c7-44e6-b58b-94942ce6d7c3",
-    "host.name": "9GFWyl01fROhlA",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/resourceGroups/azure-westus-general-73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/providers/Microsoft.Compute/virtualMachines/nMeLE6rW18uoGa",
+    "host.id": "c64a380f-be6e-4176-9264-1b5988d53d43",
+    "host.name": "nMeLE6rW18uoGa",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
     "service.instance.id": "",
-    "process.pid": 10207,
-    "process.parent_pid": 4585,
+    "process.pid": 9808,
+    "process.parent_pid": 4591,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs wget",
@@ -2479,14 +2479,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "36277a7a4b0b83776da280d5cdffcb76",
-  "span_id": "dea7b858225ae105",
-  "parent_span_id": "6619d4b318025bbe",
+  "trace_id": "a115f18cec1f42381aa665654ffa3a81",
+  "span_id": "6f849d04116c9e88",
+  "parent_span_id": "665e479cf428b16d",
   "name": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1759882924343845888,
-  "time_end": 1759882933293404928,
+  "time_start": 1760297067728842496,
+  "time_end": 1760297076772692992,
   "attributes": {
     "shell.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
     "shell.command": "xargs",
@@ -2501,22 +2501,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.29.0",
+    "telemetry.sdk.version": "5.30.1",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "centralus",
-    "cloud.resource_id": "/subscriptions/932855b2-72b4-49a9-af3b-44800410cd65/resourceGroups/azure-centralus-general-932855b2-72b4-49a9-af3b-44800410cd65/providers/Microsoft.Compute/virtualMachines/9GFWyl01fROhlA",
-    "host.id": "250ba197-88c7-44e6-b58b-94942ce6d7c3",
-    "host.name": "9GFWyl01fROhlA",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/resourceGroups/azure-westus-general-73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/providers/Microsoft.Compute/virtualMachines/nMeLE6rW18uoGa",
+    "host.id": "c64a380f-be6e-4176-9264-1b5988d53d43",
+    "host.name": "nMeLE6rW18uoGa",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
     "service.instance.id": "",
-    "process.pid": 3123,
-    "process.parent_pid": 2356,
+    "process.pid": 3116,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2533,14 +2533,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "36277a7a4b0b83776da280d5cdffcb76",
-  "span_id": "41bb4cd4e67da347",
-  "parent_span_id": "6619d4b318025bbe",
+  "trace_id": "a115f18cec1f42381aa665654ffa3a81",
+  "span_id": "be304208b3dc0afb",
+  "parent_span_id": "665e479cf428b16d",
   "name": "xargs seq 1",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1759882924325079040,
-  "time_end": 1759882928865306624,
+  "time_start": 1760297067734897408,
+  "time_end": 1760297072336784640,
   "attributes": {
     "shell.command_line": "xargs seq 1",
     "shell.command": "xargs",
@@ -2555,22 +2555,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.29.0",
+    "telemetry.sdk.version": "5.30.1",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "centralus",
-    "cloud.resource_id": "/subscriptions/932855b2-72b4-49a9-af3b-44800410cd65/resourceGroups/azure-centralus-general-932855b2-72b4-49a9-af3b-44800410cd65/providers/Microsoft.Compute/virtualMachines/9GFWyl01fROhlA",
-    "host.id": "250ba197-88c7-44e6-b58b-94942ce6d7c3",
-    "host.name": "9GFWyl01fROhlA",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/resourceGroups/azure-westus-general-73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/providers/Microsoft.Compute/virtualMachines/nMeLE6rW18uoGa",
+    "host.id": "c64a380f-be6e-4176-9264-1b5988d53d43",
+    "host.name": "nMeLE6rW18uoGa",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
     "service.instance.id": "",
-    "process.pid": 3123,
-    "process.parent_pid": 2356,
+    "process.pid": 3116,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2587,14 +2587,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "36277a7a4b0b83776da280d5cdffcb76",
-  "span_id": "2443060c761e8d7e",
-  "parent_span_id": "6619d4b318025bbe",
+  "trace_id": "a115f18cec1f42381aa665654ffa3a81",
+  "span_id": "6842c8ac28f240ff",
+  "parent_span_id": "665e479cf428b16d",
   "name": "xargs wget",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1759882924337724416,
-  "time_end": 1759882937383400192,
+  "time_start": 1760297067724532480,
+  "time_end": 1760297080671951616,
   "attributes": {
     "shell.command_line": "xargs wget",
     "shell.command": "xargs",
@@ -2609,22 +2609,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.29.0",
+    "telemetry.sdk.version": "5.30.1",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "centralus",
-    "cloud.resource_id": "/subscriptions/932855b2-72b4-49a9-af3b-44800410cd65/resourceGroups/azure-centralus-general-932855b2-72b4-49a9-af3b-44800410cd65/providers/Microsoft.Compute/virtualMachines/9GFWyl01fROhlA",
-    "host.id": "250ba197-88c7-44e6-b58b-94942ce6d7c3",
-    "host.name": "9GFWyl01fROhlA",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/resourceGroups/azure-westus-general-73703b6f-98aa-4f48-b2f6-a4eaced6f0e6/providers/Microsoft.Compute/virtualMachines/nMeLE6rW18uoGa",
+    "host.id": "c64a380f-be6e-4176-9264-1b5988d53d43",
+    "host.name": "nMeLE6rW18uoGa",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
     "service.instance.id": "",
-    "process.pid": 3123,
-    "process.parent_pid": 2356,
+    "process.pid": 3116,
+    "process.parent_pid": 2355,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
