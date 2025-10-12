@@ -1,7 +1,7 @@
 name: OpenTelemetry
 on:
   workflow_run:
-    workflows: [Analyze, Autoapprove, Autorerun, Autoversion, Build, "null", Experiment, Greetings, Performance GitHub Job, Publish, Refresh Demos, Renovate, Test, GitHub, Shell, Workflow Example]
+    workflows: [Analyze, Autoapprove, Autorerun, Autoversion, Build, Experiment, Greetings, Performance GitHub Job, Publish, Refresh Demos, Renovate, Test, GitHub, Shell, Workflow Example]
     types:
       - completed
 jobs:
