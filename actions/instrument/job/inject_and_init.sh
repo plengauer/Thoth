@@ -182,7 +182,7 @@ for node_path in "$(readlink -f /proc/*/exe | grep '/Runner.Worker$' | rev | cut
 done
 ( if type docker; then docker_path="$(which docker)" && sudo mv "$docker_path" "$relocated_binary_dir" && sudo gcc -o "$docker_path" forward.c -DEXECUTABLE=/bin/bash -DARG1="$GITHUB_ACTION_PATH"/decorate_action_docker.sh -DARG2="$relocated_binary_dir"/docker; fi 2>&1 | perl -0777 -pe '' ) &
 if [ "$GITHUB_JOB" = copilot ] && [ "$GITHUB_WORKFLOW" = 'Running Copilot' ]; then
-  for script_file in /home/runner/work/_temp/*-action-main/*/*.sh; do
+  for script_file in "${RUNNER_TEMP}"/*-action-main/*/*.sh; do
     ( sed -i 's~#!/bin/sh~#!/bin/sh\n. otel.sh~g' "$script_file" \
       && sed -i 's~#!/bin/bash~#!/bin/bash\n. otel.sh~g' "$script_file" \
       && sed -i 's~"$RUNNER_PATH/ghcca-node/node/bin/node"~_otel_inject "$RUNNER_PATH/ghcca-node/node/bin/node"~g' "$script_file" \
