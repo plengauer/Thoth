@@ -60,7 +60,7 @@ otel_span_attribute_typed $span_handle string github.actions.action.ref="$GITHUB
 otel_span_activate "$span_handle"
 commands_mute_token="$(mktemp -u)"
 exit_code_file="$(mktemp)"
-{ otel_observe "$_OTEL_GITHUB_STEP_AGENT_INJECTION_FUNCTION" "$@"; echo "$?" > "$exit_code_file"; } | while read -r line; do
+{ otel_observe "$_OTEL_GITHUB_STEP_AGENT_INJECTION_FUNCTION" "$@"; echo "$?" > "$exit_code_file"; } | while IFS=$'\n' read -r line; do
   printf '%s\n' "$line"
   if [ -r "$commands_mute_token_file" ]; then
     if [ "$line" = ::"$(cat "$commands_mute_token_file")":: ]; then
