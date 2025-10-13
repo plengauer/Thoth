@@ -36,7 +36,7 @@ github_properties_to_kvps() {
 }
 record_github_logs() {
   commands_mute_token_file="$(mktemp -u)"
-  while read -r line; do
+  while IFS=$'\n' read -r line; do
     printf '%s\n' "$line"
     if [ -r "$commands_mute_token_file" ]; then
       if [ "$line" = ::"$(cat "$commands_mute_token_file")":: ]; then
