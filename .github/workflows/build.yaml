@@ -110,7 +110,7 @@ jobs:
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
         with:
           secrets_to_redact: '["${{ github.token }}"]'
-      - uses: actions/setup-node@v5.0.0
+      - uses: actions/setup-node@v6.0.0
         with:
           node-version: ${{ matrix.version }}
       - uses: actions/checkout@v5.0.0
