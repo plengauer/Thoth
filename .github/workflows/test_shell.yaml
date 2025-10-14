@@ -101,7 +101,7 @@ jobs:
               if [ "$type" = dev ]; then
                 continue;
               else
-                exit 0
+                exit 1
               fi
             fi
             echo 'cat /etc/os-release | grep PRETTY >&2 && ((apt-get update && apt-get -y install /package.deb) || dnf -y install /package.rpm || yum -y install /package.rpm || zypper --non-interactive install --allow-unsigned-rpm /package.rpm || apk add --allow-untrusted /package.apk)' \
