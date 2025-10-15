@@ -65,7 +65,7 @@ jobs:
         shell: bash
         run: gh pr merge --squash --auto ${{ steps.open-pr.outputs.pull-request-number }}
         env:
-          GH_TOKEN: ${{ inputs.github_token }}
+          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         continue-on-error: true
   renovate-test-images:
     runs-on: ubuntu-latest
@@ -140,7 +140,7 @@ jobs:
         shell: bash
         run: gh pr merge --squash --auto ${{ steps.open-pr.outputs.pull-request-number }}
         env:
-          GH_TOKEN: ${{ inputs.github_token }}
+          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         continue-on-error: true
   renovate-license:
     runs-on: ubuntu-latest
@@ -174,5 +174,5 @@ jobs:
         shell: bash
         run: gh pr merge --squash --auto ${{ steps.open-pr.outputs.pull-request-number }}
         env:
-          GH_TOKEN: ${{ inputs.github_token }}
+          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         continue-on-error: true
