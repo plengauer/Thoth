@@ -61,12 +61,12 @@ jobs:
           delete-branch: true
       - run: sleep 60 # make sure PR state is updated and API can catch up
         if: steps.open-pr.outputs.pull-request-number != null
-      - uses: peter-evans/enable-pull-request-automerge@v3.0.0
-        if: steps.open-pr.outputs.pull-request-number != null
-        with:
-          token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
-          pull-request-number: ${{ steps.open-pr.outputs.pull-request-number }}
-          merge-method: squash
+      - if: steps.open-pr.outputs.pull-request-number != null
+        shell: bash
+        run: gh pr merge --squash --auto ${{ steps.open-pr.outputs.pull-request-number }}
+        env:
+          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+        continue-on-error: true
   renovate-test-images:
     runs-on: ubuntu-latest
     permissions:
@@ -136,12 +136,12 @@ jobs:
           delete-branch: true
       - run: sleep 60 # make sure PR state is updated and API can catch up
         if: steps.open-pr.outputs.pull-request-number != null
-      - uses: peter-evans/enable-pull-request-automerge@v3.0.0
-        if: steps.open-pr.outputs.pull-request-number != null
-        with:
-          token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
-          pull-request-number: ${{ steps.open-pr.outputs.pull-request-number }}
-          merge-method: squash
+      - if: steps.open-pr.outputs.pull-request-number != null
+        shell: bash
+        run: gh pr merge --squash --auto ${{ steps.open-pr.outputs.pull-request-number }}
+        env:
+          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+        continue-on-error: true
   renovate-license:
     runs-on: ubuntu-latest
     permissions:
@@ -170,9 +170,9 @@ jobs:
           delete-branch: true
       - run: sleep 60 # make sure PR state is updated and API can catch up
         if: steps.open-pr.outputs.pull-request-number != null
-      - uses: peter-evans/enable-pull-request-automerge@v3.0.0
-        if: steps.open-pr.outputs.pull-request-number != null
-        with:
-          token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
-          pull-request-number: ${{ steps.open-pr.outputs.pull-request-number }}
-          merge-method: squash
+      - if: steps.open-pr.outputs.pull-request-number != null
+        shell: bash
+        run: gh pr merge --squash --auto ${{ steps.open-pr.outputs.pull-request-number }}
+        env:
+          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+        continue-on-error: true
