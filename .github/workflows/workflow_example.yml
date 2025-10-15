@@ -3,7 +3,7 @@ on:
   schedule:
     - cron: '0 0 * * *'
   push:
-    paths: .github/workflows/workflow_example.yaml
+    paths: .github/workflows/workflow_example.yml
 jobs:
   build:
     runs-on: ubuntu-latest

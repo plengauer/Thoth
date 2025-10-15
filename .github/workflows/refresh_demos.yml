@@ -10,7 +10,7 @@ on:
       - '!demos/*/README.md'
       - '!demos/*/otlp.json'
       - '!demos/*/output.*'
-      - '.github/workflows/refresh_demos.yaml'
+      - '.github/workflows/refresh_demos.yml'
 jobs:
   prepare:
     runs-on: ubuntu-latest

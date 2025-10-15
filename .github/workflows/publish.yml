@@ -21,7 +21,7 @@ jobs:
       security-events: none
       statuses: none
     secrets: inherit
-    uses: ./.github/workflows/test.yaml
+    uses: ./.github/workflows/test.yml
   publish:
     needs: test
     runs-on: ubuntu-latest
