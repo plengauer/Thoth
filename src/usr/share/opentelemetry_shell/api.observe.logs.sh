@@ -1,8 +1,6 @@
 #!/bin/false
 
 _otel_call_and_record_logs() {
-  local IFS=' 
-'
   case "$-" in
     *m*) local job_control=1; \set +m;;
     *) local job_control=0;;
@@ -11,7 +9,7 @@ _otel_call_and_record_logs() {
   local traceparent="$TRACEPARENT"
   local stderr_logs="$(\mktemp -u -p "$_otel_shell_pipe_dir")_opentelemetry_shell_$$.stderr.logs.pipe"
   \mkfifo ${_otel_mkfifo_flags:-} "$stderr_logs"
-  while IFS= \read -r line; do _otel_log_record "$traceparent" auto 0 "$line"; \printf '%s\n' "$line" >&2; done < "$stderr_logs" &
+  while IFS=$'\n' \read -r line; do _otel_log_record "$traceparent" auto 0 "$line"; \printf '%s\n' "$line" >&2; done < "$stderr_logs" &
   local stderr_pid="$!"
   local exit_code=0
   $call_command "$@" 2> "$stderr_logs" || local exit_code="$?"
