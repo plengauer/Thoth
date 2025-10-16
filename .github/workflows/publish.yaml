@@ -69,15 +69,16 @@ jobs:
             sudo docker image tag "$image_name" "$tag"
             sudo docker push "$tag"
           done
-      - uses: actions/create-release@v1.1.4
+      - run: |
+          gh release create "v${{ steps.version.outputs.version }}" \
+            --title "Release v${{ steps.version.outputs.version }}" \
+            --generate-notes \
+            --draft
+          echo "upload_url=$(gh api repos/${{ github.repository }}/releases/tags/v${{ steps.version.outputs.version }} --jq .upload_url)" >> "$GITHUB_OUTPUT"
+          echo "id=$(gh api repos/${{ github.repository }}/releases/tags/v${{ steps.version.outputs.version }} --jq .id)" >> "$GITHUB_OUTPUT"
         id: create_release
         env:
-          GITHUB_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
-        with:
-          tag_name: v${{ steps.version.outputs.version }}
-          release_name: Release v${{ steps.version.outputs.version }}
-          draft: true
-          prerelease: false
+          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
       - uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
