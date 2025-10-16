@@ -74,8 +74,8 @@ jobs:
             --title "Release v${{ steps.version.outputs.version }}" \
             --generate-notes \
             --draft
-          echo "upload_url=$(gh api repos/${{ github.repository }}/releases/tags/v${{ steps.version.outputs.version }} --jq .upload_url)" >> "$GITHUB_OUTPUT"
-          echo "id=$(gh api repos/${{ github.repository }}/releases/tags/v${{ steps.version.outputs.version }} --jq .id)" >> "$GITHUB_OUTPUT"
+          echo "upload_url=$(gh api repos/${{ github.repository }}/releases/tags/v${{ steps.version.outputs.version }} --template '{{.upload_url}}')" >> "$GITHUB_OUTPUT"
+          echo "id=$(gh api repos/${{ github.repository }}/releases/tags/v${{ steps.version.outputs.version }} --template '{{.id}}')" >> "$GITHUB_OUTPUT"
         id: create_release
         env:
           GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
