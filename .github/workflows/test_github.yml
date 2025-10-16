@@ -492,7 +492,7 @@ jobs:
           debug: 1
           dry_run: true
           action_repository: '.'
-          __repository_level_instrumentation_file_name_override: '.github/workflows/test_github.yaml'
+          __repository_level_instrumentation_file_name_override: '.github/workflows/test_github.yml'
         env:
           OTEL_METRICS_EXPORTER: console
           OTEL_LOGS_EXPORTER: console
@@ -547,29 +547,29 @@ jobs:
               runs-on: ubuntu-latest
               steps:
                 - run: echo hello world
-          ' >> .github/workflows/test.yaml
+          ' >> .github/workflows/test.yml
           git add . && git commit --message "added workflow" && git push
       - if: ${{ env.ASSERT_RECEIVING_DATA == 'true' }}
         run: |
           nohup node -e "require('http').createServer(function (req, res) { console.log(req.method, req.url); res.writeHead(200); res.end(); }).listen(8080);" 1> /tmp/http.log 2> /dev/null &
       - run: |
           printf '%s' '${{ secrets.TEST_GITHUB_TOKEN }}' | GH_TOKEN='${{ secrets.TEST_GITHUB_TOKEN }}' gh secret set DEPLOY_OBSERVABILITY_TOKEN --repo ${{ steps.config.outputs.user }}/${{ steps.config.outputs.repository }}
-          wget --header "Authorization: Bearer ${{ secrets.ACTIONS_GITHUB_TOKEN }}" https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/README.md -O - | sed -n '/```yaml/,/```/p' | grep -v '```yaml' | sed '/```/,$d' > .github/workflows/deploy_otel.yaml
-          cat .github/workflows/deploy_otel.yaml | yq .jobs.deploy.steps[0].uses | grep -q '/actions/instrument/deploy@'
-          cat .github/workflows/deploy_otel.yaml | yq .jobs.deploy.steps[0].with.github_token | grep -q secrets.DEPLOY_OBSERVABILITY_TOKEN
-          yq -i 'del(.jobs.deploy.steps[0].env)' .github/workflows/deploy_otel.yaml
-          yq -i '.jobs.deploy.steps[0].uses = "${{ github.repository }}/actions/instrument/deploy@${{ github.sha }}"' .github/workflows/deploy_otel.yaml
-          yq -i '.jobs.deploy.steps[0].with.job_level_instrumentation_secret_redaction_strategy = "${{ matrix.secret_redaction_strategy }}"' .github/workflows/deploy_otel.yaml
-          yq -i '.jobs.deploy.steps[0].env.OTEL_EXPORTER_OTLP_ENDPOINT = "http://'"$(curl 'https://api.ipify.org?format=json' | jq -r .ip)"':8080"' .github/workflows/deploy_otel.yaml
+          wget --header "Authorization: Bearer ${{ secrets.ACTIONS_GITHUB_TOKEN }}" https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/README.md -O - | sed -n '/```yaml/,/```/p' | grep -v '```yaml' | sed '/```/,$d' > .github/workflows/deploy_otel.yml
+          cat .github/workflows/deploy_otel.yml | yq .jobs.deploy.steps[0].uses | grep -q '/actions/instrument/deploy@'
+          cat .github/workflows/deploy_otel.yml | yq .jobs.deploy.steps[0].with.github_token | grep -q secrets.DEPLOY_OBSERVABILITY_TOKEN
+          yq -i 'del(.jobs.deploy.steps[0].env)' .github/workflows/deploy_otel.yml
+          yq -i '.jobs.deploy.steps[0].uses = "${{ github.repository }}/actions/instrument/deploy@${{ github.sha }}"' .github/workflows/deploy_otel.yml
+          yq -i '.jobs.deploy.steps[0].with.job_level_instrumentation_secret_redaction_strategy = "${{ matrix.secret_redaction_strategy }}"' .github/workflows/deploy_otel.yml
+          yq -i '.jobs.deploy.steps[0].env.OTEL_EXPORTER_OTLP_ENDPOINT = "http://'"$(curl 'https://api.ipify.org?format=json' | jq -r .ip)"':8080"' .github/workflows/deploy_otel.yml
           git add . && git commit --message "added deploy action" && git push
       - run: |
-          while ! cat .github/workflows/test.yaml | yq '.jobs.hello-world.steps[].uses' | grep -q '/actions/instrument/job@' || ! cat .github/workflows/observability.yml | yq '.jobs.export.steps[].uses' | grep -q '/actions/instrument/workflow@'; do
+          while ! cat .github/workflows/test.yml | yq '.jobs.hello-world.steps[].uses' | grep -q '/actions/instrument/job@' || ! cat .github/workflows/observability.yml | yq '.jobs.export.steps[].uses' | grep -q '/actions/instrument/workflow@'; do
             sleep 10 && git pull
           done
       - run: |
           case "${{ matrix.secret_redaction_strategy }}" in
-            none) cat .github/workflows/test.yaml | yq '.jobs.*.steps[] | select(.uses == "*/actions/instrument/job@*") | .with.secrets_to_redact' | sort -u | grep -q null;;
-            list|all) ! cat .github/workflows/test.yaml | yq '.jobs.*.steps[] | select(.uses == "*/actions/instrument/job@*") | .with.secrets_to_redact' | sort -u | grep -q null;;
+            none) cat .github/workflows/test.yml | yq '.jobs.*.steps[] | select(.uses == "*/actions/instrument/job@*") | .with.secrets_to_redact' | sort -u | grep -q null;;
+            list|all) ! cat .github/workflows/test.yml | yq '.jobs.*.steps[] | select(.uses == "*/actions/instrument/job@*") | .with.secrets_to_redact' | sort -u | grep -q null;;
             *) false;;
           esac
       - if: ${{ env.ASSERT_RECEIVING_DATA == 'true' }}

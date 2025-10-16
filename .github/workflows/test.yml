@@ -12,14 +12,14 @@ jobs:
     permissions:
       actions: read
       contents: read
-    uses: ./.github/workflows/build.yaml
+    uses: ./.github/workflows/build.yml
     secrets: inherit
   shell:
     needs: build
     permissions:
       actions: read
       contents: read
-    uses: ./.github/workflows/test_shell.yaml
+    uses: ./.github/workflows/test_shell.yml
     secrets: inherit
   github:
     needs: build
@@ -38,7 +38,7 @@ jobs:
       pull-requests: none
       security-events: none
       statuses: none
-    uses: ./.github/workflows/test_github.yaml
+    uses: ./.github/workflows/test_github.yml
     secrets: inherit
   join:
     needs: [shell, github]
