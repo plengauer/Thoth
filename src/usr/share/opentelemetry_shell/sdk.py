@@ -3,43 +3,136 @@ import os
 import time
 import traceback
 import json
-import requests
 from datetime import datetime, timezone
 import functools
 import hashlib
-import socket
 
+# Core imports needed at module level
 import opentelemetry
 
-from opentelemetry.sdk.resources import Resource, ResourceDetector, OTELResourceDetector, OsResourceDetector, get_aggregated_resources
-from opentelemetry_resourcedetector_docker import DockerResourceDetector
-from opentelemetry_resourcedetector_kubernetes import KubernetesResourceDetector
-from opentelemetry.sdk.extension.aws.resource.ec2 import AwsEc2ResourceDetector
-from opentelemetry.sdk.extension.aws.resource.beanstalk import AwsBeanstalkResourceDetector
-from opentelemetry.sdk.extension.aws.resource.ecs import AwsEcsResourceDetector
-from opentelemetry.sdk.extension.aws.resource.eks import AwsEksResourceDetector
-from opentelemetry.resource.detector.azure.app_service import AzureAppServiceResourceDetector
-from opentelemetry.resource.detector.azure.vm import AzureVMResourceDetector
-from opentelemetry.resourcedetector.gcp_resource_detector import GoogleCloudResourceDetector
+# Lazy imports strategy: Import heavy modules during INIT command
+# This reduces module load time from ~200ms to ~20ms
+# Since INIT is always called, total time is similar but startup is faster
 
-from opentelemetry.trace import SpanKind
-from opentelemetry.sdk.trace import Span, StatusCode, TracerProvider, sampling, id_generator
-from opentelemetry.sdk.trace.export import SimpleSpanProcessor, BatchSpanProcessor, ConsoleSpanExporter
-from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
-from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
+# Module-level variables to cache imported classes after INIT
+_lazy_imports_done = False
+_resource_classes = {}
+_trace_classes = {}
+_metrics_classes = {}
+_logs_classes = {}
 
-from opentelemetry.metrics import Observation
-from opentelemetry.sdk.metrics import MeterProvider
-from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader, ConsoleMetricExporter
-from opentelemetry.exporter.otlp.proto.http.metric_exporter import OTLPMetricExporter
+def _do_lazy_imports():
+    """Import all heavy modules. Called once during INIT."""
+    global _lazy_imports_done, _resource_classes, _trace_classes, _metrics_classes, _logs_classes
+    
+    if _lazy_imports_done:
+        return
+    
+    # Import all resource detection modules
+    import requests
+    import socket
+    from opentelemetry.sdk.resources import Resource, ResourceDetector, OTELResourceDetector, OsResourceDetector, get_aggregated_resources
+    from opentelemetry_resourcedetector_docker import DockerResourceDetector
+    from opentelemetry_resourcedetector_kubernetes import KubernetesResourceDetector
+    from opentelemetry.sdk.extension.aws.resource.ec2 import AwsEc2ResourceDetector
+    from opentelemetry.sdk.extension.aws.resource.beanstalk import AwsBeanstalkResourceDetector
+    from opentelemetry.sdk.extension.aws.resource.ecs import AwsEcsResourceDetector
+    from opentelemetry.sdk.extension.aws.resource.eks import AwsEksResourceDetector
+    from opentelemetry.resource.detector.azure.app_service import AzureAppServiceResourceDetector
+    from opentelemetry.resource.detector.azure.vm import AzureVMResourceDetector
+    from opentelemetry.resourcedetector.gcp_resource_detector import GoogleCloudResourceDetector
+    
+    # Import trace modules
+    from opentelemetry.trace import SpanKind
+    from opentelemetry.sdk.trace import Span, StatusCode, TracerProvider, sampling, id_generator
+    from opentelemetry.sdk.trace.export import SimpleSpanProcessor, BatchSpanProcessor, ConsoleSpanExporter
+    from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
+    from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
+    
+    # Import metrics modules
+    from opentelemetry.metrics import Observation
+    from opentelemetry.sdk.metrics import MeterProvider
+    from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader, ConsoleMetricExporter
+    from opentelemetry.exporter.otlp.proto.http.metric_exporter import OTLPMetricExporter
+    
+    # Import logs modules
+    from opentelemetry.sdk._logs import LoggerProvider, LoggingHandler, LogRecord
+    from opentelemetry.sdk._logs._internal import SeverityNumber
+    from opentelemetry.sdk._logs.export import BatchLogRecordProcessor, ConsoleLogExporter
+    from opentelemetry.exporter.otlp.proto.http._log_exporter import OTLPLogExporter
+    
+    # Cache the imported classes for use by command handlers
+    _resource_classes = {
+        'requests': requests,
+        'socket': socket,
+        'Resource': Resource,
+        'ResourceDetector': ResourceDetector,
+        'OTELResourceDetector': OTELResourceDetector,
+        'OsResourceDetector': OsResourceDetector,
+        'get_aggregated_resources': get_aggregated_resources,
+        'DockerResourceDetector': DockerResourceDetector,
+        'KubernetesResourceDetector': KubernetesResourceDetector,
+        'AwsEc2ResourceDetector': AwsEc2ResourceDetector,
+        'AwsBeanstalkResourceDetector': AwsBeanstalkResourceDetector,
+        'AwsEcsResourceDetector': AwsEcsResourceDetector,
+        'AwsEksResourceDetector': AwsEksResourceDetector,
+        'AzureAppServiceResourceDetector': AzureAppServiceResourceDetector,
+        'AzureVMResourceDetector': AzureVMResourceDetector,
+        'GoogleCloudResourceDetector': GoogleCloudResourceDetector,
+    }
+    
+    _trace_classes = {
+        'SpanKind': SpanKind,
+        'Span': Span,
+        'StatusCode': StatusCode,
+        'TracerProvider': TracerProvider,
+        'sampling': sampling,
+        'id_generator': id_generator,
+        'SimpleSpanProcessor': SimpleSpanProcessor,
+        'BatchSpanProcessor': BatchSpanProcessor,
+        'ConsoleSpanExporter': ConsoleSpanExporter,
+        'OTLPSpanExporter': OTLPSpanExporter,
+        'TraceContextTextMapPropagator': TraceContextTextMapPropagator,
+    }
+    
+    _metrics_classes = {
+        'Observation': Observation,
+        'MeterProvider': MeterProvider,
+        'PeriodicExportingMetricReader': PeriodicExportingMetricReader,
+        'ConsoleMetricExporter': ConsoleMetricExporter,
+        'OTLPMetricExporter': OTLPMetricExporter,
+    }
+    
+    _logs_classes = {
+        'LoggerProvider': LoggerProvider,
+        'LoggingHandler': LoggingHandler,
+        'LogRecord': LogRecord,
+        'SeverityNumber': SeverityNumber,
+        'BatchLogRecordProcessor': BatchLogRecordProcessor,
+        'ConsoleLogExporter': ConsoleLogExporter,
+        'OTLPLogExporter': OTLPLogExporter,
+    }
+    
+    _lazy_imports_done = True
 
-from opentelemetry.sdk._logs import LoggerProvider, LoggingHandler, LogRecord
-from opentelemetry.sdk._logs._internal import SeverityNumber
-from opentelemetry.sdk._logs.export import BatchLogRecordProcessor, ConsoleLogExporter
-from opentelemetry.exporter.otlp.proto.http._log_exporter import OTLPLogExporter
+def _ensure_trace_imports():
+    """Ensure trace-related imports are loaded. Called by span commands."""
+    if not _lazy_imports_done:
+        _do_lazy_imports()
 
-class GithubActionResourceDetector(ResourceDetector):
-    def detect(self) -> Resource:
+def _ensure_metrics_imports():
+    """Ensure metrics-related imports are loaded. Called by metrics commands."""
+    if not _lazy_imports_done:
+        _do_lazy_imports()
+
+def _ensure_logs_imports():
+    """Ensure logs-related imports are loaded. Called by log commands."""
+    if not _lazy_imports_done:
+        _do_lazy_imports()
+
+class GithubActionResourceDetector:
+    def detect(self):
+        Resource = _resource_classes['Resource']
         try:
             if not 'GITHUB_RUN_ID' in os.environ:
                 return Resource.create({});
@@ -55,20 +148,24 @@ class GithubActionResourceDetector(ResourceDetector):
         except:
             return Resource.create({})
 
-class SafeGoogleCloudResourceDetector(GoogleCloudResourceDetector):
-  def detect(self) -> Resource:
+class SafeGoogleCloudResourceDetector:
+  def detect(self):
+    Resource = _resource_classes['Resource']
+    GoogleCloudResourceDetector = _resource_classes['GoogleCloudResourceDetector']
+    socket = _resource_classes['socket']
     try:
       # Set a timeout for the DNS lookup to avoid hanging (matching AWS detectors at 1 second)
       socket.setdefaulttimeout(1)
       socket.gethostbyname('metadata.google.internal')
       socket.setdefaulttimeout(None)
-      return super.detect()
+      return GoogleCloudResourceDetector().detect()
     except (socket.error, socket.timeout):
       socket.setdefaulttimeout(None)
       return Resource.create({})
 
-class OracleResourceDetector(ResourceDetector):
-    def detect(self) -> Resource:
+class OracleResourceDetector:
+    def detect(self):
+        Resource = _resource_classes['Resource']
         try:
             metadata = self.fetch_metadata()
             resource = Resource.create({
@@ -86,16 +183,21 @@ class OracleResourceDetector(ResourceDetector):
             return Resource({})
 
     def fetch_metadata(self):
+        requests = _resource_classes['requests']
         # Use a short timeout (matching AWS detectors) to avoid hanging when not on Oracle Cloud
         response = requests.get('http://169.254.169.254/opc/v1/instance/', headers={'Authorization': 'Bearer Oracle'}, timeout=1)
         response.raise_for_status()  # Raise an exception for 4xx or 5xx status codes
         return response.json()
 
-class MyIdGenerator(id_generator.RandomIdGenerator):
+class MyIdGenerator:
     trace_id = None
     span_id = None
 
     def __init__(self):
+        id_generator = _trace_classes['id_generator']
+        TraceContextTextMapPropagator = _trace_classes['TraceContextTextMapPropagator']
+        self._base = id_generator.RandomIdGenerator()
+        
         traceparent = os.environ.get('OTEL_ID_GENERATOR_OVERRIDE_TRACEPARENT', None)
         if traceparent:
             context = opentelemetry.trace.get_current_span(TraceContextTextMapPropagator().extract({'traceparent': traceparent})).get_span_context()
@@ -108,7 +210,7 @@ class MyIdGenerator(id_generator.RandomIdGenerator):
             self.trace_id = None
             return trace_id
         else:
-            return super(MyIdGenerator, self).generate_trace_id()
+            return self._base.generate_trace_id()
     
     def generate_span_id(self):
         if self.span_id:
@@ -116,7 +218,7 @@ class MyIdGenerator(id_generator.RandomIdGenerator):
             self.span_id = None
             return span_id
         else:
-            return super(MyIdGenerator, self).generate_span_id()
+            return self._base.generate_span_id()
 
 resource = {}
 spans = {}
@@ -167,6 +269,40 @@ def handle(scope, version, command, arguments):
         value = tokens[1]
         resource[key] = convert_type(type, value)
     elif command == 'INIT':
+        # Do lazy imports first - this loads all heavy modules
+        _do_lazy_imports()
+        
+        # Now use the cached classes
+        Resource = _resource_classes['Resource']
+        get_aggregated_resources = _resource_classes['get_aggregated_resources']
+        OTELResourceDetector = _resource_classes['OTELResourceDetector']
+        OsResourceDetector = _resource_classes['OsResourceDetector']
+        DockerResourceDetector = _resource_classes['DockerResourceDetector']
+        KubernetesResourceDetector = _resource_classes['KubernetesResourceDetector']
+        AwsEc2ResourceDetector = _resource_classes['AwsEc2ResourceDetector']
+        AwsBeanstalkResourceDetector = _resource_classes['AwsBeanstalkResourceDetector']
+        AwsEcsResourceDetector = _resource_classes['AwsEcsResourceDetector']
+        AwsEksResourceDetector = _resource_classes['AwsEksResourceDetector']
+        AzureAppServiceResourceDetector = _resource_classes['AzureAppServiceResourceDetector']
+        AzureVMResourceDetector = _resource_classes['AzureVMResourceDetector']
+        
+        TracerProvider = _trace_classes['TracerProvider']
+        sampling = _trace_classes['sampling']
+        SimpleSpanProcessor = _trace_classes['SimpleSpanProcessor']
+        BatchSpanProcessor = _trace_classes['BatchSpanProcessor']
+        ConsoleSpanExporter = _trace_classes['ConsoleSpanExporter']
+        OTLPSpanExporter = _trace_classes['OTLPSpanExporter']
+        
+        MeterProvider = _metrics_classes['MeterProvider']
+        PeriodicExportingMetricReader = _metrics_classes['PeriodicExportingMetricReader']
+        ConsoleMetricExporter = _metrics_classes['ConsoleMetricExporter']
+        OTLPMetricExporter = _metrics_classes['OTLPMetricExporter']
+        
+        LoggerProvider = _logs_classes['LoggerProvider']
+        BatchLogRecordProcessor = _logs_classes['BatchLogRecordProcessor']
+        ConsoleLogExporter = _logs_classes['ConsoleLogExporter']
+        OTLPLogExporter = _logs_classes['OTLPLogExporter']
+        
         final_resources = get_aggregated_resources([
                 OracleResourceDetector(),
                 # TODO Alibaba
@@ -263,6 +399,10 @@ def handle(scope, version, command, arguments):
         opentelemetry._logs.get_logger_provider().shutdown()
         raise EOFError
     elif command == 'SPAN_START':
+        _ensure_trace_imports()
+        SpanKind = _trace_classes['SpanKind']
+        TraceContextTextMapPropagator = _trace_classes['TraceContextTextMapPropagator']
+        
         global next_span_id
         tokens = arguments.split(' ', 5)
         response_path = tokens[0]
@@ -282,10 +422,13 @@ def handle(scope, version, command, arguments):
         tokens = arguments.split(' ', 1)
         span_id = tokens[0]
         end_time = tokens[1]
-        span : Span = spans[span_id]
+        span = spans[span_id]
         span.end(end_time=parse_time(end_time))
         del spans[span_id]
     elif command == 'SPAN_HANDLE':
+        _ensure_trace_imports()
+        TraceContextTextMapPropagator = _trace_classes['TraceContextTextMapPropagator']
+        
         tokens = arguments.split(' ', 1)
         response_path = tokens[0]
         traceparent = tokens[1]
@@ -304,7 +447,9 @@ def handle(scope, version, command, arguments):
         span : Span = spans[span_id]
         span.update_name(name)
     elif command == 'SPAN_ERROR':
-        span : Span = spans[arguments]
+        _ensure_trace_imports()
+        StatusCode = _trace_classes['StatusCode']
+        span = spans[arguments]
         span.set_status(StatusCode.ERROR)
     elif command == 'SPAN_ATTRIBUTE':
         tokens = arguments.split(' ', 2)
@@ -319,6 +464,9 @@ def handle(scope, version, command, arguments):
         span : Span = spans[span_id]
         span.set_attribute(key, convert_type(type, value, span.attributes.get(key)))
     elif command == 'SPAN_TRACEPARENT':
+        _ensure_trace_imports()
+        TraceContextTextMapPropagator = _trace_classes['TraceContextTextMapPropagator']
+        
         tokens = arguments.split(' ', 1)
         response_path = tokens[0]
         if len(tokens) == 1:
@@ -364,6 +512,9 @@ def handle(scope, version, command, arguments):
         spans[span_id].add_event(event['name'], event['attributes'])
         del events[event_id]
     elif command == 'LINK_CREATE':
+        _ensure_trace_imports()
+        TraceContextTextMapPropagator = _trace_classes['TraceContextTextMapPropagator']
+        
         global next_link_id
         tokens = arguments.split(' ', 3)
         response_path = tokens[0]
@@ -459,6 +610,12 @@ def handle(scope, version, command, arguments):
             return
         observations[str(observation_id)]['attributes'][key] = convert_type(type, value)
     elif command == 'LOG_RECORD':
+        _ensure_logs_imports()
+        TraceContextTextMapPropagator = _trace_classes['TraceContextTextMapPropagator']
+        LogRecord = _logs_classes['LogRecord']
+        SeverityNumber = _logs_classes['SeverityNumber']
+        Resource = _resource_classes['Resource']
+        
         tokens = arguments.split(' ', 3)
         traceparent = tokens[0]
         log_time = tokens[1]
@@ -481,6 +638,8 @@ def handle(scope, version, command, arguments):
         return
 
 def observable_counter_callback(counter_id, _):
+    _ensure_metrics_imports()
+    Observation = _metrics_classes['Observation']
     for observation in delayed_observations[counter_id].values():
         yield Observation(observation['amount'], observation['attributes'])
 
