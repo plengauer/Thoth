@@ -1,0 +1,4 @@
+[opentelemetry_resource_detector]
+azure_app_service = opentelemetry.resource.detector.azure.app_service:AzureAppServiceResourceDetector
+azure_functions = opentelemetry.resource.detector.azure.functions:AzureFunctionsResourceDetector
+azure_vm = opentelemetry.resource.detector.azure.vm:AzureVMResourceDetector
