@@ -3,47 +3,29 @@ import os
 import time
 import traceback
 import json
-import requests
 from datetime import datetime, timezone
 import functools
 import hashlib
-import socket
 
+# Core OpenTelemetry imports needed at module level
 import opentelemetry
 
-from opentelemetry.sdk.resources import Resource, ResourceDetector, OTELResourceDetector, OsResourceDetector, get_aggregated_resources
-from opentelemetry_resourcedetector_docker import DockerResourceDetector
-from opentelemetry_resourcedetector_kubernetes import KubernetesResourceDetector
-from opentelemetry.sdk.extension.aws.resource.ec2 import AwsEc2ResourceDetector
-from opentelemetry.sdk.extension.aws.resource.beanstalk import AwsBeanstalkResourceDetector
-from opentelemetry.sdk.extension.aws.resource.ecs import AwsEcsResourceDetector
-from opentelemetry.sdk.extension.aws.resource.eks import AwsEksResourceDetector
-from opentelemetry.resource.detector.azure.app_service import AzureAppServiceResourceDetector
-from opentelemetry.resource.detector.azure.vm import AzureVMResourceDetector
-from opentelemetry.resourcedetector.gcp_resource_detector import GoogleCloudResourceDetector
+# Lazy imports will be done in the INIT handler
+# This reduces startup time significantly
 
-from opentelemetry.trace import SpanKind
-from opentelemetry.sdk.trace import Span, StatusCode, TracerProvider, sampling, id_generator
-from opentelemetry.sdk.trace.export import SimpleSpanProcessor, BatchSpanProcessor, ConsoleSpanExporter
-from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
-from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
-
-from opentelemetry.metrics import Observation
-from opentelemetry.sdk.metrics import MeterProvider
-from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader, ConsoleMetricExporter
-from opentelemetry.exporter.otlp.proto.http.metric_exporter import OTLPMetricExporter
-
-from opentelemetry.sdk._logs import LoggerProvider, LoggingHandler, LogRecord
-from opentelemetry.sdk._logs._internal import SeverityNumber
-from opentelemetry.sdk._logs.export import BatchLogRecordProcessor, ConsoleLogExporter
-from opentelemetry.exporter.otlp.proto.http._log_exporter import OTLPLogExporter
-
-class GithubActionResourceDetector(ResourceDetector):
-    def detect(self) -> Resource:
+# Resource detector classes - defined early for lazy loading
+class GithubActionResourceDetector:
+    def __init__(self):
+        # Lazy import
+        from opentelemetry.sdk.resources import Resource, ResourceDetector
+        self.Resource = Resource
+        self._base = ResourceDetector
+        
+    def detect(self):
         try:
             if not 'GITHUB_RUN_ID' in os.environ:
-                return Resource.create({});
-            return Resource.create({
+                return self.Resource.create({});
+            return self.Resource.create({
                 'github.repository.id': os.environ.get('GITHUB_REPOSITORY_ID', ''),
                 'github.repository.name': os.environ.get('GITHUB_REPOSITORY', '/').split('/', 1)[1],
                 'github.repository.owner.id': os.environ.get('GITHUB_REPOSITORY_OWNER_ID', ''),
@@ -53,21 +35,35 @@ class GithubActionResourceDetector(ResourceDetector):
                 'github.actions.workflow.name': os.environ.get('GITHUB_WORKFLOW', ''),
             })
         except:
-            return Resource.create({})
+            return self.Resource.create({})
 
-class SafeGoogleCloudResourceDetector(GoogleCloudResourceDetector):
-  def detect(self) -> Resource:
-    try:
-      socket.gethostbyname('metadata.google.internal')
-      return super.detect()
-    except socket.error:
-      return Resource.create({})
+class SafeGoogleCloudResourceDetector:
+    def __init__(self):
+        # Lazy import
+        from opentelemetry.sdk.resources import Resource
+        from opentelemetry.resourcedetector.gcp_resource_detector import GoogleCloudResourceDetector
+        self.Resource = Resource
+        self._detector = GoogleCloudResourceDetector
+        
+    def detect(self):
+        try:
+            import socket
+            socket.gethostbyname('metadata.google.internal')
+            return self._detector().detect()
+        except socket.error:
+            return self.Resource.create({})
 
-class OracleResourceDetector(ResourceDetector):
-    def detect(self) -> Resource:
+class OracleResourceDetector:
+    def __init__(self):
+        # Lazy import
+        from opentelemetry.sdk.resources import Resource, ResourceDetector
+        self.Resource = Resource
+        self._base = ResourceDetector
+        
+    def detect(self):
         try:
             metadata = self.fetch_metadata()
-            resource = Resource.create({
+            resource = self.Resource.create({
                 "cloud.provider": "oracle",
                 "cloud.region": metadata['region'],
                 "cloud.availability_zone": metadata['availabilityDomain'],
@@ -79,18 +75,23 @@ class OracleResourceDetector(ResourceDetector):
             })
             return resource
         except Exception:
-            return Resource({})
+            return self.Resource({})
 
     def fetch_metadata(self):
+        import requests
         response = requests.get('http://169.254.169.254/opc/v1/instance/', headers={'Authorization': 'Bearer Oracle'})
         response.raise_for_status()  # Raise an exception for 4xx or 5xx status codes
         return response.json()
 
-class MyIdGenerator(id_generator.RandomIdGenerator):
+class MyIdGenerator:
     trace_id = None
     span_id = None
 
     def __init__(self):
+        from opentelemetry.sdk.trace import id_generator
+        from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
+        self._base = id_generator.RandomIdGenerator()
+        
         traceparent = os.environ.get('OTEL_ID_GENERATOR_OVERRIDE_TRACEPARENT', None)
         if traceparent:
             context = opentelemetry.trace.get_current_span(TraceContextTextMapPropagator().extract({'traceparent': traceparent})).get_span_context()
@@ -103,7 +104,7 @@ class MyIdGenerator(id_generator.RandomIdGenerator):
             self.trace_id = None
             return trace_id
         else:
-            return super(MyIdGenerator, self).generate_trace_id()
+            return self._base.generate_trace_id()
     
     def generate_span_id(self):
         if self.span_id:
@@ -111,7 +112,7 @@ class MyIdGenerator(id_generator.RandomIdGenerator):
             self.span_id = None
             return span_id
         else:
-            return super(MyIdGenerator, self).generate_span_id()
+            return self._base.generate_span_id()
 
 resource = {}
 spans = {}
@@ -162,7 +163,22 @@ def handle(scope, version, command, arguments):
         value = tokens[1]
         resource[key] = convert_type(type, value)
     elif command == 'INIT':
-        final_resources = get_aggregated_resources([
+        # Lazy imports - only import what we need for INIT
+        from opentelemetry.sdk.resources import Resource
+        
+        # Only import resource detection if needed
+        if os.environ.get('OTEL_DISABLE_RESOURCE_DETECTION', 'FALSE') == 'FALSE':
+            from opentelemetry.sdk.resources import OTELResourceDetector, OsResourceDetector, get_aggregated_resources
+            from opentelemetry_resourcedetector_docker import DockerResourceDetector
+            from opentelemetry_resourcedetector_kubernetes import KubernetesResourceDetector
+            from opentelemetry.sdk.extension.aws.resource.ec2 import AwsEc2ResourceDetector
+            from opentelemetry.sdk.extension.aws.resource.beanstalk import AwsBeanstalkResourceDetector
+            from opentelemetry.sdk.extension.aws.resource.ecs import AwsEcsResourceDetector
+            from opentelemetry.sdk.extension.aws.resource.eks import AwsEksResourceDetector
+            from opentelemetry.resource.detector.azure.app_service import AzureAppServiceResourceDetector
+            from opentelemetry.resource.detector.azure.vm import AzureVMResourceDetector
+            
+            final_resources = get_aggregated_resources([
                 OracleResourceDetector(),
                 # TODO Alibaba
                 SafeGoogleCloudResourceDetector(),
@@ -177,7 +193,9 @@ def handle(scope, version, command, arguments):
                 GithubActionResourceDetector(),
                 OsResourceDetector(),
                 OTELResourceDetector(),
-            ]).merge(Resource.create(resource)) if os.environ.get('OTEL_DISABLE_RESOURCE_DETECTION', 'FALSE') == 'FALSE' else Resource.create(resource)
+            ]).merge(Resource.create(resource))
+        else:
+            final_resources = Resource.create(resource)
 
         traces_exporters = os.environ.get('OTEL_TRACES_EXPORTER', 'otlp')
         metrics_exporters = os.environ.get('OTEL_METRICS_EXPORTER', 'otlp')
@@ -190,6 +208,9 @@ def handle(scope, version, command, arguments):
           raise Exception('Unsupported propagator: ' + propagator)
 
         if traces_exporters:
+            from opentelemetry.sdk.trace import TracerProvider, sampling
+            from opentelemetry.sdk.trace.export import SimpleSpanProcessor, BatchSpanProcessor
+            
             sampler = None
             if sampling_strategy == 'always_on':
                 sampler = sampling.DEFAULT_ON
@@ -212,14 +233,19 @@ def handle(scope, version, command, arguments):
                 elif traces_exporter == 'none':
                     pass
                 elif traces_exporter == 'console':
+                    from opentelemetry.sdk.trace.export import ConsoleSpanExporter
                     tracer_provider.add_span_processor(SimpleSpanProcessor(ConsoleSpanExporter()))
                 elif traces_exporter == 'otlp':
+                    from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
                     tracer_provider.add_span_processor(BatchSpanProcessor(OTLPSpanExporter()))
                 else:
                     raise Exception('Unknown exporter: ' + traces_exporter)
             opentelemetry.trace.set_tracer_provider(tracer_provider)
 
         if metrics_exporters:
+            from opentelemetry.sdk.metrics import MeterProvider
+            from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
+            
             metric_readers = []
             for metrics_exporter in metrics_exporters.split(','):
                 if metrics_exporter == '':
@@ -227,14 +253,19 @@ def handle(scope, version, command, arguments):
                 elif metrics_exporter == 'none':
                     pass
                 elif metrics_exporter == 'console':
+                    from opentelemetry.sdk.metrics.export import ConsoleMetricExporter
                     metric_readers.append(PeriodicExportingMetricReader(ConsoleMetricExporter()))
                 elif metrics_exporter == 'otlp':
+                    from opentelemetry.exporter.otlp.proto.http.metric_exporter import OTLPMetricExporter
                     metric_readers.append(PeriodicExportingMetricReader(OTLPMetricExporter()))
                 else:
                     raise Exception('Unknown exporter: ' + metrics_exporter)
             opentelemetry.metrics.set_meter_provider(MeterProvider(metric_readers = metric_readers, resource=final_resources))
 
         if logs_exporters:
+            from opentelemetry.sdk._logs import LoggerProvider
+            from opentelemetry.sdk._logs.export import BatchLogRecordProcessor
+            
             logger_provider = LoggerProvider(resource=final_resources)
             for logger_exporter in logs_exporters.split(','):
                 if logger_exporter == '':
@@ -242,8 +273,10 @@ def handle(scope, version, command, arguments):
                 elif logger_exporter == 'none':
                     pass
                 elif logger_exporter == 'console':
+                    from opentelemetry.sdk._logs.export import ConsoleLogExporter
                     logger_provider.add_log_record_processor(BatchLogRecordProcessor(ConsoleLogExporter()))
                 elif logger_exporter == 'otlp':
+                    from opentelemetry.exporter.otlp.proto.http._log_exporter import OTLPLogExporter
                     logger_provider.add_log_record_processor(BatchLogRecordProcessor(OTLPLogExporter()))
                 else:
                     raise Exception('Unknown exporter: ' + logger_exporter)
@@ -258,6 +291,9 @@ def handle(scope, version, command, arguments):
         opentelemetry._logs.get_logger_provider().shutdown()
         raise EOFError
     elif command == 'SPAN_START':
+        from opentelemetry.trace import SpanKind
+        from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
+        
         global next_span_id
         tokens = arguments.split(' ', 5)
         response_path = tokens[0]
@@ -274,6 +310,8 @@ def handle(scope, version, command, arguments):
             response.write(str(span_id))
         auto_end = False
     elif command == 'SPAN_END':
+        from opentelemetry.sdk.trace import Span
+        
         tokens = arguments.split(' ', 1)
         span_id = tokens[0]
         end_time = tokens[1]
@@ -281,6 +319,8 @@ def handle(scope, version, command, arguments):
         span.end(end_time=parse_time(end_time))
         del spans[span_id]
     elif command == 'SPAN_HANDLE':
+        from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
+        
         tokens = arguments.split(' ', 1)
         response_path = tokens[0]
         traceparent = tokens[1]
@@ -293,15 +333,21 @@ def handle(scope, version, command, arguments):
     elif command == 'SPAN_AUTO_END':
         auto_end = True
     elif command == 'SPAN_NAME':
+        from opentelemetry.sdk.trace import Span
+        
         tokens = arguments.split(' ', 1)
         span_id = tokens[0]
         name = tokens[1]
         span : Span = spans[span_id]
         span.update_name(name)
     elif command == 'SPAN_ERROR':
+        from opentelemetry.sdk.trace import Span, StatusCode
+        
         span : Span = spans[arguments]
         span.set_status(StatusCode.ERROR)
     elif command == 'SPAN_ATTRIBUTE':
+        from opentelemetry.sdk.trace import Span
+        
         tokens = arguments.split(' ', 2)
         span_id = tokens[0]
         type = tokens[1]
@@ -314,6 +360,9 @@ def handle(scope, version, command, arguments):
         span : Span = spans[span_id]
         span.set_attribute(key, convert_type(type, value, span.attributes.get(key)))
     elif command == 'SPAN_TRACEPARENT':
+        from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
+        from opentelemetry.sdk.trace import Span
+        
         tokens = arguments.split(' ', 1)
         response_path = tokens[0]
         if len(tokens) == 1:
@@ -359,6 +408,8 @@ def handle(scope, version, command, arguments):
         spans[span_id].add_event(event['name'], event['attributes'])
         del events[event_id]
     elif command == 'LINK_CREATE':
+        from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
+        
         global next_link_id
         tokens = arguments.split(' ', 3)
         response_path = tokens[0]
@@ -454,6 +505,11 @@ def handle(scope, version, command, arguments):
             return
         observations[str(observation_id)]['attributes'][key] = convert_type(type, value)
     elif command == 'LOG_RECORD':
+        from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
+        from opentelemetry.sdk._logs import LogRecord
+        from opentelemetry.sdk._logs._internal import SeverityNumber
+        from opentelemetry.sdk.resources import Resource
+        
         tokens = arguments.split(' ', 3)
         traceparent = tokens[0]
         log_time = tokens[1]
@@ -476,6 +532,7 @@ def handle(scope, version, command, arguments):
         return
 
 def observable_counter_callback(counter_id, _):
+    from opentelemetry.metrics import Observation
     for observation in delayed_observations[counter_id].values():
         yield Observation(observation['amount'], observation['attributes'])
 
