@@ -481,6 +481,7 @@ def handle(scope, version, command, arguments):
     elif command == 'LOG_RECORD':
         from opentelemetry._logs import get_logger, LogRecord
         from opentelemetry.sdk._logs._internal import SeverityNumber
+        from opentelemetry.sdk.resources import Resource
         from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
         tokens = arguments.split(' ', 3)
         traceparent = tokens[0]
