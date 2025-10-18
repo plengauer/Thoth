@@ -479,7 +479,8 @@ def handle(scope, version, command, arguments):
             return
         observations[str(observation_id)]['attributes'][key] = convert_type(type, value)
     elif command == 'LOG_RECORD':
-        from opentelemetry._logs import get_logger, LogRecord
+        from opentelemetry._logs import get_logger
+        from opentelemetry.sdk._logs import LogRecord
         from opentelemetry.sdk._logs._internal import SeverityNumber
         from opentelemetry.sdk.resources import Resource
         from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
