@@ -282,7 +282,6 @@ def handle(scope, version, command, arguments):
                 GithubActionResourceDetector(),
                 KubernetesResourceDetector(),
                 DockerResourceDetector(),
-                GithubActionResourceDetector(),
                 OsResourceDetector(),
                 OTELResourceDetector(),
             ]).merge(Resource.create(resource)) if os.environ.get('OTEL_DISABLE_RESOURCE_DETECTION', 'FALSE') == 'FALSE' else Resource.create(resource)
