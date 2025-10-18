@@ -53,7 +53,7 @@ def guess_cloud_resource_detectors():
         return [ AzureVMResourceDetector() ]
     elif file_contains('/sys/devices/virtual/dmi/id/product_uuid', 'ec2') or file_contains('/sys/hypervisor/uuid', 'ec2'):
         from opentelemetry.sdk.extension.aws.resource.ec2 import AwsEc2ResourceDetector
-        return [ AwsEcsResourceDetector() ]
+        return [ AwsEc2ResourceDetector() ]
     elif os.path.exists('/var/lib/waagent/'):
         from opentelemetry.resource.detector.azure.vm import AzureVMResourceDetector
         return [ AzureVMResourceDetector() ]
