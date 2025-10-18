@@ -172,15 +172,6 @@ def handle(scope, version, command, arguments):
         resource[key] = convert_type(type, value)
     elif command == 'INIT':
         from opentelemetry.sdk.resources import Resource, ResourceDetector, OTELResourceDetector, OsResourceDetector, get_aggregated_resources
-        from opentelemetry_resourcedetector_docker import DockerResourceDetector
-        from opentelemetry_resourcedetector_kubernetes import KubernetesResourceDetector
-        from opentelemetry.sdk.extension.aws.resource.ec2 import AwsEc2ResourceDetector
-        from opentelemetry.sdk.extension.aws.resource.beanstalk import AwsBeanstalkResourceDetector
-        from opentelemetry.sdk.extension.aws.resource.ecs import AwsEcsResourceDetector
-        from opentelemetry.sdk.extension.aws.resource.eks import AwsEksResourceDetector
-        from opentelemetry.resource.detector.azure.app_service import AzureAppServiceResourceDetector
-        from opentelemetry.resource.detector.azure.vm import AzureVMResourceDetector
-        # from opentelemetry.resourcedetector.gcp_resource_detector import GoogleCloudResourceDetector
         class GithubActionResourceDetector(ResourceDetector):
             def detect(self) -> Resource:
                 try:
@@ -197,6 +188,16 @@ def handle(scope, version, command, arguments):
                     })
                 except:
                     return Resource.create({})
+        from opentelemetry_resourcedetector_docker import DockerResourceDetector
+        from opentelemetry_resourcedetector_kubernetes import KubernetesResourceDetector
+        from opentelemetry.sdk.extension.aws.resource.ec2 import AwsEc2ResourceDetector
+        from opentelemetry.sdk.extension.aws.resource.beanstalk import AwsBeanstalkResourceDetector
+        from opentelemetry.sdk.extension.aws.resource.ecs import AwsEcsResourceDetector
+        from opentelemetry.sdk.extension.aws.resource.eks import AwsEksResourceDetector
+        from opentelemetry.resource.detector.azure.app_service import AzureAppServiceResourceDetector
+        from opentelemetry.resource.detector.azure.vm import AzureVMResourceDetector
+        '''
+        from opentelemetry.resourcedetector.gcp_resource_detector import GoogleCloudResourceDetector
         class SafeGoogleCloudResourceDetector(GoogleCloudResourceDetector):
           def detect(self) -> Resource:
             try:
@@ -205,6 +206,7 @@ def handle(scope, version, command, arguments):
               return super.detect()
             except socket.error:
               return Resource.create({})
+        '''
         class OracleResourceDetector(ResourceDetector):
             def detect(self) -> Resource:
                 try:
