@@ -53,10 +53,11 @@ def handle(scope, version, command, arguments):
     if command.startswith("SPAN_") and not initialized_traces:
         from opentelemetry.trace import set_tracer_provider, get_current_span
         from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
-        from opentelemetry.sdk.trace import TraceProvider
-        from opentelemetry.sdk.trace.sampling import DEFAULT_ON, DEFAULT_OFF, TradeIdRatioBased, ParentBased
+        from opentelemetry.sdk.trace import TracerProvider
+        from opentelemetry.sdk.trace.sampling import DEFAULT_ON, DEFAULT_OFF, TraceIdRatioBased, ParentBased
         from opentelemetry.sdk.trace.id_generator import RandomIdGenerator
         from opentelemetry.sdk.trace.export import SimpleSpanProcessor, BatchSpanProcessor, ConsoleSpanExporter
+        from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
         traces_exporters = os.environ.get('OTEL_TRACES_EXPORTER', 'otlp')
         propagator = os.environ.get('OTEL_PROPAGATORS', 'tracecontext')
         sampling_strategy = os.environ.get('OTEL_TRACES_SAMPLER', 'parentbased_always_on')
@@ -70,13 +71,13 @@ def handle(scope, version, command, arguments):
             elif sampling_strategy == 'always_off':
                 sampler = DEFAULT_OFF
             elif sampling_strategy == 'traceidratio':
-                sampler = TradeIdRatioBased(float(sampling_strategy_arg))
+                sampler = TraceIdRatioBased(float(sampling_strategy_arg))
             elif sampling_strategy == 'parentbased_always_on':
                 sampler = ParentBased(DEFAULT_ON)
             elif sampling_strategy == 'parentbased_always_off':
                 sampler = ParentBased(DEFAULT_OFF)
             elif sampling_strategy == 'parentbased_traceidratio':
-                sampler = ParentBased(TradeIdRatioBased(float(sampling_strategy_arg)))
+                sampler = ParentBased(TraceIdRatioBased(float(sampling_strategy_arg)))
             else:
                 raise Exception('Unknown sampler: ' + sampler)
             class MyIdGenerator(RandomIdGenerator):
