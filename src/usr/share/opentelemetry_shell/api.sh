@@ -86,9 +86,9 @@ _otel_resource_attributes() {
 
 _otel_resource_attributes_service() {
   _otel_resource_attribute string service.name="${OTEL_SERVICE_NAME:-unknown_service}"
-  _otel_resource_attribute string service.version="${OTEL_SERVICE_VERSION:-}"
-  _otel_resource_attribute string service.namespace="${OTEL_SERVICE_NAMESPACE:-}"
-  _otel_resource_attribute string service.instance.id="${OTEL_SERVICE_INSTANCE_ID:-}"
+  \[ -z "${OTEL_SERVICE_VERSION:-}" ] || _otel_resource_attribute string service.version="${OTEL_SERVICE_VERSION:-}"
+  \[ -z "${OTEL_SERVICE_NAMESPACE:-}" ] || _otel_resource_attribute string service.namespace="${OTEL_SERVICE_NAMESPACE:-}"
+  \[ -z "${OTEL_SERVICE_INSTANCE_ID:-}" ] || _otel_resource_attribute string service.instance.id="${OTEL_SERVICE_INSTANCE_ID:-}"
 }
 
 _otel_resource_attributes_process() {
