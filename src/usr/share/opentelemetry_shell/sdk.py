@@ -58,6 +58,7 @@ def guess_cloud_resource_detectors():
         from opentelemetry.resource.detector.azure.vm import AzureVMResourceDetector
         return [ AzureVMResourceDetector() ]
     elif os.path.exists('/etc/google_instance_config.json') or file_contains('/sys/class/dmi/id/product_name', 'Google Compute Engine'):
+        from opentelemetry.sdk.resources import Resource, ResourceDetector
         from opentelemetry.resourcedetector.gcp_resource_detector import GoogleCloudResourceDetector
         return [ GoogleCloudResourceDetector() ]
     elif file_contains('/sys/class/dmi/id/product_name', 'OracleCloud.com'):
@@ -85,6 +86,7 @@ def guess_cloud_resource_detectors():
                 return response.json()
         return [ OracleResourceDetector() ]
     else:
+        from opentelemetry.sdk.resources import Resource, ResourceDetector
         from opentelemetry.sdk.extension.aws.resource.ec2 import AwsEc2ResourceDetector
         from opentelemetry.sdk.extension.aws.resource.beanstalk import AwsBeanstalkResourceDetector
         from opentelemetry.sdk.extension.aws.resource.ecs import AwsEcsResourceDetector
