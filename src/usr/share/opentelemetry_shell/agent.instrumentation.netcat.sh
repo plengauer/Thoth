@@ -49,7 +49,7 @@ _otel_inject_netcat_listen_and_respond_args() {
   shift
   while \[ "$#" -gt 0 ]; do
     \echo -n ' '
-    if (\[ "$1" = -e ] || \[ "$1" = --exec ] || \[ "$1" = -c ] || \[ "$1" = --sh-exec ]) && \[ "$#" -gt 1 ]; then
+    if \[ "$#" -gt 1 ] && { \[ "$1" = -e ] || \[ "$1" = --exec ] || \[ "$1" = -c ] || \[ "$1" = --sh-exec ]; }; then
       local command="$2"; shift; shift
       _otel_escape_args -c "otel4netcat_handler $command"
     else
