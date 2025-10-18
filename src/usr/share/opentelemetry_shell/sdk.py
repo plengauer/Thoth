@@ -166,7 +166,7 @@ def handle(scope, version, command, arguments):
             elif sampling_strategy == 'parentbased_traceidratio':
                 sampler = ParentBased(TraceIdRatioBased(float(sampling_strategy_arg)))
             else:
-                raise Exception('Unknown sampler: ' + sampler)
+                raise Exception('Unknown sampler: ' + sampling_strategy)
             class MyIdGenerator(RandomIdGenerator):
                 trace_id = None
                 span_id = None
