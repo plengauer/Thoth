@@ -84,7 +84,7 @@ def guess_cloud_resource_detectors():
                 response.raise_for_status()  # Raise an exception for 4xx or 5xx status codes
                 return response.json()
         return [ OracleResourceDetector() ]
-    else
+    else:
         from opentelemetry.sdk.extension.aws.resource.ec2 import AwsEc2ResourceDetector
         from opentelemetry.sdk.extension.aws.resource.beanstalk import AwsBeanstalkResourceDetector
         from opentelemetry.sdk.extension.aws.resource.ecs import AwsEcsResourceDetector
