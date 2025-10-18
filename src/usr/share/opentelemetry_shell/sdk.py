@@ -47,6 +47,93 @@ def main():
     except:
         pass
 
+def guess_cloud_resource_detectors():
+    if os.environ.get('GITHUB_ACTIONS', 'false') == 'true' and os.environ.get('RUNNER_ENVIRONMENT', 'unknown') == 'github-hosted':
+        from opentelemetry.resource.detector.azure.vm import AzureVMResourceDetector
+        return [ AzureVMResourceDetector() ]
+    elif file_contains('/sys/devices/virtual/dmi/id/product_uuid', 'ec2') or file_contains('/sys/hypervisor/uuid', 'ec2'):
+        from opentelemetry.sdk.extension.aws.resource.ec2 import AwsEc2ResourceDetector
+        return [ AwsEcsResourceDetector() ]
+    elif os.path.exists('/var/lib/waagent/'):
+        from opentelemetry.resource.detector.azure.vm import AzureVMResourceDetector
+        return [ AzureVMResourceDetector() ]
+    elif os.path.exists('/etc/google_instance_config.json') or file_contains('/sys/class/dmi/id/product_name', 'Google Compute Engine'):
+        from opentelemetry.resourcedetector.gcp_resource_detector import GoogleCloudResourceDetector
+        return [ GoogleCloudResourceDetector() ]
+    elif file_contains('/sys/class/dmi/id/product_name', 'OracleCloud.com'):
+        class OracleResourceDetector(ResourceDetector):
+            def detect(self) -> Resource:
+                try:
+                    metadata = self.fetch_metadata()
+                    resource = Resource.create({
+                        "cloud.provider": "oracle",
+                        "cloud.region": metadata['region'],
+                        "cloud.availability_zone": metadata['availabilityDomain'],
+                        "cloud.account_id": metadata['tenantId'],
+                        "host.type": metadata['shape'],
+                        "host.name": metadata['hostname'],
+                        "host.id": metadata['id'],
+                        "host.image_id": metadata['image']
+                    })
+                    return resource
+                except Exception:
+                    return Resource({})
+            def fetch_metadata(self):
+                import requests
+                response = requests.get('http://169.254.169.254/opc/v1/instance/', headers={'Authorization': 'Bearer Oracle'})
+                response.raise_for_status()  # Raise an exception for 4xx or 5xx status codes
+                return response.json()
+        return [ OracleResourceDetector() ]
+    else
+        from opentelemetry.sdk.extension.aws.resource.ec2 import AwsEc2ResourceDetector
+        from opentelemetry.sdk.extension.aws.resource.beanstalk import AwsBeanstalkResourceDetector
+        from opentelemetry.sdk.extension.aws.resource.ecs import AwsEcsResourceDetector
+        from opentelemetry.sdk.extension.aws.resource.eks import AwsEksResourceDetector
+        from opentelemetry.resource.detector.azure.app_service import AzureAppServiceResourceDetector
+        from opentelemetry.resource.detector.azure.vm import AzureVMResourceDetector
+        from opentelemetry.resourcedetector.gcp_resource_detector import GoogleCloudResourceDetector
+        class SafeGoogleCloudResourceDetector(GoogleCloudResourceDetector):
+          def detect(self) -> Resource:
+            try:
+              import socket
+              socket.gethostbyname('metadata.google.internal')
+              return super.detect()
+            except socket.error:
+              return Resource.create({})
+        class OracleResourceDetector(ResourceDetector):
+            def detect(self) -> Resource:
+                try:
+                    metadata = self.fetch_metadata()
+                    resource = Resource.create({
+                        "cloud.provider": "oracle",
+                        "cloud.region": metadata['region'],
+                        "cloud.availability_zone": metadata['availabilityDomain'],
+                        "cloud.account_id": metadata['tenantId'],
+                        "host.type": metadata['shape'],
+                        "host.name": metadata['hostname'],
+                        "host.id": metadata['id'],
+                        "host.image_id": metadata['image']
+                    })
+                    return resource
+                except Exception:
+                    return Resource({})
+            def fetch_metadata(self):
+                import requests
+                response = requests.get('http://169.254.169.254/opc/v1/instance/', headers={'Authorization': 'Bearer Oracle'})
+                response.raise_for_status()  # Raise an exception for 4xx or 5xx status codes
+                return response.json()
+        return [
+            OracleResourceDetector(),
+            # AlibabaResourceDetector(),
+            SafeGoogleCloudResourceDetector(),
+            AzureAppServiceResourceDetector(),
+            AzureVMResourceDetector(),
+            AwsBeanstalkResourceDetector(),
+            AwsEcsResourceDetector(),
+            AwsEksResourceDetector(),
+            AwsEc2ResourceDetector(),
+        ]
+
 def handle(scope, version, command, arguments):
     global initialized_traces, initialized_metrics, initialized_logs, final_resources
     
@@ -173,10 +260,12 @@ def handle(scope, version, command, arguments):
         resource[key] = convert_type(type, value)
     elif command == 'INIT':
         from opentelemetry.sdk.resources import Resource, ResourceDetector, OTELResourceDetector, OsResourceDetector, get_aggregated_resources
+        from opentelemetry_resourcedetector_docker import DockerResourceDetector
+        from opentelemetry_resourcedetector_kubernetes import KubernetesResourceDetector
         class GithubActionResourceDetector(ResourceDetector):
             def detect(self) -> Resource:
                 try:
-                    if not 'GITHUB_RUN_ID' in os.environ:
+                    if os.environ.get('GITHUB_ACTIONS', 'false') != 'true':
                         return Resource.create({});
                     return Resource.create({
                         'github.repository.id': os.environ.get('GITHUB_REPOSITORY_ID', ''),
@@ -189,57 +278,8 @@ def handle(scope, version, command, arguments):
                     })
                 except:
                     return Resource.create({})
-        from opentelemetry_resourcedetector_docker import DockerResourceDetector
-        from opentelemetry_resourcedetector_kubernetes import KubernetesResourceDetector
-        from opentelemetry.sdk.extension.aws.resource.ec2 import AwsEc2ResourceDetector
-        from opentelemetry.sdk.extension.aws.resource.beanstalk import AwsBeanstalkResourceDetector
-        from opentelemetry.sdk.extension.aws.resource.ecs import AwsEcsResourceDetector
-        from opentelemetry.sdk.extension.aws.resource.eks import AwsEksResourceDetector
-        from opentelemetry.resource.detector.azure.app_service import AzureAppServiceResourceDetector
-        from opentelemetry.resource.detector.azure.vm import AzureVMResourceDetector
-        '''
-        from opentelemetry.resourcedetector.gcp_resource_detector import GoogleCloudResourceDetector
-        class SafeGoogleCloudResourceDetector(GoogleCloudResourceDetector):
-          def detect(self) -> Resource:
-            try:
-              import socket
-              socket.gethostbyname('metadata.google.internal')
-              return super.detect()
-            except socket.error:
-              return Resource.create({})
-        '''
-        class OracleResourceDetector(ResourceDetector):
-            def detect(self) -> Resource:
-                try:
-                    metadata = self.fetch_metadata()
-                    resource = Resource.create({
-                        "cloud.provider": "oracle",
-                        "cloud.region": metadata['region'],
-                        "cloud.availability_zone": metadata['availabilityDomain'],
-                        "cloud.account_id": metadata['tenantId'],
-                        "host.type": metadata['shape'],
-                        "host.name": metadata['hostname'],
-                        "host.id": metadata['id'],
-                        "host.image_id": metadata['image']
-                    })
-                    return resource
-                except Exception:
-                    return Resource({})
-            def fetch_metadata(self):
-                import requests
-                response = requests.get('http://169.254.169.254/opc/v1/instance/', headers={'Authorization': 'Bearer Oracle'})
-                response.raise_for_status()  # Raise an exception for 4xx or 5xx status codes
-                return response.json()
-        final_resources = get_aggregated_resources([
-                # OracleResourceDetector(),
-                # AlibabaResourceDetector(),
-                # SafeGoogleCloudResourceDetector(),
-                AzureAppServiceResourceDetector(),
-                AzureVMResourceDetector(),
-                AwsBeanstalkResourceDetector(),
-                AwsEcsResourceDetector(),
-                AwsEksResourceDetector(),
-                AwsEc2ResourceDetector(),
+        final_resources = get_aggregated_resources(guess_cloud_resource_detectors() + [
+                GithubActionResourceDetector(),
                 KubernetesResourceDetector(),
                 DockerResourceDetector(),
                 GithubActionResourceDetector(),
@@ -563,6 +603,15 @@ def convert_type(type, value, base=None):
         return value
     else:
         raise Exception('Unknown type: ' + type)
+
+def file_contains(haystack, needle):
+    try:
+        with open(haystack, 'r') as file:
+            if needle in file.read():
+                return True
+    except:
+        pass
+    return False
 
 if __name__ == "__main__":
     main()
