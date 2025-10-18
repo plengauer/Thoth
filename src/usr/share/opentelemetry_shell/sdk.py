@@ -30,7 +30,6 @@ def main():
         line = line.strip()
         if len(line) == 0:
             continue
-        print('SDK Command: ' + line, file=sys.stderr)
         tokens = line.split(' ', 1)
         tokens = [token for token in tokens if token]
         try:
