@@ -47,7 +47,7 @@ const sdk = new opentelemetry_sdk.NodeSDK({
   contextManager: context_manager.enable(),
   instrumentations: [ opentelemetry_auto_instrumentations.getNodeAutoInstrumentations() ],
   resourceDetectors: [
-    opentelemetry_resources_alibaba_cloud.alibabaCloudEcsDetector,
+    // opentelemetry_resources_alibaba_cloud.alibabaCloudEcsDetector, // TODO this one takes a full second to just time out when its not alibaba
     opentelemetry_resources_azure.azureAppServiceDetector,
     opentelemetry_resources_azure.azureFunctionsDetector,
     opentelemetry_resources_azure.azureVmDetector,
