@@ -34,6 +34,7 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
     done
   fi 2>&1 | perl -0777 -pe '' >&2 &
   python3 -m venv /opt/opentelemetry_shell/venv && . /opt/opentelemetry_shell/venv/bin/activate && pip3 install -r /opt/opentelemetry_shell/requirements.txt && pip3 check && deactivate # SKIP_DEPENDENCY_CHECK
+  cat /usr/share/opentelemetry_shell/*.py | while read -r line; do printf '%s\n' "$line"; done | grep -E '^import |^from ' | /opt/opentelemetry_shell/venv/bin/python3 # venv may be used by different users that may not be allowed to create pyc files
   wait
 else
   exit 1
