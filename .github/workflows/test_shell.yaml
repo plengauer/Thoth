@@ -96,6 +96,7 @@ jobs:
             echo "$latest" "$name" latest
             echo "$dev" "$name" dev
           done | while read -r image os type; do
+            image_not_found=0
             sudo docker pull "$image" >&2 || image_not_found=1 # make sure we fail on pull if image is not available
             if [ "${image_not_found:-0}" = 1 ]; then
               if [ "$type" = dev ]; then
