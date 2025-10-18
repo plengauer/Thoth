@@ -13,7 +13,7 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
         cp /usr/share/opentelemetry_shell/agent.instrumentation.node/"$file" /usr/share/opentelemetry_shell/agent.instrumentation.node/"$directory"/"$file"
       done
     done
-  fi &
+  fi 2>&1 | perl -0777 -pe '' >&2 &
   if type python3; then
     rm -rf /usr/share/opentelemetry_shell/agent.instrumentation.python/*/
     ( type docker 1>&2 || ( echo "$PATH" | tr : '\n' | while read -r directory; do find "$directory" -name 'python3.*'; done | grep -v -- - | while read -r executable; do eval "$executable -V"; done | cut -d ' ' -f 2 | cut -d . -f -2 ) ) \
@@ -32,7 +32,7 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
       cp -r -u "$venv"/lib/python"$version"/site-packages/* /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"/site-packages/
       rm -rf "$venv"
     done
-  fi &
+  fi 2>&1 | perl -0777 -pe '' >&2 &
   python3 -m venv /opt/opentelemetry_shell/venv && . /opt/opentelemetry_shell/venv/bin/activate && pip3 install -r /opt/opentelemetry_shell/requirements.txt && pip3 check && deactivate # SKIP_DEPENDENCY_CHECK
   wait
 else
