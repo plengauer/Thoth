@@ -3,6 +3,7 @@
 # curl -v https://www.google.at => curl -v https://www.google.at -H 'traceparent: 00-XXXXXX-01'
 
 _otel_propagate_curl() {
+  \set -x
   case "$-" in
     *m*) local job_control=1; \set +m;;
     *) local job_control=0;;
@@ -36,6 +37,7 @@ _otel_propagate_curl() {
     unset OTEL_SHELL_INJECT_HTTP_SDK_PIPE
   fi
   if \[ "$job_control" = 1 ]; then \set -m; fi
+  \set +x
   return "$exit_code"
 }
 
