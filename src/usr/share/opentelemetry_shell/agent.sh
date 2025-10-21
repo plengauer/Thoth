@@ -248,7 +248,10 @@ _otel_has_alias() {
 }
 
 _otel_resolve_alias() {
-  \alias "$1" 2> /dev/null | \cut -d = -f 2- | _otel_unquote # TODO maybe use parameter expansion for the cut to save a process? limited benefit because unquote will stay an external process
+  # \alias "$1" 2> /dev/null | \cut -d = -f 2- | _otel_unquote # TODO maybe use parameter expansion for the cut to save a process? limited benefit because unquote will stay an external process
+  local result="$(\alias "$1" 2> /dev/null | \cut -d = -f 2-)"
+  \printf '%s\n' "$result" >&2
+  \printf '%s\n' "$result" | _otel_unquote
 }
 
 otel_instrument() {
