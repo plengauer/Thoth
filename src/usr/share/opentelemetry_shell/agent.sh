@@ -269,7 +269,7 @@ _otel_alias_prepend() {
   local prepend_command="$2"
 
   if ! _otel_has_alias "$original_command"; then # fastpath
-    local new_command="$(\printf '%s' "OTEL_SHELL_COMMAND_TYPE_OVERRIDE=$(_otel_command_type "$original_command") $prepend_command \\$original_command")" # need to use printf to handle backslashes consistently across shells
+    local new_command="$(\printf '%s' "OTEL_SHELL_COMMAND_TYPE_OVERRIDE=$(_otel_command_type "$original_command") $prepend_command '\\$original_command'")" # need to use printf to handle backslashes consistently across shells
   else
     local previous_command="$(_otel_resolve_alias "$original_command")"
     for prepend_command_part in $prepend_command; do
@@ -293,10 +293,10 @@ _otel_alias_prepend() {
     local previous_otel_command="$(\printf '%s' "$previous_command" | _otel_line_split | \grep '^_otel_' | _otel_line_join)"
     local previous_alias_command="$(\printf '%s' "$previous_command" | _otel_line_split | \grep -v '^_otel_' | _otel_line_join)"
     case "$previous_alias_command" in
-      "$original_command") local previous_alias_command="$(\printf '%s' "\\$original_command")";;
-      "$original_command "*) local previous_alias_command="$(\printf '%s' "\\$original_command $(_otel_string_contains "$previous_alias_command" " " && \printf '%s' "${previous_alias_command#* }" || \printf '%s' "$previous_alias_command")")";; 
-      "\\$original_command") local previous_alias_command="$(\printf '%s' "\\$original_command")";;
-      "\\$original_command "*) local previous_alias_command="$(\printf '%s' "\\$original_command $(_otel_string_contains "$previous_alias_command" " " && \printf '%s' "${previous_alias_command#* }" || \printf '%s' "$previous_alias_command")")";;
+      "$original_command") local previous_alias_command="$(\printf '%s' "'\\$original_command'")";;
+      "$original_command "*) local previous_alias_command="$(\printf '%s' "'\\$original_command' $(_otel_string_contains "$previous_alias_command" " " && \printf '%s' "${previous_alias_command#* }" || \printf '%s' "$previous_alias_command")")";; 
+      "\\$original_command") local previous_alias_command="$(\printf '%s' "'\\$original_command'")";;
+      "\\$original_command "*) local previous_alias_command="$(\printf '%s' "'\\$original_command' $(_otel_string_contains "$previous_alias_command" " " && \printf '%s' "${previous_alias_command#* }" || \printf '%s' "$previous_alias_command")")";;
       *) ;;
     esac
     local new_command="$overrides $prepend_command $previous_otel_command $previous_alias_command"
