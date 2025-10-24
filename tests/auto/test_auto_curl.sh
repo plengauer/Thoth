@@ -24,7 +24,7 @@ assert_not_equals null "$(\echo "$span" | jq -r '.attributes."http.response.head
 assert_not_equals null "$(\echo "$span" | jq -r '.attributes."network.peer.address"')"
 assert_not_equals null "$(\echo "$span" | jq -r '.attributes."network.peer.port"')"
 
-$TEST_SHELL auto/curl.sh https://www.google.de/index.html https://www.google.de/index http://www.bing.com
+$TEST_SHELL auto/curl.sh -v https://www.google.de/index.html https://www.google.de/index http://www.bing.com
 
 span="$(resolve_span '.attributes."url.path" == "/index.html"')"
 assert_equals "GET" $(\echo "$span" | jq -r '.name')
