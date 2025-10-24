@@ -69,8 +69,11 @@ _otel_auto_instrument() {
   ## (3) using the filtered list of commands - will work in every case but slowest
   local cache_key="$({ _otel_list_path_commands | _otel_filter_commands_by_special | _otel_filter_commands_by_hint "$hint" | \sort -u; \alias; \echo "$PATH" "$_otel_shell_conservative_exec" "${OTEL_SHELL_CONFIG_MUTE_INTERNALS:-}" "${OTEL_SHELL_CONFIG_MUTE_BUILTINS:-}"; } | \md5sum | \cut -d ' ' -f 1)"
   local cache_file="$TMPDIR/opentelemetry_shell_$(_otel_package_version opentelemetry-shell)"_"$_otel_shell"_instrumentation_cache_"$cache_key".aliases
-  if \[ -f "$cache_file" ]; then
-    \eval "$(\grep -vh '_otel_alias_prepend ' $(_otel_list_special_auto_instrument_files))"
+  if \[ -r "$cache_file" ]; then
+    # \eval "$(\grep -vh '_otel_alias_prepend ' $(_otel_list_special_auto_instrument_files))"
+    for special_auto_instrumentation_file in $(_otel_list_special_auto_instrument_files); do
+      \eval "$(\grep -vh '_otel_alias_prepend ' "$special_auto_instrumentation_file")"
+    done
     \. "$cache_file"
     return $?
   fi
