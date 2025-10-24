@@ -74,8 +74,6 @@ _otel_auto_instrument() {
     for special_auto_instrumentation_file in $(_otel_list_special_auto_instrument_files); do
       \eval "$(\grep -vh '_otel_alias_prepend ' "$special_auto_instrumentation_file")"
     done
-    # \. "$cache_file"
-    # return $?
     \. "$cache_file" && return 0 || \true
   fi
 
@@ -111,7 +109,7 @@ _otel_auto_instrument() {
   fi
 
   # cache
-  \[ "$(\alias | \wc -l)" -gt 25 ] && \alias | \sed 's/^alias //' | { \[ -n "$hint" ] && \grep "$(_otel_resolve_instrumentation_hint "$hint" | \sed 's/[]\.^*[]/\\&/g' | \awk '$0="^"$0"="')" || \cat; } | \awk '{print "\\alias " $0 }'  > "$cache_file" || \true
+  \[ "$(\alias | \wc -l)" -gt 25 ] && \alias | \sed 's/^alias //' | { \[ -n "$hint" ] && \grep "$(_otel_resolve_instrumentation_hint "$hint" | \sed 's/[]\.^*[]/\\&/g' | \awk '$0="^"$0"="')" || \cat; } | \awk '{print "\\alias " $0 }' > "$cache_file" || \true
 }
 
 _otel_list_special_auto_instrument_files() {
