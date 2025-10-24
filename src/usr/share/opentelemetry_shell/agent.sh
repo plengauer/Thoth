@@ -74,8 +74,9 @@ _otel_auto_instrument() {
     for special_auto_instrumentation_file in $(_otel_list_special_auto_instrument_files); do
       \eval "$(\grep -vh '_otel_alias_prepend ' "$special_auto_instrumentation_file")"
     done
-    \. "$cache_file"
-    return $?
+    # \. "$cache_file"
+    # return $?
+    \. "$cache_file" && return 0 || \true
   fi
 
   # special instrumentations
