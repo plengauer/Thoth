@@ -119,7 +119,6 @@ _otel_list_special_auto_instrument_files() {
 _otel_list_all_commands() {
   _otel_list_path_commands
   _otel_list_alias_commands
-  _otel_list_aliased_commands
   _otel_list_builtin_commands
 }
 
@@ -133,10 +132,6 @@ _otel_list_path_executables() {
 
 _otel_list_alias_commands() {
   \alias | \sed 's/^alias //' | _otel_unquote | \tr -d "'" | \tr -d '"' | \tr -d '\\' | \grep -vF '[=' | \awk -F'=' '{ var=$1; sub($1 FS,""); } ! ($0 ~ "^'\''((OTEL_|_otel_).* )*" var "'\''$") { print var }'
-}
-
-_otel_list_aliased_commands() {
-  \alias | \cut -d = -f 2- | _otel_unquote | \tr -d "'" | \tr -d '"' | \tr -d '\\' | _otel_line_split | _otel_filter_by_validity
 }
 
 _otel_list_builtin_commands() {
