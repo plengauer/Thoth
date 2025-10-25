@@ -248,12 +248,18 @@ _otel_has_alias() {
 
 _otel_resolve_alias() {
   # \alias "$1" 2> /dev/null | \cut -d = -f 2- | _otel_unquote # TODO maybe use parameter expansion for the cut to save a process? limited benefit because unquote will stay an ex>
-  local command="$(\alias "$1" 2> /dev/null)"
-  case "$command" in
-    "'"*=*"'"'"'"'"'"') \printf '%s' "$command" | _otel_unquote | \cut -d = -f 2-;;
-    "'"*=*"'") \printf '%s' "$command" | _otel_unquote | \cut -d = -f 2-;;
-    *) \printf '%s' "$command" | \cut -d = -f 2- | _otel_unquote;;
-  esac
+  
+  # local command="$(\alias "$1" 2> /dev/null)"
+  # case "$command" in
+  #   "'"*=*"'"'"'"'"'"') \printf '%s' "$command" | _otel_unquote | \cut -d = -f 2-;;
+  #   "'"*=*"'") \printf '%s' "$command" | _otel_unquote | \cut -d = -f 2-;;
+  #   *) \printf '%s' "$command" | \cut -d = -f 2- | _otel_unquote;;
+  # esac
+
+  local my_alias="$(\alias "$1" 2> /dev/null)"
+  local my_alias="${my_alias#alias }"
+  local my_alias="$(\eval "\\echo $my_alias")"
+  \echo "${my_alias#*=}"
 }
 
 otel_instrument() {
