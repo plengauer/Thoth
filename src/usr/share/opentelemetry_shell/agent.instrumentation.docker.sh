@@ -120,6 +120,7 @@ _otel_inject_docker() {
   # if _otel_string_contains "$OTEL_METRICS_EXPORTER" console; then local otel_metrics_exporter="$(\echo "$OTEL_METRICS_EXPORTER" | \tr ',' '\n' | \grep -vE '^console$' | \head --lines=1)"; fi
   # if _otel_string_contains "$OTEL_TRACES_EXPORTER" console; then local otel_traces_exporter="$(\echo "$OTEL_TRACES_EXPORTER" | \tr ',' '\n' | \grep -vE '^console$' | \head --lines=1)"; fi
   # OTEL_LOGS_EXPORTER="$otel_logs_exporter" OTEL_METRICS_EXPORTER="$otel_metrics_exporter" OTEL_TRACES_EXPORTER="$otel_traces_exporter"
+  \set -x
   \eval _otel_call "$(_otel_inject_docker_args "$@")"
 }
 
