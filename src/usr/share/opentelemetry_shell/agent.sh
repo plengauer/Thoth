@@ -69,10 +69,9 @@ _otel_auto_instrument() {
   ## (3) using the filtered list of commands - will work in every case but slowest
   local cache_key="$({ _otel_list_path_commands | _otel_filter_commands_by_special | _otel_filter_commands_by_hint "$hint" | \sort -u; \alias; \echo "$PATH" "$_otel_shell_conservative_exec" "${OTEL_SHELL_CONFIG_MUTE_INTERNALS:-}" "${OTEL_SHELL_CONFIG_MUTE_BUILTINS:-}"; } | \md5sum | \cut -d ' ' -f 1)"
   local cache_file="$TMPDIR/opentelemetry_shell_$(_otel_package_version opentelemetry-shell)"_"$_otel_shell"_instrumentation_cache_"$cache_key".aliases
-  if \[ -f "$cache_file" ]; then
+  if \[ -r "$cache_file" ]; then
     \eval "$(\grep -vh '_otel_alias_prepend ' $(_otel_list_special_auto_instrument_files))"
-    \. "$cache_file"
-    return $?
+    \. "$cache_file" && return 0 || \true
   fi
 
   # special instrumentations
@@ -107,7 +106,7 @@ _otel_auto_instrument() {
   fi
 
   # cache
-  \[ "$(\alias | \wc -l)" -gt 25 ] && \alias | \sed 's/^alias //' | { \[ -n "$hint" ] && \grep "$(_otel_resolve_instrumentation_hint "$hint" | \sed 's/[]\.^*[]/\\&/g' | \awk '$0="^"$0"="')" || \cat; } | \awk '{print "\\alias " $0 }'  > "$cache_file" || \true
+  \[ "$(\alias | \wc -l)" -gt 25 ] && \alias | \sed 's/^alias //' | { \[ -n "$hint" ] && \grep "$(_otel_resolve_instrumentation_hint "$hint" | \sed 's/[]\.^*[]/\\&/g' | \awk '$0=$0"="')" || \cat; } | \awk '{print "\\alias " $0 }' > "$cache_file" || \true
 }
 
 _otel_list_special_auto_instrument_files() {
@@ -120,7 +119,6 @@ _otel_list_special_auto_instrument_files() {
 _otel_list_all_commands() {
   _otel_list_path_commands
   _otel_list_alias_commands
-  _otel_list_aliased_commands
   _otel_list_builtin_commands
 }
 
@@ -133,11 +131,11 @@ _otel_list_path_executables() {
 }
 
 _otel_list_alias_commands() {
-  \alias | \sed 's/^alias //' | \grep -vF '[=' | \awk -F'=' '{ var=$1; sub($1 FS,""); } ! ($0 ~ "^'\''((OTEL_|_otel_).* )*" var "'\''$") { print var }'
-}
-
-_otel_list_aliased_commands() {
-  \alias | \cut -d = -f 2- | _otel_line_split | _otel_filter_by_validity
+  \alias | while \read -r line; do
+    line="${line#alias }"
+    line="$(\eval "\\printf '%s\n' $line")"
+    \printf '%s\n' "${line%%=*}"
+  done
 }
 
 _otel_list_builtin_commands() {
@@ -248,7 +246,10 @@ _otel_has_alias() {
 }
 
 _otel_resolve_alias() {
-  \alias "$1" 2> /dev/null | \cut -d = -f 2- | _otel_unquote # TODO maybe use parameter expansion for the cut to save a process? limited benefit because unquote will stay an external process
+  local my_alias="$(\alias "$1" 2> /dev/null)"
+  local my_alias="${my_alias#alias }"
+  local my_alias="$(\eval "\\printf '%s\n' $my_alias")"
+  \printf '%s\n' "${my_alias#*=}"
 }
 
 otel_instrument() {
@@ -301,7 +302,8 @@ _otel_alias_prepend() {
 }
 
 _otel_unquote() {
-  \sed -e 's/'\''\\'\'''\''/'\''/g' -e 's/'\''"'\''"'\''/'\''/g' -e 's/'\''"'\''"/'\'''\''/g' -e "s/^'\(.*\)'$/\1/" 
+  # '\'' => ', '"'"' => ', '"'"$ => '', '"''"$ => ''' => '
+  \sed -e 's/'\''\\'\'''\''/'\''/g' -e 's/'\''"'\''"'\''/'\''/g' -e 's/'\''"'\''"$/'\'''\''/g' -e 's/'\''"'\'\''"$/'\''/g' -e "s/^'\(.*\)'$/\1/"
 }
 
 _otel_observe() {
