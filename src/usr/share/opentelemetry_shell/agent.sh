@@ -135,7 +135,7 @@ _otel_list_alias_commands() {
     line="${line#alias }"
     line="$(\eval "\\printf '%s\n' $line")"
     \printf '%s\n' "${line%%=*}"
-  done | \grep -vF '['
+  done
 }
 
 _otel_list_builtin_commands() {
