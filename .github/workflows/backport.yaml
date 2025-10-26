@@ -99,7 +99,8 @@ jobs:
           EOF
             
             # Use OpenAI to analyze
-            AI_RESPONSE=$(curl -s https://api.openai.com/v1/chat/completions \
+            HTTP_CODE=$(curl -s -w "%{http_code}" -o /tmp/ai_response.json \
+              https://api.openai.com/v1/chat/completions \
               -H "Content-Type: application/json" \
               -H "Authorization: Bearer $OPENAI_API_KEY" \
               -d "{
@@ -107,14 +108,23 @@ jobs:
                 \"messages\": [{\"role\": \"user\", \"content\": $(cat /tmp/prompt.txt | jq -Rs .)}],
                 \"temperature\": 0.3,
                 \"max_tokens\": 10
-              }" | jq -r '.choices[0].message.content' | tr '[:upper:]' '[:lower:]')
+              }")
             
-            echo "AI response: $AI_RESPONSE"
-            
-            if echo "$AI_RESPONSE" | grep -q "yes"; then
-              SHOULD_BACKPORT=true
-              REASON="AI determined this is a bugfix or patch-only update"
-              echo "AI determined this should be backported"
+            if [ "$HTTP_CODE" -eq 200 ]; then
+              AI_RESPONSE=$(jq -r '.choices[0].message.content' /tmp/ai_response.json 2>/dev/null | tr '[:upper:]' '[:lower:]')
+              echo "AI response: $AI_RESPONSE"
+              
+              if [ -n "$AI_RESPONSE" ] && echo "$AI_RESPONSE" | grep -q "yes"; then
+                SHOULD_BACKPORT=true
+                REASON="AI determined this is a bugfix or patch-only update"
+                echo "AI determined this should be backported"
+              else
+                echo "AI did not identify this as a backportable change"
+              fi
+            else
+              echo "Warning: OpenAI API call failed with HTTP code $HTTP_CODE"
+              echo "Response: $(cat /tmp/ai_response.json)"
+              echo "Skipping AI analysis, will not backport without explicit bug label"
             fi
           fi
           
@@ -198,13 +208,17 @@ jobs:
           # Remove VERSION file changes from the patch if present
           if grep -q "diff --git a/VERSION b/VERSION" /tmp/commit.patch; then
             echo "Removing VERSION file changes from patch"
-            # Use filterdiff if available, otherwise use awk
+            # Use filterdiff if available, otherwise use sed
             if command -v filterdiff >/dev/null 2>&1; then
               filterdiff -x 'VERSION' /tmp/commit.patch > /tmp/commit_filtered.patch
               mv /tmp/commit_filtered.patch /tmp/commit.patch
             else
-              awk '/diff --git a\/VERSION b\/VERSION/,/^diff --git/ {if (/^diff --git a\/VERSION/) next; if (/^diff --git/) print; next} {print}' /tmp/commit.patch > /tmp/commit_filtered.patch
-              mv /tmp/commit_filtered.patch /tmp/commit.patch
+              # Use sed to remove the VERSION diff section
+              sed '/^diff --git a\/VERSION b\/VERSION$/,/^diff --git\|^$/d' /tmp/commit.patch > /tmp/commit_filtered.patch
+              # If the filtered patch is not empty, use it
+              if [ -s /tmp/commit_filtered.patch ]; then
+                mv /tmp/commit_filtered.patch /tmp/commit.patch
+              fi
             fi
           fi
           
@@ -222,8 +236,9 @@ jobs:
               git add VERSION
               echo "Cherry-pick succeeded, VERSION restored"
             else
-              echo "Cherry-pick failed, trying manual application"
+              echo "Cherry-pick failed - conflicts need manual resolution"
               git cherry-pick --abort 2>/dev/null || true
+              echo "Please backport this commit manually: $COMMIT_SHA"
               exit 1
             fi
           else

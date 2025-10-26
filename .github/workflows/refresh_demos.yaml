@@ -45,7 +45,7 @@ jobs:
     if: |
       always() &&
       (github.event_name == 'push' || 
-       (github.event_name == 'release' && needs.check-release-on-main.outputs.should_run == 'true'))
+       (github.event_name == 'release' && needs.check-release-on-main.result == 'success' && needs.check-release-on-main.outputs.should_run == 'true'))
     needs: [check-release-on-main]
     runs-on: ubuntu-latest
     permissions:
