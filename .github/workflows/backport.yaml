@@ -12,13 +12,6 @@ jobs:
       issues: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.30.1
-        with:
-          secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}","${{ secrets.OPENAI_TOKEN }}"]'
-        env:
-          OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
-          OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      
       - uses: actions/checkout@v5.0.0
         with:
           fetch-depth: 0
@@ -37,13 +30,6 @@ jobs:
           COMMIT_MSG=$(git log -1 --pretty=%B "$COMMIT_SHA")
           echo "Checking commit: $COMMIT_SHA"
           echo "Commit message: $COMMIT_MSG"
-          
-          # Skip if this is a backport commit itself to avoid infinite loops
-          if echo "$COMMIT_MSG" | grep -q "^Backport:"; then
-            echo "This is already a backport commit, skipping"
-            echo "should_backport=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
           
           # Skip if this is just a VERSION file change (from autoversion)
           CHANGED_FILES=$(git diff-tree --no-commit-id --name-only -r "$COMMIT_SHA")
