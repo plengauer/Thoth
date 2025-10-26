@@ -1,0 +1,255 @@
+name: Backport Bugfixes
+on:
+  push:
+    branches:
+      - main
+jobs:
+  backport:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: read
+      issues: read
+      actions: read
+    steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.30.1
+        with:
+          secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}","${{ secrets.OPENAI_TOKEN }}"]'
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
+          OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
+      
+      - uses: actions/checkout@v5.0.0
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+      
+      - name: Check if backport needed
+        id: check
+        env:
+          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_TOKEN }}
+        run: |
+          set +e
+          
+          # Get the commit SHA and message
+          COMMIT_SHA="${{ github.sha }}"
+          COMMIT_MSG=$(git log -1 --pretty=%B "$COMMIT_SHA")
+          echo "Checking commit: $COMMIT_SHA"
+          echo "Commit message: $COMMIT_MSG"
+          
+          # Skip if this is a backport commit itself to avoid infinite loops
+          if echo "$COMMIT_MSG" | grep -q "^Backport:"; then
+            echo "This is already a backport commit, skipping"
+            echo "should_backport=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          
+          # Skip if this is just a VERSION file change (from autoversion)
+          CHANGED_FILES=$(git diff-tree --no-commit-id --name-only -r "$COMMIT_SHA")
+          if [ "$CHANGED_FILES" = "VERSION" ]; then
+            echo "This commit only changes VERSION file, skipping"
+            echo "should_backport=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          
+          # Try to find the PR that introduced this commit
+          PR_NUMBER=$(gh pr list --state merged --search "$COMMIT_SHA" --json number --jq '.[0].number' 2>/dev/null)
+          
+          SHOULD_BACKPORT=false
+          REASON=""
+          
+          if [ -n "$PR_NUMBER" ] && [ "$PR_NUMBER" != "null" ]; then
+            echo "Found PR #$PR_NUMBER for commit $COMMIT_SHA"
+            
+            # Get the issue linked to this PR
+            ISSUE_NUMBER=$(gh pr view "$PR_NUMBER" --json body --jq '.body' | grep -oP '(?<=#)\d+' | head -1)
+            
+            if [ -n "$ISSUE_NUMBER" ]; then
+              echo "Found linked issue #$ISSUE_NUMBER"
+              
+              # Check if issue has bug label
+              LABELS=$(gh issue view "$ISSUE_NUMBER" --json labels --jq '.labels[].name')
+              if echo "$LABELS" | grep -qi "bug"; then
+                SHOULD_BACKPORT=true
+                REASON="Issue #$ISSUE_NUMBER has bug label"
+                echo "Issue has bug label - will backport"
+              fi
+            fi
+          fi
+          
+          # If no PR/issue found or no bug label, use AI to determine
+          if [ "$SHOULD_BACKPORT" = "false" ]; then
+            echo "No PR/issue with bug label found, using AI to analyze commit"
+            
+            # Get commit diff
+            COMMIT_DIFF=$(git show "$COMMIT_SHA" --stat)
+            
+            # Create prompt for OpenAI
+            cat > /tmp/prompt.txt <<EOF
+          Analyze this git commit and determine if it is ONLY a bugfix or a patch-level dependency update that should be backported to a release branch. Return 'yes' if it should be backported (bugfix or patch-only dependency update), 'no' otherwise.
+          
+          Commit message:
+          $COMMIT_MSG
+          
+          Diff summary:
+          $COMMIT_DIFF
+          
+          Answer with just 'yes' or 'no':
+          EOF
+            
+            # Use OpenAI to analyze
+            AI_RESPONSE=$(curl -s https://api.openai.com/v1/chat/completions \
+              -H "Content-Type: application/json" \
+              -H "Authorization: Bearer $OPENAI_API_KEY" \
+              -d "{
+                \"model\": \"gpt-4\",
+                \"messages\": [{\"role\": \"user\", \"content\": $(cat /tmp/prompt.txt | jq -Rs .)}],
+                \"temperature\": 0.3,
+                \"max_tokens\": 10
+              }" | jq -r '.choices[0].message.content' | tr '[:upper:]' '[:lower:]')
+            
+            echo "AI response: $AI_RESPONSE"
+            
+            if echo "$AI_RESPONSE" | grep -q "yes"; then
+              SHOULD_BACKPORT=true
+              REASON="AI determined this is a bugfix or patch-only update"
+              echo "AI determined this should be backported"
+            fi
+          fi
+          
+          echo "should_backport=$SHOULD_BACKPORT" >> "$GITHUB_OUTPUT"
+          echo "reason=$REASON" >> "$GITHUB_OUTPUT"
+          echo "commit_sha=$COMMIT_SHA" >> "$GITHUB_OUTPUT"
+      
+      - name: Backport to release branch
+        if: steps.check.outputs.should_backport == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+        run: |
+          set -e
+          
+          COMMIT_SHA="${{ steps.check.outputs.commit_sha }}"
+          REASON="${{ steps.check.outputs.reason }}"
+          
+          echo "Backporting commit $COMMIT_SHA"
+          echo "Reason: $REASON"
+          
+          # Read current version
+          CURRENT_VERSION=$(cat VERSION)
+          echo "Current version: $CURRENT_VERSION"
+          
+          # Parse version components
+          MAJOR=$(echo "$CURRENT_VERSION" | cut -d. -f1)
+          MINOR=$(echo "$CURRENT_VERSION" | cut -d. -f2)
+          PATCH=$(echo "$CURRENT_VERSION" | cut -d. -f3)
+          
+          # Determine release branch name
+          RELEASE_BRANCH="release/v${MAJOR}.${MINOR}"
+          echo "Release branch: $RELEASE_BRANCH"
+          
+          # Configure git
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Check if release branch exists
+          if git ls-remote --exit-code --heads origin "$RELEASE_BRANCH" >/dev/null 2>&1; then
+            echo "Release branch $RELEASE_BRANCH exists, checking out"
+            git fetch origin "$RELEASE_BRANCH"
+            git checkout "$RELEASE_BRANCH"
+          else
+            echo "Release branch $RELEASE_BRANCH does not exist, creating from initial minor release"
+            
+            # Find the initial tag for this minor version (X.Y.0)
+            INITIAL_TAG="v${MAJOR}.${MINOR}.0"
+            
+            if git rev-parse "$INITIAL_TAG" >/dev/null 2>&1; then
+              echo "Creating branch from initial minor tag $INITIAL_TAG"
+              git checkout -b "$RELEASE_BRANCH" "$INITIAL_TAG"
+            else
+              # Check if there's any tag for this minor version
+              LAST_TAG=$(git tag -l "v${MAJOR}.${MINOR}.*" | sort -V | tail -1)
+              if [ -n "$LAST_TAG" ]; then
+                echo "Initial tag $INITIAL_TAG not found, but found $LAST_TAG, using that"
+                git checkout -b "$RELEASE_BRANCH" "$LAST_TAG"
+              else
+                # If we're on the current minor version on main, create from current main
+                MAIN_VERSION=$(git show main:VERSION)
+                MAIN_MAJOR=$(echo "$MAIN_VERSION" | cut -d. -f1)
+                MAIN_MINOR=$(echo "$MAIN_VERSION" | cut -d. -f2)
+                
+                if [ "$MAJOR" = "$MAIN_MAJOR" ] && [ "$MINOR" = "$MAIN_MINOR" ]; then
+                  echo "Current version on main is ${MAIN_VERSION}, creating release branch from main"
+                  git checkout -b "$RELEASE_BRANCH" main
+                else
+                  echo "ERROR: Cannot create release branch - no tag found for v${MAJOR}.${MINOR}.* and not current version"
+                  exit 1
+                fi
+              fi
+            fi
+            
+            # Push the new branch
+            git push -u origin "$RELEASE_BRANCH"
+          fi
+          
+          # Get the diff from the commit, excluding VERSION file
+          git format-patch -1 "$COMMIT_SHA" --stdout > /tmp/commit.patch
+          
+          # Remove VERSION file changes from the patch if present
+          if grep -q "diff --git a/VERSION b/VERSION" /tmp/commit.patch; then
+            echo "Removing VERSION file changes from patch"
+            # Use filterdiff if available, otherwise use awk
+            if command -v filterdiff >/dev/null 2>&1; then
+              filterdiff -x 'VERSION' /tmp/commit.patch > /tmp/commit_filtered.patch
+              mv /tmp/commit_filtered.patch /tmp/commit.patch
+            else
+              awk '/diff --git a\/VERSION b\/VERSION/,/^diff --git/ {if (/^diff --git a\/VERSION/) next; if (/^diff --git/) print; next} {print}' /tmp/commit.patch > /tmp/commit_filtered.patch
+              mv /tmp/commit_filtered.patch /tmp/commit.patch
+            fi
+          fi
+          
+          # Apply the patch
+          if [ -s /tmp/commit.patch ] && git apply --check /tmp/commit.patch 2>/dev/null; then
+            git apply /tmp/commit.patch
+            echo "Patch applied successfully"
+          elif [ -s /tmp/commit.patch ]; then
+            echo "Patch cannot be applied cleanly, attempting cherry-pick"
+            # Cherry-pick but reset VERSION to original
+            ORIGINAL_VERSION=$(cat VERSION)
+            if git cherry-pick -n "$COMMIT_SHA" 2>/dev/null; then
+              # Reset VERSION to what it was
+              echo "$ORIGINAL_VERSION" > VERSION
+              git add VERSION
+              echo "Cherry-pick succeeded, VERSION restored"
+            else
+              echo "Cherry-pick failed, trying manual application"
+              git cherry-pick --abort 2>/dev/null || true
+              exit 1
+            fi
+          else
+            echo "No changes to apply (patch is empty or only VERSION changed)"
+            # If the only change was VERSION, skip
+            exit 0
+          fi
+          
+          # Read version from release branch
+          RELEASE_VERSION=$(cat VERSION)
+          RELEASE_MAJOR=$(echo "$RELEASE_VERSION" | cut -d. -f1)
+          RELEASE_MINOR=$(echo "$RELEASE_VERSION" | cut -d. -f2)
+          RELEASE_PATCH=$(echo "$RELEASE_VERSION" | cut -d. -f3)
+          
+          # Bump patch version
+          NEW_PATCH=$((RELEASE_PATCH + 1))
+          NEW_VERSION="${RELEASE_MAJOR}.${RELEASE_MINOR}.${NEW_PATCH}"
+          echo "$NEW_VERSION" > VERSION
+          
+          echo "Bumped version to $NEW_VERSION"
+          
+          # Commit and push
+          git add -A
+          COMMIT_MSG=$(git log -1 --pretty=%B "$COMMIT_SHA" | head -1)
+          git commit -m "Backport: $COMMIT_MSG" -m "Original commit: $COMMIT_SHA" -m "Reason: $REASON" -m "Version bumped to $NEW_VERSION"
+          
+          git push origin "$RELEASE_BRANCH"
+          
+          echo "Successfully backported to $RELEASE_BRANCH with version $NEW_VERSION"

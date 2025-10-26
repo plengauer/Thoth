@@ -12,7 +12,41 @@ on:
       - '!demos/*/output.*'
       - '.github/workflows/refresh_demos.yaml'
 jobs:
+  check-release-on-main:
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      should_run: ${{ steps.check.outputs.should_run }}
+    steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.30.1
+        with:
+          secrets_to_redact: '["${{ github.token }}"]'
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
+          OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
+      - uses: actions/checkout@v5.0.0
+        with:
+          fetch-depth: 0
+      - id: check
+        run: |
+          # Check if the release tag is on main branch
+          TAG_NAME="${{ github.event.release.tag_name }}"
+          if git branch -r --contains "refs/tags/$TAG_NAME" | grep -q "origin/main"; then
+            echo "Release tag $TAG_NAME is on main branch"
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Release tag $TAG_NAME is NOT on main branch (likely a patch release)"
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+          fi
   prepare:
+    if: |
+      always() &&
+      (github.event_name == 'push' || 
+       (github.event_name == 'release' && needs.check-release-on-main.outputs.should_run == 'true'))
+    needs: [check-release-on-main]
     runs-on: ubuntu-latest
     permissions:
       contents: read
