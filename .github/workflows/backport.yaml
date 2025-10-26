@@ -111,15 +111,22 @@ jobs:
               }")
             
             if [ "$HTTP_CODE" -eq 200 ]; then
-              AI_RESPONSE=$(jq -r '.choices[0].message.content' /tmp/ai_response.json 2>/dev/null | tr '[:upper:]' '[:lower:]')
-              echo "AI response: $AI_RESPONSE"
-              
-              if [ -n "$AI_RESPONSE" ] && echo "$AI_RESPONSE" | grep -q "yes"; then
-                SHOULD_BACKPORT=true
-                REASON="AI determined this is a bugfix or patch-only update"
-                echo "AI determined this should be backported"
+              # Check if response has expected structure
+              if jq -e '.choices[0].message.content' /tmp/ai_response.json >/dev/null 2>&1; then
+                AI_RESPONSE=$(jq -r '.choices[0].message.content' /tmp/ai_response.json | tr '[:upper:]' '[:lower:]')
+                echo "AI response: $AI_RESPONSE"
+                
+                if [ -n "$AI_RESPONSE" ] && [ "$AI_RESPONSE" != "null" ] && echo "$AI_RESPONSE" | grep -q "yes"; then
+                  SHOULD_BACKPORT=true
+                  REASON="AI determined this is a bugfix or patch-only update"
+                  echo "AI determined this should be backported"
+                else
+                  echo "AI did not identify this as a backportable change"
+                fi
               else
-                echo "AI did not identify this as a backportable change"
+                echo "Warning: OpenAI API response missing expected structure"
+                echo "Response: $(cat /tmp/ai_response.json)"
+                echo "Skipping AI analysis, will not backport without explicit bug label"
               fi
             else
               echo "Warning: OpenAI API call failed with HTTP code $HTTP_CODE"
@@ -208,13 +215,17 @@ jobs:
           # Remove VERSION file changes from the patch if present
           if grep -q "diff --git a/VERSION b/VERSION" /tmp/commit.patch; then
             echo "Removing VERSION file changes from patch"
-            # Use filterdiff if available, otherwise use sed
+            # Use filterdiff if available, otherwise use a more reliable sed/awk approach
             if command -v filterdiff >/dev/null 2>&1; then
               filterdiff -x 'VERSION' /tmp/commit.patch > /tmp/commit_filtered.patch
               mv /tmp/commit_filtered.patch /tmp/commit.patch
             else
-              # Use sed to remove the VERSION diff section
-              sed '/^diff --git a\/VERSION b\/VERSION$/,/^diff --git\|^$/d' /tmp/commit.patch > /tmp/commit_filtered.patch
+              # Use awk to skip the VERSION diff section
+              awk '
+                /^diff --git a\/VERSION b\/VERSION$/ { skip=1; next }
+                /^diff --git / { skip=0 }
+                !skip { print }
+              ' /tmp/commit.patch > /tmp/commit_filtered.patch
               # If the filtered patch is not empty, use it
               if [ -s /tmp/commit_filtered.patch ]; then
                 mv /tmp/commit_filtered.patch /tmp/commit.patch
