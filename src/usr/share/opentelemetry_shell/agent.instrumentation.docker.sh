@@ -101,7 +101,7 @@ _otel_inject_docker_args() {
     fi
     \echo -n ' '; _otel_escape_args --entrypoint "$(_otel_resolve_docker_image_shell "$executable" "$image")"
     \echo -n ' '; _otel_escape_arg "$1"; shift
-    \echo -n ' '; _otel_escape_args -c '. otel.sh
+    \echo -n ' '; _otel_escape_args -xc '. otel.sh
 eval _otel_inject "$(_otel_escape_args "$@")"' sh
     \echo -n ' '; if \[ -n "${entrypoint_override:-}" ]; then \echo "$entrypoint_override" | _otel_line_split; else "$executable" inspect "$image" | \jq -r '.[0].Config.Entrypoint[]?'; fi | _otel_escape_stdin
     if \[ "$#" = 0 ]; then \echo -n ' '; "$executable" inspect "$image" | \jq -r '.[0].Config.Cmd[]?' | _otel_escape_stdin; fi
@@ -120,7 +120,6 @@ _otel_inject_docker() {
   # if _otel_string_contains "$OTEL_METRICS_EXPORTER" console; then local otel_metrics_exporter="$(\echo "$OTEL_METRICS_EXPORTER" | \tr ',' '\n' | \grep -vE '^console$' | \head --lines=1)"; fi
   # if _otel_string_contains "$OTEL_TRACES_EXPORTER" console; then local otel_traces_exporter="$(\echo "$OTEL_TRACES_EXPORTER" | \tr ',' '\n' | \grep -vE '^console$' | \head --lines=1)"; fi
   # OTEL_LOGS_EXPORTER="$otel_logs_exporter" OTEL_METRICS_EXPORTER="$otel_metrics_exporter" OTEL_TRACES_EXPORTER="$otel_traces_exporter"
-  \set -x
   \eval _otel_call "$(_otel_inject_docker_args "$@")"
 }
 
