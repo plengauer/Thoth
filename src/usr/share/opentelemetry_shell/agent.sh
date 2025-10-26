@@ -131,7 +131,11 @@ _otel_list_path_executables() {
 }
 
 _otel_list_alias_commands() {
-  \alias | \sed 's/^alias //' | _otel_unquote | \tr -d "'" | \tr -d '"' | \tr -d '\\' | \grep -vF '[=' | \awk -F'=' '{ var=$1; sub($1 FS,""); } ! ($0 ~ "^'\''((OTEL_|_otel_).* )*" var "'\''$") { print var }'
+  \alias | while \read -r line; do
+    line="${line#alias }"
+    line="$(\eval "\\printf '%s\n' $line")"
+    \printf '%s\n' "${line%%=*}"
+  done
 }
 
 _otel_list_builtin_commands() {
