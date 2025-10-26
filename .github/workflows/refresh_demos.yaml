@@ -26,13 +26,10 @@ jobs:
           fetch-depth: 0
       - id: check
         run: |
-          # Check if the release tag is on main branch
-          TAG_NAME="${{ github.event.release.tag_name }}"
-          if git branch -r --contains "refs/tags/$TAG_NAME" | grep -q "origin/main"; then
-            echo "Release tag $TAG_NAME is on main branch"
+          tag_name="${{ github.event.release.tag_name }}"
+          if git branch -r --contains "refs/tags/$tag_name" | grep -q "origin/main"; then
             echo "should_run=true" >> "$GITHUB_OUTPUT"
           else
-            echo "Release tag $TAG_NAME is NOT on main branch (likely a patch release)"
             echo "should_run=false" >> "$GITHUB_OUTPUT"
           fi
   prepare:
