@@ -249,7 +249,7 @@ _otel_has_alias() {
 _otel_resolve_alias() {
   local my_alias="$(\alias "$1" 2> /dev/null)"
   local my_alias="${my_alias#alias }"
-  local my_alias="$(\eval "\\echo $my_alias")"
+  local my_alias="$(\eval "\\printf '%s\n' $my_alias")"
   \printf '%s\n' "${my_alias#*=}"
 }
 
