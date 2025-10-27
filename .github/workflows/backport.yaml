@@ -32,7 +32,6 @@ jobs:
           fi
           
           should_backport=false
-          reason=""
           
           echo "::group::Check for bug label"
           pr_number=$(gh pr list --state merged --search "$commit_sha" --json number --jq '.[0].number' 2>/dev/null)
@@ -43,7 +42,6 @@ jobs:
             if [ -n "$issue_number" ]; then
               if gh issue view "$issue_number" --json labels --jq '.labels[].name' | grep -qi "bug"; then
                 should_backport=true
-                reason="Issue #$issue_number has bug label"
               fi
             fi
           fi
@@ -86,7 +84,6 @@ jobs:
                 
                 if [ -n "$ai_response" ] && [ "$ai_response" != "null" ] && echo "$ai_response" | grep -q "yes"; then
                   should_backport=true
-                  reason="AI determined this is a bugfix or patch-only update"
                 fi
               fi
             fi
@@ -94,7 +91,6 @@ jobs:
           fi
           
           echo "should_backport=$should_backport" >> "$GITHUB_OUTPUT"
-          echo "reason=$reason" >> "$GITHUB_OUTPUT"
           echo "commit_sha=$commit_sha" >> "$GITHUB_OUTPUT"
       
       - if: steps.check.outputs.should_backport == 'true'
@@ -211,6 +207,14 @@ jobs:
             author=$(git log -1 --pretty=%an "$commit_sha" 2>/dev/null || echo "")
           fi
           
+          if [ -n "$author" ]; then
+            if [ -n "$reviewers" ]; then
+              reviewers="${author},${reviewers}"
+            else
+              reviewers="$author"
+            fi
+          fi
+          
           if [ -f .github/renovate.json ]; then
             renovate_reviewers=$(cat .github/renovate.json | jq -r '.reviewers | join(",")' 2>/dev/null || echo "")
             if [ -n "$renovate_reviewers" ]; then
@@ -223,7 +227,6 @@ jobs:
           fi
           
           echo "reviewers=$reviewers" >> "$GITHUB_OUTPUT"
-          echo "author=$author" >> "$GITHUB_OUTPUT"
           echo "::endgroup::"
       
       - if: steps.check.outputs.should_backport == 'true'
@@ -234,15 +237,10 @@ jobs:
             Backport: ${{ steps.resolve_reviewers.outputs.commit_title }}
             
             Original commit: ${{ steps.check.outputs.commit_sha }}
-            Reason: ${{ steps.check.outputs.reason }}
           base: ${{ env.release_branch }}
           branch: backport/${{ steps.check.outputs.commit_sha }}
           title: "Backport: ${{ steps.resolve_reviewers.outputs.commit_title }}"
           body: |
             Automated backport of commit ${{ steps.check.outputs.commit_sha }}
-            
-            **Reason**: ${{ steps.check.outputs.reason }}
-            **Original Author**: ${{ steps.resolve_reviewers.outputs.author }}
-            **Original Commit**: ${{ steps.check.outputs.commit_sha }}
           reviewers: ${{ steps.resolve_reviewers.outputs.reviewers }}
           delete-branch: true
