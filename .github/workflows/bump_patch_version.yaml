@@ -39,8 +39,29 @@ jobs:
           new_patch=$((patch + 1))
           new_version="${major}.${minor}.${new_patch}"
           echo "$new_version" > VERSION
-          
-          git add VERSION
-          git commit -m "Bump patch version to $new_version"
-          git push origin "${{ github.ref_name }}"
+          echo "new_version=$new_version" >> "$GITHUB_ENV"
           echo "::endgroup::"
+      
+      - if: steps.check.outputs.skip == 'false'
+        id: reviewers
+        run: |
+          if [ -f .github/renovate.json ]; then
+            echo "reviewers=$(cat .github/renovate.json | jq -r '.reviewers | join(",")')" >> "$GITHUB_OUTPUT"
+          else
+            echo "reviewers=" >> "$GITHUB_OUTPUT"
+          fi
+      
+      - if: steps.check.outputs.skip == 'false'
+        uses: peter-evans/create-pull-request@v7.0.8
+        with:
+          token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          commit-message: "Bump patch version to ${{ env.new_version }}"
+          base: ${{ github.ref_name }}
+          branch: bump-version/${{ github.ref_name }}
+          title: "Bump patch version to ${{ env.new_version }}"
+          body: |
+            Automated patch version bump on release branch ${{ github.ref_name }}
+            
+            New version: ${{ env.new_version }}
+          reviewers: ${{ steps.reviewers.outputs.reviewers }}
+          delete-branch: true

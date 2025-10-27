@@ -184,13 +184,65 @@ jobs:
           echo "::endgroup::"
       
       - if: steps.check.outputs.should_backport == 'true'
+        id: resolve_reviewers
+        env:
+          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         run: |
           set -e
           
-          echo "::group::Commit and push"
-          git add -A
-          commit_msg=$(git log -1 --pretty=%B "$commit_sha" | head -1)
-          reason="${{ steps.check.outputs.reason }}"
-          git commit -m "Backport: $commit_msg" -m "Original commit: $commit_sha" -m "Reason: $reason"
-          git push origin "$release_branch"
+          echo "::group::Resolve reviewers and commit info"
+          commit_sha="${{ steps.check.outputs.commit_sha }}"
+          
+          commit_title=$(git log -1 --pretty=%s "$commit_sha")
+          echo "commit_title=$commit_title" >> "$GITHUB_OUTPUT"
+          
+          pr_number=$(gh pr list --state merged --search "$commit_sha" --json number --jq '.[0].number' 2>/dev/null)
+          
+          reviewers=""
+          author=""
+          
+          if [ -n "$pr_number" ] && [ "$pr_number" != "null" ]; then
+            author=$(gh pr view "$pr_number" --json author --jq '.author.login' 2>/dev/null || echo "")
+            pr_reviewers=$(gh pr view "$pr_number" --json reviews --jq '.reviews[].author.login' 2>/dev/null | sort -u | tr '\n' ',' || echo "")
+            reviewers="${pr_reviewers%,}"
+          fi
+          
+          if [ -z "$author" ]; then
+            author=$(git log -1 --pretty=%an "$commit_sha" 2>/dev/null || echo "")
+          fi
+          
+          if [ -f .github/renovate.json ]; then
+            renovate_reviewers=$(cat .github/renovate.json | jq -r '.reviewers | join(",")' 2>/dev/null || echo "")
+            if [ -n "$renovate_reviewers" ]; then
+              if [ -n "$reviewers" ]; then
+                reviewers="${reviewers},${renovate_reviewers}"
+              else
+                reviewers="$renovate_reviewers"
+              fi
+            fi
+          fi
+          
+          echo "reviewers=$reviewers" >> "$GITHUB_OUTPUT"
+          echo "author=$author" >> "$GITHUB_OUTPUT"
           echo "::endgroup::"
+      
+      - if: steps.check.outputs.should_backport == 'true'
+        uses: peter-evans/create-pull-request@v7.0.8
+        with:
+          token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          commit-message: |
+            Backport: ${{ steps.resolve_reviewers.outputs.commit_title }}
+            
+            Original commit: ${{ steps.check.outputs.commit_sha }}
+            Reason: ${{ steps.check.outputs.reason }}
+          base: ${{ env.release_branch }}
+          branch: backport/${{ steps.check.outputs.commit_sha }}
+          title: "Backport: ${{ steps.resolve_reviewers.outputs.commit_title }}"
+          body: |
+            Automated backport of commit ${{ steps.check.outputs.commit_sha }}
+            
+            **Reason**: ${{ steps.check.outputs.reason }}
+            **Original Author**: ${{ steps.resolve_reviewers.outputs.author }}
+            **Original Commit**: ${{ steps.check.outputs.commit_sha }}
+          reviewers: ${{ steps.resolve_reviewers.outputs.reviewers }}
+          delete-branch: true
