@@ -24,7 +24,7 @@ jobs:
             pull_request) cat "$GITHUB_EVENT_PATH" | jq .pull_request.number -r | xargs -I '{}' curl ${GITHUB_API_URL:-https://api.github.com}/repos/"$GITHUB_REPOSITORY"/issues/'{}'/comments'?per_page=100' | jq '.[] | select(.body == "!release") | .author_association' -r | grep -q OWNER && echo true || echo false;;
             *) echo true;;
           esac | xargs -I '{}' echo result='{}' >> "$GITHUB_OUTPUT"
-      - uses: plengauer/autoversion@v1.2.0
+      - uses: plengauer/autoversion@v1.3.0
         if: ${{ steps.should-autoversion.outputs.result == 'true' }}
         with:
           github_token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
