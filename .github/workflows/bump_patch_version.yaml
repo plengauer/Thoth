@@ -41,8 +41,6 @@ jobs:
           echo "$new_version" > VERSION
           
           git add VERSION
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
           git commit -m "Bump patch version to $new_version"
           git push origin "${{ github.ref_name }}"
           echo "::endgroup::"

@@ -52,7 +52,16 @@ jobs:
           if [ "$should_backport" = "false" ]; then
             echo "::group::AI analysis"
             cat > /tmp/prompt.txt <<EOF
-          Analyze this git commit and determine if it is ONLY a bugfix or a patch-level dependency update that should be backported to a release branch. Return 'yes' if it should be backported (bugfix or patch-only dependency update), 'no' otherwise.
+          You are an expert at analyzing git commits to determine if they are bugfixes or patch-level changes.
+
+          Analyze this git commit VERY CAREFULLY and determine if it is ONLY a bugfix or a patch-level dependency update that should be backported to a release branch.
+          
+          Consider:
+          - Is this fixing a bug or defect in existing functionality?
+          - Is this only updating dependencies to patch versions?
+          - Does this introduce any new features or breaking changes?
+          
+          Return 'yes' if it should be backported (bugfix or patch-only dependency update), 'no' otherwise.
           
           Commit message:
           $(git log -1 --pretty=%B "$commit_sha")
@@ -60,17 +69,16 @@ jobs:
           Diff summary:
           $(git show "$commit_sha" --stat)
           
-          Answer with just 'yes' or 'no':
+          Think carefully and answer with just 'yes' or 'no':
           EOF
             
             if curl -sf https://api.openai.com/v1/chat/completions \
               -H "Content-Type: application/json" \
               -H "Authorization: Bearer $OPENAI_API_KEY" \
               -d "{
-                \"model\": \"gpt-4o\",
+                \"model\": \"o1-preview\",
                 \"messages\": [{\"role\": \"user\", \"content\": $(cat /tmp/prompt.txt | jq -Rs .)}],
-                \"temperature\": 0.1,
-                \"max_tokens\": 10
+                \"max_completion_tokens\": 10
               }" -o /tmp/ai_response.json; then
               
               if jq -e '.choices[0].message.content' /tmp/ai_response.json >/dev/null 2>&1; then
