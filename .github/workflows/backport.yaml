@@ -179,8 +179,7 @@ jobs:
           fi
           echo "::endgroup::"
       
-      - if: steps.check.outputs.should_backport == 'true'
-        id: resolve_reviewers
+      - id: resolve_reviewers
         env:
           GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         run: |
@@ -229,8 +228,7 @@ jobs:
           echo "reviewers=$reviewers" >> "$GITHUB_OUTPUT"
           echo "::endgroup::"
       
-      - if: steps.check.outputs.should_backport == 'true'
-        uses: peter-evans/create-pull-request@v7.0.8
+      - uses: peter-evans/create-pull-request@v7.0.8
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           commit-message: |
