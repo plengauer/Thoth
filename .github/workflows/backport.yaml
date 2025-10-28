@@ -16,14 +16,11 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          path: repo
       
       - id: check
-        env:
-          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_TOKEN }}
+        working-directory: ./repo
         run: |
-          set +e
-          
           commit_sha="${{ github.sha }}"
           
           if [ "$(git diff-tree --no-commit-id --name-only -r "$commit_sha")" = "VERSION" ]; then
@@ -31,69 +28,41 @@ jobs:
             exit 0
           fi
           
-          should_backport=false
-          
-          echo "::group::Check for bug label"
-          pr_number=$(gh pr list --state merged --search "$commit_sha" --json number --jq '.[0].number' 2>/dev/null)
-          
-          if [ -n "$pr_number" ] && [ "$pr_number" != "null" ]; then
-            issue_number=$(gh pr view "$pr_number" --json body --jq '.body' | grep -oP '(?<=#)\d+' | head -1)
-            
-            if [ -n "$issue_number" ]; then
-              if gh issue view "$issue_number" --json labels --jq '.labels[].name' | grep -qi "bug"; then
-                should_backport=true
-              fi
-            fi
-          fi
-          echo "::endgroup::"
-          
-          if [ "$should_backport" = "false" ]; then
-            echo "::group::AI analysis"
-            cat > /tmp/prompt.txt <<EOF
-          You are an expert at analyzing git commits to determine if they are bugfixes or patch-level changes.
-
-          Analyze this git commit VERY CAREFULLY and determine if it is ONLY a bugfix or a patch-level dependency update that should be backported to a release branch.
-          
-          Consider:
-          - Is this fixing a bug or defect in existing functionality?
-          - Is this only updating dependencies to patch versions?
-          - Does this introduce any new features or breaking changes?
-          
-          Return 'yes' if it should be backported (bugfix or patch-only dependency update), 'no' otherwise.
-          
-          Commit message:
-          $(git log -1 --pretty=%B "$commit_sha")
-          
-          Diff summary:
-          $(git show "$commit_sha" --stat)
-          
-          Think carefully and answer with just 'yes' or 'no':
-          EOF
-            
-            if curl -sf https://api.openai.com/v1/chat/completions \
-              -H "Content-Type: application/json" \
-              -H "Authorization: Bearer $OPENAI_API_KEY" \
-              -d "{
-                \"model\": \"o1-preview\",
-                \"messages\": [{\"role\": \"user\", \"content\": $(cat /tmp/prompt.txt | jq -Rs .)}],
-                \"max_completion_tokens\": 10
-              }" -o /tmp/ai_response.json; then
-              
-              if jq -e '.choices[0].message.content' /tmp/ai_response.json >/dev/null 2>&1; then
-                ai_response=$(jq -r '.choices[0].message.content' /tmp/ai_response.json | tr '[:upper:]' '[:lower:]')
-                
-                if [ -n "$ai_response" ] && [ "$ai_response" != "null" ] && echo "$ai_response" | grep -q "yes"; then
-                  should_backport=true
-                fi
-              fi
-            fi
-            echo "::endgroup::"
-          fi
-          
-          echo "should_backport=$should_backport" >> "$GITHUB_OUTPUT"
           echo "commit_sha=$commit_sha" >> "$GITHUB_OUTPUT"
       
-      - if: steps.check.outputs.should_backport == 'true'
+      - id: autoversion
+        uses: plengauer/autoversion@v1.2.0
+        with:
+          github_token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          openai_token: ${{ secrets.OPENAI_TOKEN }}
+          path_include: ./repo/src:./repo/actions
+          dry_run: true
+          depth: 1
+          working_directory: ./repo
+      
+      - id: check_patch
+        working-directory: ./repo
+        run: |
+          set -e
+          
+          echo "::group::Check if only patch version changed"
+          old_version=$(git show HEAD~1:VERSION 2>/dev/null || echo "0.0.0")
+          new_version=$(cat VERSION)
+          
+          old_major=$(echo "$old_version" | cut -d. -f1)
+          old_minor=$(echo "$old_version" | cut -d. -f2)
+          new_major=$(echo "$new_version" | cut -d. -f1)
+          new_minor=$(echo "$new_version" | cut -d. -f2)
+          
+          if [ "$old_major" = "$new_major" ] && [ "$old_minor" = "$new_minor" ] && [ "$old_version" != "$new_version" ]; then
+            echo "should_backport=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "should_backport=false" >> "$GITHUB_OUTPUT"
+          fi
+          echo "::endgroup::"
+      
+      - if: steps.check_patch.outputs.should_backport == 'true'
+        working-directory: ./repo
         env:
           GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         run: |
@@ -139,7 +108,8 @@ jobs:
           echo "release_branch=$release_branch" >> "$GITHUB_ENV"
           echo "commit_sha=$commit_sha" >> "$GITHUB_ENV"
       
-      - if: steps.check.outputs.should_backport == 'true'
+      - if: steps.check_patch.outputs.should_backport == 'true'
+        working-directory: ./repo
         run: |
           set -e
           
@@ -180,6 +150,7 @@ jobs:
           echo "::endgroup::"
       
       - id: resolve_reviewers
+        working-directory: ./repo
         env:
           GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         run: |
@@ -218,7 +189,7 @@ jobs:
           fi
           
           if [ -f .github/renovate.json ]; then
-            renovate_reviewers=$(cat .github/renovate.json | jq -r '.reviewers | join(",")' 2>/dev/null || echo "")
+            renovate_reviewers=$(jq -r '.reviewers | join(",")' .github/renovate.json 2>/dev/null || echo "")
             if [ -n "$renovate_reviewers" ]; then
               if [ -n "$reviewers" ]; then
                 reviewers="${reviewers},${renovate_reviewers}"
@@ -236,6 +207,7 @@ jobs:
       - uses: peter-evans/create-pull-request@v7.0.8
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          path: ./repo
           commit-message: |
             Backport: ${{ steps.resolve_reviewers.outputs.commit_title }}
             

@@ -18,7 +18,6 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
-          ref: ${{ github.ref }}
       
       - id: bump
         run: |
