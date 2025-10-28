@@ -206,6 +206,9 @@ jobs:
             author=$(git log -1 --pretty=%an "$commit_sha" 2>/dev/null || echo "")
           fi
           
+          author_email=$(git log -1 --pretty=%ae "$commit_sha" 2>/dev/null || echo "")
+          author_name=$(git log -1 --pretty=%an "$commit_sha" 2>/dev/null || echo "")
+          
           if [ -n "$author" ]; then
             if [ -n "$reviewers" ]; then
               reviewers="${author},${reviewers}"
@@ -226,6 +229,8 @@ jobs:
           fi
           
           echo "reviewers=$reviewers" >> "$GITHUB_OUTPUT"
+          echo "author_name=$author_name" >> "$GITHUB_OUTPUT"
+          echo "author_email=$author_email" >> "$GITHUB_OUTPUT"
           echo "::endgroup::"
       
       - uses: peter-evans/create-pull-request@v7.0.8
@@ -235,6 +240,7 @@ jobs:
             Backport: ${{ steps.resolve_reviewers.outputs.commit_title }}
             
             Original commit: ${{ steps.check.outputs.commit_sha }}
+          co-authors: ${{ steps.resolve_reviewers.outputs.author_name }} <${{ steps.resolve_reviewers.outputs.author_email }}>
           base: ${{ env.release_branch }}
           branch: backport/${{ steps.check.outputs.commit_sha }}
           title: "Backport: ${{ steps.resolve_reviewers.outputs.commit_title }}"
