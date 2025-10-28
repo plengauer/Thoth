@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - 'release/v*.*'
+    paths-ignore:
+      - 'VERSION'
 concurrency:
   group: bump-version-${{ github.ref }}
   cancel-in-progress: false
@@ -18,16 +20,7 @@ jobs:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           ref: ${{ github.ref }}
       
-      - id: check
-        run: |
-          if git log -1 --pretty=%B | grep -q "^Bump patch version to"; then
-            echo "skip=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "skip=false" >> "$GITHUB_OUTPUT"
-          fi
-      
-      - if: steps.check.outputs.skip == 'false'
-        id: bump
+      - id: bump
         run: |
           set -e
           
@@ -43,17 +36,7 @@ jobs:
           echo "new_version=$new_version" >> "$GITHUB_OUTPUT"
           echo "::endgroup::"
       
-      - if: steps.check.outputs.skip == 'false'
-        id: reviewers
-        run: |
-          if [ -f .github/renovate.json ]; then
-            echo "reviewers=$(cat .github/renovate.json | jq -r '.reviewers | join(",")')" >> "$GITHUB_OUTPUT"
-          else
-            echo "reviewers=" >> "$GITHUB_OUTPUT"
-          fi
-      
-      - if: steps.check.outputs.skip == 'false'
-        uses: peter-evans/create-pull-request@v7.0.8
+      - uses: peter-evans/create-pull-request@v7.0.8
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           commit-message: "Bump patch version to ${{ steps.bump.outputs.new_version }}"
@@ -64,5 +47,4 @@ jobs:
             Automated patch version bump on release branch ${{ github.ref_name }}
             
             New version: ${{ steps.bump.outputs.new_version }}
-          reviewers: ${{ steps.reviewers.outputs.reviewers }}
           delete-branch: true
