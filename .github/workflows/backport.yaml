@@ -18,16 +18,6 @@ jobs:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           path: repo
       
-      - id: check
-        working-directory: ./repo
-        run: |
-          commit_sha="${{ github.sha }}"
-          
-          if [ "$(git diff-tree --no-commit-id --name-only -r "$commit_sha")" = "VERSION" ]; then
-            echo "should_backport=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          
           echo "commit_sha=$commit_sha" >> "$GITHUB_OUTPUT"
       
       - id: autoversion
