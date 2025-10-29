@@ -177,8 +177,9 @@ jobs:
       - uses: peter-evans/create-pull-request@v7.0.8
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
-          commit-message: ${{ steps.prepare_pr.outputs.commit_title }}
-          co-authors: ${{ steps.prepare_pr.outputs.author_name }} <${{ steps.prepare_pr.outputs.author_email }}>
+          commit-message: |
+            ${{ steps.prepare_pr.outputs.commit_title }}
+            Co-authored-by: ${{ steps.prepare_pr.outputs.author_name }} <${{ steps.prepare_pr.outputs.author_email }}>
           base: ${{ steps.prepare_branch.outputs.name }}
           branch: backport/${{ github.sha }}
           title: "Backport: ${{ steps.prepare_pr.outputs.commit_title }}"
