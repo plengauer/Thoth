@@ -181,7 +181,7 @@ jobs:
           co-authors: ${{ steps.prepare_pr.outputs.author_name }} <${{ steps.prepare_pr.outputs.author_email }}>
           base: ${{ steps.prepare_branch.outputs.name }}
           branch: backport/${{ github.sha }}
-          title: "Backport: ${{ steps.resolve_reviewers.outputs.commit_title }}"
+          title: "Backport: ${{ steps.prepare_pr.outputs.commit_title }}"
           body: Automated backport of commit ${{ github.sha }}
           reviewers: ${{ steps.prepare_pr.outputs.reviewers }}
           delete-branch: true
