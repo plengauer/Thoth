@@ -54,7 +54,8 @@ jobs:
           current_version=$(cat VERSION)
           major=$(echo "$current_version" | cut -d. -f1)
           minor=$(echo "$current_version" | cut -d. -f2)
-          echo branch_name="release/v${major}.${minor}" >> "$GITHUB_OUTPUT"
+          branch_name="release/v${major}.${minor}"
+          echo name="$branch_name" >> "$GITHUB_OUTPUT"
           
           if git ls-remote --exit-code --heads origin "$branch_name" >/dev/null 2>&1; then
             git fetch origin "$branch_name"
@@ -178,7 +179,7 @@ jobs:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           commit-message: ${{ steps.prepare_pr.outputs.commit_title }}
           co-authors: ${{ steps.prepare_pr.outputs.author_name }} <${{ steps.prepare_pr.outputs.author_email }}>
-          base: ${{ steps.branch.outputs.name }}
+          base: ${{ steps.prepare_branch.outputs.name }}
           branch: backport/${{ github.sha }}
           title: "Backport: ${{ steps.resolve_reviewers.outputs.commit_title }}"
           body: Automated backport of commit ${{ github.sha }}
