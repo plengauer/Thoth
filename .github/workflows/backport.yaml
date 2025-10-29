@@ -17,9 +17,7 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           path: repo
-      
-          echo "commit_sha=$commit_sha" >> "$GITHUB_OUTPUT"
-      
+
       - id: autoversion
         uses: plengauer/autoversion@v1.2.0
         with:
