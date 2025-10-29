@@ -26,7 +26,7 @@ jobs:
           - language: python
             build-mode: none
           - language: java
-            build-mode: none
+            build-mode: autobuild
           - language: actions
             build-mode: none
     steps:
