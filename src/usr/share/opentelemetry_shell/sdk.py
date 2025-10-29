@@ -521,9 +521,7 @@ def handle(scope, version, command, arguments):
         observations[str(observation_id)]['attributes'][key] = convert_type(type, value)
     elif command == 'LOG_RECORD':
         from opentelemetry._logs import get_logger
-        from opentelemetry.sdk._logs import LogRecord
         from opentelemetry.sdk._logs._internal import SeverityNumber
-        from opentelemetry.sdk.resources import Resource
         from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
         tokens = arguments.split(' ', 3)
         traceparent = tokens[0]
@@ -534,15 +532,13 @@ def handle(scope, version, command, arguments):
             return
         context = TraceContextTextMapPropagator().extract({'traceparent': traceparent})
         logger = get_logger(scope, version)
-        record = LogRecord(
+        logger.emit(
             timestamp=parse_time(log_time),
             context=context,
             severity_text='unspecified',
             severity_number=SeverityNumber(int(log_severity)),
             body=line,
-            resource=logger.resource if hasattr(logger, "resource") else Resource.create({}),
         )
-        logger.emit(record)
     else:
         return
 
