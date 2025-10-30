@@ -26,6 +26,7 @@ jobs:
           openai_token: ${{ secrets.OPENAI_TOKEN }}
           path_include: ./src:./actions
           dry_run: true
+          ref: ${{ github.sha }}
           depth: 1
       
       - id: check_patch
