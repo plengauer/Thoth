@@ -12,6 +12,12 @@ jobs:
       issues: read
       actions: read
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.30.1
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}","${{ secrets.OPENAI_TOKEN }}"]'
       - uses: actions/checkout@v5.0.0
         with:
           fetch-depth: 0
@@ -48,44 +54,7 @@ jobs:
         if: steps.check_patch.outputs.should_backport == 'true'
         env:
           GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
-        run: |
-          set -e
-          
-          current_version=$(cat VERSION)
-          major=$(echo "$current_version" | cut -d. -f1)
-          minor=$(echo "$current_version" | cut -d. -f2)
-          branch_name="release/v${major}.${minor}"
-          echo name="$branch_name" >> "$GITHUB_OUTPUT"
-          
-          if git ls-remote --exit-code --heads origin "$branch_name" >/dev/null 2>&1; then
-            git fetch origin "$branch_name"
-            git checkout "$branch_name"
-          else
-            initial_tag="v${major}.${minor}.0"
-            
-            if git rev-parse "$initial_tag" >/dev/null 2>&1; then
-              git checkout -b "$branch_name" "$initial_tag"
-            else
-              last_tag=$(git tag -l "v${major}.${minor}.*" | sort -V | tail -1)
-              if [ -n "$last_tag" ]; then
-                git checkout -b "$branch_name" "$last_tag"
-              else
-                main_version=$(git show main:VERSION)
-                main_major=$(echo "$main_version" | cut -d. -f1)
-                main_minor=$(echo "$main_version" | cut -d. -f2)
-                
-                if [ "$major" = "$main_major" ] && [ "$minor" = "$main_minor" ]; then
-                  git checkout -b "$branch_name" main
-                else
-                  echo "::error::Cannot create release branch - no tag found for v${major}.${minor}.* and not current version"
-                  exit 1
-                fi
-              fi
-            fi
-            
-            git push -u origin "$branch_name"
-          fi
-      
+        run: "set -e\n\ncurrent_version=$(cat VERSION)\nmajor=$(echo \"$current_version\" | cut -d. -f1)\nminor=$(echo \"$current_version\" | cut -d. -f2)\nbranch_name=\"release/v${major}.${minor}\"\necho name=\"$branch_name\" >> \"$GITHUB_OUTPUT\"\n\nif git ls-remote --exit-code --heads origin \"$branch_name\" >/dev/null 2>&1; then\n  git fetch origin \"$branch_name\"\n  git checkout \"$branch_name\"\nelse\n  initial_tag=\"v${major}.${minor}.0\"\n  \n  if git rev-parse \"$initial_tag\" >/dev/null 2>&1; then\n    git checkout -b \"$branch_name\" \"$initial_tag\"\n  else\n    last_tag=$(git tag -l \"v${major}.${minor}.*\" | sort -V | tail -1)\n    if [ -n \"$last_tag\" ]; then\n      git checkout -b \"$branch_name\" \"$last_tag\"\n    else\n      main_version=$(git show main:VERSION)\n      main_major=$(echo \"$main_version\" | cut -d. -f1)\n      main_minor=$(echo \"$main_version\" | cut -d. -f2)\n      \n      if [ \"$major\" = \"$main_major\" ] && [ \"$minor\" = \"$main_minor\" ]; then\n        git checkout -b \"$branch_name\" main\n      else\n        echo \"::error::Cannot create release branch - no tag found for v${major}.${minor}.* and not current version\"\n        exit 1\n      fi\n    fi\n  fi\n  \n  git push -u origin \"$branch_name\"\nfi\n"
       - if: steps.check_patch.outputs.should_backport == 'true'
         run: |
           set -e

@@ -33,10 +33,7 @@ jobs:
             echo "should_run=false" >> "$GITHUB_OUTPUT"
           fi
   prepare:
-    if: |
-      always() &&
-      (github.event_name == 'push' || 
-       (github.event_name == 'release' && needs.check-release-on-main.result == 'success' && needs.check-release-on-main.outputs.should_run == 'true'))
+    if: "always() &&\n(github.event_name == 'push' || \n (github.event_name == 'release' && needs.check-release-on-main.result == 'success' && needs.check-release-on-main.outputs.should_run == 'true'))\n"
     needs: [check-release-on-main]
     runs-on: ubuntu-latest
     permissions:
