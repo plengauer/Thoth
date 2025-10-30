@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - .github/workflows/experiment.yaml
+      - .github/workflows/experiment.yml
 jobs:
   env:
     strategy:
