@@ -1,0 +1,49 @@
+name: Autoversion Release
+on:
+  push:
+    branches:
+      - 'release/v*.*'
+    paths-ignore:
+      - 'VERSION'
+concurrency:
+  group: bump-version-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5.0.0
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+      
+      - id: bump
+        run: |
+          set -e
+          
+          echo "::group::Bump patch version"
+          current_version=$(cat VERSION)
+          major=$(echo "$current_version" | cut -d. -f1)
+          minor=$(echo "$current_version" | cut -d. -f2)
+          patch=$(echo "$current_version" | cut -d. -f3)
+          
+          new_patch=$((patch + 1))
+          new_version="${major}.${minor}.${new_patch}"
+          echo "$new_version" > VERSION
+          echo "new_version=$new_version" >> "$GITHUB_OUTPUT"
+          echo "::endgroup::"
+      
+      - uses: peter-evans/create-pull-request@v7.0.8
+        with:
+          token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          commit-message: "Bump patch version to ${{ steps.bump.outputs.new_version }}"
+          base: ${{ github.ref_name }}
+          branch: bump-version/${{ github.ref_name }}
+          title: "Bump patch version to ${{ steps.bump.outputs.new_version }}"
+          body: |
+            Automated patch version bump on release branch ${{ github.ref_name }}
+            
+            New version: ${{ steps.bump.outputs.new_version }}
+          delete-branch: true

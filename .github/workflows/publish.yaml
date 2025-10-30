@@ -2,7 +2,9 @@ name: Publish
 on:
   push:
     paths: VERSION
-    branches: main
+    branches:
+      - main
+      - 'release/v*.*'
 jobs:
   test:
     permissions:

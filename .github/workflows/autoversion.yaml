@@ -30,3 +30,4 @@ jobs:
           github_token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           openai_token: ${{ secrets.OPENAI_TOKEN }}
           path_include: ./src:./actions
+          increment_threshold: minor

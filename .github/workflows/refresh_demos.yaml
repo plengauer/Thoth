@@ -12,7 +12,32 @@ on:
       - '!demos/*/output.*'
       - '.github/workflows/refresh_demos.yaml'
 jobs:
+  check-release-on-main:
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      should_run: ${{ steps.check.outputs.should_run }}
+    steps:
+      - uses: actions/checkout@v5.0.0
+        with:
+          fetch-depth: 0
+      - id: check
+        run: |
+          tag_name="${{ github.event.release.tag_name }}"
+          if git branch -r --contains "refs/tags/$tag_name" | grep -q "origin/main"; then
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+          fi
   prepare:
+    if: |
+      always() &&
+      (github.event_name == 'push' || 
+       (github.event_name == 'release' && needs.check-release-on-main.result == 'success' && needs.check-release-on-main.outputs.should_run == 'true'))
+    needs: [check-release-on-main]
     runs-on: ubuntu-latest
     permissions:
       contents: read
