@@ -33,13 +33,13 @@ jobs:
         run: |
           set -e
           
-          old_version=$(git show HEAD~1:VERSION 2>/dev/null || echo "0.0.0")
+          old_version=$(git show ${{ github.sha }}:VERSION)
           new_version=$(cat VERSION)
           
-          old_major=$(echo "$old_version" | cut -d. -f1)
-          old_minor=$(echo "$old_version" | cut -d. -f2)
-          new_major=$(echo "$new_version" | cut -d. -f1)
-          new_minor=$(echo "$new_version" | cut -d. -f2)
+          old_major=$(echo "$old_version" | cut -d . -f 1)
+          old_minor=$(echo "$old_version" | cut -d . -f 2)
+          new_major=$(echo "$new_version" | cut -d . -f 1)
+          new_minor=$(echo "$new_version" | cut -d . -f 2)
           
           if [ "$old_major" = "$new_major" ] && [ "$old_minor" = "$new_minor" ] && [ "$old_version" != "$new_version" ]; then
             echo "should_backport=true" >> "$GITHUB_OUTPUT"
@@ -62,31 +62,14 @@ jobs:
           branch_name="release/v${major}.${minor}"
           echo name="$branch_name" >> "$GITHUB_OUTPUT"
           
-          if git ls-remote --exit-code --heads origin "$branch_name" > /dev/null 2>&1; then
+          if git ls-remote --exit-code --heads origin "$branch_name"; then
             git fetch origin "$branch_name"
             git checkout "$branch_name"
           else
-            initial_tag="v${major}.${minor}.0"
-            if git rev-parse "$initial_tag" >/dev/null 2>&1; then
-              git checkout -b "$branch_name" "$initial_tag"
-            else
-              last_tag=$(git tag -l "v${major}.${minor}.*" | sort -V | tail -1)\
-              if [ -n "$last_tag" ]; then
-                git checkout -b "$branch_name" "$last_tag"
-              else
-                main_version=$(git show main:VERSION)
-                main_major=$(echo "$main_version" | cut -d . -f 1)
-                main_minor=$(echo "$main_version" | cut -d . -f 2)
-                if [ "$major" = "$main_major" ] && [ "$minor" = "$main_minor" ]; then
-                  git checkout -b "$branch_name" main
-                else
-                  echo "::error::Cannot create release branch - no tag found for v${major}.${minor}.* and not current version"
-                  exit 1
-                fi
-              fi
-            fi
+            git checkout -b "$branch_name" "v${major}.${minor}.0"
             git push -u origin "$branch_name"
           fi
+      
       - if: steps.check_patch.outputs.should_backport == 'true'
         run: |
           set -e
@@ -94,7 +77,7 @@ jobs:
           git format-patch -1 "${{ github.sha }}" --stdout > /tmp/commit.patch
           
           if grep -q "diff --git a/VERSION b/VERSION" /tmp/commit.patch; then
-            if command -v filterdiff >/dev/null 2>&1; then
+            if command -v filterdiff; then
               filterdiff -x 'VERSION' /tmp/commit.patch > /tmp/commit_filtered.patch
               mv /tmp/commit_filtered.patch /tmp/commit.patch
             else
@@ -109,15 +92,15 @@ jobs:
             fi
           fi
           
-          if [ -s /tmp/commit.patch ] && git apply --check /tmp/commit.patch 2>/dev/null; then
+          if [ -s /tmp/commit.patch ] && git apply --check /tmp/commit.patch; then
             git apply /tmp/commit.patch
           elif [ -s /tmp/commit.patch ]; then
             original_version=$(cat VERSION)
-            if git cherry-pick -n "${{ github.sha }}" 2>/dev/null; then
+            if git cherry-pick -n "${{ github.sha }}"; then
               echo "$original_version" > VERSION
               git add VERSION
             else
-              git cherry-pick --abort 2>/dev/null || true
+              git cherry-pick --abort || true
               echo "::error::Cherry-pick failed - conflicts need manual resolution for commit ${{ github.sha }}"
               exit 1
             fi
