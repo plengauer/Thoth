@@ -51,8 +51,6 @@ jobs:
       
       - id: prepare_branch
         if: steps.check_patch.outputs.should_backport == 'true'
-        env:
-          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         run: |
           set -e
           
@@ -109,6 +107,7 @@ jobs:
           fi
       
       - id: prepare_pr
+        if: steps.check_patch.outputs.should_backport == 'true'
         env:
           GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         run: |
@@ -159,6 +158,7 @@ jobs:
           echo "author_email=$author_email" >> "$GITHUB_OUTPUT"
       
       - id: open-pr
+        if: steps.check_patch.outputs.should_backport == 'true'
         uses: peter-evans/create-pull-request@v7.0.8
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
@@ -172,6 +172,7 @@ jobs:
           # reviewers: ${{ steps.prepare_pr.outputs.reviewers }}
           delete-branch: true
       - run: sleep 60 # let API catch up
+        if: steps.open-pr.outputs.pull-request-number != null
       - uses: peter-evans/enable-pull-request-automerge@v3.0.0
         if: steps.open-pr.outputs.pull-request-number != null
         with:
