@@ -7,9 +7,7 @@ def inject_env_minimal(env, file, args):
     env['OTEL_SHELL_COMMANDLINE_OVERRIDE'] = ' '.join(args)
     env['OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE'] = str(os.getpid())
     # Copy all OTEL_* environment variables from the current process
-    for key, value in os.environ.items():
-        if key.startswith('OTEL_'):
-            env[key] = value
+    env.update({k: v for k, v in os.environ.items() if k.startswith('OTEL_')})
     return env
 
 try:

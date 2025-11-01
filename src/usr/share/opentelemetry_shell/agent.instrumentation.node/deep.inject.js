@@ -88,10 +88,6 @@ function shell_propagator_inject(env) {
     env.TRACESTATE = process.env.TRACESTATE ? process.env.TRACESTATE : '';
   }
   // Copy all OTEL_* environment variables from the current process
-  for (const key in process.env) {
-    if (key.startsWith('OTEL_')) {
-      env[key] = process.env[key];
-    }
-  }
+  Object.entries(process.env).filter(([key]) => key.startsWith('OTEL_')).forEach(([key, value]) => env[key] = value);
 }
 
