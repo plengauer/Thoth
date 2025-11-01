@@ -114,6 +114,10 @@ jobs:
         id: version_parts
         run: |
           VERSION="${{ steps.version.outputs.version }}"
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Error: Version '$VERSION' does not follow semantic versioning format (major.minor.patch)"
+            exit 1
+          fi
           MAJOR=$(echo "$VERSION" | cut -d. -f1)
           MINOR=$(echo "$VERSION" | cut -d. -f2)
           echo "major=$MAJOR" >> "$GITHUB_OUTPUT"
@@ -124,14 +128,10 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git tag -f "v${{ steps.version_parts.outputs.major_minor }}"
-          git push -f origin "v${{ steps.version_parts.outputs.major_minor }}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          git push -f https://x-access-token:${{ secrets.ACTIONS_GITHUB_TOKEN }}@github.com/${{ github.repository }}.git "v${{ steps.version_parts.outputs.major_minor }}"
       - name: Create and push major version tag
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git tag -f "v${{ steps.version_parts.outputs.major }}"
-          git push -f origin "v${{ steps.version_parts.outputs.major }}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          git push -f https://x-access-token:${{ secrets.ACTIONS_GITHUB_TOKEN }}@github.com/${{ github.repository }}.git "v${{ steps.version_parts.outputs.major }}"
