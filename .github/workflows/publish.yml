@@ -110,3 +110,28 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         with:
           release_id: ${{ steps.create_release.outputs.id }}
+      - name: Extract version components
+        id: version_parts
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          MAJOR=$(echo "$VERSION" | cut -d. -f1)
+          MINOR=$(echo "$VERSION" | cut -d. -f2)
+          echo "major=$MAJOR" >> "$GITHUB_OUTPUT"
+          echo "minor=$MINOR" >> "$GITHUB_OUTPUT"
+          echo "major_minor=$MAJOR.$MINOR" >> "$GITHUB_OUTPUT"
+      - name: Create and push major.minor version tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -f "v${{ steps.version_parts.outputs.major_minor }}"
+          git push -f origin "v${{ steps.version_parts.outputs.major_minor }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+      - name: Create and push major version tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -f "v${{ steps.version_parts.outputs.major }}"
+          git push -f origin "v${{ steps.version_parts.outputs.major }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
