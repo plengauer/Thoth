@@ -87,5 +87,11 @@ function shell_propagator_inject(env) {
     env.TRACEPARENT = process.env.TRACEPARENT ? process.env.TRACEPARENT : '';
     env.TRACESTATE = process.env.TRACESTATE ? process.env.TRACESTATE : '';
   }
+  // Copy all OTEL_* environment variables from the current process
+  for (const key in process.env) {
+    if (key.startsWith('OTEL_')) {
+      env[key] = process.env[key];
+    }
+  }
 }
 
