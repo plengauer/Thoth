@@ -123,15 +123,10 @@ jobs:
           echo "major=$MAJOR" >> "$GITHUB_OUTPUT"
           echo "minor=$MINOR" >> "$GITHUB_OUTPUT"
           echo "major_minor=$MAJOR.$MINOR" >> "$GITHUB_OUTPUT"
-      - name: Create and push major.minor version tag
+      - name: Create and push major and minor version tags
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git tag -f "v${{ steps.version_parts.outputs.major_minor }}"
-          git push -f https://x-access-token:${{ secrets.ACTIONS_GITHUB_TOKEN }}@github.com/${{ github.repository }}.git "v${{ steps.version_parts.outputs.major_minor }}"
-      - name: Create and push major version tag
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
           git tag -f "v${{ steps.version_parts.outputs.major }}"
-          git push -f https://x-access-token:${{ secrets.ACTIONS_GITHUB_TOKEN }}@github.com/${{ github.repository }}.git "v${{ steps.version_parts.outputs.major }}"
+          git push -f https://x-access-token:${{ secrets.ACTIONS_GITHUB_TOKEN }}@github.com/${{ github.repository }}.git "v${{ steps.version_parts.outputs.major_minor }}" "v${{ steps.version_parts.outputs.major }}"
