@@ -3,6 +3,7 @@ import os
 import subprocess
 
 def inject_env_minimal(env, file, args):
+    env.update({k: v for k, v in os.environ.items() if k.startswith('OTEL_')})
     env['OTEL_SHELL_AUTO_INSTRUMENTATION_HINT'] = file
     env['OTEL_SHELL_COMMANDLINE_OVERRIDE'] = ' '.join(args)
     env['OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE'] = str(os.getpid())

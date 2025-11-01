@@ -87,5 +87,6 @@ function shell_propagator_inject(env) {
     env.TRACEPARENT = process.env.TRACEPARENT ? process.env.TRACEPARENT : '';
     env.TRACESTATE = process.env.TRACESTATE ? process.env.TRACESTATE : '';
   }
+  Object.entries(process.env).filter(([key]) => key.startsWith('OTEL_')).forEach(([key, value]) => env[key] = value);
 }
 
