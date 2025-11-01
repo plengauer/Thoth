@@ -3,11 +3,12 @@ import os
 import subprocess
 
 def inject_env_minimal(env, file, args):
+    # Copy all OTEL_* environment variables from the current process first
+    env.update({k: v for k, v in os.environ.items() if k.startswith('OTEL_')})
+    # Then set subprocess-specific variables to ensure they override parent values
     env['OTEL_SHELL_AUTO_INSTRUMENTATION_HINT'] = file
     env['OTEL_SHELL_COMMANDLINE_OVERRIDE'] = ' '.join(args)
     env['OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE'] = str(os.getpid())
-    # Copy all OTEL_* environment variables from the current process
-    env.update({k: v for k, v in os.environ.items() if k.startswith('OTEL_')})
     return env
 
 try:

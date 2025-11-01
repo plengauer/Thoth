@@ -49,18 +49,19 @@ public class SubprocessInjectionAgent {
                 }
             }
             if (environment != null) {
+                // Copy all OTEL_* environment variables from the current process first
+                for (Map.Entry<String, String> entry : System.getenv().entrySet()) {
+                    if (entry.getKey().startsWith("OTEL_")) {
+                        environment.put(entry.getKey(), entry.getValue());
+                    }
+                }
+                // Then set subprocess-specific variables to ensure they override parent values
                 SpanContext spanContext = Span.current().getSpanContext();
                 environment.put("TRACEPARENT", String.format("%s-%s-%s-%s", "00", spanContext.getTraceId(), spanContext.getSpanId(), spanContext.getTraceFlags().asHex()));
                 environment.put("OTEL_SHELL_AUTO_INSTRUMENTATION_HINT", cmdarray[0]);
                 environment.put("OTEL_SHELL_AUTO_INJECTED", "TRUE");
                 environment.put("OTEL_SHELL_COMMANDLINE_OVERRIDE", String.join(" ", cmdarray));
                 environment.put("OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE", "0");
-                // Copy all OTEL_* environment variables from the current process
-                for (Map.Entry<String, String> entry : System.getenv().entrySet()) {
-                    if (entry.getKey().startsWith("OTEL_")) {
-                        environment.put(entry.getKey(), entry.getValue());
-                    }
-                }
             }
             String[] oldcmdarray = cmdarray;
             cmdarray = new String[3 + oldcmdarray.length];
