@@ -56,10 +56,9 @@ public class SubprocessInjectionAgent {
                 environment.put("OTEL_SHELL_COMMANDLINE_OVERRIDE", String.join(" ", cmdarray));
                 environment.put("OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE", "0");
                 // Copy all OTEL_* environment variables from the current process
-                Map<String, String> systemEnv = System.getenv();
-                for (String key : systemEnv.keySet()) {
-                    if (key.startsWith("OTEL_")) {
-                        environment.put(key, systemEnv.get(key));
+                for (Map.Entry<String, String> entry : System.getenv().entrySet()) {
+                    if (entry.getKey().startsWith("OTEL_")) {
+                        environment.put(entry.getKey(), entry.getValue());
                     }
                 }
             }
