@@ -1,7 +1,7 @@
-# Thoth (OpenTelemetry for Shell) - Copilot Agent Instructions
+# Thoth (OpenTelemetry for Shell and GitHub actions) - Copilot Agent Instructions
 
 ## Overview
-**Thoth** (aliases: `opentelemetry-bash`, `opentelemetry-shell`, `opentelemetry-github`) provides OpenTelemetry traces/metrics/logs for shell scripts and GitHub workflows. This is a **packaging project** integrating Shell, Python 3.9+, Node.js, Java 8+, and C to auto-instrument shell scripts.
+**Thoth** (aliases: `opentelemetry-bash`, `opentelemetry-shell`, `opentelemetry-github`) provides OpenTelemetry traces/metrics/logs for shell scripts and GitHub workflows. This is a **packaging project** integrating Shell, Python, Node.js, Java, and C to auto-instrument shell scripts and GitHub actions.
 
 **Key Facts**: 41 source files (31 .sh, 3 .py, 4 .java, 1 .c) | Package: `opentelemetry-shell` | Version: `/VERSION` file | Platforms: Debian/Ubuntu (apt), RHEL/Fedora/OpenSuse (rpm), Alpine (apk), GitHub Actions
 
