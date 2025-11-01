@@ -226,6 +226,13 @@ jobs:
               | jq -s '. | sort_by(.name) | .[]'
           }
 
+          # Validate that at least one root span exists
+          root_span_count=$(get_root_span_id | wc -l)
+          if [ "$root_span_count" -eq 0 ]; then
+            echo "Error: No root span found in trace data. At least one root span is required." >&2
+            exit 1
+          fi
+
           {
             echo '# Demo "'"$(cat ./meta.json | jq -r .title)"'"'
             cat meta.json | jq -r .description
