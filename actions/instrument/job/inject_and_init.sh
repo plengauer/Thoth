@@ -32,7 +32,7 @@ if [ "$deferred" = true ]; then
     require('http').createServer(function (req, res) {
       let filename = '$INTERNAL_OTEL_DEFERRED_EXPORT_DIR' + '/' + counter + '.' + req.path.split('/').pop();
       counter++;
-      require('fs').appendFileSync(filename, req.getHeader('Content-Type') + '\n');
+      require('fs').appendFileSync(filename, req.headers['content-type'] + '\n');
       req.on('data', (chunk) => { require('fs').appendFileSync(filename, chunk); });
       req.on('end', () => { res.writeHead(200); res.end(); }
     }).listen(4320);
