@@ -362,7 +362,7 @@ done
 echo "::endgroup::"
 
 echo "::group::Deferred Export"
-jq -r '.name' "$artifacts_json" | grep -E '^opentelemetry_job_.*_signals$' || true | while read -r artifact_name; do
+jq -r '.name' "$artifacts_json" | ( grep -E '^opentelemetry_job_.*_signals$' || true ) | while read -r artifact_name; do
   dir="$(mktemp -d)"
   gh_artifact_download "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" "$artifact_name" "$dir" || continue
   for file in "$dir"/*.logs; do
