@@ -370,21 +370,21 @@ cat "$artifacts_json" | jq -r .name | ( grep '^opentelemetry_job_' || true) | ( 
     echo "$OTEL_EXPORTER_OTLP_HEADERS" >> "$headers"
     echo "$OTEL_EXPORTER_OTLP_LOGS_HEADERS" >> "$headers"
     read -r content_type < "$file"
-    curl --retry 3 "${OTEL_EXPORTER_OTLP_LOGS_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/logs}" -H "Content-Type: $content_type" -H @"$headers" -d @"$file" &
+    curl --retry 3 "${OTEL_EXPORTER_OTLP_LOGS_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/logs}" -H "Content-Type: $content_type" -H @"$headers" --data-binary @<(tail -n +2 "$file") &
   done
   for file in "$dir"/*.metrics; do
     headers="$(mktemp)"
     echo "$OTEL_EXPORTER_OTLP_HEADERS" >> "$headers"
     echo "$OTEL_EXPORTER_OTLP_METRICS_HEADERS" >> "$headers"
     read -r content_type < "$file"
-    curl --retry 3 "${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/metrics}" -H "Content-Type: $content_type" -H @"$headers" -d @"$file" &
+    curl --retry 3 "${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/metrics}" -H "Content-Type: $content_type" -H @"$headers" --data-binary @<(tail -n +2 "$file") &
   done
   for file in "$dir"/*.traces; do
     headers="$(mktemp)"
     echo "$OTEL_EXPORTER_OTLP_HEADERS" >> "$headers"
     echo "$OTEL_EXPORTER_OTLP_TRACES_HEADERS" >> "$headers"
     read -r content_type < "$file"
-    curl --retry 3 "${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/traces}" -H "Content-Type: $content_type" -H @"$headers" -d @"$file" &
+    curl --retry 3 "${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/traces}" -H "Content-Type: $content_type" -H @"$headers" --data-binary @<(tail -n +2 "$file") &
   done
   wait
   rm -rf "$dir"
