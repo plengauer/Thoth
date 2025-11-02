@@ -80,9 +80,14 @@ else
 fi
 echo "::endgroup::"
 
-times_dir="$(mktemp -d)"
+echo "::group::Determine Trace ID"
+workflow_run_dir="$(mktemp -d)"
+gh_artifact_download "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" opentelemetry_workflow_run_"$INPUT_WORKFLOW_RUN_ATTEMPT" "$workflow_run_dir" || true
+if [ -r "$workflow_run_dir"/traceparent ]; then export OTEL_ID_GENERATOR_OVERRIDE_TRACEPARENT="$(cat "$workflow_run_dir"/traceparent)"; fi
+echo "::endgroup::"
 
 echo "::group::Export"
+times_dir="$(mktemp -d)"
 
 . otelapi.sh
 export OTEL_DISABLE_RESOURCE_DETECTION=TRUE
@@ -99,9 +104,6 @@ _otel_resource_attributes_process() {
 _otel_resource_attributes_custom() {
   _otel_resource_attribute string telemetry.sdk.language=github
 }
-workflow_run_dir="$(mktemp -d)"
-gh_artifact_download "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" opentelemetry_workflow_run_"$INPUT_WORKFLOW_RUN_ATTEMPT" "$workflow_run_dir" || true
-if [ -r "$workflow_run_dir"/traceparent ]; then export OTEL_ID_GENERATOR_OVERRIDE_TRACEPARENT="$(cat "$workflow_run_dir"/traceparent)"; fi
 
 otel_init
 workflow_run_counter_handle="$(otel_counter_create counter github.actions.workflows 1 'Number of workflow runs')"
