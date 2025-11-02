@@ -13,7 +13,6 @@ jobs:
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
         with:
           secrets_to_redact: ${{ toJSON(secrets) }}
-      - run: |
-          :
+      - run: printenv
     permissions:
       actions: read
