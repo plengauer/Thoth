@@ -386,7 +386,7 @@ root4job_end() {
   
   if [ -n "${INTERNAL_OTEL_DEFERRED_EXPORT_DIR:-}" ]; then
     for filename in "$INTERNAL_OTEL_DEFERRED_EXPORT_DIR"/*; do
-      gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_job_"$GITHUB_JOB_ID"_"$filename"_signals "$filename" 2>&1 | perl -0777 -pe '' &
+      gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_job_"$GITHUB_JOB_ID"_$(basename "$filename")_signals "$filename" 2>&1 | perl -0777 -pe '' &
     done
     wait
   fi
