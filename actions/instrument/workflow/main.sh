@@ -361,5 +361,35 @@ done
 
 echo "::endgroup::"
 
+echo "::group::Deferred Export"
+cat "$artifacts_json" | jq -r .name | ( grep '^opentelemetry_job_' || true) | ( grep '_signals$' || true ) | while read -r artifact_name; do
+  dir="$(mktemp -d)"
+  gh_artifact_download "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" "$artifact_name" "$dir" || continue
+  for file in "$dir"/*.logs; do
+    headers="$(mktemp)"
+    echo "$OTEL_EXPORTER_OTLP_HEADERS" >> "$headers"
+    echo "$OTEL_EXPORTER_OTLP_LOGS_HEADERS" >> "$headers"
+    read -r content_type < "$file"
+    curl --retry 3 "${OTEL_EXPORTER_OTLP_LOGS_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/logs}" -H "Content-Type: $content_type" -H @"$headers" -d @"$file" &
+  done
+  for file in "$dir"/*.metrics; do
+    headers="$(mktemp)"
+    echo "$OTEL_EXPORTER_OTLP_HEADERS" >> "$headers"
+    echo "$OTEL_EXPORTER_OTLP_METRICS_HEADERS" >> "$headers"
+    read -r content_type < "$file"
+    curl --retry 3 "${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/metrics}" -H "Content-Type: $content_type" -H @"$headers" -d @"$file" &
+  done
+  for file in "$dir"/*.traces; do
+    headers="$(mktemp)"
+    echo "$OTEL_EXPORTER_OTLP_HEADERS" >> "$headers"
+    echo "$OTEL_EXPORTER_OTLP_TRACES_HEADERS" >> "$headers"
+    read -r content_type < "$file"
+    curl --retry 3 "${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/traces}" -H "Content-Type: $content_type" -H @"$headers" -d @"$file" &
+  done
+  wait
+  rm -rf "$dir"
+done
+echo "::endgroup::"
+
 otel_shutdown
 while pgrep -f /opt/opentelemetry_shell/; do sleep 1; done
