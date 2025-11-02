@@ -12,6 +12,34 @@ export OTEL_SERVICE_NAME="${OTEL_SERVICE_NAME:-"$(echo "$GITHUB_REPOSITORY" | cu
 . ../shared/config_validation.sh
 echo "::endgroup::"
 
+if [ "${OTEL_LOGS_EXPORTER}" = deferred ]; then
+  export OTEL_EXPORTER_OTLP_LOGS_ENDPOINT=http://localhost:4320/v1/logs
+  deferred=true
+fi
+if [ "${OTEL_METRICS_EXPORTER}" = deferred ]; then
+  export OTEL_EXPORTER_OTLP_METRICS_ENDPOINT=http://localhost:4320/v1/logs
+  deferred=true
+fi
+if [ "${OTEL_TRACES_EXPORTER}" = deferred ]; then
+  export OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://localhost:4320/v1/logs
+  deferred=true
+fi
+if [ "$deferred" = true ]; then
+  echo "::group::Setup Deferred Export"
+  export INTERNAL_OTEL_DEFERRED_EXPORT_DIR="$(mktemp -d)"
+  node -e "
+    let counter = 0;
+    require('http').createServer(function (req, res) {
+      let filename = '$INTERNAL_OTEL_DEFERRED_EXPORT_DIR' + '/' + counter + '.' + req.path.split('/').pop();
+      counter++;
+      require('fs').appendFileSync(filename, req.getHeader('Content-Type') + '\n');
+      req.on('data', (chunk) => { require('fs').appendFileSync(filename, chunk); });
+      req.on('end', () => { res.writeHead(200); res.end(); }
+    }).listen(4320);
+  " 1> /tmp/http.log 2> /dev/null &
+  echo "::endgroup::"
+fi
+
 echo "::group::Setup SDK Output Redirect"
 tmp_dir="$(mktemp -d)"
 chmod 777 "$tmp_dir"
@@ -355,6 +383,14 @@ root4job_end() {
     sudo docker logs "$OTEL_SHELL_COLLECTOR_CONTAINER" 2>&1 | tr '\t' ' ' | cut -d ' ' -f 2- | tee "$collector_pipe_warning" | tee "$collector_pipe_error" | { if [ -n "$INPUT_DEBUG" ]; then cat; else cat > /dev/null; fi; }
     wait
   fi
+  
+  if [ -n "${INTERNAL_OTEL_DEFERRED_EXPORT_DIR:-}" ]; then
+    for filename in "$INTERNAL_OTEL_DEFERRED_EXPORT_DIR"/*; do
+      gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_job_"$GITHUB_JOB_ID"_"$filename"_signals "$filename" 2>&1 | perl -0777 -pe '' &
+    done
+    wait
+  fi
+  
   exit 0
 }
 export -f root4job_end
