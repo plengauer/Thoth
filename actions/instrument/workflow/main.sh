@@ -362,32 +362,35 @@ done
 echo "::endgroup::"
 
 echo "::group::Deferred Export"
-jq -r '.name' "$artifacts_json" | ( grep -E '^opentelemetry_job_.*_signals$' || true ) | while read -r artifact_name; do
+export_deferred_signal_artifacts() {
+  artifact_name="$1"
   dir="$(mktemp -d)"
-  gh_artifact_download "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" "$artifact_name" "$dir" || continue
-  for file in "$dir"/*.logs; do
-    headers="$(mktemp)"
-    echo "$OTEL_EXPORTER_OTLP_HEADERS" >> "$headers"
-    echo "$OTEL_EXPORTER_OTLP_LOGS_HEADERS" >> "$headers"
-    read -r content_type < "$file"
-    curl --retry 3 "${OTEL_EXPORTER_OTLP_LOGS_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/logs}" -H "Content-Type: $content_type" -H @"$headers" --data-binary @<(tail -n +2 "$file") &
-  done
-  for file in "$dir"/*.metrics; do
-    headers="$(mktemp)"
-    echo "$OTEL_EXPORTER_OTLP_HEADERS" >> "$headers"
-    echo "$OTEL_EXPORTER_OTLP_METRICS_HEADERS" >> "$headers"
-    read -r content_type < "$file"
-    curl --retry 3 "${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/metrics}" -H "Content-Type: $content_type" -H @"$headers" --data-binary @<(tail -n +2 "$file") &
-  done
-  for file in "$dir"/*.traces; do
-    headers="$(mktemp)"
-    echo "$OTEL_EXPORTER_OTLP_HEADERS" >> "$headers"
-    echo "$OTEL_EXPORTER_OTLP_TRACES_HEADERS" >> "$headers"
-    read -r content_type < "$file"
-    curl --retry 3 "${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/traces}" -H "Content-Type: $content_type" -H @"$headers" --data-binary @<(tail -n +2 "$file") &
-  done
-  wait
+  gh_artifact_download "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" "$artifact_name" "$dir" || return 0
+  {
+    for file in "$dir"/*.logs; do echo "$file"; done
+    for file in "$dir"/*.metrics; do echo "$file"; done
+    for file in "$dir"/*.traces; do echo "$file"; done
+  } | while read -r endpoint headers file; do ! [ -r "$file" ] || echo "$file"; done | xargs parallel -j 16 export_deferred_signal_file :::
   rm -rf "$dir"
+}
+export -f export_deferred_signal_artifacts
+export_deferred_signal_file() {
+  file="$1"
+  headers="$(mktemp)"
+  echo "$OTEL_EXPORTER_OTLP_HEADERS" >> "$headers"
+  case "$file" in
+    *.logs) endpoint="${OTEL_EXPORTER_OTLP_LOGS_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/logs}"; echo "$OTEL_EXPORTER_OTLP_LOGS_HEADERS" >> "$headers";;
+    *.metrics) endpoint="${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/metrics}"; echo "$OTEL_EXPORTER_OTLP_METRICS_HEADERS" >> "$headers";;
+    *.traces) endpoint="${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/traces}"; echo "$OTEL_EXPORTER_OTLP_TRACES_HEADERS" >> "$headers";;
+    *) return 1;;
+  esac
+  read -r content_type < "$file"
+  curl --retry 8 "$endpoint" -H "Content-Type: $content_type" -H @"$headers" --data-binary @<(tail -n +2 "$file")
+  rm "$headers"
+}
+export -f export_deferred_signal_file
+jq -r '.name' "$artifacts_json" | ( grep -E '^opentelemetry_job_.*_signals_.*$' || true ) | xargs parallel -j 16 export_deferred_signal_artifacts :::
+  
 done
 echo "::endgroup::"
 
