@@ -181,11 +181,6 @@ runs:
             cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/deploy*") | .env | keys[]' | grep '^OTEL_' | while read -r key; do
               yq -i ".jobs.$job_name.steps[0].env.$key = \"$(cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/deploy*") | .env.'"$key")\"" "$workflow_file"
             done
-            if [ "$workflow_file" = ".github/workflows/copilot-setup-steps.yml" ]; then
-              yq -i ".jobs.$job_name.steps[0].env.OTEL_LOGS_EXPORTER = \"deferred\"" "$workflow_file"
-              yq -i ".jobs.$job_name.steps[0].env.OTEL_METRICS_EXPORTER = \"deferred\"" "$workflow_file"
-              yq -i ".jobs.$job_name.steps[0].env.OTEL_TRACES_EXPORTER = \"deferred\"" "$workflow_file"
-            fi
           done
         done
     - name: "Configure Secret Redaction"
