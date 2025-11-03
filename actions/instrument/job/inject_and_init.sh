@@ -10,12 +10,6 @@ export OTEL_SHELL_CONFIG_OBSERVE_SIGNALS="${OTEL_SHELL_CONFIG_OBSERVE_SIGNALS:-T
 export OTEL_SHELL_CONFIG_OBSERVE_PIPES="${OTEL_SHELL_CONFIG_OBSERVE_PIPES:-TRUE}"
 export OTEL_SERVICE_NAME="${OTEL_SERVICE_NAME:-"$(echo "$GITHUB_REPOSITORY" | cut -d / -f 2-) CI"}"
 . ../shared/config_validation.sh
-if [ "$GITHUB_JOB" = copilot ] && [ "$GITHUB_WORKFLOW" = 'Copilot coding agent' ]; then
-  echo "::notice ::OpenTelemetry for GitHub actions detected Copilot coding agent, which is unable to extract data directly (it may have caused warnings already), reconfiguring for deferred export. This needs the workflow-level instrumentation to forward the data."
-  export OTEL_LOGS_EXPORTER=deferred
-  export OTEL_METRICS_EXPORTER=deferred
-  export OTEL_TRACES_EXPORTER=deferred
-fi
 echo "::endgroup::"
 
 echo "::group::Setup SDK Output Redirect"
