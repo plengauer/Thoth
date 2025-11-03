@@ -370,7 +370,7 @@ export_deferred_signal_artifacts() {
     for file in "$dir"/*.logs; do echo "$file"; done
     for file in "$dir"/*.metrics; do echo "$file"; done
     for file in "$dir"/*.traces; do echo "$file"; done
-  } | while read -r endpoint headers file; do ! [ -r "$file" ] || echo "$file"; done | xargs parallel -j 16 export_deferred_signal_file :::
+  } | while read -r file; do ! [ -r "$file" ] || echo "$file"; done | xargs parallel -j 16 export_deferred_signal_file :::
   rm -rf "$dir"
 }
 export -f export_deferred_signal_artifacts
