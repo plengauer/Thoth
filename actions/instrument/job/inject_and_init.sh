@@ -26,12 +26,11 @@ if [ "${OTEL_TRACES_EXPORTER}" = deferred ]; then
 fi
 if [ "$deferred" = true ]; then
   echo "::group::Setup Deferred Export"
-  export INTERNAL_OTEL_DEFERRED_EXPORT_DIR="$(mktemp -d)"
+  export INTERNAL_OTEL_DEFERRED_EXPORT_DIR="$(TMPDIR="$(pwd)" mktemp -d)"
   node -e "
     let counter = 0;
     require('http').createServer(function (req, res) {
-      let filename = '$INTERNAL_OTEL_DEFERRED_EXPORT_DIR' + '/' + counter + '.' + req.path.split('/').pop();
-      counter++;
+      let filename = '$INTERNAL_OTEL_DEFERRED_EXPORT_DIR' + '/' + counter++ + '.' + req.path.split('/').pop();
       require('fs').appendFileSync(filename, req.headers['content-type'] + '\n');
       req.on('data', (chunk) => { require('fs').appendFileSync(filename, chunk); });
       req.on('end', () => { res.writeHead(200); res.end(); }
@@ -386,7 +385,7 @@ root4job_end() {
   
   if [ -n "${INTERNAL_OTEL_DEFERRED_EXPORT_DIR:-}" ]; then
     for filename in "$INTERNAL_OTEL_DEFERRED_EXPORT_DIR"/*; do
-      gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_job_"$GITHUB_JOB_ID"_$(basename "$filename")_signals "$filename" 2>&1 | perl -0777 -pe '' &
+      gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_job_"$GITHUB_JOB_ID"_signals_$(basename "$filename") "$filename" 2>&1 | perl -0777 -pe '' &
     done
     wait
   fi
