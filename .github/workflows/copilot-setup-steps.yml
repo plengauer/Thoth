@@ -11,6 +11,9 @@ jobs:
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+          OTEL_LOGS_EXPORTER: deferred
+          OTEL_METRICS_EXPORTER: deferred
+          OTEL_TRACES_EXPORTER: deferred
         with:
           secrets_to_redact: ${{ toJSON(secrets) }}
       - run: printenv
