@@ -390,8 +390,6 @@ export_deferred_signal_file() {
 }
 export -f export_deferred_signal_file
 jq -r '.name' "$artifacts_json" | ( grep -E '^opentelemetry_job_.*_signals_.*$' || true ) | xargs parallel -j 16 export_deferred_signal_artifacts :::
-  
-done
 echo "::endgroup::"
 
 otel_shutdown
