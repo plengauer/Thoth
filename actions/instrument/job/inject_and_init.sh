@@ -77,7 +77,7 @@ if [ "$INPUT_CACHE" = "true" ]; then
     fi
   fi
 fi
-bash -e -o pipefail ../shared/install.sh perl curl wget jq sed unzip 'node;nodejs' npm 'docker;docker.io' 'gcc;build-essential'
+bash -e -o pipefail ../shared/install.sh perl curl wget jq sed unzip parallel 'node;nodejs' npm 'docker;docker.io' 'gcc;build-essential'
 export OTEL_SHELL_COLLECTOR_IMAGE="$(cat Dockerfile | grep '^FROM ' | cut -d ' ' -f 2-)"
 if [ -r /opt/opentelemetry_shell/collector.image ]; then
   sudo docker load < /opt/opentelemetry_shell/collector.image
@@ -387,10 +387,7 @@ root4job_end() {
   fi
   
   if [ -n "${INTERNAL_OTEL_DEFERRED_EXPORT_DIR:-}" ]; then
-    for filename in "$INTERNAL_OTEL_DEFERRED_EXPORT_DIR"/*; do
-      gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_job_"$GITHUB_JOB_ID"_signals_$(basename "$filename") "$filename" 2>&1 | perl -0777 -pe '' &
-    done
-    wait
+    ls "$INTERNAL_OTEL_DEFERRED_EXPORT_DIR" | parallel gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_job_"$GITHUB_JOB_ID"_signals_'{}' '{}'
   fi
   
   exit 0
