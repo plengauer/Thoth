@@ -22,7 +22,7 @@ jobs:
           secrets_to_redact: '["${{ github.token }}"]'
       - uses: actions/checkout@v5.0.0
       - if: ${{ matrix.architecture != 'amd64' }}
-        uses: docker/setup-qemu-action@v3.6.0
+        uses: docker/setup-qemu-action@v3.7.0
       - id: build
         run: |
           debian_architecture="$(echo ${{ matrix.architecture }} | cut -d / -f 1 | sed 's/le$/el/g')"

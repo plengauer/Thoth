@@ -66,7 +66,7 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           issue-message: "Hello, thanks for adding an issue for the first time!"
           pr-message: "Hello, thanks for contributing for the first time!"
-      - uses: docker/setup-qemu-action@v3.6.0 # some docker actions have otel built-in
+      - uses: docker/setup-qemu-action@v3.7.0 # some docker actions have otel built-in
       - uses: docker/setup-buildx-action@v3.11.1 # some docker actions have otel built-in
       - uses: actions/download-artifact@v6.0.0
         with:
