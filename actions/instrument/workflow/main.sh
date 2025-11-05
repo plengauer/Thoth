@@ -366,11 +366,7 @@ export_deferred_signal_artifacts() {
   artifact_name="$1"
   dir="$(mktemp -d)"
   gh_artifact_download "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" "$artifact_name" "$dir" || return 0
-  {
-    for file in "$dir"/*.logs; do echo "$file"; done
-    for file in "$dir"/*.metrics; do echo "$file"; done
-    for file in "$dir"/*.traces; do echo "$file"; done
-  } | while read -r file; do ! [ -r "$file" ] || echo "$file"; done | xargs parallel -j 16 export_deferred_signal_file :::
+  ( cd "$dir" && ls | grep -E '.logs$|.metrics$|.traces$' | parallel -j 16 export_deferred_signal_file )
   rm -rf "$dir"
 }
 export -f export_deferred_signal_artifacts
@@ -389,7 +385,7 @@ export_deferred_signal_file() {
   rm "$headers"
 }
 export -f export_deferred_signal_file
-jq -r '.name' "$artifacts_json" | ( grep -E '^opentelemetry_job_.*_signals_.*$' || true ) | xargs parallel -j 16 export_deferred_signal_artifacts :::
+jq -r '.name' "$artifacts_json" | ( grep -E '^opentelemetry_job_.*_signals_.*$' || true ) | parallel -j 16 export_deferred_signal_artifacts
 echo "::endgroup::"
 
 otel_shutdown
