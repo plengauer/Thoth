@@ -12,6 +12,36 @@ export OTEL_SERVICE_NAME="${OTEL_SERVICE_NAME:-"$(echo "$GITHUB_REPOSITORY" | cu
 . ../shared/config_validation.sh
 echo "::endgroup::"
 
+if [ "${OTEL_LOGS_EXPORTER:-otlp}" = deferred ]; then
+  export OTEL_LOGS_EXPORTER=otlp
+  export OTEL_EXPORTER_OTLP_LOGS_ENDPOINT=http://localhost:4320/v1/logs
+  deferred=true
+fi
+if [ "${OTEL_METRICS_EXPORTER:-otlp}" = deferred ]; then
+  export OTEL_METRICS_EXPORTER=otlp
+  export OTEL_EXPORTER_OTLP_METRICS_ENDPOINT=http://localhost:4320/v1/metrics
+  deferred=true
+fi
+if [ "${OTEL_TRACES_EXPORTER:-otlp}" = deferred ]; then
+  export OTEL_TRACES_EXPORTER=otlp
+  export OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://localhost:4320/v1/traces
+  deferred=true
+fi
+if [ "$deferred" = true ]; then
+  echo "::group::Setup Deferred Export"
+  export INTERNAL_OTEL_DEFERRED_EXPORT_DIR="$(TMPDIR="$(pwd)" mktemp -d)"
+  node -e "
+    let counter = 0;
+    require('http').createServer(function (req, res) {
+      let filename = '$INTERNAL_OTEL_DEFERRED_EXPORT_DIR' + '/' + counter++ + '.' + req.url.split('/').pop();
+      require('fs').appendFileSync(filename, req.headers['content-type'] + '\n');
+      req.on('data', (chunk) => { require('fs').appendFileSync(filename, chunk); });
+      req.on('end', () => { res.writeHead(200); res.end(); });
+    }).listen(4320);
+  " 1> /tmp/http.log 2> /dev/null &
+  echo "::endgroup::"
+fi
+
 echo "::group::Setup SDK Output Redirect"
 tmp_dir="$(mktemp -d)"
 chmod 777 "$tmp_dir"
@@ -47,7 +77,7 @@ if [ "$INPUT_CACHE" = "true" ]; then
     fi
   fi
 fi
-bash -e -o pipefail ../shared/install.sh perl curl wget jq sed unzip 'node;nodejs' npm 'docker;docker.io' 'gcc;build-essential'
+bash -e -o pipefail ../shared/install.sh perl curl wget jq sed unzip parallel 'node;nodejs' npm 'docker;docker.io' 'gcc;build-essential'
 export OTEL_SHELL_COLLECTOR_IMAGE="$(cat Dockerfile | grep '^FROM ' | cut -d ' ' -f 2-)"
 if [ -r /opt/opentelemetry_shell/collector.image ]; then
   sudo docker load < /opt/opentelemetry_shell/collector.image
@@ -355,6 +385,11 @@ root4job_end() {
     sudo docker logs "$OTEL_SHELL_COLLECTOR_CONTAINER" 2>&1 | tr '\t' ' ' | cut -d ' ' -f 2- | tee "$collector_pipe_warning" | tee "$collector_pipe_error" | { if [ -n "$INPUT_DEBUG" ]; then cat; else cat > /dev/null; fi; }
     wait
   fi
+  
+  if [ -n "${INTERNAL_OTEL_DEFERRED_EXPORT_DIR:-}" ]; then
+    ( cd "$INTERNAL_OTEL_DEFERRED_EXPORT_DIR" && ls | grep -E '.logs$|.metrics$|.traces$' | xargs gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_job_"$GITHUB_JOB_ID"_signals_0 )
+  fi
+  
   exit 0
 }
 export -f root4job_end
