@@ -49,6 +49,11 @@ public class SubprocessInjectionAgent {
                 }
             }
             if (environment != null) {
+                for (Map.Entry<String, String> entry : System.getenv().entrySet()) {
+                    if (entry.getKey().startsWith("OTEL_")) {
+                        environment.put(entry.getKey(), entry.getValue());
+                    }
+                }
                 SpanContext spanContext = Span.current().getSpanContext();
                 environment.put("TRACEPARENT", String.format("%s-%s-%s-%s", "00", spanContext.getTraceId(), spanContext.getSpanId(), spanContext.getTraceFlags().asHex()));
                 environment.put("OTEL_SHELL_AUTO_INSTRUMENTATION_HINT", cmdarray[0]);
