@@ -110,3 +110,15 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         with:
           release_id: ${{ steps.create_release.outputs.id }}
+      - id: version_parts
+        run: |
+          version="${{ steps.version.outputs.version }}"
+          major=$(echo "$version" | cut -d. -f1)
+          minor=$(echo "$version" | cut -d. -f2)
+          echo "major=$major" >> "$GITHUB_OUTPUT"
+          echo "minor=$minor" >> "$GITHUB_OUTPUT"
+          echo "major_minor=$major.$minor" >> "$GITHUB_OUTPUT"
+      - run: |
+          git tag -f "v${{ steps.version_parts.outputs.major_minor }}"
+          git tag -f "v${{ steps.version_parts.outputs.major }}"
+          git push -f origin "v${{ steps.version_parts.outputs.major_minor }}" "v${{ steps.version_parts.outputs.major }}"
