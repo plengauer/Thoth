@@ -12,15 +12,18 @@ export OTEL_SERVICE_NAME="${OTEL_SERVICE_NAME:-"$(echo "$GITHUB_REPOSITORY" | cu
 . ../shared/config_validation.sh
 echo "::endgroup::"
 
-if [ "${OTEL_LOGS_EXPORTER}" = deferred ]; then
+if [ "${OTEL_LOGS_EXPORTER:-otlp}" = deferred ]; then
+  export OTEL_LOGS_EXPORTER=otlp
   export OTEL_EXPORTER_OTLP_LOGS_ENDPOINT=http://localhost:4320/v1/logs
   deferred=true
 fi
-if [ "${OTEL_METRICS_EXPORTER}" = deferred ]; then
+if [ "${OTEL_METRICS_EXPORTER:-otlp}" = deferred ]; then
+  export OTEL_METRICS_EXPORTER=otlp
   export OTEL_EXPORTER_OTLP_METRICS_ENDPOINT=http://localhost:4320/v1/metrics
   deferred=true
 fi
-if [ "${OTEL_TRACES_EXPORTER}" = deferred ]; then
+if [ "${OTEL_TRACES_EXPORTER:-otlp}" = deferred ]; then
+  export OTEL_TRACES_EXPORTER=otlp
   export OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://localhost:4320/v1/traces
   deferred=true
 fi
