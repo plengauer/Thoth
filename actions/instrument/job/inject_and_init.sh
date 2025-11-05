@@ -33,10 +33,10 @@ if [ "$deferred" = true ]; then
   node -e "
     let counter = 0;
     require('http').createServer(function (req, res) {
-      let filename = '$INTERNAL_OTEL_DEFERRED_EXPORT_DIR' + '/' + counter++ + '.' + req.path.split('/').pop();
+      let filename = '$INTERNAL_OTEL_DEFERRED_EXPORT_DIR' + '/' + counter++ + '.' + req.url.split('/').pop();
       require('fs').appendFileSync(filename, req.headers['content-type'] + '\n');
       req.on('data', (chunk) => { require('fs').appendFileSync(filename, chunk); });
-      req.on('end', () => { res.writeHead(200); res.end(); }
+      req.on('end', () => { res.writeHead(200); res.end(); });
     }).listen(4320);
   " 1> /tmp/http.log 2> /dev/null &
   echo "::endgroup::"
