@@ -169,7 +169,33 @@ otel_span_end "$workflow_span_handle" @"$workflow_ended_at"
 
 jq < "$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .started_at, .completed_at, .name] | @tsv' | sed 's/\t/ /g' | while read -r TRACEPARENT job_id job_conclusion job_started_at job_completed_at job_name; do
   if [ "$job_conclusion" = skipped ]; then continue; fi
-  if [ "$job_started_at" '<' "$workflow_started_at" ] || jq < "$artifacts_json" -r .name | grep -q '^opentelemetry_job_'"$job_id"'$'; then continue; fi
+  if [ "$job_started_at" '<' "$workflow_started_at" ] || jq < "$artifacts_json" -r .name | grep -q '^opentelemetry_job_'"$job_id"'$'; then
+    export_deferred_signal_artifacts() {
+      artifact_name="$1"
+      dir="$(mktemp -d)"
+      gh_artifact_download "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" "$artifact_name" "$dir" || return 0
+      ( cd "$dir" && ls | grep -E '.logs$|.metrics$|.traces$' | parallel -j 16 export_deferred_signal_file )
+      rm -rf "$dir"
+    }
+    export -f export_deferred_signal_artifacts
+    export_deferred_signal_file() {
+      file="$1"
+      headers="$(mktemp)"
+      echo "$OTEL_EXPORTER_OTLP_HEADERS" >> "$headers"
+      case "$file" in
+        *.logs) endpoint="${OTEL_EXPORTER_OTLP_LOGS_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/logs}"; echo "$OTEL_EXPORTER_OTLP_LOGS_HEADERS" >> "$headers";;
+        *.metrics) endpoint="${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/metrics}"; echo "$OTEL_EXPORTER_OTLP_METRICS_HEADERS" >> "$headers";;
+        *.traces) endpoint="${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/traces}"; echo "$OTEL_EXPORTER_OTLP_TRACES_HEADERS" >> "$headers";;
+        *) return 1;;
+      esac
+      read -r content_type < "$file"
+      curl --retry 8 "$endpoint" -H "Content-Type: $content_type" -H @"$headers" --data-binary @<(tail -n +2 "$file")
+      rm "$headers"
+    }
+    export -f export_deferred_signal_file
+    jq -r '.name' "$artifacts_json" | ( grep -E '^opentelemetry_job_'"$job_id"'_signals_.*$' || true ) | parallel -j 16 export_deferred_signal_artifacts
+    continue
+  fi
   job_log_file="$(printf '%s' "${job_name//\//_}" | tr -d ':')"
   last_log_timestamp="$(read_log_file "$job_log_file" | tail -n 1 | cut -d ' ' -f 1 || true)"
   if [ -n "$last_log_timestamp" ] && [ "$last_log_timestamp" '>' "$job_completed_at" ]; then job_completed_at="$last_log_timestamp"; fi
@@ -359,33 +385,6 @@ done | sed 's/\t/ /g' | while read -r TRACEPARENT job_id step_number step_conclu
   
 done
 
-echo "::endgroup::"
-
-echo "::group::Deferred Export"
-export_deferred_signal_artifacts() {
-  artifact_name="$1"
-  dir="$(mktemp -d)"
-  gh_artifact_download "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" "$artifact_name" "$dir" || return 0
-  ( cd "$dir" && ls | grep -E '.logs$|.metrics$|.traces$' | parallel -j 16 export_deferred_signal_file )
-  rm -rf "$dir"
-}
-export -f export_deferred_signal_artifacts
-export_deferred_signal_file() {
-  file="$1"
-  headers="$(mktemp)"
-  echo "$OTEL_EXPORTER_OTLP_HEADERS" >> "$headers"
-  case "$file" in
-    *.logs) endpoint="${OTEL_EXPORTER_OTLP_LOGS_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/logs}"; echo "$OTEL_EXPORTER_OTLP_LOGS_HEADERS" >> "$headers";;
-    *.metrics) endpoint="${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/metrics}"; echo "$OTEL_EXPORTER_OTLP_METRICS_HEADERS" >> "$headers";;
-    *.traces) endpoint="${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/traces}"; echo "$OTEL_EXPORTER_OTLP_TRACES_HEADERS" >> "$headers";;
-    *) return 1;;
-  esac
-  read -r content_type < "$file"
-  curl --retry 8 "$endpoint" -H "Content-Type: $content_type" -H @"$headers" --data-binary @<(tail -n +2 "$file")
-  rm "$headers"
-}
-export -f export_deferred_signal_file
-jq -r '.name' "$artifacts_json" | ( grep -E '^opentelemetry_job_.*_signals_.*$' || true ) | parallel -j 16 export_deferred_signal_artifacts
 echo "::endgroup::"
 
 otel_shutdown
