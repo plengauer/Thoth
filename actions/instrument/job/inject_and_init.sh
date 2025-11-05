@@ -181,7 +181,7 @@ for node_path in "$(readlink -f /proc/*/exe | grep '/Runner.Worker$' | rev | cut
   gcc -o "$node_path" forward.c -DEXECUTABLE=/bin/bash -DARG1="$GITHUB_ACTION_PATH"/decorate_action_node.sh -DARG2="$node_path_new" 2>&1 | perl -0777 -pe '' & # path is hardcoded in the runners
 done
 ( if type docker; then docker_path="$(which docker)" && sudo mv "$docker_path" "$relocated_binary_dir" && sudo gcc -o "$docker_path" forward.c -DEXECUTABLE=/bin/bash -DARG1="$GITHUB_ACTION_PATH"/decorate_action_docker.sh -DARG2="$relocated_binary_dir"/docker; fi 2>&1 | perl -0777 -pe '' ) &
-if [ "$GITHUB_JOB" = copilot ] && [ "$GITHUB_WORKFLOW" = 'Running Copilot' ]; then
+if [ "$GITHUB_JOB" = copilot ] && [ "$GITHUB_WORKFLOW" = 'Copilot coding agent' ]; then
   for script_file in "${RUNNER_TEMP}"/*-action-main/*/*.sh; do
     ( sed -i 's~#!/bin/sh~#!/bin/sh\n. otel.sh~g' "$script_file" \
       && sed -i 's~#!/bin/bash~#!/bin/bash\n. otel.sh~g' "$script_file" \
