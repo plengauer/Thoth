@@ -9,7 +9,7 @@ echo "::endgroup::"
 . ../shared/id_printer.sh
 
 echo "::group::Install Dependencies"
-bash -e -o pipefail ../shared/install.sh curl wget jq sed unzip
+bash -e -o pipefail ../shared/install.sh curl wget jq sed unzip parallel
 echo "::endgroup::"
 
 # selfmonitoring
