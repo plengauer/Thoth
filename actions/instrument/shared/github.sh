@@ -65,7 +65,7 @@ gh_artifact_upload() {
   GITHUB_TOKEN="$INPUT_GITHUB_TOKEN" node -e '
     const path = require("path");
     const { DefaultArtifactClient } = require("@actions/artifact");
-    new DefaultArtifactClient().uploadArtifact("'"$3"'", [ "'"$(echo "${@:4}" | tr ' ' '\n' | sed -E 's/^(.*)$/"\1"/g' | tr '\n' ',')"'" ], path.dirname("'"$4"'"));
+    new DefaultArtifactClient().uploadArtifact("'"$3"'", [ '"$(echo "${@:4}" | tr ' ' '\n' | sed -E 's/^(.*)$/"\1"/g' | tr '\n' ',')"' ], path.dirname("'"$4"'"));
   '
 }
 export -f gh_artifact_upload
