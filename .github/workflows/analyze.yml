@@ -1,9 +1,13 @@
 name: "Analyze"
 on:
   push:
-    branches: "main"
+    branches:
+      - "main"
+      - "release/v*"
   pull_request:
-    branches: "main"
+    branches:
+      - "main"
+      - "release/v*"
   schedule:
     - cron: '0 0 * * *'
 env:
