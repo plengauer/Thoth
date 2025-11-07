@@ -42,15 +42,19 @@ jobs:
           echo "new_version=$new_version" >> "$GITHUB_OUTPUT"
           echo "::endgroup::"
       
-      - uses: peter-evans/create-pull-request@v7.0.8
+      - id: open-pr
+        uses: peter-evans/create-pull-request@v7.0.8
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
-          commit-message: "Bump patch version to ${{ steps.bump.outputs.new_version }}"
+          commit-message: "Bump Version"
           base: ${{ github.ref_name }}
-          branch: bump-version/${{ github.ref_name }}
-          title: "Bump patch version to ${{ steps.bump.outputs.new_version }}"
+          branch: versionbump/${{ github.ref_name }}
+          title: "Automatic Version Bump"
           body: |
-            Automated patch version bump on release branch ${{ github.ref_name }}
-            
-            New version: ${{ steps.bump.outputs.new_version }}
+            This PR bumps version(s) to trigger a release.
+            (this PR is automatically generated)
           delete-branch: true
+      - run: sleep 60
+      - run: gh pr merge --squash --auto ${{ steps.open-pr.outputs.pull-request-number }}
+        env:
+          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
