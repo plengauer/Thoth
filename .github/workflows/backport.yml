@@ -173,9 +173,7 @@ jobs:
           delete-branch: true
       - run: sleep 60 # let API catch up
         if: steps.open-pr.outputs.pull-request-number != null
-      - uses: peter-evans/enable-pull-request-automerge@v3.0.0
+      - run: gh pr merge --squash --auto ${{ steps.open-pr.outputs.pull-request-number }}
         if: steps.open-pr.outputs.pull-request-number != null
-        with:
-          token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
-          pull-request-number: ${{ steps.open-pr.outputs.pull-request-number }}
-          merge-method: squash
+        env:
+          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
