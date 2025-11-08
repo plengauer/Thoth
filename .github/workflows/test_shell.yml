@@ -60,7 +60,7 @@ jobs:
       - uses: actions/download-artifact@v6.0.0
         with:
           name: packages
-      - run: sudo apt-get -y install ./package.deb
+      - run: sudo apt-get -y install --allow-downgrades ./package.deb
   list-images:
     needs: smoke
     runs-on: ubuntu-latest
