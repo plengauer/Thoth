@@ -30,7 +30,7 @@ fi
 if [ "$deferred" = true ]; then
   echo "::group::Setup Deferred Export"
   export INTERNAL_OTEL_DEFERRED_EXPORT_DIR="$(TMPDIR="$(pwd)" mktemp -d)"
-  nohup node -e "
+  ( nohup node -e "
     let counter = 0;
     require('http').createServer(function (req, res) {
       let filename = '$INTERNAL_OTEL_DEFERRED_EXPORT_DIR' + '/' + counter++ + '.' + req.url.split('/').pop();
@@ -38,7 +38,7 @@ if [ "$deferred" = true ]; then
       req.on('data', (chunk) => { require('fs').appendFileSync(filename, chunk); });
       req.on('end', () => { res.writeHead(200); res.end(); });
     }).listen(4320);
-  " 1> /dev/null 2> /dev/null &
+  " 1> /dev/null 2> /dev/null & )
   echo "::endgroup::"
 fi
 
