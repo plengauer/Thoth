@@ -20,7 +20,7 @@ jobs:
           secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}","${{ secrets.OPENAI_TOKEN }}"]'
 
       - id: autoversion
-        uses: plengauer/autoversion@v2.0.1
+        uses: plengauer/autoversion@v2.0.2
         with:
           github_token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           openai_token: ${{ secrets.OPENAI_TOKEN }}
