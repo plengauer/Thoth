@@ -4,9 +4,9 @@ on:
     branches:
       - 'release/v*.*'
     paths:
-      - 'meta/*'
-      - 'src/*'
-      - 'actions/*'
+      - 'meta/**'
+      - 'src/**'
+      - 'actions/**'
     paths-ignore:
       - 'VERSION'
 concurrency:
