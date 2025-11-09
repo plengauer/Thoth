@@ -66,7 +66,7 @@ _otel_call_and_record_pipes() {
     local exit_code="$(\cat "$exit_code_file")"
     \rm "$exit_code_file" 2> /dev/null
   fi
-  if _otel_wait_for_process_with_timeout 200 "$stdout_pid" && _otel_wait_for_process_with_timeout 100 "$stderr_pid"; then
+  if _otel_wait_for_process_with_timeout 50 "$stdout_pid" && _otel_wait_for_process_with_timeout 10 "$stderr_pid"; then
     # similar to logs, we cannot just blindly wait, the control flow must continue when the command terminates, not when the streams close (they may be inherited to grandchildren that havent terminated yet
     # so we wait for a short moment, and then simply move on in case the streams have closed
     \wait "$stdin_bytes_pid" "$stdin_lines_pid" "$stdout_bytes_pid" "$stdout_lines_pid" "$stderr_bytes_pid" "$stderr_lines_pid" "$stdout_pid" "$stderr_pid"
