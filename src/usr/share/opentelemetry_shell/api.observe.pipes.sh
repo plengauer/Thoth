@@ -66,7 +66,7 @@ _otel_call_and_record_pipes() {
     local exit_code="$(\cat "$exit_code_file")"
     \rm "$exit_code_file" 2> /dev/null
   fi
-  if _otel_wait_for_process_with_timeout 200 "$stdout_pid" "$stderr_pid"; then
+  if _otel_wait_for_process_with_timeout 200 "$stdout_pid" && _otel_wait_for_process_with_timeout 100 "$stderr_pid"; then
      # this is wait is a problem, it will block execution if the process was a shell or some other process that forked a subprocess that inherited stdout or stderr and didnt terminate with its parent
     \wait "$stdin_bytes_pid" "$stdin_lines_pid" "$stdout_bytes_pid" "$stdout_lines_pid" "$stderr_bytes_pid" "$stderr_lines_pid" "$stdout_pid" "$stderr_pid"
     if \[ "$observe_stdin" = TRUE ]; then
