@@ -525,6 +525,15 @@ _otel_line_split() {
   \tr ' ' '\n'
 }
 
+_otel_wait_for_process_with_timeout() {
+  local timeout="$1"
+  local pid="$2"
+  local interval=100
+  local count=$(($1 / 100))
+  while \[ "$count" -gt 0 ] && \kill -0 "$pid" 1> /dev/null 2> /dev/null; do sleep 0.1; count=$((count - 1)); done
+  \[ "$count" -gt 0 ]
+}
+
 # this is functionally equivalent with "$*" but does not require IFS to be set properly
 _otel_dollar_star() {
   # \echo "$*" # dont do this because it uses the IFS which may not be set properly (and we dont wanna reset and cause a sideeffect, especially because we would have to set empty and unset state of IFS properly)
