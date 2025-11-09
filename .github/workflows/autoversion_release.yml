@@ -7,8 +7,7 @@ on:
       - 'meta/**'
       - 'src/**'
       - 'actions/**'
-    paths-ignore:
-      - 'VERSION'
+      - '!VERSION'
 concurrency:
   group: bump-version-${{ github.ref }}
   cancel-in-progress: false
