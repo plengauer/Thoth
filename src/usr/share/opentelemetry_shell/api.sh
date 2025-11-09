@@ -528,8 +528,8 @@ _otel_line_split() {
 _otel_wait_for_process_with_timeout() {
   local timeout="$1"
   local pid="$2"
-  local count=$(($timeout / 100))
-  while \[ "$count" -gt 0 ] && \kill -0 "$pid" 1> /dev/null 2> /dev/null; do sleep 0.1; count=$((count - 1)); done
+  local count=$(($timeout / 10))
+  while \[ "$count" -gt 0 ] && \kill -0 "$pid" 1> /dev/null 2> /dev/null; do \sleep 0.01; count=$((count - 1)); done
   \[ "$count" -gt 0 ]
 }
 
