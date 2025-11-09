@@ -67,7 +67,8 @@ _otel_call_and_record_pipes() {
     \rm "$exit_code_file" 2> /dev/null
   fi
   if _otel_wait_for_process_with_timeout 200 "$stdout_pid" && _otel_wait_for_process_with_timeout 100 "$stderr_pid"; then
-     # this is wait is a problem, it will block execution if the process was a shell or some other process that forked a subprocess that inherited stdout or stderr and didnt terminate with its parent
+    # similar to logs, we cannot just blindly wait, the control flow must continue when the command terminates, not when the streams close (they may be inherited to grandchildren that havent terminated yet
+    # so we wait for a short moment, and then simply move on in case the streams have closed
     \wait "$stdin_bytes_pid" "$stdin_lines_pid" "$stdout_bytes_pid" "$stdout_lines_pid" "$stderr_bytes_pid" "$stderr_lines_pid" "$stdout_pid" "$stderr_pid"
     if \[ "$observe_stdin" = TRUE ]; then
       _otel_record_pipes "$span_handle" stdin 0 "$stdin_bytes_result" "$stdin_lines_result"
