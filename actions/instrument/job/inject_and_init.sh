@@ -3,12 +3,17 @@ set -e -o pipefail
 if [ -n "$INPUT_DEBUG" ]; then set -mx; fi
 
 echo "::group::Validate Configuration"
+export OTEL_SERVICE_NAME="${OTEL_SERVICE_NAME:-"$(echo "$GITHUB_REPOSITORY" | cut -d / -f 2-) CI"}"
+if [ "$GITHUB_JOB" = copilot ] && [ "$GITHUB_WORKFLOW" = 'Copilot coding agent' ]; then
+  export OTEL_SHELL_CONFIG_OBSERVE_PIPES=FALSE
+  export OTEL_SHELL_CONFIG_OBSERVE_STDERR=FALSE
+fi
 export OTEL_SHELL_CONFIG_MUTE_BUILTINS="${OTEL_SHELL_CONFIG_MUTE_BUILTINS:-TRUE}"
 export OTEL_SHELL_CONFIG_INJECT_DEEP="${OTEL_SHELL_CONFIG_INJECT_DEEP:-TRUE}"
+export OTEL_SHELL_CONFIG_OBSERVE_STDERR="${OTEL_SHELL_CONFIG_OBSERVE_STDERR:-TRUE}"
 export OTEL_SHELL_CONFIG_OBSERVE_SUBPROCESSES="${OTEL_SHELL_CONFIG_OBSERVE_SUBPROCESSES:-TRUE}"
 export OTEL_SHELL_CONFIG_OBSERVE_SIGNALS="${OTEL_SHELL_CONFIG_OBSERVE_SIGNALS:-TRUE}"
 export OTEL_SHELL_CONFIG_OBSERVE_PIPES="${OTEL_SHELL_CONFIG_OBSERVE_PIPES:-TRUE}"
-export OTEL_SERVICE_NAME="${OTEL_SERVICE_NAME:-"$(echo "$GITHUB_REPOSITORY" | cut -d / -f 2-) CI"}"
 . ../shared/config_validation.sh
 echo "::endgroup::"
 
@@ -211,18 +216,6 @@ for node_path in "$(readlink -f /proc/*/exe | grep '/Runner.Worker$' | rev | cut
   gcc -o "$node_path" forward.c -DEXECUTABLE=/bin/bash -DARG1="$GITHUB_ACTION_PATH"/decorate_action_node.sh -DARG2="$node_path_new" 2>&1 | perl -0777 -pe '' & # path is hardcoded in the runners
 done
 ( if type docker; then docker_path="$(which docker)" && sudo mv "$docker_path" "$relocated_binary_dir" && sudo gcc -o "$docker_path" forward.c -DEXECUTABLE=/bin/bash -DARG1="$GITHUB_ACTION_PATH"/decorate_action_docker.sh -DARG2="$relocated_binary_dir"/docker; fi 2>&1 | perl -0777 -pe '' ) &
-if [ "$GITHUB_JOB" = copilot ] && [ "$GITHUB_WORKFLOW" = 'Copilot coding agent' ]; then
-  for script_file in "${RUNNER_TEMP}"/*-action-main/*/*.sh; do
-    ( sed -i 's~#!/bin/sh~#!/bin/sh\n. otel.sh~g' "$script_file" \
-      && sed -i 's~#!/bin/bash~#!/bin/bash\n. otel.sh~g' "$script_file" \
-      && sed -i 's~"$RUNNER_PATH/ghcca-node/node/bin/node"~_otel_inject "$RUNNER_PATH/ghcca-node/node/bin/node"~g' "$script_file" \
-      && sed -i 's~"${target_location}/node/bin/node"~_otel_inject "${target_location}/node/bin/node"~g' "$script_file" \
-      && sed -i 's~^${command_to_execute}$~_otel_inject ${command_to_execute}~g' "$script_file" \
-    ) &
-  done
-  export OTEL_SHELL_CONFIG_OBSERVE_PIPES=FALSE
-  export OTEL_SHELL_CONFIG_OBSERVE_STDERR=FALSE
-fi
 echo "::endgroup::"
 
 echo "::group::Resolve W3C Tracecontext"
