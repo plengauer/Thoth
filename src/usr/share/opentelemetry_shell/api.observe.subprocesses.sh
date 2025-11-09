@@ -4,13 +4,14 @@ _otel_call_and_record_subprocesses() {
   local span_handle="$1"; shift
   local call_command="$1"; shift
   local command="$1"; shift
-  local strace="$(\mktemp -u -p "$_otel_shell_pipe_dir")_opentelemetry_shell_$$.strace.pipe"
-  \mkfifo "$strace"
-  _otel_record_subprocesses "$span_handle" < "$strace" 1> /dev/null 2> /dev/null &
-  local parse_pid="$!"
+  local strace_data="$(\mktemp -u -p "$_otel_shell_pipe_dir")_opentelemetry_shell_$$.strace.pipe"
+  local strace_signal="$(\mktemp -u -p "$_otel_shell_pipe_dir")_opentelemetry_shell_$$.strace.signal"
+  \mkfifo "$strace_data" "$strace_signal"
+  _otel_record_subprocesses "$span_handle" "$strace_signal" < "$strace_data" 1> /dev/null 2> /dev/null &
   local exit_code=0
-  $call_command '\strace' -D -ttt -f -e trace=process -o "$strace" -s 8192 "${command#\\}" "$@" || local exit_code="$?"
-  \rm "$strace" 2> /dev/null
+  $call_command '\strace' -D -ttt -f -e trace=process -o "$strace_data" -s 8192 "${command#\\}" "$@" || local exit_code="$?"
+  : < "$strace_signal"
+  \rm "$strace_data" "$strace_signal" 2> /dev/null
   return "$exit_code"
 }
 
@@ -29,7 +30,9 @@ _otel_call_and_record_subprocesses() {
 # 582400 +++ killed by SIGINT +++
 _otel_record_subprocesses() {
   local root_span_handle="$1"
+  local signal="$2"
   while \read -r pid time line; do
+    if \[ -z "$root_pid" ]; then local root_pid="$pid"; fi
     local operation=""
     case "$line" in
       *' (To be restarted)') ;;
@@ -85,7 +88,7 @@ _otel_record_subprocesses() {
         fi
         ;;
       exit)
-        if \[ -z "${span_handle:-}" ]; then continue; fi
+        if \[ -z "${span_handle:-}" ]; then if \[ "$pid" = "$root_pid" ]; then : > "$signal"; local signaled=true; fi; continue; fi
         if _otel_string_starts_with "$line" "+++ killed by " || (_otel_string_starts_with "$line" "+++ exited with " && ! _otel_string_starts_with "$line" "+++ exited with 0 +++"); then
           otel_span_error "$span_handle"
         fi
@@ -118,4 +121,5 @@ _otel_record_subprocesses() {
       *) ;;
     esac
   done
+  if \[ "${signaled:-false}" != true ]; then : > "$signal"; fi
 }
