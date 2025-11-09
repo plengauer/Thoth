@@ -6,7 +6,7 @@ _otel_call_and_record_subprocesses() {
   local command="$1"; shift
   local strace="$(\mktemp -u -p "$_otel_shell_pipe_dir")_opentelemetry_shell_$$.strace.pipe"
   \mkfifo "$strace"
-  _otel_record_subprocesses "$span_handle" < "$strace" &
+  _otel_record_subprocesses "$span_handle" < "$strace" 1> /dev/null 2> /dev/null &
   local parse_pid="$!"
   local exit_code=0
   $call_command '\strace' -D -ttt -f -e trace=process -o "$strace" -s 8192 "${command#\\}" "$@" || local exit_code="$?"
