@@ -29,5 +29,5 @@ jobs:
         with:
           github_token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           openai_token: ${{ secrets.OPENAI_TOKEN }}
-          path_include: ./src:./actions
+          path_include: ./meta:./src:./actions
           increment_threshold: minor
