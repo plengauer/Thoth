@@ -2,8 +2,7 @@
 
 ## Overview
 **Thoth** (aliases: `opentelemetry-bash`, `opentelemetry-shell`, `opentelemetry-github`) provides OpenTelemetry traces/metrics/logs for shell scripts and GitHub workflows. This is a **packaging project** integrating Shell, Python, Node.js, Java, and C to auto-instrument shell scripts and GitHub actions.
-
-**Key Facts**: 41 source files (31 .sh, 3 .py, 4 .java, 1 .c) | Package: `opentelemetry-shell` | Version: `/VERSION` file | Platforms: Debian/Ubuntu (apt), RHEL/Fedora/OpenSuse (rpm), Alpine (apk), GitHub Actions
+**Key Facts**: 41 source files (31 .sh, 3 .py, 4 .java, 1 .c) | Package: `opentelemetry-shell` | Version: `VERSION` file | Platforms: Debian/Ubuntu (apt), RHEL/Fedora/OpenSuse (rpm), Alpine (apk), GitHub Actions
 
 ## Structure
 - **`src/`**: Package source (mirrors `/usr` and `/opt` filesystem)
@@ -49,7 +48,7 @@ cd tests && bash run_tests.sh bash  # Or dash, ash, busybox
 
 **Other workflows**:
 - `analyze.yml`: CodeQL security scanning (C, JS, Python, Java, Actions) with `build-mode: none`
-- `publish.yml`: Triggers on `/VERSION` changes, builds artifacts, creates GitHub release with attestations
+- `publish.yml`: Triggers on `VERSION` changes, builds artifacts, creates GitHub release with attestations
 - `verify-deb-dependencies`: Auto-validates shell commands exist in declared package dependencies
 - `verify-deb-python-dependency`: Validates Python version matches OpenTelemetry SDK requirements
 
@@ -81,7 +80,7 @@ cd tests && bash run_tests.sh bash  # Or dash, ash, busybox
 2. Package metadata: `meta/debian/control` (Pre-Depends/Depends), `meta/rpm/*.spec` (Requires)
 
 ### Version Bump
-Edit `/VERSION` file → commit to `main` → `publish.yml` auto-triggers → creates GitHub release
+Edit `VERSION` file → commit to `main` → `publish.yml` auto-triggers → creates GitHub release
 
 ### Testing Changes
 ```bash
@@ -100,7 +99,8 @@ cd tests && bash run_tests.sh bash
 - **Instrumentation cache**: `/tmp/opentelemetry_shell_*_instrumentation_cache_*.aliases` (invalidated on script/executable changes)
 - **Multi-language**: Shell (function wrapping), Python (`opentelemetry-instrumentation`), Node.js (`@opentelemetry/auto-instrumentations-node`), Java (OpenTelemetry agent), C (HTTP header injection)
 - **GitHub Actions**: Workflow-level (GitHub API, post-completion) + job-level (injected first step) can coexist without duplication
-- **Shell compatibility**: All code MUST work on bash, dash, ash, busybox with POSIX compliance
+- **Shell compatibility**: All code MUST work on bash, dash, ash, busybox with POSIX compliance.
+- **Instrumentation**: Instrumentation is done via aliasing commands. Aliases will redirect to a function that starts/stops spans and then forwards to the original command. To avoid endless recursion, internal commands are always used with a backslash in front to avoid alias resolution. We must make sure, that all code that runs in the observed shell script (but not, for example, in package install scripts) is not triggering the alias.
 
 ## Critical Rules
 1. **Always install package before tests** - tests depend on `/usr/bin/*` files
