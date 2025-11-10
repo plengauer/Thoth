@@ -3,8 +3,11 @@ on:
   push:
     branches:
       - 'release/v*.*'
-    paths-ignore:
-      - 'VERSION'
+    paths:
+      - 'meta/**'
+      - 'src/**'
+      - 'actions/**'
+      - '!VERSION'
 concurrency:
   group: bump-version-${{ github.ref }}
   cancel-in-progress: false
