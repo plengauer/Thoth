@@ -29,6 +29,15 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    steps:
+      - uses: actions/checkout@v5.0.0
+      - run: echo hello world | cat
+
+  default:
+    needs: [ warmup ]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
       actions: read
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.32.0
