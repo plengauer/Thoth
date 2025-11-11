@@ -83,7 +83,7 @@ _otel_call_and_record_pipes() {
 }
 
 _otel_is_stream_open() {
-  \lsof -p "$1" -ad "$1" -O -b -t 2> /dev/null | \grep -qF -- "$1"
+  \lsof -p "$1" -ad "$2" -O -b -t 2> /dev/null | \grep -qF -- "$1"
 }
 
 _otel_record_pipes() {
