@@ -200,7 +200,7 @@ if [ -n "${GITHUB_ACTION_REPOSITORY:-}" ]; then
   otel_counter_observe "$counter_handle" "$observation_handle"
 fi
 
-if ! _otel_wait_for_process_with_timeout 2500 "$redirect_github_logs_pid"; then
+if lsof -p "$redirect_github_logs_pid" -ad 0 -O -b -t 2> /dev/null | \grep -qF -- "$redirect_github_logs_pid"; then
   kill -9 "$redirect_github_logs_pid" &> /dev/null
 fi
 wait "$redirect_github_logs_pid" "$record_github_logs_pid"
