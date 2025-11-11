@@ -205,7 +205,7 @@ jobs:
   export:
     runs-on: ubuntu-latest
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/workflow@v5.33.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/workflow@v5.33.3
         env:
           OTEL_SERVICE_NAME: ${{ secrets.SERVICE_NAME }}
           # ...
