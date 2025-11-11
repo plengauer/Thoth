@@ -66,7 +66,7 @@ _otel_call_and_record_pipes() {
     local exit_code="$(\cat "$exit_code_file")"
     \rm "$exit_code_file" 2> /dev/null
   fi
-  if \[ "$observe_stdin" = TRUE ] && ! _otel_is_stream_open "$stdin_pid" 1; then
+  if \[ "$observe_stdin" = TRUE ]; then
     \wait "$stdin_bytes_pid" "$stdin_lines_pid"
     _otel_record_pipes "$span_handle" stdin 0 "$stdin_bytes_result" "$stdin_lines_result"
   fi
