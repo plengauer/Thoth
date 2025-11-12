@@ -430,8 +430,9 @@ export -f root4job
 
 echo "::group::Start Observation"
 traceparent_file="$(mktemp -u)"
-mkfifo /tmp/opentelemetry_shell.github.debug.log
+mkfifo /tmp/opentelemetry_shell.github.debug.log /tmp/otel_shell_sdk_factory.pipe
 wait # make sure we wait for all background jobs before we actually start
+{ cat /usr/share/opentelemetry_shell/sdk.py | grep -E 'from|import' | while read -r line; do echo "$line"; done | sort -u; cat ./sdk_factory.py; } | nohup /opt/opentelemetry_shell/venv/bin/python &> /dev/null &
 nohup bash -c 'root4job "$@"' bash "$traceparent_file" &> /dev/null &
 echo "pid=$!" >> "$GITHUB_STATE"
 cat /tmp/opentelemetry_shell.github.debug.log
