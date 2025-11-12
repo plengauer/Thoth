@@ -2,7 +2,7 @@ Package: opentelemetry-shell
 Version: __VERSION__
 Architecture: all
 Pre-Depends: coreutils, util-linux, findutils, python3 (>= 3.9), python3-pip, python3-venv, tar
-Depends: grep, sed, awk, dpkg, procps, jq, xxd, libc-bin
+Depends: grep, sed, awk, dpkg, procps, lsof, jq, xxd, libc-bin
 Recommends: strace
 Enhances: ash, dash, bash, busybox
 Priority: extra

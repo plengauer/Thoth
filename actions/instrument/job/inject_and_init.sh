@@ -78,7 +78,7 @@ if [ "$INPUT_CACHE" = "true" ]; then
     fi
   fi
 fi
-bash -e -o pipefail ../shared/install.sh perl curl wget jq sed unzip parallel 'node;nodejs' npm 'docker;docker.io' 'gcc;build-essential'
+bash -e -o pipefail ../shared/install.sh perl curl wget jq sed unzip parallel 'node;nodejs' npm 'docker;docker.io' 'gcc;build-essential' lsof
 export OTEL_SHELL_COLLECTOR_IMAGE="$(cat Dockerfile | grep '^FROM ' | cut -d ' ' -f 2-)"
 if [ -r /opt/opentelemetry_shell/collector.image ]; then
   sudo docker load < /opt/opentelemetry_shell/collector.image
