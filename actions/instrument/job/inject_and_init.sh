@@ -428,11 +428,18 @@ root4job() {
 }
 export -f root4job
 
+echo "::group::Setting Up SDK Factory"
+mv sdk_factory.py sdk_factory.py.backup
+cat /usr/share/opentelemetry_shell/sdk.py | grep -E 'from|import' | while read -r line; do echo "$line"; done | sort -u > sdk_factory.py
+cat sdk_factory.py.backup >> sdk_factory.py
+rm sdk_factory.py.backup
+echo "::endgroup::"
+
 echo "::group::Start Observation"
 traceparent_file="$(mktemp -u)"
 mkfifo /tmp/opentelemetry_shell.github.debug.log /tmp/otel_shell_sdk_factory.pipe
 wait # make sure we wait for all background jobs before we actually start
-{ cat /usr/share/opentelemetry_shell/sdk.py | grep -E 'from|import' | while read -r line; do echo "$line"; done | sort -u; cat ./sdk_factory.py; } | nohup /opt/opentelemetry_shell/venv/bin/python &> /dev/null &
+nohup /opt/opentelemetry_shell/venv/bin/python < /tmp/otel_shell_sdk_factory.pipe &> /dev/null &
 nohup bash -c 'root4job "$@"' bash "$traceparent_file" &> /dev/null &
 echo "pid=$!" >> "$GITHUB_STATE"
 cat /tmp/opentelemetry_shell.github.debug.log
