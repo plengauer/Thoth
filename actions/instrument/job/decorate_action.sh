@@ -201,9 +201,12 @@ if [ -n "${GITHUB_ACTION_REPOSITORY:-}" ]; then
 fi
 
 if lsof -p "$redirect_github_logs_pid" -ad 0 -O -b -t 2> /dev/null | \grep -qF -- "$redirect_github_logs_pid"; then
-  kill -9 "$redirect_github_logs_pid" &> /dev/null
+  wait "$redirect_github_logs_pid"
+else
+  sleep 3
+  kill -9 "$redirect_github_logs_pid" &> /dev/null || true
 fi
-wait "$redirect_github_logs_pid" "$record_github_logs_pid"
+wait "$record_github_logs_pid"
 rm "$log_0_pipe" "$log_1_pipe"
 
 otel_shutdown
