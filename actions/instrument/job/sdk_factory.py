@@ -1,3 +1,4 @@
+import sys
 import os
 from /usr/share/opentelemetry_shell/sdk.py import run
 
