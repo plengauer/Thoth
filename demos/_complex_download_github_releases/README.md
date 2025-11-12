@@ -45,8 +45,8 @@ bash -e demo.sh
       GET
     curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=4
       GET
-  jq .[].assets[].browser_download_url -r
   head --lines=3
+  jq .[].assets[].browser_download_url -r
   grep .deb$
   grep _1.
   xargs wget
@@ -61,19 +61,19 @@ bash -e demo.sh
 ## Full Trace
 ```
 {
-  "trace_id": "cff2dcf83beed1ecc7dfb0866945e282",
-  "span_id": "11a5ee49081906d3",
-  "parent_span_id": "63a551b4ed848f63",
+  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
+  "span_id": "c1f7ddbfd3d1307e",
+  "parent_span_id": "aebc43782213df4b",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1762661057599095040,
-  "time_end": 1762661058117919488,
+  "time_start": 1762910742023362560,
+  "time_end": 1762910742680046592,
   "attributes": {
     "network.transport": "tcp",
     "network.protocol.name": "https",
     "network.protocol.version": "2",
-    "network.peer.address": "140.82.113.5",
+    "network.peer.address": "140.82.114.6",
     "network.peer.port": 443,
     "server.address": "api.github.com",
     "server.port": 443,
@@ -93,11 +93,11 @@ bash -e demo.sh
       "*/*"
     ],
     "http.request.header.traceparent": [
-      "00-cff2dcf83beed1ecc7dfb0866945e282-63a551b4ed848f63-01"
+      "00-f4d19b905ff381cd43a0148c426537f6-aebc43782213df4b-01"
     ],
     "http.response.status_code": 200,
     "http.response.header.date": [
-      "Sun, 09 Nov 2025 04:04:17 GMT"
+      "Wed, 12 Nov 2025 01:25:42 GMT"
     ],
     "http.response.header.content-type": [
       "application/json; charset=utf-8"
@@ -109,919 +109,7 @@ bash -e demo.sh
       "Accept,Accept-Encoding, Accept, X-Requested-With"
     ],
     "http.response.header.etag": [
-      "W/\"0eb6e9321f8058f411f7938a6501e3dbe4df792a6fd3ae8bd938dc603f1ee7d2\""
-    ],
-    "http.response.header.x-github-media-type": [
-      "github.v3; format=json"
-    ],
-    "http.response.header.link": [
-      "<https://api.github.com/repositories/692042935/releases?per_page=100&page=2>; rel=\"next\", <https://api.github.com/repositories/692042935/releases?per_page=100&page=4>; rel=\"last\""
-    ],
-    "http.response.header.x-github-api-version-selected": [
-      "2022-11-28"
-    ],
-    "http.response.header.access-control-expose-headers": [
-      "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset"
-    ],
-    "http.response.header.access-control-allow-origin": [
-      "*"
-    ],
-    "http.response.header.strict-transport-security": [
-      "max-age=31536000; includeSubdomains; preload"
-    ],
-    "http.response.header.x-frame-options": [
-      "deny"
-    ],
-    "http.response.header.x-content-type-options": [
-      "nosniff"
-    ],
-    "http.response.header.x-xss-protection": [
-      "0"
-    ],
-    "http.response.header.referrer-policy": [
-      "origin-when-cross-origin, strict-origin-when-cross-origin"
-    ],
-    "http.response.header.content-security-policy": [
-      "default-src 'none'"
-    ],
-    "http.response.header.server": [
-      "github.com"
-    ],
-    "http.response.header.accept-ranges": [
-      "bytes"
-    ],
-    "http.response.header.x-ratelimit-limit": [
-      "60"
-    ],
-    "http.response.header.x-ratelimit-remaining": [
-      "56"
-    ],
-    "http.response.header.x-ratelimit-reset": [
-      "1762661842"
-    ],
-    "http.response.header.x-ratelimit-resource": [
-      "core"
-    ],
-    "http.response.header.x-ratelimit-used": [
-      "4"
-    ],
-    "http.response.header.x-github-request-id": [
-      "EC11:304F92:3E58643:121B7319:691012C1"
-    ]
-  },
-  "resource_attributes": {
-    "telemetry.sdk.language": "shell",
-    "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.33.3",
-    "service.name": "unknown_service",
-    "azure.vm.scaleset.name": "",
-    "azure.vm.sku": "",
-    "cloud.platform": "azure_vm",
-    "cloud.provider": "azure",
-    "cloud.region": "eastus",
-    "cloud.resource_id": "/subscriptions/40f5713a-e7ee-41d4-a22a-62b5827363b6/resourceGroups/azure-eastus-general-40f5713a-e7ee-41d4-a22a-62b5827363b6/providers/Microsoft.Compute/virtualMachines/Ighbr0pQoW7P6S",
-    "host.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "host.name": "Ighbr0pQoW7P6S",
-    "host.type": "Standard_D4ads_v5",
-    "os.type": "linux",
-    "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "process.pid": 6018,
-    "process.parent_pid": 4646,
-    "process.executable.name": "bash",
-    "process.executable.path": "/usr/bin/bash",
-    "process.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
-    "process.command": "xargs",
-    "process.owner": "runner",
-    "process.runtime.name": "bash",
-    "process.runtime.description": "Bourne Again Shell",
-    "process.runtime.version": "5.2.21-2ubuntu4",
-    "process.runtime.options": "hBc"
-  },
-  "links": [],
-  "events": []
-}
-{
-  "trace_id": "cff2dcf83beed1ecc7dfb0866945e282",
-  "span_id": "cbba31b0218d45b0",
-  "parent_span_id": "196dd7768dd6365a",
-  "name": "GET",
-  "kind": "CLIENT",
-  "status": "UNSET",
-  "time_start": 1762661058482967808,
-  "time_end": 1762661059046854400,
-  "attributes": {
-    "network.transport": "tcp",
-    "network.protocol.name": "https",
-    "network.protocol.version": "2",
-    "network.peer.address": "140.82.113.5",
-    "network.peer.port": 443,
-    "server.address": "api.github.com",
-    "server.port": 443,
-    "url.full": "https://api.github.com:443/repos/plengauer/Thoth/releases?per_page=100&page=2",
-    "url.path": "/repos/plengauer/Thoth/releases",
-    "url.query": "per_page=100&page=2",
-    "url.scheme": "https",
-    "http.request.method": "GET",
-    "http.request.header.host": [
-      "api.github.com"
-    ],
-    "user_agent.original": "curl/8.5.0",
-    "http.request.header.user-agent": [
-      "curl/8.5.0"
-    ],
-    "http.request.header.accept": [
-      "*/*"
-    ],
-    "http.request.header.traceparent": [
-      "00-cff2dcf83beed1ecc7dfb0866945e282-196dd7768dd6365a-01"
-    ],
-    "http.response.status_code": 200,
-    "http.response.header.date": [
-      "Sun, 09 Nov 2025 04:04:18 GMT"
-    ],
-    "http.response.header.content-type": [
-      "application/json; charset=utf-8"
-    ],
-    "http.response.header.cache-control": [
-      "public, max-age=60, s-maxage=60"
-    ],
-    "http.response.header.vary": [
-      "Accept,Accept-Encoding, Accept, X-Requested-With"
-    ],
-    "http.response.header.etag": [
-      "W/\"12200b67372be293a338c83d6fbbfad75735ec219832ddcc215fa66086170c69\""
-    ],
-    "http.response.header.x-github-media-type": [
-      "github.v3; format=json"
-    ],
-    "http.response.header.link": [
-      "<https://api.github.com/repositories/692042935/releases?per_page=100&page=1>; rel=\"prev\", <https://api.github.com/repositories/692042935/releases?per_page=100&page=3>; rel=\"next\", <https://api.github.com/repositories/692042935/releases?per_page=100&page=4>; rel=\"last\", <https://api.github.com/repositories/692042935/releases?per_page=100&page=1>; rel=\"first\""
-    ],
-    "http.response.header.x-github-api-version-selected": [
-      "2022-11-28"
-    ],
-    "http.response.header.access-control-expose-headers": [
-      "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset"
-    ],
-    "http.response.header.access-control-allow-origin": [
-      "*"
-    ],
-    "http.response.header.strict-transport-security": [
-      "max-age=31536000; includeSubdomains; preload"
-    ],
-    "http.response.header.x-frame-options": [
-      "deny"
-    ],
-    "http.response.header.x-content-type-options": [
-      "nosniff"
-    ],
-    "http.response.header.x-xss-protection": [
-      "0"
-    ],
-    "http.response.header.referrer-policy": [
-      "origin-when-cross-origin, strict-origin-when-cross-origin"
-    ],
-    "http.response.header.content-security-policy": [
-      "default-src 'none'"
-    ],
-    "http.response.header.server": [
-      "github.com"
-    ],
-    "http.response.header.accept-ranges": [
-      "bytes"
-    ],
-    "http.response.header.x-ratelimit-limit": [
-      "60"
-    ],
-    "http.response.header.x-ratelimit-remaining": [
-      "55"
-    ],
-    "http.response.header.x-ratelimit-reset": [
-      "1762661842"
-    ],
-    "http.response.header.x-ratelimit-resource": [
-      "core"
-    ],
-    "http.response.header.x-ratelimit-used": [
-      "5"
-    ],
-    "http.response.header.x-github-request-id": [
-      "EC12:334BBB:8E50B41:28CFC1DD:691012C2"
-    ]
-  },
-  "resource_attributes": {
-    "telemetry.sdk.language": "shell",
-    "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.33.3",
-    "service.name": "unknown_service",
-    "azure.vm.scaleset.name": "",
-    "azure.vm.sku": "",
-    "cloud.platform": "azure_vm",
-    "cloud.provider": "azure",
-    "cloud.region": "eastus",
-    "cloud.resource_id": "/subscriptions/40f5713a-e7ee-41d4-a22a-62b5827363b6/resourceGroups/azure-eastus-general-40f5713a-e7ee-41d4-a22a-62b5827363b6/providers/Microsoft.Compute/virtualMachines/Ighbr0pQoW7P6S",
-    "host.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "host.name": "Ighbr0pQoW7P6S",
-    "host.type": "Standard_D4ads_v5",
-    "os.type": "linux",
-    "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "process.pid": 7499,
-    "process.parent_pid": 4646,
-    "process.executable.name": "bash",
-    "process.executable.path": "/usr/bin/bash",
-    "process.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
-    "process.command": "xargs",
-    "process.owner": "runner",
-    "process.runtime.name": "bash",
-    "process.runtime.description": "Bourne Again Shell",
-    "process.runtime.version": "5.2.21-2ubuntu4",
-    "process.runtime.options": "hBc"
-  },
-  "links": [],
-  "events": []
-}
-{
-  "trace_id": "cff2dcf83beed1ecc7dfb0866945e282",
-  "span_id": "f6288d636946da58",
-  "parent_span_id": "b43cce936f91f7b9",
-  "name": "GET",
-  "kind": "CLIENT",
-  "status": "UNSET",
-  "time_start": 1762661059405009664,
-  "time_end": 1762661059945648640,
-  "attributes": {
-    "network.transport": "tcp",
-    "network.protocol.name": "https",
-    "network.protocol.version": "2",
-    "network.peer.address": "140.82.113.5",
-    "network.peer.port": 443,
-    "server.address": "api.github.com",
-    "server.port": 443,
-    "url.full": "https://api.github.com:443/repos/plengauer/Thoth/releases?per_page=100&page=3",
-    "url.path": "/repos/plengauer/Thoth/releases",
-    "url.query": "per_page=100&page=3",
-    "url.scheme": "https",
-    "http.request.method": "GET",
-    "http.request.header.host": [
-      "api.github.com"
-    ],
-    "user_agent.original": "curl/8.5.0",
-    "http.request.header.user-agent": [
-      "curl/8.5.0"
-    ],
-    "http.request.header.accept": [
-      "*/*"
-    ],
-    "http.request.header.traceparent": [
-      "00-cff2dcf83beed1ecc7dfb0866945e282-b43cce936f91f7b9-01"
-    ],
-    "http.response.status_code": 200,
-    "http.response.header.date": [
-      "Sun, 09 Nov 2025 04:04:19 GMT"
-    ],
-    "http.response.header.content-type": [
-      "application/json; charset=utf-8"
-    ],
-    "http.response.header.cache-control": [
-      "public, max-age=60, s-maxage=60"
-    ],
-    "http.response.header.vary": [
-      "Accept,Accept-Encoding, Accept, X-Requested-With"
-    ],
-    "http.response.header.etag": [
-      "W/\"ea92e6dec85bd618a4c6463a67bdf40469f1693470f24c71964ae99576b6fcb1\""
-    ],
-    "http.response.header.x-github-media-type": [
-      "github.v3; format=json"
-    ],
-    "http.response.header.link": [
-      "<https://api.github.com/repositories/692042935/releases?per_page=100&page=2>; rel=\"prev\", <https://api.github.com/repositories/692042935/releases?per_page=100&page=4>; rel=\"next\", <https://api.github.com/repositories/692042935/releases?per_page=100&page=4>; rel=\"last\", <https://api.github.com/repositories/692042935/releases?per_page=100&page=1>; rel=\"first\""
-    ],
-    "http.response.header.x-github-api-version-selected": [
-      "2022-11-28"
-    ],
-    "http.response.header.access-control-expose-headers": [
-      "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset"
-    ],
-    "http.response.header.access-control-allow-origin": [
-      "*"
-    ],
-    "http.response.header.strict-transport-security": [
-      "max-age=31536000; includeSubdomains; preload"
-    ],
-    "http.response.header.x-frame-options": [
-      "deny"
-    ],
-    "http.response.header.x-content-type-options": [
-      "nosniff"
-    ],
-    "http.response.header.x-xss-protection": [
-      "0"
-    ],
-    "http.response.header.referrer-policy": [
-      "origin-when-cross-origin, strict-origin-when-cross-origin"
-    ],
-    "http.response.header.content-security-policy": [
-      "default-src 'none'"
-    ],
-    "http.response.header.server": [
-      "github.com"
-    ],
-    "http.response.header.accept-ranges": [
-      "bytes"
-    ],
-    "http.response.header.x-ratelimit-limit": [
-      "60"
-    ],
-    "http.response.header.x-ratelimit-remaining": [
-      "54"
-    ],
-    "http.response.header.x-ratelimit-reset": [
-      "1762661842"
-    ],
-    "http.response.header.x-ratelimit-resource": [
-      "core"
-    ],
-    "http.response.header.x-ratelimit-used": [
-      "6"
-    ],
-    "http.response.header.x-github-request-id": [
-      "EC13:3CDA6D:8B3F426:27BE8F69:691012C3"
-    ]
-  },
-  "resource_attributes": {
-    "telemetry.sdk.language": "shell",
-    "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.33.3",
-    "service.name": "unknown_service",
-    "azure.vm.scaleset.name": "",
-    "azure.vm.sku": "",
-    "cloud.platform": "azure_vm",
-    "cloud.provider": "azure",
-    "cloud.region": "eastus",
-    "cloud.resource_id": "/subscriptions/40f5713a-e7ee-41d4-a22a-62b5827363b6/resourceGroups/azure-eastus-general-40f5713a-e7ee-41d4-a22a-62b5827363b6/providers/Microsoft.Compute/virtualMachines/Ighbr0pQoW7P6S",
-    "host.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "host.name": "Ighbr0pQoW7P6S",
-    "host.type": "Standard_D4ads_v5",
-    "os.type": "linux",
-    "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "process.pid": 8396,
-    "process.parent_pid": 4646,
-    "process.executable.name": "bash",
-    "process.executable.path": "/usr/bin/bash",
-    "process.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
-    "process.command": "xargs",
-    "process.owner": "runner",
-    "process.runtime.name": "bash",
-    "process.runtime.description": "Bourne Again Shell",
-    "process.runtime.version": "5.2.21-2ubuntu4",
-    "process.runtime.options": "hBc"
-  },
-  "links": [],
-  "events": []
-}
-{
-  "trace_id": "cff2dcf83beed1ecc7dfb0866945e282",
-  "span_id": "ca2307ee3a7bbf9b",
-  "parent_span_id": "55ec823f034e5b78",
-  "name": "GET",
-  "kind": "CLIENT",
-  "status": "UNSET",
-  "time_start": 1762661060300696576,
-  "time_end": 1762661060728793088,
-  "attributes": {
-    "network.transport": "tcp",
-    "network.protocol.name": "https",
-    "network.protocol.version": "2",
-    "network.peer.address": "140.82.113.5",
-    "network.peer.port": 443,
-    "server.address": "api.github.com",
-    "server.port": 443,
-    "url.full": "https://api.github.com:443/repos/plengauer/Thoth/releases?per_page=100&page=4",
-    "url.path": "/repos/plengauer/Thoth/releases",
-    "url.query": "per_page=100&page=4",
-    "url.scheme": "https",
-    "http.request.method": "GET",
-    "http.request.header.host": [
-      "api.github.com"
-    ],
-    "user_agent.original": "curl/8.5.0",
-    "http.request.header.user-agent": [
-      "curl/8.5.0"
-    ],
-    "http.request.header.accept": [
-      "*/*"
-    ],
-    "http.request.header.traceparent": [
-      "00-cff2dcf83beed1ecc7dfb0866945e282-55ec823f034e5b78-01"
-    ],
-    "http.response.status_code": 200,
-    "http.response.header.date": [
-      "Sun, 09 Nov 2025 04:04:20 GMT"
-    ],
-    "http.response.header.content-type": [
-      "application/json; charset=utf-8"
-    ],
-    "http.response.header.cache-control": [
-      "public, max-age=60, s-maxage=60"
-    ],
-    "http.response.header.vary": [
-      "Accept,Accept-Encoding, Accept, X-Requested-With"
-    ],
-    "http.response.header.etag": [
-      "W/\"b107a21c7f69342c9f5e981b3f3d0f2bc2c676907594d92e52a307c5a70c155e\""
-    ],
-    "http.response.header.x-github-media-type": [
-      "github.v3; format=json"
-    ],
-    "http.response.header.link": [
-      "<https://api.github.com/repositories/692042935/releases?per_page=100&page=3>; rel=\"prev\", <https://api.github.com/repositories/692042935/releases?per_page=100&page=1>; rel=\"first\""
-    ],
-    "http.response.header.x-github-api-version-selected": [
-      "2022-11-28"
-    ],
-    "http.response.header.access-control-expose-headers": [
-      "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset"
-    ],
-    "http.response.header.access-control-allow-origin": [
-      "*"
-    ],
-    "http.response.header.strict-transport-security": [
-      "max-age=31536000; includeSubdomains; preload"
-    ],
-    "http.response.header.x-frame-options": [
-      "deny"
-    ],
-    "http.response.header.x-content-type-options": [
-      "nosniff"
-    ],
-    "http.response.header.x-xss-protection": [
-      "0"
-    ],
-    "http.response.header.referrer-policy": [
-      "origin-when-cross-origin, strict-origin-when-cross-origin"
-    ],
-    "http.response.header.content-security-policy": [
-      "default-src 'none'"
-    ],
-    "http.response.header.server": [
-      "github.com"
-    ],
-    "http.response.header.accept-ranges": [
-      "bytes"
-    ],
-    "http.response.header.x-ratelimit-limit": [
-      "60"
-    ],
-    "http.response.header.x-ratelimit-remaining": [
-      "53"
-    ],
-    "http.response.header.x-ratelimit-reset": [
-      "1762661842"
-    ],
-    "http.response.header.x-ratelimit-resource": [
-      "core"
-    ],
-    "http.response.header.x-ratelimit-used": [
-      "7"
-    ],
-    "http.response.header.x-github-request-id": [
-      "EC14:33F537:CE3764A:2FD6EB25:691012C4"
-    ]
-  },
-  "resource_attributes": {
-    "telemetry.sdk.language": "shell",
-    "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.33.3",
-    "service.name": "unknown_service",
-    "azure.vm.scaleset.name": "",
-    "azure.vm.sku": "",
-    "cloud.platform": "azure_vm",
-    "cloud.provider": "azure",
-    "cloud.region": "eastus",
-    "cloud.resource_id": "/subscriptions/40f5713a-e7ee-41d4-a22a-62b5827363b6/resourceGroups/azure-eastus-general-40f5713a-e7ee-41d4-a22a-62b5827363b6/providers/Microsoft.Compute/virtualMachines/Ighbr0pQoW7P6S",
-    "host.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "host.name": "Ighbr0pQoW7P6S",
-    "host.type": "Standard_D4ads_v5",
-    "os.type": "linux",
-    "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "process.pid": 9292,
-    "process.parent_pid": 4646,
-    "process.executable.name": "bash",
-    "process.executable.path": "/usr/bin/bash",
-    "process.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
-    "process.command": "xargs",
-    "process.owner": "runner",
-    "process.runtime.name": "bash",
-    "process.runtime.description": "Bourne Again Shell",
-    "process.runtime.version": "5.2.21-2ubuntu4",
-    "process.runtime.options": "hBc"
-  },
-  "links": [],
-  "events": []
-}
-{
-  "trace_id": "cff2dcf83beed1ecc7dfb0866945e282",
-  "span_id": "16b1c43fc99d206c",
-  "parent_span_id": "8fcdf7787c3853f1",
-  "name": "GET",
-  "kind": "CLIENT",
-  "status": "UNSET",
-  "time_start": 1762661061525520896,
-  "time_end": 1762661061633324288,
-  "attributes": {
-    "network.protocol.name": "https",
-    "network.transport": "tcp",
-    "network.peer.address": "140.82.113.3",
-    "network.peer.port": 443,
-    "server.address": "github.com",
-    "server.port": 443,
-    "url.full": "https://github.com/plengauer/Thoth/releases/download/v1.13.7/opentelemetry-shell_1.13.7.deb",
-    "url.path": "/plengauer/Thoth/releases/download/v1.13.7/opentelemetry-shell_1.13.7.deb",
-    "url.scheme": "https",
-    "user_agent.original": "wget",
-    "http.request.method": "GET",
-    "http.response.status_code": 302
-  },
-  "resource_attributes": {
-    "telemetry.sdk.language": "shell",
-    "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.33.3",
-    "service.name": "unknown_service",
-    "azure.vm.scaleset.name": "",
-    "azure.vm.sku": "",
-    "cloud.platform": "azure_vm",
-    "cloud.provider": "azure",
-    "cloud.region": "eastus",
-    "cloud.resource_id": "/subscriptions/40f5713a-e7ee-41d4-a22a-62b5827363b6/resourceGroups/azure-eastus-general-40f5713a-e7ee-41d4-a22a-62b5827363b6/providers/Microsoft.Compute/virtualMachines/Ighbr0pQoW7P6S",
-    "host.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "host.name": "Ighbr0pQoW7P6S",
-    "host.type": "Standard_D4ads_v5",
-    "os.type": "linux",
-    "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "process.pid": 10191,
-    "process.parent_pid": 4573,
-    "process.executable.name": "bash",
-    "process.executable.path": "/usr/bin/bash",
-    "process.command_line": "xargs wget",
-    "process.command": "xargs",
-    "process.owner": "runner",
-    "process.runtime.name": "bash",
-    "process.runtime.description": "Bourne Again Shell",
-    "process.runtime.version": "5.2.21-2ubuntu4",
-    "process.runtime.options": "hBc"
-  },
-  "links": [],
-  "events": []
-}
-{
-  "trace_id": "cff2dcf83beed1ecc7dfb0866945e282",
-  "span_id": "f6e21662ee9dc867",
-  "parent_span_id": "8fcdf7787c3853f1",
-  "name": "GET",
-  "kind": "CLIENT",
-  "status": "UNSET",
-  "time_start": 1762661061621230592,
-  "time_end": 1762661061668398592,
-  "attributes": {
-    "network.protocol.name": "https",
-    "network.transport": "tcp",
-    "network.peer.address": "185.199.110.133",
-    "network.peer.port": 443,
-    "server.address": "release-assets.githubusercontent.com",
-    "server.port": 443,
-    "url.full": "https://release-assets.githubusercontent.com/github-production-release-asset/692042935/5544a935-3cf9-4f9b-b6ed-d668fd012e99?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-11-09T04%3A41%3A53Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.7.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-11-09T03%3A41%3A26Z&ske=2025-11-09T04%3A41%3A53Z&sks=b&skv=2018-11-09&sig=qPqZKaQV9P6nrQCcSYptyYOijP1IuvEw5oR1LsNnYd4%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc2MjY2MTM2MSwibmJmIjoxNzYyNjYxMDYxLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.UIwCMg_OFHTWw72Sl_CdUPwF1IJk94RN2haEwcuWj1A&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.7.deb&response-content-type=application%2Foctet-stream",
-    "url.path": "/github-production-release-asset/692042935/5544a935-3cf9-4f9b-b6ed-d668fd012e99",
-    "url.query": "sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-11-09T04%3A41%3A53Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.7.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-11-09T03%3A41%3A26Z&ske=2025-11-09T04%3A41%3A53Z&sks=b&skv=2018-11-09&sig=qPqZKaQV9P6nrQCcSYptyYOijP1IuvEw5oR1LsNnYd4%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc2MjY2MTM2MSwibmJmIjoxNzYyNjYxMDYxLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.UIwCMg_OFHTWw72Sl_CdUPwF1IJk94RN2haEwcuWj1A&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.7.deb&response-content-type=application%2Foctet-stream",
-    "url.scheme": "https",
-    "user_agent.original": "wget",
-    "http.request.method": "GET",
-    "http.response.status_code": 200,
-    "http.response.header.content-type": [
-      "application/octet-stream"
-    ],
-    "http.response.header.content-length": [
-      "7202"
-    ]
-  },
-  "resource_attributes": {
-    "telemetry.sdk.language": "shell",
-    "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.33.3",
-    "service.name": "unknown_service",
-    "azure.vm.scaleset.name": "",
-    "azure.vm.sku": "",
-    "cloud.platform": "azure_vm",
-    "cloud.provider": "azure",
-    "cloud.region": "eastus",
-    "cloud.resource_id": "/subscriptions/40f5713a-e7ee-41d4-a22a-62b5827363b6/resourceGroups/azure-eastus-general-40f5713a-e7ee-41d4-a22a-62b5827363b6/providers/Microsoft.Compute/virtualMachines/Ighbr0pQoW7P6S",
-    "host.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "host.name": "Ighbr0pQoW7P6S",
-    "host.type": "Standard_D4ads_v5",
-    "os.type": "linux",
-    "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "process.pid": 10191,
-    "process.parent_pid": 4573,
-    "process.executable.name": "bash",
-    "process.executable.path": "/usr/bin/bash",
-    "process.command_line": "xargs wget",
-    "process.command": "xargs",
-    "process.owner": "runner",
-    "process.runtime.name": "bash",
-    "process.runtime.description": "Bourne Again Shell",
-    "process.runtime.version": "5.2.21-2ubuntu4",
-    "process.runtime.options": "hBc"
-  },
-  "links": [],
-  "events": []
-}
-{
-  "trace_id": "cff2dcf83beed1ecc7dfb0866945e282",
-  "span_id": "f51b79ec458ad52f",
-  "parent_span_id": "8fcdf7787c3853f1",
-  "name": "GET",
-  "kind": "CLIENT",
-  "status": "UNSET",
-  "time_start": 1762661061637663488,
-  "time_end": 1762661061732361984,
-  "attributes": {
-    "network.protocol.name": "https",
-    "network.transport": "tcp",
-    "network.peer.address": "140.82.113.3",
-    "network.peer.port": 443,
-    "server.address": "github.com",
-    "server.port": 443,
-    "url.full": "https://github.com/plengauer/Thoth/releases/download/v1.13.6/opentelemetry-shell_1.13.6.deb",
-    "url.path": "/plengauer/Thoth/releases/download/v1.13.6/opentelemetry-shell_1.13.6.deb",
-    "url.scheme": "https",
-    "user_agent.original": "wget",
-    "http.request.method": "GET",
-    "http.response.status_code": 302
-  },
-  "resource_attributes": {
-    "telemetry.sdk.language": "shell",
-    "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.33.3",
-    "service.name": "unknown_service",
-    "azure.vm.scaleset.name": "",
-    "azure.vm.sku": "",
-    "cloud.platform": "azure_vm",
-    "cloud.provider": "azure",
-    "cloud.region": "eastus",
-    "cloud.resource_id": "/subscriptions/40f5713a-e7ee-41d4-a22a-62b5827363b6/resourceGroups/azure-eastus-general-40f5713a-e7ee-41d4-a22a-62b5827363b6/providers/Microsoft.Compute/virtualMachines/Ighbr0pQoW7P6S",
-    "host.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "host.name": "Ighbr0pQoW7P6S",
-    "host.type": "Standard_D4ads_v5",
-    "os.type": "linux",
-    "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "process.pid": 10191,
-    "process.parent_pid": 4573,
-    "process.executable.name": "bash",
-    "process.executable.path": "/usr/bin/bash",
-    "process.command_line": "xargs wget",
-    "process.command": "xargs",
-    "process.owner": "runner",
-    "process.runtime.name": "bash",
-    "process.runtime.description": "Bourne Again Shell",
-    "process.runtime.version": "5.2.21-2ubuntu4",
-    "process.runtime.options": "hBc"
-  },
-  "links": [],
-  "events": []
-}
-{
-  "trace_id": "cff2dcf83beed1ecc7dfb0866945e282",
-  "span_id": "e32f76b0a8211b09",
-  "parent_span_id": "8fcdf7787c3853f1",
-  "name": "GET",
-  "kind": "CLIENT",
-  "status": "UNSET",
-  "time_start": 1762661061718888704,
-  "time_end": 1762661061767463168,
-  "attributes": {
-    "network.protocol.name": "https",
-    "network.transport": "tcp",
-    "network.peer.address": "185.199.110.133",
-    "network.peer.port": 443,
-    "server.address": "release-assets.githubusercontent.com",
-    "server.port": 443,
-    "url.full": "https://release-assets.githubusercontent.com/github-production-release-asset/692042935/e8091cbc-915a-4ba7-bca7-308817fe26c4?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-11-09T04%3A58%3A19Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.6.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-11-09T03%3A58%3A14Z&ske=2025-11-09T04%3A58%3A19Z&sks=b&skv=2018-11-09&sig=lq20I6Cqewb1YUJeygbbyZ8MMqPDI7hiZU%2FyibV7z7Y%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc2MjY2MTM2MSwibmJmIjoxNzYyNjYxMDYxLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.UIwCMg_OFHTWw72Sl_CdUPwF1IJk94RN2haEwcuWj1A&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.6.deb&response-content-type=application%2Foctet-stream",
-    "url.path": "/github-production-release-asset/692042935/e8091cbc-915a-4ba7-bca7-308817fe26c4",
-    "url.query": "sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-11-09T04%3A58%3A19Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.6.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-11-09T03%3A58%3A14Z&ske=2025-11-09T04%3A58%3A19Z&sks=b&skv=2018-11-09&sig=lq20I6Cqewb1YUJeygbbyZ8MMqPDI7hiZU%2FyibV7z7Y%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc2MjY2MTM2MSwibmJmIjoxNzYyNjYxMDYxLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.UIwCMg_OFHTWw72Sl_CdUPwF1IJk94RN2haEwcuWj1A&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.6.deb&response-content-type=application%2Foctet-stream",
-    "url.scheme": "https",
-    "user_agent.original": "wget",
-    "http.request.method": "GET",
-    "http.response.status_code": 200,
-    "http.response.header.content-type": [
-      "application/octet-stream"
-    ],
-    "http.response.header.content-length": [
-      "7184"
-    ]
-  },
-  "resource_attributes": {
-    "telemetry.sdk.language": "shell",
-    "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.33.3",
-    "service.name": "unknown_service",
-    "azure.vm.scaleset.name": "",
-    "azure.vm.sku": "",
-    "cloud.platform": "azure_vm",
-    "cloud.provider": "azure",
-    "cloud.region": "eastus",
-    "cloud.resource_id": "/subscriptions/40f5713a-e7ee-41d4-a22a-62b5827363b6/resourceGroups/azure-eastus-general-40f5713a-e7ee-41d4-a22a-62b5827363b6/providers/Microsoft.Compute/virtualMachines/Ighbr0pQoW7P6S",
-    "host.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "host.name": "Ighbr0pQoW7P6S",
-    "host.type": "Standard_D4ads_v5",
-    "os.type": "linux",
-    "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "process.pid": 10191,
-    "process.parent_pid": 4573,
-    "process.executable.name": "bash",
-    "process.executable.path": "/usr/bin/bash",
-    "process.command_line": "xargs wget",
-    "process.command": "xargs",
-    "process.owner": "runner",
-    "process.runtime.name": "bash",
-    "process.runtime.description": "Bourne Again Shell",
-    "process.runtime.version": "5.2.21-2ubuntu4",
-    "process.runtime.options": "hBc"
-  },
-  "links": [],
-  "events": []
-}
-{
-  "trace_id": "cff2dcf83beed1ecc7dfb0866945e282",
-  "span_id": "cb3d891fdf452644",
-  "parent_span_id": "8fcdf7787c3853f1",
-  "name": "GET",
-  "kind": "CLIENT",
-  "status": "UNSET",
-  "time_start": 1762661061737542656,
-  "time_end": 1762661061830126080,
-  "attributes": {
-    "network.protocol.name": "https",
-    "network.transport": "tcp",
-    "network.peer.address": "140.82.113.3",
-    "network.peer.port": 443,
-    "server.address": "github.com",
-    "server.port": 443,
-    "url.full": "https://github.com/plengauer/Thoth/releases/download/v1.13.5/opentelemetry-shell_1.13.5.deb",
-    "url.path": "/plengauer/Thoth/releases/download/v1.13.5/opentelemetry-shell_1.13.5.deb",
-    "url.scheme": "https",
-    "user_agent.original": "wget",
-    "http.request.method": "GET",
-    "http.response.status_code": 302
-  },
-  "resource_attributes": {
-    "telemetry.sdk.language": "shell",
-    "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.33.3",
-    "service.name": "unknown_service",
-    "azure.vm.scaleset.name": "",
-    "azure.vm.sku": "",
-    "cloud.platform": "azure_vm",
-    "cloud.provider": "azure",
-    "cloud.region": "eastus",
-    "cloud.resource_id": "/subscriptions/40f5713a-e7ee-41d4-a22a-62b5827363b6/resourceGroups/azure-eastus-general-40f5713a-e7ee-41d4-a22a-62b5827363b6/providers/Microsoft.Compute/virtualMachines/Ighbr0pQoW7P6S",
-    "host.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "host.name": "Ighbr0pQoW7P6S",
-    "host.type": "Standard_D4ads_v5",
-    "os.type": "linux",
-    "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "process.pid": 10191,
-    "process.parent_pid": 4573,
-    "process.executable.name": "bash",
-    "process.executable.path": "/usr/bin/bash",
-    "process.command_line": "xargs wget",
-    "process.command": "xargs",
-    "process.owner": "runner",
-    "process.runtime.name": "bash",
-    "process.runtime.description": "Bourne Again Shell",
-    "process.runtime.version": "5.2.21-2ubuntu4",
-    "process.runtime.options": "hBc"
-  },
-  "links": [],
-  "events": []
-}
-{
-  "trace_id": "cff2dcf83beed1ecc7dfb0866945e282",
-  "span_id": "b06f50a1a71d429d",
-  "parent_span_id": "8fcdf7787c3853f1",
-  "name": "GET",
-  "kind": "CLIENT",
-  "status": "UNSET",
-  "time_start": 1762661061816845312,
-  "time_end": 1762661061849851392,
-  "attributes": {
-    "network.protocol.name": "https",
-    "network.transport": "tcp",
-    "network.peer.address": "185.199.110.133",
-    "network.peer.port": 443,
-    "server.address": "release-assets.githubusercontent.com",
-    "server.port": 443,
-    "url.full": "https://release-assets.githubusercontent.com/github-production-release-asset/692042935/25d95ab9-56aa-4a77-8e84-d4947ecef0fc?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-11-09T04%3A50%3A19Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.5.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-11-09T03%3A50%3A16Z&ske=2025-11-09T04%3A50%3A19Z&sks=b&skv=2018-11-09&sig=HLyIPbpVJxCcWzhdwsIN1VSzzB%2BjlNKQVvRUVXPynFM%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc2MjY2MTM2MSwibmJmIjoxNzYyNjYxMDYxLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.UIwCMg_OFHTWw72Sl_CdUPwF1IJk94RN2haEwcuWj1A&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.5.deb&response-content-type=application%2Foctet-stream",
-    "url.path": "/github-production-release-asset/692042935/25d95ab9-56aa-4a77-8e84-d4947ecef0fc",
-    "url.query": "sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-11-09T04%3A50%3A19Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.5.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-11-09T03%3A50%3A16Z&ske=2025-11-09T04%3A50%3A19Z&sks=b&skv=2018-11-09&sig=HLyIPbpVJxCcWzhdwsIN1VSzzB%2BjlNKQVvRUVXPynFM%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc2MjY2MTM2MSwibmJmIjoxNzYyNjYxMDYxLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.UIwCMg_OFHTWw72Sl_CdUPwF1IJk94RN2haEwcuWj1A&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.5.deb&response-content-type=application%2Foctet-stream",
-    "url.scheme": "https",
-    "user_agent.original": "wget",
-    "http.request.method": "GET",
-    "http.response.status_code": 200,
-    "http.response.header.content-type": [
-      "application/octet-stream"
-    ],
-    "http.response.header.content-length": [
-      "7176"
-    ]
-  },
-  "resource_attributes": {
-    "telemetry.sdk.language": "shell",
-    "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.33.3",
-    "service.name": "unknown_service",
-    "azure.vm.scaleset.name": "",
-    "azure.vm.sku": "",
-    "cloud.platform": "azure_vm",
-    "cloud.provider": "azure",
-    "cloud.region": "eastus",
-    "cloud.resource_id": "/subscriptions/40f5713a-e7ee-41d4-a22a-62b5827363b6/resourceGroups/azure-eastus-general-40f5713a-e7ee-41d4-a22a-62b5827363b6/providers/Microsoft.Compute/virtualMachines/Ighbr0pQoW7P6S",
-    "host.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "host.name": "Ighbr0pQoW7P6S",
-    "host.type": "Standard_D4ads_v5",
-    "os.type": "linux",
-    "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "process.pid": 10191,
-    "process.parent_pid": 4573,
-    "process.executable.name": "bash",
-    "process.executable.path": "/usr/bin/bash",
-    "process.command_line": "xargs wget",
-    "process.command": "xargs",
-    "process.owner": "runner",
-    "process.runtime.name": "bash",
-    "process.runtime.description": "Bourne Again Shell",
-    "process.runtime.version": "5.2.21-2ubuntu4",
-    "process.runtime.options": "hBc"
-  },
-  "links": [],
-  "events": []
-}
-{
-  "trace_id": "cff2dcf83beed1ecc7dfb0866945e282",
-  "span_id": "16bf637b575ba8f6",
-  "parent_span_id": "9559db18b934847d",
-  "name": "HEAD",
-  "kind": "CLIENT",
-  "status": "UNSET",
-  "time_start": 1762661052756325376,
-  "time_end": 1762661056107063552,
-  "attributes": {
-    "network.transport": "tcp",
-    "network.peer.port": 443,
-    "server.address": "api.github.com",
-    "server.port": 443,
-    "network.protocol.name": "http",
-    "network.protocol.version": "1.1",
-    "url.full": "http://api.github.com:443/repos/plengauer/Thoth/releases?per_page=100",
-    "url.path": "/repos/plengauer/Thoth/releases",
-    "url.query": "per_page=100",
-    "url.scheme": "http",
-    "http.request.method": "HEAD",
-    "http.request.body.size": 0,
-    "user_agent.original": "netcat",
-    "http.request.header.connection": [
-      "close"
-    ],
-    "http.request.header.user-agent": [
-      "ncat"
-    ],
-    "http.request.header.host": [
-      "api.github.com"
-    ],
-    "http.response.status_code": 200,
-    "http.response.header.date": [
-      "Sun, 09 Nov 2025 04:04:13 GMT"
-    ],
-    "http.response.header.content-type": [
-      "application/json; charset=utf-8"
-    ],
-    "http.response.header.cache-control": [
-      "public, max-age=60, s-maxage=60"
-    ],
-    "http.response.header.vary": [
-      "Accept,Accept-Encoding, Accept, X-Requested-With"
-    ],
-    "http.response.header.etag": [
-      "W/\"b473a797a164e4d25057736e81faa412025e4c75acf671394c79667723685eef\""
+      "W/\"699d3e3cca2bffc3706828ddb6e8e9163a259b236fdacd5336033a764ea59d46\""
     ],
     "http.response.header.x-github-media-type": [
       "github.v3; format=json"
@@ -1069,7 +157,7 @@ bash -e demo.sh
       "57"
     ],
     "http.response.header.x-ratelimit-reset": [
-      "1762661842"
+      "1762914003"
     ],
     "http.response.header.x-ratelimit-resource": [
       "core"
@@ -1078,7 +166,919 @@ bash -e demo.sh
       "3"
     ],
     "http.response.header.x-github-request-id": [
-      "EC10:324CDA:8CC9114:286A85E2:691012BC"
+      "D001:176641:274E8DC:B140BC6:6913E216"
+    ]
+  },
+  "resource_attributes": {
+    "telemetry.sdk.language": "shell",
+    "telemetry.sdk.name": "opentelemetry",
+    "telemetry.sdk.version": "5.33.5",
+    "service.name": "unknown_service",
+    "azure.vm.scaleset.name": "",
+    "azure.vm.sku": "",
+    "cloud.platform": "azure_vm",
+    "cloud.provider": "azure",
+    "cloud.region": "northcentralus",
+    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
+    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "host.name": "EEgsQGO8KpK39v",
+    "host.type": "Standard_D4ads_v5",
+    "os.type": "linux",
+    "os.version": "6.11.0-1018-azure",
+    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "process.pid": 5995,
+    "process.parent_pid": 4630,
+    "process.executable.name": "bash",
+    "process.executable.path": "/usr/bin/bash",
+    "process.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
+    "process.command": "xargs",
+    "process.owner": "runner",
+    "process.runtime.name": "bash",
+    "process.runtime.description": "Bourne Again Shell",
+    "process.runtime.version": "5.2.21-2ubuntu4",
+    "process.runtime.options": "hBc"
+  },
+  "links": [],
+  "events": []
+}
+{
+  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
+  "span_id": "9b7cc2687f64636f",
+  "parent_span_id": "e59285ea89d843d9",
+  "name": "GET",
+  "kind": "CLIENT",
+  "status": "UNSET",
+  "time_start": 1762910743050949632,
+  "time_end": 1762910743597487360,
+  "attributes": {
+    "network.transport": "tcp",
+    "network.protocol.name": "https",
+    "network.protocol.version": "2",
+    "network.peer.address": "140.82.114.6",
+    "network.peer.port": 443,
+    "server.address": "api.github.com",
+    "server.port": 443,
+    "url.full": "https://api.github.com:443/repos/plengauer/Thoth/releases?per_page=100&page=2",
+    "url.path": "/repos/plengauer/Thoth/releases",
+    "url.query": "per_page=100&page=2",
+    "url.scheme": "https",
+    "http.request.method": "GET",
+    "http.request.header.host": [
+      "api.github.com"
+    ],
+    "user_agent.original": "curl/8.5.0",
+    "http.request.header.user-agent": [
+      "curl/8.5.0"
+    ],
+    "http.request.header.accept": [
+      "*/*"
+    ],
+    "http.request.header.traceparent": [
+      "00-f4d19b905ff381cd43a0148c426537f6-e59285ea89d843d9-01"
+    ],
+    "http.response.status_code": 200,
+    "http.response.header.date": [
+      "Wed, 12 Nov 2025 01:25:43 GMT"
+    ],
+    "http.response.header.content-type": [
+      "application/json; charset=utf-8"
+    ],
+    "http.response.header.cache-control": [
+      "public, max-age=60, s-maxage=60"
+    ],
+    "http.response.header.vary": [
+      "Accept,Accept-Encoding, Accept, X-Requested-With"
+    ],
+    "http.response.header.etag": [
+      "W/\"87e2bec4f7db3a07f3b350cd73dab916189a0a9ea52c023f3309ea5cf6168c45\""
+    ],
+    "http.response.header.x-github-media-type": [
+      "github.v3; format=json"
+    ],
+    "http.response.header.link": [
+      "<https://api.github.com/repositories/692042935/releases?per_page=100&page=1>; rel=\"prev\", <https://api.github.com/repositories/692042935/releases?per_page=100&page=3>; rel=\"next\", <https://api.github.com/repositories/692042935/releases?per_page=100&page=4>; rel=\"last\", <https://api.github.com/repositories/692042935/releases?per_page=100&page=1>; rel=\"first\""
+    ],
+    "http.response.header.x-github-api-version-selected": [
+      "2022-11-28"
+    ],
+    "http.response.header.access-control-expose-headers": [
+      "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset"
+    ],
+    "http.response.header.access-control-allow-origin": [
+      "*"
+    ],
+    "http.response.header.strict-transport-security": [
+      "max-age=31536000; includeSubdomains; preload"
+    ],
+    "http.response.header.x-frame-options": [
+      "deny"
+    ],
+    "http.response.header.x-content-type-options": [
+      "nosniff"
+    ],
+    "http.response.header.x-xss-protection": [
+      "0"
+    ],
+    "http.response.header.referrer-policy": [
+      "origin-when-cross-origin, strict-origin-when-cross-origin"
+    ],
+    "http.response.header.content-security-policy": [
+      "default-src 'none'"
+    ],
+    "http.response.header.server": [
+      "github.com"
+    ],
+    "http.response.header.accept-ranges": [
+      "bytes"
+    ],
+    "http.response.header.x-ratelimit-limit": [
+      "60"
+    ],
+    "http.response.header.x-ratelimit-remaining": [
+      "56"
+    ],
+    "http.response.header.x-ratelimit-reset": [
+      "1762914003"
+    ],
+    "http.response.header.x-ratelimit-resource": [
+      "core"
+    ],
+    "http.response.header.x-ratelimit-used": [
+      "4"
+    ],
+    "http.response.header.x-github-request-id": [
+      "D002:1B4547:27FA950:B484CAC:6913E217"
+    ]
+  },
+  "resource_attributes": {
+    "telemetry.sdk.language": "shell",
+    "telemetry.sdk.name": "opentelemetry",
+    "telemetry.sdk.version": "5.33.5",
+    "service.name": "unknown_service",
+    "azure.vm.scaleset.name": "",
+    "azure.vm.sku": "",
+    "cloud.platform": "azure_vm",
+    "cloud.provider": "azure",
+    "cloud.region": "northcentralus",
+    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
+    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "host.name": "EEgsQGO8KpK39v",
+    "host.type": "Standard_D4ads_v5",
+    "os.type": "linux",
+    "os.version": "6.11.0-1018-azure",
+    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "process.pid": 7476,
+    "process.parent_pid": 4630,
+    "process.executable.name": "bash",
+    "process.executable.path": "/usr/bin/bash",
+    "process.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
+    "process.command": "xargs",
+    "process.owner": "runner",
+    "process.runtime.name": "bash",
+    "process.runtime.description": "Bourne Again Shell",
+    "process.runtime.version": "5.2.21-2ubuntu4",
+    "process.runtime.options": "hBc"
+  },
+  "links": [],
+  "events": []
+}
+{
+  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
+  "span_id": "2d241c7b85f25273",
+  "parent_span_id": "2d07beffebfb92cd",
+  "name": "GET",
+  "kind": "CLIENT",
+  "status": "UNSET",
+  "time_start": 1762910743975700480,
+  "time_end": 1762910744604286464,
+  "attributes": {
+    "network.transport": "tcp",
+    "network.protocol.name": "https",
+    "network.protocol.version": "2",
+    "network.peer.address": "140.82.114.6",
+    "network.peer.port": 443,
+    "server.address": "api.github.com",
+    "server.port": 443,
+    "url.full": "https://api.github.com:443/repos/plengauer/Thoth/releases?per_page=100&page=3",
+    "url.path": "/repos/plengauer/Thoth/releases",
+    "url.query": "per_page=100&page=3",
+    "url.scheme": "https",
+    "http.request.method": "GET",
+    "http.request.header.host": [
+      "api.github.com"
+    ],
+    "user_agent.original": "curl/8.5.0",
+    "http.request.header.user-agent": [
+      "curl/8.5.0"
+    ],
+    "http.request.header.accept": [
+      "*/*"
+    ],
+    "http.request.header.traceparent": [
+      "00-f4d19b905ff381cd43a0148c426537f6-2d07beffebfb92cd-01"
+    ],
+    "http.response.status_code": 200,
+    "http.response.header.date": [
+      "Wed, 12 Nov 2025 01:25:44 GMT"
+    ],
+    "http.response.header.content-type": [
+      "application/json; charset=utf-8"
+    ],
+    "http.response.header.cache-control": [
+      "public, max-age=60, s-maxage=60"
+    ],
+    "http.response.header.vary": [
+      "Accept,Accept-Encoding, Accept, X-Requested-With"
+    ],
+    "http.response.header.etag": [
+      "W/\"1cc90e48d9847c08e58ef0211f5444baeef537ccbff0d39fab72378b7d0b2fc1\""
+    ],
+    "http.response.header.x-github-media-type": [
+      "github.v3; format=json"
+    ],
+    "http.response.header.link": [
+      "<https://api.github.com/repositories/692042935/releases?per_page=100&page=2>; rel=\"prev\", <https://api.github.com/repositories/692042935/releases?per_page=100&page=4>; rel=\"next\", <https://api.github.com/repositories/692042935/releases?per_page=100&page=4>; rel=\"last\", <https://api.github.com/repositories/692042935/releases?per_page=100&page=1>; rel=\"first\""
+    ],
+    "http.response.header.x-github-api-version-selected": [
+      "2022-11-28"
+    ],
+    "http.response.header.access-control-expose-headers": [
+      "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset"
+    ],
+    "http.response.header.access-control-allow-origin": [
+      "*"
+    ],
+    "http.response.header.strict-transport-security": [
+      "max-age=31536000; includeSubdomains; preload"
+    ],
+    "http.response.header.x-frame-options": [
+      "deny"
+    ],
+    "http.response.header.x-content-type-options": [
+      "nosniff"
+    ],
+    "http.response.header.x-xss-protection": [
+      "0"
+    ],
+    "http.response.header.referrer-policy": [
+      "origin-when-cross-origin, strict-origin-when-cross-origin"
+    ],
+    "http.response.header.content-security-policy": [
+      "default-src 'none'"
+    ],
+    "http.response.header.server": [
+      "github.com"
+    ],
+    "http.response.header.accept-ranges": [
+      "bytes"
+    ],
+    "http.response.header.x-ratelimit-limit": [
+      "60"
+    ],
+    "http.response.header.x-ratelimit-remaining": [
+      "55"
+    ],
+    "http.response.header.x-ratelimit-reset": [
+      "1762914003"
+    ],
+    "http.response.header.x-ratelimit-resource": [
+      "core"
+    ],
+    "http.response.header.x-ratelimit-used": [
+      "5"
+    ],
+    "http.response.header.x-github-request-id": [
+      "D003:1E9E8E:27510E4:B103BB7:6913E217"
+    ]
+  },
+  "resource_attributes": {
+    "telemetry.sdk.language": "shell",
+    "telemetry.sdk.name": "opentelemetry",
+    "telemetry.sdk.version": "5.33.5",
+    "service.name": "unknown_service",
+    "azure.vm.scaleset.name": "",
+    "azure.vm.sku": "",
+    "cloud.platform": "azure_vm",
+    "cloud.provider": "azure",
+    "cloud.region": "northcentralus",
+    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
+    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "host.name": "EEgsQGO8KpK39v",
+    "host.type": "Standard_D4ads_v5",
+    "os.type": "linux",
+    "os.version": "6.11.0-1018-azure",
+    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "process.pid": 8372,
+    "process.parent_pid": 4630,
+    "process.executable.name": "bash",
+    "process.executable.path": "/usr/bin/bash",
+    "process.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
+    "process.command": "xargs",
+    "process.owner": "runner",
+    "process.runtime.name": "bash",
+    "process.runtime.description": "Bourne Again Shell",
+    "process.runtime.version": "5.2.21-2ubuntu4",
+    "process.runtime.options": "hBc"
+  },
+  "links": [],
+  "events": []
+}
+{
+  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
+  "span_id": "b1206a94cc2915c2",
+  "parent_span_id": "d1679fd1562803d7",
+  "name": "GET",
+  "kind": "CLIENT",
+  "status": "UNSET",
+  "time_start": 1762910744979547904,
+  "time_end": 1762910745431303424,
+  "attributes": {
+    "network.transport": "tcp",
+    "network.protocol.name": "https",
+    "network.protocol.version": "2",
+    "network.peer.address": "140.82.114.6",
+    "network.peer.port": 443,
+    "server.address": "api.github.com",
+    "server.port": 443,
+    "url.full": "https://api.github.com:443/repos/plengauer/Thoth/releases?per_page=100&page=4",
+    "url.path": "/repos/plengauer/Thoth/releases",
+    "url.query": "per_page=100&page=4",
+    "url.scheme": "https",
+    "http.request.method": "GET",
+    "http.request.header.host": [
+      "api.github.com"
+    ],
+    "user_agent.original": "curl/8.5.0",
+    "http.request.header.user-agent": [
+      "curl/8.5.0"
+    ],
+    "http.request.header.accept": [
+      "*/*"
+    ],
+    "http.request.header.traceparent": [
+      "00-f4d19b905ff381cd43a0148c426537f6-d1679fd1562803d7-01"
+    ],
+    "http.response.status_code": 200,
+    "http.response.header.date": [
+      "Wed, 12 Nov 2025 01:25:45 GMT"
+    ],
+    "http.response.header.content-type": [
+      "application/json; charset=utf-8"
+    ],
+    "http.response.header.cache-control": [
+      "public, max-age=60, s-maxage=60"
+    ],
+    "http.response.header.vary": [
+      "Accept,Accept-Encoding, Accept, X-Requested-With"
+    ],
+    "http.response.header.etag": [
+      "W/\"378d665aea2e3c47283533f99afe5f80b237e47104d1f3d6478210c050aa8ae7\""
+    ],
+    "http.response.header.x-github-media-type": [
+      "github.v3; format=json"
+    ],
+    "http.response.header.link": [
+      "<https://api.github.com/repositories/692042935/releases?per_page=100&page=3>; rel=\"prev\", <https://api.github.com/repositories/692042935/releases?per_page=100&page=1>; rel=\"first\""
+    ],
+    "http.response.header.x-github-api-version-selected": [
+      "2022-11-28"
+    ],
+    "http.response.header.access-control-expose-headers": [
+      "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset"
+    ],
+    "http.response.header.access-control-allow-origin": [
+      "*"
+    ],
+    "http.response.header.strict-transport-security": [
+      "max-age=31536000; includeSubdomains; preload"
+    ],
+    "http.response.header.x-frame-options": [
+      "deny"
+    ],
+    "http.response.header.x-content-type-options": [
+      "nosniff"
+    ],
+    "http.response.header.x-xss-protection": [
+      "0"
+    ],
+    "http.response.header.referrer-policy": [
+      "origin-when-cross-origin, strict-origin-when-cross-origin"
+    ],
+    "http.response.header.content-security-policy": [
+      "default-src 'none'"
+    ],
+    "http.response.header.server": [
+      "github.com"
+    ],
+    "http.response.header.accept-ranges": [
+      "bytes"
+    ],
+    "http.response.header.x-ratelimit-limit": [
+      "60"
+    ],
+    "http.response.header.x-ratelimit-remaining": [
+      "54"
+    ],
+    "http.response.header.x-ratelimit-reset": [
+      "1762914003"
+    ],
+    "http.response.header.x-ratelimit-resource": [
+      "core"
+    ],
+    "http.response.header.x-ratelimit-used": [
+      "6"
+    ],
+    "http.response.header.x-github-request-id": [
+      "D004:171DA0:261584F:ABBA326:6913E218"
+    ]
+  },
+  "resource_attributes": {
+    "telemetry.sdk.language": "shell",
+    "telemetry.sdk.name": "opentelemetry",
+    "telemetry.sdk.version": "5.33.5",
+    "service.name": "unknown_service",
+    "azure.vm.scaleset.name": "",
+    "azure.vm.sku": "",
+    "cloud.platform": "azure_vm",
+    "cloud.provider": "azure",
+    "cloud.region": "northcentralus",
+    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
+    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "host.name": "EEgsQGO8KpK39v",
+    "host.type": "Standard_D4ads_v5",
+    "os.type": "linux",
+    "os.version": "6.11.0-1018-azure",
+    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "process.pid": 9268,
+    "process.parent_pid": 4630,
+    "process.executable.name": "bash",
+    "process.executable.path": "/usr/bin/bash",
+    "process.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
+    "process.command": "xargs",
+    "process.owner": "runner",
+    "process.runtime.name": "bash",
+    "process.runtime.description": "Bourne Again Shell",
+    "process.runtime.version": "5.2.21-2ubuntu4",
+    "process.runtime.options": "hBc"
+  },
+  "links": [],
+  "events": []
+}
+{
+  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
+  "span_id": "d1f0216eefda6d21",
+  "parent_span_id": "10a0e8d99b53a755",
+  "name": "GET",
+  "kind": "CLIENT",
+  "status": "UNSET",
+  "time_start": 1762910746230223872,
+  "time_end": 1762910747250383360,
+  "attributes": {
+    "network.protocol.name": "https",
+    "network.transport": "tcp",
+    "network.peer.address": "140.82.114.3",
+    "network.peer.port": 443,
+    "server.address": "github.com",
+    "server.port": 443,
+    "url.full": "https://github.com/plengauer/Thoth/releases/download/v1.13.7/opentelemetry-shell_1.13.7.deb",
+    "url.path": "/plengauer/Thoth/releases/download/v1.13.7/opentelemetry-shell_1.13.7.deb",
+    "url.scheme": "https",
+    "user_agent.original": "wget",
+    "http.request.method": "GET",
+    "http.response.status_code": 302
+  },
+  "resource_attributes": {
+    "telemetry.sdk.language": "shell",
+    "telemetry.sdk.name": "opentelemetry",
+    "telemetry.sdk.version": "5.33.5",
+    "service.name": "unknown_service",
+    "azure.vm.scaleset.name": "",
+    "azure.vm.sku": "",
+    "cloud.platform": "azure_vm",
+    "cloud.provider": "azure",
+    "cloud.region": "northcentralus",
+    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
+    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "host.name": "EEgsQGO8KpK39v",
+    "host.type": "Standard_D4ads_v5",
+    "os.type": "linux",
+    "os.version": "6.11.0-1018-azure",
+    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "process.pid": 10168,
+    "process.parent_pid": 4566,
+    "process.executable.name": "bash",
+    "process.executable.path": "/usr/bin/bash",
+    "process.command_line": "xargs wget",
+    "process.command": "xargs",
+    "process.owner": "runner",
+    "process.runtime.name": "bash",
+    "process.runtime.description": "Bourne Again Shell",
+    "process.runtime.version": "5.2.21-2ubuntu4",
+    "process.runtime.options": "hBc"
+  },
+  "links": [],
+  "events": []
+}
+{
+  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
+  "span_id": "54b4cb4c98ac5d21",
+  "parent_span_id": "10a0e8d99b53a755",
+  "name": "GET",
+  "kind": "CLIENT",
+  "status": "UNSET",
+  "time_start": 1762910746356625664,
+  "time_end": 1762910747285876480,
+  "attributes": {
+    "network.protocol.name": "https",
+    "network.transport": "tcp",
+    "network.peer.address": "185.199.108.133",
+    "network.peer.port": 443,
+    "server.address": "release-assets.githubusercontent.com",
+    "server.port": 443,
+    "url.full": "https://release-assets.githubusercontent.com/github-production-release-asset/692042935/5544a935-3cf9-4f9b-b6ed-d668fd012e99?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-11-12T02%3A03%3A15Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.7.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-11-12T01%3A02%3A43Z&ske=2025-11-12T02%3A03%3A15Z&sks=b&skv=2018-11-09&sig=OEfLwXMu%2FLKvvVU5R3SQo%2F4M4ODZP6RypHMe7ZnEO4Y%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc2MjkxMTA0NiwibmJmIjoxNzYyOTEwNzQ2LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.drbsO4qzMVmr5gdHZZ2zhD-LzQkCYEiHI2iC0VOaLn4&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.7.deb&response-content-type=application%2Foctet-stream",
+    "url.path": "/github-production-release-asset/692042935/5544a935-3cf9-4f9b-b6ed-d668fd012e99",
+    "url.query": "sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-11-12T02%3A03%3A15Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.7.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-11-12T01%3A02%3A43Z&ske=2025-11-12T02%3A03%3A15Z&sks=b&skv=2018-11-09&sig=OEfLwXMu%2FLKvvVU5R3SQo%2F4M4ODZP6RypHMe7ZnEO4Y%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc2MjkxMTA0NiwibmJmIjoxNzYyOTEwNzQ2LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.drbsO4qzMVmr5gdHZZ2zhD-LzQkCYEiHI2iC0VOaLn4&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.7.deb&response-content-type=application%2Foctet-stream",
+    "url.scheme": "https",
+    "user_agent.original": "wget",
+    "http.request.method": "GET",
+    "http.response.status_code": 200,
+    "http.response.header.content-type": [
+      "application/octet-stream"
+    ],
+    "http.response.header.content-length": [
+      "7202"
+    ]
+  },
+  "resource_attributes": {
+    "telemetry.sdk.language": "shell",
+    "telemetry.sdk.name": "opentelemetry",
+    "telemetry.sdk.version": "5.33.5",
+    "service.name": "unknown_service",
+    "azure.vm.scaleset.name": "",
+    "azure.vm.sku": "",
+    "cloud.platform": "azure_vm",
+    "cloud.provider": "azure",
+    "cloud.region": "northcentralus",
+    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
+    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "host.name": "EEgsQGO8KpK39v",
+    "host.type": "Standard_D4ads_v5",
+    "os.type": "linux",
+    "os.version": "6.11.0-1018-azure",
+    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "process.pid": 10168,
+    "process.parent_pid": 4566,
+    "process.executable.name": "bash",
+    "process.executable.path": "/usr/bin/bash",
+    "process.command_line": "xargs wget",
+    "process.command": "xargs",
+    "process.owner": "runner",
+    "process.runtime.name": "bash",
+    "process.runtime.description": "Bourne Again Shell",
+    "process.runtime.version": "5.2.21-2ubuntu4",
+    "process.runtime.options": "hBc"
+  },
+  "links": [],
+  "events": []
+}
+{
+  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
+  "span_id": "6efddf6340905564",
+  "parent_span_id": "10a0e8d99b53a755",
+  "name": "GET",
+  "kind": "CLIENT",
+  "status": "UNSET",
+  "time_start": 1762910747293980416,
+  "time_end": 1762910748316245504,
+  "attributes": {
+    "network.protocol.name": "https",
+    "network.transport": "tcp",
+    "network.peer.address": "140.82.114.3",
+    "network.peer.port": 443,
+    "server.address": "github.com",
+    "server.port": 443,
+    "url.full": "https://github.com/plengauer/Thoth/releases/download/v1.13.6/opentelemetry-shell_1.13.6.deb",
+    "url.path": "/plengauer/Thoth/releases/download/v1.13.6/opentelemetry-shell_1.13.6.deb",
+    "url.scheme": "https",
+    "user_agent.original": "wget",
+    "http.request.method": "GET",
+    "http.response.status_code": 302
+  },
+  "resource_attributes": {
+    "telemetry.sdk.language": "shell",
+    "telemetry.sdk.name": "opentelemetry",
+    "telemetry.sdk.version": "5.33.5",
+    "service.name": "unknown_service",
+    "azure.vm.scaleset.name": "",
+    "azure.vm.sku": "",
+    "cloud.platform": "azure_vm",
+    "cloud.provider": "azure",
+    "cloud.region": "northcentralus",
+    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
+    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "host.name": "EEgsQGO8KpK39v",
+    "host.type": "Standard_D4ads_v5",
+    "os.type": "linux",
+    "os.version": "6.11.0-1018-azure",
+    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "process.pid": 10168,
+    "process.parent_pid": 4566,
+    "process.executable.name": "bash",
+    "process.executable.path": "/usr/bin/bash",
+    "process.command_line": "xargs wget",
+    "process.command": "xargs",
+    "process.owner": "runner",
+    "process.runtime.name": "bash",
+    "process.runtime.description": "Bourne Again Shell",
+    "process.runtime.version": "5.2.21-2ubuntu4",
+    "process.runtime.options": "hBc"
+  },
+  "links": [],
+  "events": []
+}
+{
+  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
+  "span_id": "a98bd5cebfa743fd",
+  "parent_span_id": "10a0e8d99b53a755",
+  "name": "GET",
+  "kind": "CLIENT",
+  "status": "UNSET",
+  "time_start": 1762910747415895296,
+  "time_end": 1762910748354296064,
+  "attributes": {
+    "network.protocol.name": "https",
+    "network.transport": "tcp",
+    "network.peer.address": "185.199.108.133",
+    "network.peer.port": 443,
+    "server.address": "release-assets.githubusercontent.com",
+    "server.port": 443,
+    "url.full": "https://release-assets.githubusercontent.com/github-production-release-asset/692042935/e8091cbc-915a-4ba7-bca7-308817fe26c4?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-11-12T02%3A00%3A43Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.6.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-11-12T01%3A00%3A22Z&ske=2025-11-12T02%3A00%3A43Z&sks=b&skv=2018-11-09&sig=7e5vwCG9CLwaacKZGoLgPmnINF%2B3Kk48PI%2FNh3Bswzo%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc2MjkxMTA0NywibmJmIjoxNzYyOTEwNzQ3LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.ccuK-nLXWF8gfTy_L6L8J_uSrtLJ8qxfrxN9-wIRr3k&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.6.deb&response-content-type=application%2Foctet-stream",
+    "url.path": "/github-production-release-asset/692042935/e8091cbc-915a-4ba7-bca7-308817fe26c4",
+    "url.query": "sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-11-12T02%3A00%3A43Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.6.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-11-12T01%3A00%3A22Z&ske=2025-11-12T02%3A00%3A43Z&sks=b&skv=2018-11-09&sig=7e5vwCG9CLwaacKZGoLgPmnINF%2B3Kk48PI%2FNh3Bswzo%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc2MjkxMTA0NywibmJmIjoxNzYyOTEwNzQ3LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.ccuK-nLXWF8gfTy_L6L8J_uSrtLJ8qxfrxN9-wIRr3k&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.6.deb&response-content-type=application%2Foctet-stream",
+    "url.scheme": "https",
+    "user_agent.original": "wget",
+    "http.request.method": "GET",
+    "http.response.status_code": 200,
+    "http.response.header.content-type": [
+      "application/octet-stream"
+    ],
+    "http.response.header.content-length": [
+      "7184"
+    ]
+  },
+  "resource_attributes": {
+    "telemetry.sdk.language": "shell",
+    "telemetry.sdk.name": "opentelemetry",
+    "telemetry.sdk.version": "5.33.5",
+    "service.name": "unknown_service",
+    "azure.vm.scaleset.name": "",
+    "azure.vm.sku": "",
+    "cloud.platform": "azure_vm",
+    "cloud.provider": "azure",
+    "cloud.region": "northcentralus",
+    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
+    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "host.name": "EEgsQGO8KpK39v",
+    "host.type": "Standard_D4ads_v5",
+    "os.type": "linux",
+    "os.version": "6.11.0-1018-azure",
+    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "process.pid": 10168,
+    "process.parent_pid": 4566,
+    "process.executable.name": "bash",
+    "process.executable.path": "/usr/bin/bash",
+    "process.command_line": "xargs wget",
+    "process.command": "xargs",
+    "process.owner": "runner",
+    "process.runtime.name": "bash",
+    "process.runtime.description": "Bourne Again Shell",
+    "process.runtime.version": "5.2.21-2ubuntu4",
+    "process.runtime.options": "hBc"
+  },
+  "links": [],
+  "events": []
+}
+{
+  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
+  "span_id": "8e86a07f5b1db3d1",
+  "parent_span_id": "10a0e8d99b53a755",
+  "name": "GET",
+  "kind": "CLIENT",
+  "status": "UNSET",
+  "time_start": 1762910748361173504,
+  "time_end": 1762910749383774208,
+  "attributes": {
+    "network.protocol.name": "https",
+    "network.transport": "tcp",
+    "network.peer.address": "140.82.114.3",
+    "network.peer.port": 443,
+    "server.address": "github.com",
+    "server.port": 443,
+    "url.full": "https://github.com/plengauer/Thoth/releases/download/v1.13.5/opentelemetry-shell_1.13.5.deb",
+    "url.path": "/plengauer/Thoth/releases/download/v1.13.5/opentelemetry-shell_1.13.5.deb",
+    "url.scheme": "https",
+    "user_agent.original": "wget",
+    "http.request.method": "GET",
+    "http.response.status_code": 302
+  },
+  "resource_attributes": {
+    "telemetry.sdk.language": "shell",
+    "telemetry.sdk.name": "opentelemetry",
+    "telemetry.sdk.version": "5.33.5",
+    "service.name": "unknown_service",
+    "azure.vm.scaleset.name": "",
+    "azure.vm.sku": "",
+    "cloud.platform": "azure_vm",
+    "cloud.provider": "azure",
+    "cloud.region": "northcentralus",
+    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
+    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "host.name": "EEgsQGO8KpK39v",
+    "host.type": "Standard_D4ads_v5",
+    "os.type": "linux",
+    "os.version": "6.11.0-1018-azure",
+    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "process.pid": 10168,
+    "process.parent_pid": 4566,
+    "process.executable.name": "bash",
+    "process.executable.path": "/usr/bin/bash",
+    "process.command_line": "xargs wget",
+    "process.command": "xargs",
+    "process.owner": "runner",
+    "process.runtime.name": "bash",
+    "process.runtime.description": "Bourne Again Shell",
+    "process.runtime.version": "5.2.21-2ubuntu4",
+    "process.runtime.options": "hBc"
+  },
+  "links": [],
+  "events": []
+}
+{
+  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
+  "span_id": "f1ce1984e079f133",
+  "parent_span_id": "10a0e8d99b53a755",
+  "name": "GET",
+  "kind": "CLIENT",
+  "status": "UNSET",
+  "time_start": 1762910748857648896,
+  "time_end": 1762910749420133888,
+  "attributes": {
+    "network.protocol.name": "https",
+    "network.transport": "tcp",
+    "network.peer.address": "185.199.108.133",
+    "network.peer.port": 443,
+    "server.address": "release-assets.githubusercontent.com",
+    "server.port": 443,
+    "url.full": "https://release-assets.githubusercontent.com/github-production-release-asset/692042935/25d95ab9-56aa-4a77-8e84-d4947ecef0fc?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-11-12T02%3A01%3A13Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.5.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-11-12T01%3A00%3A56Z&ske=2025-11-12T02%3A01%3A13Z&sks=b&skv=2018-11-09&sig=Ye1Y4ku0nyDVjTtzNVW2wpXZamWb0tuU7OmmHW%2BzeWQ%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc2MjkxMTA0OCwibmJmIjoxNzYyOTEwNzQ4LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.PC0DGz48KZoKBgS7OWFYqKfUsLZlHg5AtKg_kGOhgpc&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.5.deb&response-content-type=application%2Foctet-stream",
+    "url.path": "/github-production-release-asset/692042935/25d95ab9-56aa-4a77-8e84-d4947ecef0fc",
+    "url.query": "sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-11-12T02%3A01%3A13Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.5.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-11-12T01%3A00%3A56Z&ske=2025-11-12T02%3A01%3A13Z&sks=b&skv=2018-11-09&sig=Ye1Y4ku0nyDVjTtzNVW2wpXZamWb0tuU7OmmHW%2BzeWQ%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc2MjkxMTA0OCwibmJmIjoxNzYyOTEwNzQ4LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.PC0DGz48KZoKBgS7OWFYqKfUsLZlHg5AtKg_kGOhgpc&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.5.deb&response-content-type=application%2Foctet-stream",
+    "url.scheme": "https",
+    "user_agent.original": "wget",
+    "http.request.method": "GET",
+    "http.response.status_code": 200,
+    "http.response.header.content-type": [
+      "application/octet-stream"
+    ],
+    "http.response.header.content-length": [
+      "7176"
+    ]
+  },
+  "resource_attributes": {
+    "telemetry.sdk.language": "shell",
+    "telemetry.sdk.name": "opentelemetry",
+    "telemetry.sdk.version": "5.33.5",
+    "service.name": "unknown_service",
+    "azure.vm.scaleset.name": "",
+    "azure.vm.sku": "",
+    "cloud.platform": "azure_vm",
+    "cloud.provider": "azure",
+    "cloud.region": "northcentralus",
+    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
+    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "host.name": "EEgsQGO8KpK39v",
+    "host.type": "Standard_D4ads_v5",
+    "os.type": "linux",
+    "os.version": "6.11.0-1018-azure",
+    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "process.pid": 10168,
+    "process.parent_pid": 4566,
+    "process.executable.name": "bash",
+    "process.executable.path": "/usr/bin/bash",
+    "process.command_line": "xargs wget",
+    "process.command": "xargs",
+    "process.owner": "runner",
+    "process.runtime.name": "bash",
+    "process.runtime.description": "Bourne Again Shell",
+    "process.runtime.version": "5.2.21-2ubuntu4",
+    "process.runtime.options": "hBc"
+  },
+  "links": [],
+  "events": []
+}
+{
+  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
+  "span_id": "8380c0741ef2ad7a",
+  "parent_span_id": "0567805a2e1de418",
+  "name": "HEAD",
+  "kind": "CLIENT",
+  "status": "UNSET",
+  "time_start": 1762910737090056960,
+  "time_end": 1762910740512978944,
+  "attributes": {
+    "network.transport": "tcp",
+    "network.peer.port": 443,
+    "server.address": "api.github.com",
+    "server.port": 443,
+    "network.protocol.name": "http",
+    "network.protocol.version": "1.1",
+    "url.full": "http://api.github.com:443/repos/plengauer/Thoth/releases?per_page=100",
+    "url.path": "/repos/plengauer/Thoth/releases",
+    "url.query": "per_page=100",
+    "url.scheme": "http",
+    "http.request.method": "HEAD",
+    "http.request.body.size": 0,
+    "user_agent.original": "netcat",
+    "http.request.header.connection": [
+      "close"
+    ],
+    "http.request.header.user-agent": [
+      "ncat"
+    ],
+    "http.request.header.host": [
+      "api.github.com"
+    ],
+    "http.response.status_code": 200,
+    "http.response.header.date": [
+      "Wed, 12 Nov 2025 01:25:37 GMT"
+    ],
+    "http.response.header.content-type": [
+      "application/json; charset=utf-8"
+    ],
+    "http.response.header.cache-control": [
+      "public, max-age=60, s-maxage=60"
+    ],
+    "http.response.header.vary": [
+      "Accept,Accept-Encoding, Accept, X-Requested-With"
+    ],
+    "http.response.header.etag": [
+      "W/\"6067561b9a55c953a0bffcc74b8893403f79d7edf4ad5f7f56a5c32d7761ae4a\""
+    ],
+    "http.response.header.x-github-media-type": [
+      "github.v3; format=json"
+    ],
+    "http.response.header.link": [
+      "<https://api.github.com/repositories/692042935/releases?per_page=100&page=2>; rel=\"next\", <https://api.github.com/repositories/692042935/releases?per_page=100&page=4>; rel=\"last\""
+    ],
+    "http.response.header.x-github-api-version-selected": [
+      "2022-11-28"
+    ],
+    "http.response.header.access-control-expose-headers": [
+      "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset"
+    ],
+    "http.response.header.access-control-allow-origin": [
+      "*"
+    ],
+    "http.response.header.strict-transport-security": [
+      "max-age=31536000; includeSubdomains; preload"
+    ],
+    "http.response.header.x-frame-options": [
+      "deny"
+    ],
+    "http.response.header.x-content-type-options": [
+      "nosniff"
+    ],
+    "http.response.header.x-xss-protection": [
+      "0"
+    ],
+    "http.response.header.referrer-policy": [
+      "origin-when-cross-origin, strict-origin-when-cross-origin"
+    ],
+    "http.response.header.content-security-policy": [
+      "default-src 'none'"
+    ],
+    "http.response.header.server": [
+      "github.com"
+    ],
+    "http.response.header.accept-ranges": [
+      "bytes"
+    ],
+    "http.response.header.x-ratelimit-limit": [
+      "60"
+    ],
+    "http.response.header.x-ratelimit-remaining": [
+      "58"
+    ],
+    "http.response.header.x-ratelimit-reset": [
+      "1762914003"
+    ],
+    "http.response.header.x-ratelimit-resource": [
+      "core"
+    ],
+    "http.response.header.x-ratelimit-used": [
+      "2"
+    ],
+    "http.response.header.x-github-request-id": [
+      "D000:266F54:2715798:B044532:6913E211"
     ],
     "http.response.header.connection": [
       "close"
@@ -1088,22 +1088,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.33.3",
+    "telemetry.sdk.version": "5.33.5",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "eastus",
-    "cloud.resource_id": "/subscriptions/40f5713a-e7ee-41d4-a22a-62b5827363b6/resourceGroups/azure-eastus-general-40f5713a-e7ee-41d4-a22a-62b5827363b6/providers/Microsoft.Compute/virtualMachines/Ighbr0pQoW7P6S",
-    "host.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "host.name": "Ighbr0pQoW7P6S",
+    "cloud.region": "northcentralus",
+    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
+    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "host.name": "EEgsQGO8KpK39v",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "process.pid": 3141,
-    "process.parent_pid": 2390,
+    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "process.pid": 3117,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1118,34 +1118,34 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "cff2dcf83beed1ecc7dfb0866945e282",
-  "span_id": "a7a0773f882f5e52",
+  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
+  "span_id": "c7919cd5ab6b6253",
   "parent_span_id": null,
   "name": "bash -e demo.sh",
   "kind": "SERVER",
   "status": "UNSET",
-  "time_start": 1762661052399779584,
-  "time_end": 1762661061896726016,
+  "time_start": 1762910736726287360,
+  "time_end": 1762910749429389312,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.33.3",
+    "telemetry.sdk.version": "5.33.5",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "eastus",
-    "cloud.resource_id": "/subscriptions/40f5713a-e7ee-41d4-a22a-62b5827363b6/resourceGroups/azure-eastus-general-40f5713a-e7ee-41d4-a22a-62b5827363b6/providers/Microsoft.Compute/virtualMachines/Ighbr0pQoW7P6S",
-    "host.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "host.name": "Ighbr0pQoW7P6S",
+    "cloud.region": "northcentralus",
+    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
+    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "host.name": "EEgsQGO8KpK39v",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "process.pid": 3141,
-    "process.parent_pid": 2390,
+    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "process.pid": 3117,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1160,14 +1160,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "cff2dcf83beed1ecc7dfb0866945e282",
-  "span_id": "63a551b4ed848f63",
-  "parent_span_id": "21fae24a2e17fe33",
+  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
+  "span_id": "aebc43782213df4b",
+  "parent_span_id": "38c901d1f751d8cb",
   "name": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=1",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762661057505184512,
-  "time_end": 1762661058122222592,
+  "time_start": 1762910741928805888,
+  "time_end": 1762910742684050688,
   "attributes": {
     "shell.command_line": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=1",
     "shell.command": "curl",
@@ -1183,22 +1183,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.33.3",
+    "telemetry.sdk.version": "5.33.5",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "eastus",
-    "cloud.resource_id": "/subscriptions/40f5713a-e7ee-41d4-a22a-62b5827363b6/resourceGroups/azure-eastus-general-40f5713a-e7ee-41d4-a22a-62b5827363b6/providers/Microsoft.Compute/virtualMachines/Ighbr0pQoW7P6S",
-    "host.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "host.name": "Ighbr0pQoW7P6S",
+    "cloud.region": "northcentralus",
+    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
+    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "host.name": "EEgsQGO8KpK39v",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "process.pid": 6018,
-    "process.parent_pid": 4646,
+    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "process.pid": 5995,
+    "process.parent_pid": 4630,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
@@ -1213,14 +1213,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "cff2dcf83beed1ecc7dfb0866945e282",
-  "span_id": "196dd7768dd6365a",
-  "parent_span_id": "21fae24a2e17fe33",
+  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
+  "span_id": "e59285ea89d843d9",
+  "parent_span_id": "38c901d1f751d8cb",
   "name": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=2",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762661058400424704,
-  "time_end": 1762661059051038464,
+  "time_start": 1762910742962459136,
+  "time_end": 1762910743601496064,
   "attributes": {
     "shell.command_line": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=2",
     "shell.command": "curl",
@@ -1236,22 +1236,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.33.3",
+    "telemetry.sdk.version": "5.33.5",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "eastus",
-    "cloud.resource_id": "/subscriptions/40f5713a-e7ee-41d4-a22a-62b5827363b6/resourceGroups/azure-eastus-general-40f5713a-e7ee-41d4-a22a-62b5827363b6/providers/Microsoft.Compute/virtualMachines/Ighbr0pQoW7P6S",
-    "host.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "host.name": "Ighbr0pQoW7P6S",
+    "cloud.region": "northcentralus",
+    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
+    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "host.name": "EEgsQGO8KpK39v",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "process.pid": 7499,
-    "process.parent_pid": 4646,
+    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "process.pid": 7476,
+    "process.parent_pid": 4630,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
@@ -1266,14 +1266,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "cff2dcf83beed1ecc7dfb0866945e282",
-  "span_id": "b43cce936f91f7b9",
-  "parent_span_id": "21fae24a2e17fe33",
+  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
+  "span_id": "2d07beffebfb92cd",
+  "parent_span_id": "38c901d1f751d8cb",
   "name": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=3",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762661059329866752,
-  "time_end": 1762661059949844224,
+  "time_start": 1762910743883158016,
+  "time_end": 1762910744608220160,
   "attributes": {
     "shell.command_line": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=3",
     "shell.command": "curl",
@@ -1289,22 +1289,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.33.3",
+    "telemetry.sdk.version": "5.33.5",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "eastus",
-    "cloud.resource_id": "/subscriptions/40f5713a-e7ee-41d4-a22a-62b5827363b6/resourceGroups/azure-eastus-general-40f5713a-e7ee-41d4-a22a-62b5827363b6/providers/Microsoft.Compute/virtualMachines/Ighbr0pQoW7P6S",
-    "host.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "host.name": "Ighbr0pQoW7P6S",
+    "cloud.region": "northcentralus",
+    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
+    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "host.name": "EEgsQGO8KpK39v",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "process.pid": 8396,
-    "process.parent_pid": 4646,
+    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "process.pid": 8372,
+    "process.parent_pid": 4630,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
@@ -1319,14 +1319,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "cff2dcf83beed1ecc7dfb0866945e282",
-  "span_id": "55ec823f034e5b78",
-  "parent_span_id": "21fae24a2e17fe33",
+  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
+  "span_id": "d1679fd1562803d7",
+  "parent_span_id": "38c901d1f751d8cb",
   "name": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=4",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762661060226655232,
-  "time_end": 1762661060733059328,
+  "time_start": 1762910744886693376,
+  "time_end": 1762910745435270400,
   "attributes": {
     "shell.command_line": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=4",
     "shell.command": "curl",
@@ -1342,22 +1342,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.33.3",
+    "telemetry.sdk.version": "5.33.5",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "eastus",
-    "cloud.resource_id": "/subscriptions/40f5713a-e7ee-41d4-a22a-62b5827363b6/resourceGroups/azure-eastus-general-40f5713a-e7ee-41d4-a22a-62b5827363b6/providers/Microsoft.Compute/virtualMachines/Ighbr0pQoW7P6S",
-    "host.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "host.name": "Ighbr0pQoW7P6S",
+    "cloud.region": "northcentralus",
+    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
+    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "host.name": "EEgsQGO8KpK39v",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "process.pid": 9292,
-    "process.parent_pid": 4646,
+    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "process.pid": 9268,
+    "process.parent_pid": 4630,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
@@ -1372,14 +1372,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "cff2dcf83beed1ecc7dfb0866945e282",
-  "span_id": "80a61bd856611efb",
-  "parent_span_id": "a7a0773f882f5e52",
+  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
+  "span_id": "791fd77f5e161300",
+  "parent_span_id": "c7919cd5ab6b6253",
   "name": "cut -d   -f 2-",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762661052448786688,
-  "time_end": 1762661056117798400,
+  "time_start": 1762910736772024320,
+  "time_end": 1762910740523458816,
   "attributes": {
     "shell.command_line": "cut -d   -f 2-",
     "shell.command": "cut",
@@ -1394,22 +1394,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.33.3",
+    "telemetry.sdk.version": "5.33.5",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "eastus",
-    "cloud.resource_id": "/subscriptions/40f5713a-e7ee-41d4-a22a-62b5827363b6/resourceGroups/azure-eastus-general-40f5713a-e7ee-41d4-a22a-62b5827363b6/providers/Microsoft.Compute/virtualMachines/Ighbr0pQoW7P6S",
-    "host.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "host.name": "Ighbr0pQoW7P6S",
+    "cloud.region": "northcentralus",
+    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
+    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "host.name": "EEgsQGO8KpK39v",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "process.pid": 3141,
-    "process.parent_pid": 2390,
+    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "process.pid": 3117,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1424,14 +1424,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "cff2dcf83beed1ecc7dfb0866945e282",
-  "span_id": "bc7e4a6e0fd2ba58",
-  "parent_span_id": "a7a0773f882f5e52",
+  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
+  "span_id": "89f14543a7dc3e9b",
+  "parent_span_id": "c7919cd5ab6b6253",
   "name": "cut -d ; -f1",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762661052444774144,
-  "time_end": 1762661056127275776,
+  "time_start": 1762910736772315392,
+  "time_end": 1762910740532093952,
   "attributes": {
     "shell.command_line": "cut -d ; -f1",
     "shell.command": "cut",
@@ -1446,22 +1446,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.33.3",
+    "telemetry.sdk.version": "5.33.5",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "eastus",
-    "cloud.resource_id": "/subscriptions/40f5713a-e7ee-41d4-a22a-62b5827363b6/resourceGroups/azure-eastus-general-40f5713a-e7ee-41d4-a22a-62b5827363b6/providers/Microsoft.Compute/virtualMachines/Ighbr0pQoW7P6S",
-    "host.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "host.name": "Ighbr0pQoW7P6S",
+    "cloud.region": "northcentralus",
+    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
+    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "host.name": "EEgsQGO8KpK39v",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "process.pid": 3141,
-    "process.parent_pid": 2390,
+    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "process.pid": 3117,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1476,14 +1476,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "cff2dcf83beed1ecc7dfb0866945e282",
-  "span_id": "30fe448de8e7f8a4",
-  "parent_span_id": "a7a0773f882f5e52",
+  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
+  "span_id": "ffff6405623d59b1",
+  "parent_span_id": "c7919cd5ab6b6253",
   "name": "cut -d = -f 2",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762661052444933888,
-  "time_end": 1762661056136909312,
+  "time_start": 1762910736763418880,
+  "time_end": 1762910740541255168,
   "attributes": {
     "shell.command_line": "cut -d = -f 2",
     "shell.command": "cut",
@@ -1498,22 +1498,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.33.3",
+    "telemetry.sdk.version": "5.33.5",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "eastus",
-    "cloud.resource_id": "/subscriptions/40f5713a-e7ee-41d4-a22a-62b5827363b6/resourceGroups/azure-eastus-general-40f5713a-e7ee-41d4-a22a-62b5827363b6/providers/Microsoft.Compute/virtualMachines/Ighbr0pQoW7P6S",
-    "host.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "host.name": "Ighbr0pQoW7P6S",
+    "cloud.region": "northcentralus",
+    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
+    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "host.name": "EEgsQGO8KpK39v",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "process.pid": 3141,
-    "process.parent_pid": 2390,
+    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "process.pid": 3117,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1528,14 +1528,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "cff2dcf83beed1ecc7dfb0866945e282",
-  "span_id": "158e1ad1a66697da",
-  "parent_span_id": "a7a0773f882f5e52",
+  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
+  "span_id": "3afdfaea43feeff4",
+  "parent_span_id": "c7919cd5ab6b6253",
   "name": "cut -d ? -f 2-",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762661052425360384,
-  "time_end": 1762661056129588736,
+  "time_start": 1762910736756751360,
+  "time_end": 1762910740534410240,
   "attributes": {
     "shell.command_line": "cut -d ? -f 2-",
     "shell.command": "cut",
@@ -1550,22 +1550,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.33.3",
+    "telemetry.sdk.version": "5.33.5",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "eastus",
-    "cloud.resource_id": "/subscriptions/40f5713a-e7ee-41d4-a22a-62b5827363b6/resourceGroups/azure-eastus-general-40f5713a-e7ee-41d4-a22a-62b5827363b6/providers/Microsoft.Compute/virtualMachines/Ighbr0pQoW7P6S",
-    "host.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "host.name": "Ighbr0pQoW7P6S",
+    "cloud.region": "northcentralus",
+    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
+    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "host.name": "EEgsQGO8KpK39v",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "process.pid": 3141,
-    "process.parent_pid": 2390,
+    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "process.pid": 3117,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1580,14 +1580,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "cff2dcf83beed1ecc7dfb0866945e282",
-  "span_id": "281df5c62c98ac51",
-  "parent_span_id": "a7a0773f882f5e52",
+  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
+  "span_id": "2bb1b2d96dc6ec52",
+  "parent_span_id": "c7919cd5ab6b6253",
   "name": "grep .deb$",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762661052449161472,
-  "time_end": 1762661060778273024,
+  "time_start": 1762910736779666432,
+  "time_end": 1762910745445220608,
   "attributes": {
     "shell.command_line": "grep .deb$",
     "shell.command": "grep",
@@ -1602,22 +1602,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.33.3",
+    "telemetry.sdk.version": "5.33.5",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "eastus",
-    "cloud.resource_id": "/subscriptions/40f5713a-e7ee-41d4-a22a-62b5827363b6/resourceGroups/azure-eastus-general-40f5713a-e7ee-41d4-a22a-62b5827363b6/providers/Microsoft.Compute/virtualMachines/Ighbr0pQoW7P6S",
-    "host.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "host.name": "Ighbr0pQoW7P6S",
+    "cloud.region": "northcentralus",
+    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
+    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "host.name": "EEgsQGO8KpK39v",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "process.pid": 3141,
-    "process.parent_pid": 2390,
+    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "process.pid": 3117,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1632,14 +1632,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "cff2dcf83beed1ecc7dfb0866945e282",
-  "span_id": "91f97c081ca6d68e",
-  "parent_span_id": "a7a0773f882f5e52",
+  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
+  "span_id": "69c710e8a83e1d71",
+  "parent_span_id": "c7919cd5ab6b6253",
   "name": "grep ^link:",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762661052437400832,
-  "time_end": 1762661056115314688,
+  "time_start": 1762910736772170752,
+  "time_end": 1762910740521243904,
   "attributes": {
     "shell.command_line": "grep ^link:",
     "shell.command": "grep",
@@ -1654,22 +1654,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.33.3",
+    "telemetry.sdk.version": "5.33.5",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "eastus",
-    "cloud.resource_id": "/subscriptions/40f5713a-e7ee-41d4-a22a-62b5827363b6/resourceGroups/azure-eastus-general-40f5713a-e7ee-41d4-a22a-62b5827363b6/providers/Microsoft.Compute/virtualMachines/Ighbr0pQoW7P6S",
-    "host.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "host.name": "Ighbr0pQoW7P6S",
+    "cloud.region": "northcentralus",
+    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
+    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "host.name": "EEgsQGO8KpK39v",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "process.pid": 3141,
-    "process.parent_pid": 2390,
+    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "process.pid": 3117,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1684,14 +1684,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "cff2dcf83beed1ecc7dfb0866945e282",
-  "span_id": "8446f567e33611d8",
-  "parent_span_id": "a7a0773f882f5e52",
+  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
+  "span_id": "fd1d65ca2968b0f3",
+  "parent_span_id": "c7919cd5ab6b6253",
   "name": "grep ^page=",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762661052445399040,
-  "time_end": 1762661056134536192,
+  "time_start": 1762910736754350336,
+  "time_end": 1762910740539095296,
   "attributes": {
     "shell.command_line": "grep ^page=",
     "shell.command": "grep",
@@ -1706,22 +1706,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.33.3",
+    "telemetry.sdk.version": "5.33.5",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "eastus",
-    "cloud.resource_id": "/subscriptions/40f5713a-e7ee-41d4-a22a-62b5827363b6/resourceGroups/azure-eastus-general-40f5713a-e7ee-41d4-a22a-62b5827363b6/providers/Microsoft.Compute/virtualMachines/Ighbr0pQoW7P6S",
-    "host.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "host.name": "Ighbr0pQoW7P6S",
+    "cloud.region": "northcentralus",
+    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
+    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "host.name": "EEgsQGO8KpK39v",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "process.pid": 3141,
-    "process.parent_pid": 2390,
+    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "process.pid": 3117,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1736,14 +1736,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "cff2dcf83beed1ecc7dfb0866945e282",
-  "span_id": "c4254b8a5c91119d",
-  "parent_span_id": "a7a0773f882f5e52",
+  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
+  "span_id": "260e57daa527c595",
+  "parent_span_id": "c7919cd5ab6b6253",
   "name": "grep _1.",
   "kind": "INTERNAL",
   "status": "ERROR",
-  "time_start": 1762661052438925824,
-  "time_end": 1762661060781978880,
+  "time_start": 1762910736775883520,
+  "time_end": 1762910745448265472,
   "attributes": {
     "shell.command_line": "grep _1.",
     "shell.command": "grep",
@@ -1758,22 +1758,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.33.3",
+    "telemetry.sdk.version": "5.33.5",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "eastus",
-    "cloud.resource_id": "/subscriptions/40f5713a-e7ee-41d4-a22a-62b5827363b6/resourceGroups/azure-eastus-general-40f5713a-e7ee-41d4-a22a-62b5827363b6/providers/Microsoft.Compute/virtualMachines/Ighbr0pQoW7P6S",
-    "host.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "host.name": "Ighbr0pQoW7P6S",
+    "cloud.region": "northcentralus",
+    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
+    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "host.name": "EEgsQGO8KpK39v",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "process.pid": 3141,
-    "process.parent_pid": 2390,
+    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "process.pid": 3117,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1788,14 +1788,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "cff2dcf83beed1ecc7dfb0866945e282",
-  "span_id": "d0b0422de21efe9a",
-  "parent_span_id": "a7a0773f882f5e52",
+  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
+  "span_id": "c43f247b3125636a",
+  "parent_span_id": "c7919cd5ab6b6253",
   "name": "grep rel=\"last\"",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762661052449294080,
-  "time_end": 1762661056124955392,
+  "time_start": 1762910736776696064,
+  "time_end": 1762910740529960448,
   "attributes": {
     "shell.command_line": "grep rel=\"last\"",
     "shell.command": "grep",
@@ -1810,22 +1810,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.33.3",
+    "telemetry.sdk.version": "5.33.5",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "eastus",
-    "cloud.resource_id": "/subscriptions/40f5713a-e7ee-41d4-a22a-62b5827363b6/resourceGroups/azure-eastus-general-40f5713a-e7ee-41d4-a22a-62b5827363b6/providers/Microsoft.Compute/virtualMachines/Ighbr0pQoW7P6S",
-    "host.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "host.name": "Ighbr0pQoW7P6S",
+    "cloud.region": "northcentralus",
+    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
+    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "host.name": "EEgsQGO8KpK39v",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "process.pid": 3141,
-    "process.parent_pid": 2390,
+    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "process.pid": 3117,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1840,14 +1840,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "cff2dcf83beed1ecc7dfb0866945e282",
-  "span_id": "b3f6d10496f1a179",
-  "parent_span_id": "a7a0773f882f5e52",
+  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
+  "span_id": "eb0520ad2d19e543",
+  "parent_span_id": "c7919cd5ab6b6253",
   "name": "head --lines=3",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762661052448908032,
-  "time_end": 1762661060775693568,
+  "time_start": 1762910736772452864,
+  "time_end": 1762910745441985536,
   "attributes": {
     "shell.command_line": "head --lines=3",
     "shell.command": "head",
@@ -1862,22 +1862,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.33.3",
+    "telemetry.sdk.version": "5.33.5",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "eastus",
-    "cloud.resource_id": "/subscriptions/40f5713a-e7ee-41d4-a22a-62b5827363b6/resourceGroups/azure-eastus-general-40f5713a-e7ee-41d4-a22a-62b5827363b6/providers/Microsoft.Compute/virtualMachines/Ighbr0pQoW7P6S",
-    "host.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "host.name": "Ighbr0pQoW7P6S",
+    "cloud.region": "northcentralus",
+    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
+    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "host.name": "EEgsQGO8KpK39v",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "process.pid": 3141,
-    "process.parent_pid": 2390,
+    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "process.pid": 3117,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1892,14 +1892,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "cff2dcf83beed1ecc7dfb0866945e282",
-  "span_id": "4050d9ab83b9204b",
-  "parent_span_id": "a7a0773f882f5e52",
+  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
+  "span_id": "1f86424dddfd8b3a",
+  "parent_span_id": "c7919cd5ab6b6253",
   "name": "jq .[].assets[].browser_download_url -r",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762661052445144320,
-  "time_end": 1762661060775659520,
+  "time_start": 1762910736768940032,
+  "time_end": 1762910745442518016,
   "attributes": {
     "shell.command_line": "jq .[].assets[].browser_download_url -r",
     "shell.command": "jq",
@@ -1914,22 +1914,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.33.3",
+    "telemetry.sdk.version": "5.33.5",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "eastus",
-    "cloud.resource_id": "/subscriptions/40f5713a-e7ee-41d4-a22a-62b5827363b6/resourceGroups/azure-eastus-general-40f5713a-e7ee-41d4-a22a-62b5827363b6/providers/Microsoft.Compute/virtualMachines/Ighbr0pQoW7P6S",
-    "host.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "host.name": "Ighbr0pQoW7P6S",
+    "cloud.region": "northcentralus",
+    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
+    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "host.name": "EEgsQGO8KpK39v",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "process.pid": 3141,
-    "process.parent_pid": 2390,
+    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "process.pid": 3117,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1944,14 +1944,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "cff2dcf83beed1ecc7dfb0866945e282",
-  "span_id": "026d78987bf5c090",
-  "parent_span_id": "a7a0773f882f5e52",
+  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
+  "span_id": "7e8f21c469bac93a",
+  "parent_span_id": "c7919cd5ab6b6253",
   "name": "ncat --ssl -i 3 --no-shutdown api.github.com 443",
   "kind": "INTERNAL",
   "status": "ERROR",
-  "time_start": 1762661052428645120,
-  "time_end": 1762661056110562304,
+  "time_start": 1762910736765476352,
+  "time_end": 1762910740516655872,
   "attributes": {
     "shell.command_line": "ncat --ssl -i 3 --no-shutdown api.github.com 443",
     "shell.command": "ncat",
@@ -1966,22 +1966,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.33.3",
+    "telemetry.sdk.version": "5.33.5",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "eastus",
-    "cloud.resource_id": "/subscriptions/40f5713a-e7ee-41d4-a22a-62b5827363b6/resourceGroups/azure-eastus-general-40f5713a-e7ee-41d4-a22a-62b5827363b6/providers/Microsoft.Compute/virtualMachines/Ighbr0pQoW7P6S",
-    "host.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "host.name": "Ighbr0pQoW7P6S",
+    "cloud.region": "northcentralus",
+    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
+    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "host.name": "EEgsQGO8KpK39v",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "process.pid": 3141,
-    "process.parent_pid": 2390,
+    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "process.pid": 3117,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1996,14 +1996,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "cff2dcf83beed1ecc7dfb0866945e282",
-  "span_id": "fa72ada5fc5fe998",
-  "parent_span_id": "a7a0773f882f5e52",
+  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
+  "span_id": "21580855858e7450",
+  "parent_span_id": "c7919cd5ab6b6253",
   "name": "printf HEAD /repos/plengauer/Thoth/releases?per_page=100 HTTP/1.1\\r\\nConnection: close\\r\\nUser-Agent: ncat\\r\\nHost: api.github.com\\r\\n\\r\\n",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762661052420388352,
-  "time_end": 1762661052525638144,
+  "time_start": 1762910736754121216,
+  "time_end": 1762910736864610048,
   "attributes": {
     "shell.command_line": "printf HEAD /repos/plengauer/Thoth/releases?per_page=100 HTTP/1.1\\r\\nConnection: close\\r\\nUser-Agent: ncat\\r\\nHost: api.github.com\\r\\n\\r\\n",
     "shell.command": "printf",
@@ -2016,22 +2016,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.33.3",
+    "telemetry.sdk.version": "5.33.5",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "eastus",
-    "cloud.resource_id": "/subscriptions/40f5713a-e7ee-41d4-a22a-62b5827363b6/resourceGroups/azure-eastus-general-40f5713a-e7ee-41d4-a22a-62b5827363b6/providers/Microsoft.Compute/virtualMachines/Ighbr0pQoW7P6S",
-    "host.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "host.name": "Ighbr0pQoW7P6S",
+    "cloud.region": "northcentralus",
+    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
+    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "host.name": "EEgsQGO8KpK39v",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "process.pid": 3141,
-    "process.parent_pid": 2390,
+    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "process.pid": 3117,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2046,14 +2046,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "cff2dcf83beed1ecc7dfb0866945e282",
-  "span_id": "9559db18b934847d",
-  "parent_span_id": "026d78987bf5c090",
+  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
+  "span_id": "0567805a2e1de418",
+  "parent_span_id": "7e8f21c469bac93a",
   "name": "send/receive",
   "kind": "PRODUCER",
   "status": "UNSET",
-  "time_start": 1762661052557880576,
-  "time_end": 1762661056107086848,
+  "time_start": 1762910736888922368,
+  "time_end": 1762910740513001984,
   "attributes": {
     "network.transport": "tcp",
     "network.peer.port": 443,
@@ -2063,22 +2063,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.33.3",
+    "telemetry.sdk.version": "5.33.5",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "eastus",
-    "cloud.resource_id": "/subscriptions/40f5713a-e7ee-41d4-a22a-62b5827363b6/resourceGroups/azure-eastus-general-40f5713a-e7ee-41d4-a22a-62b5827363b6/providers/Microsoft.Compute/virtualMachines/Ighbr0pQoW7P6S",
-    "host.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "host.name": "Ighbr0pQoW7P6S",
+    "cloud.region": "northcentralus",
+    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
+    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "host.name": "EEgsQGO8KpK39v",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "process.pid": 3141,
-    "process.parent_pid": 2390,
+    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "process.pid": 3117,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2093,14 +2093,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "cff2dcf83beed1ecc7dfb0866945e282",
-  "span_id": "eb575c889b2ade9e",
-  "parent_span_id": "9336a69d24db2bb3",
+  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
+  "span_id": "8f3e9f5829151b40",
+  "parent_span_id": "b2a93326d7a15cb4",
   "name": "seq 1 4",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762661056802951936,
-  "time_end": 1762661056820568576,
+  "time_start": 1762910741217975808,
+  "time_end": 1762910741236335872,
   "attributes": {
     "shell.command_line": "seq 1 4",
     "shell.command": "seq",
@@ -2116,22 +2116,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.33.3",
+    "telemetry.sdk.version": "5.33.5",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "eastus",
-    "cloud.resource_id": "/subscriptions/40f5713a-e7ee-41d4-a22a-62b5827363b6/resourceGroups/azure-eastus-general-40f5713a-e7ee-41d4-a22a-62b5827363b6/providers/Microsoft.Compute/virtualMachines/Ighbr0pQoW7P6S",
-    "host.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "host.name": "Ighbr0pQoW7P6S",
+    "cloud.region": "northcentralus",
+    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
+    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "host.name": "EEgsQGO8KpK39v",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "process.pid": 5342,
-    "process.parent_pid": 4586,
+    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "process.pid": 5319,
+    "process.parent_pid": 4570,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs seq 1",
@@ -2146,14 +2146,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "cff2dcf83beed1ecc7dfb0866945e282",
-  "span_id": "68fa72c29f0f8a2a",
-  "parent_span_id": "a7a0773f882f5e52",
+  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
+  "span_id": "0445d73b20008b66",
+  "parent_span_id": "c7919cd5ab6b6253",
   "name": "tr & \\n",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762661052449021952,
-  "time_end": 1762661056132067584,
+  "time_start": 1762910736779448832,
+  "time_end": 1762910740536724480,
   "attributes": {
     "shell.command_line": "tr & \\n",
     "shell.command": "tr",
@@ -2168,22 +2168,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.33.3",
+    "telemetry.sdk.version": "5.33.5",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "eastus",
-    "cloud.resource_id": "/subscriptions/40f5713a-e7ee-41d4-a22a-62b5827363b6/resourceGroups/azure-eastus-general-40f5713a-e7ee-41d4-a22a-62b5827363b6/providers/Microsoft.Compute/virtualMachines/Ighbr0pQoW7P6S",
-    "host.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "host.name": "Ighbr0pQoW7P6S",
+    "cloud.region": "northcentralus",
+    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
+    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "host.name": "EEgsQGO8KpK39v",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "process.pid": 3141,
-    "process.parent_pid": 2390,
+    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "process.pid": 3117,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2198,14 +2198,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "cff2dcf83beed1ecc7dfb0866945e282",
-  "span_id": "0898ec9e9754d3f9",
-  "parent_span_id": "a7a0773f882f5e52",
+  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
+  "span_id": "c3381d185d47ce3c",
+  "parent_span_id": "c7919cd5ab6b6253",
   "name": "tr , \\n",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762661052439055360,
-  "time_end": 1762661056122586368,
+  "time_start": 1762910736775536640,
+  "time_end": 1762910740527768064,
   "attributes": {
     "shell.command_line": "tr , \\n",
     "shell.command": "tr",
@@ -2220,22 +2220,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.33.3",
+    "telemetry.sdk.version": "5.33.5",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "eastus",
-    "cloud.resource_id": "/subscriptions/40f5713a-e7ee-41d4-a22a-62b5827363b6/resourceGroups/azure-eastus-general-40f5713a-e7ee-41d4-a22a-62b5827363b6/providers/Microsoft.Compute/virtualMachines/Ighbr0pQoW7P6S",
-    "host.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "host.name": "Ighbr0pQoW7P6S",
+    "cloud.region": "northcentralus",
+    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
+    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "host.name": "EEgsQGO8KpK39v",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "process.pid": 3141,
-    "process.parent_pid": 2390,
+    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "process.pid": 3117,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2250,14 +2250,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "cff2dcf83beed1ecc7dfb0866945e282",
-  "span_id": "9c8a1e8e0e03da71",
-  "parent_span_id": "a7a0773f882f5e52",
+  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
+  "span_id": "a45306f109183abc",
+  "parent_span_id": "c7919cd5ab6b6253",
   "name": "tr -d  <>",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762661052439345920,
-  "time_end": 1762661056120250112,
+  "time_start": 1762910736760635904,
+  "time_end": 1762910740525620736,
   "attributes": {
     "shell.command_line": "tr -d  <>",
     "shell.command": "tr",
@@ -2272,22 +2272,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.33.3",
+    "telemetry.sdk.version": "5.33.5",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "eastus",
-    "cloud.resource_id": "/subscriptions/40f5713a-e7ee-41d4-a22a-62b5827363b6/resourceGroups/azure-eastus-general-40f5713a-e7ee-41d4-a22a-62b5827363b6/providers/Microsoft.Compute/virtualMachines/Ighbr0pQoW7P6S",
-    "host.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "host.name": "Ighbr0pQoW7P6S",
+    "cloud.region": "northcentralus",
+    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
+    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "host.name": "EEgsQGO8KpK39v",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "process.pid": 3141,
-    "process.parent_pid": 2390,
+    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "process.pid": 3117,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2302,14 +2302,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "cff2dcf83beed1ecc7dfb0866945e282",
-  "span_id": "fa78f3ddca2e43d0",
-  "parent_span_id": "a7a0773f882f5e52",
+  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
+  "span_id": "7d74a0c8db09eb50",
+  "parent_span_id": "c7919cd5ab6b6253",
   "name": "tr [:upper:] [:lower:]",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762661052425195520,
-  "time_end": 1762661056112947712,
+  "time_start": 1762910736756396800,
+  "time_end": 1762910740518972416,
   "attributes": {
     "shell.command_line": "tr [:upper:] [:lower:]",
     "shell.command": "tr",
@@ -2324,22 +2324,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.33.3",
+    "telemetry.sdk.version": "5.33.5",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "eastus",
-    "cloud.resource_id": "/subscriptions/40f5713a-e7ee-41d4-a22a-62b5827363b6/resourceGroups/azure-eastus-general-40f5713a-e7ee-41d4-a22a-62b5827363b6/providers/Microsoft.Compute/virtualMachines/Ighbr0pQoW7P6S",
-    "host.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "host.name": "Ighbr0pQoW7P6S",
+    "cloud.region": "northcentralus",
+    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
+    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "host.name": "EEgsQGO8KpK39v",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "process.pid": 3141,
-    "process.parent_pid": 2390,
+    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "process.pid": 3117,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2354,14 +2354,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "cff2dcf83beed1ecc7dfb0866945e282",
-  "span_id": "8fcdf7787c3853f1",
-  "parent_span_id": "5956a97c8a5d2bd0",
+  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
+  "span_id": "10a0e8d99b53a755",
+  "parent_span_id": "47010720bdc1600d",
   "name": "wget https://github.com/plengauer/Thoth/releases/download/v1.13.7/opentelemetry-shell_1.13.7.deb https://github.com/plengauer/Thoth/releases/download/v1.13.6/opentelemetry-shell_1.13.6.deb https://github.com/plengauer/Thoth/releases/download/v1.13.5/opentelemetry-shell_1.13.5.deb",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762661061456797952,
-  "time_end": 1762661061855045120,
+  "time_start": 1762910746129990912,
+  "time_end": 1762910749424306688,
   "attributes": {
     "shell.command_line": "wget https://github.com/plengauer/Thoth/releases/download/v1.13.7/opentelemetry-shell_1.13.7.deb https://github.com/plengauer/Thoth/releases/download/v1.13.6/opentelemetry-shell_1.13.6.deb https://github.com/plengauer/Thoth/releases/download/v1.13.5/opentelemetry-shell_1.13.5.deb",
     "shell.command": "wget",
@@ -2377,22 +2377,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.33.3",
+    "telemetry.sdk.version": "5.33.5",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "eastus",
-    "cloud.resource_id": "/subscriptions/40f5713a-e7ee-41d4-a22a-62b5827363b6/resourceGroups/azure-eastus-general-40f5713a-e7ee-41d4-a22a-62b5827363b6/providers/Microsoft.Compute/virtualMachines/Ighbr0pQoW7P6S",
-    "host.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "host.name": "Ighbr0pQoW7P6S",
+    "cloud.region": "northcentralus",
+    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
+    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "host.name": "EEgsQGO8KpK39v",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "process.pid": 10191,
-    "process.parent_pid": 4573,
+    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "process.pid": 10168,
+    "process.parent_pid": 4566,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs wget",
@@ -2407,14 +2407,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "cff2dcf83beed1ecc7dfb0866945e282",
-  "span_id": "21fae24a2e17fe33",
-  "parent_span_id": "a7a0773f882f5e52",
+  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
+  "span_id": "38c901d1f751d8cb",
+  "parent_span_id": "c7919cd5ab6b6253",
   "name": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762661052445274112,
-  "time_end": 1762661060772660224,
+  "time_start": 1762910736763270400,
+  "time_end": 1762910745439075072,
   "attributes": {
     "shell.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
     "shell.command": "xargs",
@@ -2429,22 +2429,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.33.3",
+    "telemetry.sdk.version": "5.33.5",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "eastus",
-    "cloud.resource_id": "/subscriptions/40f5713a-e7ee-41d4-a22a-62b5827363b6/resourceGroups/azure-eastus-general-40f5713a-e7ee-41d4-a22a-62b5827363b6/providers/Microsoft.Compute/virtualMachines/Ighbr0pQoW7P6S",
-    "host.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "host.name": "Ighbr0pQoW7P6S",
+    "cloud.region": "northcentralus",
+    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
+    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "host.name": "EEgsQGO8KpK39v",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "process.pid": 3141,
-    "process.parent_pid": 2390,
+    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "process.pid": 3117,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2459,14 +2459,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "cff2dcf83beed1ecc7dfb0866945e282",
-  "span_id": "9336a69d24db2bb3",
-  "parent_span_id": "a7a0773f882f5e52",
+  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
+  "span_id": "b2a93326d7a15cb4",
+  "parent_span_id": "c7919cd5ab6b6253",
   "name": "xargs seq 1",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762661052448578560,
-  "time_end": 1762661056861064192,
+  "time_start": 1762910736775704576,
+  "time_end": 1762910741240983808,
   "attributes": {
     "shell.command_line": "xargs seq 1",
     "shell.command": "xargs",
@@ -2481,22 +2481,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.33.3",
+    "telemetry.sdk.version": "5.33.5",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "eastus",
-    "cloud.resource_id": "/subscriptions/40f5713a-e7ee-41d4-a22a-62b5827363b6/resourceGroups/azure-eastus-general-40f5713a-e7ee-41d4-a22a-62b5827363b6/providers/Microsoft.Compute/virtualMachines/Ighbr0pQoW7P6S",
-    "host.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "host.name": "Ighbr0pQoW7P6S",
+    "cloud.region": "northcentralus",
+    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
+    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "host.name": "EEgsQGO8KpK39v",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "process.pid": 3141,
-    "process.parent_pid": 2390,
+    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "process.pid": 3117,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2511,14 +2511,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "cff2dcf83beed1ecc7dfb0866945e282",
-  "span_id": "5956a97c8a5d2bd0",
-  "parent_span_id": "a7a0773f882f5e52",
+  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
+  "span_id": "47010720bdc1600d",
+  "parent_span_id": "c7919cd5ab6b6253",
   "name": "xargs wget",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762661052438789888,
-  "time_end": 1762661061896026112,
+  "time_start": 1762910736771755776,
+  "time_end": 1762910749428524288,
   "attributes": {
     "shell.command_line": "xargs wget",
     "shell.command": "xargs",
@@ -2533,22 +2533,22 @@ bash -e demo.sh
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
     "telemetry.sdk.name": "opentelemetry",
-    "telemetry.sdk.version": "5.33.3",
+    "telemetry.sdk.version": "5.33.5",
     "service.name": "unknown_service",
     "azure.vm.scaleset.name": "",
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "eastus",
-    "cloud.resource_id": "/subscriptions/40f5713a-e7ee-41d4-a22a-62b5827363b6/resourceGroups/azure-eastus-general-40f5713a-e7ee-41d4-a22a-62b5827363b6/providers/Microsoft.Compute/virtualMachines/Ighbr0pQoW7P6S",
-    "host.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "host.name": "Ighbr0pQoW7P6S",
+    "cloud.region": "northcentralus",
+    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
+    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "host.name": "EEgsQGO8KpK39v",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "fb76dd12-9860-49bf-b0af-761e787b7cf1",
-    "process.pid": 3141,
-    "process.parent_pid": 2390,
+    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
+    "process.pid": 3117,
+    "process.parent_pid": 2359,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
