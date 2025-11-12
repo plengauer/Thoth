@@ -24,9 +24,10 @@ delayed_observations = {}
 auto_end = False
 
 def main():
-    scope = sys.argv[1]
-    version = sys.argv[2]
-    for line in sys.stdin:
+    run(sys.argv[1], sys.argv[2], sys.stdin)
+
+def run(scope, version, commands):
+    for line in commands:
         line = line.strip()
         if len(line) == 0:
             continue
