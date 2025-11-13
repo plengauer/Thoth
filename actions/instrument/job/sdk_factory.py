@@ -1,14 +1,11 @@
 import sys
 import os
-import signal
 
 import importlib.util
 spec = importlib.util.spec_from_file_location("sdk", "/usr/share/opentelemetry_shell/sdk.py")
 sdk = importlib.util.module_from_spec(spec)
 sys.modules["sdk"] = sdk
 spec.loader.exec_module(sdk)
-
-signal.signal(signal.SIGCHLD, signal.SIG_IGN)
 
 while True:
   with open(sys.argv[1]) as pipe:
@@ -24,7 +21,9 @@ while True:
         pid = os.fork()
         if pid != 0:
           continue
-        sys.stdin.close()
+        pid = os.fork()
+        if pid != 0:
+          sys.exit(0)
         with open(pipe) as commands:
           sdk.run(scope, version, commands)
     except:
