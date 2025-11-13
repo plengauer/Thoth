@@ -335,7 +335,7 @@ otel_observation_create() {
   \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
   _otel_sdk_communicate "OBSERVATION_CREATE" "$response_pipe" "$value"
   local handle
-  \read handle < "$response_pipe"
+  \read handle < "$response_pipe" || \true
   \echo "$handle"
   \rm "$response_pipe" 1> /dev/null 2> /dev/null
 }
