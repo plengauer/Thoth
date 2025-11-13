@@ -50,8 +50,8 @@ else
     _otel_package_version opentelemetry-shell > /dev/null # to build the cache outside a subshell
     _otel_package_version "$_otel_shell" > /dev/null
     \mkfifo "$_otel_remote_sdk_pipe"
-    if \[ -p "${TMPDIR:-/tmp}"/otel_shell_sdk_factory.pipe ] && \[ -w "${TMPDIR:-/tmp}"/otel_shell_sdk_factory.pipe ] && \[ "${OTEL_LOGS_EXPORTER:-otlp}" != console ] && \[ "${OTEL_METRICS_EXPORTER:-otlp}" != console ] && \[ "${OTEL_TRACES_EXPORTER:-otlp}" != console ]; then
-      \echo shell "$(_otel_package_version opentelemetry-shell)" "$_otel_remote_sdk_pipe" >> "${TMPDIR:-/tmp}"/otel_shell_sdk_factory.pipe
+    if \[ -n "${OTEL_SHELL_SDK_FACTORY_PIPE:-}" ] && \[ "${OTEL_LOGS_EXPORTER:-otlp}" != console ] && \[ "${OTEL_METRICS_EXPORTER:-otlp}" != console ] && \[ "${OTEL_TRACES_EXPORTER:-otlp}" != console ]; then
+      \echo shell "$(_otel_package_version opentelemetry-shell)" "$_otel_remote_sdk_pipe" >> "$OTEL_SHELL_SDK_FACTORY_PIPE"
     else
       # several weird things going on in the next line, (1) using '((' fucks up the syntax highlighting in github while '( (' does not, and (2) &> causes weird buffering / late flushing behavior
       if \env --help 2>&1 | \grep -q 'ignore-signal'; then local extra_env_flags='--ignore-signal=INT --ignore-signal=HUP'; fi
