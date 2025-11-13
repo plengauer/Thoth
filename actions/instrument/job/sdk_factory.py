@@ -7,8 +7,6 @@ sdk = importlib.util.module_from_spec(spec)
 sys.modules["sdk"] = sdk
 spec.loader.exec_module(sdk)
 
-import sdk
-
 for line in sys.stdin:
   line = line.strip()
   tokens = line.split(" ", 2)
