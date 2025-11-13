@@ -9,6 +9,8 @@ spec.loader.exec_module(sdk)
 
 for line in sys.stdin:
   line = line.strip()
+  if line == "EOF":
+    sys.exit()
   tokens = line.split(" ", 2)
   scope = tokens[0]
   version = tokens[1]
