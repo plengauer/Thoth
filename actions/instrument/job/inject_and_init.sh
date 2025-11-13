@@ -438,11 +438,11 @@ echo "::endgroup::"
 
 echo "::group::Start Observation"
 traceparent_file="$(mktemp -u)"
-export OTEL_SHELL_SDK_FACTORY_PIPE=/tmp/otel_shell/sdk_factory.pipe
-mkdir -p "${OTEL_SHELL_SDK_FACTORY_PIPE%/*}"
-mkfifo /tmp/opentelemetry_shell.github.debug.log "$OTEL_SHELL_SDK_FACTORY_PIPE" # subdirectory to avoid sticky bit
+export OTEL_SHELL_SDK_FACTORY_PIPE=
+mkdir -p /tmp/otel_shell
+mkfifo /tmp/opentelemetry_shell.github.debug.log /tmp/otel_shell/sdk_factory."$USER".pipe # subdirectory to avoid sticky bit
 wait # make sure we wait for all background jobs before we actually start
-nohup /opt/opentelemetry_shell/venv/bin/python sdk_factory.py "$OTEL_SHELL_SDK_FACTORY_PIPE" &> /dev/null &
+nohup /opt/opentelemetry_shell/venv/bin/python sdk_factory.py /tmp/otel_shell/sdk_factory."$USER".pipe &> /dev/null &
 nohup bash -c 'root4job "$@"' bash "$traceparent_file" &> /dev/null &
 echo "pid=$!" >> "$GITHUB_STATE"
 cat /tmp/opentelemetry_shell.github.debug.log
