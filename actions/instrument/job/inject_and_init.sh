@@ -438,7 +438,6 @@ echo "::endgroup::"
 
 echo "::group::Start Observation"
 traceparent_file="$(mktemp -u)"
-export OTEL_SHELL_SDK_FACTORY_PIPE=
 mkdir -p /tmp/otel_shell
 mkfifo /tmp/opentelemetry_shell.github.debug.log /tmp/otel_shell/sdk_factory."$USER".pipe # subdirectory to avoid sticky bit
 wait # make sure we wait for all background jobs before we actually start
