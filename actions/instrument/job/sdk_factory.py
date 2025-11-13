@@ -18,7 +18,7 @@ for line in sys.stdin:
   pipe = tokens[2]
   pid = os.fork()
   if pid != 0:
-    Thread().start(target = os.waitpid, (pid, 0, ))
+    Thread().start(target=os.waitpid, args=(pid, 0, ))
   else
     sys.stdin.close()
     with open(pipe) as commands:
