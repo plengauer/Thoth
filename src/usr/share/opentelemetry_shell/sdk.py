@@ -80,7 +80,7 @@ def guess_cloud_resource_detectors():
                     return Resource({})
             def fetch_metadata(self):
                 import requests
-                response = requests.get('http://169.254.169.254/opc/v1/instance/', headers={'Authorization': 'Bearer Oracle'})
+                response = requests.get('http://169.254.169.254/opc/v1/instance/', headers={'Authorization': 'Bearer Oracle'}, timeout=0.1)
                 response.raise_for_status()  # Raise an exception for 4xx or 5xx status codes
                 return response.json()
         return [ OracleResourceDetector() ]
@@ -120,7 +120,7 @@ def guess_cloud_resource_detectors():
                     return Resource({})
             def fetch_metadata(self):
                 import requests
-                response = requests.get('http://169.254.169.254/opc/v1/instance/', headers={'Authorization': 'Bearer Oracle'})
+                response = requests.get('http://169.254.169.254/opc/v1/instance/', headers={'Authorization': 'Bearer Oracle'}, timeout=0.1)
                 response.raise_for_status()  # Raise an exception for 4xx or 5xx status codes
                 return response.json()
         return [
