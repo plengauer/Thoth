@@ -1,5 +1,6 @@
 import sys
 import os
+from threading import Thread
 
 import importlib.util
 spec = importlib.util.spec_from_file_location("sdk", "/usr/share/opentelemetry_shell/sdk.py")
@@ -17,6 +18,8 @@ for line in sys.stdin:
   pipe = tokens[2]
   pid = os.fork()
   if pid != 0:
-    continue
-  with open(pipe) as commands:
-    sdk.run(scope, version, commands)
+    Thread().start(target = os.waitpid, (pid, 0, ))
+  else
+    sys.stdin.close()
+    with open(pipe) as commands:
+      sdk.run(scope, version, commands)
