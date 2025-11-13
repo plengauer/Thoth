@@ -7,6 +7,8 @@ helpers = importlib.util.module_from_spec(spec)
 sys.modules["sdk"] = helpers
 spec.loader.exec_module(helpers)
 
+import sdk
+
 for line in sys.stdin:
   line = line.strip()
   tokens = line.split(" ", 2)
