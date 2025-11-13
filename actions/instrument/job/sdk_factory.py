@@ -3,9 +3,9 @@ import os
 
 import importlib.util
 spec = importlib.util.spec_from_file_location("sdk", "/usr/share/opentelemetry_shell/sdk.py")
-helpers = importlib.util.module_from_spec(spec)
-sys.modules["sdk"] = helpers
-spec.loader.exec_module(helpers)
+sdk = importlib.util.module_from_spec(spec)
+sys.modules["sdk"] = sdk
+spec.loader.exec_module(sdk)
 
 import sdk
 
