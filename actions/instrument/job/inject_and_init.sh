@@ -438,7 +438,7 @@ echo "::endgroup::"
 
 echo "::group::Start Observation"
 traceparent_file="$(mktemp -u)"
-mkfifo /tmp/opentelemetry_shell.github.debug.log /tmp/otel_shell_sdk_factory.pipe
+mkfifo -m 666 /tmp/opentelemetry_shell.github.debug.log /tmp/otel_shell_sdk_factory.pipe
 wait # make sure we wait for all background jobs before we actually start
 nohup /opt/opentelemetry_shell/venv/bin/python sdk_factory.py /tmp/otel_shell_sdk_factory.pipe &> /dev/null &
 nohup bash -c 'root4job "$@"' bash "$traceparent_file" &> /dev/null &
