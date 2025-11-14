@@ -64,7 +64,7 @@ action_tag_name="$(echo "$GITHUB_ACTION_REF" | cut -sd @ -f 2-)"
 if [ -z "$action_tag_name" ]; then action_tag_name="v$(cat ../../../VERSION)"; fi
 if [ "$INPUT_CACHE" = "true" ]; then
   export INSTRUMENTATION_CACHE_KEY="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} instrumentation $GITHUB_WORKFLOW $GITHUB_JOB"
-  ( sudo -E -H eatmydata node -e "require('@actions/cache').restoreCache(['/tmp/*.aliases'], '$INSTRUMENTATION_CACHE_KEY');" 2>&1 | { type perl && perl -0777 -pe '' || cat > /dev/null; } & )
+  sudo -E -H eatmydata node -e "require('@actions/cache').restoreCache(['/tmp/*.aliases'], '$INSTRUMENTATION_CACHE_KEY');" 2>&1 | { type perl && perl -0777 -pe '' || cat > /dev/null; } &
   cache_key="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} dependencies $({ cat /etc/os-release; python3 --version || true; node --version || true; printenv | grep -E '^OTEL_SHELL_CONFIG_INSTALL_' || true; } | md5sum | cut -d ' ' -f 1)"
   sudo -E -H eatmydata node -e "require('@actions/cache').restoreCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip', '/opt/opentelemetry_shell/collector.image'], '$cache_key');"
   [ "$(find /var/cache/apt/archives/ -name '*.deb' | wc -l)" -gt 0 ] && [ -r /opt/opentelemetry_shell/collector.image ] || write_back_cache=TRUE
@@ -272,7 +272,7 @@ root4job_end() {
   exec 1> /tmp/opentelemetry_shell.github.debug.log
   exec 2> /tmp/opentelemetry_shell.github.debug.log
   rm /tmp/opentelemetry_shell.github.observe_rate_limits
-  [ -z "${INSTRUMENTATION_CACHE_KEY:-}" ] || ( ( sudo -E -H node -e "require('@actions/cache').saveCache(['/tmp/*.aliases'], '$INSTRUMENTATION_CACHE_KEY');" ) &> /dev/null & )
+  [ -z "${INSTRUMENTATION_CACHE_KEY:-}" ] || sudo -E -H node -e "require('@actions/cache').saveCache(['/tmp/*.aliases'], '$INSTRUMENTATION_CACHE_KEY');" &> /dev/null &
 
   if [ -f /tmp/opentelemetry_shell.github.error ]; then local conclusion=failure; else local conclusion=success; fi
   otel_span_attribute_typed $span_handle string github.actions.job.conclusion="$conclusion"
@@ -376,13 +376,13 @@ root4job_end() {
     cat "$collector_pipe_warning" | grep '^warn ' | cut -d ' ' -f 2- | sort -u | while read -r line; do echo ::warning::"$line"; done &
     cat "$collector_pipe_error" | grep '^err ' | cut -d ' ' -f 2- | sort -u | while read -r line; do echo ::error::"$line"; done &
     sudo docker logs "$OTEL_SHELL_COLLECTOR_CONTAINER" 2>&1 | tr '\t' ' ' | cut -d ' ' -f 2- | tee "$collector_pipe_warning" | tee "$collector_pipe_error" | { if [ -n "$INPUT_DEBUG" ]; then cat; else cat > /dev/null; fi; }
-    wait
   fi
   
   if [ -n "${INTERNAL_OTEL_DEFERRED_EXPORT_DIR:-}" ]; then
-    ( cd "$INTERNAL_OTEL_DEFERRED_EXPORT_DIR" && ls | grep -E '.logs$|.metrics$|.traces$' | xargs gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_job_"$GITHUB_JOB_ID"_signals_0 )
+    ( cd "$INTERNAL_OTEL_DEFERRED_EXPORT_DIR" && ls | grep -E '.logs$|.metrics$|.traces$' | xargs gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_job_"$GITHUB_JOB_ID"_signals_0 ) &
   fi
   
+  wait
   exit 0
 }
 export -f root4job_end
@@ -436,6 +436,7 @@ echo "::group::Start Observation"
 traceparent_file="$(mktemp -u)"
 mkfifo /tmp/opentelemetry_shell.github.debug.log
 wait # make sure we wait for all background jobs before we actually start
+sudo find /tmp | grep -qE '.aliases$' && unset INSTRUMENTATION_CACHE_KEY || true
 nohup bash -c 'root4job "$@"' bash "$traceparent_file" &> /dev/null &
 echo "pid=$!" >> "$GITHUB_STATE"
 cat /tmp/opentelemetry_shell.github.debug.log
