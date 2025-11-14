@@ -2,10 +2,12 @@ name: Test
 on:
   push:
     branches:
-      - '**'
+      - "main"
+      - "release/v*"
   pull_request:
     branches:
       - "main"
+      - "release/v*"
   workflow_call:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
