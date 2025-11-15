@@ -436,7 +436,7 @@ if \[ "$_otel_shell" = dash ] || \[ "$_otel_shell" = 'busybox sh' ]; then # LEGA
   }
 else
   _otel_call() {
-    "${1#\\}" "${@:2}"
+    \alias "$1" 1> /dev/null 2> /dev/null && \eval "$(_otel_escape_args "$@")" || "${1#\\}" "${@:2}"
   }
 fi
 
