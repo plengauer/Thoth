@@ -14,19 +14,15 @@ concurrency:
 jobs:
   setup:
     runs-on: ubuntu-latest
+    outputs:
+      images: ${{ steps.dynamic.outputs.ref }}
     permissions:
       actions: read
       contents: read
     steps:
-      - run: |
-          set -x
-          ( [ -n '${{ inputs.ref }}' ] && echo '${{ inputs.ref }}' || echo '${{ github.sha }}' ) | xargs -t -0 -I '{}' echo 'ref={}' >> "$GITHUB_OUTPUT"
-  experiment:
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          echo '${{ needs.setup.outputs.ref }}'
+      - id: dynamic
+        run: |
+          ( [ -n '${{ inputs.ref }}' ] && echo '${{ inputs.ref }}' || echo '${{ github.sha }}' ) | xargs -0 -I '{}' echo 'ref={}' >> "$GITHUB_OUTPUT"
   build:
     needs: setup
     permissions:
