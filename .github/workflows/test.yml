@@ -13,6 +13,8 @@ jobs:
       actions: read
       contents: read
     uses: ./.github/workflows/build.yml
+    with:
+      ref: ${{ github.ref }}
     secrets: inherit
   shell:
     needs: build
@@ -20,6 +22,8 @@ jobs:
       actions: read
       contents: read
     uses: ./.github/workflows/test_shell.yml
+    with:
+      ref: ${{ github.ref }}
     secrets: inherit
   github:
     needs: build
@@ -39,6 +43,8 @@ jobs:
       security-events: none
       statuses: none
     uses: ./.github/workflows/test_github.yml
+    with:
+      ref: ${{ github.ref }}
     secrets: inherit
   join:
     needs: [shell, github]
