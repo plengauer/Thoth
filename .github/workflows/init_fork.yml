@@ -1,0 +1,24 @@
+name: Initialize Fork
+on:
+  workflow_dispatch:
+jobs:
+  init:
+    if: ${{ github.event.repository.fork }}
+    runs-on: ubuntu:latest
+    permissions:
+      actions: read
+    steps:
+      - run: |
+          [ -n ${{ secrets.ACTIONS_GITHUB_TOKEN }} ] # needs these scopes: delete:packages, repo, workflow, write:packages
+      - run: |
+          curl --fail -H "Authorization: Bearer ${{ secrets.ACTIONS_GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_REPOSITORY"/actions/workflows'?per_page=100' | jq '.workflows[].id' \
+            | xargs -I '{}' curl --fail -H "Authorization: Bearer ${{ secrets.ACTIONS_GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_REPOSITORY"/actions/workflows/'{}'/enable -X PUT
+      - uses: actions/checkout@v5.0.0
+        with:
+          token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag=v"$(cat VERSION)"
+          git tag "$tag"
+          git push origin "$tag"
