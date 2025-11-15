@@ -21,6 +21,6 @@ if ! type otel.sh 2> /dev/null; then
   else
     false
   fi \
-    || ( echo ::warning::Cannot find release for specified tag, falling back to latest && wget -O - https://raw.githubusercontent.com/"$GITHUB_ACTION_REPOSITORY"/main/INSTALL.sh | sh ) \
-    || ( echo ::warning::Cannot find any release in repository, falling back to root repository && wget -O - https://raw.githubusercontent.com/plengauer/Thoth/main/INSTALL.sh | sh )
+    || ( echo ::warning::Cannot find release for specified tag, falling back to latest >&2 && wget -O - https://raw.githubusercontent.com/"$GITHUB_ACTION_REPOSITORY"/main/INSTALL.sh | sh ) \
+    || ( echo ::warning::Cannot find any release in repository, falling back to root repository >&2 && wget -O - https://raw.githubusercontent.com/plengauer/Thoth/main/INSTALL.sh | sh )
 fi
