@@ -4,29 +4,42 @@ on:
     branches:
       - '**'
   workflow_call:
+    inputs:
+      ref:
+        type: string
+        required: true
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
+  setup:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    steps:
+      - run: |
+          ( [ -n '${{ inputs.ref }}' ] && echo '${{ inputs.ref }}' || echo '${{ github.sha }}' ) | xargs -0 -I '{}' echo 'ref={}' >> "$GITHUB_OUTPUT"
   build:
+    needs: setup
     permissions:
       actions: read
       contents: read
     uses: ./.github/workflows/build.yml
     with:
-      ref: ${{ github.sha }}
+      ref: ${{ needs.setup.outputs.ref }}
     secrets: inherit
   shell:
-    needs: build
+    needs: [setup, build]
     permissions:
       actions: read
       contents: read
     uses: ./.github/workflows/test_shell.yml
     with:
-      ref: ${{ github.sha }}
+      ref: ${{ needs.setup.outputs.ref }}
     secrets: inherit
   github:
-    needs: build
+    needs: [setup, build]
     permissions:
       actions: read
       attestations: none
@@ -44,7 +57,7 @@ jobs:
       statuses: none
     uses: ./.github/workflows/test_github.yml
     with:
-      ref: ${{ github.sha }}
+      ref: ${{ needs.setup.outputs.ref }}
     secrets: inherit
   join:
     needs: [shell, github]
