@@ -519,6 +519,7 @@ jobs:
           OTEL_TRACES_EXPORTER: console
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
   deploy:
+    if: ${{ !github.event.repository.fork }}
     needs: deploy-smoke
     runs-on: ubuntu-latest
     permissions:
