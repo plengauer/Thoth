@@ -20,5 +20,7 @@ if ! type otel.sh 2> /dev/null; then
     sudo -E -H eatmydata apt-get -o Binary::apt::APT::Keep-Downloaded-Packages=true install -y "$debian_file"
   else
     false
-  fi || wget -O - https://raw.githubusercontent.com/"$GITHUB_ACTION_REPOSITORY"/main/INSTALL.sh | sh
+  fi \
+    || ( echo ::warning::Cannot find release for specified tag, falling back to latest && wget -O - https://raw.githubusercontent.com/"$GITHUB_ACTION_REPOSITORY"/main/INSTALL.sh | sh ) \
+    || ( echo ::warning::Cannot find any release in repository, falling back to root repository && wget -O - https://raw.githubusercontent.com/plengauer/Thoth/main/INSTALL.sh | sh )
 fi
