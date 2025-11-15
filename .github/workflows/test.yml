@@ -19,7 +19,8 @@ jobs:
       contents: read
     steps:
       - run: |
-          ( [ -n '${{ inputs.ref }}' ] && echo '${{ inputs.ref }}' || echo '${{ github.sha }}' ) | xargs -0 -I '{}' echo 'ref={}' >> "$GITHUB_OUTPUT"
+          set -x
+          ( [ -n '${{ inputs.ref }}' ] && echo '${{ inputs.ref }}' || echo '${{ github.sha }}' ) | xargs -t -0 -I '{}' echo 'ref={}' >> "$GITHUB_OUTPUT"
   build:
     needs: setup
     permissions:
