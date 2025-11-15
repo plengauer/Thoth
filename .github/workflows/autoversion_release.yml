@@ -13,6 +13,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   bump:
+    if: ${{ !github.event.repository.fork }}
     runs-on: ubuntu-latest
     permissions:
       contents: write

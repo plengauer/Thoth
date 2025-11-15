@@ -5,6 +5,7 @@ on:
       - main
 jobs:
   backport:
+    if: ${{ !github.event.repository.fork }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
