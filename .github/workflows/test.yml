@@ -21,6 +21,12 @@ jobs:
       - run: |
           set -x
           ( [ -n '${{ inputs.ref }}' ] && echo '${{ inputs.ref }}' || echo '${{ github.sha }}' ) | xargs -t -0 -I '{}' echo 'ref={}' >> "$GITHUB_OUTPUT"
+  experiment:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo '${{ needs.setup.outputs.ref }}'
   build:
     needs: setup
     permissions:
