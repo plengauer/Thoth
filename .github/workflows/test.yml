@@ -14,7 +14,7 @@ jobs:
       contents: read
     uses: ./.github/workflows/build.yml
     with:
-      ref: ${{ github.ref }}
+      ref: ${{ github.sha }}
     secrets: inherit
   shell:
     needs: build
@@ -23,7 +23,7 @@ jobs:
       contents: read
     uses: ./.github/workflows/test_shell.yml
     with:
-      ref: ${{ github.ref }}
+      ref: ${{ github.sha }}
     secrets: inherit
   github:
     needs: build
@@ -44,7 +44,7 @@ jobs:
       statuses: none
     uses: ./.github/workflows/test_github.yml
     with:
-      ref: ${{ github.ref }}
+      ref: ${{ github.sha }}
     secrets: inherit
   join:
     needs: [shell, github]
