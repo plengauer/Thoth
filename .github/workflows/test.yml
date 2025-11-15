@@ -15,7 +15,7 @@ jobs:
   setup:
     runs-on: ubuntu-latest
     outputs:
-      images: ${{ steps.dynamic.outputs.ref }}
+      ref: ${{ steps.dynamic.outputs.ref }}
     permissions:
       actions: read
       contents: read
