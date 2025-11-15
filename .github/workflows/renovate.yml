@@ -8,6 +8,7 @@ concurrency:
   group: renovate
 jobs:
   renovate-dependencies:
+    if: ${{ !github.event.repository.fork }}
     runs-on: ubuntu-latest
     permissions:
       contents: none
@@ -25,6 +26,7 @@ jobs:
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
   renovate-package-dependency-python:
+    if: ${{ !github.event.repository.fork }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -68,6 +70,7 @@ jobs:
           GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         continue-on-error: true
   renovate-test-images:
+    if: ${{ !github.event.repository.fork }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -143,6 +146,7 @@ jobs:
           GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         continue-on-error: true
   renovate-license:
+    if: ${{ !github.event.repository.fork }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
