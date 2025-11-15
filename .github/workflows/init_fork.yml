@@ -9,7 +9,7 @@ jobs:
       actions: read
     steps:
       - run: |
-          [ -n ${{ secrets.ACTIONS_GITHUB_TOKEN }} ] # needs these scopes: delete:packages, repo, workflow, write:packages
+          [ -n "${{ secrets.ACTIONS_GITHUB_TOKEN }}" ] # needs these scopes: delete:packages, repo, workflow, write:packages
       - run: |
           curl --fail -H "Authorization: Bearer ${{ secrets.ACTIONS_GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_REPOSITORY"/actions/workflows'?per_page=100' | jq '.workflows[].id' \
             | xargs -I '{}' curl --fail -H "Authorization: Bearer ${{ secrets.ACTIONS_GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_REPOSITORY"/actions/workflows/'{}'/enable -X PUT
