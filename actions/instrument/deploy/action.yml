@@ -27,7 +27,7 @@ inputs:
     description: 'Whether to (1) redact no secrets at all, to (2) list them explicitly based on content of the workflow, or to (3) proactively redact all secrets (one of "none", "list", "all").'
     default: 'list'
   action_repository:
-    default: plengauer/opentelemetry-github
+    default: ''
   action_version:
     default: same
   job_level_instrumentation_copilot:
@@ -46,12 +46,18 @@ runs:
   steps:
     - name: "Determine repository"
       id: determine-repository
+      env:
+        GITHUB_ACTION_REPOSITORY: ${{ github.action_repository }}
       shell: bash
       run: |
-        if [ "$GITHUB_API_URL" = 'https://api.github.com' ]; then
+        if [ -n '${{ inputs.action_repository }}' ]; then
           echo '${{ inputs.action_repository }}'
+        elif [ "${GITHUB_ACTION_REPOSITORY%/*}" != plengauer ]; then
+          echo "$GITHUB_ACTION_REPOSITORY"
+        elif [ "$GITHUB_API_URL" = 'https://api.github.com' ]; then
+          echo plengauer/opentelemetry-github
         else
-          echo "::notice::On private GitHub servers, action runners are not following redirects. Therefore the repository configuration is ignored." >&2
+          echo "::notice::On private GitHub servers, action runners are not following redirects." >&2
           echo plengauer/Thoth
         fi | xargs -I '{}' echo repository='{}' >> "$GITHUB_OUTPUT"
     - name: "Install dependencies"
