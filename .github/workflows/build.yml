@@ -1,6 +1,11 @@
 name: 'Build'
+
 on:
   workflow_call:
+    inputs:
+      ref:
+        type: string
+        required: true
 
 jobs:
 
@@ -21,6 +26,8 @@ jobs:
         with:
           secrets_to_redact: '["${{ github.token }}"]'
       - uses: actions/checkout@v5.0.0
+        with:
+          ref: ${{ inputs.ref }}
       - if: ${{ matrix.architecture != 'amd64' }}
         uses: docker/setup-qemu-action@v3.7.0
       - id: build
@@ -88,6 +95,8 @@ jobs:
         with:
           secrets_to_redact: '["${{ github.token }}"]'
       - uses: actions/checkout@v5.0.0
+        with:
+          ref: ${{ inputs.ref }}
       - run: cd src/usr/share/opentelemetry_shell/agent.instrumentation.node && npm install
       - id: dynamic
         run: |
@@ -114,6 +123,8 @@ jobs:
         with:
           node-version: ${{ matrix.version }}
       - uses: actions/checkout@v5.0.0
+        with:
+          ref: ${{ inputs.ref }}
       - run: |
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.node
           npm install
@@ -168,6 +179,8 @@ jobs:
         with:
           secrets_to_redact: '["${{ github.token }}"]'
       - uses: actions/checkout@v5.0.0
+        with:
+          ref: ${{ inputs.ref }}
       - run: |
           python3 -m venv venv
           . venv/bin/activate
@@ -198,6 +211,8 @@ jobs:
         with:
           python-version: ${{ matrix.version }}
       - uses: actions/checkout@v5.0.0
+        with:
+          ref: ${{ inputs.ref }}
       - run: |
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.python
           python3 -m venv venv
@@ -261,6 +276,8 @@ jobs:
         with:
           secrets_to_redact: '["${{ github.token }}"]'
       - uses: actions/checkout@v5.0.0
+        with:
+          ref: ${{ inputs.ref }}
       - uses: actions/setup-java@v5.0.0
         with:
           java-version: 8
@@ -328,6 +345,8 @@ jobs:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
       - uses: actions/checkout@v5.0.0
+        with:
+          ref: ${{ inputs.ref }}
       - run: |
           python3 -m venv venv
           . venv/bin/activate
@@ -350,6 +369,8 @@ jobs:
         with:
           secrets_to_redact: '["${{ github.token }}"]'
       - uses: actions/checkout@v5.0.0
+        with:
+          ref: ${{ inputs.ref }}
       - run: sudo apt-get update && sudo apt-get -y install apt-file
       - run: sudo apt-file update
       - run: |
@@ -386,6 +407,8 @@ jobs:
         with:
           secrets_to_redact: '["${{ github.token }}"]'
       - uses: actions/checkout@v5.0.0
+        with:
+          ref: ${{ inputs.ref }}
       - run: |
           {
             find src -iname 'Dockerfile' -type f
@@ -435,6 +458,8 @@ jobs:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
       - uses: actions/checkout@v5.0.0
+        with:
+          ref: ${{ inputs.ref }}
       - run: |
           python3 -m venv venv
           . venv/bin/activate
@@ -458,6 +483,8 @@ jobs:
         with:
           secrets_to_redact: '["${{ github.token }}"]'
       - uses: actions/checkout@v5.0.0
+        with:
+          ref: ${{ inputs.ref }}
       - run: |
           {
             find src -iname 'Dockerfile' -type f
@@ -533,6 +560,8 @@ jobs:
         with:
           secrets_to_redact: '["${{ github.token }}"]'
       - uses: actions/checkout@v5.0.0
+        with:
+          ref: ${{ inputs.ref }}
       - run: |
           {
             find src -iname 'Dockerfile' -type f
@@ -604,6 +633,8 @@ jobs:
         with:
           secrets_to_redact: '["${{ github.token }}"]'
       - uses: actions/checkout@v5.0.0
+        with:
+          ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v6.0.0
         with:
           name: package.deb
