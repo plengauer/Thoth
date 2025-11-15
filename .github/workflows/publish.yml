@@ -11,12 +11,17 @@ jobs:
 
   setup:
     runs-on: ubuntu:latest
+    outputs:
+      refs: ${{ steps.dynamic.outputs.refs }}
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v5.0.0
         with:
           fetch-depth: 0
           fetch-tags: true
-      - run: |
+      - id: dynamic
+        run: |
           cat '${{ github.event_path }}' | jq '.commits[].id' -r | while read -r ref; do
             if git diff-tree --root --no-commit-id --name-only -r "$ref" | grep -qE '^VERSION$' || ( git tag --points-at "$ref" | grep -qE '^v' && ! curl -s --fail -H "Authorization: Bearer ${{ github.token }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_REPOSITORY"/releases/tags/"$(git tag --points-at "$ref")" ); then
               echo "$ref"
