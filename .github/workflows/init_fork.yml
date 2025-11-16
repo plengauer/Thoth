@@ -20,4 +20,4 @@ jobs:
           tag=v"$(cat VERSION)"
           git tag "$tag"
           git push origin "$tag"
-      - run: echo ::notice::'The build and release workflow is running - it may take a few minutes up to a few hours (depending on the traffic on your GitHub runners until the first release has been published.' >&2
+      - run: echo ::notice::'The build and release workflow is running - it may take a few minutes up to a few hours (depending on the traffic on your GitHub runners) until the first release has been published.' >&2
