@@ -49,7 +49,7 @@ jobs:
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
       - uses: actions/download-artifact@v6 # check if node action works
         with:
-          name: packages
+          name: packages_${{ inputs.ref }}
   job-docker:
     needs: job-smoke
     runs-on: ubuntu-latest
