@@ -65,7 +65,7 @@ jobs:
       - run: sudo apt-get -y install ./*.deb
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: packages
+          name: packages_${{ inputs.ref }}
       - run: sudo apt-get -y install --allow-downgrades ./package.deb
   list-images:
     needs: smoke
@@ -94,7 +94,7 @@ jobs:
       - if: ${{ hashFiles('images.json') == '' }}
         uses: actions/download-artifact@v6.0.0
         with:
-          name: packages
+          name: packages_${{ inputs.ref }}
       - if: ${{ hashFiles('images.json') == '' }}
         run: |
           sudo docker login -u '${{ secrets.DOCKERHUB_USERNAME }}' -p '${{ secrets.DOCKERHUB_TOKEN }}'
