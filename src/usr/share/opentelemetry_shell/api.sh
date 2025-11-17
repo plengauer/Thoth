@@ -429,7 +429,7 @@ fi
 _otel_call() {
   local command="$1"
   shift
-  \alias "$command" 1> /dev/null 2> /dev/null && \eval "$(_otel_escape_args "$command" "$@")" || "${command#\\}" "$@"
+  \alias "$command" 1> /dev/null 2> /dev/null && \eval "$(_otel_escape_args "${command#\\}" "$@")" || "${command#\\}" "$@"
 }
 
 \. /usr/share/opentelemetry_shell/api.observe.logs.sh
