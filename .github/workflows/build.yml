@@ -154,9 +154,11 @@ jobs:
         with:
           pattern: node_modules_*_${{ inputs.ref }}
       - run: |
-          ls | grep '^node_modules_' | while read -r directory_name; do echo "${directory_name#node_modules_}"; done | while read -r directory_name; do echo "${directory_name%_*}"; done | while read -r version; do
+          ls | grep '^node_modules_' | while read -r directory; do
+            version="${directory#node_modules_}"
+            version="${version%_*}"
             mkdir "$version"
-            mv node_modules_"$version" "$version"/node_modules
+            mv "$directory" "$version"/node_modules
           done
       - run: find . -type f | xargs sha256sum | sort | cut -d ' ' -f 3- | tar -cf node_modules.tar -T - && xz -9 node_modules.tar
       - uses: actions/upload-artifact@v5.0.0
@@ -256,7 +258,9 @@ jobs:
         with:
           pattern: python_site_packages_*_${{ inputs.ref }}
       - run: |
-          ls | grep '^python_site_packages' | while read -r directory_name; do echo "${directory_name#python_site_packages_}"; done | while read -r directory_name; do echo "${directory_name%_*}"; done | while read -r version; do
+          ls | grep '^python_site_packages' | while read -r directory; do
+            version="${directory#python_site_packages_}"
+            version="${version%_*}"
             mkdir "$version"
             mv python_site_packages_"$version" "$version"/site-packages
           done
