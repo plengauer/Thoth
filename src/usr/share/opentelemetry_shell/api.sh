@@ -427,9 +427,7 @@ if ! \type which 1> /dev/null 2> /dev/null; then
 fi
 
 _otel_call() {
-  local command="$1"; shift
-  if ! _otel_string_starts_with "$command" "\\"; then local command="$(_otel_escape_arg "$command")"; fi
-  \eval "$command" "$(_otel_escape_args "$@")"
+  \alias "$1" 1> /dev/null 2> /dev/null && \eval "$(_otel_escape_args "$@")" || "${1#\\}" "${@:2}"
 }
 
 \. /usr/share/opentelemetry_shell/api.observe.logs.sh
