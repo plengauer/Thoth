@@ -72,8 +72,10 @@ jobs:
           pattern: http_*_${{ inputs.ref }}
       - run: |
           mkdir bin
-          ls | grep '^http_' | while read -r directory_name; do echo "${directory_name#http_}"; done | while read -r architecture; do
-            mv http_"$architecture" bin/"$architecture"
+          ls | grep '^http_' | while read -r directory; do
+            architecture="${directory#http_}"
+            architecture="${architecture%_*}"
+            mv "$directory" bin/"$architecture"
           done
       - uses: actions/upload-artifact@v5.0.0
         with:
