@@ -486,18 +486,12 @@ _otel_escape_args() {
 }
 
 _otel_escape_arg() {
-   # that SO article shows why this is extra fun! https://stackoverflow.com/questions/16991270/newlines-at-the-end-get-removed-in-shell-scripts-why
   local do_escape=0
-  if \[ -z "$1" ]; then
-    local do_escape=1
-  elif \[ "$1X" != "$(\echo "$1")"X ]; then # fancy check for "contains linefeed"
-    local do_escape=1
-  else
-    case "$1X" in
-      *[[:space:]\&\<\>\|\'\"\(\)\`\!\$\;\\\*]*) local do_escape=1 ;;
-      *) local do_escape=0 ;;
-    esac
-  fi
+  case "$1" in
+    '') local do_escape=1;;
+    *[[:space:]\&\<\>\|\'\"\(\)\`\!\$\;\\\*]*) local do_escape=1;;  
+    *) local do_escape=0;;
+  esac
   if \[ "$do_escape" = 1 ]; then
     if \[ "${no_quote:-0}" = 1 ]; then local format_string='%s'; else local format_string="'%s'"; fi
     _otel_escape_arg_format "$format_string" "$1"
