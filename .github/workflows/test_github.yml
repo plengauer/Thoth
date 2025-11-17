@@ -202,7 +202,7 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: packages
+          name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
