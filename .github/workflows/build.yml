@@ -154,7 +154,7 @@ jobs:
         with:
           pattern: node_modules_*_${{ inputs.ref }}
       - run: |
-          ls | grep '^node_modules_' | while read -r directory_name; do echo "${directory_name#node_modules_}"; done | while read -r version; do
+          ls | grep '^node_modules_' | while read -r directory_name; do echo "${directory_name#node_modules_}"; done | while read -r directory_name; do echo "${directory_name%_*}"; done | while read -r version; do
             mkdir "$version"
             mv node_modules_"$version" "$version"/node_modules
           done
@@ -256,7 +256,7 @@ jobs:
         with:
           pattern: python_site_packages_*_${{ inputs.ref }}
       - run: |
-          ls | grep '^python_site_packages' | while read -r directory_name; do echo "${directory_name#python_site_packages_}"; done | while read -r version; do
+          ls | grep '^python_site_packages' | while read -r directory_name; do echo "${directory_name#python_site_packages_}"; done | while read -r directory_name; do echo "${directory_name%_*}"; done | while read -r version; do
             mkdir "$version"
             mv python_site_packages_"$version" "$version"/site-packages
           done
