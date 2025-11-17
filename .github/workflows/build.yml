@@ -419,19 +419,19 @@ jobs:
           } | xargs -r rm
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: http
+          name: http_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.http
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: node_modules
+          name: node_modules_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.node
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: python_site_packages
+          name: python_site_packages_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.python
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: java
+          name: java_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.java
       - run: cp -r meta/debian src/DEBIAN
       - run: sed -i "s/__VERSION__/$(cat VERSION)/g" src/DEBIAN/control
@@ -495,19 +495,19 @@ jobs:
           } | xargs -r rm
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: http
+          name: http_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.http
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: node_modules
+          name: node_modules_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.node
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: python_site_packages
+          name: python_site_packages_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.python
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: java
+          name: java_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.java
       - run: cp meta/rpm/opentelemetry-shell.spec .
       - run: sed -i "s/__VERSION__/$(cat VERSION)/g" opentelemetry-shell.spec
@@ -572,15 +572,15 @@ jobs:
           } | xargs -r rm
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: node_modules
+          name: node_modules_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.node
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: python_site_packages
+          name: python_site_packages_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.python
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: java
+          name: java_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.java
       - run: |
           workspace="$(mktemp -d)"
