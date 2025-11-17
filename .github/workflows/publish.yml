@@ -78,7 +78,7 @@ jobs:
         id: version
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: packages
+          name: packages_${{ matrix.ref }}
       - uses: actions/attest-build-provenance@v3.0.0
         with:
           subject-path: ./package.deb
@@ -93,7 +93,7 @@ jobs:
           subject-name: opentelemetry-shell_${{ steps.version.outputs.version }}.apk
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: images
+          name: images_${{ matrix.ref }}
       - run: |
           echo ${{ secrets.ACTIONS_GITHUB_TOKEN }} | sudo docker login ghcr.io -u "$(GH_TOKEN=${{ secrets.ACTIONS_GITHUB_TOKEN }} gh api user -q .login)" --password-stdin
           find . -iname '*.image' | while read -r image_file; do
