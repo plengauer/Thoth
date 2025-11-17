@@ -637,7 +637,7 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: package.deb
+          name: package.deb_${{ inputs.ref }}
       - run: |
           cp package.deb actions/instrument/workflow
           pushd actions/instrument/workflow
