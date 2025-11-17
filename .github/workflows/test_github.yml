@@ -199,7 +199,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5.0.0
         with:
-          ref: ${{ inputs.ref }}_${{ inputs.ref }}
+          ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v6.0.0
         with:
           name: packages
