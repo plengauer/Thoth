@@ -366,6 +366,7 @@ root4job_end() {
   fi
 
   while kill -0 "$observe_rate_limit_pid" 2> /dev/null; do sleep 1; done
+  if [ -p /tmp/otel_shell/sdk_factory."$USER".pipe ]; then echo "EOF" > /tmp/otel_shell/sdk_factory."$USER".pipe; rm -rf /tmp/otel_shell; fi
   timeout 5s sh -c 'while fuser /opt/opentelemetry_shell/venv/bin/python; do sleep 1; done' &> /dev/null || true
   
   if [ -n "${OTEL_SHELL_COLLECTOR_CONTAINER:-}" ]; then
@@ -432,11 +433,20 @@ root4job() {
 }
 export -f root4job
 
+echo "::group::Setting Up SDK Factory"
+mv sdk_factory.py sdk_factory.py.backup
+cat /usr/share/opentelemetry_shell/sdk.py | grep -E 'from|import' | while read -r line; do echo "$line"; done | sort -u > sdk_factory.py
+cat sdk_factory.py.backup >> sdk_factory.py
+rm sdk_factory.py.backup
+echo "::endgroup::"
+
 echo "::group::Start Observation"
 traceparent_file="$(mktemp -u)"
-mkfifo /tmp/opentelemetry_shell.github.debug.log
+mkdir -p /tmp/otel_shell
+mkfifo /tmp/opentelemetry_shell.github.debug.log /tmp/otel_shell/sdk_factory."$USER".pipe # subdirectory to avoid sticky bit
 wait # make sure we wait for all background jobs before we actually start
 sudo find /tmp | grep -qE '.aliases$' && unset INSTRUMENTATION_CACHE_KEY || true
+nohup /opt/opentelemetry_shell/venv/bin/python sdk_factory.py /tmp/otel_shell/sdk_factory."$USER".pipe &> /dev/null &
 nohup bash -c 'root4job "$@"' bash "$traceparent_file" &> /dev/null &
 echo "pid=$!" >> "$GITHUB_STATE"
 cat /tmp/opentelemetry_shell.github.debug.log

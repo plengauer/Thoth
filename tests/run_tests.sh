@@ -5,6 +5,11 @@ if [ "$SHELL" = "" ]; then
   echo "need to specify shell to test"
   exit 1
 fi
+. /etc/os-release
+if [ "$SHELL" = dash ] && ! ( [ "$ID" = debian ] || [ "$ID_LIKE" = debian ] ); then
+  exit 0
+fi
+
 if [ "$SHELL" = busybox ]; then
   export TEST_SHELL="busybox sh";
 else
