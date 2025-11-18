@@ -231,6 +231,27 @@ jobs:
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
       - run: |
           ( { echo foo; sleep $((60 * 60 * 60)); echo bar; } ) &
+  job-background-indirect:
+    needs: job-smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v5.0.0
+      - uses: actions/download-artifact@v6.0.0
+        with:
+          name: packages
+      - uses: ./actions/instrument/job
+        with:
+          cache: 'false'
+        env:
+          OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
+          OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
+      - run: |
+          echo '( { echo foo; sleep $((60 * 60 * 60)); echo bar; } ) &' > start_background.sh
+          sh ./start_background.sh
   job-cache:
     needs: job-smoke
     runs-on: ubuntu-latest
