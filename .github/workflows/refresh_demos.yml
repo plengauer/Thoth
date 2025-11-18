@@ -32,6 +32,7 @@ jobs:
           cd demos && echo */ | tr ' ' '\n' | tr -d / | while read -r dir; do echo \""$dir"\"; done | jq -s | tr -d ' ' | tr -d '\n' | xargs -0 -I {} echo 'dirs={}' >> "$GITHUB_OUTPUT"
         id: demos
   generate:
+    if: ${{ !github.event.repository.fork }}
     needs: prepare
     runs-on: ubuntu-latest
     permissions:

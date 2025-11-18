@@ -27,7 +27,7 @@ inputs:
     description: 'Whether to (1) redact no secrets at all, to (2) list them explicitly based on content of the workflow, or to (3) proactively redact all secrets (one of "none", "list", "all").'
     default: 'list'
   action_repository:
-    default: plengauer/opentelemetry-github
+    default: ''
   action_version:
     default: same
   job_level_instrumentation_copilot:
@@ -46,12 +46,18 @@ runs:
   steps:
     - name: "Determine repository"
       id: determine-repository
+      env:
+        GITHUB_ACTION_REPOSITORY: ${{ github.action_repository }}
       shell: bash
       run: |
-        if [ "$GITHUB_API_URL" = 'https://api.github.com' ]; then
+        if [ -n "${{ inputs.action_repository }}" ]; then
           echo '${{ inputs.action_repository }}'
+        elif [ "${GITHUB_ACTION_REPOSITORY%/*}" != plengauer ]; then
+          echo "$GITHUB_ACTION_REPOSITORY"
+        elif [ "$GITHUB_API_URL" = 'https://api.github.com' ]; then
+          echo plengauer/opentelemetry-github
         else
-          echo "::notice::On private GitHub servers, action runners are not following redirects. Therefore the repository configuration is ignored." >&2
+          echo "::notice::On private GitHub servers, action runners are not following redirects." >&2
           echo plengauer/Thoth
         fi | xargs -I '{}' echo repository='{}' >> "$GITHUB_OUTPUT"
     - name: "Install dependencies"
@@ -141,7 +147,12 @@ runs:
       run: |
         if [ -w "${{ steps.find-workflow-level-instrumentation.outputs.path }}" ]; then path="${{ steps.find-workflow-level-instrumentation.outputs.path }}"; else path="${{ inputs.workflows_directory }}/${{ inputs.workflow_level_instrumentation_file_name }}"; fi
         if cat "$path" | yq '.jobs.export.container' | grep -q '^null$'; then
-          yq -i ".jobs.export.container = \"ghcr.io/"$(echo ${{ steps.determine-repository.outputs.repository }} | cut -d / -f 1)"/opentelemetry-github-workflow-instrumentation-runner:${{ steps.determine-instrumentation-version.outputs.version }}\"" "$path"
+          image=ghcr.io/"$(echo ${{ steps.determine-repository.outputs.repository }} | cut -d / -f 1)"/opentelemetry-github-workflow-instrumentation-runner:${{ steps.determine-instrumentation-version.outputs.version }}
+          if ! sudo docker pull "$image"; then
+            echo ::warning::'Runner image '"$image"' is unavailable, skipping configuration since it its only for optimization. A common cause for this is that the package is not publicly visible in the ghcr. This needs to be configured manually.'
+            exit 0
+          fi
+          yq -i ".jobs.export.container = \"$image\"" "$path"
         fi
     - name: "Update workflow-level observability triggers"
       shell: bash

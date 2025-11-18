@@ -1,6 +1,10 @@
 name: 'GitHub'
 on:
   workflow_call:
+    inputs:
+      ref:
+        type: string
+        required: true
 env:
   OTEL_SHELL_CONFIG_GITHUB_IS_TEST: 'TRUE'
 jobs:
@@ -12,9 +16,11 @@ jobs:
       actions: read
     steps:
       - uses: actions/checkout@v5.0.1
+        with:
+          ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: packages
+          name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
@@ -30,9 +36,11 @@ jobs:
       actions: read
     steps:
       - uses: actions/checkout@v5.0.1
+        with:
+          ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: packages
+          name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
@@ -41,7 +49,7 @@ jobs:
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
       - uses: actions/download-artifact@v6 # check if node action works
         with:
-          name: packages
+          name: packages_${{ inputs.ref }}
   job-docker:
     needs: job-smoke
     runs-on: ubuntu-latest
@@ -51,9 +59,11 @@ jobs:
       actions: read
     steps:
       - uses: actions/checkout@v5.0.1
+        with:
+          ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: packages
+          name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
@@ -70,7 +80,7 @@ jobs:
       - uses: docker/setup-buildx-action@v3.11.1 # some docker actions have otel built-in
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: packages
+          name: packages_${{ inputs.ref }}
       - run: cp package.deb tests/package.deb
       - uses: docker/build-push-action@v6.18.0 # some docker actions have otel built-in
         with:
@@ -90,9 +100,11 @@ jobs:
       actions: read
     steps:
       - uses: actions/checkout@v5.0.1
+        with:
+          ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: packages
+          name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
@@ -116,9 +128,11 @@ jobs:
       actions: read
     steps:
       - uses: actions/checkout@v5.0.1
+        with:
+          ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: packages
+          name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
@@ -140,9 +154,11 @@ jobs:
       actions: read
     steps:
       - uses: actions/checkout@v5.0.1
+        with:
+          ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: packages
+          name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
@@ -182,9 +198,11 @@ jobs:
       foo: ${{ steps.my-step.outputs.foo }}
     steps:
       - uses: actions/checkout@v5.0.1
+        with:
+          ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: packages
+          name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
@@ -202,9 +220,11 @@ jobs:
       actions: read
     steps:
       - uses: actions/checkout@v5.0.1
+        with:
+          ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: packages
+          name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
@@ -220,9 +240,11 @@ jobs:
       actions: read
     steps:
       - uses: actions/checkout@v5.0.1
+        with:
+          ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: packages
+          name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
@@ -242,7 +264,7 @@ jobs:
       - uses: actions/checkout@v5.0.1
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: packages
+          name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
@@ -265,9 +287,11 @@ jobs:
       actions: read
     steps:
       - uses: actions/checkout@v5.0.1
+        with:
+          ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: packages
+          name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
         with:
           cache: ${{ matrix.cache }}
@@ -284,9 +308,11 @@ jobs:
       actions: read
     steps:
       - uses: actions/checkout@v5.0.1
+        with:
+          ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: packages
+          name: packages_${{ inputs.ref }}
       - run: |
           nohup node -e "require('http').createServer(function (req, res) { console.log(req.method, req.url); res.writeHead(200); res.end(); }).listen(8080);" 1> /tmp/http.log 2> /dev/null &
       - uses: ./actions/instrument/job
@@ -324,9 +350,11 @@ jobs:
       actions: read
     steps:
       - uses: actions/checkout@v5.0.1
+        with:
+          ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v6
         with:
-          name: packages
+          name: packages_${{ inputs.ref }}
       - run: |
           nohup node -e "require('http').createServer(function (req, res) { console.log(req.method, req.url); res.writeHead(200); res.end(); }).listen(8080);" 1> /tmp/http.log 2> /dev/null &
       - uses: ./actions/instrument/job
@@ -371,9 +399,11 @@ jobs:
       statuses: none
     steps:
       - uses: actions/checkout@v5.0.1
+        with:
+          ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: packages
+          name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
@@ -393,9 +423,11 @@ jobs:
       actions: read
     steps:
       - uses: actions/checkout@v5.0.1
+        with:
+          ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: packages
+          name: packages_${{ inputs.ref }}
       - run: |
           nohup node -e "require('http').createServer(function (req, res) { console.log(req.method, req.url); res.writeHead(200); res.end(); }).listen(8080);" 1> /tmp/http.log 2> /dev/null &
       - uses: ./actions/instrument/job
@@ -417,6 +449,8 @@ jobs:
       actions: read
     steps:
       - uses: actions/checkout@v5.0.1
+        with:
+          ref: ${{ inputs.ref }}
       - uses: ./actions/instrument/job
       - run: echo hello world
   job-macos:
@@ -428,6 +462,8 @@ jobs:
       actions: read
     steps:
       - uses: actions/checkout@v5.0.1
+        with:
+          ref: ${{ inputs.ref }}
       - uses: ./actions/instrument/job
       - run: echo hello world
   workflow-smoke:
@@ -438,9 +474,11 @@ jobs:
       actions: read
     steps:
       - uses: actions/checkout@v5.0.1
+        with:
+          ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: packages
+          name: packages_${{ inputs.ref }}
       - id: workflow_run
         run: |
           curl -L --no-progress-meter --fail --retry 16 -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_REPOSITORY"/actions/workflows'?per_page=100&page=1' | jq --unbuffered -r '.workflows[] | select(.name == "Workflow Example") | .id' \
@@ -479,9 +517,11 @@ jobs:
       - id: filename
         run: echo "otlp=$(mktemp)" >> "$GITHUB_OUTPUT"
       - uses: actions/checkout@v5.0.1
+        with:
+          ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: packages
+          name: packages_${{ inputs.ref }}
       - id: workflow_run
         run: |
           curl -L --no-progress-meter --fail --retry 16 -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_REPOSITORY"/actions/workflows'?per_page=100&page=1' | jq --unbuffered -r '.workflows[] | select(.name == "Workflow Example") | .id' \
@@ -528,6 +568,8 @@ jobs:
       actions: read
     steps:
       - uses: actions/checkout@v5.0.1
+        with:
+          ref: ${{ inputs.ref }}
       - uses: ./actions/instrument/deploy
         with:
           debug: 1
@@ -540,6 +582,7 @@ jobs:
           OTEL_TRACES_EXPORTER: console
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
   deploy:
+    if: ${{ !github.event.repository.fork }}
     needs: deploy-smoke
     runs-on: ubuntu-latest
     permissions:
@@ -599,7 +642,7 @@ jobs:
           cat .github/workflows/deploy_otel.yml | yq .jobs.deploy.steps[0].uses | grep -q '/actions/instrument/deploy@'
           cat .github/workflows/deploy_otel.yml | yq .jobs.deploy.steps[0].with.github_token | grep -q secrets.DEPLOY_OBSERVABILITY_TOKEN
           yq -i 'del(.jobs.deploy.steps[0].env)' .github/workflows/deploy_otel.yml
-          yq -i '.jobs.deploy.steps[0].uses = "${{ github.repository }}/actions/instrument/deploy@${{ github.sha }}"' .github/workflows/deploy_otel.yml
+          yq -i '.jobs.deploy.steps[0].uses = "${{ github.repository }}/actions/instrument/deploy@${{ inputs.ref }}"' .github/workflows/deploy_otel.yml
           yq -i '.jobs.deploy.steps[0].with.job_level_instrumentation_secret_redaction_strategy = "${{ matrix.secret_redaction_strategy }}"' .github/workflows/deploy_otel.yml
           yq -i '.jobs.deploy.steps[0].env.OTEL_EXPORTER_OTLP_ENDPOINT = "http://'"$(curl 'https://api.ipify.org?format=json' | jq -r .ip)"':8080"' .github/workflows/deploy_otel.yml
           git add . && git commit --message "added deploy action" && git push
