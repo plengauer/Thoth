@@ -1,6 +1,11 @@
 name: 'Build'
+
 on:
   workflow_call:
+    inputs:
+      ref:
+        type: string
+        required: true
 
 jobs:
 
@@ -21,6 +26,8 @@ jobs:
         with:
           secrets_to_redact: '["${{ github.token }}"]'
       - uses: actions/checkout@v5.0.1
+        with:
+          ref: ${{ inputs.ref }}
       - if: ${{ matrix.architecture != 'amd64' }}
         uses: docker/setup-qemu-action@v3.7.0
       - id: build
@@ -44,7 +51,7 @@ jobs:
           [ -r src/usr/share/opentelemetry_shell/agent.instrumentation.http/libinjecthttpheader.so ]
       - uses: actions/upload-artifact@v5.0.0
         with:
-          name: http_${{ steps.build.outputs.architecture }}
+          name: http_${{ steps.build.outputs.architecture }}_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.http/libinjecthttpheader.so
           if-no-files-found: error
   merge-http:
@@ -62,15 +69,17 @@ jobs:
           secrets_to_redact: '["${{ github.token }}"]'
       - uses: actions/download-artifact@v6.0.0
         with:
-          pattern: http_*
+          pattern: http_*_${{ inputs.ref }}
       - run: |
           mkdir bin
-          ls | grep '^http_' | while read -r directory_name; do echo "${directory_name#http_}"; done | while read -r architecture; do
-            mv http_"$architecture" bin/"$architecture"
+          ls | grep '^http_' | while read -r directory; do
+            architecture="${directory#http_}"
+            architecture="${architecture%_*}"
+            mv "$directory" bin/"$architecture"
           done
       - uses: actions/upload-artifact@v5.0.0
         with:
-          name: http
+          name: http_${{ inputs.ref }}
           path: bin/
 
   list-node-versions:
@@ -88,6 +97,8 @@ jobs:
         with:
           secrets_to_redact: '["${{ github.token }}"]'
       - uses: actions/checkout@v5.0.1
+        with:
+          ref: ${{ inputs.ref }}
       - run: cd src/usr/share/opentelemetry_shell/agent.instrumentation.node && npm install
       - id: dynamic
         run: |
@@ -114,6 +125,8 @@ jobs:
         with:
           node-version: ${{ matrix.version }}
       - uses: actions/checkout@v5.0.1
+        with:
+          ref: ${{ inputs.ref }}
       - run: |
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.node
           npm install
@@ -124,7 +137,7 @@ jobs:
           ! find -L src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules -type l -exec readlink -f '{}' ';' | while read -r file; do realpath "$file"; done | grep '^'"$(pwd)"/src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules
       - uses: actions/upload-artifact@v5.0.0
         with:
-          name: node_modules_${{ matrix.version }}
+          name: node_modules_${{ matrix.version }}_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules
   merge-node-modules:
     needs: build-node-modules
@@ -141,16 +154,18 @@ jobs:
           secrets_to_redact: '["${{ github.token }}"]'
       - uses: actions/download-artifact@v6.0.0
         with:
-          pattern: node_modules_*
+          pattern: node_modules_*_${{ inputs.ref }}
       - run: |
-          ls | grep '^node_modules_' | while read -r directory_name; do echo "${directory_name#node_modules_}"; done | while read -r version; do
+          ls | grep '^node_modules_' | while read -r directory; do
+            version="${directory#node_modules_}"
+            version="${version%_*}"
             mkdir "$version"
-            mv node_modules_"$version" "$version"/node_modules
+            mv "$directory" "$version"/node_modules
           done
       - run: find . -type f | xargs sha256sum | sort | cut -d ' ' -f 3- | tar -cf node_modules.tar -T - && xz -9 node_modules.tar
       - uses: actions/upload-artifact@v5.0.0
         with:
-          name: node_modules
+          name: node_modules_${{ inputs.ref }}
           path: node_modules.tar.xz
 
   list-python-versions:
@@ -168,6 +183,8 @@ jobs:
         with:
           secrets_to_redact: '["${{ github.token }}"]'
       - uses: actions/checkout@v5.0.1
+        with:
+          ref: ${{ inputs.ref }}
       - run: |
           python3 -m venv venv
           . venv/bin/activate
@@ -198,6 +215,8 @@ jobs:
         with:
           python-version: ${{ matrix.version }}
       - uses: actions/checkout@v5.0.1
+        with:
+          ref: ${{ inputs.ref }}
       - run: |
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.python
           python3 -m venv venv
@@ -222,7 +241,7 @@ jobs:
           ! find -L src/usr/share/opentelemetry_shell/agent.instrumentation.python/venv/lib/python${{ matrix.version }}/site-packages -type l -exec readlink -f '{}' ';' | while read -r file; do realpath "$file"; done | grep '^'"$(pwd)"/src/usr/share/opentelemetry_shell/agent.instrumentation.python/
       - uses: actions/upload-artifact@v5.0.0
         with:
-          name: python_site_packages_${{ matrix.version }}
+          name: python_site_packages_${{ matrix.version }}_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.python/venv/lib/python${{ matrix.version }}/site-packages
   merge-python-site-packages:
     needs: build-python-site-packages
@@ -239,16 +258,18 @@ jobs:
           secrets_to_redact: '["${{ github.token }}"]'
       - uses: actions/download-artifact@v6.0.0
         with:
-          pattern: python_site_packages_*
+          pattern: python_site_packages_*_${{ inputs.ref }}
       - run: |
-          ls | grep '^python_site_packages' | while read -r directory_name; do echo "${directory_name#python_site_packages_}"; done | while read -r version; do
+          ls | grep '^python_site_packages' | while read -r directory; do
+            version="${directory#python_site_packages_}"
+            version="${version%_*}"
             mkdir "$version"
-            mv python_site_packages_"$version" "$version"/site-packages
+            mv "$directory" "$version"/site-packages
           done
       - run: find . -type f | xargs sha256sum | sort | cut -d ' ' -f 3- | tar -cf python_site_packages.tar -T - && xz -9 python_site_packages.tar
       - uses: actions/upload-artifact@v5.0.0
         with:
-          name: python_site_packages
+          name: python_site_packages_${{ inputs.ref }}
           path: python_site_packages.tar.xz
 
   build-java-agents:
@@ -261,6 +282,8 @@ jobs:
         with:
           secrets_to_redact: '["${{ github.token }}"]'
       - uses: actions/checkout@v5.0.1
+        with:
+          ref: ${{ inputs.ref }}
       - uses: actions/setup-java@v5.0.0
         with:
           java-version: 8
@@ -307,7 +330,7 @@ jobs:
           echo "${{ steps.determine-minimum-version.outputs.version }}" > version
       - uses: actions/upload-artifact@v5.0.0
         with:
-          name: java
+          name: java_${{ inputs.ref }}
           path: |
             src/usr/share/opentelemetry_shell/agent.instrumentation.java/SystemPropertiesPrinter.class
             src/usr/share/opentelemetry_shell/agent.instrumentation.java/*.jar
@@ -328,6 +351,8 @@ jobs:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
       - uses: actions/checkout@v5.0.1
+        with:
+          ref: ${{ inputs.ref }}
       - run: |
           python3 -m venv venv
           . venv/bin/activate
@@ -350,6 +375,8 @@ jobs:
         with:
           secrets_to_redact: '["${{ github.token }}"]'
       - uses: actions/checkout@v5.0.1
+        with:
+          ref: ${{ inputs.ref }}
       - run: sudo apt-get update && sudo apt-get -y install apt-file
       - run: sudo apt-file update
       - run: |
@@ -386,6 +413,8 @@ jobs:
         with:
           secrets_to_redact: '["${{ github.token }}"]'
       - uses: actions/checkout@v5.0.1
+        with:
+          ref: ${{ inputs.ref }}
       - run: |
           {
             find src -iname 'Dockerfile' -type f
@@ -396,19 +425,19 @@ jobs:
           } | xargs -r rm
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: http
+          name: http_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.http
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: node_modules
+          name: node_modules_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.node
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: python_site_packages
+          name: python_site_packages_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.python
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: java
+          name: java_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.java
       - run: cp -r meta/debian src/DEBIAN
       - run: sed -i "s/__VERSION__/$(cat VERSION)/g" src/DEBIAN/control
@@ -419,7 +448,7 @@ jobs:
       - run: cd src && dpkg-deb --root-owner-group -Zgzip --build . ../package.deb
       - uses: actions/upload-artifact@v5.0.0
         with:
-          name: package.deb
+          name: package.deb_${{ inputs.ref }}
           path: package.deb
 
   verify-rpm-python-dependency:
@@ -435,6 +464,8 @@ jobs:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
       - uses: actions/checkout@v5.0.1
+        with:
+          ref: ${{ inputs.ref }}
       - run: |
           python3 -m venv venv
           . venv/bin/activate
@@ -458,6 +489,8 @@ jobs:
         with:
           secrets_to_redact: '["${{ github.token }}"]'
       - uses: actions/checkout@v5.0.1
+        with:
+          ref: ${{ inputs.ref }}
       - run: |
           {
             find src -iname 'Dockerfile' -type f
@@ -468,19 +501,19 @@ jobs:
           } | xargs -r rm
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: http
+          name: http_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.http
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: node_modules
+          name: node_modules_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.node
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: python_site_packages
+          name: python_site_packages_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.python
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: java
+          name: java_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.java
       - run: cp meta/rpm/opentelemetry-shell.spec .
       - run: sed -i "s/__VERSION__/$(cat VERSION)/g" opentelemetry-shell.spec
@@ -516,7 +549,7 @@ jobs:
           mv /home/runner/rpmbuild/RPMS/noarch/opentelemetry-shell-*.noarch.rpm package.rpm
       - uses: actions/upload-artifact@v5.0.0
         with:
-          name: package.rpm
+          name: package.rpm_${{ inputs.ref }}
           path: package.rpm
 
   build-apk:
@@ -533,6 +566,8 @@ jobs:
         with:
           secrets_to_redact: '["${{ github.token }}"]'
       - uses: actions/checkout@v5.0.1
+        with:
+          ref: ${{ inputs.ref }}
       - run: |
           {
             find src -iname 'Dockerfile' -type f
@@ -543,15 +578,15 @@ jobs:
           } | xargs -r rm
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: node_modules
+          name: node_modules_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.node
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: python_site_packages
+          name: python_site_packages_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.python
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: java
+          name: java_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.java
       - run: |
           workspace="$(mktemp -d)"
@@ -566,7 +601,7 @@ jobs:
           mv "$workspace"/*.apk package.apk
       - uses: actions/upload-artifact@v5.0.0
         with:
-          name: package.apk
+          name: package.apk_${{ inputs.ref }}
           path: package.apk
   merge-packages:
     needs: [build-deb, build-rpm, build-apk]
@@ -587,7 +622,7 @@ jobs:
           merge-multiple: true
       - uses: actions/upload-artifact@v5.0.0
         with:
-          name: packages
+          name: packages_${{ inputs.ref }}
           path: package.*
 
   build-workflow-image:
@@ -604,9 +639,11 @@ jobs:
         with:
           secrets_to_redact: '["${{ github.token }}"]'
       - uses: actions/checkout@v5.0.1
+        with:
+          ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v6.0.0
         with:
-          name: package.deb
+          name: package.deb_${{ inputs.ref }}
       - run: |
           cp package.deb actions/instrument/workflow
           pushd actions/instrument/workflow
@@ -616,5 +653,5 @@ jobs:
           rm actions/instrument/workflow/package.deb
       - uses: actions/upload-artifact@v5.0.0
         with:
-          name: images
+          name: images_${{ inputs.ref }}
           path: '*.image'
