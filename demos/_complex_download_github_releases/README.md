@@ -45,8 +45,8 @@ bash -e demo.sh
       GET
     curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=4
       GET
-  head --lines=3
   jq .[].assets[].browser_download_url -r
+  head --lines=3
   grep .deb$
   grep _1.
   xargs wget
@@ -61,19 +61,19 @@ bash -e demo.sh
 ## Full Trace
 ```
 {
-  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
-  "span_id": "c1f7ddbfd3d1307e",
-  "parent_span_id": "aebc43782213df4b",
+  "trace_id": "b8022842f0c46f536c5513ced117f816",
+  "span_id": "721393ad39bd0d7d",
+  "parent_span_id": "d1597489e8b76aa8",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1762910742023362560,
-  "time_end": 1762910742680046592,
+  "time_start": 1763456119749128960,
+  "time_end": 1763456120396360448,
   "attributes": {
     "network.transport": "tcp",
     "network.protocol.name": "https",
     "network.protocol.version": "2",
-    "network.peer.address": "140.82.114.6",
+    "network.peer.address": "140.82.116.5",
     "network.peer.port": 443,
     "server.address": "api.github.com",
     "server.port": 443,
@@ -93,11 +93,11 @@ bash -e demo.sh
       "*/*"
     ],
     "http.request.header.traceparent": [
-      "00-f4d19b905ff381cd43a0148c426537f6-aebc43782213df4b-01"
+      "00-b8022842f0c46f536c5513ced117f816-d1597489e8b76aa8-01"
     ],
     "http.response.status_code": 200,
     "http.response.header.date": [
-      "Wed, 12 Nov 2025 01:25:42 GMT"
+      "Tue, 18 Nov 2025 08:55:20 GMT"
     ],
     "http.response.header.content-type": [
       "application/json; charset=utf-8"
@@ -109,7 +109,7 @@ bash -e demo.sh
       "Accept,Accept-Encoding, Accept, X-Requested-With"
     ],
     "http.response.header.etag": [
-      "W/\"699d3e3cca2bffc3706828ddb6e8e9163a259b236fdacd5336033a764ea59d46\""
+      "W/\"eca4a90186ca318ce491fc5733cf3e6fcf4bf2afe588957dd5c23101327e4f08\""
     ],
     "http.response.header.x-github-media-type": [
       "github.v3; format=json"
@@ -154,19 +154,19 @@ bash -e demo.sh
       "60"
     ],
     "http.response.header.x-ratelimit-remaining": [
-      "57"
+      "41"
     ],
     "http.response.header.x-ratelimit-reset": [
-      "1762914003"
+      "1763456574"
     ],
     "http.response.header.x-ratelimit-resource": [
       "core"
     ],
     "http.response.header.x-ratelimit-used": [
-      "3"
+      "19"
     ],
     "http.response.header.x-github-request-id": [
-      "D001:176641:274E8DC:B140BC6:6913E216"
+      "4801:1488F8:848198:87F589:691C3477"
     ]
   },
   "resource_attributes": {
@@ -178,16 +178,16 @@ bash -e demo.sh
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "northcentralus",
-    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
-    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "host.name": "EEgsQGO8KpK39v",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/873ffdb0-cf50-4649-8b12-c12b1997de0f/resourceGroups/azure-westus-general-873ffdb0-cf50-4649-8b12-c12b1997de0f/providers/Microsoft.Compute/virtualMachines/lKtgfWsdW3YNgI",
+    "host.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "host.name": "lKtgfWsdW3YNgI",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "process.pid": 5995,
-    "process.parent_pid": 4630,
+    "service.instance.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "process.pid": 5481,
+    "process.parent_pid": 4124,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
@@ -202,19 +202,19 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
-  "span_id": "9b7cc2687f64636f",
-  "parent_span_id": "e59285ea89d843d9",
+  "trace_id": "b8022842f0c46f536c5513ced117f816",
+  "span_id": "40142de196cddf56",
+  "parent_span_id": "7c1bfc805d6714ae",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1762910743050949632,
-  "time_end": 1762910743597487360,
+  "time_start": 1763456120764937728,
+  "time_end": 1763456121377931520,
   "attributes": {
     "network.transport": "tcp",
     "network.protocol.name": "https",
     "network.protocol.version": "2",
-    "network.peer.address": "140.82.114.6",
+    "network.peer.address": "140.82.116.5",
     "network.peer.port": 443,
     "server.address": "api.github.com",
     "server.port": 443,
@@ -234,11 +234,11 @@ bash -e demo.sh
       "*/*"
     ],
     "http.request.header.traceparent": [
-      "00-f4d19b905ff381cd43a0148c426537f6-e59285ea89d843d9-01"
+      "00-b8022842f0c46f536c5513ced117f816-7c1bfc805d6714ae-01"
     ],
     "http.response.status_code": 200,
     "http.response.header.date": [
-      "Wed, 12 Nov 2025 01:25:43 GMT"
+      "Tue, 18 Nov 2025 08:55:21 GMT"
     ],
     "http.response.header.content-type": [
       "application/json; charset=utf-8"
@@ -250,7 +250,7 @@ bash -e demo.sh
       "Accept,Accept-Encoding, Accept, X-Requested-With"
     ],
     "http.response.header.etag": [
-      "W/\"87e2bec4f7db3a07f3b350cd73dab916189a0a9ea52c023f3309ea5cf6168c45\""
+      "W/\"75636971f608e8f3beb5a3f49f2ad28a1ee3badd9c0d1c9d5bb161005ab50b4b\""
     ],
     "http.response.header.x-github-media-type": [
       "github.v3; format=json"
@@ -295,19 +295,19 @@ bash -e demo.sh
       "60"
     ],
     "http.response.header.x-ratelimit-remaining": [
-      "56"
+      "40"
     ],
     "http.response.header.x-ratelimit-reset": [
-      "1762914003"
+      "1763456574"
     ],
     "http.response.header.x-ratelimit-resource": [
       "core"
     ],
     "http.response.header.x-ratelimit-used": [
-      "4"
+      "20"
     ],
     "http.response.header.x-github-request-id": [
-      "D002:1B4547:27FA950:B484CAC:6913E217"
+      "4802:CA82C:84E956:885B85:691C3478"
     ]
   },
   "resource_attributes": {
@@ -319,16 +319,16 @@ bash -e demo.sh
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "northcentralus",
-    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
-    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "host.name": "EEgsQGO8KpK39v",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/873ffdb0-cf50-4649-8b12-c12b1997de0f/resourceGroups/azure-westus-general-873ffdb0-cf50-4649-8b12-c12b1997de0f/providers/Microsoft.Compute/virtualMachines/lKtgfWsdW3YNgI",
+    "host.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "host.name": "lKtgfWsdW3YNgI",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "process.pid": 7476,
-    "process.parent_pid": 4630,
+    "service.instance.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "process.pid": 6962,
+    "process.parent_pid": 4124,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
@@ -343,19 +343,19 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
-  "span_id": "2d241c7b85f25273",
-  "parent_span_id": "2d07beffebfb92cd",
+  "trace_id": "b8022842f0c46f536c5513ced117f816",
+  "span_id": "b8e66fd4e9d43bd1",
+  "parent_span_id": "8524eb74a7fc717b",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1762910743975700480,
-  "time_end": 1762910744604286464,
+  "time_start": 1763456121745997056,
+  "time_end": 1763456122401900288,
   "attributes": {
     "network.transport": "tcp",
     "network.protocol.name": "https",
     "network.protocol.version": "2",
-    "network.peer.address": "140.82.114.6",
+    "network.peer.address": "140.82.116.5",
     "network.peer.port": 443,
     "server.address": "api.github.com",
     "server.port": 443,
@@ -375,11 +375,11 @@ bash -e demo.sh
       "*/*"
     ],
     "http.request.header.traceparent": [
-      "00-f4d19b905ff381cd43a0148c426537f6-2d07beffebfb92cd-01"
+      "00-b8022842f0c46f536c5513ced117f816-8524eb74a7fc717b-01"
     ],
     "http.response.status_code": 200,
     "http.response.header.date": [
-      "Wed, 12 Nov 2025 01:25:44 GMT"
+      "Tue, 18 Nov 2025 08:55:22 GMT"
     ],
     "http.response.header.content-type": [
       "application/json; charset=utf-8"
@@ -391,7 +391,7 @@ bash -e demo.sh
       "Accept,Accept-Encoding, Accept, X-Requested-With"
     ],
     "http.response.header.etag": [
-      "W/\"1cc90e48d9847c08e58ef0211f5444baeef537ccbff0d39fab72378b7d0b2fc1\""
+      "W/\"a72f86ef02118ecdbe796a9c81dbe8068c4658fca28ce6fc06578597ab5424d2\""
     ],
     "http.response.header.x-github-media-type": [
       "github.v3; format=json"
@@ -436,19 +436,19 @@ bash -e demo.sh
       "60"
     ],
     "http.response.header.x-ratelimit-remaining": [
-      "55"
+      "39"
     ],
     "http.response.header.x-ratelimit-reset": [
-      "1762914003"
+      "1763456574"
     ],
     "http.response.header.x-ratelimit-resource": [
       "core"
     ],
     "http.response.header.x-ratelimit-used": [
-      "5"
+      "21"
     ],
     "http.response.header.x-github-request-id": [
-      "D003:1E9E8E:27510E4:B103BB7:6913E217"
+      "4803:24D5DD:86DA42:8A4CF6:691C3479"
     ]
   },
   "resource_attributes": {
@@ -460,16 +460,16 @@ bash -e demo.sh
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "northcentralus",
-    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
-    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "host.name": "EEgsQGO8KpK39v",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/873ffdb0-cf50-4649-8b12-c12b1997de0f/resourceGroups/azure-westus-general-873ffdb0-cf50-4649-8b12-c12b1997de0f/providers/Microsoft.Compute/virtualMachines/lKtgfWsdW3YNgI",
+    "host.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "host.name": "lKtgfWsdW3YNgI",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "process.pid": 8372,
-    "process.parent_pid": 4630,
+    "service.instance.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "process.pid": 7858,
+    "process.parent_pid": 4124,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
@@ -484,19 +484,19 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
-  "span_id": "b1206a94cc2915c2",
-  "parent_span_id": "d1679fd1562803d7",
+  "trace_id": "b8022842f0c46f536c5513ced117f816",
+  "span_id": "6aad3ae3638cca0b",
+  "parent_span_id": "34670aae888459ba",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1762910744979547904,
-  "time_end": 1762910745431303424,
+  "time_start": 1763456122772554240,
+  "time_end": 1763456123235051776,
   "attributes": {
     "network.transport": "tcp",
     "network.protocol.name": "https",
     "network.protocol.version": "2",
-    "network.peer.address": "140.82.114.6",
+    "network.peer.address": "140.82.116.5",
     "network.peer.port": 443,
     "server.address": "api.github.com",
     "server.port": 443,
@@ -516,11 +516,11 @@ bash -e demo.sh
       "*/*"
     ],
     "http.request.header.traceparent": [
-      "00-f4d19b905ff381cd43a0148c426537f6-d1679fd1562803d7-01"
+      "00-b8022842f0c46f536c5513ced117f816-34670aae888459ba-01"
     ],
     "http.response.status_code": 200,
     "http.response.header.date": [
-      "Wed, 12 Nov 2025 01:25:45 GMT"
+      "Tue, 18 Nov 2025 08:55:22 GMT"
     ],
     "http.response.header.content-type": [
       "application/json; charset=utf-8"
@@ -577,19 +577,19 @@ bash -e demo.sh
       "60"
     ],
     "http.response.header.x-ratelimit-remaining": [
-      "54"
+      "38"
     ],
     "http.response.header.x-ratelimit-reset": [
-      "1762914003"
+      "1763456574"
     ],
     "http.response.header.x-ratelimit-resource": [
       "core"
     ],
     "http.response.header.x-ratelimit-used": [
-      "6"
+      "22"
     ],
     "http.response.header.x-github-request-id": [
-      "D004:171DA0:261584F:ABBA326:6913E218"
+      "4804:110970:84FDE5:887134:691C347A"
     ]
   },
   "resource_attributes": {
@@ -601,16 +601,16 @@ bash -e demo.sh
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "northcentralus",
-    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
-    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "host.name": "EEgsQGO8KpK39v",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/873ffdb0-cf50-4649-8b12-c12b1997de0f/resourceGroups/azure-westus-general-873ffdb0-cf50-4649-8b12-c12b1997de0f/providers/Microsoft.Compute/virtualMachines/lKtgfWsdW3YNgI",
+    "host.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "host.name": "lKtgfWsdW3YNgI",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "process.pid": 9268,
-    "process.parent_pid": 4630,
+    "service.instance.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "process.pid": 8754,
+    "process.parent_pid": 4124,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
@@ -625,18 +625,18 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
-  "span_id": "d1f0216eefda6d21",
-  "parent_span_id": "10a0e8d99b53a755",
+  "trace_id": "b8022842f0c46f536c5513ced117f816",
+  "span_id": "2fa9356a0f5aea6f",
+  "parent_span_id": "d79a54f1103e5863",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1762910746230223872,
-  "time_end": 1762910747250383360,
+  "time_start": 1763456124020394752,
+  "time_end": 1763456125038195200,
   "attributes": {
     "network.protocol.name": "https",
     "network.transport": "tcp",
-    "network.peer.address": "140.82.114.3",
+    "network.peer.address": "140.82.116.3",
     "network.peer.port": 443,
     "server.address": "github.com",
     "server.port": 443,
@@ -656,16 +656,16 @@ bash -e demo.sh
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "northcentralus",
-    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
-    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "host.name": "EEgsQGO8KpK39v",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/873ffdb0-cf50-4649-8b12-c12b1997de0f/resourceGroups/azure-westus-general-873ffdb0-cf50-4649-8b12-c12b1997de0f/providers/Microsoft.Compute/virtualMachines/lKtgfWsdW3YNgI",
+    "host.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "host.name": "lKtgfWsdW3YNgI",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "process.pid": 10168,
-    "process.parent_pid": 4566,
+    "service.instance.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "process.pid": 9653,
+    "process.parent_pid": 4073,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs wget",
@@ -680,24 +680,24 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
-  "span_id": "54b4cb4c98ac5d21",
-  "parent_span_id": "10a0e8d99b53a755",
+  "trace_id": "b8022842f0c46f536c5513ced117f816",
+  "span_id": "23840f615736ea5d",
+  "parent_span_id": "d79a54f1103e5863",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1762910746356625664,
-  "time_end": 1762910747285876480,
+  "time_start": 1763456124222400000,
+  "time_end": 1763456125117261568,
   "attributes": {
     "network.protocol.name": "https",
     "network.transport": "tcp",
-    "network.peer.address": "185.199.108.133",
+    "network.peer.address": "185.199.111.133",
     "network.peer.port": 443,
     "server.address": "release-assets.githubusercontent.com",
     "server.port": 443,
-    "url.full": "https://release-assets.githubusercontent.com/github-production-release-asset/692042935/5544a935-3cf9-4f9b-b6ed-d668fd012e99?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-11-12T02%3A03%3A15Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.7.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-11-12T01%3A02%3A43Z&ske=2025-11-12T02%3A03%3A15Z&sks=b&skv=2018-11-09&sig=OEfLwXMu%2FLKvvVU5R3SQo%2F4M4ODZP6RypHMe7ZnEO4Y%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc2MjkxMTA0NiwibmJmIjoxNzYyOTEwNzQ2LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.drbsO4qzMVmr5gdHZZ2zhD-LzQkCYEiHI2iC0VOaLn4&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.7.deb&response-content-type=application%2Foctet-stream",
+    "url.full": "https://release-assets.githubusercontent.com/github-production-release-asset/692042935/5544a935-3cf9-4f9b-b6ed-d668fd012e99?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-11-18T09%3A48%3A05Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.7.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-11-18T08%3A47%3A23Z&ske=2025-11-18T09%3A48%3A05Z&sks=b&skv=2018-11-09&sig=%2Bw%2FFTI5hcGdX%2FCI0MEC2AzXyGdtUNHZAptNYhFw2Rro%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc2MzQ1NjQyNCwibmJmIjoxNzYzNDU2MTI0LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.ztKX6zRElHIfO6mRGJPMCb-wNr3lrb-zOgnviFP3bhM&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.7.deb&response-content-type=application%2Foctet-stream",
     "url.path": "/github-production-release-asset/692042935/5544a935-3cf9-4f9b-b6ed-d668fd012e99",
-    "url.query": "sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-11-12T02%3A03%3A15Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.7.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-11-12T01%3A02%3A43Z&ske=2025-11-12T02%3A03%3A15Z&sks=b&skv=2018-11-09&sig=OEfLwXMu%2FLKvvVU5R3SQo%2F4M4ODZP6RypHMe7ZnEO4Y%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc2MjkxMTA0NiwibmJmIjoxNzYyOTEwNzQ2LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.drbsO4qzMVmr5gdHZZ2zhD-LzQkCYEiHI2iC0VOaLn4&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.7.deb&response-content-type=application%2Foctet-stream",
+    "url.query": "sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-11-18T09%3A48%3A05Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.7.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-11-18T08%3A47%3A23Z&ske=2025-11-18T09%3A48%3A05Z&sks=b&skv=2018-11-09&sig=%2Bw%2FFTI5hcGdX%2FCI0MEC2AzXyGdtUNHZAptNYhFw2Rro%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc2MzQ1NjQyNCwibmJmIjoxNzYzNDU2MTI0LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.ztKX6zRElHIfO6mRGJPMCb-wNr3lrb-zOgnviFP3bhM&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.7.deb&response-content-type=application%2Foctet-stream",
     "url.scheme": "https",
     "user_agent.original": "wget",
     "http.request.method": "GET",
@@ -718,16 +718,16 @@ bash -e demo.sh
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "northcentralus",
-    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
-    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "host.name": "EEgsQGO8KpK39v",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/873ffdb0-cf50-4649-8b12-c12b1997de0f/resourceGroups/azure-westus-general-873ffdb0-cf50-4649-8b12-c12b1997de0f/providers/Microsoft.Compute/virtualMachines/lKtgfWsdW3YNgI",
+    "host.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "host.name": "lKtgfWsdW3YNgI",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "process.pid": 10168,
-    "process.parent_pid": 4566,
+    "service.instance.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "process.pid": 9653,
+    "process.parent_pid": 4073,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs wget",
@@ -742,18 +742,18 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
-  "span_id": "6efddf6340905564",
-  "parent_span_id": "10a0e8d99b53a755",
+  "trace_id": "b8022842f0c46f536c5513ced117f816",
+  "span_id": "cc2364c6502c6115",
+  "parent_span_id": "d79a54f1103e5863",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1762910747293980416,
-  "time_end": 1762910748316245504,
+  "time_start": 1763456125129419008,
+  "time_end": 1763456126146955264,
   "attributes": {
     "network.protocol.name": "https",
     "network.transport": "tcp",
-    "network.peer.address": "140.82.114.3",
+    "network.peer.address": "140.82.116.3",
     "network.peer.port": 443,
     "server.address": "github.com",
     "server.port": 443,
@@ -773,16 +773,16 @@ bash -e demo.sh
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "northcentralus",
-    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
-    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "host.name": "EEgsQGO8KpK39v",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/873ffdb0-cf50-4649-8b12-c12b1997de0f/resourceGroups/azure-westus-general-873ffdb0-cf50-4649-8b12-c12b1997de0f/providers/Microsoft.Compute/virtualMachines/lKtgfWsdW3YNgI",
+    "host.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "host.name": "lKtgfWsdW3YNgI",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "process.pid": 10168,
-    "process.parent_pid": 4566,
+    "service.instance.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "process.pid": 9653,
+    "process.parent_pid": 4073,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs wget",
@@ -797,24 +797,24 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
-  "span_id": "a98bd5cebfa743fd",
-  "parent_span_id": "10a0e8d99b53a755",
+  "trace_id": "b8022842f0c46f536c5513ced117f816",
+  "span_id": "756288897745ba10",
+  "parent_span_id": "d79a54f1103e5863",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1762910747415895296,
-  "time_end": 1762910748354296064,
+  "time_start": 1763456125326225152,
+  "time_end": 1763456126224548352,
   "attributes": {
     "network.protocol.name": "https",
     "network.transport": "tcp",
-    "network.peer.address": "185.199.108.133",
+    "network.peer.address": "185.199.111.133",
     "network.peer.port": 443,
     "server.address": "release-assets.githubusercontent.com",
     "server.port": 443,
-    "url.full": "https://release-assets.githubusercontent.com/github-production-release-asset/692042935/e8091cbc-915a-4ba7-bca7-308817fe26c4?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-11-12T02%3A00%3A43Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.6.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-11-12T01%3A00%3A22Z&ske=2025-11-12T02%3A00%3A43Z&sks=b&skv=2018-11-09&sig=7e5vwCG9CLwaacKZGoLgPmnINF%2B3Kk48PI%2FNh3Bswzo%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc2MjkxMTA0NywibmJmIjoxNzYyOTEwNzQ3LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.ccuK-nLXWF8gfTy_L6L8J_uSrtLJ8qxfrxN9-wIRr3k&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.6.deb&response-content-type=application%2Foctet-stream",
+    "url.full": "https://release-assets.githubusercontent.com/github-production-release-asset/692042935/e8091cbc-915a-4ba7-bca7-308817fe26c4?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-11-18T09%3A48%3A27Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.6.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-11-18T08%3A47%3A39Z&ske=2025-11-18T09%3A48%3A27Z&sks=b&skv=2018-11-09&sig=jZac8PBohC0HyziKrHN2Ifjs1MDmP7pDwKLLnYwIv1U%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc2MzQ1NjQyNSwibmJmIjoxNzYzNDU2MTI1LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.hFhHw3Dg5nlBi3aAA2G3KnlKsjIKe4CjlBG9axMCyFE&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.6.deb&response-content-type=application%2Foctet-stream",
     "url.path": "/github-production-release-asset/692042935/e8091cbc-915a-4ba7-bca7-308817fe26c4",
-    "url.query": "sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-11-12T02%3A00%3A43Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.6.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-11-12T01%3A00%3A22Z&ske=2025-11-12T02%3A00%3A43Z&sks=b&skv=2018-11-09&sig=7e5vwCG9CLwaacKZGoLgPmnINF%2B3Kk48PI%2FNh3Bswzo%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc2MjkxMTA0NywibmJmIjoxNzYyOTEwNzQ3LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.ccuK-nLXWF8gfTy_L6L8J_uSrtLJ8qxfrxN9-wIRr3k&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.6.deb&response-content-type=application%2Foctet-stream",
+    "url.query": "sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-11-18T09%3A48%3A27Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.6.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-11-18T08%3A47%3A39Z&ske=2025-11-18T09%3A48%3A27Z&sks=b&skv=2018-11-09&sig=jZac8PBohC0HyziKrHN2Ifjs1MDmP7pDwKLLnYwIv1U%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc2MzQ1NjQyNSwibmJmIjoxNzYzNDU2MTI1LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.hFhHw3Dg5nlBi3aAA2G3KnlKsjIKe4CjlBG9axMCyFE&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.6.deb&response-content-type=application%2Foctet-stream",
     "url.scheme": "https",
     "user_agent.original": "wget",
     "http.request.method": "GET",
@@ -835,16 +835,16 @@ bash -e demo.sh
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "northcentralus",
-    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
-    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "host.name": "EEgsQGO8KpK39v",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/873ffdb0-cf50-4649-8b12-c12b1997de0f/resourceGroups/azure-westus-general-873ffdb0-cf50-4649-8b12-c12b1997de0f/providers/Microsoft.Compute/virtualMachines/lKtgfWsdW3YNgI",
+    "host.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "host.name": "lKtgfWsdW3YNgI",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "process.pid": 10168,
-    "process.parent_pid": 4566,
+    "service.instance.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "process.pid": 9653,
+    "process.parent_pid": 4073,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs wget",
@@ -859,18 +859,18 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
-  "span_id": "8e86a07f5b1db3d1",
-  "parent_span_id": "10a0e8d99b53a755",
+  "trace_id": "b8022842f0c46f536c5513ced117f816",
+  "span_id": "56e8fdd0f2a6eaa6",
+  "parent_span_id": "d79a54f1103e5863",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1762910748361173504,
-  "time_end": 1762910749383774208,
+  "time_start": 1763456126236404480,
+  "time_end": 1763456127253930496,
   "attributes": {
     "network.protocol.name": "https",
     "network.transport": "tcp",
-    "network.peer.address": "140.82.114.3",
+    "network.peer.address": "140.82.116.3",
     "network.peer.port": 443,
     "server.address": "github.com",
     "server.port": 443,
@@ -890,16 +890,16 @@ bash -e demo.sh
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "northcentralus",
-    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
-    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "host.name": "EEgsQGO8KpK39v",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/873ffdb0-cf50-4649-8b12-c12b1997de0f/resourceGroups/azure-westus-general-873ffdb0-cf50-4649-8b12-c12b1997de0f/providers/Microsoft.Compute/virtualMachines/lKtgfWsdW3YNgI",
+    "host.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "host.name": "lKtgfWsdW3YNgI",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "process.pid": 10168,
-    "process.parent_pid": 4566,
+    "service.instance.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "process.pid": 9653,
+    "process.parent_pid": 4073,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs wget",
@@ -914,24 +914,24 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
-  "span_id": "f1ce1984e079f133",
-  "parent_span_id": "10a0e8d99b53a755",
+  "trace_id": "b8022842f0c46f536c5513ced117f816",
+  "span_id": "99abdca3fee2f81c",
+  "parent_span_id": "d79a54f1103e5863",
   "name": "GET",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1762910748857648896,
-  "time_end": 1762910749420133888,
+  "time_start": 1763456126427569408,
+  "time_end": 1763456127312999680,
   "attributes": {
     "network.protocol.name": "https",
     "network.transport": "tcp",
-    "network.peer.address": "185.199.108.133",
+    "network.peer.address": "185.199.111.133",
     "network.peer.port": 443,
     "server.address": "release-assets.githubusercontent.com",
     "server.port": 443,
-    "url.full": "https://release-assets.githubusercontent.com/github-production-release-asset/692042935/25d95ab9-56aa-4a77-8e84-d4947ecef0fc?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-11-12T02%3A01%3A13Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.5.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-11-12T01%3A00%3A56Z&ske=2025-11-12T02%3A01%3A13Z&sks=b&skv=2018-11-09&sig=Ye1Y4ku0nyDVjTtzNVW2wpXZamWb0tuU7OmmHW%2BzeWQ%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc2MjkxMTA0OCwibmJmIjoxNzYyOTEwNzQ4LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.PC0DGz48KZoKBgS7OWFYqKfUsLZlHg5AtKg_kGOhgpc&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.5.deb&response-content-type=application%2Foctet-stream",
+    "url.full": "https://release-assets.githubusercontent.com/github-production-release-asset/692042935/25d95ab9-56aa-4a77-8e84-d4947ecef0fc?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-11-18T09%3A49%3A24Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.5.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-11-18T08%3A49%3A16Z&ske=2025-11-18T09%3A49%3A24Z&sks=b&skv=2018-11-09&sig=w1oIwK6ggOmHK6Kk8xo8HBK8jhT1OlVEg%2Fza1zZGqx4%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc2MzQ1NjQyNiwibmJmIjoxNzYzNDU2MTI2LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.W9LSofBKmUwMyQmkDbkazFsZ_nUpILK1bBxFL5gnD8k&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.5.deb&response-content-type=application%2Foctet-stream",
     "url.path": "/github-production-release-asset/692042935/25d95ab9-56aa-4a77-8e84-d4947ecef0fc",
-    "url.query": "sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-11-12T02%3A01%3A13Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.5.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-11-12T01%3A00%3A56Z&ske=2025-11-12T02%3A01%3A13Z&sks=b&skv=2018-11-09&sig=Ye1Y4ku0nyDVjTtzNVW2wpXZamWb0tuU7OmmHW%2BzeWQ%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc2MjkxMTA0OCwibmJmIjoxNzYyOTEwNzQ4LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.PC0DGz48KZoKBgS7OWFYqKfUsLZlHg5AtKg_kGOhgpc&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.5.deb&response-content-type=application%2Foctet-stream",
+    "url.query": "sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-11-18T09%3A49%3A24Z&rscd=attachment%3B+filename%3Dopentelemetry-shell_1.13.5.deb&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-11-18T08%3A49%3A16Z&ske=2025-11-18T09%3A49%3A24Z&sks=b&skv=2018-11-09&sig=w1oIwK6ggOmHK6Kk8xo8HBK8jhT1OlVEg%2Fza1zZGqx4%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc2MzQ1NjQyNiwibmJmIjoxNzYzNDU2MTI2LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.W9LSofBKmUwMyQmkDbkazFsZ_nUpILK1bBxFL5gnD8k&response-content-disposition=attachment%3B%20filename%3Dopentelemetry-shell_1.13.5.deb&response-content-type=application%2Foctet-stream",
     "url.scheme": "https",
     "user_agent.original": "wget",
     "http.request.method": "GET",
@@ -952,16 +952,16 @@ bash -e demo.sh
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "northcentralus",
-    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
-    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "host.name": "EEgsQGO8KpK39v",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/873ffdb0-cf50-4649-8b12-c12b1997de0f/resourceGroups/azure-westus-general-873ffdb0-cf50-4649-8b12-c12b1997de0f/providers/Microsoft.Compute/virtualMachines/lKtgfWsdW3YNgI",
+    "host.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "host.name": "lKtgfWsdW3YNgI",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "process.pid": 10168,
-    "process.parent_pid": 4566,
+    "service.instance.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "process.pid": 9653,
+    "process.parent_pid": 4073,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs wget",
@@ -976,14 +976,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
-  "span_id": "8380c0741ef2ad7a",
-  "parent_span_id": "0567805a2e1de418",
+  "trace_id": "b8022842f0c46f536c5513ced117f816",
+  "span_id": "6c4b44433d42e9bd",
+  "parent_span_id": "18d52ae897514514",
   "name": "HEAD",
   "kind": "CLIENT",
   "status": "UNSET",
-  "time_start": 1762910737090056960,
-  "time_end": 1762910740512978944,
+  "time_start": 1763456114836845824,
+  "time_end": 1763456118273883648,
   "attributes": {
     "network.transport": "tcp",
     "network.peer.port": 443,
@@ -1009,7 +1009,7 @@ bash -e demo.sh
     ],
     "http.response.status_code": 200,
     "http.response.header.date": [
-      "Wed, 12 Nov 2025 01:25:37 GMT"
+      "Tue, 18 Nov 2025 08:55:15 GMT"
     ],
     "http.response.header.content-type": [
       "application/json; charset=utf-8"
@@ -1021,7 +1021,7 @@ bash -e demo.sh
       "Accept,Accept-Encoding, Accept, X-Requested-With"
     ],
     "http.response.header.etag": [
-      "W/\"6067561b9a55c953a0bffcc74b8893403f79d7edf4ad5f7f56a5c32d7761ae4a\""
+      "W/\"6531aaad28725ef2be8bc92b40b45c0083cec647a0ea7a1bb6836b322bfa73a2\""
     ],
     "http.response.header.x-github-media-type": [
       "github.v3; format=json"
@@ -1066,19 +1066,19 @@ bash -e demo.sh
       "60"
     ],
     "http.response.header.x-ratelimit-remaining": [
-      "58"
+      "42"
     ],
     "http.response.header.x-ratelimit-reset": [
-      "1762914003"
+      "1763456574"
     ],
     "http.response.header.x-ratelimit-resource": [
       "core"
     ],
     "http.response.header.x-ratelimit-used": [
-      "2"
+      "18"
     ],
     "http.response.header.x-github-request-id": [
-      "D000:266F54:2715798:B044532:6913E211"
+      "4800:CA82C:84D185:8842FD:691C3472"
     ],
     "http.response.header.connection": [
       "close"
@@ -1094,16 +1094,16 @@ bash -e demo.sh
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "northcentralus",
-    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
-    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "host.name": "EEgsQGO8KpK39v",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/873ffdb0-cf50-4649-8b12-c12b1997de0f/resourceGroups/azure-westus-general-873ffdb0-cf50-4649-8b12-c12b1997de0f/providers/Microsoft.Compute/virtualMachines/lKtgfWsdW3YNgI",
+    "host.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "host.name": "lKtgfWsdW3YNgI",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "process.pid": 3117,
-    "process.parent_pid": 2359,
+    "service.instance.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "process.pid": 2603,
+    "process.parent_pid": 2403,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1118,14 +1118,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
-  "span_id": "c7919cd5ab6b6253",
+  "trace_id": "b8022842f0c46f536c5513ced117f816",
+  "span_id": "040633b8317f63ae",
   "parent_span_id": null,
   "name": "bash -e demo.sh",
   "kind": "SERVER",
   "status": "UNSET",
-  "time_start": 1762910736726287360,
-  "time_end": 1762910749429389312,
+  "time_start": 1763456114481545216,
+  "time_end": 1763456127322227456,
   "attributes": {},
   "resource_attributes": {
     "telemetry.sdk.language": "shell",
@@ -1136,16 +1136,16 @@ bash -e demo.sh
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "northcentralus",
-    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
-    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "host.name": "EEgsQGO8KpK39v",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/873ffdb0-cf50-4649-8b12-c12b1997de0f/resourceGroups/azure-westus-general-873ffdb0-cf50-4649-8b12-c12b1997de0f/providers/Microsoft.Compute/virtualMachines/lKtgfWsdW3YNgI",
+    "host.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "host.name": "lKtgfWsdW3YNgI",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "process.pid": 3117,
-    "process.parent_pid": 2359,
+    "service.instance.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "process.pid": 2603,
+    "process.parent_pid": 2403,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1160,14 +1160,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
-  "span_id": "aebc43782213df4b",
-  "parent_span_id": "38c901d1f751d8cb",
+  "trace_id": "b8022842f0c46f536c5513ced117f816",
+  "span_id": "d1597489e8b76aa8",
+  "parent_span_id": "24f7b7baa57cd71d",
   "name": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=1",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762910741928805888,
-  "time_end": 1762910742684050688,
+  "time_start": 1763456119655056896,
+  "time_end": 1763456120400272640,
   "attributes": {
     "shell.command_line": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=1",
     "shell.command": "curl",
@@ -1189,16 +1189,16 @@ bash -e demo.sh
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "northcentralus",
-    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
-    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "host.name": "EEgsQGO8KpK39v",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/873ffdb0-cf50-4649-8b12-c12b1997de0f/resourceGroups/azure-westus-general-873ffdb0-cf50-4649-8b12-c12b1997de0f/providers/Microsoft.Compute/virtualMachines/lKtgfWsdW3YNgI",
+    "host.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "host.name": "lKtgfWsdW3YNgI",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "process.pid": 5995,
-    "process.parent_pid": 4630,
+    "service.instance.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "process.pid": 5481,
+    "process.parent_pid": 4124,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
@@ -1213,14 +1213,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
-  "span_id": "e59285ea89d843d9",
-  "parent_span_id": "38c901d1f751d8cb",
+  "trace_id": "b8022842f0c46f536c5513ced117f816",
+  "span_id": "7c1bfc805d6714ae",
+  "parent_span_id": "24f7b7baa57cd71d",
   "name": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=2",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762910742962459136,
-  "time_end": 1762910743601496064,
+  "time_start": 1763456120675148288,
+  "time_end": 1763456121381926656,
   "attributes": {
     "shell.command_line": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=2",
     "shell.command": "curl",
@@ -1242,16 +1242,16 @@ bash -e demo.sh
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "northcentralus",
-    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
-    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "host.name": "EEgsQGO8KpK39v",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/873ffdb0-cf50-4649-8b12-c12b1997de0f/resourceGroups/azure-westus-general-873ffdb0-cf50-4649-8b12-c12b1997de0f/providers/Microsoft.Compute/virtualMachines/lKtgfWsdW3YNgI",
+    "host.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "host.name": "lKtgfWsdW3YNgI",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "process.pid": 7476,
-    "process.parent_pid": 4630,
+    "service.instance.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "process.pid": 6962,
+    "process.parent_pid": 4124,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
@@ -1266,14 +1266,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
-  "span_id": "2d07beffebfb92cd",
-  "parent_span_id": "38c901d1f751d8cb",
+  "trace_id": "b8022842f0c46f536c5513ced117f816",
+  "span_id": "8524eb74a7fc717b",
+  "parent_span_id": "24f7b7baa57cd71d",
   "name": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=3",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762910743883158016,
-  "time_end": 1762910744608220160,
+  "time_start": 1763456121656304896,
+  "time_end": 1763456122405804032,
   "attributes": {
     "shell.command_line": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=3",
     "shell.command": "curl",
@@ -1295,16 +1295,16 @@ bash -e demo.sh
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "northcentralus",
-    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
-    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "host.name": "EEgsQGO8KpK39v",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/873ffdb0-cf50-4649-8b12-c12b1997de0f/resourceGroups/azure-westus-general-873ffdb0-cf50-4649-8b12-c12b1997de0f/providers/Microsoft.Compute/virtualMachines/lKtgfWsdW3YNgI",
+    "host.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "host.name": "lKtgfWsdW3YNgI",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "process.pid": 8372,
-    "process.parent_pid": 4630,
+    "service.instance.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "process.pid": 7858,
+    "process.parent_pid": 4124,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
@@ -1319,14 +1319,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
-  "span_id": "d1679fd1562803d7",
-  "parent_span_id": "38c901d1f751d8cb",
+  "trace_id": "b8022842f0c46f536c5513ced117f816",
+  "span_id": "34670aae888459ba",
+  "parent_span_id": "24f7b7baa57cd71d",
   "name": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=4",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762910744886693376,
-  "time_end": 1762910745435270400,
+  "time_start": 1763456122681980160,
+  "time_end": 1763456123238856704,
   "attributes": {
     "shell.command_line": "curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page=4",
     "shell.command": "curl",
@@ -1348,16 +1348,16 @@ bash -e demo.sh
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "northcentralus",
-    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
-    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "host.name": "EEgsQGO8KpK39v",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/873ffdb0-cf50-4649-8b12-c12b1997de0f/resourceGroups/azure-westus-general-873ffdb0-cf50-4649-8b12-c12b1997de0f/providers/Microsoft.Compute/virtualMachines/lKtgfWsdW3YNgI",
+    "host.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "host.name": "lKtgfWsdW3YNgI",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "process.pid": 9268,
-    "process.parent_pid": 4630,
+    "service.instance.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "process.pid": 8754,
+    "process.parent_pid": 4124,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
@@ -1372,14 +1372,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
-  "span_id": "791fd77f5e161300",
-  "parent_span_id": "c7919cd5ab6b6253",
+  "trace_id": "b8022842f0c46f536c5513ced117f816",
+  "span_id": "d91d92e82413c89d",
+  "parent_span_id": "040633b8317f63ae",
   "name": "cut -d   -f 2-",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762910736772024320,
-  "time_end": 1762910740523458816,
+  "time_start": 1763456114505179392,
+  "time_end": 1763456118284278272,
   "attributes": {
     "shell.command_line": "cut -d   -f 2-",
     "shell.command": "cut",
@@ -1400,16 +1400,16 @@ bash -e demo.sh
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "northcentralus",
-    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
-    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "host.name": "EEgsQGO8KpK39v",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/873ffdb0-cf50-4649-8b12-c12b1997de0f/resourceGroups/azure-westus-general-873ffdb0-cf50-4649-8b12-c12b1997de0f/providers/Microsoft.Compute/virtualMachines/lKtgfWsdW3YNgI",
+    "host.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "host.name": "lKtgfWsdW3YNgI",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "process.pid": 3117,
-    "process.parent_pid": 2359,
+    "service.instance.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "process.pid": 2603,
+    "process.parent_pid": 2403,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1424,14 +1424,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
-  "span_id": "89f14543a7dc3e9b",
-  "parent_span_id": "c7919cd5ab6b6253",
+  "trace_id": "b8022842f0c46f536c5513ced117f816",
+  "span_id": "075e393a9325c8ad",
+  "parent_span_id": "040633b8317f63ae",
   "name": "cut -d ; -f1",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762910736772315392,
-  "time_end": 1762910740532093952,
+  "time_start": 1763456114506300928,
+  "time_end": 1763456118292887808,
   "attributes": {
     "shell.command_line": "cut -d ; -f1",
     "shell.command": "cut",
@@ -1452,16 +1452,16 @@ bash -e demo.sh
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "northcentralus",
-    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
-    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "host.name": "EEgsQGO8KpK39v",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/873ffdb0-cf50-4649-8b12-c12b1997de0f/resourceGroups/azure-westus-general-873ffdb0-cf50-4649-8b12-c12b1997de0f/providers/Microsoft.Compute/virtualMachines/lKtgfWsdW3YNgI",
+    "host.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "host.name": "lKtgfWsdW3YNgI",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "process.pid": 3117,
-    "process.parent_pid": 2359,
+    "service.instance.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "process.pid": 2603,
+    "process.parent_pid": 2403,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1476,14 +1476,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
-  "span_id": "ffff6405623d59b1",
-  "parent_span_id": "c7919cd5ab6b6253",
+  "trace_id": "b8022842f0c46f536c5513ced117f816",
+  "span_id": "dc2d68372d2175f1",
+  "parent_span_id": "040633b8317f63ae",
   "name": "cut -d = -f 2",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762910736763418880,
-  "time_end": 1762910740541255168,
+  "time_start": 1763456114534653952,
+  "time_end": 1763456118301679104,
   "attributes": {
     "shell.command_line": "cut -d = -f 2",
     "shell.command": "cut",
@@ -1504,16 +1504,16 @@ bash -e demo.sh
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "northcentralus",
-    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
-    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "host.name": "EEgsQGO8KpK39v",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/873ffdb0-cf50-4649-8b12-c12b1997de0f/resourceGroups/azure-westus-general-873ffdb0-cf50-4649-8b12-c12b1997de0f/providers/Microsoft.Compute/virtualMachines/lKtgfWsdW3YNgI",
+    "host.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "host.name": "lKtgfWsdW3YNgI",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "process.pid": 3117,
-    "process.parent_pid": 2359,
+    "service.instance.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "process.pid": 2603,
+    "process.parent_pid": 2403,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1528,14 +1528,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
-  "span_id": "3afdfaea43feeff4",
-  "parent_span_id": "c7919cd5ab6b6253",
+  "trace_id": "b8022842f0c46f536c5513ced117f816",
+  "span_id": "b1d51379fa3b3cd7",
+  "parent_span_id": "040633b8317f63ae",
   "name": "cut -d ? -f 2-",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762910736756751360,
-  "time_end": 1762910740534410240,
+  "time_start": 1763456114510172416,
+  "time_end": 1763456118295082240,
   "attributes": {
     "shell.command_line": "cut -d ? -f 2-",
     "shell.command": "cut",
@@ -1556,16 +1556,16 @@ bash -e demo.sh
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "northcentralus",
-    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
-    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "host.name": "EEgsQGO8KpK39v",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/873ffdb0-cf50-4649-8b12-c12b1997de0f/resourceGroups/azure-westus-general-873ffdb0-cf50-4649-8b12-c12b1997de0f/providers/Microsoft.Compute/virtualMachines/lKtgfWsdW3YNgI",
+    "host.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "host.name": "lKtgfWsdW3YNgI",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "process.pid": 3117,
-    "process.parent_pid": 2359,
+    "service.instance.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "process.pid": 2603,
+    "process.parent_pid": 2403,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1580,14 +1580,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
-  "span_id": "2bb1b2d96dc6ec52",
-  "parent_span_id": "c7919cd5ab6b6253",
+  "trace_id": "b8022842f0c46f536c5513ced117f816",
+  "span_id": "aad3161fcf2facb5",
+  "parent_span_id": "040633b8317f63ae",
   "name": "grep .deb$",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762910736779666432,
-  "time_end": 1762910745445220608,
+  "time_start": 1763456114534797568,
+  "time_end": 1763456123248899840,
   "attributes": {
     "shell.command_line": "grep .deb$",
     "shell.command": "grep",
@@ -1608,16 +1608,16 @@ bash -e demo.sh
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "northcentralus",
-    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
-    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "host.name": "EEgsQGO8KpK39v",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/873ffdb0-cf50-4649-8b12-c12b1997de0f/resourceGroups/azure-westus-general-873ffdb0-cf50-4649-8b12-c12b1997de0f/providers/Microsoft.Compute/virtualMachines/lKtgfWsdW3YNgI",
+    "host.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "host.name": "lKtgfWsdW3YNgI",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "process.pid": 3117,
-    "process.parent_pid": 2359,
+    "service.instance.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "process.pid": 2603,
+    "process.parent_pid": 2403,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1632,14 +1632,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
-  "span_id": "69c710e8a83e1d71",
-  "parent_span_id": "c7919cd5ab6b6253",
+  "trace_id": "b8022842f0c46f536c5513ced117f816",
+  "span_id": "681bfa710d1bdb20",
+  "parent_span_id": "040633b8317f63ae",
   "name": "grep ^link:",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762910736772170752,
-  "time_end": 1762910740521243904,
+  "time_start": 1763456114519746816,
+  "time_end": 1763456118281959424,
   "attributes": {
     "shell.command_line": "grep ^link:",
     "shell.command": "grep",
@@ -1660,16 +1660,16 @@ bash -e demo.sh
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "northcentralus",
-    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
-    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "host.name": "EEgsQGO8KpK39v",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/873ffdb0-cf50-4649-8b12-c12b1997de0f/resourceGroups/azure-westus-general-873ffdb0-cf50-4649-8b12-c12b1997de0f/providers/Microsoft.Compute/virtualMachines/lKtgfWsdW3YNgI",
+    "host.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "host.name": "lKtgfWsdW3YNgI",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "process.pid": 3117,
-    "process.parent_pid": 2359,
+    "service.instance.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "process.pid": 2603,
+    "process.parent_pid": 2403,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1684,14 +1684,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
-  "span_id": "fd1d65ca2968b0f3",
-  "parent_span_id": "c7919cd5ab6b6253",
+  "trace_id": "b8022842f0c46f536c5513ced117f816",
+  "span_id": "b036795638e1855f",
+  "parent_span_id": "040633b8317f63ae",
   "name": "grep ^page=",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762910736754350336,
-  "time_end": 1762910740539095296,
+  "time_start": 1763456114536014080,
+  "time_end": 1763456118299542016,
   "attributes": {
     "shell.command_line": "grep ^page=",
     "shell.command": "grep",
@@ -1712,16 +1712,16 @@ bash -e demo.sh
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "northcentralus",
-    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
-    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "host.name": "EEgsQGO8KpK39v",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/873ffdb0-cf50-4649-8b12-c12b1997de0f/resourceGroups/azure-westus-general-873ffdb0-cf50-4649-8b12-c12b1997de0f/providers/Microsoft.Compute/virtualMachines/lKtgfWsdW3YNgI",
+    "host.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "host.name": "lKtgfWsdW3YNgI",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "process.pid": 3117,
-    "process.parent_pid": 2359,
+    "service.instance.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "process.pid": 2603,
+    "process.parent_pid": 2403,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1736,14 +1736,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
-  "span_id": "260e57daa527c595",
-  "parent_span_id": "c7919cd5ab6b6253",
+  "trace_id": "b8022842f0c46f536c5513ced117f816",
+  "span_id": "241c34f0291cb798",
+  "parent_span_id": "040633b8317f63ae",
   "name": "grep _1.",
   "kind": "INTERNAL",
   "status": "ERROR",
-  "time_start": 1762910736775883520,
-  "time_end": 1762910745448265472,
+  "time_start": 1763456114525938944,
+  "time_end": 1763456123252423168,
   "attributes": {
     "shell.command_line": "grep _1.",
     "shell.command": "grep",
@@ -1764,16 +1764,16 @@ bash -e demo.sh
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "northcentralus",
-    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
-    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "host.name": "EEgsQGO8KpK39v",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/873ffdb0-cf50-4649-8b12-c12b1997de0f/resourceGroups/azure-westus-general-873ffdb0-cf50-4649-8b12-c12b1997de0f/providers/Microsoft.Compute/virtualMachines/lKtgfWsdW3YNgI",
+    "host.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "host.name": "lKtgfWsdW3YNgI",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "process.pid": 3117,
-    "process.parent_pid": 2359,
+    "service.instance.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "process.pid": 2603,
+    "process.parent_pid": 2403,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1788,14 +1788,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
-  "span_id": "c43f247b3125636a",
-  "parent_span_id": "c7919cd5ab6b6253",
+  "trace_id": "b8022842f0c46f536c5513ced117f816",
+  "span_id": "79e8c6a4ff998f51",
+  "parent_span_id": "040633b8317f63ae",
   "name": "grep rel=\"last\"",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762910736776696064,
-  "time_end": 1762910740529960448,
+  "time_start": 1763456114520040960,
+  "time_end": 1763456118290666752,
   "attributes": {
     "shell.command_line": "grep rel=\"last\"",
     "shell.command": "grep",
@@ -1816,16 +1816,16 @@ bash -e demo.sh
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "northcentralus",
-    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
-    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "host.name": "EEgsQGO8KpK39v",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/873ffdb0-cf50-4649-8b12-c12b1997de0f/resourceGroups/azure-westus-general-873ffdb0-cf50-4649-8b12-c12b1997de0f/providers/Microsoft.Compute/virtualMachines/lKtgfWsdW3YNgI",
+    "host.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "host.name": "lKtgfWsdW3YNgI",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "process.pid": 3117,
-    "process.parent_pid": 2359,
+    "service.instance.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "process.pid": 2603,
+    "process.parent_pid": 2403,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1840,14 +1840,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
-  "span_id": "eb0520ad2d19e543",
-  "parent_span_id": "c7919cd5ab6b6253",
+  "trace_id": "b8022842f0c46f536c5513ced117f816",
+  "span_id": "5e2fcaec7bfed98a",
+  "parent_span_id": "040633b8317f63ae",
   "name": "head --lines=3",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762910736772452864,
-  "time_end": 1762910745441985536,
+  "time_start": 1763456114544686336,
+  "time_end": 1763456123246154752,
   "attributes": {
     "shell.command_line": "head --lines=3",
     "shell.command": "head",
@@ -1868,16 +1868,16 @@ bash -e demo.sh
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "northcentralus",
-    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
-    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "host.name": "EEgsQGO8KpK39v",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/873ffdb0-cf50-4649-8b12-c12b1997de0f/resourceGroups/azure-westus-general-873ffdb0-cf50-4649-8b12-c12b1997de0f/providers/Microsoft.Compute/virtualMachines/lKtgfWsdW3YNgI",
+    "host.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "host.name": "lKtgfWsdW3YNgI",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "process.pid": 3117,
-    "process.parent_pid": 2359,
+    "service.instance.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "process.pid": 2603,
+    "process.parent_pid": 2403,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1892,14 +1892,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
-  "span_id": "1f86424dddfd8b3a",
-  "parent_span_id": "c7919cd5ab6b6253",
+  "trace_id": "b8022842f0c46f536c5513ced117f816",
+  "span_id": "5d1749724b60497f",
+  "parent_span_id": "040633b8317f63ae",
   "name": "jq .[].assets[].browser_download_url -r",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762910736768940032,
-  "time_end": 1762910745442518016,
+  "time_start": 1763456114536371200,
+  "time_end": 1763456123245889024,
   "attributes": {
     "shell.command_line": "jq .[].assets[].browser_download_url -r",
     "shell.command": "jq",
@@ -1920,16 +1920,16 @@ bash -e demo.sh
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "northcentralus",
-    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
-    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "host.name": "EEgsQGO8KpK39v",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/873ffdb0-cf50-4649-8b12-c12b1997de0f/resourceGroups/azure-westus-general-873ffdb0-cf50-4649-8b12-c12b1997de0f/providers/Microsoft.Compute/virtualMachines/lKtgfWsdW3YNgI",
+    "host.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "host.name": "lKtgfWsdW3YNgI",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "process.pid": 3117,
-    "process.parent_pid": 2359,
+    "service.instance.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "process.pid": 2603,
+    "process.parent_pid": 2403,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1944,14 +1944,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
-  "span_id": "7e8f21c469bac93a",
-  "parent_span_id": "c7919cd5ab6b6253",
+  "trace_id": "b8022842f0c46f536c5513ced117f816",
+  "span_id": "01da7246ca624cc7",
+  "parent_span_id": "040633b8317f63ae",
   "name": "ncat --ssl -i 3 --no-shutdown api.github.com 443",
   "kind": "INTERNAL",
   "status": "ERROR",
-  "time_start": 1762910736765476352,
-  "time_end": 1762910740516655872,
+  "time_start": 1763456114519607808,
+  "time_end": 1763456118277314304,
   "attributes": {
     "shell.command_line": "ncat --ssl -i 3 --no-shutdown api.github.com 443",
     "shell.command": "ncat",
@@ -1972,16 +1972,16 @@ bash -e demo.sh
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "northcentralus",
-    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
-    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "host.name": "EEgsQGO8KpK39v",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/873ffdb0-cf50-4649-8b12-c12b1997de0f/resourceGroups/azure-westus-general-873ffdb0-cf50-4649-8b12-c12b1997de0f/providers/Microsoft.Compute/virtualMachines/lKtgfWsdW3YNgI",
+    "host.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "host.name": "lKtgfWsdW3YNgI",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "process.pid": 3117,
-    "process.parent_pid": 2359,
+    "service.instance.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "process.pid": 2603,
+    "process.parent_pid": 2403,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -1996,14 +1996,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
-  "span_id": "21580855858e7450",
-  "parent_span_id": "c7919cd5ab6b6253",
+  "trace_id": "b8022842f0c46f536c5513ced117f816",
+  "span_id": "ab39c20ca4c5f561",
+  "parent_span_id": "040633b8317f63ae",
   "name": "printf HEAD /repos/plengauer/Thoth/releases?per_page=100 HTTP/1.1\\r\\nConnection: close\\r\\nUser-Agent: ncat\\r\\nHost: api.github.com\\r\\n\\r\\n",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762910736754121216,
-  "time_end": 1762910736864610048,
+  "time_start": 1763456114496987136,
+  "time_end": 1763456114594100992,
   "attributes": {
     "shell.command_line": "printf HEAD /repos/plengauer/Thoth/releases?per_page=100 HTTP/1.1\\r\\nConnection: close\\r\\nUser-Agent: ncat\\r\\nHost: api.github.com\\r\\n\\r\\n",
     "shell.command": "printf",
@@ -2022,16 +2022,16 @@ bash -e demo.sh
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "northcentralus",
-    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
-    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "host.name": "EEgsQGO8KpK39v",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/873ffdb0-cf50-4649-8b12-c12b1997de0f/resourceGroups/azure-westus-general-873ffdb0-cf50-4649-8b12-c12b1997de0f/providers/Microsoft.Compute/virtualMachines/lKtgfWsdW3YNgI",
+    "host.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "host.name": "lKtgfWsdW3YNgI",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "process.pid": 3117,
-    "process.parent_pid": 2359,
+    "service.instance.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "process.pid": 2603,
+    "process.parent_pid": 2403,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2046,14 +2046,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
-  "span_id": "0567805a2e1de418",
-  "parent_span_id": "7e8f21c469bac93a",
+  "trace_id": "b8022842f0c46f536c5513ced117f816",
+  "span_id": "18d52ae897514514",
+  "parent_span_id": "01da7246ca624cc7",
   "name": "send/receive",
   "kind": "PRODUCER",
   "status": "UNSET",
-  "time_start": 1762910736888922368,
-  "time_end": 1762910740513001984,
+  "time_start": 1763456114627347968,
+  "time_end": 1763456118273904128,
   "attributes": {
     "network.transport": "tcp",
     "network.peer.port": 443,
@@ -2069,16 +2069,16 @@ bash -e demo.sh
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "northcentralus",
-    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
-    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "host.name": "EEgsQGO8KpK39v",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/873ffdb0-cf50-4649-8b12-c12b1997de0f/resourceGroups/azure-westus-general-873ffdb0-cf50-4649-8b12-c12b1997de0f/providers/Microsoft.Compute/virtualMachines/lKtgfWsdW3YNgI",
+    "host.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "host.name": "lKtgfWsdW3YNgI",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "process.pid": 3117,
-    "process.parent_pid": 2359,
+    "service.instance.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "process.pid": 2603,
+    "process.parent_pid": 2403,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2093,14 +2093,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
-  "span_id": "8f3e9f5829151b40",
-  "parent_span_id": "b2a93326d7a15cb4",
+  "trace_id": "b8022842f0c46f536c5513ced117f816",
+  "span_id": "861db5dfb30cfdb1",
+  "parent_span_id": "5881bd8960f70c6a",
   "name": "seq 1 4",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762910741217975808,
-  "time_end": 1762910741236335872,
+  "time_start": 1763456118964187392,
+  "time_end": 1763456118981619712,
   "attributes": {
     "shell.command_line": "seq 1 4",
     "shell.command": "seq",
@@ -2122,16 +2122,16 @@ bash -e demo.sh
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "northcentralus",
-    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
-    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "host.name": "EEgsQGO8KpK39v",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/873ffdb0-cf50-4649-8b12-c12b1997de0f/resourceGroups/azure-westus-general-873ffdb0-cf50-4649-8b12-c12b1997de0f/providers/Microsoft.Compute/virtualMachines/lKtgfWsdW3YNgI",
+    "host.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "host.name": "lKtgfWsdW3YNgI",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "process.pid": 5319,
-    "process.parent_pid": 4570,
+    "service.instance.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "process.pid": 4805,
+    "process.parent_pid": 4082,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs seq 1",
@@ -2146,14 +2146,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
-  "span_id": "0445d73b20008b66",
-  "parent_span_id": "c7919cd5ab6b6253",
+  "trace_id": "b8022842f0c46f536c5513ced117f816",
+  "span_id": "d6084ee98f8ba991",
+  "parent_span_id": "040633b8317f63ae",
   "name": "tr & \\n",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762910736779448832,
-  "time_end": 1762910740536724480,
+  "time_start": 1763456114536620544,
+  "time_end": 1763456118297238528,
   "attributes": {
     "shell.command_line": "tr & \\n",
     "shell.command": "tr",
@@ -2174,16 +2174,16 @@ bash -e demo.sh
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "northcentralus",
-    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
-    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "host.name": "EEgsQGO8KpK39v",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/873ffdb0-cf50-4649-8b12-c12b1997de0f/resourceGroups/azure-westus-general-873ffdb0-cf50-4649-8b12-c12b1997de0f/providers/Microsoft.Compute/virtualMachines/lKtgfWsdW3YNgI",
+    "host.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "host.name": "lKtgfWsdW3YNgI",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "process.pid": 3117,
-    "process.parent_pid": 2359,
+    "service.instance.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "process.pid": 2603,
+    "process.parent_pid": 2403,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2198,14 +2198,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
-  "span_id": "c3381d185d47ce3c",
-  "parent_span_id": "c7919cd5ab6b6253",
+  "trace_id": "b8022842f0c46f536c5513ced117f816",
+  "span_id": "642e0d104433cfe6",
+  "parent_span_id": "040633b8317f63ae",
   "name": "tr , \\n",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762910736775536640,
-  "time_end": 1762910740527768064,
+  "time_start": 1763456114513467904,
+  "time_end": 1763456118288520960,
   "attributes": {
     "shell.command_line": "tr , \\n",
     "shell.command": "tr",
@@ -2226,16 +2226,16 @@ bash -e demo.sh
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "northcentralus",
-    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
-    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "host.name": "EEgsQGO8KpK39v",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/873ffdb0-cf50-4649-8b12-c12b1997de0f/resourceGroups/azure-westus-general-873ffdb0-cf50-4649-8b12-c12b1997de0f/providers/Microsoft.Compute/virtualMachines/lKtgfWsdW3YNgI",
+    "host.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "host.name": "lKtgfWsdW3YNgI",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "process.pid": 3117,
-    "process.parent_pid": 2359,
+    "service.instance.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "process.pid": 2603,
+    "process.parent_pid": 2403,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2250,14 +2250,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
-  "span_id": "a45306f109183abc",
-  "parent_span_id": "c7919cd5ab6b6253",
+  "trace_id": "b8022842f0c46f536c5513ced117f816",
+  "span_id": "da55c6041a0bea9f",
+  "parent_span_id": "040633b8317f63ae",
   "name": "tr -d  <>",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762910736760635904,
-  "time_end": 1762910740525620736,
+  "time_start": 1763456114525800704,
+  "time_end": 1763456118286383616,
   "attributes": {
     "shell.command_line": "tr -d  <>",
     "shell.command": "tr",
@@ -2278,16 +2278,16 @@ bash -e demo.sh
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "northcentralus",
-    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
-    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "host.name": "EEgsQGO8KpK39v",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/873ffdb0-cf50-4649-8b12-c12b1997de0f/resourceGroups/azure-westus-general-873ffdb0-cf50-4649-8b12-c12b1997de0f/providers/Microsoft.Compute/virtualMachines/lKtgfWsdW3YNgI",
+    "host.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "host.name": "lKtgfWsdW3YNgI",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "process.pid": 3117,
-    "process.parent_pid": 2359,
+    "service.instance.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "process.pid": 2603,
+    "process.parent_pid": 2403,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2302,14 +2302,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
-  "span_id": "7d74a0c8db09eb50",
-  "parent_span_id": "c7919cd5ab6b6253",
+  "trace_id": "b8022842f0c46f536c5513ced117f816",
+  "span_id": "b59a0cfdf0d3787a",
+  "parent_span_id": "040633b8317f63ae",
   "name": "tr [:upper:] [:lower:]",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762910736756396800,
-  "time_end": 1762910740518972416,
+  "time_start": 1763456114510008064,
+  "time_end": 1763456118279623424,
   "attributes": {
     "shell.command_line": "tr [:upper:] [:lower:]",
     "shell.command": "tr",
@@ -2330,16 +2330,16 @@ bash -e demo.sh
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "northcentralus",
-    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
-    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "host.name": "EEgsQGO8KpK39v",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/873ffdb0-cf50-4649-8b12-c12b1997de0f/resourceGroups/azure-westus-general-873ffdb0-cf50-4649-8b12-c12b1997de0f/providers/Microsoft.Compute/virtualMachines/lKtgfWsdW3YNgI",
+    "host.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "host.name": "lKtgfWsdW3YNgI",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "process.pid": 3117,
-    "process.parent_pid": 2359,
+    "service.instance.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "process.pid": 2603,
+    "process.parent_pid": 2403,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2354,14 +2354,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
-  "span_id": "10a0e8d99b53a755",
-  "parent_span_id": "47010720bdc1600d",
+  "trace_id": "b8022842f0c46f536c5513ced117f816",
+  "span_id": "d79a54f1103e5863",
+  "parent_span_id": "cf26efd55d6ef71c",
   "name": "wget https://github.com/plengauer/Thoth/releases/download/v1.13.7/opentelemetry-shell_1.13.7.deb https://github.com/plengauer/Thoth/releases/download/v1.13.6/opentelemetry-shell_1.13.6.deb https://github.com/plengauer/Thoth/releases/download/v1.13.5/opentelemetry-shell_1.13.5.deb",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762910746129990912,
-  "time_end": 1762910749424306688,
+  "time_start": 1763456123918499584,
+  "time_end": 1763456127316906752,
   "attributes": {
     "shell.command_line": "wget https://github.com/plengauer/Thoth/releases/download/v1.13.7/opentelemetry-shell_1.13.7.deb https://github.com/plengauer/Thoth/releases/download/v1.13.6/opentelemetry-shell_1.13.6.deb https://github.com/plengauer/Thoth/releases/download/v1.13.5/opentelemetry-shell_1.13.5.deb",
     "shell.command": "wget",
@@ -2383,16 +2383,16 @@ bash -e demo.sh
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "northcentralus",
-    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
-    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "host.name": "EEgsQGO8KpK39v",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/873ffdb0-cf50-4649-8b12-c12b1997de0f/resourceGroups/azure-westus-general-873ffdb0-cf50-4649-8b12-c12b1997de0f/providers/Microsoft.Compute/virtualMachines/lKtgfWsdW3YNgI",
+    "host.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "host.name": "lKtgfWsdW3YNgI",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "process.pid": 10168,
-    "process.parent_pid": 4566,
+    "service.instance.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "process.pid": 9653,
+    "process.parent_pid": 4073,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "xargs wget",
@@ -2407,14 +2407,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
-  "span_id": "38c901d1f751d8cb",
-  "parent_span_id": "c7919cd5ab6b6253",
+  "trace_id": "b8022842f0c46f536c5513ced117f816",
+  "span_id": "24f7b7baa57cd71d",
+  "parent_span_id": "040633b8317f63ae",
   "name": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762910736763270400,
-  "time_end": 1762910745439075072,
+  "time_start": 1763456114525636864,
+  "time_end": 1763456123243002624,
   "attributes": {
     "shell.command_line": "xargs -I {} curl --no-progress-meter --fail --retry 16 --retry-all-errors https://api.github.com/repos/plengauer/Thoth/releases?per_page=100&page={}",
     "shell.command": "xargs",
@@ -2435,16 +2435,16 @@ bash -e demo.sh
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "northcentralus",
-    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
-    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "host.name": "EEgsQGO8KpK39v",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/873ffdb0-cf50-4649-8b12-c12b1997de0f/resourceGroups/azure-westus-general-873ffdb0-cf50-4649-8b12-c12b1997de0f/providers/Microsoft.Compute/virtualMachines/lKtgfWsdW3YNgI",
+    "host.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "host.name": "lKtgfWsdW3YNgI",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "process.pid": 3117,
-    "process.parent_pid": 2359,
+    "service.instance.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "process.pid": 2603,
+    "process.parent_pid": 2403,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2459,14 +2459,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
-  "span_id": "b2a93326d7a15cb4",
-  "parent_span_id": "c7919cd5ab6b6253",
+  "trace_id": "b8022842f0c46f536c5513ced117f816",
+  "span_id": "5881bd8960f70c6a",
+  "parent_span_id": "040633b8317f63ae",
   "name": "xargs seq 1",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762910736775704576,
-  "time_end": 1762910741240983808,
+  "time_start": 1763456114534987264,
+  "time_end": 1763456118986476032,
   "attributes": {
     "shell.command_line": "xargs seq 1",
     "shell.command": "xargs",
@@ -2487,16 +2487,16 @@ bash -e demo.sh
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "northcentralus",
-    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
-    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "host.name": "EEgsQGO8KpK39v",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/873ffdb0-cf50-4649-8b12-c12b1997de0f/resourceGroups/azure-westus-general-873ffdb0-cf50-4649-8b12-c12b1997de0f/providers/Microsoft.Compute/virtualMachines/lKtgfWsdW3YNgI",
+    "host.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "host.name": "lKtgfWsdW3YNgI",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "process.pid": 3117,
-    "process.parent_pid": 2359,
+    "service.instance.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "process.pid": 2603,
+    "process.parent_pid": 2403,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
@@ -2511,14 +2511,14 @@ bash -e demo.sh
   "events": []
 }
 {
-  "trace_id": "f4d19b905ff381cd43a0148c426537f6",
-  "span_id": "47010720bdc1600d",
-  "parent_span_id": "c7919cd5ab6b6253",
+  "trace_id": "b8022842f0c46f536c5513ced117f816",
+  "span_id": "cf26efd55d6ef71c",
+  "parent_span_id": "040633b8317f63ae",
   "name": "xargs wget",
   "kind": "INTERNAL",
   "status": "UNSET",
-  "time_start": 1762910736771755776,
-  "time_end": 1762910749428524288,
+  "time_start": 1763456114536198656,
+  "time_end": 1763456127321415936,
   "attributes": {
     "shell.command_line": "xargs wget",
     "shell.command": "xargs",
@@ -2539,16 +2539,16 @@ bash -e demo.sh
     "azure.vm.sku": "",
     "cloud.platform": "azure_vm",
     "cloud.provider": "azure",
-    "cloud.region": "northcentralus",
-    "cloud.resource_id": "/subscriptions/34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/resourceGroups/azure-northcentralus-general-34849e28-3f6f-4c3f-937a-6b4d5b9f6a33/providers/Microsoft.Compute/virtualMachines/EEgsQGO8KpK39v",
-    "host.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "host.name": "EEgsQGO8KpK39v",
+    "cloud.region": "westus",
+    "cloud.resource_id": "/subscriptions/873ffdb0-cf50-4649-8b12-c12b1997de0f/resourceGroups/azure-westus-general-873ffdb0-cf50-4649-8b12-c12b1997de0f/providers/Microsoft.Compute/virtualMachines/lKtgfWsdW3YNgI",
+    "host.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "host.name": "lKtgfWsdW3YNgI",
     "host.type": "Standard_D4ads_v5",
     "os.type": "linux",
     "os.version": "6.11.0-1018-azure",
-    "service.instance.id": "71820e31-db48-4ab9-b77a-160d1f1ca9c0",
-    "process.pid": 3117,
-    "process.parent_pid": 2359,
+    "service.instance.id": "95a3a1fc-706c-41f8-990d-0bcacb6ca095",
+    "process.pid": 2603,
+    "process.parent_pid": 2403,
     "process.executable.name": "bash",
     "process.executable.path": "/usr/bin/bash",
     "process.command_line": "bash -e demo.sh",
