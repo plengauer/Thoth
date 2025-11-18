@@ -444,21 +444,11 @@ if ! \type which 1> /dev/null 2> /dev/null; then
   fi
 fi
 
-if \[ "$_otel_shell" = dash ] || \[ "$_otel_shell" = 'busybox sh' ]; then # LEGACY this seems to be only necessary for old dashes on focal
-  # old versions of dash dont set env vars properly
-  # more specifically they do not make variables that are set in front of commands part of the child process env vars but only of the local execution environment
-  _otel_call() {
-    local command="$1"; shift
-    if ! _otel_string_starts_with "$command" "\\"; then local command="$(_otel_escape_arg "$command")"; fi
-    \eval "$( { \printenv; \set; } | \grep -E '^OTEL_|^PYTHONPATH=|^JAVA_TOOL_OPTIONS=' | \cut -d = -f 1 | \sort -u | \awk '{ print $1 "=\"$" $1 "\"" }' | _otel_line_join)" "$command" "$(_otel_escape_args "$@")"
-  }
-else
-  _otel_call() {
-    local command="$1"; shift
-    if ! _otel_string_starts_with "$command" "\\"; then local command="$(_otel_escape_arg "$command")"; fi
-    \eval "$command" "$(_otel_escape_args "$@")"
-  }
-fi
+_otel_call() {
+  local command="$1"
+  shift
+  \alias "$command" 1> /dev/null 2> /dev/null && \eval "$(_otel_escape_args "${command#\\}" "$@")" || "${command#\\}" "$@"
+}
 
 \. /usr/share/opentelemetry_shell/api.observe.logs.sh
 \. /usr/share/opentelemetry_shell/api.observe.pipes.sh

@@ -34,7 +34,7 @@ _otel_inject_inner_command() {
   local cmdline="${cmdline#\\}"
   local command_string="$(_otel_inject_inner_command_args "$@")"
   unset OTEL_SHELL_INJECT_INNER_COMMAND_MORE_ARGS # unset it also here, not just in subshell above
-  OTEL_SHELL_AUTO_INSTRUMENTATION_HINT="$cmdline" OTEL_SHELL_COMMANDLINE_OVERRIDE="$cmdline" OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE="0" OTEL_SHELL_AUTO_INJECTED=TRUE \eval _otel_call "$command_string"
+  \eval OTEL_SHELL_AUTO_INSTRUMENTATION_HINT="$(_otel_escape_arg "$cmdline")" OTEL_SHELL_COMMANDLINE_OVERRIDE="$(_otel_escape_arg "$cmdline")" OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE=0 OTEL_SHELL_AUTO_INJECTED=TRUE _otel_call "$command_string"
 }
 
 _otel_alias_prepend taskset _otel_inject_inner_command
