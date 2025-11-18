@@ -10,7 +10,10 @@ if \[ -n "${OTEL_SHELL_TRACES_ENABLE:-}" ] || \[ -n "${OTEL_SHELL_METRICS_ENABLE
   \[ "${OTEL_SHELL_TRACES_ENABLE:-FALSE}" = TRUE ] && \export OTEL_TRACES_EXPORTER=otlp || \export OTEL_TRACES_EXPORTER=""
   \[ "${OTEL_SHELL_METRICS_ENABLE:-FALSE}" = TRUE ] && \export OTEL_METRICS_EXPORTER=otlp || \export OTEL_METRICS_EXPORTER=""
   \[ "${OTEL_SHELL_LOGS_ENABLE:-FALSE}" = TRUE ] && \export OTEL_LOGS_EXPORTER=otlp || \export OTEL_LOGS_EXPORTER=""
-  \export OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE=delta
+  # Only set temporality preference if not already configured (for backward compatibility with legacy config)
+  if \[ -z "${OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE:-}" ]; then
+    \export OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE=delta
+  fi
 fi
 
 # check environment
