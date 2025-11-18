@@ -13,7 +13,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v5.0.0
+      - uses: actions/checkout@v5.0.1
       - uses: actions/download-artifact@v6.0.0
         with:
           name: packages
@@ -76,7 +76,7 @@ jobs:
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - uses: actions/checkout@v5.0.0
+      - uses: actions/checkout@v5.0.1
       - id: key
         run: cat .github/workflows/images.json .github/workflows/test_shell.yml meta/*/* | md5sum | cut -d ' ' -f 1 | xargs -I '{}' echo "key={}" >> "$GITHUB_OUTPUT"
       - uses: actions/cache@v4.3.0
@@ -129,7 +129,7 @@ jobs:
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - uses: actions/checkout@v5.0.0
+      - uses: actions/checkout@v5.0.1
       - run: |
           {
             echo sh
@@ -166,7 +166,7 @@ jobs:
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - uses: actions/checkout@v5.0.0
+      - uses: actions/checkout@v5.0.1
       - run: |
           cat meta/debian/triggers | cut -sd ' ' -f 2- | rev | cut -sd / -f 1 | rev | grep -v '^$' | sed 's/node/nodejs/g' \
            | grep -vF "$(cat meta/debian/control | grep '^Pre-Depends:' | cut -d : -f 2- | tr '|' ',' | tr , '\n' | tr -d ' ' | cut -d '(' -f 1 | sed 's/python3-pip/pip3/g')" \
@@ -231,7 +231,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v5.0.0
+      - uses: actions/checkout@v5.0.1
       - run: cat INSTALL.sh | sh -e
       - run: type otel.sh
   install-manual-os:
@@ -245,7 +245,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v5.0.0
+      - uses: actions/checkout@v5.0.1
       - run: |
           {
             echo '
@@ -275,7 +275,7 @@ jobs:
       actions: read
     steps:
       # - run: sudo docker login -u '${{ secrets.DOCKERHUB_USERNAME }}' -p '${{ secrets.DOCKERHUB_TOKEN }}'
-      - uses: actions/checkout@v5.0.0
+      - uses: actions/checkout@v5.0.1
       - uses: actions/download-artifact@v6.0.0
         with:
           name: packages
@@ -300,7 +300,7 @@ jobs:
         with:
           distribution: Ubuntu-24.04
           wsl-version: ${{ matrix.version }}
-      - uses: actions/checkout@v5.0.0
+      - uses: actions/checkout@v5.0.1
       - uses: actions/download-artifact@v6.0.0
         with:
           name: packages
