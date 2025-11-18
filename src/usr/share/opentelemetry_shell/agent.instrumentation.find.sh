@@ -38,7 +38,7 @@ _otel_inject_find() {
   if \[ "$(\expr "$*" : ".* -exec .*")" -gt 0 ] || \[ "$(\expr "$*" : ".* -execdir .*")" -gt 0 ]; then
     local cmdline="$(_otel_dollar_star "$@")"
     local cmdline="${cmdline#\\}"
-    OTEL_SHELL_AUTO_INSTRUMENTATION_HINT="$cmdline" OTEL_SHELL_COMMANDLINE_OVERRIDE="$cmdline" OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE="0" OTEL_SHELL_AUTO_INJECTED=TRUE \eval _otel_call "$(_otel_inject_find_arguments "$@")"
+    \eval OTEL_SHELL_AUTO_INSTRUMENTATION_HINT="$(_otel_escape_args "$cmdline")" OTEL_SHELL_COMMANDLINE_OVERRIDE="$(_otel_escape_args "$cmdline")" OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE=0 OTEL_SHELL_AUTO_INJECTED=TRUE _otel_call "$(_otel_inject_find_arguments "$@")"
   else
     _otel_call "$@"
   fi

@@ -64,7 +64,7 @@ runs:
       shell: bash
       run: type yq || (sudo apt-get update && sudo apt-get -y install yq)
     - name: "Checkout"
-      uses: actions/checkout@v5.0.0
+      uses: actions/checkout@v5.0.1
       with:
         token: ${{ inputs.github_token }}
     - name: Deploy Copilot Setup
