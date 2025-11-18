@@ -1,4 +1,4 @@
-FROM debian:13.1-slim
+FROM debian:13.2-slim
 ARG repository
 LABEL org.opencontainers.image.source=https://github.com/$repository
 COPY ./package.deb /root/package.deb
