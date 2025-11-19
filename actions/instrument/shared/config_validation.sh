@@ -33,8 +33,4 @@ if [ "${OTEL_LOGS_EXPORTER:-}" = console ] || [ "${OTEL_METRICS_EXPORTER:-}" = c
   export OTEL_SHELL_SDK_OUTPUT_REDIRECT="${OTEL_SHELL_SDK_OUTPUT_REDIRECT:-/dev/stderr}"
 fi
 export OTEL_EXPORTER_OTLP_PROTOCOL="${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}" # default is not uniform, so lets pin it here
-# Only set temporality preference if not already configured by user
-# Default to delta for volatile environments, but cumulative is required for Prometheus/Grafana Mimir backends
-if [ -z "${OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE:-}" ]; then
-  export OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE=delta
-fi
+export OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE="${OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE:-delta}" # default to delta for volatile environments
