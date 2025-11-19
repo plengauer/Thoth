@@ -187,9 +187,6 @@ jobs:
         with:
           category: "/language:python"
           upload: never
-      - uses: actions/checkout@v5.0.1
-        with:
-          ref: ${{ inputs.ref }}
       - run: |
           # initializing a python venv because venv have a lot of corner cases about injection, users, file permissions, changing paths and on-the-fly instrumentation
           python3 -m venv venv
