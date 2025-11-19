@@ -24,7 +24,8 @@ esac
 # basic setup
 if \[ -z "${TMPDIR:-}" ]; then TMPDIR=/tmp; fi
 _otel_shell_pipe_dir="${OTEL_SHELL_PIPE_DIR:-$TMPDIR}"
-_otel_remote_sdk_pipe="${OTEL_REMOTE_SDK_PIPE:-$(\mktemp -u -p "$_otel_shell_pipe_dir")_opentelemetry_shell_$$.pipe}"
+_otel_remote_sdk_request_pipe="${OTEL_REMOTE_SDK_REQUEST_PIPE:-$(\mktemp -u -p "$_otel_shell_pipe_dir")_opentelemetry_shell_$$_request.pipe}"
+_otel_remote_sdk_response_pipe="${OTEL_REMOTE_SDK_RESPONSE_PIPE:-$(\mktemp -u -p "$_otel_shell_pipe_dir")_opentelemetry_shell_$$_response.pipe}"
 _otel_remote_sdk_fd="${OTEL_REMOTE_SDK_FD:-7}"
 _otel_remote_sdk_stdout_redirect="${OTEL_SHELL_SDK_STDOUT_REDIRECT:-${OTEL_SHELL_SDK_OUTPUT_REDIRECT:-/dev/stderr}}"
 _otel_remote_sdk_stderr_redirect="${OTEL_SHELL_SDK_STDERR_REDIRECT:-${OTEL_SHELL_SDK_OUTPUT_REDIRECT:-/dev/stderr}}"
@@ -39,10 +40,10 @@ unset OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE
 unset OTEL_SHELL_COMMAND_TYPE_OVERRIDE
 unset OTEL_SHELL_SPAN_KIND_OVERRIDE
 
-if \[ -p "$_otel_remote_sdk_pipe" ]; then
+if \[ -p "$_otel_remote_sdk_request_pipe" ] && \[ -p "$_otel_remote_sdk_response_pipe" ]; then
   otel_init() {
     _otel_mkfifo_flags="-m 666"
-    \eval "\\exec ${_otel_remote_sdk_fd}> \"$_otel_remote_sdk_pipe\""
+    \eval "\\exec ${_otel_remote_sdk_fd}> \"$_otel_remote_sdk_request_pipe\""
   }
 
   otel_shutdown() {
@@ -52,22 +53,22 @@ else
   otel_init() {
     _otel_package_version opentelemetry-shell > /dev/null # to build the cache outside a subshell
     _otel_package_version "$_otel_shell" > /dev/null
-    \mkfifo "$_otel_remote_sdk_pipe"
+    \mkfifo "$_otel_remote_sdk_request_pipe" "$_otel_remote_sdk_response_pipe"
     if \[ -n "${USER:-}" ] && \[ -p /tmp/otel_shell/sdk_factory."$USER".pipe ] && \[ "${OTEL_LOGS_EXPORTER:-otlp}" != console ] && \[ "${OTEL_METRICS_EXPORTER:-otlp}" != console ] && \[ "${OTEL_TRACES_EXPORTER:-otlp}" != console ]; then
-      \echo shell "$(_otel_package_version opentelemetry-shell)" "$_otel_remote_sdk_pipe" >> /tmp/otel_shell/sdk_factory."$USER".pipe
+      \echo shell "$(_otel_package_version opentelemetry-shell)" "$_otel_remote_sdk_request_pipe" >> /tmp/otel_shell/sdk_factory."$USER".pipe
     else
       # several weird things going on in the next line, (1) using '((' fucks up the syntax highlighting in github while '( (' does not, and (2) &> causes weird buffering / late flushing behavior
       if \env --help 2>&1 | \grep -q 'ignore-signal'; then local extra_env_flags='--ignore-signal=INT --ignore-signal=HUP'; fi
-      ( \exec \env ${extra_env_flags:-} /opt/opentelemetry_shell/venv/bin/python /usr/share/opentelemetry_shell/sdk.py shell "$(_otel_package_version opentelemetry-shell)" < "$_otel_remote_sdk_pipe" 1> "$_otel_remote_sdk_stdout_redirect" 2> "$_otel_remote_sdk_stderr_redirect" &)
+      ( \exec \env ${extra_env_flags:-} /opt/opentelemetry_shell/venv/bin/python /usr/share/opentelemetry_shell/sdk.py shell "$(_otel_package_version opentelemetry-shell)" < "$_otel_remote_sdk_request_pipe" 1> "$_otel_remote_sdk_stdout_redirect" 2> "$_otel_remote_sdk_stderr_redirect" &)
     fi
-    \eval "\\exec ${_otel_remote_sdk_fd}> \"$_otel_remote_sdk_pipe\""
+    \eval "\\exec ${_otel_remote_sdk_fd}> \"$_otel_remote_sdk_request_pipe\""
     _otel_resource_attributes
     _otel_sdk_communicate "INIT"
   }
 
   otel_shutdown() {
     \eval "\\exec ${_otel_remote_sdk_fd}>&-"
-    \rm "$_otel_remote_sdk_pipe"
+    \rm "$_otel_remote_sdk_request_pipe" "$_otel_remote_sdk_response_pipe"
   }
 fi
 
@@ -170,26 +171,20 @@ _otel_resolve_package_version() {
 }
 
 otel_span_current() {
-  local response_pipe="$(\mktemp -u -p "$_otel_shell_pipe_dir")_opentelemetry_shell_$$.span_handle.pipe"
-  \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
-  _otel_sdk_communicate "SPAN_HANDLE" "$response_pipe" "${TRACEPARENT:-}"
+  _otel_sdk_communicate "SPAN_HANDLE" "$_otel_remote_sdk_response_pipe" "${TRACEPARENT:-}"
   local handle
-  \read handle < "$response_pipe" || \true
+  \read handle < "$_otel_remote_sdk_response_pipe" || \true
   \echo "$handle"
-  \rm "$response_pipe" 1> /dev/null 2> /dev/null
 }
 
 otel_span_start() {
   if _otel_string_starts_with "${1:-}" @; then local time="${1#@}"; shift; else local time=auto; fi
   local kind="$1"
   local name="$2"
-  local response_pipe="$(\mktemp -u -p "$_otel_shell_pipe_dir")_opentelemetry_shell_$$.span_handle.pipe"
-  \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
-  _otel_sdk_communicate "SPAN_START" "$response_pipe" "${TRACEPARENT:-}" "${TRACESTATE:-}" "$time" "$kind" "$name"
+  _otel_sdk_communicate "SPAN_START" "$_otel_remote_sdk_response_pipe" "${TRACEPARENT:-}" "${TRACESTATE:-}" "$time" "$kind" "$name"
   local handle
-  \read handle < "$response_pipe" || \true
+  \read handle < "$_otel_remote_sdk_response_pipe" || \true
   \echo "$handle"
-  \rm "$response_pipe" 1> /dev/null 2> /dev/null
 }
 
 otel_span_end() {
@@ -224,13 +219,10 @@ otel_span_attribute_typed() {
 
 otel_span_traceparent() {
   local span_handle="$1"
-  local response_pipe="$(\mktemp -u -p "$_otel_shell_pipe_dir")_opentelemetry_shell_$$.traceparent.pipe"
-  \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
-  _otel_sdk_communicate "SPAN_TRACEPARENT" "$response_pipe" "$span_handle"
+  _otel_sdk_communicate "SPAN_TRACEPARENT" "$_otel_remote_sdk_response_pipe" "$span_handle"
   local traceparent
-  \read traceparent < "$response_pipe" || \true
+  \read traceparent < "$_otel_remote_sdk_response_pipe" || \true
   \echo "$traceparent"
-  \rm "$response_pipe" 1> /dev/null 2> /dev/null
 }
 
 otel_span_activate() {
@@ -257,13 +249,10 @@ otel_span_deactivate() {
 
 otel_event_create() {
   local event_name="$1"
-  local response_pipe="$(\mktemp -u -p "$_otel_shell_pipe_dir")_opentelemetry_shell_$$.event_handle.pipe"
-  \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
-  _otel_sdk_communicate "EVENT_CREATE" "$response_pipe" "$event_name"
+  _otel_sdk_communicate "EVENT_CREATE" "$_otel_remote_sdk_response_pipe" "$event_name"
   local handle
   \read handle < "$response_pipe" || \true
   \echo "$handle"
-  \rm "$response_pipe" 1> /dev/null 2> /dev/null
 }
 
 otel_event_attribute() {
@@ -288,13 +277,10 @@ otel_event_add() {
 otel_link_create() {
   local traceparent="$1"
   local tracestate="$2"
-  local response_pipe="$(\mktemp -u -p "$_otel_shell_pipe_dir")_opentelemetry_shell_$$.link_handle.pipe"
-  \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
-  _otel_sdk_communicate "LINK_CREATE" "$response_pipe" "$traceparent" "$tracestate" END
+  _otel_sdk_communicate "LINK_CREATE" "$_otel_remote_sdk_response_pipe" "$traceparent" "$tracestate" END
   local handle
-  \read handle < "$response_pipe" || \true
+  \read handle < "$_otel_remote_sdk_response_pipe" || \true
   \echo "$handle"
-  \rm "$response_pipe" 1> /dev/null 2> /dev/null
 }
 
 otel_link_attribute() {
@@ -321,13 +307,10 @@ otel_counter_create() {
   local name="$2"
   local unit="${3:-1}"
   local description="${4:-}"
-  local response_pipe="$(\mktemp -u -p "$_otel_shell_pipe_dir")_opentelemetry_shell_$$.counter_handle.pipe"
-  \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
-  _otel_sdk_communicate "COUNTER_CREATE" "$response_pipe" "$type" "$name" "$unit" "$description"
+  _otel_sdk_communicate "COUNTER_CREATE" "$_otel_remote_sdk_response_pipe" "$type" "$name" "$unit" "$description"
   local handle
-  \read handle < "$response_pipe" || \true
+  \read handle < "$_otel_remote_sdk_response_pipe" || \true
   \echo "$handle"
-  \rm "$response_pipe" 1> /dev/null 2> /dev/null
 }
 
 otel_counter_observe() {
@@ -338,13 +321,10 @@ otel_counter_observe() {
 
 otel_observation_create() {
   local value="$1"
-  local response_pipe="$(\mktemp -u -p "$_otel_shell_pipe_dir")_opentelemetry_shell_$$.observation_handle.pipe"
-  \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
-  _otel_sdk_communicate "OBSERVATION_CREATE" "$response_pipe" "$value"
+  _otel_sdk_communicate "OBSERVATION_CREATE" "$_otel_remote_sdk_response_pipe" "$value"
   local handle
-  \read handle < "$response_pipe" || \true
+  \read handle < "$_otel_remote_sdk_response_pipe" || \true
   \echo "$handle"
-  \rm "$response_pipe" 1> /dev/null 2> /dev/null
 }
 
 otel_observation_attribute_typed() {
