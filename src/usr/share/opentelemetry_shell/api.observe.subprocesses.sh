@@ -29,6 +29,7 @@ _otel_call_and_record_subprocesses() {
 # 582398 wait4(582400,  <unfinished ...>
 # 582400 +++ killed by SIGINT +++
 _otel_record_subprocesses() {
+  \set -x
   local root_span_handle="$1"
   local signal="$2"
   while \read -r pid time line; do
