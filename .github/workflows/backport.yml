@@ -73,7 +73,7 @@ jobs:
             echo "should_backport=false" >> "$GITHUB_OUTPUT"
           fi
 
-          git checkout ${{ matrix.ref }}
+          git checkout .
       
       - id: prepare_branch
         if: steps.check_patch.outputs.should_backport == 'true'
