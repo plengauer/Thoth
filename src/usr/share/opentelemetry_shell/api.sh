@@ -42,7 +42,6 @@ unset OTEL_SHELL_SPAN_KIND_OVERRIDE
 
 if \[ -p "$_otel_remote_sdk_request_pipe" ] && \[ -p "$_otel_remote_sdk_response_pipe" ]; then
   otel_init() {
-    _otel_mkfifo_flags="-m 666"
     \eval "\\exec ${_otel_remote_sdk_fd}> \"$_otel_remote_sdk_request_pipe\""
   }
 
