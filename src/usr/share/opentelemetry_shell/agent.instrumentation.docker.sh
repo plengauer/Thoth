@@ -89,9 +89,11 @@ _otel_inject_docker_args() {
     \echo -n ' '; _otel_escape_args --mount type=bind,source=/usr/share/opentelemetry_shell,target=/usr/share/opentelemetry_shell
     \echo -n ' '; _otel_escape_args --mount type=bind,source=/opt/opentelemetry_shell,target=/opt/opentelemetry_shell
     for kvp in $(\printenv | \grep '^OTEL_' | \cut -d = -f 1); do \echo -n ' '; _otel_escape_args --env "$kvp"; done
-    \chmod 666 "$_otel_remote_sdk_pipe"
-    \echo -n ' '; _otel_escape_args --mount type=bind,source="$_otel_remote_sdk_pipe",target=/var/opentelemetry_shell"$_otel_remote_sdk_pipe"
-    \echo -n ' '; _otel_escape_args --env OTEL_REMOTE_SDK_PIPE=/var/opentelemetry_shell"$_otel_remote_sdk_pipe"
+    \chmod 666 "$_otel_remote_sdk_request_pipe" "$_otel_remote_sdk_response_pipe"
+    \echo -n ' '; _otel_escape_args --mount type=bind,source="$_otel_remote_sdk_request_pipe",target=/var/opentelemetry_shell"$_otel_remote_sdk_request_pipe"
+    \echo -n ' '; _otel_escape_args --mount type=bind,source="$_otel_remote_sdk_response_pipe",target=/var/opentelemetry_shell"$_otel_remote_sdk_response_pipe"
+    \echo -n ' '; _otel_escape_args --env OTEL_REMOTE_SDK_REQUEST_PIPE=/var/opentelemetry_shell"$_otel_remote_sdk_request_pipe"
+    \echo -n ' '; _otel_escape_args --env OTEL_REMOTE_SDK_RESPONSE_PIPE=/var/opentelemetry_shell"$_otel_remote_sdk_response_pipe"
     local pipes_dir="$(\mktemp -u)_opentelemetry_shell_$$.docker"; \mkdir -p "$pipes_dir"; \chmod 777 "$pipes_dir"
     \echo -n ' '; _otel_escape_args --mount type=bind,source="$pipes_dir",target="$pipes_dir"
     \echo -n ' '; _otel_escape_args --env OTEL_SHELL_PIPE_DIR="$pipes_dir"
