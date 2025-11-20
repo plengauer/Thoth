@@ -121,6 +121,6 @@ _otel_record_subprocesses() {
         ;;
       *) ;;
     esac
-  done
+  done || \true
   if \[ "${signaled:-false}" != true ]; then : > "$signal"; fi
 }
