@@ -26,5 +26,6 @@ while True:
           sys.exit(0)
         with open(pipe) as commands:
           sdk.run(scope, version, commands)
+          sys.exit()
     except:
       pass
