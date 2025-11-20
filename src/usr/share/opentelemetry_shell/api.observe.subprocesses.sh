@@ -33,7 +33,7 @@ _otel_record_subprocesses() {
   local signal="$2"
   while \read -r pid time line; do
     if \[ "$pid" = '?' ]; then continue; fi
-    if \[ -z "$root_pid" ]; then local root_pid="$pid"; fi
+    if \[ -z "${root_pid:-}" ]; then local root_pid="$pid"; \eval "local span_handle_$root_pid=$root_span_handle" fi
     local operation=""
     case "$line" in
       *' (To be restarted)') ;;
@@ -49,11 +49,11 @@ _otel_record_subprocesses() {
       '--- '*) local operation=signal;;
       *) ;;
     esac
-    \eval "local parent_pid=\$parent_pid_$pid"
     \eval "local span_handle=\$span_handle_$pid"
     case "$operation" in
       fork)
         if \[ "${OTEL_SHELL_CONFIG_OBSERVE_SUBPROCESSES:-FALSE}" != TRUE ]; then continue; fi
+        \eval "local parent_pid=\$parent_pid_$pid"
         local new_pid="${line##* }"
         \eval "local parent_pid_$new_pid=$pid"
         \eval "local span_name=\"\$span_name_$new_pid\""
