@@ -250,7 +250,7 @@ otel_event_create() {
   local event_name="$1"
   _otel_sdk_communicate "EVENT_CREATE" "$_otel_remote_sdk_response_pipe" "$event_name"
   local handle
-  \read handle < "$response_pipe" || \true
+  \read handle < "$_otel_remote_sdk_response_pipe" || \true
   \echo "$handle"
 }
 
