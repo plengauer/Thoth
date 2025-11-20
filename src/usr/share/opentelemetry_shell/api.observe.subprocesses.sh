@@ -33,6 +33,7 @@ _otel_record_subprocesses() {
   local root_span_handle="$1"
   local signal="$2"
   while \read -r pid time line; do
+    if \[ "$pid" = '?' ]; then continue; fi
     if \[ -z "$root_pid" ]; then local root_pid="$pid"; fi
     local operation=""
     case "$line" in
