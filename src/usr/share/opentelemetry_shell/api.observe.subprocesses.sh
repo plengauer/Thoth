@@ -89,7 +89,7 @@ _otel_record_subprocesses() {
         fi
         ;;
       exit)
-        if \[ -z "${span_handle:-}" ]; then if \[ "$pid" = "$root_pid" ]; then : > "$signal"; local signaled=true; fi; continue; fi
+        if \[ -z "${span_handle:-}" ]; then if \[ "$pid" = "$root_pid" ] && \[ "${signaled:-false}" != true ]; then : > "$signal"; local signaled=true; fi; continue; fi
         if _otel_string_starts_with "$line" "+++ killed by " || (_otel_string_starts_with "$line" "+++ exited with " && ! _otel_string_starts_with "$line" "+++ exited with 0 +++"); then
           otel_span_error "$span_handle"
         fi
