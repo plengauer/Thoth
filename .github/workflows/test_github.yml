@@ -256,7 +256,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v5.0.0
+      - uses: actions/checkout@v5.0.1
       - uses: actions/download-artifact@v6.0.0
         with:
           name: packages_${{ inputs.ref }}
