@@ -182,6 +182,12 @@ jobs:
         with:
           category: "/language:python"
           upload: never
+      - run: |
+          # initializing a python venv because venv have a lot of corner cases about injection, users, file permissions, changing paths and on-the-fly instrumentation
+          python3 -m venv venv
+          . venv/bin/activate
+          pip3 install -r src/usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.txt
+          deactivate
   job-io-1:
     needs: job-smoke
     runs-on: ubuntu-latest
