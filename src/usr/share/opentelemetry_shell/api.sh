@@ -67,7 +67,7 @@ else
 
   otel_shutdown() {
     \eval "\\exec ${_otel_remote_sdk_fd}>&-"
-    \rm "$_otel_remote_sdk_request_pipe" "$_otel_remote_sdk_response_pipe"
+    \rm "$_otel_remote_sdk_request_pipe" # "$_otel_remote_sdk_response_pipe"
   }
 fi
 
