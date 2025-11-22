@@ -381,7 +381,7 @@ root4job_end() {
   
   if [ -n "${INTERNAL_OTEL_DEFERRED_EXPORT_DIR:-}" ]; then
     export -f gh_artifact_upload
-    ( cd "$INTERNAL_OTEL_DEFERRED_EXPORT_DIR" && ls | grep -E '.logs$|.metrics$|.traces$' | xargs -r -I '{}' bash -c 'gh_artifact_upload "$@" "{}"' bash "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_job_"$GITHUB_JOB_ID"_signals_0 ) &
+    ( cd "$INTERNAL_OTEL_DEFERRED_EXPORT_DIR" && ls | grep -E '.logs$|.metrics$|.traces$' | xargs -r -I '{}' bash -c 'gh_artifact_upload "$1" "$2" "$3" "{}"' _ "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_job_"$GITHUB_JOB_ID"_signals_0 ) &
   fi
   
   wait
