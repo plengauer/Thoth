@@ -15,7 +15,14 @@ jobs:
       refs: ${{ steps.dynamic.outputs.refs }}
     permissions:
       contents: read
+      actions: read
     steps:
+      - uses: /actions/instrument/job@v5.35.0
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: '["${{ github.token }}"]'
       - uses: actions/checkout@v5.0.1
         with:
           fetch-depth: 0
@@ -65,7 +72,7 @@ jobs:
       id-token: write
       attestations: write
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.35.0
+      - uses: /actions/instrument/job@v5.35.0
         with:
           secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}"]'
         env:
