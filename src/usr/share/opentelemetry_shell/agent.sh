@@ -106,7 +106,16 @@ _otel_auto_instrument() {
   fi
 
   # cache
-  \[ "$(\alias | \wc -l)" -gt 25 ] && \alias | \sed 's/^alias //' | { \[ -n "$hint" ] && \grep "$(_otel_resolve_instrumentation_hint "$hint" | \sed 's/[]\.^*[]/\\&/g' | \awk '$0=$0"="')" || \cat; } | \awk '{print "\\alias " $0 }' > "$cache_file" || \true
+  if \[ "$(\alias | \wc -l)" -gt 25 ]; then
+    if \[ -n "$hint" ]; then
+      local hint_patterns="$(\mktemp)"
+      _otel_resolve_instrumentation_hint "$hint" | \sed 's/[]\.^*[]/\\&/g' | \awk '$0=$0"="' > "$hint_patterns"
+      \alias | \sed 's/^alias //' | \grep -f "$hint_patterns" | \awk '{print "\\alias " $0 }' > "$cache_file"
+      \rm "$hint_patterns"
+    else
+      \alias | \sed 's/^alias //' | \awk '{print "\\alias " $0 }' > "$cache_file"
+    fi
+  fi || \true
 }
 
 _otel_list_special_auto_instrument_files() {
@@ -149,11 +158,14 @@ _otel_list_builtin_commands() {
 _otel_filter_commands_by_hint() {
   local hint="$1"
   if \[ -n "$hint" ]; then
+    local hint_patterns="$(\mktemp)"
+    _otel_resolve_instrumentation_hint "$hint" > "$hint_patterns"
     if \[ "$_otel_shell" = 'busybox sh' ]; then
-      "$(\which grep)" -xF "$(_otel_resolve_instrumentation_hint "$hint")"
+      "$(\which grep)" -xFf "$hint_patterns"
     else
-      \grep -xF "$(_otel_resolve_instrumentation_hint "$hint")"
+      \grep -xFf "$hint_patterns"
     fi
+    \rm "$hint_patterns"
   elif \[ -n "${WSL_DISTRO_NAME:-}" ]; then
     # in WSL, path may include a directory of windows executables
     # there, a bunch of files have the executable bit set, but are not really executable binaries (like .dll, ....)
