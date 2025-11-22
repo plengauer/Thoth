@@ -108,10 +108,12 @@ _otel_auto_instrument() {
   # cache
   if \[ "$(\alias | \wc -l)" -gt 25 ]; then
     if \[ -n "$hint" ]; then
-      local hint_patterns="$(\mktemp)"
-      _otel_resolve_instrumentation_hint "$hint" | \sed 's/[]\.^*[]/\\&/g' | \awk '$0=$0"="' > "$hint_patterns" || { \[ -f "$hint_patterns" ] && \rm "$hint_patterns"; return 1; }
-      \alias | \sed 's/^alias //' | \grep -f "$hint_patterns" | \awk '{print "\\alias " $0 }' > "$cache_file" || \true
-      \rm "$hint_patterns"
+      # short circuit: if hint is a large file, skip filtering to avoid overhead
+      if \[ -f "$hint" ] && \[ "$(\wc -c < "$hint" 2>/dev/null || \echo 0)" -gt 32768 ]; then
+        \alias | \sed 's/^alias //' | \awk '{print "\\alias " $0 }' > "$cache_file"
+      else
+        \alias | \sed 's/^alias //' | { \grep "$(_otel_resolve_instrumentation_hint "$hint" | \sed 's/[]\.^*[]/\\&/g' | \awk '$0=$0"="')" || \cat; } | \awk '{print "\\alias " $0 }' > "$cache_file"
+      fi
     else
       \alias | \sed 's/^alias //' | \awk '{print "\\alias " $0 }' > "$cache_file"
     fi
@@ -158,14 +160,14 @@ _otel_list_builtin_commands() {
 _otel_filter_commands_by_hint() {
   local hint="$1"
   if \[ -n "$hint" ]; then
-    local hint_patterns="$(\mktemp)"
-    _otel_resolve_instrumentation_hint "$hint" > "$hint_patterns" || { \[ -f "$hint_patterns" ] && \rm "$hint_patterns"; return 1; }
-    if \[ "$_otel_shell" = 'busybox sh' ]; then
-      "$(\which grep)" -xFf "$hint_patterns"
+    # short circuit: if hint is a large file, skip filtering to avoid overhead
+    if \[ -f "$hint" ] && \[ "$(\wc -c < "$hint" 2>/dev/null || \echo 0)" -gt 32768 ]; then
+      \cat
+    elif \[ "$_otel_shell" = 'busybox sh' ]; then
+      "$(\which grep)" -xF "$(_otel_resolve_instrumentation_hint "$hint")" || \true
     else
-      \grep -xFf "$hint_patterns"
-    fi || \true
-    \rm "$hint_patterns"
+      \grep -xF "$(_otel_resolve_instrumentation_hint "$hint")" || \true
+    fi
   elif \[ -n "${WSL_DISTRO_NAME:-}" ]; then
     # in WSL, path may include a directory of windows executables
     # there, a bunch of files have the executable bit set, but are not really executable binaries (like .dll, ....)
