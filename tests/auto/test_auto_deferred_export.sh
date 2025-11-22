@@ -4,7 +4,7 @@
 # This tests that the Copilot instrumentation doesn't crash when initialized
 export GITHUB_ACTIONS=true
 export GITHUB_WORKFLOW="Copilot coding agent"
-export GITHUB_JOB=copilot
+export GITHUB_JOB="copilot"
 export COPILOT_AGENT_RUNTIME_VERSION="1.0.0"
 export GITHUB_COPILOT_ACTION_DOWNLOAD_URL="https://example.com/action.tar.gz"
 
