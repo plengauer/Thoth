@@ -34,20 +34,20 @@ jobs:
           - language: actions
             build-mode: none
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.33.5
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.35.0
         with:
           secrets_to_redact: '["${{ github.token }}"]'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
       - name: Checkout repository
-        uses: actions/checkout@v5.0.0
+        uses: actions/checkout@v5.0.1
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v4.31.2
+        uses: github/codeql-action/init@v4.31.4
         with:
           languages: ${{ matrix.language }}
           build-mode: ${{ matrix.build-mode }}
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v4.31.2
+        uses: github/codeql-action/analyze@v4.31.4
         with:
           category: "/language:${{matrix.language}}"

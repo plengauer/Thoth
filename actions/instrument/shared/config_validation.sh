@@ -11,11 +11,11 @@ fi
 if [ "${OTEL_TRACES_EXPORTER:-otlp}" != otlp ] && [ "${OTEL_TRACES_EXPORTER:-otlp}" != console ] && [ "${OTEL_TRACES_EXPORTER:-otlp}" != none ]; then
   echo "::error ::OpenTelemetry for GitHub actions only supports otlp exporters ($OTEL_TRACES_EXPORTER). For other exporters, pipe the data through a collector outside of GitHub to translate the data to a different protocol." && false
 fi
-if [ "$GITHUB_JOB" = copilot ] && [ "$GITHUB_WORKFLOW" = 'Copilot coding agent' ]; then
-  echo "::notice ::OpenTelemetry for GitHub actions detected Copilot coding agent, which is unable to extract data directly, reconfiguring for deferred export. This needs the workflow-level instrumentation to forward the data."
-  export OTEL_LOGS_EXPORTER=deferred
-  export OTEL_METRICS_EXPORTER=deferred
-  export OTEL_TRACES_EXPORTER=deferred
+if [ "$GITHUB_EVENT_NAME" = dynamic ]; then
+  echo "::notice ::OpenTelemetry for GitHub actions detected a dynamic workflow, which is unable to extract data directly, reconfiguring all otlp exporters for deferred export. This needs the workflow-level instrumentation to forward the data."
+  [ "${OTEL_LOGS_EXPORTER:-otlp}" != otlp ] || export OTEL_LOGS_EXPORTER=deferred
+  [ "${OTEL_METRICS_EXPORTER:-otlp}" != otlp ] || export OTEL_METRICS_EXPORTER=deferred
+  [ "${OTEL_TRACES_EXPORTER:-otlp}" != otlp ] || export OTEL_TRACES_EXPORTER=deferred
 fi
 if [ -z "${OTEL_EXPORTER_OTLP_LOGS_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT:-}}" ] && [ -z "${OTEL_LOGS_EXPORTER:-}" ]; then
   export OTEL_LOGS_EXPORTER=none
@@ -33,4 +33,4 @@ if [ "${OTEL_LOGS_EXPORTER:-}" = console ] || [ "${OTEL_METRICS_EXPORTER:-}" = c
   export OTEL_SHELL_SDK_OUTPUT_REDIRECT="${OTEL_SHELL_SDK_OUTPUT_REDIRECT:-/dev/stderr}"
 fi
 export OTEL_EXPORTER_OTLP_PROTOCOL="${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}" # default is not uniform, so lets pin it here
-export OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE=delta # only delta makes sense in a volatile environment, user can always reset in specific places
+export OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE="${OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE:-delta}" # default to delta for volatile environments

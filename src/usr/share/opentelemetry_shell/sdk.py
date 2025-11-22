@@ -24,9 +24,10 @@ delayed_observations = {}
 auto_end = False
 
 def main():
-    scope = sys.argv[1]
-    version = sys.argv[2]
-    for line in sys.stdin:
+    run(sys.argv[1], sys.argv[2], sys.stdin)
+
+def run(scope, version, commands):
+    for line in commands:
         line = line.strip()
         if len(line) == 0:
             continue
@@ -80,7 +81,7 @@ def guess_cloud_resource_detectors():
                     return Resource({})
             def fetch_metadata(self):
                 import requests
-                response = requests.get('http://169.254.169.254/opc/v1/instance/', headers={'Authorization': 'Bearer Oracle'})
+                response = requests.get('http://169.254.169.254/opc/v1/instance/', headers={'Authorization': 'Bearer Oracle'}, timeout=0.1)
                 response.raise_for_status()  # Raise an exception for 4xx or 5xx status codes
                 return response.json()
         return [ OracleResourceDetector() ]
@@ -120,7 +121,7 @@ def guess_cloud_resource_detectors():
                     return Resource({})
             def fetch_metadata(self):
                 import requests
-                response = requests.get('http://169.254.169.254/opc/v1/instance/', headers={'Authorization': 'Bearer Oracle'})
+                response = requests.get('http://169.254.169.254/opc/v1/instance/', headers={'Authorization': 'Bearer Oracle'}, timeout=0.1)
                 response.raise_for_status()  # Raise an exception for 4xx or 5xx status codes
                 return response.json()
         return [

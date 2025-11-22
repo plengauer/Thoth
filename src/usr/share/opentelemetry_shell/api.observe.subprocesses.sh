@@ -32,7 +32,8 @@ _otel_record_subprocesses() {
   local root_span_handle="$1"
   local signal="$2"
   while \read -r pid time line; do
-    if \[ -z "$root_pid" ]; then local root_pid="$pid"; fi
+    if \[ "$pid" = '?' ]; then continue; fi
+    if \[ -z "${root_pid:-}" ]; then local root_pid="$pid"; \eval "local span_handle_$root_pid=$root_span_handle"; fi
     local operation=""
     case "$line" in
       *' (To be restarted)') ;;
@@ -48,21 +49,20 @@ _otel_record_subprocesses() {
       '--- '*) local operation=signal;;
       *) ;;
     esac
-    \eval "local parent_pid=\$parent_pid_$pid"
     \eval "local span_handle=\$span_handle_$pid"
     case "$operation" in
       fork)
         if \[ "${OTEL_SHELL_CONFIG_OBSERVE_SUBPROCESSES:-FALSE}" != TRUE ]; then continue; fi
         local new_pid="${line##* }"
-        \eval "local parent_pid_$new_pid=$pid"
-        \eval "local span_name=\"\$span_name_$new_pid\""
-        if \[ -z "${span_name:-}" ]; then \eval "local span_name=\"\$span_name_$pid\""; fi
-        if \[ -z "${span_name:-}" ]; then \eval "local span_name=\"\$span_name_$parent_pid\""; fi
+        \eval "local span_name=\"\${span_name_$new_pid:-}\""
+        if \[ -z "${span_name:-}" ]; then \eval "local span_name=\"\${span_name_$pid:-}\""; fi
+        if \[ -z "${span_name:-}" ]; then \eval "local parent_pid=\$parent_pid_$pid"; \eval "local span_name=\"\${span_name_$parent_pid:-}\""; fi
         local span_name="${span_name:-<unknown>}"
-        otel_span_activate "${span_handle:-$root_span_handle}"
+        otel_span_activate "$span_handle"
         local span_handle="$(otel_span_start @"$time" INTERNAL "$span_name")"
         otel_span_deactivate
         \eval "local span_handle_$new_pid=$span_handle"
+        \eval "local parent_pid_$new_pid=$pid"
         \eval "local span_name_$new_pid=\"\$span_name\""
         # TODO immediately end span if stored due to very fast exit (faster than the fork syscall of the parent can actually be finished) 
         ;;
@@ -82,17 +82,15 @@ _otel_record_subprocesses() {
             ;;
           *) local name="<unknown>";;
         esac
+        \[ "$span_handle" = "$root_span_handle" ] || otel_span_name "$span_handle" "$name"
         \eval "local span_name_$pid=\"\$name\""
-        if \[ -n "${span_handle:-}" ]; then
-          otel_span_name "$span_handle" "$name"
-        fi
         ;;
       exit)
-        if \[ -z "${span_handle:-}" ]; then if \[ "$pid" = "$root_pid" ]; then : > "$signal"; local signaled=true; fi; continue; fi
+        if \[ "$pid" = "$root_pid" ] && \[ "${signaled:-false}" != true ]; then : > "$signal"; local signaled=true; fi
         if _otel_string_starts_with "$line" "+++ killed by " || (_otel_string_starts_with "$line" "+++ exited with " && ! _otel_string_starts_with "$line" "+++ exited with 0 +++"); then
           otel_span_error "$span_handle"
         fi
-        otel_span_end "$span_handle" @"$time"
+        \[ "$span_handle" = "$root_span_handle" ] || otel_span_end "$span_handle" @"$time"
         ;;
       signal)
         if \[ "${OTEL_SHELL_CONFIG_OBSERVE_SIGNALS:-FALSE}" != TRUE ]; then continue; fi
@@ -116,10 +114,10 @@ _otel_record_subprocesses() {
         else
           \printf '%s' "$kvps" | \tr -d ' ' | \tr '_' '.' | \tr ',' '\n'
         fi | while \read -r kvp; do otel_event_attribute "$event_handle" "$kvp"; done
-        otel_event_add "$event_handle" "${span_handle:-$root_span_handle}"
+        otel_event_add "$event_handle" "$span_handle"
         ;;
       *) ;;
     esac
-  done
+  done || while \read -r line; do :; done
   if \[ "${signaled:-false}" != true ]; then : > "$signal"; fi
 }
