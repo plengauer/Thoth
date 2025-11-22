@@ -109,7 +109,7 @@ _otel_auto_instrument() {
   if \[ "$(\alias | \wc -l)" -gt 25 ]; then
     if \[ -n "$hint" ]; then
       local hint_patterns="$(\mktemp)"
-      _otel_resolve_instrumentation_hint "$hint" | \sed 's/[]\.^*[]/\\&/g' | \awk '$0=$0"="' > "$hint_patterns" || { \rm "$hint_patterns"; return 1; }
+      _otel_resolve_instrumentation_hint "$hint" | \sed 's/[]\.^*[]/\\&/g' | \awk '$0=$0"="' > "$hint_patterns" || { \[ -f "$hint_patterns" ] && \rm "$hint_patterns"; return 1; }
       \alias | \sed 's/^alias //' | \grep -f "$hint_patterns" | \awk '{print "\\alias " $0 }' > "$cache_file" || \true
       \rm "$hint_patterns"
     else
@@ -159,7 +159,7 @@ _otel_filter_commands_by_hint() {
   local hint="$1"
   if \[ -n "$hint" ]; then
     local hint_patterns="$(\mktemp)"
-    _otel_resolve_instrumentation_hint "$hint" > "$hint_patterns" || { \rm "$hint_patterns"; return 1; }
+    _otel_resolve_instrumentation_hint "$hint" > "$hint_patterns" || { \[ -f "$hint_patterns" ] && \rm "$hint_patterns"; return 1; }
     if \[ "$_otel_shell" = 'busybox sh' ]; then
       "$(\which grep)" -xFf "$hint_patterns" || \true
     else
