@@ -49,7 +49,6 @@ for file in "${test_files[@]}"; do
     touch "$stdout" "$stderr"
     chmod 0666 "$stdout" "$stderr"
     export OTEL_SHELL_SDK_STDERR_REDIRECT="$stderr"
-    
     # Run test and capture result
     test_output="$output_dir/$(basename "$file").output"
     if timeout $((60 * 60 * 3)) "$TEST_SHELL" $options "$file" 1> "$stdout"; then
