@@ -19,7 +19,7 @@ fi
 failed_flag="$(mktemp -u)"
 
 for dir in unit sdk auto integration; do
-  for file in $({ find $dir -iname 'test_*.sh'; find $dir -iname 'test_*.'"$SHELL"; } | sort -u); do
+  while IFS= read -r file; do
     (
       rm /tmp/opentelemetry_shell_*_instrumentation_cache_*.aliases 2> /dev/null || true
       export OTEL_EXPORT_LOCATION="$(mktemp -u)".sdk.out
@@ -41,7 +41,7 @@ for dir in unit sdk auto integration; do
       export OTEL_SHELL_SDK_STDERR_REDIRECT="$stderr"
       timeout $((60 * 60 * 3)) $TEST_SHELL $options "$file" 1> "$stdout" && echo "$file SUCCEEDED" || (echo "$file FAILED" && echo "stdout:" && cat "$stdout" && echo "stderr:" && cat "$stderr" && echo "otlp:" && cat "$OTEL_EXPORT_LOCATION" && touch "$failed_flag" && exit 1)
     ) | perl -e '$| = 1; print while <>;' &
-  done
+  done < <({ find $dir -iname 'test_*.sh'; find $dir -iname 'test_*.'"$SHELL"; } | sort -u)
 done
 wait
 if [ -f "$failed_flag" ]; then
