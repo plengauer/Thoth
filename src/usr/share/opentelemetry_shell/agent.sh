@@ -106,7 +106,18 @@ _otel_auto_instrument() {
   fi
 
   # cache
-  \[ "$(\alias | \wc -l)" -gt 25 ] && \alias | \sed 's/^alias //' | { \[ -n "$hint" ] && \grep "$(_otel_resolve_instrumentation_hint "$hint" | \sed 's/[]\.^*[]/\\&/g' | \awk '$0=$0"="')" || \cat; } | \awk '{print "\\alias " $0 }' > "$cache_file" || \true
+  if \[ "$(\alias | \wc -l)" -gt 25 ]; then
+    if \[ -n "$hint" ]; then
+      # short circuit: if hint is a large file, skip filtering to avoid overhead
+      if \[ -f "$hint" ] && \[ "$(\wc -c < "$hint" 2>/dev/null || \echo 0)" -gt 32768 ]; then
+        \alias | \sed 's/^alias //' | \awk '{print "\\alias " $0 }' > "$cache_file"
+      else
+        \alias | \sed 's/^alias //' | { \grep "$(_otel_resolve_instrumentation_hint "$hint" | \sed 's/[]\.^*[]/\\&/g' | \awk '$0=$0"="')" || \cat; } | \awk '{print "\\alias " $0 }' > "$cache_file"
+      fi
+    else
+      \alias | \sed 's/^alias //' | \awk '{print "\\alias " $0 }' > "$cache_file"
+    fi
+  fi || \true
 }
 
 _otel_list_special_auto_instrument_files() {
@@ -149,10 +160,13 @@ _otel_list_builtin_commands() {
 _otel_filter_commands_by_hint() {
   local hint="$1"
   if \[ -n "$hint" ]; then
-    if \[ "$_otel_shell" = 'busybox sh' ]; then
-      "$(\which grep)" -xF "$(_otel_resolve_instrumentation_hint "$hint")"
+    # short circuit: if hint is a large file, skip filtering to avoid overhead
+    if \[ -f "$hint" ] && \[ "$(\wc -c < "$hint" 2>/dev/null || \echo 0)" -gt 32768 ]; then
+      \cat
+    elif \[ "$_otel_shell" = 'busybox sh' ]; then
+      "$(\which grep)" -xF "$(_otel_resolve_instrumentation_hint "$hint")" || \true
     else
-      \grep -xF "$(_otel_resolve_instrumentation_hint "$hint")"
+      \grep -xF "$(_otel_resolve_instrumentation_hint "$hint")" || \true
     fi
   elif \[ -n "${WSL_DISTRO_NAME:-}" ]; then
     # in WSL, path may include a directory of windows executables
