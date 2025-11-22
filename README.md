@@ -183,7 +183,7 @@ jobs:
     concurrency:
       group: otel-deploy-job
     steps:
-      - uses: plengauer/Thoth/actions/instrument/deploy@v5.33.3
+      - uses: plengauer/Thoth/actions/instrument/deploy@v5.33
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -205,7 +205,7 @@ jobs:
   export:
     runs-on: ubuntu-latest
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/workflow@v5.33.5
+      - uses: plengauer/opentelemetry-github/actions/instrument/workflow@v5.33
         env:
           OTEL_SERVICE_NAME: ${{ secrets.SERVICE_NAME }}
           # ...
@@ -213,7 +213,7 @@ jobs:
 
 To deploy job-level instrumentation, add the following step as first in every job you want to observe. You can configure the SDK as described <a href="https://opentelemetry.io/docs/languages/sdk-configuration/">here</a> by adding according environment variables to the setup step. Job-level instrumentation can be combined arbitrarily with workflow-level instrumentation.
 ```yaml
-- uses: plengauer/opentelemetry-github/actions/instrument/job@v5.33.3
+- uses: plengauer/opentelemetry-github/actions/instrument/job@v5.33
   env:
     OTEL_SERVICE_NAME: 'Test'
     # ...
@@ -221,7 +221,7 @@ To deploy job-level instrumentation, add the following step as first in every jo
 ```
 Depending on the actions in use, GitHub `secrets` or other sensitive information could appear in commandlines or action inputs/states which may captured as attributes on spans, metrics, or logs recorded by job-level instrumentation. To redact these secrets, use the following parameter to redact their values from any attribute. The value of the parameter must be a `json` object, whereas every value of every field is considered a secret to be redacted. By default, if left unset, the implicit GitHub token is redacted.
 ```yaml
-- uses: plengauer/opentelemetry-github/actions/instrument/job@v5.33.3
+- uses: plengauer/opentelemetry-github/actions/instrument/job@v5.33
   with:
     secrets_to_redact: '${{ toJSON(secrets) }}' # Redact all secrets from any attribute, span name, or log body.
 ```
