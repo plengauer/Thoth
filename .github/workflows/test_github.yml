@@ -34,10 +34,6 @@ jobs:
     permissions:
       contents: read
       actions: read
-    env:
-      GITHUB_WORKFLOW: 'Copilot coding agent'
-      GITHUB_JOB: 'copilot'
-      GITHUB_EVENT_NAME: 'dynamic'
     steps:
       - uses: actions/checkout@v5.0.1
         with:
@@ -49,6 +45,9 @@ jobs:
         with:
           cache: 'false'
         env:
+          GITHUB_WORKFLOW: 'Copilot coding agent'
+          GITHUB_JOB: 'copilot'
+          GITHUB_EVENT_NAME: 'dynamic'
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
       - run: echo "hello world"
