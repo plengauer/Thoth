@@ -52,7 +52,10 @@ else
   otel_init() {
     _otel_package_version opentelemetry-shell > /dev/null # to build the cache outside a subshell
     _otel_package_version "$_otel_shell" > /dev/null
-    \mkfifo "$_otel_remote_sdk_request_pipe" "$_otel_remote_sdk_response_pipe"
+    local created_request_pipe=false
+    local created_response_pipe=false
+    if ! \[ -p "$_otel_remote_sdk_request_pipe" ]; then \mkfifo "$_otel_remote_sdk_request_pipe"; created_request_pipe=true; fi
+    if ! \[ -p "$_otel_remote_sdk_response_pipe" ]; then \mkfifo "$_otel_remote_sdk_response_pipe"; created_response_pipe=true; fi
     if \[ -n "${USER:-}" ] && \[ -p /tmp/otel_shell/sdk_factory."$USER".pipe ] && \[ "${OTEL_LOGS_EXPORTER:-otlp}" != console ] && \[ "${OTEL_METRICS_EXPORTER:-otlp}" != console ] && \[ "${OTEL_TRACES_EXPORTER:-otlp}" != console ]; then
       \echo shell "$(_otel_package_version opentelemetry-shell)" "$_otel_remote_sdk_request_pipe" >> /tmp/otel_shell/sdk_factory."$USER".pipe
     else
@@ -63,11 +66,14 @@ else
     \eval "\\exec ${_otel_remote_sdk_fd}> \"$_otel_remote_sdk_request_pipe\""
     _otel_resource_attributes
     _otel_sdk_communicate "INIT"
+    _otel_created_request_pipe="$created_request_pipe"
+    _otel_created_response_pipe="$created_response_pipe"
   }
 
   otel_shutdown() {
     \eval "\\exec ${_otel_remote_sdk_fd}>&-"
-    \rm "$_otel_remote_sdk_request_pipe" # "$_otel_remote_sdk_response_pipe"
+    if \[ "${_otel_created_request_pipe:-false}" = true ]; then \rm "$_otel_remote_sdk_request_pipe" 2>/dev/null || \true; fi
+    if \[ "${_otel_created_response_pipe:-false}" = true ]; then \rm "$_otel_remote_sdk_response_pipe" 2>/dev/null || \true; fi
   }
 fi
 
