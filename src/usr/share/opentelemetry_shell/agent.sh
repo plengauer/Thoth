@@ -161,10 +161,10 @@ _otel_filter_commands_by_hint() {
     local hint_patterns="$(\mktemp)"
     _otel_resolve_instrumentation_hint "$hint" > "$hint_patterns" || { \[ -f "$hint_patterns" ] && \rm "$hint_patterns"; return 1; }
     if \[ "$_otel_shell" = 'busybox sh' ]; then
-      "$(\which grep)" -xFf "$hint_patterns" || \true
+      "$(\which grep)" -xFf "$hint_patterns"
     else
-      \grep -xFf "$hint_patterns" || \true
-    fi
+      \grep -xFf "$hint_patterns"
+    fi || \true
     \rm "$hint_patterns"
   elif \[ -n "${WSL_DISTRO_NAME:-}" ]; then
     # in WSL, path may include a directory of windows executables
