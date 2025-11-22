@@ -22,7 +22,7 @@ assert_equals "SpanKind.CONSUMER" $(\echo "$span" | jq -r '.kind')
 # assert_equals "ncat -l -p 12345 -c cat" $(\echo "$span" | jq -r '.name')
 # assert_equals "SpanKind.INTERNAL" $(\echo "$span" | jq -r '.kind')
 
-span="$(resolve_span '.name == "ncat -i 10 --no-shutdown 127.0.0.1 12345"')"
+span="$(resolve_span '.name == "ncat -i 10 --no-shutdown 127.0.0.1 12346"')"
 assert_equals "SpanKind.INTERNAL" $(\echo "$span" | jq -r '.kind')
 span_id=$(\echo "$span" | jq -r '.context.span_id')
 span="$(resolve_span '.parent_id == "'$span_id'"')"

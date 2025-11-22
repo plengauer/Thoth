@@ -52,7 +52,7 @@ for file in "${test_files[@]}"; do
     
     # Run test and capture result
     test_output="$output_dir/$(basename "$file").output"
-    if timeout $((60 * 60 * 3)) $TEST_SHELL $options "$file" 1> "$stdout" 2>&1; then
+    if timeout $((60 * 60 * 3)) "$TEST_SHELL" $options "$file" 1> "$stdout"; then
       echo "$file SUCCEEDED" > "$test_output"
       exit 0
     else
