@@ -246,7 +246,7 @@ jobs:
       - name: "Open Pull Request"
         if: steps.diff.outputs.dirty
         id: open-pr
-        uses: peter-evans/create-pull-request@v7.0.8
+        uses: peter-evans/create-pull-request@v7.0.9
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           commit-message: "Update demo"
