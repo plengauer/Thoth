@@ -19,7 +19,7 @@ fi
 failed_flag="$(mktemp -u)"
 
 for dir in unit sdk auto integration; do
-  { find $dir -iname 'test_*.sh'; find $dir -iname 'test_*.'"$SHELL"; } | sort -u | while read -r file; do
+  for file in $({ find $dir -iname 'test_*.sh'; find $dir -iname 'test_*.'"$SHELL"; } | sort -u); do
     (
       rm /tmp/opentelemetry_shell_*_instrumentation_cache_*.aliases 2> /dev/null || true
       export OTEL_EXPORT_LOCATION="$(mktemp -u)".sdk.out
