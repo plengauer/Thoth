@@ -50,7 +50,6 @@ runs:
         GITHUB_ACTION_REPOSITORY: ${{ github.action_repository }}
       shell: bash
       run: |
-        [ -n "${GITHUB_ACTION_REPOSITORY:-}" ]
         if [ -n "${{ inputs.action_repository }}" ]; then
           echo '${{ inputs.action_repository }}'
         elif [ "${GITHUB_ACTION_REPOSITORY%/*}" != plengauer ]; then
