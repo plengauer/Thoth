@@ -40,8 +40,9 @@ unset OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE
 unset OTEL_SHELL_COMMAND_TYPE_OVERRIDE
 unset OTEL_SHELL_SPAN_KIND_OVERRIDE
 
-if \[ -p "$_otel_remote_sdk_request_pipe" ] && \[ -p "$_otel_remote_sdk_response_pipe" ]; then
+if \[ -p "$_otel_remote_sdk_request_pipe" ]; then
   otel_init() {
+    \mkfifo -m 666 "$_otel_remote_sdk_response_pipe"
     \eval "\\exec ${_otel_remote_sdk_fd}> \"$_otel_remote_sdk_request_pipe\""
   }
 
@@ -52,11 +53,7 @@ else
   otel_init() {
     _otel_package_version opentelemetry-shell > /dev/null # to build the cache outside a subshell
     _otel_package_version "$_otel_shell" > /dev/null
-    if \[ -z "${OTEL_REMOTE_SDK_REQUEST_PIPE:-}" ]; then
-      \mkfifo "$_otel_remote_sdk_request_pipe" "$_otel_remote_sdk_response_pipe"
-    else
-      \mkfifo "$_otel_remote_sdk_response_pipe"
-    fi
+    \mkfifo "$_otel_remote_sdk_request_pipe" "$_otel_remote_sdk_response_pipe"
     if \[ -n "${USER:-}" ] && \[ -p /tmp/otel_shell/sdk_factory."$USER".pipe ] && \[ "${OTEL_LOGS_EXPORTER:-otlp}" != console ] && \[ "${OTEL_METRICS_EXPORTER:-otlp}" != console ] && \[ "${OTEL_TRACES_EXPORTER:-otlp}" != console ]; then
       \echo shell "$(_otel_package_version opentelemetry-shell)" "$_otel_remote_sdk_request_pipe" >> /tmp/otel_shell/sdk_factory."$USER".pipe
     else
