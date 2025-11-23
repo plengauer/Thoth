@@ -73,6 +73,7 @@ jobs:
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
       - uses: actions/checkout@v5.0.1
         with:
+          token: ${{ secrets.ACTIONS_GITHUB_TOKEN }} # need to use this token for later pushes of tags
           ref: ${{ matrix.ref }}
       - run: echo "version=$(cat VERSION)" >> "$GITHUB_OUTPUT"
         id: version
