@@ -11,7 +11,7 @@ jobs:
       contents: none
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.33.5
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.35.0
         with:
           secrets_to_redact: '["${{ github.token }}"]'
         env:
