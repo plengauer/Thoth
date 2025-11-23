@@ -42,6 +42,6 @@ for dir in unit sdk auto integration performance; do
     [ "$dir" != performance ] || wait
   done < <({ find $dir -iname 'test_*.sh'; find $dir -iname 'test_*.'"$SHELL"; } | sort -u)
   wait
-  ! [ -f "$failed_flag" ]
+  if [ -r "$failed_flag" ]; then exit 1; fi
 done
 echo "ALL TESTS SUCCESSFUL"
