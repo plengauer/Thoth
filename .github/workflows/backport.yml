@@ -19,9 +19,8 @@ jobs:
       - id: dynamic
         run: |
           cat '${{ github.event_path }}' | jq '.commits[].id' -r | while read -r ref; do
-            if git diff-tree --root --no-commit-id --name-only -r "$ref" | grep -qE '^VERSION$' || ( git tag --points-at "$ref" | grep -qE '^v' && ! curl -s --fail -H "Authorization: Bearer ${{ github.token }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_REPOSITORY"/releases/tags/"$(git tag --points-at "$ref")" ); then
-              echo "$ref"
-            fi
+            if git diff-tree --root --no-commit-id --name-only -r "$ref" | grep -qE '^VERSION$' || git tag --points-at "$ref" | grep -qE '^v'; then continue; fi
+            echo "$ref"
           done | while read -r ref; do echo \""$ref"\"; done | jq -s | tr -d '\n' | tr -d ' ' | xargs -0 -I {} echo 'refs={}' >> "$GITHUB_OUTPUT"
     
 
