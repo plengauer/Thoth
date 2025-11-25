@@ -20,7 +20,6 @@ failed_flag="$(mktemp -u)"
 
 for dir in unit sdk auto integration performance; do
   while IFS= read -r file; do
-    rm /tmp/opentelemetry_shell_*_instrumentation_cache_*.aliases 2> /dev/null || true
     export OTEL_EXPORT_LOCATION="$(mktemp -u)".sdk.out
     export OTEL_SHELL_SDK_STDOUT_REDIRECT="$(mktemp -u -p "$(mktemp -d)")".pipe
     export OTEL_TRACES_EXPORTER=console
