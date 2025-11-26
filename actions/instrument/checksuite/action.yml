@@ -1,0 +1,30 @@
+name: 'OpenTelemetry Check Suite'
+description: 'Observe GitHub Check Suites with OpenTelemetry'
+branding:
+  icon: 'activity'
+  color: 'blue'
+inputs:
+  github_token:
+    description: 'A GitHub token for API access (read-only)'
+    default: '${{ github.token }}'
+  cache:
+    description: 'Whether to use GitHub Actions Cache to cache dependencies'
+    default: true
+  check_suite_id:
+    description: 'The check suite to observe (id)'
+    default: ${{ github.event.check_suite.id }}
+  self_monitoring:
+    description: 'Whether to send usage statistics (invocation counts, feature usages) to the maintainer. No data of the workflow itself will be collected. Possible values are true, false, and auto (true for repositories on GitHub SaaS, false for private GitHub servers).'
+    default: auto
+  self_monitoring_anonymize:
+    description: 'Whether to strip self monitoring data of any identifiable information. Possible values are true, false, and auto (false for public repository on GitHub SaaS, true for private GitHub servers and private repositories).'
+    default: true
+  debug:
+    description: 'Enable debug logging'
+    default: '${{ runner.debug }}'
+  __kill_switch:
+    description: 'INTERNAL ONLY - DO NOT SET MANUALLY'
+    default: ''
+runs:
+  using: 'node24'
+  main: 'main.js'

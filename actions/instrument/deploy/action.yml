@@ -33,6 +33,12 @@ inputs:
   job_level_instrumentation_copilot:
     description: 'Instrument Copilot'
     default: false
+  check_suite_instrumentation:
+    description: 'Deploy check suite instrumentation for non-GitHub-Actions check runs'
+    default: false
+  check_suite_instrumentation_file_name:
+    description: 'File name for check suite instrumentation workflow'
+    default: 'observability_checksuite.yml'
   dry_run:
     default: false
   debug:
@@ -176,6 +182,34 @@ runs:
           [ -n "$names" ] && names="${names}, ${line}" || names="$line"
         done < "$names_file"
         yq -i ".on.workflow_run.workflows = [${names}]" "$path"
+    - name: "Deploy check suite instrumentation"
+      if: ${{ inputs.check_suite_instrumentation == 'true' }}
+      shell: bash
+      run: |
+        path="${{ inputs.workflows_directory }}/${{ inputs.check_suite_instrumentation_file_name }}"
+        if [ -r "$path" ]; then
+          echo "Check suite instrumentation already exists at $path"
+          exit 0
+        fi
+        echo '
+        name: OpenTelemetry Check Suite
+        on:
+          check_suite:
+            types:
+              - completed
+        jobs:
+          export:
+            if: github.event.check_suite.app.slug != '"'"'github-actions'"'"'
+            runs-on: ubuntu-latest
+            permissions:
+              checks: read
+            steps:
+              - uses: ${{ steps.determine-repository.outputs.repository }}/actions/instrument/checksuite@${{ steps.determine-instrumentation-version.outputs.version }}
+        ' > "$path"
+        cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/deploy*") | .env | keys[]' | grep '^OTEL_' | while read -r key; do
+          value="$(cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/deploy*") | .env.'"$key")"
+          yq -i '.jobs[].steps[0].env.'"$key"' = "'"$value"'"' "$path"
+        done
     - name: "Deploy job-level observability"
       shell: bash
       run: |
