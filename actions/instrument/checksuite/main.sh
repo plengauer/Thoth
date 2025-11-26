@@ -12,6 +12,16 @@ echo "::group::Install Dependencies"
 bash -e -o pipefail ../shared/install.sh curl wget jq sed
 echo "::endgroup::"
 
+# Check if this check suite is from GitHub Actions - if so, abort before any processing
+echo "::group::Check App Type"
+check_suite_app_slug="$(jq < "$GITHUB_EVENT_PATH" -r '.check_suite.app.slug // empty')"
+if [ "$check_suite_app_slug" = "github-actions" ]; then
+  echo "::notice ::Check suite is from GitHub Actions, skipping instrumentation."
+  echo "::endgroup::"
+  exit 0
+fi
+echo "::endgroup::"
+
 # selfmonitoring
 if ([ "$INPUT_SELF_MONITORING" = true ] || ([ "$INPUT_SELF_MONITORING" = auto ] && [ "$GITHUB_API_URL" = 'https://api.github.com' ])); then
   (
@@ -54,14 +64,8 @@ echo "::endgroup::"
 echo "::group::Resolve Check Runs"
 check_runs_json="$(mktemp)"
 gh_check_runs "$INPUT_CHECK_SUITE_ID" | jq '.check_runs[]' > "$check_runs_json"
-echo "::endgroup::"
-
-# Filter out check runs from GitHub Actions app (app slug is "github-actions")
-echo "::group::Filter Check Runs"
-filtered_check_runs_json="$(mktemp)"
-jq 'select(.app.slug != "github-actions")' < "$check_runs_json" > "$filtered_check_runs_json"
-if [ ! -s "$filtered_check_runs_json" ]; then
-  echo "::notice ::No non-GitHub-Actions check runs found in this check suite."
+if [ ! -s "$check_runs_json" ]; then
+  echo "::notice ::No check runs found in this check suite."
   exit 0
 fi
 echo "::endgroup::"
@@ -86,8 +90,8 @@ check_run_duration_counter_handle="$(otel_counter_create counter github.checks.r
 link="${GITHUB_SERVER_URL:-https://github.com}"/"$GITHUB_REPOSITORY"/runs
 
 # Get check suite timing
-check_suite_started_at="$(jq < "$filtered_check_runs_json" -r .started_at | sort | head -n 1)"
-check_suite_ended_at="$(jq < "$filtered_check_runs_json" -r .completed_at | sort -r | head -n 1)"
+check_suite_started_at="$(jq < "$check_runs_json" -r .started_at | sort | head -n 1)"
+check_suite_ended_at="$(jq < "$check_runs_json" -r .completed_at | sort -r | head -n 1)"
 
 # Create a parent span for the check suite
 check_suite_name="$(jq < "$check_suite_json" -r '.app.name // "Check Suite"')"
@@ -108,7 +112,7 @@ if [ "$check_suite_conclusion" = failure ]; then otel_span_error "$check_suite_s
 echo ::notice title=Observability Information::"Trace ID: $(echo "$TRACEPARENT" | cut -d - -f 2), Span ID: $(echo "$TRACEPARENT" | cut -d - -f 3), Trace Deep Link: $(print_trace_link "$check_suite_started_at" || echo unavailable)"
 
 # Process each check run
-jq -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .name, .conclusion, .started_at, .completed_at, (.app.name // "unknown"), (.app.slug // "unknown")] | @tsv' < "$filtered_check_runs_json" | sed 's/\t/ /g' | while read -r TRACEPARENT check_run_id check_run_name check_run_conclusion check_run_started_at check_run_completed_at app_name app_slug; do
+jq -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .name, .conclusion, .started_at, .completed_at, (.app.name // "unknown"), (.app.slug // "unknown")] | @tsv' < "$check_runs_json" | sed 's/\t/ /g' | while read -r TRACEPARENT check_run_id check_run_name check_run_conclusion check_run_started_at check_run_completed_at app_name app_slug; do
   if [ "$check_run_conclusion" = null ] || [ -z "$check_run_conclusion" ]; then continue; fi
   if [ "$check_run_started_at" = null ] || [ -z "$check_run_started_at" ]; then continue; fi
   if [ "$check_run_completed_at" = null ] || [ -z "$check_run_completed_at" ]; then check_run_completed_at="$check_run_started_at"; fi
