@@ -583,7 +583,7 @@ jobs:
           }
       - run: |
           [ -n "${{ steps.check_suite.outputs.id }}" ]
-      - uses: ./actions/instrument/workflow
+      - uses: ./actions/instrument/checksuite
         with:
           checksuite_id: ${{ steps.check_suite.outputs.id }}
           cache: false
