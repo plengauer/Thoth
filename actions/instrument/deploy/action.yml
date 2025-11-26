@@ -179,7 +179,7 @@ runs:
           [ -n "$names" ] && names="${names}, ${line}" || names="$line"
         done < "$names_file"
         yq -i ".on.workflow_run.workflows = [${names}]" "$path"
-    - name: "Deploy check suite instrumentation"
+    - name: "Deploy check suite-level instrumentation"
       shell: bash
       run: |
         path="${{ inputs.workflows_directory }}/${{ inputs.check_suite_instrumentation_file_name }}"
@@ -206,7 +206,7 @@ runs:
           value="$(cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/deploy*") | .env.'"$key")"
           yq -i '.jobs[].steps[0].env.'"$key"' = "'"$value"'"' "$path"
         done
-    - name: "Deploy job-level observability"
+    - name: "Deploy job-level instrumentation"
       shell: bash
       run: |
         (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
@@ -217,6 +217,7 @@ runs:
             cat "$workflow_file" | yq ".jobs.$job_name.steps" | grep -q '^null$' && continue || true
             cat "$workflow_file" | yq ".jobs.$job_name.container" | grep -q '^null$' || continue
             if [ -n "$(cat "$workflow_file" | yq ".jobs.$job_name.steps[] | select(.uses == \"${{ steps.determine-repository.outputs.repository }}/actions/instrument/workflow@*\") | .uses")" ]; then continue; fi
+            if [ -n "$(cat "$workflow_file" | yq ".jobs.$job_name.steps[] | select(.uses == \"${{ steps.determine-repository.outputs.repository }}/actions/instrument/checksuite@*\") | .uses")" ]; then continue; fi
             if [ -n "$(cat "$workflow_file" | yq ".jobs.$job_name.steps[] | select(.uses == \"${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*\") | .uses")" ]; then continue; fi
             yq -i ".jobs.$job_name.steps |= ([{ \"uses\": \"${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@${{ steps.determine-instrumentation-version.outputs.version }}\" }] + .)" "$workflow_file"
             cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/deploy*") | .env | keys[]' | grep '^OTEL_' | while read -r key; do
@@ -224,7 +225,7 @@ runs:
             done
           done
         done
-    - name: "Configure Secret Redaction"
+    - name: "Configure job-level instrumentation secret redaction"
       shell: bash
       run: |
         (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
@@ -241,7 +242,7 @@ runs:
             esac
           done
         done
-    - name: "Modify Permissions"
+    - name: "Modify permissions for job-level instrumentations"
       shell: bash
       run: |
         (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
