@@ -20,25 +20,22 @@ inputs:
   workflow_level_instrumentation_use_container:
     description: 'Use a container image to avoid repeated installation on every run.'
     default: true
+  check_suite_instrumentation_file_name:
+    description: 'File name for check suite instrumentation workflow'
+    default: 'observability_checksuite.yml'
   job_level_instrumentation_exclude:
     description: 'Comma-separated list of workflow names to exclude from job-level instrumentation.'
     default: ''
   job_level_instrumentation_secret_redaction_strategy:
     description: 'Whether to (1) redact no secrets at all, to (2) list them explicitly based on content of the workflow, or to (3) proactively redact all secrets (one of "none", "list", "all").'
     default: 'list'
+  job_level_instrumentation_copilot:
+    description: 'Instrument Copilot'
+    default: false
   action_repository:
     default: ''
   action_version:
     default: same
-  job_level_instrumentation_copilot:
-    description: 'Instrument Copilot'
-    default: false
-  check_suite_instrumentation:
-    description: 'Deploy check suite instrumentation for non-GitHub-Actions check runs'
-    default: false
-  check_suite_instrumentation_file_name:
-    description: 'File name for check suite instrumentation workflow'
-    default: 'observability_checksuite.yml'
   dry_run:
     default: false
   debug:
@@ -183,7 +180,6 @@ runs:
         done < "$names_file"
         yq -i ".on.workflow_run.workflows = [${names}]" "$path"
     - name: "Deploy check suite instrumentation"
-      if: ${{ inputs.check_suite_instrumentation == 'true' }}
       shell: bash
       run: |
         path="${{ inputs.workflows_directory }}/${{ inputs.check_suite_instrumentation_file_name }}"
