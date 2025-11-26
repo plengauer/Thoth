@@ -1,6 +1,7 @@
 . ./assert.sh
 if ! [ -f /usr/share/debconf/confmodule ]; then exit 0; fi
 set +u
+export DEBIAN_FRONTEND=noninteractive
 . /usr/share/debconf/confmodule
 . /usr/bin/opentelemetry_shell.sh
 db_get $(debconf-show $(debconf-show --listowners | head -n1) | sed 's/^\* //' | sed 's/  //' | cut -d: -f1 | head -n1)
