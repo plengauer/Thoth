@@ -211,7 +211,7 @@ jobs:
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
         with:
           secrets_to_redact: '["${{ github.token }}"]'
-      - uses: actions/setup-python@v6.0.0
+      - uses: actions/setup-python@v6.1.0
         with:
           python-version: ${{ matrix.version }}
       - uses: actions/checkout@v5.0.1
