@@ -86,7 +86,7 @@ _otel_record_subprocesses() {
         \eval "local span_name_$pid=\"\$name\""
         ;;
       exit)
-        \[ -n "${span_handle:-}" ] || continue; # if the exit is faster than the foirk of the parent, then we dont have a handle we are leaking a span - we accept that
+        \[ -n "${span_handle:-}" ] || continue; # if the exit is faster than the fork of the parent, then we dont have a handle we are leaking a span - we accept that
         if \[ "$pid" = "$root_pid" ] && \[ "${signaled:-false}" != true ]; then : > "$signal"; local signaled=true; fi
         if _otel_string_starts_with "$line" "+++ killed by " || (_otel_string_starts_with "$line" "+++ exited with " && ! _otel_string_starts_with "$line" "+++ exited with 0 +++"); then
           otel_span_error "$span_handle"
