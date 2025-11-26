@@ -60,7 +60,7 @@ _otel_record_subprocesses() {
         local span_name="${span_name:-<unknown>}"
         \[ -z "${span_handle:-}" ] || otel_span_activate "$span_handle" # span handle could be empty if there is a sequence of rapid forks and the parent fork is not completed yet even though child is already forking again
         local new_span_handle="$(otel_span_start @"$time" INTERNAL "$span_name")"
-        \[ -z "$span_handle:-}" ] || otel_span_deactivate
+        \[ -z "${span_handle:-}" ] || otel_span_deactivate
         \eval "local span_handle_$new_pid=$new_span_handle"
         \eval "local parent_pid_$new_pid=$pid"
         \eval "local span_name_$new_pid=\"\$span_name\""
