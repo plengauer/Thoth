@@ -82,7 +82,7 @@ _otel_record_subprocesses() {
             ;;
           *) local name="<unknown>";;
         esac
-        \[ "$span_handle" = "$root_span_handle" ] || otel_span_name "$span_handle" "$name"
+        \[ -z "$span_handle" ] || \[ "$span_handle" = "$root_span_handle" ] || otel_span_name "$span_handle" "$name"
         \eval "local span_name_$pid=\"\$name\""
         ;;
       exit)
