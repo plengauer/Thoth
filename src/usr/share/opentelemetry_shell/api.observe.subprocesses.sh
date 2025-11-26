@@ -94,7 +94,7 @@ _otel_record_subprocesses() {
         \[ "$span_handle" = "$root_span_handle" ] || otel_span_end "$span_handle" @"$time"
         ;;
       signal)
-        \[ -n "${span_handle:-}" ] || continue; # this can happen if a child receives a signal before the parent compeltes forking, in this case, lets drop the signal
+        \[ -n "${span_handle:-}" ] || continue; # this can happen if a child receives a signal before the parent completes forking, in this case, lets drop the signal
         if \[ "${OTEL_SHELL_CONFIG_OBSERVE_SIGNALS:-FALSE}" != TRUE ]; then continue; fi
         if \[ "$_otel_shell" = bash ]; then
           local name="$line"
