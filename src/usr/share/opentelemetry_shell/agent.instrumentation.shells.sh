@@ -65,7 +65,7 @@ _otel_inject_shell_with_copy() {
   local temporary_script="$(\mktemp -u)"
   local injected_command_string="$(_otel_inject_shell_args_with_copy "$temporary_script" "$@")"
   local exit_code=0
-  if ! \[ -f "$temporary_script" ] && ! [ -t 0 ]; then
+  if ! \[ -f "$temporary_script" ] && ! \[ -t 0 ]; then
     { \echo ". otel.sh"; \cat; } | \eval OTEL_SHELL_IS_DYNAMIC=TRUE OTEL_SHELL_COMMANDLINE_OVERRIDE=\""$(_otel_escape_arg "$cmdline")"\" OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE=$$ OTEL_SHELL_AUTO_INJECTED=TRUE _otel_call "$injected_command_string" || local exit_code=$?
   else
     \eval OTEL_SHELL_COMMANDLINE_OVERRIDE="$(_otel_escape_arg "$cmdline")" OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE=$$ OTEL_SHELL_AUTO_INJECTED=TRUE _otel_call "$injected_command_string" || local exit_code=$?
