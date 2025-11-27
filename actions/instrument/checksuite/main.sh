@@ -52,7 +52,7 @@ if [ "$(jq < "$check_suite_json" -r .status)" != completed ]; then echo "::error
 echo "::endgroup::"
 
 echo "::group::Check for GitHub Actions"
-if [ "$(jq < "$check_suite_json" -r '.check_suite.app.slug')" = "github-actions" ]; then
+if [ "$(jq < "$check_suite_json" -r '.app.slug')" = "github-actions" ]; then
   echo "::warning ::Check suite is from GitHub Actions, skipping."
   echo "::endgroup::"
   exit 0
