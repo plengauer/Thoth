@@ -93,8 +93,9 @@ check_suite_span_handle="$(otel_span_start @"$check_suite_started_at" CONSUMER "
 otel_span_attribute_typed "$check_suite_span_handle" string github.actions.type=checksuite
 otel_span_attribute_typed "$check_suite_span_handle" int github.actions.checks.suite.id="$(jq < "$check_suite_json" .id)"
 otel_span_attribute_typed "$check_suite_span_handle" string github.actions.checks.suite.conclusion="$(jq < "$check_suite_json" -r .conclusion)"
-otel_span_attribute_typed "$check_suite_span_handle" string github.actions.checks.suite.head_branch="$(jq < "$check_suite_json" -r .head_branch)"
-otel_span_attribute_typed "$check_suite_span_handle" string github.actions.checks.suite.head_sha="$(jq < "$check_suite_json" -r .head_sha)"
+otel_span_attribute_typed "$workflow_span_handle" string github.actions.checks.suite.ref="/refs/heads/$(jq < "$check_suite_json" -r .head_branch)"
+otel_span_attribute_typed "$workflow_span_handle" string github.actions.checks.suite.ref.sha="$(jq < "$check_suite_json" -r .head_sha)"
+otel_span_attribute_typed "$workflow_span_handle" string github.actions.checks.suite.ref.name="$(jq < "$check_suite_json" -r .head_branch)"
 otel_span_attribute_typed "$check_suite_span_handle" string github.actions.checks.app.name="$(jq < "$check_suite_json" -r .app.name)"
 otel_span_attribute_typed "$check_suite_span_handle" string github.actions.checks.app.slug="$(jq < "$check_suite_json" -r .app.slug)"
 otel_span_activate "$check_suite_span_handle"
@@ -102,7 +103,7 @@ otel_span_activate "$check_suite_span_handle"
 if [ "$(jq < "$check_suite_json" -r .conclusion)" = failure ]; then otel_span_error "$check_suite_span_handle"; fi
 echo ::notice title=Observability Information::"Trace ID: $(echo "$TRACEPARENT" | cut -d - -f 2), Span ID: $(echo "$TRACEPARENT" | cut -d - -f 3), Trace Deep Link: $(print_trace_link "$check_suite_started_at" || echo unavailable)"
 
-jq < "$check_runs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .name, .conclusion, .started_at, .completed_at, .app.slug, .app.name] | @tsv' | sed 's/\t/ /g' | while read -r TRACEPARENT check_run_id check_run_name check_run_conclusion check_run_started_at check_run_completed_at app_slug app_name; do
+jq < "$check_runs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .started_at, .completed_at, .app.slug, .name] | @tsv' | sed 's/\t/ /g' | while read -r TRACEPARENT check_run_id check_run_name check_run_conclusion check_run_started_at check_run_completed_at app_slug check_run_name; do
   if [ "$check_run_conclusion" = null ] || [ -z "$check_run_conclusion" ]; then continue; fi
   if [ "$check_run_started_at" = null ] || [ -z "$check_run_started_at" ]; then continue; fi
   if [ "$check_run_completed_at" = null ] || [ -z "$check_run_completed_at" ]; then check_run_completed_at="$check_run_started_at"; fi
@@ -110,14 +111,12 @@ jq < "$check_runs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .name, .c
   observation_handle="$(otel_observation_create 1)"
   otel_observation_attribute_typed "$observation_handle" string github.actions.checks.run.name="$check_run_name"
   otel_observation_attribute_typed "$observation_handle" string github.actions.checks.run.conclusion="$check_run_conclusion"
-  otel_observation_attribute_typed "$observation_handle" string github.actions.checks.app.name="$app_name"
   otel_observation_attribute_typed "$observation_handle" string github.actions.checks.app.slug="$app_slug"
   otel_counter_observe "$check_run_counter_handle" "$observation_handle"
 
   observation_handle="$(otel_observation_create "$(python3 -c "print(str(max(0, $(date -d "$check_run_completed_at" '+%s.%N') - $(date -d "$check_run_started_at" '+%s.%N'))))")")"
   otel_observation_attribute_typed "$observation_handle" string github.actions.checks.run.name="$check_run_name"
   otel_observation_attribute_typed "$observation_handle" string github.actions.checks.run.conclusion="$check_run_conclusion"
-  otel_observation_attribute_typed "$observation_handle" string github.actions.checks.app.name="$app_name"
   otel_observation_attribute_typed "$observation_handle" string github.actions.checks.app.slug="$app_slug"
   otel_counter_observe "$check_run_duration_counter_handle" "$observation_handle"
 
@@ -127,7 +126,6 @@ jq < "$check_runs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .name, .c
   otel_span_attribute_typed "$check_run_span_handle" int github.actions.checks.run.id="$check_run_id"
   otel_span_attribute_typed "$check_run_span_handle" string github.actions.checks.run.name="$check_run_name"
   otel_span_attribute_typed "$check_run_span_handle" string github.actions.checks.run.conclusion="$check_run_conclusion"
-  otel_span_attribute_typed "$check_run_span_handle" string github.actions.checks.app.name="$app_name"
   otel_span_attribute_typed "$check_run_span_handle" string github.actions.checks.app.slug="$app_slug"
   [ -z "${INPUT_DEBUG}" ] || echo "span check $TRACEPARENT $check_run_name" >&2
   if [ "$check_run_conclusion" = failure ]; then otel_span_error "$check_run_span_handle"; fi
