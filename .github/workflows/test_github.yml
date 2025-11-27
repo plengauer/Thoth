@@ -585,7 +585,7 @@ jobs:
           [ -n "${{ steps.check_suite.outputs.id }}" ]
       - uses: ./actions/instrument/checksuite
         with:
-          checksuite_id: ${{ steps.check_suite.outputs.id }}
+          check_suite_id: ${{ steps.check_suite.outputs.id }}
           cache: false
         env:
           OTEL_METRICS_EXPORTER: console
