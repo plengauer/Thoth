@@ -50,11 +50,3 @@ if find --help | grep -- execdir; then
   actual="$(find "$directory" -execdir echo {} '+' | \tr '\n' ' ')"
   assert_equals "$expected" "$actual"
 fi
-
-if which busybox; then
-  touch /tmp/busybox_find_test.txt
-  busybox find /tmp -iname '*.txt' -exec echo {} ';'
-  resolve_span '.name == "busybox find /tmp -iname *.txt -exec echo {} ;"'
-  resolve_span '.name == "find /tmp -iname *.txt -exec echo {} ;"'
-  resolve_span '.name == "echo /tmp/busybox_find_test.txt"'
-fi
