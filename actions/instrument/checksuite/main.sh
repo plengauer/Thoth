@@ -103,7 +103,7 @@ otel_span_activate "$check_suite_span_handle"
 if [ "$(jq < "$check_suite_json" -r .conclusion)" = failure ]; then otel_span_error "$check_suite_span_handle"; fi
 echo ::notice title=Observability Information::"Trace ID: $(echo "$TRACEPARENT" | cut -d - -f 2), Span ID: $(echo "$TRACEPARENT" | cut -d - -f 3), Trace Deep Link: $(print_trace_link "$check_suite_started_at" || echo unavailable)"
 
-jq < "$check_runs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .started_at, .completed_at, .app.slug, .name] | @tsv' | sed 's/\t/ /g' | while read -r TRACEPARENT check_run_id check_run_name check_run_conclusion check_run_started_at check_run_completed_at app_slug check_run_name; do
+jq < "$check_runs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .started_at, .completed_at, .app.slug, .name] | @tsv' | sed 's/\t/ /g' | while read -r TRACEPARENT check_run_id check_run_conclusion check_run_started_at check_run_completed_at app_slug check_run_name; do
   if [ "$check_run_conclusion" = null ] || [ -z "$check_run_conclusion" ]; then continue; fi
   if [ "$check_run_started_at" = null ] || [ -z "$check_run_started_at" ]; then continue; fi
   if [ "$check_run_completed_at" = null ] || [ -z "$check_run_completed_at" ]; then check_run_completed_at="$check_run_started_at"; fi
