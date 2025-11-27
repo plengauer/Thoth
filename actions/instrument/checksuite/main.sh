@@ -63,7 +63,7 @@ echo "::group::Resolve Check Runs"
 check_runs_json="$(mktemp)"
 gh_check_runs "$INPUT_CHECK_SUITE_ID" | jq '.check_runs[]' > "$check_runs_json"
 if [ ! -s "$check_runs_json" ]; then
-  echo "::warnings ::No check runs found in this check suite."
+  echo "::warning ::No check runs found in this check suite."
   exit 0
 fi
 echo "::endgroup::"
