@@ -34,11 +34,11 @@ Before contributing, please:
 .
 ├── src/                           # Package source code
 │   ├── usr/bin/                   # Symlinks to main scripts (otel.sh, otelapi.sh)
-│   ├── usr/share/opentelemetry_shell/  # Core shell instrumentation (25+ .sh files)
+│   ├── usr/share/opentelemetry_shell/  # Core shell instrumentation (~28 .sh files)
 │   │   ├── agent.*.sh             # Instrumentation agents for various tools
 │   │   ├── api.*.sh               # API implementations
 │   │   └── agent.instrumentation.*/  # Language-specific instrumentation (node, python, java)
-│   └── opt/opentelemetry_shell/   # Python SDK wrapper
+│   └── opt/opentelemetry_shell/   # Python SDK requirements
 ├── meta/                          # Package metadata
 │   ├── debian/                    # Debian package files (control, postinst, prerm, triggers)
 │   ├── rpm/                       # RPM package specification
@@ -190,10 +190,11 @@ When writing instrumentation code:
 
 When adding new dependencies:
 
-1. Update the language-specific file:
+1. Update the language-specific configuration file:
    - Python: `src/usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.txt`
    - Node.js: `src/usr/share/opentelemetry_shell/agent.instrumentation.node/package.json`
    - Java: `src/usr/share/opentelemetry_shell/agent.instrumentation.java/pom.xml`
+   - SDK Python wrapper: `src/opt/opentelemetry_shell/requirements.txt`
 
 2. Update package metadata:
    - Debian: `meta/debian/control` (Pre-Depends, Depends, Recommends, Suggests)
@@ -212,8 +213,7 @@ When adding new dependencies:
    - Why it's needed
    - How to test it
 3. **Ensure CI passes**:
-   - Build (`build.yml`)
-   - Tests (`test_shell.yml`, `test_github.yml`)
+   - Main test workflow (`test.yml`) which orchestrates build and all tests
    - CodeQL analysis (`analyze.yml`)
 4. **Address review feedback** promptly
 5. **Squash commits** if requested
