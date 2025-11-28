@@ -34,7 +34,7 @@ Before contributing, please:
 .
 ├── src/                           # Package source code
 │   ├── usr/bin/                   # Symlinks to main scripts (otel.sh, otelapi.sh)
-│   ├── usr/share/opentelemetry_shell/  # Core shell instrumentation (~28 .sh files)
+│   ├── usr/share/opentelemetry_shell/  # Core shell instrumentation (25+ .sh files)
 │   │   ├── agent.*.sh             # Instrumentation agents for various tools
 │   │   ├── api.*.sh               # API implementations
 │   │   └── agent.instrumentation.*/  # Language-specific instrumentation (node, python, java)
