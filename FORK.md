@@ -53,4 +53,4 @@ Once the release is published, your fork is fully functional:
 - Users can install packages from your releases
 - Container images are available from your GitHub Container Registry
 
-To keep your fork updated, sync with upstream and run the publish workflow when the `VERSION` file changes.
+To keep your fork updated, sync with upstream. When the `VERSION` file changes, the publish workflow runs automatically.
