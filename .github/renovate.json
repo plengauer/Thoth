@@ -28,19 +28,6 @@
       "matchPackageNames": [
         "/.*/"
       ]
-    },
-    {
-      "description": "Use major.minor versioning for GitHub action examples in README",
-      "matchManagers": [
-        "regex"
-      ],
-      "matchPackageNames": [
-        "plengauer/Thoth/actions/instrument/deploy",
-        "plengauer/Thoth/actions/instrument/workflow",
-        "plengauer/Thoth/actions/instrument/job"
-      ],
-      "extractVersion": "^v(?<version>\\d+\\.\\d+)",
-      "versioning": "semver-coerced"
     }
   ],
   "customManagers": [
@@ -54,7 +41,8 @@
         "plengauer/opentelemetry-github/actions/instrument/deploy@(?<currentValue>[\\w.-]+)"
       ],
       "depNameTemplate": "plengauer/Thoth/actions/instrument/deploy",
-      "datasourceTemplate": "github-tags"
+      "datasourceTemplate": "github-tags",
+      "extractVersionTemplate": "^v(?<version>\\d+\\.\\d+)"
     },
     {
       "customType": "regex",
@@ -65,7 +53,8 @@
         "plengauer/opentelemetry-github/actions/instrument/workflow@(?<currentValue>[\\w.-]+)"
       ],
       "depNameTemplate": "plengauer/Thoth/actions/instrument/workflow",
-      "datasourceTemplate": "github-tags"
+      "datasourceTemplate": "github-tags",
+      "extractVersionTemplate": "^v(?<version>\\d+\\.\\d+)"
     },
     {
       "customType": "regex",
@@ -76,7 +65,8 @@
         "plengauer/opentelemetry-github/actions/instrument/job@(?<currentValue>[\\w.-]+)"
       ],
       "depNameTemplate": "plengauer/Thoth/actions/instrument/job",
-      "datasourceTemplate": "github-tags"
+      "datasourceTemplate": "github-tags",
+      "extractVersionTemplate": "^v(?<version>\\d+\\.\\d+)"
     }
   ]
 }
