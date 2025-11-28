@@ -1,4 +1,4 @@
-name: CI
+name: Test
 on:
   push:
     branches:
@@ -9,7 +9,7 @@ on:
       - "main"
       - "release/v*"
 jobs:
-  test:
+  ci:
     permissions:
       actions: write
       attestations: none
@@ -26,6 +26,6 @@ jobs:
       security-events: none
       statuses: none
     secrets: inherit
-    uses: ./.github/workflows/test.yml
+    uses: ./.github/workflows/ci.yml
     with:
       ref: ${{ github.sha }}
