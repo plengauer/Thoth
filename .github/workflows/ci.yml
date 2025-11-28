@@ -1,0 +1,31 @@
+name: CI
+on:
+  push:
+    branches:
+      - "main"
+      - "release/v*"
+  pull_request:
+    branches:
+      - "main"
+      - "release/v*"
+jobs:
+  test:
+    permissions:
+      actions: write
+      attestations: none
+      checks: none
+      contents: read
+      deployments: none
+      discussions: none
+      id-token: none
+      issues: none
+      models: none
+      packages: read
+      pages: none
+      pull-requests: none
+      security-events: none
+      statuses: none
+    secrets: inherit
+    uses: ./.github/workflows/test.yml
+    with:
+      ref: ${{ github.sha }}
