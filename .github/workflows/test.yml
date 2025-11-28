@@ -8,6 +8,9 @@ on:
     branches:
       - "main"
       - "release/v*"
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   ci:
     permissions:
