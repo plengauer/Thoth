@@ -28,6 +28,19 @@
       "matchPackageNames": [
         "/.*/"
       ]
+    },
+    {
+      "description": "Use major.minor versioning for GitHub action examples in README",
+      "matchManagers": [
+        "regex"
+      ],
+      "matchPackageNames": [
+        "plengauer/Thoth/actions/instrument/deploy",
+        "plengauer/Thoth/actions/instrument/workflow",
+        "plengauer/Thoth/actions/instrument/job"
+      ],
+      "extractVersion": "^v(?<version>\\d+\\.\\d+)",
+      "versioning": "semver-coerced"
     }
   ],
   "customManagers": [
