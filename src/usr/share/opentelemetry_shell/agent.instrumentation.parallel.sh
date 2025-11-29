@@ -28,8 +28,7 @@ _otel_inject $arg"
         no_quote=1 _otel_escape_arg "$(_otel_escape_arg "$arg")"
       else
         if \[ "$inject_all_args" = 1 ]; then 
-          \echo -n "'sh -c '\''. otel.sh
-_otel_inject $arg'\'' parallel'"
+          \echo -n "'sh -c '\''. otel.sh"$'\n'"_otel_inject $arg'\'' parallel'"
         else
           if \[ "$arg" = "-i" ]; then local explicit_pos=1; fi
           _otel_escape_arg "$arg"
