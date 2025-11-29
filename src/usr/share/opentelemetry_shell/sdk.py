@@ -338,6 +338,8 @@ def handle(scope, version, command, arguments):
                 with open(response_path, 'w') as response:
                     response.write(str(span_id))
                     return
+        with open(response_path, 'w') as response:
+            response.write('')
     elif command == 'SPAN_AUTO_END':
         auto_end = True
     elif command == 'SPAN_NAME':
