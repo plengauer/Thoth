@@ -31,6 +31,9 @@ for dir in unit sdk auto integration; do
     if [ "$TEST_SHELL" = bash ]; then
       options="$options -p -o pipefail"
     fi
+    if [ "$dir" = auto ]; then
+      options="$options -x"
+    fi
     stdout="$(mktemp -u -p "$(mktemp -d)").out"
     stderr="$(mktemp -u -p "$(mktemp -d)").err"
     touch "$stdout" "$stderr"
