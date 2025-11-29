@@ -342,6 +342,7 @@ otel_observation_attribute() {
 }
 
 otel_observe() {
+  \set -x
   local IFS=' 
 '
   # validate and clean arguments
@@ -403,7 +404,8 @@ otel_observe() {
     done
   fi
   otel_span_end "$span_handle"
-  
+
+  \set +x
   return "$exit_code"
 }
 
