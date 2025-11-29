@@ -20,7 +20,7 @@ for dir in unit sdk auto integration; do
   { find $dir -iname 'test_*.sh'; find $dir -iname 'test_*.'"$SHELL"; } | sort -u | while read -r file; do
     rm /tmp/opentelemetry_shell_*_instrumentation_cache_*.aliases 2> /dev/null || true
     export OTEL_EXPORT_LOCATION="$(mktemp -u)".sdk.out
-    export OTEL_SHELL_SDK_REDIRECT="$(mktemp -u -p "$(mktemp -d)")".pipe
+    export OTEL_SHELL_SDK_OUTPUT_REDIRECT="$(mktemp -u -p "$(mktemp -d)")".pipe
     export OTEL_TRACES_EXPORTER=console
     export OTEL_METRICS_EXPORTER=console
     export OTEL_LOGS_EXPORTER=console
@@ -38,7 +38,6 @@ for dir in unit sdk auto integration; do
     stderr="$(mktemp -u -p "$(mktemp -d)").err"
     touch "$stdout" "$stderr"
     chmod 0666 "$stdout" "$stderr"
-    export OTEL_SHELL_SDK_STDERR_REDIRECT="$stderr"
     timeout $((60 * 60 * 3)) $TEST_SHELL $options "$file" 1> "$stdout" 2> "$stderr" && echo "$file SUCCEEDED" || (echo "$file FAILED" && echo "stdout:" && cat "$stdout" && echo "stderr:" && cat "$stderr" && echo "otlp:" && cat "$OTEL_EXPORT_LOCATION" && exit 1)
   done
 done
