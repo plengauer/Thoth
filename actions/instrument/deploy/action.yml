@@ -10,8 +10,10 @@ inputs:
     required: true
   workflows_directory:
     default: '.github/workflows'
+  workflow_level_instrumentation:
+    default: true
   workflow_level_instrumentation_file_name:
-    default: 'observability.yml'
+    default: 'observability_workflow.yml'
   workflow_level_instrumentation_workflow_name:
     default: 'OpenTelemetry'
   workflow_level_instrumentation_exclude:
@@ -20,9 +22,16 @@ inputs:
   workflow_level_instrumentation_use_container:
     description: 'Use a container image to avoid repeated installation on every run.'
     default: true
+  check_suite_level_instrumentation:
+    default: true
   check_suite_instrumentation_file_name:
     description: 'File name for check suite instrumentation workflow'
     default: 'observability_checksuite.yml'
+  check_suite_level_instrumentation_use_container:
+    description: 'Use a container image to avoid repeated installation on every run.'
+    default: true
+  job_level_instrumentation:
+    default: true
   job_level_instrumentation_exclude:
     description: 'Comma-separated list of workflow names to exclude from job-level instrumentation.'
     default: ''
@@ -44,9 +53,11 @@ inputs:
   __repository_level_instrumentation_file_name_override:
     description: 'INTERNAL ONLY - DO NOT SET MANUALLY'
     default: ''
+    
 runs:
   using: composite
   steps:
+
     - name: "Determine repository"
       id: determine-repository
       env:
@@ -70,6 +81,7 @@ runs:
       uses: actions/checkout@v5.0.1
       with:
         token: ${{ inputs.github_token }}
+  
     - name: Deploy Copilot Setup
       if: ${{ inputs.job_level_instrumentation_copilot == 'true' }}
       shell: bash
@@ -94,6 +106,7 @@ runs:
             sed -i 's~'"$repository"'~${{ steps.determine-repository.outputs.repository }}~g' "$workflow_file"
           done
         done
+  
     - name: "Find self"
       id: find-self
       shell: bash
@@ -114,6 +127,13 @@ runs:
         (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
           cat "$workflow_file" | yq .on.workflow_run.workflows 2> /dev/null | grep -qv '^null$' && cat "$workflow_file" | yq .jobs.*.steps[].uses | grep -q /actions/instrument/workflow && echo path="$workflow_file" >> "$GITHUB_OUTPUT" && break || true
         done
+    - name: "Find check-suite-level observability"
+      id: find-check-suite-level-instrumentation
+      shell: bash
+      run: |
+        (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
+          cat "$workflow_file" | yq .on.workflow_run.workflows 2> /dev/null | grep -qv '^null$' && cat "$workflow_file" | yq .jobs.*.steps[].uses | grep -q /actions/instrument/checksuite && echo path="$workflow_file" >> "$GITHUB_OUTPUT" && break || true
+        done
     - name: "Determine version"
       id: determine-instrumentation-version
       shell: bash
@@ -123,8 +143,9 @@ runs:
         else
           echo '${{ inputs.action_version }}'
         fi | xargs -I '{}' echo version='{}' >> "$GITHUB_OUTPUT"
+  
     - name: "Deploy workflow-level observability"
-      if: steps.find-workflow-level-instrumentation.outputs.path == null
+      if: ${{ inputs.workflow_level_instrumentation == 'true' && steps.find-workflow-level-instrumentation.outputs.path == null }}
       shell: bash
       run: |
         echo '
@@ -145,7 +166,7 @@ runs:
           yq -i '.jobs[].steps[0].env.'"$key"' = "'"$value"'"' "${{ inputs.workflows_directory }}/${{ inputs.workflow_level_instrumentation_file_name }}"
         done
     - name: "Deploy workflow-level startup optimization"
-      if: ${{ inputs.workflow_level_instrumentation_use_container == 'true' }}
+      if: ${{ inputs.workflow_level_instrumentation == 'true' && inputs.workflow_level_instrumentation_use_container == 'true' }}
       shell: bash
       run: |
         if [ -w "${{ steps.find-workflow-level-instrumentation.outputs.path }}" ]; then path="${{ steps.find-workflow-level-instrumentation.outputs.path }}"; else path="${{ inputs.workflows_directory }}/${{ inputs.workflow_level_instrumentation_file_name }}"; fi
@@ -158,6 +179,7 @@ runs:
           yq -i ".jobs.export.container = \"$image\"" "$path"
         fi
     - name: "Update workflow-level observability triggers"
+      if: ${{ inputs.workflow_level_instrumentation == 'true' }}
       shell: bash
       run: |
         if [ -w "${{ steps.find-workflow-level-instrumentation.outputs.path }}" ]; then path="${{ steps.find-workflow-level-instrumentation.outputs.path }}"; else path="${{ inputs.workflows_directory }}/${{ inputs.workflow_level_instrumentation_file_name }}"; fi
@@ -179,7 +201,9 @@ runs:
           [ -n "$names" ] && names="${names}, ${line}" || names="$line"
         done < "$names_file"
         yq -i ".on.workflow_run.workflows = [${names}]" "$path"
+  
     - name: "Deploy check suite-level instrumentation"
+      if: ${{ inputs.check_suite_level_instrumentation == 'true' }}
       shell: bash
       run: |
         path="${{ inputs.workflows_directory }}/${{ inputs.check_suite_instrumentation_file_name }}"
@@ -206,7 +230,22 @@ runs:
           value="$(cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/deploy*") | .env.'"$key")"
           yq -i '.jobs[].steps[0].env.'"$key"' = "'"$value"'"' "$path"
         done
+    - name: "Deploy check suite-level startup optimization"
+      if: ${{ inputs.check_suite_level_instrumentation == 'true' && inputs.check_suite_level_instrumentation_use_container == 'true' }}
+      shell: bash
+      run: |
+        if [ -w "${{ steps.find-check-suite-level-instrumentation.outputs.path }}" ]; then path="${{ steps.find-check-suite-level-instrumentation.outputs.path }}"; else path="${{ inputs.workflows_directory }}/${{ inputs.check_suite_level_instrumentation_file_name }}"; fi
+        if cat "$path" | yq '.jobs.export.container' | grep -q '^null$'; then
+          image=ghcr.io/"$(echo ${{ steps.determine-repository.outputs.repository }} | cut -d / -f 1)"/opentelemetry-github-workflow-instrumentation-runner:${{ steps.determine-instrumentation-version.outputs.version }}
+          if ! sudo docker pull "$image"; then
+            echo ::warning::'Runner image '"$image"' is unavailable, skipping configuration since it its only for optimization. A common cause for this is that the package is not publicly visible in the ghcr. This needs to be configured manually.'
+            exit 0
+          fi
+          yq -i ".jobs.export.container = \"$image\"" "$path"
+        fi
+  
     - name: "Deploy job-level instrumentation"
+      if: ${{ inputs.job_level_instrumentation == 'true' }}
       shell: bash
       run: |
         (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
@@ -226,6 +265,7 @@ runs:
           done
         done
     - name: "Configure job-level instrumentation secret redaction"
+      if: ${{ inputs.job_level_instrumentation == 'true' }}
       shell: bash
       run: |
         (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
@@ -243,6 +283,7 @@ runs:
           done
         done
     - name: "Modify permissions for job-level instrumentations"
+      if: ${{ inputs.job_level_instrumentation == 'true' }}
       shell: bash
       run: |
         (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
@@ -257,6 +298,7 @@ runs:
             fi
           done
         done
+  
     - name: "Restore blank lines"
       shell: bash
       run: |
@@ -271,6 +313,7 @@ runs:
       shell: bash
       run: |
         git diff
+  
     - name: "Open Pull Request"
       if: ${{ inputs.dry_run != 'true' }}
       id: open-pr
