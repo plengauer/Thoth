@@ -69,8 +69,7 @@ else
 fi
 
 _otel_sdk_communicate() {
-  if _otel_string_contains "$*" "
-"; then
+  if _otel_string_contains "$*" $'\n'; then
     local IFS=' '
     _otel_sdk_communicate "$(\printf '%s' "$*" | \tr '\n' ' ')"
   else
