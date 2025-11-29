@@ -4,8 +4,8 @@ _otel_call_and_record_subprocesses() {
   local span_handle="$1"; shift
   local call_command="$1"; shift
   local command="$1"; shift
-  local strace_data="$(\mktemp -u -p "$_otel_shell_pipe_dir")_opentelemetry_shell_$$.strace.pipe"
-  local strace_signal="$(\mktemp -u -p "$_otel_shell_pipe_dir")_opentelemetry_shell_$$.strace.signal"
+  local strace_data="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.strace.pipe.XXXXXXXXXX)"
+  local strace_signal="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.strace.signal.XXXXXXXXXX)"
   \mkfifo "$strace_data" "$strace_signal"
   _otel_record_subprocesses "$span_handle" "$strace_signal" < "$strace_data" 1> /dev/null 2> /dev/null &
   local exit_code=0
