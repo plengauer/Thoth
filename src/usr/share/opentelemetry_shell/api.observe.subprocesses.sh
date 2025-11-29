@@ -110,8 +110,7 @@ _otel_record_subprocesses() {
         if \[ "$_otel_shell" = bash ]; then
           local kvps="${kvps// /}"
           local kvps="${kvps//_/.}"
-          local kvps="${kvps//,/
-}"
+          local kvps="${kvps//,/"$'\n'"}"
           \printf '%s' "$kvps"
         else
           \printf '%s' "$kvps" | \tr -d ' ' | \tr '_' '.' | \tr ',' '\n'
