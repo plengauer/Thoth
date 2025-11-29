@@ -403,7 +403,7 @@ otel_observe() {
     done
   fi
   otel_span_end "$span_handle"
-
+  
   return "$exit_code"
 }
 
