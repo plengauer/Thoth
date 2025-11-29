@@ -14,20 +14,20 @@ _otel_call_and_record_pipes() {
   local span_handle="$1"; shift
   local command_type="$1"; shift
   local call_command="$1"; shift
-  local stdin_bytes_result="$(\mktemp -u -p "$_otel_shell_pipe_dir")_opentelemetry_shell_$$.stdin.bytes.result"
-  local stdin_lines_result="$(\mktemp -u -p "$_otel_shell_pipe_dir")_opentelemetry_shell_$$.stdin.lines.result"
-  local stdout_bytes_result="$(\mktemp -u -p "$_otel_shell_pipe_dir")_opentelemetry_shell_$$.stdout.bytes.result"
-  local stdout_lines_result="$(\mktemp -u -p "$_otel_shell_pipe_dir")_opentelemetry_shell_$$.stdout.lines.result"
-  local stderr_bytes_result="$(\mktemp -u -p "$_otel_shell_pipe_dir")_opentelemetry_shell_$$.stderr.bytes.result"
-  local stderr_lines_result="$(\mktemp -u -p "$_otel_shell_pipe_dir")_opentelemetry_shell_$$.stderr.lines.result"
-  local stdout="$(\mktemp -u -p "$_otel_shell_pipe_dir")_opentelemetry_shell_$$.stdout.pipe"
-  local stderr="$(\mktemp -u -p "$_otel_shell_pipe_dir")_opentelemetry_shell_$$.stderr.pipe"
-  local stdin_bytes="$(\mktemp -u -p "$_otel_shell_pipe_dir")_opentelemetry_shell_$$.stdin.bytes.pipe"
-  local stdin_lines="$(\mktemp -u -p "$_otel_shell_pipe_dir")_opentelemetry_shell_$$.stdin.lines.pipe"
-  local stdout_bytes="$(\mktemp -u -p "$_otel_shell_pipe_dir")_opentelemetry_shell_$$.stdout.bytes.pipe"
-  local stdout_lines="$(\mktemp -u -p "$_otel_shell_pipe_dir")_opentelemetry_shell_$$.stdout.lines.pipe"
-  local stderr_bytes="$(\mktemp -u -p "$_otel_shell_pipe_dir")_opentelemetry_shell_$$.stderr.bytes.pipe"
-  local stderr_lines="$(\mktemp -u -p "$_otel_shell_pipe_dir")_opentelemetry_shell_$$.stderr.lines.pipe"
+  local stdin_bytes_result="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.stdin.bytes.result.XXXXXXXXXX)"
+  local stdin_lines_result="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.stdin.lines.result.XXXXXXXXXX)"
+  local stdout_bytes_result="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.stdout.bytes.result.XXXXXXXXXX)"
+  local stdout_lines_result="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.stdout.lines.result.XXXXXXXXXX)"
+  local stderr_bytes_result="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.stderr.bytes.result.XXXXXXXXXX)"
+  local stderr_lines_result="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.stderr.lines.result.XXXXXXXXXX)"
+  local stdout="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.stdout.pipe.XXXXXXXXXX)"
+  local stderr="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.stderr.pipe.XXXXXXXXXX)"
+  local stdin_bytes="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.stdin.bytes.pipe.XXXXXXXXXX)"
+  local stdin_lines="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.stdin.lines.pipe.XXXXXXXXXX)"
+  local stdout_bytes="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.stdout.bytes.pipe.XXXXXXXXXX)"
+  local stdout_lines="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.stdout.lines.pipe.XXXXXXXXXX)"
+  local stderr_bytes="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.stderr.bytes.pipe.XXXXXXXXXX)"
+  local stderr_lines="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.stderr.lines.pipe.XXXXXXXXXX)"
   local exit_code=0
   \mkfifo "$stdout" "$stderr" "$stdin_bytes" "$stdin_lines" "$stdout_bytes" "$stdout_lines" "$stderr_bytes" "$stderr_lines"
   \wc -c < "$stdin_bytes" > "$stdin_bytes_result" &
@@ -55,7 +55,7 @@ _otel_call_and_record_pipes() {
     # this is inherently unsafe because tee will consume stdin even when command never reads from it, so killing it will eventually cause data to be lost
     # this ONLY ever works when the actual command guarantees by definiton to consume all of stdin, like simple invocations of grep
     local observe_stdin=TRUE
-    local exit_code_file="$(\mktemp -u -p "$_otel_shell_pipe_dir")_opentelemetry_shell_$$.exit_code"
+    local exit_code_file="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.exit_code.XXXXXXXXXX)"
     \tee "$stdin_bytes" "$stdin_lines" 2> /dev/null | {
       local inner_exit_code=0
       $call_command "$@" || local inner_exit_code="$?"
