@@ -678,7 +678,7 @@ jobs:
           yq -i '.jobs.deploy.steps[0].env.OTEL_EXPORTER_OTLP_ENDPOINT = "http://'"$(curl 'https://api.ipify.org?format=json' | jq -r .ip)"':8080"' .github/workflows/deploy_otel.yml
           git add . && git commit --message "added deploy action" && git push
       - run: |
-          while ! cat .github/workflows/test.yml | yq '.jobs.hello-world.steps[].uses' | grep -q '/actions/instrument/job@' || ! cat .github/workflows/observability.yml | yq '.jobs.export.steps[].uses' | grep -q '/actions/instrument/workflow@'; do
+          while ! cat .github/workflows/test.yml | yq '.jobs.hello-world.steps[].uses' | grep -q '/actions/instrument/job@' || ! cat .github/workflows/observability_workflow.yml | yq '.jobs.export.steps[].uses' | grep -q '/actions/instrument/workflow@'; do
             sleep 10 && git pull
           done
       - run: |
