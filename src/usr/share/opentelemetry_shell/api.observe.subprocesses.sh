@@ -54,6 +54,7 @@ _otel_record_subprocesses() {
       fork)
         if \[ "${OTEL_SHELL_CONFIG_OBSERVE_SUBPROCESSES:-FALSE}" != TRUE ]; then continue; fi
         local new_pid="${line##* }"
+        case "$new_pid" in ''|*[!0-9]*) continue;; esac # skip if not a valid pid (e.g., "?" from unfinished syscall)
         \eval "local span_name=\"\${span_name_$new_pid:-}\""
         if \[ -z "${span_name:-}" ]; then \eval "local span_name=\"\${span_name_$pid:-}\""; fi
         if \[ -z "${span_name:-}" ]; then \eval "local parent_pid=\$parent_pid_$pid"; \eval "local span_name=\"\${span_name_$parent_pid:-}\""; fi
