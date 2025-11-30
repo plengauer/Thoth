@@ -340,7 +340,7 @@ otel_observation_attribute() {
 }
 
 otel_observe() {
-  local IFS=' '$'\t'$'\n'
+  local IFS=' '
 
   # validate and clean arguments
   local dollar_star="$(_otel_dollar_star "$@")"
