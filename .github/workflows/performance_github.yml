@@ -19,7 +19,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.33.5
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.36.0
         with:
           secrets_to_redact: '["${{ github.token }}"]'
       - run: echo hello world
@@ -31,7 +31,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v5.0.0
+      - uses: actions/checkout@v5.0.1
       - run: echo hello world | cat
 
   default:
@@ -41,10 +41,10 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.33.5
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.36.0
         with:
           secrets_to_redact: '["${{ github.token }}"]'
-      - uses: actions/checkout@v5.0.0
+      - uses: actions/checkout@v5.0.1
       - run: echo hello world | cat
 
   performance:
@@ -63,7 +63,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.33.5
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.36.0
         with:
           secrets_to_redact: '["${{ github.token }}"]'
           cache: '${{ matrix.cache }}'
@@ -74,5 +74,5 @@ jobs:
           OTEL_SHELL_CONFIG_INJECT_DEEP: '${{ matrix.inject-deep }}'
           OTEL_SHELL_CONFIG_OBSERVE_SIGNALS: '${{ matrix.observe-signals }}'
           OTEL_SHELL_CONFIG_OBSERVE_SUBPROCESSES: '${{ matrix.observe-subprocesses }}'
-      - uses: actions/checkout@v5.0.0
+      - uses: actions/checkout@v5.0.1
       - run: echo hello world | cat

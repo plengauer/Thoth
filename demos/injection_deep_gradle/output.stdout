@@ -1,16 +1,16 @@
-Downloading https://services.gradle.org/distributions/gradle-9.2.0-bin.zip
+Downloading https://services.gradle.org/distributions/gradle-9.2.1-bin.zip
 ............10%.............20%.............30%.............40%.............50%.............60%.............70%.............80%.............90%.............100%
 
-Welcome to Gradle 9.2.0!
+Welcome to Gradle 9.2.1!
 
 Here are the highlights of this release:
  - Windows ARM support
  - Improved publishing APIs
  - Better guidance for dependency verification failures
 
-For more details see https://docs.gradle.org/9.2.0/release-notes.html
+For more details see https://docs.gradle.org/9.2.1/release-notes.html
 
-To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.2.0/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.2.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
 Daemon will be stopped at the end of the build 
 Calculating task graph as no cached configuration is available for tasks: build
 > Task :app:processResources NO-SOURCE
@@ -32,6 +32,6 @@ Calculating task graph as no cached configuration is available for tasks: build
 > Task :app:check
 > Task :app:build
 
-BUILD SUCCESSFUL in 1m 15s
+BUILD SUCCESSFUL in 1m 23s
 7 actionable tasks: 7 executed
 Configuration cache entry stored.

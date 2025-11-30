@@ -27,7 +27,7 @@ inputs:
     description: 'Whether to (1) redact no secrets at all, to (2) list them explicitly based on content of the workflow, or to (3) proactively redact all secrets (one of "none", "list", "all").'
     default: 'list'
   action_repository:
-    default: plengauer/opentelemetry-github
+    default: ''
   action_version:
     default: same
   job_level_instrumentation_copilot:
@@ -44,23 +44,46 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: "Determine repository"
-      id: determine-repository
-      shell: bash
-      run: |
-        if [ "$GITHUB_API_URL" = 'https://api.github.com' ]; then
-          echo '${{ inputs.action_repository }}'
-        else
-          echo "::notice::On private GitHub servers, action runners are not following redirects. Therefore the repository configuration is ignored." >&2
-          echo plengauer/Thoth
-        fi | xargs -I '{}' echo repository='{}' >> "$GITHUB_OUTPUT"
     - name: "Install dependencies"
       shell: bash
       run: type yq || (sudo apt-get update && sudo apt-get -y install yq)
     - name: "Checkout"
-      uses: actions/checkout@v5.0.0
+      uses: actions/checkout@v5.0.1
       with:
         token: ${{ inputs.github_token }}
+    - name: "Find self"
+      id: find-self
+      shell: bash
+      run: |
+        if [ -r '${{ inputs.__repository_level_instrumentation_file_name_override }}' ]; then
+          echo path="${{ inputs.__repository_level_instrumentation_file_name_override }}" >> "$GITHUB_OUTPUT"
+        elif [ -r "${{ github.workflow }}" ]; then
+          echo path="${{ github.workflow }}" >> "$GITHUB_OUTPUT"
+        else
+          (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
+            [ "$(cat "$workflow_file" | yq .name)" = "${{ github.workflow }}" ] && echo path="$workflow_file" >> "$GITHUB_OUTPUT" && break || true
+          done
+        fi
+    - name: "Determine repository"
+      id: determine-repository
+      env:
+        GITHUB_ACTION_REPOSITORY: ${{ github.action_repository }}
+      shell: bash
+      run: |
+        uses="$(cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "*/actions/instrument/deploy*") | .uses' -r | head -n 1)"
+        self="${uses%%/actions/instrument/deploy*}"
+        if [ -n "${{ inputs.action_repository }}" ]; then
+          echo '${{ inputs.action_repository }}'
+        elif [ -n "${GITHUB_ACTION_REPOSITORY:-}" ] && [ "${GITHUB_ACTION_REPOSITORY%/*}" != plengauer ]; then
+          echo "$GITHUB_ACTION_REPOSITORY"
+        elif [ "${self%/*}" != plengauer ]; then
+          echo "$self"
+        elif [ "$GITHUB_API_URL" = 'https://api.github.com' ]; then
+          echo plengauer/opentelemetry-github
+        else
+          echo "::notice::On private GitHub servers, action runners are not following redirects." >&2
+          echo plengauer/Thoth
+        fi | xargs -I '{}' echo repository='{}' >> "$GITHUB_OUTPUT"
     - name: Deploy Copilot Setup
       if: ${{ inputs.job_level_instrumentation_copilot == 'true' }}
       shell: bash
@@ -85,19 +108,6 @@ runs:
             sed -i 's~'"$repository"'~${{ steps.determine-repository.outputs.repository }}~g' "$workflow_file"
           done
         done
-    - name: "Find self"
-      id: find-self
-      shell: bash
-      run: |
-        if [ -r '${{ inputs.__repository_level_instrumentation_file_name_override }}' ]; then
-          echo path="${{ inputs.__repository_level_instrumentation_file_name_override }}" >> "$GITHUB_OUTPUT"
-        elif [ -r "${{ github.workflow }}" ]; then
-          echo path="${{ github.workflow }}" >> "$GITHUB_OUTPUT"
-        else
-          (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
-            [ "$(cat "$workflow_file" | yq .name)" = "${{ github.workflow }}" ] && echo path="$workflow_file" >> "$GITHUB_OUTPUT" && break || true
-          done
-        fi
     - name: "Find workflow-level observability"
       id: find-workflow-level-instrumentation
       shell: bash
@@ -141,7 +151,12 @@ runs:
       run: |
         if [ -w "${{ steps.find-workflow-level-instrumentation.outputs.path }}" ]; then path="${{ steps.find-workflow-level-instrumentation.outputs.path }}"; else path="${{ inputs.workflows_directory }}/${{ inputs.workflow_level_instrumentation_file_name }}"; fi
         if cat "$path" | yq '.jobs.export.container' | grep -q '^null$'; then
-          yq -i ".jobs.export.container = \"ghcr.io/"$(echo ${{ steps.determine-repository.outputs.repository }} | cut -d / -f 1)"/opentelemetry-github-workflow-instrumentation-runner:${{ steps.determine-instrumentation-version.outputs.version }}\"" "$path"
+          image=ghcr.io/"$(echo ${{ steps.determine-repository.outputs.repository }} | cut -d / -f 1)"/opentelemetry-github-workflow-instrumentation-runner:${{ steps.determine-instrumentation-version.outputs.version }}
+          if ! sudo docker pull "$image"; then
+            echo ::warning::'Runner image '"$image"' is unavailable, skipping configuration since it its only for optimization. A common cause for this is that the package is not publicly visible in the ghcr. This needs to be configured manually.'
+            exit 0
+          fi
+          yq -i ".jobs.export.container = \"$image\"" "$path"
         fi
     - name: "Update workflow-level observability triggers"
       shell: bash
@@ -191,7 +206,7 @@ runs:
             cat "$workflow_file" | yq ".jobs.$job_name.steps" | grep -qvF null || continue
             if [ -z "$(cat "$workflow_file" | yq '.jobs.'"$job_name"'.steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*") | .uses')" ]; then continue; fi
             job_level_instrumentation_secret_redaction_strategy="${{ inputs.job_level_instrumentation_secret_redaction_strategy }}"
-            if [ "$workflow_file" = '.github/workflows/copilot-setup-steps.yml' ]; then job_level_instrumentation_secret_redaction_strategy=all; fi
+            if [ "$workflow_file" = '.github/workflows/copilot-setup-steps.yml' ]; then job_level_instrumentation_secret_redaction_strategy=none; fi
             case "$job_level_instrumentation_secret_redaction_strategy" in
               none) [ "$(cat "$workflow_file" | yq '.jobs.'"$job_name"'.steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*") | .with.secrets_to_redact')" = null ] || yq -i 'del(.jobs.'"$job_name"'.steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*").with.secrets_to_redact)' "$workflow_file";;
               list) [ "$(cat "$workflow_file" | yq '.jobs.'"$job_name"'.steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*") | .with.secrets_to_redact')" = "$(cat "$workflow_file" | yq '.jobs.'"$job_name"'.steps[] | select(.uses != "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*")' | { echo JHt7IGdpdGh1Yi50b2tlbiB9fQo= | base64 -d; grep -oE "$(echo XCR7e1tbOmJsYW5rOl1dKnNlY3JldHNcLlthLXpBLVowLTlfLi1dK1tbOmJsYW5rOl1dKn19Cg== | base64 -d)" || true; } | sort -u | jq --raw-input --slurp 'split("\n") | .[0:-1]' -c)" ] || yq -i '(.jobs.'"$job_name"'.steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*")).with.secrets_to_redact = "'"$(cat "$workflow_file" | yq '.jobs.'"$job_name"'.steps[] | select(.uses != "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*")' | { echo JHt7IGdpdGh1Yi50b2tlbiB9fQo= | base64 -d; grep -oE "$(echo XCR7e1tbOmJsYW5rOl1dKnNlY3JldHNcLlthLXpBLVowLTlfLi1dK1tbOmJsYW5rOl1dKn19Cg== | base64 -d)" || true; } | sort -u | jq --raw-input --slurp 'split("\n") | .[0:-1]' -c | sed 's/"/\\"/g')"'"' "$workflow_file";;

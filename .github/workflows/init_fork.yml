@@ -1,0 +1,23 @@
+name: Initialize Fork
+on:
+  workflow_dispatch:
+jobs:
+  init:
+    if: ${{ github.event.repository.fork }}
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+    steps:
+      - run: |
+          [ -n "${{ secrets.ACTIONS_GITHUB_TOKEN }}" ] # a token for a bot or real user that will be used for some automations, needs these scopes: delete:packages, repo, workflow, write:packages
+      - run: |
+          curl --fail -H "Authorization: Bearer ${{ secrets.ACTIONS_GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_REPOSITORY"/actions/workflows'?per_page=100' | jq '.workflows[].id' \
+            | xargs -I '{}' curl --fail -H "Authorization: Bearer ${{ secrets.ACTIONS_GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_REPOSITORY"/actions/workflows/'{}'/enable -X PUT
+      - uses: actions/checkout@v5.0.1
+        with:
+          token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+      - run: |
+          tag=v"$(cat VERSION)"
+          git tag "$tag"
+          git push origin "$tag"
+      - run: echo ::notice::'The build and release workflow is running - it may take a few minutes up to a few hours (depending on the traffic on your GitHub runners) until the first release has been published.' >&2

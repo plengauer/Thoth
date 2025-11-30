@@ -4,7 +4,32 @@ on:
     branches:
       - main
 jobs:
+  setup:
+    if: ${{ !github.event.repository.fork }}
+    runs-on: ubuntu-latest
+    outputs:
+      refs: ${{ steps.dynamic.outputs.refs }}
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v5.0.1
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+      - id: dynamic
+        run: |
+          cat '${{ github.event_path }}' | jq '.commits[].id' -r | while read -r ref; do
+            if git diff-tree --root --no-commit-id --name-only -r "$ref" | grep -qE '^VERSION$' || git tag --points-at "$ref" | grep -qE '^v'; then continue; fi
+            echo "$ref"
+          done | while read -r ref; do echo \""$ref"\"; done | jq -s | tr -d '\n' | tr -d ' ' | xargs -0 -I {} echo 'refs={}' >> "$GITHUB_OUTPUT"
+    
+
   backport:
+    if: ${{ !github.event.repository.fork }}
+    needs: setup
+    strategy:
+      matrix:
+        ref: ${{ fromJSON(needs.setup.outputs.refs) }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -12,7 +37,7 @@ jobs:
       issues: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.33.5
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.36.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
@@ -20,20 +45,20 @@ jobs:
           secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}","${{ secrets.OPENAI_TOKEN }}"]'
 
       - id: autoversion
-        uses: plengauer/autoversion@v2.0.2
+        uses: plengauer/autoversion@v2.1.0
         with:
           github_token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           openai_token: ${{ secrets.OPENAI_TOKEN }}
           path_include: ./meta:./src:./actions:./tests:./.github
           dry_run: true
-          ref: ${{ github.sha }}
+          ref: ${{ matrix.ref }}
           depth: 1
       
       - id: check_patch
         run: |
           set -e
           
-          old_version=$(git show ${{ github.sha }}:VERSION)
+          old_version=$(git show ${{ matrix.ref }}:VERSION)
           new_version=$(cat VERSION)
           
           old_major=$(echo "$old_version" | cut -d . -f 1)
@@ -72,7 +97,7 @@ jobs:
         run: |
           set -e
           
-          git format-patch -1 "${{ github.sha }}" --stdout > /tmp/commit.patch
+          git format-patch -1 "${{ matrix.ref }}" --stdout > /tmp/commit.patch
           
           if grep -q "diff --git a/VERSION b/VERSION" /tmp/commit.patch; then
             if command -v filterdiff; then
@@ -94,12 +119,12 @@ jobs:
             git apply /tmp/commit.patch
           elif [ -s /tmp/commit.patch ]; then
             original_version=$(cat VERSION)
-            if git cherry-pick -n "${{ github.sha }}"; then
+            if git cherry-pick -n "${{ matrix.ref }}"; then
               echo "$original_version" > VERSION
               git add VERSION
             else
               git cherry-pick --abort || true
-              echo "::error::Cherry-pick failed - conflicts need manual resolution for commit ${{ github.sha }}"
+              echo "::error::Cherry-pick failed - conflicts need manual resolution for commit ${{ matrix.ref }}"
               exit 1
             fi
           else
@@ -113,10 +138,10 @@ jobs:
         run: |
           set -e
           
-          commit_title=$(git log -1 --pretty=%s "${{ github.sha }}")
+          commit_title=$(git log -1 --pretty=%s "${{ matrix.ref }}")
           echo "commit_title=$commit_title" >> "$GITHUB_OUTPUT"
           
-          pr_number=$(gh pr list --state merged --search "${{ github.sha }}" --json number --jq '.[0].number' 2>/dev/null)
+          pr_number=$(gh pr list --state merged --search "${{ matrix.ref }}" --json number --jq '.[0].number' 2>/dev/null)
           
           reviewers=""
           author=""
@@ -128,11 +153,11 @@ jobs:
           fi
           
           if [ -z "$author" ]; then
-            author=$(git log -1 --pretty=%an "${{ github.sha }}" 2>/dev/null || echo "")
+            author=$(git log -1 --pretty=%an "${{ matrix.ref }}" 2>/dev/null || echo "")
           fi
           
-          author_email=$(git log -1 --pretty=%ae "${{ github.sha }}" 2>/dev/null || echo "")
-          author_name=$(git log -1 --pretty=%an "${{ github.sha }}" 2>/dev/null || echo "")
+          author_email=$(git log -1 --pretty=%ae "${{ matrix.ref }}" 2>/dev/null || echo "")
+          author_name=$(git log -1 --pretty=%an "${{ matrix.ref }}" 2>/dev/null || echo "")
           
           if [ -n "$author" ]; then
             if [ -n "$reviewers" ]; then
@@ -166,9 +191,9 @@ jobs:
             ${{ steps.prepare_pr.outputs.commit_title }}
             Co-authored-by: ${{ steps.prepare_pr.outputs.author_name }} <${{ steps.prepare_pr.outputs.author_email }}>
           base: ${{ steps.prepare_branch.outputs.name }}
-          branch: backport/${{ github.sha }}
+          branch: backport/${{ matrix.ref }}
           title: "${{ steps.prepare_pr.outputs.commit_title }}"
-          body: Automated backport of commit ${{ github.sha }}
+          body: Automated backport of commit ${{ matrix.ref }}
           # reviewers: ${{ steps.prepare_pr.outputs.reviewers }}
           delete-branch: true
       - run: sleep 60 # let API catch up
