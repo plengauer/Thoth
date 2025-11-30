@@ -28,7 +28,7 @@ jobs:
             fi
           done | while read -r ref; do echo \""$ref"\"; done | jq -s | tr -d '\n' | tr -d ' ' | xargs -0 -I {} echo 'refs={}' >> "$GITHUB_OUTPUT"
   
-  test:
+  ci:
     needs: setup
     strategy:
       matrix:
@@ -49,12 +49,12 @@ jobs:
       security-events: none
       statuses: none
     secrets: inherit
-    uses: ./.github/workflows/test.yml
+    uses: ./.github/workflows/ci.yml
     with:
       ref: ${{ matrix.ref }}
     
   publish:
-    needs: [ setup, test ]
+    needs: [ setup, ci ]
     strategy:
       matrix:
         ref: ${{ fromJSON(needs.setup.outputs.refs) }}
