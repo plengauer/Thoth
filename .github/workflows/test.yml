@@ -8,48 +8,13 @@ on:
     branches:
       - "main"
       - "release/v*"
-  workflow_call:
-    inputs:
-      ref:
-        type: string
-        required: true
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  setup:
-    runs-on: ubuntu-latest
-    outputs:
-      ref: ${{ steps.dynamic.outputs.ref }}
+  ci:
     permissions:
-      actions: read
-      contents: read
-    steps:
-      - id: dynamic
-        run: |
-          ( [ -n '${{ inputs.ref }}' ] && echo '${{ inputs.ref }}' || echo '${{ github.sha }}' ) | xargs -0 -I '{}' echo 'ref={}' >> "$GITHUB_OUTPUT"
-  build:
-    needs: setup
-    permissions:
-      actions: read
-      contents: read
-    uses: ./.github/workflows/build.yml
-    with:
-      ref: ${{ needs.setup.outputs.ref }}
-    secrets: inherit
-  shell:
-    needs: [setup, build]
-    permissions:
-      actions: read
-      contents: read
-    uses: ./.github/workflows/test_shell.yml
-    with:
-      ref: ${{ needs.setup.outputs.ref }}
-    secrets: inherit
-  github:
-    needs: [setup, build]
-    permissions:
-      actions: read
+      actions: write
       attestations: none
       checks: none
       contents: read
@@ -57,48 +22,13 @@ jobs:
       discussions: none
       id-token: none
       issues: none
-      # models: none
+      models: none
       packages: read
       pages: none
       pull-requests: none
       security-events: none
       statuses: none
-    uses: ./.github/workflows/test_github.yml
-    with:
-      ref: ${{ needs.setup.outputs.ref }}
     secrets: inherit
-  join:
-    needs: [shell, github]
-    runs-on: ubuntu-latest
-    outputs:
-      success: ${{ steps.tests.outputs.success }}
-    permissions:
-      contents: none
-      actions: read
-    steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.36.0
-        env:
-          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
-          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
-        with:
-          secrets_to_redact: '["${{ github.token }}"]'
-      - id: tests
-        run: echo "success=true" >> "$GITHUB_OUTPUT"
-  all:
-    if: ${{ always() }} # this is because we need this to fail and not skipped to avoid PRs getting merged without this passing
-    needs: join
-    runs-on: ubuntu-latest
-    permissions:
-      contents: none
-      actions: read
-    steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.36.0
-        env:
-          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
-          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
-        with:
-          secrets_to_redact: '["${{ github.token }}"]'
-      - env:
-          SUCCESS: ${{ needs.join.outputs.success }}
-        run: |
-          [ "$SUCCESS" = 'true' ]
+    uses: ./.github/workflows/ci.yml
+    with:
+      ref: ${{ github.sha }}
