@@ -4,8 +4,8 @@ _otel_call_and_record_subprocesses() {
   local span_handle="$1"; shift
   local call_command="$1"; shift
   local command="$1"; shift
-  local strace_data="$(\mktemp -u -p "$_otel_shell_pipe_dir")_opentelemetry_shell_$$.strace.pipe"
-  local strace_signal="$(\mktemp -u -p "$_otel_shell_pipe_dir")_opentelemetry_shell_$$.strace.signal"
+  local strace_data="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.strace.pipe.XXXXXXXXXX)"
+  local strace_signal="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.strace.signal.XXXXXXXXXX)"
   \mkfifo "$strace_data" "$strace_signal"
   _otel_record_subprocesses "$span_handle" "$strace_signal" < "$strace_data" 1> /dev/null 2> /dev/null &
   local exit_code=0
@@ -49,19 +49,20 @@ _otel_record_subprocesses() {
       '--- '*) local operation=signal;;
       *) ;;
     esac
-    \eval "local span_handle=\$span_handle_$pid"
+    \eval "local span_handle=\"\${span_handle_$pid:-}\"" # could be empty if child process is faster than fork in parent
     case "$operation" in
       fork)
         if \[ "${OTEL_SHELL_CONFIG_OBSERVE_SUBPROCESSES:-FALSE}" != TRUE ]; then continue; fi
         local new_pid="${line##* }"
+        case "$new_pid" in ''|*[!0-9]*) continue;; esac # skip if not a valid pid (e.g., "?" from unfinished syscall)
         \eval "local span_name=\"\${span_name_$new_pid:-}\""
         if \[ -z "${span_name:-}" ]; then \eval "local span_name=\"\${span_name_$pid:-}\""; fi
         if \[ -z "${span_name:-}" ]; then \eval "local parent_pid=\$parent_pid_$pid"; \eval "local span_name=\"\${span_name_$parent_pid:-}\""; fi
         local span_name="${span_name:-<unknown>}"
-        otel_span_activate "$span_handle"
-        local span_handle="$(otel_span_start @"$time" INTERNAL "$span_name")"
-        otel_span_deactivate
-        \eval "local span_handle_$new_pid=$span_handle"
+        \[ -z "${span_handle:-}" ] || otel_span_activate "$span_handle" # span handle could be empty if there is a sequence of rapid forks and the parent fork is not completed yet even though child is already forking again
+        local new_span_handle="$(otel_span_start @"$time" INTERNAL "$span_name")"
+        \[ -z "${span_handle:-}" ] || otel_span_deactivate
+        \eval "local span_handle_$new_pid=$new_span_handle"
         \eval "local parent_pid_$new_pid=$pid"
         \eval "local span_name_$new_pid=\"\$span_name\""
         # TODO immediately end span if stored due to very fast exit (faster than the fork syscall of the parent can actually be finished) 
@@ -82,10 +83,11 @@ _otel_record_subprocesses() {
             ;;
           *) local name="<unknown>";;
         esac
-        \[ "$span_handle" = "$root_span_handle" ] || otel_span_name "$span_handle" "$name"
+        \[ -z "$span_handle" ] || \[ "$span_handle" = "$root_span_handle" ] || otel_span_name "$span_handle" "$name"
         \eval "local span_name_$pid=\"\$name\""
         ;;
       exit)
+        \[ -n "${span_handle:-}" ] || continue; # if the exit is faster than the fork of the parent, then we dont have a handle we are leaking a span - we accept that
         if \[ "$pid" = "$root_pid" ] && \[ "${signaled:-false}" != true ]; then : > "$signal"; local signaled=true; fi
         if _otel_string_starts_with "$line" "+++ killed by " || (_otel_string_starts_with "$line" "+++ exited with " && ! _otel_string_starts_with "$line" "+++ exited with 0 +++"); then
           otel_span_error "$span_handle"
@@ -93,6 +95,7 @@ _otel_record_subprocesses() {
         \[ "$span_handle" = "$root_span_handle" ] || otel_span_end "$span_handle" @"$time"
         ;;
       signal)
+        \[ -n "${span_handle:-}" ] || continue; # this can happen if a child receives a signal before the parent completes forking, in this case, lets drop the signal
         if \[ "${OTEL_SHELL_CONFIG_OBSERVE_SIGNALS:-FALSE}" != TRUE ]; then continue; fi
         if \[ "$_otel_shell" = bash ]; then
           local name="$line"
