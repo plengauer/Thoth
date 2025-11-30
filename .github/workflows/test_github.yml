@@ -27,6 +27,30 @@ jobs:
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
+  job-copilot-deferred-export:
+    needs: job-smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v5.0.1
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/download-artifact@v6.0.0
+        with:
+          name: packages_${{ inputs.ref }}
+      - uses: ./actions/instrument/job
+        with:
+          cache: 'false'
+        env:
+          GITHUB_WORKFLOW: 'Copilot coding agent'
+          GITHUB_JOB: 'copilot'
+          GITHUB_EVENT_NAME: 'dynamic'
+          OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
+          OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
+      - run: echo "hello world"
   job-node:
     needs: job-smoke
     runs-on: ubuntu-latest
@@ -160,7 +184,7 @@ jobs:
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
-      - uses: renovatebot/github-action@v44.0.3 # node action with call to docker, docker flags that make injection more complicated, then call a node script via exec that already is injected with otel
+      - uses: renovatebot/github-action@v44.0.4 # node action with call to docker, docker flags that make injection more complicated, then call a node script via exec that already is injected with otel
         env:
           RENOVATE_DRY_RUN: full
           RENOVATE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -597,7 +621,7 @@ jobs:
       REPOSITORY_TEMPLATE: thoth-deploy-test-repository-${{ matrix.private  }}-${{ matrix.secret_redaction_strategy }}
       ASSERT_RECEIVING_DATA: 'false'
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.35.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.36.0
         with:
           secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}","${{ secrets.TEST_GITHUB_TOKEN }}"]'
         env:
