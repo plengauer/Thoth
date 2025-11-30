@@ -586,6 +586,36 @@ jobs:
           cat "$OTLP_JSON" | jq -r .name | grep -v '^null$' | sort -u | grep 'Set up job'
           cat "$OTLP_JSON" | jq -r .name | grep -v '^null$' | sort -u | grep 'Complete job'
           # cat "$OTLP_JSON" | jq -r .body | grep -v '^null$' | sort -u | grep 'Cleaning up orphan processes'
+  checksuite-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v5.0.1
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/download-artifact@v6.0.0
+        with:
+          name: packages_${{ inputs.ref }}
+      - id: check_suite
+        run: |
+          curl -L --no-progress-meter --fail --retry 16 -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_REPOSITORY"/commits/deploy-otel/check-suites'?per_page=100&page=1' | jq --unbuffered -r '.check_suites[] | select(.app.slug == "github-actions" | not) | .id' | {
+            read -r id
+            echo "id=$id" >> "$GITHUB_OUTPUT"
+          }
+      - run: |
+          [ -n "${{ steps.check_suite.outputs.id }}" ]
+      - uses: ./actions/instrument/checksuite
+        with:
+          check_suite_id: ${{ steps.check_suite.outputs.id }}
+          cache: false
+        env:
+          OTEL_METRICS_EXPORTER: console
+          OTEL_LOGS_EXPORTER: console
+          OTEL_TRACES_EXPORTER: console
+          OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
   deploy-smoke:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -672,7 +702,7 @@ jobs:
           yq -i '.jobs.deploy.steps[0].env.OTEL_EXPORTER_OTLP_ENDPOINT = "http://'"$(curl 'https://api.ipify.org?format=json' | jq -r .ip)"':8080"' .github/workflows/deploy_otel.yml
           git add . && git commit --message "added deploy action" && git push
       - run: |
-          while ! cat .github/workflows/test.yml | yq '.jobs.hello-world.steps[].uses' | grep -q '/actions/instrument/job@' || ! cat .github/workflows/observability.yml | yq '.jobs.export.steps[].uses' | grep -q '/actions/instrument/workflow@'; do
+          while ! cat .github/workflows/test.yml | yq '.jobs.hello-world.steps[].uses' | grep -q '/actions/instrument/job@' || ! cat .github/workflows/observability_workflow.yml | yq '.jobs.export.steps[].uses' | grep -q '/actions/instrument/workflow@'; do
             sleep 10 && git pull
           done
       - run: |

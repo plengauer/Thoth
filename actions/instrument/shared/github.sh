@@ -77,3 +77,13 @@ gh_artifact_delete() {
   '
 }
 export -f gh_artifact_delete
+
+gh_check_suite() {
+  gh_curl /check-suites/"$1"
+}
+export -f gh_check_suite
+
+gh_check_runs() {
+  gh_curl_paginated /check-suites/"$1"/check-runs'?per_page=100'
+}
+export -f gh_check_runs
