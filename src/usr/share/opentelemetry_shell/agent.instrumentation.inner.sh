@@ -22,7 +22,7 @@ _otel_inject_inner_command_args() {
   # more options
   for arg in $more_args; do \echo -n " ";  _otel_escape_arg "$arg"; done
   # wrap command
-  \echo -n " $_otel_shell -c '. otel.sh'$'\n''_otel_inject $(_otel_escape_arg "$1") "'"$@"'"'"
+  \echo -n " $_otel_shell -c '. otel.sh"$'\n'"_otel_inject $(_otel_escape_arg "$1") "'"$@"'"'"
   shift
   \printf ' %s' "$(_otel_escape_arg "${command#\\}")"
   while \[ "$#" -gt 0 ]; do \echo -n " "; _otel_escape_arg "$1"; shift; done
