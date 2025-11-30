@@ -44,22 +44,6 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: "Determine repository"
-      id: determine-repository
-      env:
-        GITHUB_ACTION_REPOSITORY: ${{ github.action_repository }}
-      shell: bash
-      run: |
-        if [ -n "${{ inputs.action_repository }}" ]; then
-          echo '${{ inputs.action_repository }}'
-        elif [ -n "${GITHUB_ACTION_REPOSITORY%/*}" ] && [ "${GITHUB_ACTION_REPOSITORY%/*}" != plengauer ]; then
-          echo "$GITHUB_ACTION_REPOSITORY"
-        elif [ "$GITHUB_API_URL" = 'https://api.github.com' ]; then
-          echo plengauer/opentelemetry-github
-        else
-          echo "::notice::On private GitHub servers, action runners are not following redirects." >&2
-          echo plengauer/Thoth
-        fi | xargs -I '{}' echo repository='{}' >> "$GITHUB_OUTPUT"
     - name: "Install dependencies"
       shell: bash
       run: type yq || (sudo apt-get update && sudo apt-get -y install yq)
@@ -67,6 +51,39 @@ runs:
       uses: actions/checkout@v5.0.1
       with:
         token: ${{ inputs.github_token }}
+    - name: "Find self"
+      id: find-self
+      shell: bash
+      run: |
+        if [ -r '${{ inputs.__repository_level_instrumentation_file_name_override }}' ]; then
+          echo path="${{ inputs.__repository_level_instrumentation_file_name_override }}" >> "$GITHUB_OUTPUT"
+        elif [ -r "${{ github.workflow }}" ]; then
+          echo path="${{ github.workflow }}" >> "$GITHUB_OUTPUT"
+        else
+          (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
+            [ "$(cat "$workflow_file" | yq .name)" = "${{ github.workflow }}" ] && echo path="$workflow_file" >> "$GITHUB_OUTPUT" && break || true
+          done
+        fi
+    - name: "Determine repository"
+      id: determine-repository
+      env:
+        GITHUB_ACTION_REPOSITORY: ${{ github.action_repository }}
+      shell: bash
+      run: |
+        uses="$(cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "*/actions/instrument/deploy*") | .uses' -r | head -n 1)"
+        self="${uses%%/actions/instrument/deploy*}"
+        if [ -n "${{ inputs.action_repository }}" ]; then
+          echo '${{ inputs.action_repository }}'
+        elif [ -n "${GITHUB_ACTION_REPOSITORY:-}" ] && [ "${GITHUB_ACTION_REPOSITORY%/*}" != plengauer ]; then
+          echo "$GITHUB_ACTION_REPOSITORY"
+        elif [ "${self%/*}" != plengauer ]; then
+          echo "$self"
+        elif [ "$GITHUB_API_URL" = 'https://api.github.com' ]; then
+          echo plengauer/opentelemetry-github
+        else
+          echo "::notice::On private GitHub servers, action runners are not following redirects." >&2
+          echo plengauer/Thoth
+        fi | xargs -I '{}' echo repository='{}' >> "$GITHUB_OUTPUT"
     - name: Deploy Copilot Setup
       if: ${{ inputs.job_level_instrumentation_copilot == 'true' }}
       shell: bash
@@ -91,19 +108,6 @@ runs:
             sed -i 's~'"$repository"'~${{ steps.determine-repository.outputs.repository }}~g' "$workflow_file"
           done
         done
-    - name: "Find self"
-      id: find-self
-      shell: bash
-      run: |
-        if [ -r '${{ inputs.__repository_level_instrumentation_file_name_override }}' ]; then
-          echo path="${{ inputs.__repository_level_instrumentation_file_name_override }}" >> "$GITHUB_OUTPUT"
-        elif [ -r "${{ github.workflow }}" ]; then
-          echo path="${{ github.workflow }}" >> "$GITHUB_OUTPUT"
-        else
-          (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
-            [ "$(cat "$workflow_file" | yq .name)" = "${{ github.workflow }}" ] && echo path="$workflow_file" >> "$GITHUB_OUTPUT" && break || true
-          done
-        fi
     - name: "Find workflow-level observability"
       id: find-workflow-level-instrumentation
       shell: bash
