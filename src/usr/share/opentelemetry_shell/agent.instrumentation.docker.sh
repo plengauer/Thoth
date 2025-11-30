@@ -101,8 +101,7 @@ _otel_inject_docker_args() {
     fi
     \echo -n ' '; _otel_escape_args --entrypoint "$(_otel_resolve_docker_image_shell "$executable" "$image")"
     \echo -n ' '; _otel_escape_arg "$1"; shift
-    \echo -n ' '; _otel_escape_args -c '. otel.sh
-eval _otel_inject "$(_otel_escape_args "$@")"' sh
+    \echo -n ' '; _otel_escape_args -c '. otel.sh'$'\n''eval _otel_inject "$(_otel_escape_args "$@")"' sh
     \echo -n ' '; if \[ -n "${entrypoint_override:-}" ]; then \echo "$entrypoint_override" | _otel_line_split; else "$executable" inspect "$image" | \jq -r '.[0].Config.Entrypoint[]?'; fi | _otel_escape_stdin
     if \[ "$#" = 0 ]; then \echo -n ' '; "$executable" inspect "$image" | \jq -r '.[0].Config.Cmd[]?' | _otel_escape_stdin; fi
   else
