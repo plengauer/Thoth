@@ -101,7 +101,6 @@ runs:
       id: determine-instrumentation-version
       shell: bash
       run: |
-        cat "$GITHUB_ACTION_PATH"/../../../VERSION | xargs -I '{}' echo version_real='{}' >> "$GITHUB_OUTPUT"
         if [ "${{ inputs.action_version }}" = same ]; then
           cat "${{ steps.find-self.outputs.path }}" | yq -r '.jobs[].steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/deploy*") | .uses' | cut -d @ -f 2
         else
@@ -173,7 +172,7 @@ runs:
       run: |
         if [ -w "${{ steps.find-workflow-level-instrumentation.outputs.path }}" ]; then path="${{ steps.find-workflow-level-instrumentation.outputs.path }}"; else path="${{ inputs.workflows_directory }}/${{ inputs.workflow_level_instrumentation_file_name }}"; fi
         if cat "$path" | yq '.jobs.export.container' | grep -q '^null$'; then
-          image=ghcr.io/"$(echo ${{ steps.determine-repository.outputs.repository }} | cut -d / -f 1)"/opentelemetry-github-workflow-instrumentation-runner:${{ steps.determine-instrumentation-version.outputs.version_real }}
+          image=ghcr.io/"$(echo ${{ steps.determine-repository.outputs.repository }} | cut -d / -f 1)"/opentelemetry-github-workflow-instrumentation-runner:${{ steps.determine-instrumentation-version.outputs.version }}
           if ! sudo docker pull "$image"; then
             echo ::warning::'Runner image '"$image"' is unavailable, skipping configuration since it its only for optimization. A common cause for this is that the package is not publicly visible in the ghcr. This needs to be configured manually.'
             exit 0
@@ -238,7 +237,7 @@ runs:
       run: |
         if [ -w "${{ steps.find-check-suite-level-instrumentation.outputs.path }}" ]; then path="${{ steps.find-check-suite-level-instrumentation.outputs.path }}"; else path="${{ inputs.workflows_directory }}/${{ inputs.check_suite_level_instrumentation_file_name }}"; fi
         if cat "$path" | yq '.jobs.export.container' | grep -q '^null$'; then
-          image=ghcr.io/"$(echo ${{ steps.determine-repository.outputs.repository }} | cut -d / -f 1)"/opentelemetry-github-workflow-instrumentation-runner:${{ steps.determine-instrumentation-version.outputs.version_real }}
+          image=ghcr.io/"$(echo ${{ steps.determine-repository.outputs.repository }} | cut -d / -f 1)"/opentelemetry-github-workflow-instrumentation-runner:${{ steps.determine-instrumentation-version.outputs.version }}
           if ! sudo docker pull "$image"; then
             echo ::warning::'Runner image '"$image"' is unavailable, skipping configuration since it its only for optimization. A common cause for this is that the package is not publicly visible in the ghcr. This needs to be configured manually.'
             exit 0
