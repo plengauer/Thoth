@@ -2,7 +2,6 @@ const process = require('process')
 const { spawn } = require('child_process');
 
 function run(executable, args = []) {
-  console.log(process.platform);
   if (process.platform != 'linux') return;
   return new Promise((resolve, reject) => {
     const process = spawn(executable, args, { cwd: __dirname, stdio: 'inherit' });
