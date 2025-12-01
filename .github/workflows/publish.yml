@@ -107,7 +107,7 @@ jobs:
             image_name="${image_name#./}"
             image_name="${image_name%.image}"
             for tag_simple in "v${major}.${minor}.${patch}" "v${major}.${minor}" "v${major}" "${{ matrix.ref }}"; do
-              tag_full=ghcr.io/"${GITHUB_REPOSITORY%/*}"/"$image_name":"$tag_simple"            
+              tag_full=ghcr.io/"${GITHUB_REPOSITORY%/*}"/"$image_name":"$tag_simple"
               sudo docker image tag "$image_name" "$tag_full"
             done
             sudo docker image remove "$image_name"
