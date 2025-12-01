@@ -102,7 +102,7 @@ runs:
       shell: bash
       run: |
         cat "$GITHUB_ACTION_PATH"/../../../VERSION | xargs -I '{}' echo version_real='{}' >> "$GITHUB_OUTPUT"
-        if [ ${{ inputs.action_version }} = same ]; then
+        if [ "${{ inputs.action_version }}" = same ]; then
           cat "${{ steps.find-self.outputs.path }}" | yq -r '.jobs[].steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/deploy*") | .uses' | cut -d @ -f 2
         else
           echo '${{ inputs.action_version }}'
