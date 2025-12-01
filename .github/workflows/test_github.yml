@@ -491,6 +491,19 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: ./actions/instrument/job
       - run: echo hello world
+  job-ubuntu-slim:
+    needs: job-smoke
+    runs-on: ubuntu-slim
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v5.0.1
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: ./actions/instrument/job
+      - run: echo hello world
   workflow-smoke:
     runs-on: ubuntu-latest
     timeout-minutes: 180
