@@ -62,7 +62,7 @@ jobs:
       - id: tests
         run: echo "success=true" >> "$GITHUB_OUTPUT"
   all:
-    if: ${{ always() }} # this is because we need this to fail and not skipped to avoid PRs getting merged without this passing
+    if: ${{ success() || failure() }} # this is because we need this to fail and not skipped to avoid PRs getting merged without this passing
     needs: join
     runs-on: ubuntu-latest
     permissions:
