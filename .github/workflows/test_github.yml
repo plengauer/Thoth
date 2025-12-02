@@ -620,7 +620,8 @@ jobs:
           name: packages_${{ inputs.ref }}
       - id: check_suite
         run: |
-          curl -L --no-progress-meter --fail --retry 16 -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_REPOSITORY"/commits/deploy-otel/check-suites'?per_page=100&page=1' | jq --unbuffered -r '.check_suites[] | select(.app.slug == "github-actions" | not) | .id' | {
+          curl -L --no-progress-meter --fail --retry 16 -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_REPOSITORY"/branches'?per_page=100&page=1' | jq '.[].name' -r \
+           | xargs -I '{}' curl -L --no-progress-meter --fail --retry 16 -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_REPOSITORY"/commits/'{}'/check-suites'?per_page=100&page=1' | jq --unbuffered '.check_suites[] | select(.app.slug == "github-actions" | not) | .id' -r | tail -n 1 | {
             read -r id
             echo "id=$id" >> "$GITHUB_OUTPUT"
           }
