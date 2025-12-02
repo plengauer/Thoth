@@ -160,8 +160,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         with:
           release_id: ${{ steps.create_release.outputs.id }}
-      - id: version_parts
-        run: |
+      - run: |
           version="${{ steps.version.outputs.version }}"
           major=$(echo "$version" | cut -d . -f 1)
           minor=$(echo "$version" | cut -d . -f 2)
