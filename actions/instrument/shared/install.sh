@@ -1,7 +1,7 @@
 #!/bin/sh -e
 export GITHUB_ACTION_REPOSITORY="${GITHUB_ACTION_REPOSITORY:-"$GITHUB_REPOSITORY"}"
 
-ensure_installed() { for item in "$@"; do type "${item%%;*}" 1> /dev/null 2> /dev/null || echo "${item#*;}"; done | sort -u | (type eatmydata 1> /dev/null 2> /dev/null && xargs -r sudo eatmydata apt-get install || xargs -r sudo apt-get install); }
+ensure_installed() { for item in "$@"; do type "${item%%;*}" 1> /dev/null 2> /dev/null || echo "${item#*;}"; done | sort -u | (type eatmydata 1> /dev/null 2> /dev/null && xargs -r sudo eatmydata apt-get -y install || xargs -r sudo apt-get -y install); }
 ensure_installed eatmydata jq curl wget "$@" || (sudo apt-get update && ensure_installed eatmydata jq curl wget "$@")
 
 if ! type otel.sh 2> /dev/null; then
