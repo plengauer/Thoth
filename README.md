@@ -213,7 +213,7 @@ jobs:
 
 To deploy job-level instrumentation, add the following step as first in every job you want to observe. You can configure the SDK as described <a href="https://opentelemetry.io/docs/languages/sdk-configuration/">here</a> by adding according environment variables to the setup step. Job-level instrumentation can be combined arbitrarily with workflow-level instrumentation.
 ```yaml
-- uses: plengauer/opentelemetry-github/actions/instrument/job@v5.36
+- uses: plengauer/opentelemetry-github/actions/instrument/job@5.37
   env:
     OTEL_SERVICE_NAME: 'Test'
     # ...
@@ -221,7 +221,7 @@ To deploy job-level instrumentation, add the following step as first in every jo
 ```
 Depending on the actions in use, GitHub `secrets` or other sensitive information could appear in commandlines or action inputs/states which may captured as attributes on spans, metrics, or logs recorded by job-level instrumentation. To redact these secrets, use the following parameter to redact their values from any attribute. The value of the parameter must be a `json` object, whereas every value of every field is considered a secret to be redacted. By default, if left unset, the implicit GitHub token is redacted.
 ```yaml
-- uses: plengauer/opentelemetry-github/actions/instrument/job@v5.36
+- uses: plengauer/opentelemetry-github/actions/instrument/job@5.37
   with:
     secrets_to_redact: '${{ toJSON(secrets) }}' # Redact all secrets from any attribute, span name, or log body.
 ```
