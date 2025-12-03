@@ -15,7 +15,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v5.0.1
+      - uses: actions/checkout@v6.0.1
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v6.0.0
@@ -35,7 +35,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v5.0.1
+      - uses: actions/checkout@v6.0.1
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v6.0.0
@@ -59,7 +59,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v5.0.1
+      - uses: actions/checkout@v6.0.1
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v6.0.0
@@ -82,7 +82,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v5.0.1
+      - uses: actions/checkout@v6.0.1
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v6.0.0
@@ -118,7 +118,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v5.0.1
+      - uses: actions/checkout@v6.0.1
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v6.0.0
@@ -146,7 +146,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v5.0.1
+      - uses: actions/checkout@v6.0.1
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v6.0.0
@@ -172,7 +172,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v5.0.1
+      - uses: actions/checkout@v6.0.1
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v6.0.0
@@ -222,7 +222,7 @@ jobs:
     outputs:
       foo: ${{ steps.my-step.outputs.foo }}
     steps:
-      - uses: actions/checkout@v5.0.1
+      - uses: actions/checkout@v6.0.1
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v6.0.0
@@ -244,7 +244,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v5.0.1
+      - uses: actions/checkout@v6.0.1
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v6.0.0
@@ -264,7 +264,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v5.0.1
+      - uses: actions/checkout@v6.0.1
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v6.0.0
@@ -286,7 +286,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v5.0.1
+      - uses: actions/checkout@v6.0.1
       - uses: actions/download-artifact@v6.0.0
         with:
           name: packages_${{ inputs.ref }}
@@ -311,7 +311,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v5.0.1
+      - uses: actions/checkout@v6.0.1
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v6.0.0
@@ -332,7 +332,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v5.0.1
+      - uses: actions/checkout@v6.0.1
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v6.0.0
@@ -374,7 +374,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v5.0.1
+      - uses: actions/checkout@v6.0.1
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v6
@@ -423,7 +423,7 @@ jobs:
       security-events: none
       statuses: none
     steps:
-      - uses: actions/checkout@v5.0.1
+      - uses: actions/checkout@v6.0.1
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v6.0.0
@@ -447,7 +447,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v5.0.1
+      - uses: actions/checkout@v6.0.1
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v6.0.0
@@ -473,7 +473,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v5.0.1
+      - uses: actions/checkout@v6.0.1
         with:
           ref: ${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -486,7 +486,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v5.0.1
+      - uses: actions/checkout@v6.0.1
         with:
           ref: ${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -498,7 +498,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v5.0.1
+      - uses: actions/checkout@v6.0.1
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v6.0.0
@@ -541,7 +541,7 @@ jobs:
     steps:
       - id: filename
         run: echo "otlp=$(mktemp)" >> "$GITHUB_OUTPUT"
-      - uses: actions/checkout@v5.0.1
+      - uses: actions/checkout@v6.0.1
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v6.0.0
@@ -593,7 +593,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v5.0.1
+      - uses: actions/checkout@v6.0.1
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v6.0.0
@@ -623,7 +623,7 @@ jobs:
     permissions:
       actions: read
     steps:
-      - uses: actions/checkout@v5.0.1
+      - uses: actions/checkout@v6.0.1
         with:
           ref: ${{ inputs.ref }}
       - uses: ./actions/instrument/deploy
@@ -666,7 +666,7 @@ jobs:
           curl -L -H "Authorization: Bearer ${{ secrets.TEST_GITHUB_TOKEN }}" -X DELETE "${GITHUB_API_URL:-https://api.github.com}"/repos/${{ steps.config.outputs.user }}/${{ steps.config.outputs.repository }} || true
       - run: |
           curl -L -H "Authorization: Bearer ${{ secrets.TEST_GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/user/repos -d '{"name":"${{ steps.config.outputs.repository }}","private":${{ matrix.private }},"auto_init":true}'
-      - uses: actions/checkout@v5.0.1
+      - uses: actions/checkout@v6.0.1
         with:
           repository: "${{ steps.config.outputs.user }}/${{ steps.config.outputs.repository }}"
           token: ${{ secrets.TEST_GITHUB_TOKEN }}

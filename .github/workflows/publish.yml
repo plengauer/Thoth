@@ -23,7 +23,7 @@ jobs:
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
         with:
           secrets_to_redact: '["${{ github.token }}"]'
-      - uses: actions/checkout@v5.0.1
+      - uses: actions/checkout@v6.0.1
         with:
           fetch-depth: 0
           fetch-tags: true
@@ -78,7 +78,7 @@ jobs:
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - uses: actions/checkout@v5.0.1
+      - uses: actions/checkout@v6.0.1
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }} # need to use this token for later pushes of tags
           ref: ${{ matrix.ref }}
