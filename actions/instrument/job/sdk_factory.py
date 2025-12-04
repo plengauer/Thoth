@@ -25,3 +25,4 @@ while True:
       pipe = tokens[2]
       with open(pipe) as commands:
         sdk.run(scope, version, commands)
+        sys.exit(0)
