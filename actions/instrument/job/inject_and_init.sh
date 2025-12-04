@@ -271,6 +271,7 @@ export -f observe_rate_limit
 root4job_end() {
   exec 1> /tmp/opentelemetry_shell.github.debug.log
   exec 2> /tmp/opentelemetry_shell.github.debug.log
+date +"%Y-%m-%d %H:%M:%S.%3N"
   rm /tmp/opentelemetry_shell.github.observe_rate_limits
   [ -z "${INSTRUMENTATION_CACHE_KEY:-}" ] || sudo -E -H node -e "require('@actions/cache').saveCache(['/tmp/*.aliases'], '$INSTRUMENTATION_CACHE_KEY');" &> /dev/null &
 
@@ -365,18 +366,22 @@ root4job_end() {
     )
   fi
 
+date +"%Y-%m-%d %H:%M:%S.%3N"
   while kill -0 "$observe_rate_limit_pid" 2> /dev/null; do sleep 1; done
   if [ -p /tmp/otel_shell/sdk_factory."$USER".pipe ]; then echo "EOF" > /tmp/otel_shell/sdk_factory."$USER".pipe; rm -rf /tmp/otel_shell; fi
   timeout 5s sh -c 'while fuser /opt/opentelemetry_shell/venv/bin/python; do sleep 1; done; true' &> /dev/null || echo "Found leaked SDK processes (this may be due to leaked processes that are still being observed)."
+date +"%Y-%m-%d %H:%M:%S.%3N"
   
   if [ -n "${OTEL_SHELL_COLLECTOR_CONTAINER:-}" ]; then
-    time sudo docker stop "$OTEL_SHELL_COLLECTOR_CONTAINER"
+    sudo docker stop "$OTEL_SHELL_COLLECTOR_CONTAINER"
+date +"%Y-%m-%d %H:%M:%S.%3N"
     local collector_pipe_warning="$(mktemp -u)"
     local collector_pipe_error="$(mktemp -u)"
     mkfifo "$collector_pipe_warning" "$collector_pipe_error"
     cat "$collector_pipe_warning" | grep '^warn ' | cut -d ' ' -f 2- | sort -u | while read -r line; do echo ::warning::"$line"; done &
     cat "$collector_pipe_error" | grep '^err ' | cut -d ' ' -f 2- | sort -u | while read -r line; do echo ::error::"$line"; done &
     sudo docker logs "$OTEL_SHELL_COLLECTOR_CONTAINER" 2>&1 | tr '\t' ' ' | cut -d ' ' -f 2- | tee "$collector_pipe_warning" | tee "$collector_pipe_error" | { if [ -n "$INPUT_DEBUG" ]; then cat; else cat > /dev/null; fi; }
+date +"%Y-%m-%d %H:%M:%S.%3N"
   fi
   
   if [ -n "${INTERNAL_OTEL_DEFERRED_EXPORT_DIR:-}" ]; then
