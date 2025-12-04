@@ -19,7 +19,7 @@ jobs:
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
         with:
           secrets_to_redact: '["${{ github.token }}"]'
-      - uses: actions/checkout@v5.0.1
+      - uses: actions/checkout@v6.0.1
         with:
           fetch-depth: 0
           fetch-tags: true
@@ -52,7 +52,7 @@ jobs:
           secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}","${{ secrets.OPENAI_TOKEN }}"]'
 
       - id: autoversion
-        uses: plengauer/autoversion@v2.1.2
+        uses: plengauer/autoversion@v2.1.3
         with:
           github_token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           openai_token: ${{ secrets.OPENAI_TOKEN }}
