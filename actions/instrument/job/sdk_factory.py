@@ -16,7 +16,6 @@ while True:
       pid = os.fork()
       if pid != 0:
         continue
-      close(pipe)
       pid = os.fork()
       if pid != 0:
         sys.exit(0)
