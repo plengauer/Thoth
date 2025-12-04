@@ -365,13 +365,8 @@ root4job_end() {
     )
   fi
 
-date +"%Y-%m-%d %H:%M:%S.%3N"
-set -x
-  while kill -0 "$observe_rate_limit_pid" 2> /dev/null; do sleep 1; done
   if [ -p /tmp/otel_shell/sdk_factory."$USER".pipe ]; then echo "EOF" > /tmp/otel_shell/sdk_factory."$USER".pipe; rm -rf /tmp/otel_shell; fi
-  timeout 5s sh -xc 'while fuser /opt/opentelemetry_shell/venv/bin/python; do sleep 1; done; true' || echo "Found leaked SDK processes (this may be due to leaked processes that are still being observed)."
-set +x
-date +"%Y-%m-%d %H:%M:%S.%3N"
+  timeout 5s sh -c 'while fuser /opt/opentelemetry_shell/venv/bin/python; do sleep 1; done; true' || echo "Found leaked SDK processes (this may be due to leaked processes that are still being observed)."
   
   if [ -n "${OTEL_SHELL_COLLECTOR_CONTAINER:-}" ]; then
     sudo docker stop "$OTEL_SHELL_COLLECTOR_CONTAINER"
@@ -410,7 +405,6 @@ root4job() {
   otel_init
   touch /tmp/opentelemetry_shell.github.observe_rate_limits
   observe_rate_limit &> /dev/null &
-  observe_rate_limit_pid="$!"
   time_start="$(date +%s.%N)"
   span_handle="$(otel_span_start CONSUMER "${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}")"
   otel_span_attribute_typed $span_handle string github.actions.type=job
