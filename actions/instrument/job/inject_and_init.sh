@@ -370,7 +370,7 @@ root4job_end() {
   timeout 5s sh -c 'while fuser /opt/opentelemetry_shell/venv/bin/python; do sleep 1; done; true' &> /dev/null || echo "Found leaked SDK processes (this may be due to leaked processes that are still being observed)."
   
   if [ -n "${OTEL_SHELL_COLLECTOR_CONTAINER:-}" ]; then
-    sudo docker stop "$OTEL_SHELL_COLLECTOR_CONTAINER"
+    time sudo docker stop "$OTEL_SHELL_COLLECTOR_CONTAINER"
     local collector_pipe_warning="$(mktemp -u)"
     local collector_pipe_error="$(mktemp -u)"
     mkfifo "$collector_pipe_warning" "$collector_pipe_error"
