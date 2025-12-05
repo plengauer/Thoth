@@ -153,7 +153,7 @@ otel_span_attribute_typed "$workflow_span_handle" string github.actions.workflow
 otel_span_attribute_typed "$workflow_span_handle" int github.actions.workflow_run.id="$(jq < "$workflow_json" .id)"
 otel_span_attribute_typed "$workflow_span_handle" int github.actions.workflow_run.attempt="$(jq < "$workflow_json" .run_attempt)"
 otel_span_attribute_typed "$workflow_span_handle" int github.actions.workflow_run.number="$(jq < "$workflow_json" .run_number)"
-otel_span_attribute_typed "$workflow_span_handle" string github.actions.workflow_run.conclusion="$(jq < "$workflow_json" -r .conclusion)"
+otel_span_attribute_typed "$workflow_span_handle" string github.actions.conclusion="$(jq < "$workflow_json" -r .conclusion)"
 otel_span_attribute_typed "$workflow_span_handle" int github.actions.actor.id="$(jq < "$workflow_json" .actor.id)"
 otel_span_attribute_typed "$workflow_span_handle" string github.actions.actor.name="$(jq < "$workflow_json" -r .actor.login)"
 otel_span_attribute_typed "$workflow_span_handle" string github.actions.event.name="$(jq < "$workflow_json" -r .event)"
