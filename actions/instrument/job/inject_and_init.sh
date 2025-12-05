@@ -263,7 +263,10 @@ observe_rate_limit() {
       otel_observation_attribute_typed "$observation_handle" string github.api.resource="$resource"
       otel_counter_observe "$remaining_gauge_handle" "$observation_handle"
     done
-    while [ ! -r /tmp/opentelemetry_shell.github.observe_rate_limits ]; do sleep 1; done
+    for i in 1 2 3 4 5; do
+      if ! [ -r /tmp/opentelemetry_shell.github.observe_rate_limits ]; then break; fi
+      sleep 1
+    done
   done
 }
 export -f observe_rate_limit
