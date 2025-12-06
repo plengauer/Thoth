@@ -2,13 +2,13 @@
 if [ -n "${INPUT___KILL_SWITCH:-}" ]; then
   echo "::warning ::OpenTelemetry for GitHub actions disabled by kill switch!" && exit 0
 fi
-if [ "${OTEL_LOGS_EXPORTER:-otlp}" != otlp ] && [ "${OTEL_LOGS_EXPORTER:-otlp}" != console ] && [ "${OTEL_LOGS_EXPORTER:-otlp}" != none ]; then
+if [ "${OTEL_LOGS_EXPORTER:-otlp}" != otlp ] && [ "${OTEL_LOGS_EXPORTER:-otlp}" != console ] && [ "${OTEL_LOGS_EXPORTER:-otlp}" != none ] && [ "${OTEL_LOGS_EXPORTER:-otlp}" != deferred ]; then
   echo "::error ::OpenTelemetry for GitHub actions only supports otlp exporters ($OTEL_LOGS_EXPORTER). For other exporters, pipe the data through a collector outside of GitHub to translate the data to a different protocol." && false
 fi
-if [ "${OTEL_METRICS_EXPORTER:-otlp}" != otlp ] && [ "${OTEL_METRICS_EXPORTER:-otlp}" != console ] && [ "${OTEL_METRICS_EXPORTER:-otlp}" != none ]; then
+if [ "${OTEL_METRICS_EXPORTER:-otlp}" != otlp ] && [ "${OTEL_METRICS_EXPORTER:-otlp}" != console ] && [ "${OTEL_METRICS_EXPORTER:-otlp}" != none ] && [ "${OTEL_METRICS_EXPORTER:-otlp}" != deferred ]; then
   echo "::error ::OpenTelemetry for GitHub actions only supports otlp exporters ($OTEL_METRICS_EXPORTER). For other exporters, pipe the data through a collector outside of GitHub to translate the data to a different protocol." && false
 fi
-if [ "${OTEL_TRACES_EXPORTER:-otlp}" != otlp ] && [ "${OTEL_TRACES_EXPORTER:-otlp}" != console ] && [ "${OTEL_TRACES_EXPORTER:-otlp}" != none ]; then
+if [ "${OTEL_TRACES_EXPORTER:-otlp}" != otlp ] && [ "${OTEL_TRACES_EXPORTER:-otlp}" != console ] && [ "${OTEL_TRACES_EXPORTER:-otlp}" != none ] && [ "${OTEL_TRACES_EXPORTER:-otlp}" != deferred ]; then
   echo "::error ::OpenTelemetry for GitHub actions only supports otlp exporters ($OTEL_TRACES_EXPORTER). For other exporters, pipe the data through a collector outside of GitHub to translate the data to a different protocol." && false
 fi
 if [ "$GITHUB_EVENT_NAME" = dynamic ]; then
