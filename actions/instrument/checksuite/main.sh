@@ -92,7 +92,7 @@ check_suite_ended_at="$(jq < "$check_runs_json" -r .completed_at | sort -r | hea
 check_suite_span_handle="$(otel_span_start @"$check_suite_started_at" CONSUMER "$(jq < "$check_suite_json" -r '.app.name')")"
 otel_span_attribute_typed "$check_suite_span_handle" string github.actions.type=checksuite
 otel_span_attribute_typed "$check_suite_span_handle" int github.actions.checks.suite.id="$(jq < "$check_suite_json" .id)"
-otel_span_attribute_typed "$check_suite_span_handle" string github.actions.checks.suite.conclusion="$(jq < "$check_suite_json" -r .conclusion)"
+otel_span_attribute_typed "$check_suite_span_handle" string github.actions.conclusion="$(jq < "$check_suite_json" -r .conclusion)"
 otel_span_attribute_typed "$check_suite_span_handle" string github.actions.checks.suite.ref="/refs/heads/$(jq < "$check_suite_json" -r .head_branch)"
 otel_span_attribute_typed "$check_suite_span_handle" string github.actions.checks.suite.ref.sha="$(jq < "$check_suite_json" -r .head_sha)"
 otel_span_attribute_typed "$check_suite_span_handle" string github.actions.checks.suite.ref.name="$(jq < "$check_suite_json" -r .head_branch)"
@@ -125,7 +125,7 @@ jq < "$check_runs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusi
   otel_span_attribute_typed "$check_run_span_handle" string github.actions.url="$link"/"$check_run_id"
   otel_span_attribute_typed "$check_run_span_handle" int github.actions.checks.run.id="$check_run_id"
   otel_span_attribute_typed "$check_run_span_handle" string github.actions.checks.run.name="$check_run_name"
-  otel_span_attribute_typed "$check_run_span_handle" string github.actions.checks.run.conclusion="$check_run_conclusion"
+  otel_span_attribute_typed "$check_run_span_handle" string github.actions.conclusion="$check_run_conclusion"
   otel_span_attribute_typed "$check_run_span_handle" string github.actions.checks.app.slug="$app_slug"
   [ -z "${INPUT_DEBUG}" ] || echo "span check $TRACEPARENT $check_run_name" >&2
   if [ "$check_run_conclusion" = failure ]; then otel_span_error "$check_run_span_handle"; fi
