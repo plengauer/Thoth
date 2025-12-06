@@ -176,6 +176,7 @@ $(cat $section_exporter_metrics)
 $(cat $section_exporter_traces)
 processors:
   batch:
+    timeout 600s
   transform:
     error_mode: ignore
     log_statements:
