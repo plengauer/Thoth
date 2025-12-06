@@ -176,7 +176,7 @@ $(cat $section_exporter_metrics)
 $(cat $section_exporter_traces)
 processors:
   batch:
-    timeout: $([ "${deferred:-false}" = true ] && echo 10 || echo $(60 * 60 * 1))s
+    timeout: $([ "${deferred:-false}" = true ] && echo $((60 * 60 * 1)) || echo 10)s
   transform:
     error_mode: ignore
     log_statements:
