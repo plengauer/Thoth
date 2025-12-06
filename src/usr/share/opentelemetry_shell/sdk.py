@@ -289,6 +289,9 @@ def handle(scope, version, command, arguments):
             ]).merge(Resource.create(resource)) if os.environ.get('OTEL_DISABLE_RESOURCE_DETECTION', 'FALSE') == 'FALSE' else Resource.create(resource)
 
     elif command == 'SHUTDOWN':
+        if not auto_end:
+            for span in spans.values():
+                print("DEBUG DEBUG DEBUG still active span: " + span.name, file=sys.stderr)
         if auto_end:
             for span in spans.values():
                 span.end()
