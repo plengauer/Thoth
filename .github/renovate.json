@@ -42,7 +42,7 @@
       ],
       "depNameTemplate": "plengauer/Thoth/actions/instrument/deploy",
       "datasourceTemplate": "github-tags",
-      "extractVersionTemplate": "^v(?<version>\\d+\\.\\d+)"
+      "extractVersionTemplate": "^v(?<version>\\d+)"
     },
     {
       "customType": "regex",
@@ -54,7 +54,7 @@
       ],
       "depNameTemplate": "plengauer/Thoth/actions/instrument/workflow",
       "datasourceTemplate": "github-tags",
-      "extractVersionTemplate": "^v(?<version>\\d+\\.\\d+)"
+      "extractVersionTemplate": "^v(?<version>\\d+)"
     },
     {
       "customType": "regex",
@@ -66,7 +66,7 @@
       ],
       "depNameTemplate": "plengauer/Thoth/actions/instrument/job",
       "datasourceTemplate": "github-tags",
-      "extractVersionTemplate": "^v(?<version>\\d+\\.\\d+)"
+      "extractVersionTemplate": "^v(?<version>\\d+)"
     }
   ]
 }
