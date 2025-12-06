@@ -3,6 +3,11 @@ const opentelemetry_sdk = require('@opentelemetry/sdk-node');
 const context_async_hooks = require("@opentelemetry/context-async-hooks");
 const semver = require("semver");
 
+// node.js terminates when event loop is empty and flushing the SDK (below) is unfortunately async.
+// creating a simple span processor manually is a pain because all the exporter creation and configuration logic is not publicly accessible.
+// so lets give the BatchSpanProcessor an identity crisis and demote him to a SimpleSpanProcessor that will start flushing synchronously on every span getting queued
+process.env.OTEL_BSP_MAX_EXPORT_BATCH_SIZE=1
+
 class CustomRootContextManager {
   inner;
   custom_context;
