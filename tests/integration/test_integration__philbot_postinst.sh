@@ -11,14 +11,14 @@ value() {
   \echo "$RET"
 }
 config() {
-    value "$*" | xargs -I {} /bin/echo "$*={}"
+    value "$*" | tee /dev/stderr | xargs -I {} /bin/echo "$*={}"
 }
 config DISCORD_API_TOKEN
 ' > populate.sh
   chmod +x populate.sh
 fi
 
-sh -ex ./populate.sh
+sh -e ./populate.sh
 . otel.sh
 . /usr/share/debconf/confmodule
 config() { db_get philbot-containerized/"$*"; echo "$*=$RET"; }
