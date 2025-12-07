@@ -18,7 +18,7 @@ config DISCORD_API_TOKEN
   chmod +x populate.sh
 fi
 
-sh -e ./populate.sh
+sh -ex ./populate.sh
 . otel.sh
 . /usr/share/debconf/confmodule
 config() { db_get philbot-containerized/"$*"; echo "$*=$RET"; }
