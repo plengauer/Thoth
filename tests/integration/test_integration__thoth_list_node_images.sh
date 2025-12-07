@@ -1,3 +1,4 @@
+[ -d ../src/usr/share/opentelemetry_shell/agent.instrumentation.node ] || exit 0
 set +f
 export OTEL_SHELL_CONFIG_OBSERVE_PIPES=TRUE
 export OTEL_SHELL_CONFIG_MUTE_INTERNALS=TRUE
