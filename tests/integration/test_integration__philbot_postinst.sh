@@ -10,7 +10,7 @@ else
   chmod +x populate.sh
 fi
 
-sh -e populate.sh
+sh -e ./populate.sh
 . otel.sh
 . /usr/share/debconf/confmodule
 db_stop
