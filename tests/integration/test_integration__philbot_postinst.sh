@@ -8,10 +8,10 @@ else
 echo hello world
 value() {
   db_get philbot/"$*"
-  \echo "$RET"
+  echo foo # "$RET"
 }
 config() {
-    value "$*" | tee /dev/stderr | xargs -I {} /bin/echo "$*={}"
+    value "$*" | xargs -I {} /bin/echo "$*={}"
 }
 config DISCORD_API_TOKEN
 ' > populate.sh
