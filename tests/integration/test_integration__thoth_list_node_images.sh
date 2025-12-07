@@ -1,3 +1,4 @@
+[ -z "${WSL_DISTRO_NAME:-}" ] || exit 0
 [ -d ../src/usr/share/opentelemetry_shell/agent.instrumentation.node ] || exit 0
 type npm || exit 0
 set +f
