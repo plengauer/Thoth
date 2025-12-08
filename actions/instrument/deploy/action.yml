@@ -133,7 +133,7 @@ runs:
       shell: bash
       run: |
         (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
-          cat "$workflow_file" | yq .on.workflow_run.workflows 2> /dev/null | grep -qv '^null$' && cat "$workflow_file" | yq .jobs.*.steps[].uses | grep -q /actions/instrument/checksuite && echo path="$workflow_file" >> "$GITHUB_OUTPUT" && break || true
+          cat "$workflow_file" | yq .on.check_suite 2> /dev/null | grep -qv '^null$' && cat "$workflow_file" | yq .jobs.*.steps[].uses | grep -q /actions/instrument/checksuite && echo path="$workflow_file" >> "$GITHUB_OUTPUT" && break || true
         done
     - name: "Determine version"
       id: determine-instrumentation-version
