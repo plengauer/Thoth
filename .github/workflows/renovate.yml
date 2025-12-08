@@ -89,43 +89,43 @@ jobs:
           stable="debian:$(jq < /tmp/launchpad.debian.json '.entries[] | select(.active == true) | select(.status == "Supported") | .name' -r | head -n 1)"
           latest="debian:$(jq < /tmp/launchpad.debian.json '.entries[] | select(.active == true) | select(.status == "Current Stable Release") | .name' -r)"
           dev="debian:$(jq < /tmp/launchpad.debian.json '.entries[] | select(.active == true) | select(.status == "Active Development" or .status == "Pre-release Freeze") | .name' -r | head -n 1)"
-          cat .github/workflows/images.json | jq ".debian.oldest = \"$oldest\"" | jq ".debian.stable = \"$stable\"" | jq ".debian.latest = \"$latest\"" | jq ".debian.dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/workflows/images.json
-          cat .github/workflows/images.json | jq ".\"debian-slim\".oldest = \"$oldest-slim\"" | jq ".\"debian-slim\".stable = \"$stable-slim\"" | jq ".\"debian-slim\".latest = \"$latest-slim\"" | jq ".\"debian-slim\".dev = \"$dev-slim\"" > /tmp/images.json && cat < /tmp/images.json > .github/workflows/images.json
+          cat .github/images.json | jq ".debian.oldest = \"$oldest\"" | jq ".debian.stable = \"$stable\"" | jq ".debian.latest = \"$latest\"" | jq ".debian.dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/images.json
+          cat .github/images.json | jq ".\"debian-slim\".oldest = \"$oldest-slim\"" | jq ".\"debian-slim\".stable = \"$stable-slim\"" | jq ".\"debian-slim\".latest = \"$latest-slim\"" | jq ".\"debian-slim\".dev = \"$dev-slim\"" > /tmp/images.json && cat < /tmp/images.json > .github/images.json
       - run: |
           curl -s --fail https://api.launchpad.net/devel/ubuntu/series > /tmp/launchpad.ubuntu.json
           oldest="ubuntu:$(jq < /tmp/launchpad.ubuntu.json '.entries[] | select(.active == true) | select(.status == "Supported") | .name' -r | head -n 2 | tail -n 1)"
           stable="ubuntu:$(jq < /tmp/launchpad.ubuntu.json '.entries[] | select(.active == true) | select(.status == "Supported") | .name' -r | head -n 1)"
           latest="ubuntu:$(jq < /tmp/launchpad.ubuntu.json '.entries[] | select(.active == true) | select(.status == "Current Stable Release") | .name' -r)"
           dev="ubuntu:$(jq < /tmp/launchpad.ubuntu.json '.entries[] | select(.active == true) | select(.status == "Active Development" or .status == "Pre-release Freeze") | .name' -r | head -n 1)"
-          cat .github/workflows/images.json | jq ".ubuntu.oldest = \"$oldest\"" | jq ".ubuntu.stable = \"$stable\"" | jq ".ubuntu.latest = \"$latest\"" | jq ".ubuntu.dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/workflows/images.json
+          cat .github/images.json | jq ".ubuntu.oldest = \"$oldest\"" | jq ".ubuntu.stable = \"$stable\"" | jq ".ubuntu.latest = \"$latest\"" | jq ".ubuntu.dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/images.json
       - run: |
           curl -s --fail https://fedoraproject.org/releases.json > /tmp/fedora_releases.json
           oldest="fedora:$(jq < /tmp/fedora_releases.json '.[].version' -r | cut -d ' ' -f 1 | sort -u | tail -n 2 | head -n 1)"
           stable="fedora:$(jq < /tmp/fedora_releases.json '.[].version' -r | cut -d ' ' -f 1 | sort -u | tail -n 1)"
           latest="$stable"
           dev=fedora:rawhide
-          cat .github/workflows/images.json | jq ".fedora.oldest = \"$oldest\"" | jq ".fedora.stable = \"$stable\"" | jq ".fedora.latest = \"$latest\"" | jq ".fedora.dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/workflows/images.json
+          cat .github/images.json | jq ".fedora.oldest = \"$oldest\"" | jq ".fedora.stable = \"$stable\"" | jq ".fedora.latest = \"$latest\"" | jq ".fedora.dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/images.json
       - run: |
           curl -s --fail https://endoflife.date/api/v1/products/opensuse > /tmp/opensuse.json
           oldest="opensuse/leap:$(jq < /tmp/opensuse.json '.result.releases[] | select(.isEol == false) | .name' -r | tail -n 1)"
           stable="opensuse/leap:$(jq < /tmp/opensuse.json '.result.releases[] | select(.isEol == false) | .name' -r | head -n 1)"
           latest=opensuse/tumbleweed:latest
           dev=opensuse/tumbleweed:latest
-          cat .github/workflows/images.json | jq ".opensuse.oldest = \"$oldest\"" | jq ".opensuse.stable = \"$stable\"" | jq ".opensuse.latest = \"$latest\"" | jq ".opensuse.dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/workflows/images.json
+          cat .github/images.json | jq ".opensuse.oldest = \"$oldest\"" | jq ".opensuse.stable = \"$stable\"" | jq ".opensuse.latest = \"$latest\"" | jq ".opensuse.dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/images.json
       - run: |
           curl -s --fail https://endoflife.date/api/v1/products/rhel > /tmp/rhel.json
           oldest="redhat/ubi$(jq < /tmp/rhel.json '.result.releases[] | select(.isEol == false) | .name' -r | tail -n 1):latest"
           stable="redhat/ubi$(jq < /tmp/rhel.json '.result.releases[] | select(.isEol == false) | .name' -r | head -n 2 | tail -n 1):latest"
           latest="redhat/ubi$(jq < /tmp/rhel.json '.result.releases[] | select(.isEol == false) | .name' -r | head -n 1):latest"
           dev="$latest"
-          cat .github/workflows/images.json | jq ".rhel.oldest = \"$oldest\"" | jq ".rhel.stable = \"$stable\"" | jq ".rhel.latest = \"$latest\"" | jq ".rhel.dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/workflows/images.json
+          cat .github/images.json | jq ".rhel.oldest = \"$oldest\"" | jq ".rhel.stable = \"$stable\"" | jq ".rhel.latest = \"$latest\"" | jq ".rhel.dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/images.json
       - run: |
           curl -s --fail https://endoflife.date/api/v1/products/alpine-linux > /tmp/alpine.json
           oldest="alpine:$(jq < /tmp/alpine.json '.result.releases[] | select(.isEol == false) | .name' -r | tail -n 1)"
           stable="alpine:$(jq < /tmp/alpine.json '.result.releases[] | select(.isEol == false) | .name' -r | head -n 2 | tail -n 1)"
           latest="alpine:$(jq < /tmp/alpine.json '.result.releases[] | select(.isEol == false) | .name' -r | head -n 1)"
           dev="$latest"
-          cat .github/workflows/images.json | jq ".alpine.oldest = \"$oldest\"" | jq ".alpine.stable = \"$stable\"" | jq ".alpine.latest = \"$latest\"" | jq ".alpine.dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/workflows/images.json
+          cat .github/images.json | jq ".alpine.oldest = \"$oldest\"" | jq ".alpine.stable = \"$stable\"" | jq ".alpine.latest = \"$latest\"" | jq ".alpine.dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/images.json
       - id: open-pr
         uses: peter-evans/create-pull-request@v7.0.11
         with:
