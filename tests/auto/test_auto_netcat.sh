@@ -66,7 +66,7 @@ http_body() {
     esac
     if \[ "${#line}" = 1 ]; then break; fi
   done
-  \[ "${chunked:0}" = 0 ] && \cat || {
+  \[ "${chunked:-0}" = 0 ] && \cat || {
     while \read length && \[ "$length" != 0 ]; do
       \head -c "$(\printf '%d' '0x'"$(\printf '%s' "$length" | \head -c "$(("${#length}" - 1))")")"
       \head -c 2 > /dev/null
