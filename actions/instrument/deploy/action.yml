@@ -318,7 +318,7 @@ runs:
     - name: "Open Pull Request"
       if: ${{ inputs.dry_run != 'true' }}
       id: open-pr
-      uses: peter-evans/create-pull-request@v7.0.11
+      uses: peter-evans/create-pull-request@v8.0.0
       with:
         token: ${{ inputs.github_token }}
         branch: "deploy-otel"
