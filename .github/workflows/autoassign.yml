@@ -1,0 +1,103 @@
+name: Autoassign
+on:
+  schedule:
+    - cron: '0 * * * *'  # Run every hour
+  workflow_dispatch:  # Allow manual triggering for testing
+concurrency:
+  group: autoassign
+  cancel-in-progress: false
+jobs:
+  autoassign:
+    if: ${{ !github.event.repository.fork }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      actions: read
+    steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.37.0
+        with:
+          secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}"]'
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
+          OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
+      
+      - name: Get authenticated user
+        id: get_user
+        env:
+          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+        run: |
+          # Resolve the user associated with the token
+          user=$(gh api user --jq '.login')
+          echo "user=$user" >> "$GITHUB_OUTPUT"
+          echo "Authenticated user: $user"
+      
+      - name: Get repository owner
+        id: get_owner
+        run: |
+          # Extract repository owner from GITHUB_REPOSITORY
+          owner=$(echo "$GITHUB_REPOSITORY" | cut -d'/' -f1)
+          echo "owner=$owner" >> "$GITHUB_OUTPUT"
+          echo "Repository owner: $owner"
+      
+      - name: Find and assign stale PRs
+        env:
+          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+        run: |
+          set -e
+          
+          USER="${{ steps.get_user.outputs.user }}"
+          OWNER="${{ steps.get_owner.outputs.owner }}"
+          REPO="${{ github.repository }}"
+          
+          # Calculate the date 3 days ago in ISO 8601 format
+          THREE_DAYS_AGO=$(date -u -d '3 days ago' '+%Y-%m-%dT%H:%M:%SZ')
+          
+          echo "Searching for open PRs created by user: $USER"
+          echo "Checking for PRs without pushes since: $THREE_DAYS_AGO"
+          
+          # Get all open PRs created by the authenticated user
+          gh pr list \
+            --repo "$REPO" \
+            --state open \
+            --author "$USER" \
+            --json number,headRefName,updatedAt,assignees \
+            --jq '.[]' | while IFS= read -r pr_json; do
+            
+            PR_NUMBER=$(echo "$pr_json" | jq -r '.number')
+            BRANCH=$(echo "$pr_json" | jq -r '.headRefName')
+            UPDATED_AT=$(echo "$pr_json" | jq -r '.updatedAt')
+            ASSIGNEES=$(echo "$pr_json" | jq -r '.assignees[].login' | tr '\n' ',' | sed 's/,$//')
+            
+            echo "Checking PR #$PR_NUMBER (branch: $BRANCH)"
+            
+            # Get the last commit date on the PR branch
+            LAST_COMMIT_DATE=$(gh api \
+              "/repos/$REPO/commits?sha=$BRANCH&per_page=1" \
+              --jq '.[0].commit.committer.date' 2>/dev/null || echo "")
+            
+            if [ -z "$LAST_COMMIT_DATE" ]; then
+              echo "  Could not determine last commit date, skipping..."
+              continue
+            fi
+            
+            echo "  Last commit date: $LAST_COMMIT_DATE"
+            
+            # Compare dates (convert to Unix timestamps for comparison)
+            LAST_COMMIT_TS=$(date -u -d "$LAST_COMMIT_DATE" +%s)
+            THREE_DAYS_AGO_TS=$(date -u -d "$THREE_DAYS_AGO" +%s)
+            
+            if [ "$LAST_COMMIT_TS" -lt "$THREE_DAYS_AGO_TS" ]; then
+              # Check if owner is already assigned
+              if echo "$ASSIGNEES" | grep -q "$OWNER"; then
+                echo "  PR #$PR_NUMBER is stale but owner is already assigned, skipping..."
+              else
+                echo "  PR #$PR_NUMBER is stale (no push in last 3 days), assigning to $OWNER..."
+                gh pr edit "$PR_NUMBER" --add-assignee "$OWNER" --repo "$REPO" || echo "  Failed to assign PR #$PR_NUMBER"
+              fi
+            else
+              echo "  PR #$PR_NUMBER has recent activity, no action needed"
+            fi
+          done
+          
+          echo "Autoassign check completed"
