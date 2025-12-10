@@ -14,7 +14,7 @@ jobs:
       - env:
           GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         run: |
-          gh api user --jq '.login' | xargs -I '{}' gh pr list --repo "$GITHUB_REPOSITORY" --state open --author '{}' --json number,headRefName | jq '.[] | [.number, .headRefName ] | @tsv' | sed 's/\t/ /g' | while read -r number branch; do
+          gh api user --jq '.login' | xargs -I '{}' gh pr list --repo "$GITHUB_REPOSITORY" --state open --author '{}' --json number,headRefName | jq '.[] | [ .number, .headRefName ] | @tsv' | sed 's/\t/ /g' | while read -r number branch; do
             commit_date="$(gh api /repos/"$GITHUB_REPOSITORY"/commits?sha="$branch"'&'per_page=1 | jq '.[0].commit.committer.date')"
             if [ "$(date -u -d "$commit_date" +%s)" -gt "$(date -u -d "$(date -u -d '3 days ago' '+%Y-%m-%dT%H:%M:%SZ')" +%s)" ]; then continue; fi
             gh pr edit "$number" --add-assignee "${GITHUB_REPOSITORY%%/*}" --repo "$GITHUB_REPOSITORY"
