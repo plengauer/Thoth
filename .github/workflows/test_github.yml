@@ -216,6 +216,7 @@ jobs:
         with:
           path: repo_with_submodules
           repository: robocorp/example-use-git-submodule-for-shared-code
+          submodules: recursive
   job-io-1:
     needs: job-smoke
     runs-on: ubuntu-latest
