@@ -212,6 +212,10 @@ jobs:
           . venv/bin/activate
           pip3 install -r src/usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.txt
           deactivate
+      - uses: actions/checkout@v6.0.1
+        with:
+          path: repo_with_submodules
+          repository: robocorp/example-use-git-submodule-for-shared-code
   job-io-1:
     needs: job-smoke
     runs-on: ubuntu-latest
