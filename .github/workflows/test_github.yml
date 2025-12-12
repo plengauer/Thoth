@@ -71,7 +71,7 @@ jobs:
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
-      - uses: actions/download-artifact@v7 # check if node action works
+      - uses: actions/download-artifact@v7.0.0 # check if node action works
         with:
           name: packages_${{ inputs.ref }}
   job-docker:
@@ -377,7 +377,7 @@ jobs:
       - uses: actions/checkout@v6.0.1
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@v7.0.0
         with:
           name: packages_${{ inputs.ref }}
       - run: |
