@@ -4,10 +4,10 @@ This project delivers [OpenTelemetry](https://opentelemetry.io/) traces, metrics
 
 The project is named after [Thoth](https://en.wikipedia.org/wiki/Thoth), the Egyptian god of (among other things) wisdom, knowledge, and science (aka observability), writing and hieroglyphs (aka shell scripts), and judgment of the dead (aka troubleshooting). Thoth was also a member of the Ogdoad, a group of gods responsible for creating the world (aka probably the original GitHub CI/CD pipeline).
 
-[![Tests](https://github.com/plengauer/opentelemetry-bash/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/plengauer/opentelemetry-bash/actions/workflows/test.yml)
+[![Tests](https://github.com/plengauer/Thoth/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/plengauer/Thoth/actions/workflows/test.yml)
 
 # Overview
-Check out our detailed [Demos](https://github.com/plengauer/opentelemetry-bash/tree/main/demos).
+Check out our detailed [Demos](https://github.com/plengauer/Thoth/tree/main/demos).
 A simple command like `curl http://www.google.at` on an AWS EC2 will produce a span like this:
 ```json
 {
