@@ -97,6 +97,15 @@ runs:
           echo "::notice::On private GitHub servers, action runners are not following redirects." >&2
           echo plengauer/Thoth
         fi | xargs -I '{}' echo repository='{}' >> "$GITHUB_OUTPUT"
+    - name: "Determine version"
+      id: determine-instrumentation-version
+      shell: bash
+      run: |
+        if [ "${{ inputs.action_version }}" = same ]; then
+          cat "${{ steps.find-self.outputs.path }}" | yq -r '.jobs[].steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/deploy*") | .uses' | cut -d @ -f 2
+        else
+          echo '${{ inputs.action_version }}'
+        fi | xargs -I '{}' echo version='{}' >> "$GITHUB_OUTPUT"
     - name: Deploy Copilot Setup
       if: ${{ inputs.job_level_instrumentation_copilot == 'true' }}
       shell: bash
@@ -133,17 +142,8 @@ runs:
       shell: bash
       run: |
         (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
-          cat "$workflow_file" | yq .on.workflow_run.workflows 2> /dev/null | grep -qv '^null$' && cat "$workflow_file" | yq .jobs.*.steps[].uses | grep -q /actions/instrument/checksuite && echo path="$workflow_file" >> "$GITHUB_OUTPUT" && break || true
+          cat "$workflow_file" | yq .on.check_suite 2> /dev/null | grep -qv '^null$' && cat "$workflow_file" | yq .jobs.*.steps[].uses | grep -q /actions/instrument/checksuite && echo path="$workflow_file" >> "$GITHUB_OUTPUT" && break || true
         done
-    - name: "Determine version"
-      id: determine-instrumentation-version
-      shell: bash
-      run: |
-        if [ ${{ inputs.action_version }} = same ]; then
-          cat "${{ steps.find-self.outputs.path }}" | yq -r '.jobs[].steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/deploy*") | .uses' | cut -d @ -f 2
-        else
-          echo '${{ inputs.action_version }}'
-        fi | xargs -I '{}' echo version='{}' >> "$GITHUB_OUTPUT"
   
     - name: "Deploy workflow-level observability"
       if: ${{ inputs.workflow_level_instrumentation == 'true' && steps.find-workflow-level-instrumentation.outputs.path == null }}
@@ -318,7 +318,7 @@ runs:
     - name: "Open Pull Request"
       if: ${{ inputs.dry_run != 'true' }}
       id: open-pr
-      uses: peter-evans/create-pull-request@v7.0.11
+      uses: peter-evans/create-pull-request@v8.0.0
       with:
         token: ${{ inputs.github_token }}
         branch: "deploy-otel"

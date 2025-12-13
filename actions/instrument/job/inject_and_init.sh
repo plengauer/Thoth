@@ -64,9 +64,9 @@ action_tag_name="$(echo "$GITHUB_ACTION_REF" | cut -sd @ -f 2-)"
 if [ -z "$action_tag_name" ]; then action_tag_name="v$(cat ../../../VERSION)"; fi
 if [ "$INPUT_CACHE" = "true" ]; then
   export INSTRUMENTATION_CACHE_KEY="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} instrumentation $GITHUB_WORKFLOW $GITHUB_JOB"
-  sudo -E -H eatmydata node -e "require('@actions/cache').restoreCache(['/tmp/*.aliases'], '$INSTRUMENTATION_CACHE_KEY');" 2>&1 | { type perl && perl -0777 -pe '' || cat > /dev/null; } &
+  sudo -E -H node -e "require('@actions/cache').restoreCache(['/tmp/*.aliases'], '$INSTRUMENTATION_CACHE_KEY');" 2>&1 | { type perl && perl -0777 -pe '' || cat > /dev/null; } &
   cache_key="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} dependencies $({ cat /etc/os-release; python3 --version || true; node --version || true; printenv | grep -E '^OTEL_SHELL_CONFIG_INSTALL_' || true; } | md5sum | cut -d ' ' -f 1)"
-  sudo -E -H eatmydata node -e "require('@actions/cache').restoreCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip', '/opt/opentelemetry_shell/collector.image'], '$cache_key');"
+  sudo -E -H node -e "require('@actions/cache').restoreCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip', '/opt/opentelemetry_shell/collector.image'], '$cache_key');"
   [ "$(find /var/cache/apt/archives/ -name '*.deb' | wc -l)" -gt 0 ] && [ -r /opt/opentelemetry_shell/collector.image ] || write_back_cache=TRUE
   if ! type otel.sh &&  [ -r /var/cache/apt/archives/opentelemetry-shell*.deb ]; then # fast track install, what could possibly go wrong
     control_dir="$(mktemp -d)"
@@ -176,6 +176,7 @@ $(cat $section_exporter_metrics)
 $(cat $section_exporter_traces)
 processors:
   batch:
+    timeout: $([ "${deferred:-false}" = true ] && echo $((60 * 60 * 1)) || echo 10)s
   transform:
     error_mode: ignore
     log_statements:
@@ -255,7 +256,7 @@ observe_rate_limit() {
   used_gauge_handle="$(otel_counter_create observable_gauge github.api.rate_limit.used 1 "The amount of rate limited requests used")"
   remaining_gauge_handle="$(otel_counter_create observable_gauge github.api.rate_limit.remaining 1 "The amount of rate limited requests remaining")"
   while [ -r /tmp/opentelemetry_shell.github.observe_rate_limits ]; do
-    gh_rate_limit | jq --unbuffered -r '.resources | to_entries[] | [.key, .value.used, .value.remaining] | @tsv' | sed 's/\t/ /g' | while read -r resource used remaining; do
+    gh_rate_limit | jq --unbuffered -r '.resources | to_entries[] | [.key, .value.used, .value.remaining] | @tsv' | while IFS=$'\t' read -r resource used remaining; do
       observation_handle="$(otel_observation_create "$used")"
       otel_observation_attribute_typed "$observation_handle" string github.api.resource="$resource"
       otel_counter_observe "$used_gauge_handle" "$observation_handle"
@@ -263,7 +264,10 @@ observe_rate_limit() {
       otel_observation_attribute_typed "$observation_handle" string github.api.resource="$resource"
       otel_counter_observe "$remaining_gauge_handle" "$observation_handle"
     done
-    sleep 5
+    for i in 1 2 3 4 5; do
+      if ! [ -r /tmp/opentelemetry_shell.github.observe_rate_limits ]; then break; fi
+      sleep 1
+    done
   done
 }
 export -f observe_rate_limit
@@ -275,7 +279,7 @@ root4job_end() {
   [ -z "${INSTRUMENTATION_CACHE_KEY:-}" ] || sudo -E -H node -e "require('@actions/cache').saveCache(['/tmp/*.aliases'], '$INSTRUMENTATION_CACHE_KEY');" &> /dev/null &
 
   if [ -f /tmp/opentelemetry_shell.github.error ]; then local conclusion=failure; else local conclusion=success; fi
-  otel_span_attribute_typed $span_handle string github.actions.job.conclusion="$conclusion"
+  otel_span_attribute_typed $span_handle string github.actions.conclusion="$conclusion"
   if [ "$conclusion" = failure ]; then otel_span_error "$span_handle"; fi
   otel_span_end "$span_handle"
   time_end="$(date +%s.%N)"
@@ -365,9 +369,8 @@ root4job_end() {
     )
   fi
 
-  while kill -0 "$observe_rate_limit_pid" 2> /dev/null; do sleep 1; done
   if [ -p /tmp/otel_shell/sdk_factory."$USER".pipe ]; then echo "EOF" > /tmp/otel_shell/sdk_factory."$USER".pipe; rm -rf /tmp/otel_shell; fi
-  timeout 5s sh -c 'while fuser /opt/opentelemetry_shell/venv/bin/python; do sleep 1; done' &> /dev/null || true
+  timeout 5s sh -c 'while fuser /opt/opentelemetry_shell/venv/bin/python; do sleep 1; done; true' &> /dev/null || echo "Found leaked SDK processes (this may be due to leaked processes that are still being observed)."
   
   if [ -n "${OTEL_SHELL_COLLECTOR_CONTAINER:-}" ]; then
     sudo docker stop "$OTEL_SHELL_COLLECTOR_CONTAINER"
@@ -406,7 +409,6 @@ root4job() {
   otel_init
   touch /tmp/opentelemetry_shell.github.observe_rate_limits
   observe_rate_limit &> /dev/null &
-  observe_rate_limit_pid="$!"
   time_start="$(date +%s.%N)"
   span_handle="$(otel_span_start CONSUMER "${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}")"
   otel_span_attribute_typed $span_handle string github.actions.type=job
@@ -415,7 +417,7 @@ root4job() {
   fi
   otel_span_attribute_typed $span_handle int github.actions.job.id="${GITHUB_JOB_ID:-}"
   otel_span_attribute_typed $span_handle string github.actions.job.name="${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}"
-  printf '%s' "$INPUT___JOB_MATRIX" | jq 'to_entries | .[] | [ .key, .value ] | @tsv' -r | sed 's/\t/ /g' | while read -r key value; do otel_span_attribute_typed $span_handle string github.actions.job.matrix."$key"="$value"; done
+  printf '%s' "$INPUT___JOB_MATRIX" | jq 'to_entries | .[] | [ .key, .value ] | @tsv' -r | while IFS=$'\t' read -r key value; do otel_span_attribute_typed $span_handle string github.actions.job.matrix."$key"="$value"; done
   otel_span_attribute_typed $span_handle string github.actions.runner.name="$RUNNER_NAME"
   otel_span_attribute_typed $span_handle string github.actions.runner.os="$RUNNER_OS"
   otel_span_attribute_typed $span_handle string github.actions.runner.arch="$RUNNER_ARCH"
