@@ -64,9 +64,9 @@ action_tag_name="$(echo "$GITHUB_ACTION_REF" | cut -sd @ -f 2-)"
 if [ -z "$action_tag_name" ]; then action_tag_name="v$(cat ../../../VERSION)"; fi
 if [ "$INPUT_CACHE" = "true" ]; then
   export INSTRUMENTATION_CACHE_KEY="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} instrumentation $GITHUB_WORKFLOW $GITHUB_JOB"
-  sudo -E -H eatmydata node -e "require('@actions/cache').restoreCache(['/tmp/*.aliases'], '$INSTRUMENTATION_CACHE_KEY');" 2>&1 | { type perl && perl -0777 -pe '' || cat > /dev/null; } &
+  sudo -E -H node -e "require('@actions/cache').restoreCache(['/tmp/*.aliases'], '$INSTRUMENTATION_CACHE_KEY');" 2>&1 | { type perl && perl -0777 -pe '' || cat > /dev/null; } &
   cache_key="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} dependencies $({ cat /etc/os-release; python3 --version || true; node --version || true; printenv | grep -E '^OTEL_SHELL_CONFIG_INSTALL_' || true; } | md5sum | cut -d ' ' -f 1)"
-  sudo -E -H eatmydata node -e "require('@actions/cache').restoreCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip', '/opt/opentelemetry_shell/collector.image'], '$cache_key');"
+  sudo -E -H node -e "require('@actions/cache').restoreCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip', '/opt/opentelemetry_shell/collector.image'], '$cache_key');"
   [ "$(find /var/cache/apt/archives/ -name '*.deb' | wc -l)" -gt 0 ] && [ -r /opt/opentelemetry_shell/collector.image ] || write_back_cache=TRUE
   if ! type otel.sh &&  [ -r /var/cache/apt/archives/opentelemetry-shell*.deb ]; then # fast track install, what could possibly go wrong
     control_dir="$(mktemp -d)"
