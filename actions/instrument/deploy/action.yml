@@ -197,8 +197,8 @@ runs:
             | ([ -n "${{ inputs.workflow_level_instrumentation_exclude }}" ] && grep -qvF "$(echo "${{ inputs.workflow_level_instrumentation_exclude }}" | tr ',' '\n' | tr ':' '\n' | tr ';' '\n')" || cat) \
             | grep -vF "$([ -r "${{ steps.find-workflow-level-instrumentation.outputs.path }}" ] && cat "${{ steps.find-workflow-level-instrumentation.outputs.path }}" | yq .name || cat "${{ inputs.workflows_directory }}/${{ inputs.workflow_level_instrumentation_file_name }}" | yq .name)"
           seq 1 10 \
-            | xargs -I '{}' curl -s --fail --retry 8 --header "Authorization: Bearer ${{ inputs.github_token }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/plengauer/Thoth/actions/runs'?per_page=100&page={}' | jq '.workflow_runs[].workflow_id' | sort -u \
-            | xargs -I '{}' curl -s --fail --retry 8 --header "Authorization: Bearer ${{ inputs.github_token }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/plengauer/Thoth/actions/workflows/'{}' | jq 'select(.path | startswith("dynamic/")) | .name' -r
+            | xargs -I '{}' curl -s --fail --retry 8 --header "Authorization: Bearer ${{ inputs.github_token }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/${{ github.repository }}/actions/runs'?per_page=100&page={}' | jq '.workflow_runs[].workflow_id' | sort -u \
+            | xargs -I '{}' curl -s --fail --retry 8 --header "Authorization: Bearer ${{ inputs.github_token }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/${{ github.repository }}/actions/workflows/'{}' | jq 'select(.path | startswith("dynamic/")) | .name' -r
           echo Copilot coding agent
         } | sort -u > "$names_file"
         names=""
