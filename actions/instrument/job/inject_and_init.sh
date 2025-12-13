@@ -403,7 +403,7 @@ export -f root4job_end
 root4job() {
   exec 1> /tmp/opentelemetry_shell.github.debug.log
   exec 2> /tmp/opentelemetry_shell.github.debug.log
-  OTEL_GITHUB_COLLECTOR_CONFIG="$(cat "$(pwd)"/collector.yaml)" otelcol-contrib --config=env:OTEL_GITHUB_COLLECTOR_CONFIG &> /var/log/otelcol."$$".log &
+  OTEL_GITHUB_COLLECTOR_CONFIG="$(cat "$(pwd)"/collector.yaml)" otelcol-contrib --config=env:OTEL_GITHUB_COLLECTOR_CONFIG 2>&1 | sudo tee /var/log/otelcol."$$".log &> /dev/null &
   OTEL_COLLECTOR_PID="$!"
   rm -rf "$(pwd)"/collector.yaml 2> /dev/null
   rm /tmp/opentelemetry_shell.github.error 2> /dev/null
