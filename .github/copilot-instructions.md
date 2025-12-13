@@ -108,5 +108,7 @@ cd tests && bash run_tests.sh bash
 3. **Test on all shells** (bash, dash, ash, busybox) for core instrumentation changes
 4. **Update package metadata** (`meta/debian/control`, `meta/rpm/*.spec`) when changing dependencies
 5. **Follow POSIX syntax** - code must run on all supported shells
+6. **Code style** - for shell code, use lower case with underscore for variable names.
+7. **Code compactness** - no comments in the code, keep the code as minimal and simple as possible - the code should speak for itself
 
 **Trust these instructions**. Only search for information if instructions are incomplete or errors occur not documented here.

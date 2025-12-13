@@ -20,7 +20,8 @@ _otel_inject_git_arguments() {
   fi
   if \[ "$inject" = 1 ]; then
     \echo -n ' '; _otel_escape_args $_otel_shell -c '. otel.sh
-eval "$(_otel_escape_args "$@")"' "$executable"
+'"$1" "$executable"
+    shift
   fi
   while \[ "$#" -gt 0 ]; do \echo -n ' '; _otel_escape_arg "$1"; shift; done
 }

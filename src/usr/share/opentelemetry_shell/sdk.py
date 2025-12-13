@@ -232,7 +232,7 @@ def handle(scope, version, command, arguments):
     if command.startswith("LOG_") and not initialized_logs:
         from opentelemetry._logs import set_logger_provider
         from opentelemetry.sdk._logs import LoggerProvider
-        from opentelemetry.sdk._logs.export import BatchLogRecordProcessor, ConsoleLogExporter
+        from opentelemetry.sdk._logs.export import BatchLogRecordProcessor, ConsoleLogRecordExporter
         from opentelemetry.exporter.otlp.proto.http._log_exporter import OTLPLogExporter
         logs_exporters = os.environ.get('OTEL_LOGS_EXPORTER', 'otlp')
         if logs_exporters:
@@ -243,7 +243,7 @@ def handle(scope, version, command, arguments):
                 elif logger_exporter == 'none':
                     pass
                 elif logger_exporter == 'console':
-                    logger_provider.add_log_record_processor(BatchLogRecordProcessor(ConsoleLogExporter()))
+                    logger_provider.add_log_record_processor(BatchLogRecordProcessor(ConsoleLogRecordExporter()))
                 elif logger_exporter == 'otlp':
                     logger_provider.add_log_record_processor(BatchLogRecordProcessor(OTLPLogExporter()))
                 else:

@@ -153,7 +153,7 @@ otel_span_attribute_typed "$workflow_span_handle" string github.actions.workflow
 otel_span_attribute_typed "$workflow_span_handle" int github.actions.workflow_run.id="$(jq < "$workflow_json" .id)"
 otel_span_attribute_typed "$workflow_span_handle" int github.actions.workflow_run.attempt="$(jq < "$workflow_json" .run_attempt)"
 otel_span_attribute_typed "$workflow_span_handle" int github.actions.workflow_run.number="$(jq < "$workflow_json" .run_number)"
-otel_span_attribute_typed "$workflow_span_handle" string github.actions.workflow_run.conclusion="$(jq < "$workflow_json" -r .conclusion)"
+otel_span_attribute_typed "$workflow_span_handle" string github.actions.conclusion="$(jq < "$workflow_json" -r .conclusion)"
 otel_span_attribute_typed "$workflow_span_handle" int github.actions.actor.id="$(jq < "$workflow_json" .actor.id)"
 otel_span_attribute_typed "$workflow_span_handle" string github.actions.actor.name="$(jq < "$workflow_json" -r .actor.login)"
 otel_span_attribute_typed "$workflow_span_handle" string github.actions.event.name="$(jq < "$workflow_json" -r .event)"
@@ -169,7 +169,7 @@ if [ "$(jq < "$workflow_json" .conclusion -r)" = failure ]; then otel_span_error
 echo ::notice title=Observability Information::"Trace ID: $(echo "$TRACEPARENT" | cut -d - -f 2), Span ID: $(echo "$TRACEPARENT" | cut -d - -f 3), Trace Deep Link: $(print_trace_link "$workflow_started_at" || echo unavailable), GitHub Workflow Run: $link/attempts/$(jq < "$workflow_json" -r .run_attempt)"
 otel_span_end "$workflow_span_handle" @"$workflow_ended_at"
 
-jq < "$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .started_at, .completed_at, .name] | @tsv' | sed 's/\t/ /g' | while read -r TRACEPARENT job_id job_conclusion job_started_at job_completed_at job_name; do
+jq < "$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .started_at, .completed_at, .name] | @tsv' | while IFS=$'\t' read -r TRACEPARENT job_id job_conclusion job_started_at job_completed_at job_name; do
   if [ "$job_conclusion" = skipped ]; then continue; fi
   if [ "$job_started_at" '<' "$workflow_started_at" ] || jq < "$artifacts_json" -r .name | grep -q '^opentelemetry_job_'"$job_id"'$'; then
     export_deferred_signal_artifacts() {
@@ -233,7 +233,7 @@ jq < "$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .s
   otel_span_attribute_typed "$job_span_handle" string github.actions.url="$link"/job/"$job_id"
   otel_span_attribute_typed "$job_span_handle" int github.actions.job.id="$job_id"
   otel_span_attribute_typed "$job_span_handle" string github.actions.job.name="$job_name"
-  otel_span_attribute_typed "$job_span_handle" string github.actions.job.conclusion="$job_conclusion"
+  otel_span_attribute_typed "$job_span_handle" string github.actions.conclusion="$job_conclusion"
   otel_span_activate "$job_span_handle"
   [ -z "${INPUT_DEBUG}" ] || echo "span job $TRACEPARENT $job_name" >&2
   jq < "$jobs_json" -r --unbuffered '. | select(.id == '"$job_id"') | .steps[] | ["'"$TRACEPARENT"'", "'"$job_id"'", .number, .conclusion, if .started_at == null or .started_at == "" then "null" else .started_at end, if .completed_at == null or .completed_at == "" then "null" else .completed_at end, .name] | @tsv'
@@ -241,7 +241,7 @@ jq < "$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .s
   if [ "$job_conclusion" = failure ]; then otel_span_error "$job_span_handle"; fi
   otel_span_end "$job_span_handle" @"$job_completed_at"
 
-done | sed 's/\t/ /g' | while read -r TRACEPARENT job_id step_number step_conclusion step_started_at step_completed_at step_name; do
+done | while IFS=$'\t' read -r TRACEPARENT job_id step_number step_conclusion step_started_at step_completed_at step_name; do
   if [ "$step_conclusion" = skipped ]; then continue; fi
   if [ "$step_started_at" = null ]; then continue; fi; 
   if [ "$step_completed_at" = null ]; then step_completed_at="$step_started_at"; fi
@@ -342,7 +342,7 @@ done | sed 's/\t/ /g' | while read -r TRACEPARENT job_id step_number step_conclu
   otel_span_attribute_typed "$step_span_handle" string github.actions.action.name="${action_name:-}"
   otel_span_attribute_typed "$step_span_handle" string github.actions.action.ref="${action_tag:-}"
   otel_span_attribute_typed "$step_span_handle" string github.actions.action.phase="${action_phase:-}"
-  otel_span_attribute_typed "$step_span_handle" string github.actions.step.conclusion="$step_conclusion"
+  otel_span_attribute_typed "$step_span_handle" string github.actions.conclusion="$step_conclusion"
   otel_span_activate "$step_span_handle"
   { read_log_file "$step_log_file" || [ "$step_conclusion" = skipped ] || echo "::warning ::Cannot resolve log for job $job_name step $step_number, log file is missing." >&2; } | while read -r line; do
     timestamp="${line%% *}"

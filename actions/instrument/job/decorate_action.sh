@@ -133,7 +133,7 @@ if [ "$exit_code" != 0 ]; then
 else
   conclusion=success
 fi
-otel_span_attribute_typed $span_handle string github.actions.step.conclusion="$conclusion"
+otel_span_attribute_typed $span_handle string github.actions.conclusion="$conclusion"
 if [ "$conclusion" = failure ]; then otel_span_error "$span_handle"; touch /tmp/opentelemetry_shell.github.error; fi
 otel_span_end "$span_handle"
 time_end="$(date +%s.%N)"
