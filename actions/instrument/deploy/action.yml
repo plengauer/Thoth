@@ -106,22 +106,6 @@ runs:
         else
           echo '${{ inputs.action_version }}'
         fi | xargs -I '{}' echo version='{}' >> "$GITHUB_OUTPUT"
-    - name: Deploy Copilot Setup
-      if: ${{ inputs.job_level_instrumentation_copilot == 'true' }}
-      shell: bash
-      run: |
-        if [ -r "${{ inputs.workflows_directory }}"/copilot-setup-steps.yml ]; then exit 0; fi
-        echo '
-        on:
-          push:
-            paths:
-              - .github/workflows/copilot-setup-steps.yml
-        jobs:
-          copilot-setup-steps:
-            runs-on: ubuntu-latest
-            steps:
-              - run: |
-                  :' > "${{ inputs.workflows_directory }}"/copilot-setup-steps.yml
     - name: Canonicalize
       shell: bash
       run: |
@@ -245,6 +229,22 @@ runs:
           yq -i ".jobs.export.container = \"$image\"" "$path"
         fi
   
+    - name: "Deploy Copilot Setup"
+      if: ${{ inputs.job_level_instrumentation == 'true' && inputs.job_level_instrumentation_copilot == 'true' }}
+      shell: bash
+      run: |
+        if [ -r "${{ inputs.workflows_directory }}"/copilot-setup-steps.yml ]; then exit 0; fi
+        echo '
+        on:
+          push:
+            paths:
+              - .github/workflows/copilot-setup-steps.yml
+        jobs:
+          copilot-setup-steps:
+            runs-on: ubuntu-latest
+            steps:
+              - run: |
+                  :' > "${{ inputs.workflows_directory }}"/copilot-setup-steps.yml
     - name: "Deploy job-level instrumentation"
       if: ${{ inputs.job_level_instrumentation == 'true' }}
       shell: bash
