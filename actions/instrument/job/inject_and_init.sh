@@ -446,8 +446,12 @@ root4job() {
 }
 export -f root4job
 
+echo "::group::Waiting for background init jobs"
+wait
+echo "::endgroup::"
+
 echo "::group::Setting Up SDK Factory"
-mv sdk_factory.py sdk_factory.py.backup # TODO by this time extraction must be complete, move it down after wait
+mv sdk_factory.py sdk_factory.py.backup
 cat /usr/share/opentelemetry_shell/sdk.py | grep -E 'from|import' | while read -r line; do echo "$line"; done | sort -u > sdk_factory.py
 cat sdk_factory.py.backup >> sdk_factory.py
 rm sdk_factory.py.backup
@@ -457,7 +461,6 @@ echo "::group::Start Observation"
 traceparent_file="$(mktemp -u)"
 mkdir -p /tmp/otel_shell
 mkfifo /tmp/opentelemetry_shell.github.debug.log /tmp/otel_shell/sdk_factory."$USER".pipe # subdirectory to avoid sticky bit
-wait # make sure we wait for all background jobs before we actually start
 sudo find /tmp | grep -qE '.aliases$' && unset INSTRUMENTATION_CACHE_KEY || true
 nohup /opt/opentelemetry_shell/venv/bin/python sdk_factory.py /tmp/otel_shell/sdk_factory."$USER".pipe &> /dev/null &
 nohup bash -c 'root4job "$@"' bash "$traceparent_file" &> /dev/null &
