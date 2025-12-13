@@ -169,7 +169,7 @@ if [ "$(jq < "$workflow_json" .conclusion -r)" = failure ]; then otel_span_error
 echo ::notice title=Observability Information::"Trace ID: $(echo "$TRACEPARENT" | cut -d - -f 2), Span ID: $(echo "$TRACEPARENT" | cut -d - -f 3), Trace Deep Link: $(print_trace_link "$workflow_started_at" || echo unavailable), GitHub Workflow Run: $link/attempts/$(jq < "$workflow_json" -r .run_attempt)"
 otel_span_end "$workflow_span_handle" @"$workflow_ended_at"
 
-jq < "$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .started_at, .completed_at, .name] | @tsv' | sed 's/\t/ /g' | while read -r TRACEPARENT job_id job_conclusion job_started_at job_completed_at job_name; do
+jq < "$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .started_at, .completed_at, .name] | @tsv' | while IFS=$'\t' read -r TRACEPARENT job_id job_conclusion job_started_at job_completed_at job_name; do
   if [ "$job_conclusion" = skipped ]; then continue; fi
   if [ "$job_started_at" '<' "$workflow_started_at" ] || jq < "$artifacts_json" -r .name | grep -q '^opentelemetry_job_'"$job_id"'$'; then
     export_deferred_signal_artifacts() {
@@ -241,7 +241,7 @@ jq < "$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .s
   if [ "$job_conclusion" = failure ]; then otel_span_error "$job_span_handle"; fi
   otel_span_end "$job_span_handle" @"$job_completed_at"
 
-done | sed 's/\t/ /g' | while read -r TRACEPARENT job_id step_number step_conclusion step_started_at step_completed_at step_name; do
+done | while IFS=$'\t' read -r TRACEPARENT job_id step_number step_conclusion step_started_at step_completed_at step_name; do
   if [ "$step_conclusion" = skipped ]; then continue; fi
   if [ "$step_started_at" = null ]; then continue; fi; 
   if [ "$step_completed_at" = null ]; then step_completed_at="$step_started_at"; fi
