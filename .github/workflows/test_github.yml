@@ -509,7 +509,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v5.0.1
+      - uses: actions/checkout@v6.0.1
         with:
           ref: ${{ inputs.ref }}
       - uses: ./actions/instrument/job
