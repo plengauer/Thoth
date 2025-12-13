@@ -11,6 +11,12 @@ jobs:
   autoassign:
     runs-on: ubuntu-latest
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.37.1
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}"]'
       - env:
           GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         run: |
@@ -19,3 +25,5 @@ jobs:
             if [ "$(date -u -d "$commit_date" +%s)" -gt "$(date -u -d "$(date -u -d '3 days ago' '+%Y-%m-%dT%H:%M:%SZ')" +%s)" ]; then continue; fi
             gh pr edit "$number" --add-assignee "${GITHUB_REPOSITORY%%/*}" --repo "$GITHUB_REPOSITORY"
           done
+    permissions:
+      actions: read
