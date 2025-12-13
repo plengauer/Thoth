@@ -58,6 +58,7 @@ echo "::endgroup::"
 echo "::group::Install Dependencies"
 . ../shared/github.sh
 . ../shared/id_printer.sh
+FAST_DEB_INSTALL=TRUE
 export GITHUB_ACTION_REPOSITORY="${GITHUB_ACTION_REPOSITORY:-"$GITHUB_REPOSITORY"}"
 npm --no-audit ci
 action_tag_name="$(echo "$GITHUB_ACTION_REF" | cut -sd @ -f 2-)"
@@ -66,30 +67,38 @@ if [ "$INPUT_CACHE" = "true" ]; then
   export INSTRUMENTATION_CACHE_KEY="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} instrumentation $GITHUB_WORKFLOW $GITHUB_JOB"
   sudo -E -H node -e "require('@actions/cache').restoreCache(['/tmp/*.aliases'], '$INSTRUMENTATION_CACHE_KEY');" 2>&1 | { type perl && perl -0777 -pe '' || cat > /dev/null; } &
   cache_key="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} dependencies $({ cat /etc/os-release; python3 --version || true; node --version || true; printenv | grep -E '^OTEL_SHELL_CONFIG_INSTALL_' || true; } | md5sum | cut -d ' ' -f 1)"
-  sudo -E -H node -e "require('@actions/cache').restoreCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip', '/opt/opentelemetry_shell/collector.image'], '$cache_key');"
-  [ "$(find /var/cache/apt/archives/ -name '*.deb' | wc -l)" -gt 0 ] && [ -r /opt/opentelemetry_shell/collector.image ] || write_back_cache=TRUE
-  if ! type otel.sh &&  [ -r /var/cache/apt/archives/opentelemetry-shell*.deb ]; then # fast track install, what could possibly go wrong
+  sudo -E -H node -e "require('@actions/cache').restoreCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip'], '$cache_key');"
+  [ "$(find /var/cache/apt/archives/ -name '*.deb' | wc -l)" -gt 0 ] || write_back_cache=TRUE
+fi
+if ! type otel.sh && [ -r /var/cache/apt/archives/opentelemetry-shell*.deb ]; then
+  if [ "${FAST_DEB_INSTALL:-FALSE}" ]; then # lets assume exactly one postinst script, no triggers
     control_dir="$(mktemp -d)"
     dpkg-deb --control /var/cache/apt/archives/opentelemetry-shell*.deb "$control_dir"
     if cat "$control_dir"/control | grep -E '^Pre-Depends:|^Depends:' | cut -d ':' -f 2 - | tr ',' '\n' | grep -v '|' | tr -d ' ' | cut -d '(' -f 1 | sed 's/awk/gawk/g' | xargs -I '{}' [ -r /var/lib/dpkg/info/'{}'.list ]; then
-      sudo dpkg-deb --extract /var/cache/apt/archives/opentelemetry-shell*.deb /
-      ( sudo "$control_dir"/postinst configure && rm -rf "$control_dir" ) 2>&1 | { type perl && perl -0777 -pe '' || cat > /dev/null; } &
+      ( sudo dpkg-deb --extract /var/cache/apt/archives/opentelemetry-shell*.deb && sudo "$control_dir"/postinst configure && rm -rf "$control_dir" ) 2>&1 | { type perl && perl -0777 -pe '' || cat > /dev/null; } &
       export OTEL_SHELL_PACKAGE_VERSION_CACHE_opentelemetry_shell="$(cat ../../../VERSION)"
     else
       rm -rf "$control_dir"
     fi
+  else
+    sudo apt-get install -y /var/cache/apt/archives/opentelemetry-shell*.deb
   fi
 fi
-bash -e -o pipefail ../shared/install.sh perl curl wget jq sed unzip parallel 'node;nodejs' npm 'docker;docker.io' 'gcc;build-essential' lsof
-export OTEL_SHELL_COLLECTOR_IMAGE="$(cat Dockerfile | grep '^FROM ' | cut -d ' ' -f 2-)"
-if [ -r /opt/opentelemetry_shell/collector.image ]; then
-  sudo docker load < /opt/opentelemetry_shell/collector.image
-else
-  sudo docker pull "$OTEL_SHELL_COLLECTOR_IMAGE"
+bash -e -o pipefail ../shared/install.sh perl curl wget jq sed unzip parallel 'node;nodejs' npm 'gcc;build-essential' lsof
+if ! type otelcol-contrib; then
+  if ! [ -r /var/cache/apt/archives/otelcol-contrib.deb ]; then
+    GITHUB_REPOSITORY=open-telemetry/opentelemetry-collector-releases gh_curl /releases/tags/v"$(cat Dockerfile | grep '^FROM ' | cut -d ' ' -f 2- | cut -d : -f 2)" | jq '.assets[] | select(.name | endswith(".deb")) | [ .name, .url ] | @tsv' -r | grep contrib | grep linux | grep "$(arch | sed 's/x86_64/amd64/g')" | head -n 1 | cut -d $'\t' -f 2 \
+      | xargs -I '{}' wget --header "Authorization: Bearer $INPUT_GITHUB_TOKEN" --header "Accept: application/octet-stream" '{}' -O - | sudo tee /var/cache/apt/archives/ otelcol-contrib.deb > /dev/null
+  fi
+  if [ "${FAST_DEB_INSTALL:-FALSE}" ]; then # lets assume no install scripts or dependencies or triggers
+    sudo dpkg-deb --extract /var/cache/apt/archives/otelcol-contrib.deb /
+  else
+    sudo apt-get install -y /var/cache/apt/archives/otelcol-contrib.deb
+  fi
 fi 2>&1 | perl -0777 -pe '' &
 if [ "${write_back_cache:-FALSE}" = TRUE ] && [ -n "${cache_key:-}" ]; then
   wait # only join in case we wanna write back, this will be rare and is necessary to have a good cache
-  ( ( sudo docker save "$OTEL_SHELL_COLLECTOR_IMAGE" | sudo tee /opt/opentelemetry_shell/collector.image > /dev/null && sudo -E -H node -e "require('@actions/cache').saveCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip', '/opt/opentelemetry_shell/collector.image'], '$cache_key');" ) &> /dev/null & )
+  ( sudo -E -H node -e "require('@actions/cache').saveCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip'], '$cache_key');" &> /dev/null & )
 fi
 echo "::endgroup::"
 
@@ -338,7 +347,7 @@ root4job_end() {
       otel_observation_attribute_typed "$invocation_observation_handle" string github.actions.runner.environment="$RUNNER_ENVIRONMENT"
       otel_counter_observe "$(otel_counter_create counter selfmonitoring.opentelemetry.github.job.invocations 1 'Invocations of job-level instrumentation')" "$invocation_observation_handle"
       self_monitoring_metrics_file="$(mktemp)"
-      [ -z "${OTEL_SHELL_COLLECTOR_CONTAINER:-}" ] || curl -s http://localhost:8888/metrics > "$self_monitoring_metrics_file"
+      curl -s http://localhost:8888/metrics > "$self_monitoring_metrics_file"
       metrics_observation_handle="$(otel_observation_create "$({ echo 0; cat "$self_monitoring_metrics_file" | grep '^otelcol_receiver_accepted_metric_points' | cut -d ' ' -f 2; } | paste -sd+ | bc)")"
       otel_observation_attribute_typed "$metrics_observation_handle" string github.actions.runner.os="$RUNNER_OS"
       otel_observation_attribute_typed "$metrics_observation_handle" string github.actions.runner.arch="$RUNNER_ARCH"
@@ -372,15 +381,14 @@ root4job_end() {
   if [ -p /tmp/otel_shell/sdk_factory."$USER".pipe ]; then echo "EOF" > /tmp/otel_shell/sdk_factory."$USER".pipe; rm -rf /tmp/otel_shell; fi
   timeout 5s sh -c 'while fuser /opt/opentelemetry_shell/venv/bin/python; do sleep 1; done; true' &> /dev/null || echo "Found leaked SDK processes (this may be due to leaked processes that are still being observed)."
   
-  if [ -n "${OTEL_SHELL_COLLECTOR_CONTAINER:-}" ]; then
-    sudo docker stop "$OTEL_SHELL_COLLECTOR_CONTAINER"
-    local collector_pipe_warning="$(mktemp -u)"
-    local collector_pipe_error="$(mktemp -u)"
-    mkfifo "$collector_pipe_warning" "$collector_pipe_error"
-    cat "$collector_pipe_warning" | grep '^warn ' | cut -d ' ' -f 2- | sort -u | while read -r line; do echo ::warning::"$line"; done &
-    cat "$collector_pipe_error" | grep '^err ' | cut -d ' ' -f 2- | sort -u | while read -r line; do echo ::error::"$line"; done &
-    sudo docker logs "$OTEL_SHELL_COLLECTOR_CONTAINER" 2>&1 | tr '\t' ' ' | cut -d ' ' -f 2- | tee "$collector_pipe_warning" | tee "$collector_pipe_error" | { if [ -n "$INPUT_DEBUG" ]; then cat; else cat > /dev/null; fi; }
-  fi
+  kill -SIGINT "$OTEL_COLLECTOR_PID"
+  wait "$OTEL_COLLECTOR_PID"
+  local collector_pipe_warning="$(mktemp -u)"
+  local collector_pipe_error="$(mktemp -u)"
+  mkfifo "$collector_pipe_warning" "$collector_pipe_error"
+  cat "$collector_pipe_warning" | grep '^warn ' | cut -d ' ' -f 2- | sort -u | while read -r line; do echo ::warning::"$line"; done &
+  cat "$collector_pipe_error" | grep '^err ' | cut -d ' ' -f 2- | sort -u | while read -r line; do echo ::error::"$line"; done &
+  cat var/log/otelcol."$$".log | tr '\t' ' ' | cut -d ' ' -f 2- | tee "$collector_pipe_warning" | tee "$collector_pipe_error" | { if [ -n "$INPUT_DEBUG" ]; then cat; else cat > /dev/null; fi; }
   
   if [ -n "${INTERNAL_OTEL_DEFERRED_EXPORT_DIR:-}" ]; then
     export -f gh_artifact_upload
@@ -395,7 +403,8 @@ export -f root4job_end
 root4job() {
   exec 1> /tmp/opentelemetry_shell.github.debug.log
   exec 2> /tmp/opentelemetry_shell.github.debug.log
-  [ -z "${OTEL_SHELL_COLLECTOR_IMAGE:-}" ] || export OTEL_SHELL_COLLECTOR_CONTAINER="$(OTEL_SHELL_COLLECTOR_CONFIG="$(cat "$(pwd)"/collector.yaml)" sudo -E docker run --detach --restart unless-stopped --network=host --env OTEL_SHELL_COLLECTOR_CONFIG "$OTEL_SHELL_COLLECTOR_IMAGE" --config=env:OTEL_SHELL_COLLECTOR_CONFIG)"
+  OTEL_GITHUB_COLLECTOR_CONFIG="$(cat "$(pwd)"/collector.yaml)" otelcol-contrib --config=env:OTEL_GITHUB_COLLECTOR_CONFIG &> /var/log/otelcol."$$".log &
+  OTEL_COLLECTOR_PID="$!"
   rm -rf "$(pwd)"/collector.yaml 2> /dev/null
   rm /tmp/opentelemetry_shell.github.error 2> /dev/null
   traceparent_file="$1"
@@ -438,7 +447,7 @@ root4job() {
 export -f root4job
 
 echo "::group::Setting Up SDK Factory"
-mv sdk_factory.py sdk_factory.py.backup
+mv sdk_factory.py sdk_factory.py.backup # TODO by this time extraction must be complete, move it down after wait
 cat /usr/share/opentelemetry_shell/sdk.py | grep -E 'from|import' | while read -r line; do echo "$line"; done | sort -u > sdk_factory.py
 cat sdk_factory.py.backup >> sdk_factory.py
 rm sdk_factory.py.backup
