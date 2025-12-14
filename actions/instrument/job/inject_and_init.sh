@@ -1,13 +1,13 @@
 #!/bin/bash
 set -e -o pipefail
 if [ -n "$INPUT_DEBUG" ]; then set -mx; fi
-FAST_DEB_INSTALL=TRUE
-ASYNC_INIT=FALSE
-ls -la /lib/x86_64-linux-gnu/libc.so.6
+FAST_DEB_INSTALL="${FAST_DEB_INSTALL:-TRUE}"
+ASYNC_INIT="${ASYNC_INIT:-FALSE}"
+[ -z "$INPUT_DEBUG" ] || ASYNC_INIT=FALSE
 set -x
 
 if [ "${ASYNC_INIT:-FALSE}" = TRUE ]; then
-  run() { "$@" 2>&1 | { type perl &> /dev/null && perl -0777 -pe '' || cat > /dev/null; } & }
+  run() { "$@" 2>&1 | { type perl &> /dev/null && perl -0777 -pe '' || cat > /dev/null; } &; }
 else
   run() { "$@"; }
 fi
