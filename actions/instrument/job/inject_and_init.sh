@@ -1,7 +1,15 @@
 #!/bin/bash
 set -e -o pipefail
 if [ -n "$INPUT_DEBUG" ]; then set -mx; fi
+FAST_DEB_INSTALL=TRUE
+ASYNC_INIT=FALSE
 set -x
+
+if [ "${ASYNC_INIT:-FALSE}" = TRUE ]; then
+  run() { "$@" 2>&1 | { type perl &> /dev/null && perl -0777 -pe '' || cat > /dev/null; } & }
+else
+  run() { "$@"; }
+fi
 
 echo "::group::Validate Configuration"
 export OTEL_SERVICE_NAME="${OTEL_SERVICE_NAME:-"$(echo "$GITHUB_REPOSITORY" | cut -d / -f 2-) CI"}"
@@ -59,14 +67,13 @@ echo "::endgroup::"
 echo "::group::Install Dependencies"
 . ../shared/github.sh
 . ../shared/id_printer.sh
-FAST_DEB_INSTALL=TRUE
 export GITHUB_ACTION_REPOSITORY="${GITHUB_ACTION_REPOSITORY:-"$GITHUB_REPOSITORY"}"
 npm --no-audit ci
 action_tag_name="$(echo "$GITHUB_ACTION_REF" | cut -sd @ -f 2-)"
 if [ -z "$action_tag_name" ]; then action_tag_name="v$(cat ../../../VERSION)"; fi
 if [ "$INPUT_CACHE" = "true" ]; then
   export INSTRUMENTATION_CACHE_KEY="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} instrumentation $GITHUB_WORKFLOW $GITHUB_JOB"
-  sudo -E -H node -e "require('@actions/cache').restoreCache(['/tmp/*.aliases'], '$INSTRUMENTATION_CACHE_KEY');" 2>&1 # | { type perl && perl -0777 -pe '' || cat > /dev/null; } &
+  run sudo -E -H node -e "require('@actions/cache').restoreCache(['/tmp/*.aliases'], '$INSTRUMENTATION_CACHE_KEY');"
   cache_key="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} dependencies $({ cat /etc/os-release; python3 --version || true; node --version || true; printenv | grep -E '^OTEL_SHELL_CONFIG_INSTALL_' || true; } | md5sum | cut -d ' ' -f 1)"
   sudo -E -H node -e "require('@actions/cache').restoreCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip'], '$cache_key');"
   [ "$(find /var/cache/apt/archives/ -name '*.deb' | wc -l)" -gt 0 ] || write_back_cache=TRUE
@@ -76,7 +83,7 @@ if ! type otel.sh && [ -r /var/cache/apt/archives/opentelemetry-shell*.deb ]; th
     control_dir="$(mktemp -d)"
     dpkg-deb --control /var/cache/apt/archives/opentelemetry-shell*.deb "$control_dir"
     if cat "$control_dir"/control | grep -E '^Pre-Depends:|^Depends:' | cut -d ':' -f 2 - | tr ',' '\n' | grep -v '|' | tr -d ' ' | cut -d '(' -f 1 | sed 's/awk/gawk/g' | xargs -I '{}' [ -r /var/lib/dpkg/info/'{}'.list ]; then
-      ( sudo dpkg-deb --extract /var/cache/apt/archives/opentelemetry-shell*.deb && sudo "$control_dir"/postinst configure && rm -rf "$control_dir" ) 2>&1 # | { type perl && perl -0777 -pe '' || cat > /dev/null; } &
+      run eval sudo dpkg-deb --extract /var/cache/apt/archives/opentelemetry-shell*.deb '&&' sudo "$control_dir"/postinst configure '&&' rm -rf "$control_dir"
       export OTEL_SHELL_PACKAGE_VERSION_CACHE_opentelemetry_shell="$(cat ../../../VERSION)"
     else
       rm -rf "$control_dir"
@@ -92,11 +99,11 @@ if ! type otelcol-contrib; then
       | xargs -I '{}' wget -q --header "Authorization: Bearer $INPUT_GITHUB_TOKEN" --header "Accept: application/octet-stream" '{}' -O - | sudo tee /var/cache/apt/archives/otelcol-contrib.deb > /dev/null
   fi
   if [ "${FAST_DEB_INSTALL:-FALSE}" ]; then # lets assume no install scripts or dependencies or triggers
-    sudo dpkg-deb --extract /var/cache/apt/archives/otelcol-contrib.deb /
+    run sudo dpkg-deb --extract /var/cache/apt/archives/otelcol-contrib.deb /
   else
     sudo apt-get install -y /var/cache/apt/archives/otelcol-contrib.deb
   fi
-fi 2>&1 # | perl -0777 -pe '' &
+fi
 if [ "${write_back_cache:-FALSE}" = TRUE ] && [ -n "${cache_key:-}" ]; then
   wait # only join in case we wanna write back, this will be rare and is necessary to have a good cache
   ( sudo -E -H node -e "require('@actions/cache').saveCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip'], '$cache_key');" &> /dev/null & )
@@ -215,18 +222,22 @@ new_binary_dir="$GITHUB_ACTION_PATH/bin"
 relocated_binary_dir="$GITHUB_ACTION_PATH/relocated_bin"
 mkdir -p "$new_binary_dir" "$relocated_binary_dir"
 echo "$new_binary_dir" >> "$GITHUB_PATH"
-( if type sh;   then gcc -o "$new_binary_dir"/sh forward.c -DEXECUTABLE="$(which sh)" -DARG1="$GITHUB_ACTION_PATH"/decorate_action_run.sh -DARG2="$(which sh)"; fi 2>&1 | perl -0777 -pe '' ) # &
-( if type ash;  then gcc -o "$new_binary_dir"/dash forward.c -DEXECUTABLE="$(which ash)" -DARG1="$GITHUB_ACTION_PATH"/decorate_action_run.sh -DARG2="$(which ash)"; fi 2>&1 | perl -0777 -pe '' ) # &
-( if type dash; then gcc -o "$new_binary_dir"/dash forward.c -DEXECUTABLE="$(which dash)" -DARG1="$GITHUB_ACTION_PATH"/decorate_action_run.sh -DARG2="$(which dash)"; fi 2>&1 | perl -0777 -pe '' ) # &
-( if type bash; then gcc -o "$new_binary_dir"/bash forward.c -DEXECUTABLE="$(which bash)" -DARG1="$GITHUB_ACTION_PATH"/decorate_action_run.sh -DARG2="$(which bash)"; fi 2>&1 | perl -0777 -pe '' ) # &
+if type sh;   then run gcc -o "$new_binary_dir"/sh forward.c -DEXECUTABLE="$(which sh)" -DARG1="$GITHUB_ACTION_PATH"/decorate_action_run.sh -DARG2="$(which sh)"; fi
+if type ash;  then run gcc -o "$new_binary_dir"/dash forward.c -DEXECUTABLE="$(which ash)" -DARG1="$GITHUB_ACTION_PATH"/decorate_action_run.sh -DARG2="$(which ash)"; fi
+if type dash; then run gcc -o "$new_binary_dir"/dash forward.c -DEXECUTABLE="$(which dash)" -DARG1="$GITHUB_ACTION_PATH"/decorate_action_run.sh -DARG2="$(which dash)"; fi
+if type bash; then run gcc -o "$new_binary_dir"/bash forward.c -DEXECUTABLE="$(which bash)" -DARG1="$GITHUB_ACTION_PATH"/decorate_action_run.sh -DARG2="$(which bash)"; fi
 for node_path in "$(readlink -f /proc/*/exe | grep '/Runner.Worker$' | rev | cut -d / -f 4- | rev)"/*/externals/node*/bin/node; do
   dir_path_new="$relocated_binary_dir"/"$(echo "$node_path" | rev | cut -d / -f 3 | rev)"-"$(echo "$node_path" | md5sum | cut -d ' ' -f 1)"
   mkdir "$dir_path_new"
   node_path_new="$dir_path_new"/node
   mv "$node_path" "$node_path_new"
-  gcc -o "$node_path" forward.c -DEXECUTABLE=/bin/bash -DARG1="$GITHUB_ACTION_PATH"/decorate_action_node.sh -DARG2="$node_path_new" 2>&1 # | perl -0777 -pe '' & # path is hardcoded in the runners
+  run gcc -o "$node_path" forward.c -DEXECUTABLE=/bin/bash -DARG1="$GITHUB_ACTION_PATH"/decorate_action_node.sh -DARG2="$node_path_new" # path is hardcoded in the runners
 done
-( if type docker; then docker_path="$(which docker)" && sudo mv "$docker_path" "$relocated_binary_dir" && sudo gcc -o "$docker_path" forward.c -DEXECUTABLE=/bin/bash -DARG1="$GITHUB_ACTION_PATH"/decorate_action_docker.sh -DARG2="$relocated_binary_dir"/docker; fi 2>&1 | perl -0777 -pe '' ) &
+if type docker; then
+  docker_path="$(which docker)"
+  sudo mv "$docker_path" "$relocated_binary_dir"
+  run sudo gcc -o "$docker_path" forward.c -DEXECUTABLE=/bin/bash -DARG1="$GITHUB_ACTION_PATH"/decorate_action_docker.sh -DARG2="$relocated_binary_dir"/docker
+fi
 echo "::endgroup::"
 
 echo "::group::Resolve W3C Tracecontext"
