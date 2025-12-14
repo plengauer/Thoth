@@ -84,7 +84,7 @@ if ! type otel.sh && [ -r /var/cache/apt/archives/opentelemetry-shell*.deb ]; th
     sudo apt-get install -y /var/cache/apt/archives/opentelemetry-shell*.deb
   fi
 fi
-bash -e -o pipefail ../shared/install.sh perl curl wget jq sed unzip parallel 'node;nodejs' npm 'gcc;build-essential' lsof
+bash -e -o pipefail ../shared/install.sh perl curl wget jq sed unzip parallel 'node;nodejs' npm 'gcc;build-essential' libc6 lsof
 if ! type otelcol-contrib; then
   if ! [ -r /var/cache/apt/archives/otelcol-contrib.deb ]; then
     GITHUB_REPOSITORY=open-telemetry/opentelemetry-collector-releases gh_curl /releases/tags/v"$(cat Dockerfile | grep '^FROM ' | cut -d ' ' -f 2- | cut -d : -f 2)" | jq '.assets[] | select(.name | endswith(".deb")) | [ .name, .url ] | @tsv' -r | grep contrib | grep linux | grep "$(arch | sed 's/x86_64/amd64/g')" | head -n 1 | cut -d $'\t' -f 2 \
