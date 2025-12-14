@@ -3,6 +3,7 @@ set -e -o pipefail
 if [ -n "$INPUT_DEBUG" ]; then set -mx; fi
 FAST_DEB_INSTALL=TRUE
 ASYNC_INIT=FALSE
+ls -la /lib/x86_64-linux-gnu/libc.so.6
 set -x
 
 if [ "${ASYNC_INIT:-FALSE}" = TRUE ]; then
@@ -81,18 +82,18 @@ fi
 if ! type otel.sh && [ -r /var/cache/apt/archives/opentelemetry-shell*.deb ]; then
   if [ "${FAST_DEB_INSTALL:-FALSE}" ]; then # lets assume exactly one postinst script, no triggers
     control_dir="$(mktemp -d)"
-    dpkg-deb --control /var/cache/apt/archives/opentelemetry-shell*.deb "$control_dir"
+    dpkg-deb --control /var/cache/apt/archives/opentelemetry-shell_*_all.deb "$control_dir"
     if cat "$control_dir"/control | grep -E '^Pre-Depends:|^Depends:' | cut -d ':' -f 2 - | tr ',' '\n' | grep -v '|' | tr -d ' ' | cut -d '(' -f 1 | sed 's/awk/gawk/g' | xargs -I '{}' [ -r /var/lib/dpkg/info/'{}'.list ]; then
-      run eval sudo dpkg-deb --extract /var/cache/apt/archives/opentelemetry-shell*.deb '&&' sudo "$control_dir"/postinst configure '&&' rm -rf "$control_dir"
+      run eval sudo dpkg-deb --extract /var/cache/apt/archives/opentelemetry-shell_*_all.deb '&&' sudo "$control_dir"/postinst configure '&&' rm -rf "$control_dir"
       export OTEL_SHELL_PACKAGE_VERSION_CACHE_opentelemetry_shell="$(cat ../../../VERSION)"
     else
       rm -rf "$control_dir"
     fi
   else
-    sudo apt-get install -y /var/cache/apt/archives/opentelemetry-shell*.deb
+    sudo apt-get install -y /var/cache/apt/archives/opentelemetry-shell_*_all.deb
   fi
 fi
-bash -e -o pipefail ../shared/install.sh perl curl wget jq sed unzip parallel 'node;nodejs' npm 'gcc;build-essential' libc6 lsof
+bash -e -o pipefail ../shared/install.sh perl curl wget jq sed unzip parallel 'node;nodejs' npm 'gcc;build-essential' lsof
 if ! type otelcol-contrib; then
   if ! [ -r /var/cache/apt/archives/otelcol-contrib.deb ]; then
     GITHUB_REPOSITORY=open-telemetry/opentelemetry-collector-releases gh_curl /releases/tags/v"$(cat Dockerfile | grep '^FROM ' | cut -d ' ' -f 2- | cut -d : -f 2)" | jq '.assets[] | select(.name | endswith(".deb")) | [ .name, .url ] | @tsv' -r | grep contrib | grep linux | grep "$(arch | sed 's/x86_64/amd64/g')" | head -n 1 | cut -d $'\t' -f 2 \
