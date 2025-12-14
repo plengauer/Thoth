@@ -101,10 +101,10 @@ if ! type otelcol-contrib; then
     GITHUB_REPOSITORY=open-telemetry/opentelemetry-collector-releases gh_curl /releases/tags/v"$(cat Dockerfile | grep '^FROM ' | cut -d ' ' -f 2- | cut -d : -f 2)" | jq '.assets[] | select(.name | endswith(".deb")) | [ .name, .url ] | @tsv' -r | grep contrib | grep linux | grep "$(arch | sed 's/x86_64/amd64/g')" | head -n 1 | cut -d $'\t' -f 2 \
       | xargs -I '{}' wget -q --header "Authorization: Bearer $INPUT_GITHUB_TOKEN" --header "Accept: application/octet-stream" '{}' -O - | sudo tee /var/cache/apt/archives/otelcol-contrib.deb > /dev/null
   fi
-  if [ "${FAST_DEB_INSTALL:-FALSE}" = TRUE ]; then # lets assume no install scripts or dependencies or triggers
+  if [ "${FAST_DEB_INSTALL:-FALSE}" = TRUE ] && false; then # lets assume no install scripts or dependencies or triggers
     run sudo dpkg-deb --extract /var/cache/apt/archives/otelcol-contrib.deb /
   else
-    sudo apt-get install -y /var/cache/apt/archives/otelcol-contrib.deb
+    run sudo apt-get install -y /var/cache/apt/archives/otelcol-contrib.deb
   fi
 fi
 if [ "${write_back_cache:-FALSE}" = TRUE ] && [ -n "${cache_key:-}" ]; then
