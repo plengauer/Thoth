@@ -4,7 +4,6 @@ if [ -n "$INPUT_DEBUG" ]; then set -mx; fi
 FAST_DEB_INSTALL="${FAST_DEB_INSTALL:-TRUE}"
 ASYNC_INIT="${ASYNC_INIT:-TRUE}"
 [ -z "$INPUT_DEBUG" ] || ASYNC_INIT=FALSE
-set -x
 
 if [ "${ASYNC_INIT:-FALSE}" = TRUE ]; then
   run() {
@@ -104,7 +103,7 @@ if ! type otelcol-contrib; then
   if [ "${FAST_DEB_INSTALL:-FALSE}" = TRUE ] && false; then # lets assume no install scripts or dependencies or triggers
     run sudo dpkg-deb --extract /var/cache/apt/archives/otelcol-contrib.deb /
   else
-    run sudo apt-get install -y /var/cache/apt/archives/otelcol-contrib.deb
+    run sudo apt-get install -y /var/cache/apt/archives/otelcol-contrib.deb '&&' '( ' sudo systemctl disable otelcol-contrib.service '||' true ' )'
   fi
 fi
 if [ "${write_back_cache:-FALSE}" = TRUE ] && [ -n "${cache_key:-}" ]; then
@@ -214,8 +213,6 @@ $(cat $section_pipeline_metrics)
 $(cat $section_pipeline_traces)
 EOF
 if [ -n "$INPUT_DEBUG" ]; then cat collector.yml; fi
-pwd
-ls -la
 echo "::endgroup::"
 
 echo "::group::Instrument shell/javascript/docker actions"
@@ -420,8 +417,6 @@ export -f root4job_end
 root4job() {
   exec 1> /tmp/opentelemetry_shell.github.debug.log
   exec 2> /tmp/opentelemetry_shell.github.debug.log
-  pwd
-  ls -la
   OTEL_GITHUB_COLLECTOR_CONFIG="$(cat collector.yml)" otelcol-contrib --config=env:OTEL_GITHUB_COLLECTOR_CONFIG 2>&1 | sudo tee /var/log/otelcol."$$".log &> /dev/null &
   OTEL_COLLECTOR_PID="$!"
   rm -rf collector.yml 2> /dev/null
