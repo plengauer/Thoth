@@ -7,7 +7,9 @@ ASYNC_INIT="${ASYNC_INIT:-FALSE}" # TRUE
 set -x
 
 if [ "${ASYNC_INIT:-FALSE}" = TRUE ]; then
-  run() { "$@" 2>&1 | { type perl &> /dev/null && perl -0777 -pe '' || cat > /dev/null; } &; }
+  run() {
+    "$@" 2>&1 | { type perl &> /dev/null && perl -0777 -pe '' || cat > /dev/null; } &
+  }
 else
   run() { "$@"; }
 fi
