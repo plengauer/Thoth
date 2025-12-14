@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e -o pipefail
 if [ -n "$INPUT_DEBUG" ]; then set -mx; fi
-FAST_DEB_INSTALL="${FAST_DEB_INSTALL:-TRUE}"
-ASYNC_INIT="${ASYNC_INIT:-FALSE}"
+FAST_DEB_INSTALL="${FAST_DEB_INSTALL:-FALSE}" # TRUE
+ASYNC_INIT="${ASYNC_INIT:-FALSE}" # TRUE
 [ -z "$INPUT_DEBUG" ] || ASYNC_INIT=FALSE
 set -x
 
