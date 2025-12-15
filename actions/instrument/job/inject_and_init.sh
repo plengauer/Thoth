@@ -103,7 +103,7 @@ if ! type otelcol-contrib; then
   if [ "${FAST_DEB_INSTALL:-FALSE}" = TRUE ] && false; then # lets assume no install scripts or dependencies or triggers
     run sudo dpkg-deb --extract /var/cache/apt/archives/otelcol-contrib.deb /
   else
-    run sudo apt-get install -y /var/cache/apt/archives/otelcol-contrib.deb '&&' '(' sudo systemctl stop otelcol-contrib.service && sudo systemctl disable otelcol-contrib.service '||' true ')'
+    run eval sudo apt-get install -y /var/cache/apt/archives/otelcol-contrib.deb '&&' '(' sudo systemctl stop otelcol-contrib.service && sudo systemctl disable otelcol-contrib.service '||' true ')'
   fi
 fi
 if [ "${write_back_cache:-FALSE}" = TRUE ] && [ -n "${cache_key:-}" ]; then
