@@ -415,6 +415,7 @@ root4job_end() {
 export -f root4job_end
 
 root4job() {
+  if [ -n "$INPUT_DEBUG" ]; then set -x; fi
   exec 1> /tmp/opentelemetry_shell.github.debug.log
   exec 2> /tmp/opentelemetry_shell.github.debug.log
   OTEL_GITHUB_COLLECTOR_CONFIG="$(cat collector.yml)" otelcol-contrib --config=env:OTEL_GITHUB_COLLECTOR_CONFIG 2>&1 | sudo tee /var/log/otelcol."$$".log &> /dev/null &
