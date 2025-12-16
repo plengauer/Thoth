@@ -201,7 +201,7 @@ service:
         processors: [transform, batch]
 EOF
 if type yq; then
-  cat collector.yml | yq '.exporters | keys[]' -r | while read -r exporter; do
+  for exporter in $(cat collector.yml | yq '.exporters | keys[]' -r); do
     if [ "$exporter" != "$collector_logs_exporter" ] && [ "$exporter" != "$collector_metrics_exporter" ] && [ "$exporter" != "$collector_traces_exporter" ]; then
       yq -i "del(.exporters.$exporter)" collector.yml
     fi
