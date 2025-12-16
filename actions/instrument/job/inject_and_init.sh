@@ -158,32 +158,32 @@ exporters:
   otlp/logs:
     endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:-${OTEL_EXPORTER_OTLP_LOGS_ENDPOINT%/v1/logs}}
     headers:
-      $(echo "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_LOGS_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /g')
+$(echo "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_LOGS_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /g' | sed 's/^/      /g')
   otlp/metrics:
     endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:-${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT%/v1/metrics}}
     headers:
-      $(echo "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_METRICS_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /g')
+$(echo "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_METRICS_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /g' | sed 's/^/      /g')
   otlp/traces:
     endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:-${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT%/v1/traces}}
     headers:
-      $(echo "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_TRACES_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /g')
+$(echo "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_TRACES_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /g' | sed 's/^/      /g')
   otlphttp/logs:
     endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:-${OTEL_EXPORTER_OTLP_LOGS_ENDPOINT%/v1/logs}}
     $([ -z "${OTEL_EXPORTER_OTLP_LOGS_ENDPOINT:-}" ] || echo "logs_endpoint: $OTEL_EXPORTER_OTLP_LOGS_ENDPOINT")
     headers:
-      $(echo "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_LOGS_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /g')
+$(echo "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_LOGS_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /g' | sed 's/^/      /g')
     encoding: $([ "${OTEL_EXPORTER_OTLP_LOGS_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/json ] && echo json || echo proto)
   otlphttp/metrics:
     endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:-${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT%/v1/metrics}}
     $([ -z "${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT:-}" ] || echo "metrics_endpoint: $OTEL_EXPORTER_OTLP_METRICS_ENDPOINT")
     headers:
-      $(echo "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_METRICS_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /g')
+$(echo "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_METRICS_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /g' | sed 's/^/      /g')
     encoding: $([ "${OTEL_EXPORTER_OTLP_METRICS_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/json ] && echo json || echo proto)
   otlphttp/traces:
     endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:-${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT%/v1/traces}}
     $([ -z "${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-}" ] || echo "traces_endpoint: $OTEL_EXPORTER_OTLP_TRACES_ENDPOINT")
     headers:
-      $(echo "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_TRACES_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /g')
+$(echo "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_TRACES_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /g' | sed 's/^/      /g')
     encoding: $([ "${OTEL_EXPORTER_OTLP_TRACES_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/json ] && echo json || echo proto)
 service:
   pipelines:
@@ -400,7 +400,7 @@ root4job_end() {
   if [ -p /tmp/otel_shell/sdk_factory."$USER".pipe ]; then echo "EOF" > /tmp/otel_shell/sdk_factory."$USER".pipe; rm -rf /tmp/otel_shell; fi
   timeout 5s sh -c 'while fuser /opt/opentelemetry_shell/venv/bin/python; do sleep 1; done; true' &> /dev/null || echo "Found leaked SDK processes (this may be due to leaked processes that are still being observed)."
   
-  killall -SIGINT otelcol-contrib
+  killall -SIGINT otelcol-contrib || INPUT_DEBUG=1
   wait "$OTEL_COLLECTOR_PID"
   local collector_pipe_warning="$(mktemp -u)"
   local collector_pipe_error="$(mktemp -u)"
