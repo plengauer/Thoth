@@ -121,13 +121,13 @@ case "${OTEL_LOGS_EXPORTER:-otlp}" in
   *) echo ::error::Unsupported logs exporter: "${OTEL_LOGS_EXPORTER:-otlp}" && exit 1;;
 esac
 case "${OTEL_METRICS_EXPORTER:-otlp}" in
-  otlp) if [ "${OTEL_EXPORTER_OTLP_METRICS_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/protobuf ] || [ "${OTEL_EXPORTER_OTLP_METRICS_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/json ]; then collector_metrics_exporter=otlphttp/metrics; else collector_metrics_exporter=otlp/metrics; fi
+  otlp) if [ "${OTEL_EXPORTER_OTLP_METRICS_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/protobuf ] || [ "${OTEL_EXPORTER_OTLP_METRICS_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/json ]; then collector_metrics_exporter=otlphttp/metrics; else collector_metrics_exporter=otlp/metrics; fi;;
   console) collector_metrics_exporter=debug;;
   none) collector_metrics_exporter=nop;;
   *) echo ::error::Unsupported metrics exporter: "${OTEL_METRICS_EXPORTER:-otlp}" && exit 1;;
 esac
 case "${OTEL_TRACES_EXPORTER:-otlp}" in
-  otlp) if [ "${OTEL_EXPORTER_OTLP_TRACES_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/protobuf ] || [ "${OTEL_EXPORTER_OTLP_TRACES_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/json ]; then collector_traces_exporter=otlphttp/traces; else collector_traces_exporter=otlp/traces; fi
+  otlp) if [ "${OTEL_EXPORTER_OTLP_TRACES_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/protobuf ] || [ "${OTEL_EXPORTER_OTLP_TRACES_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/json ]; then collector_traces_exporter=otlphttp/traces; else collector_traces_exporter=otlp/traces; fi;;
   console) collector_traces_exporter=debug;;
   none) collector_traces_exporter=nop;;
   *) echo ::error::Unsupported traces exporter: "${OTEL_TRACES_EXPORTER:-otlp}" && exit 1;;
