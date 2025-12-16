@@ -200,6 +200,13 @@ service:
         exporters: [${collector_traces_exporter}]
         processors: [transform, batch]
 EOF
+if type yq; then
+  cat collector.yml | yq '.exporters | keys[]' -r | while read -r exporter; do
+    if [ "$exporter" != "$collector_logs_exporter" ] && [ "$exporter" != "$collector_metrics_exporter" ] && [ "$exporter" != "$collector_traces_exporter" ]; then
+      yq -i "del(.exporters.$exporter)" collector.yml
+    fi
+  done
+fi
 if [ -n "$INPUT_DEBUG" ]; then cat collector.yml; fi
 export OTEL_LOGS_EXPORTER=otlp
 export OTEL_EXPORTER_OTLP_LOGS_ENDPOINT=http://localhost:4318/v1/logs
