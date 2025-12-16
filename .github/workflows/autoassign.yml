@@ -11,7 +11,7 @@ jobs:
   autoassign:
     runs-on: ubuntu-latest
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.37.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.37.4
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
