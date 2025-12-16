@@ -400,6 +400,7 @@ root4job_end() {
   if [ -p /tmp/otel_shell/sdk_factory."$USER".pipe ]; then echo "EOF" > /tmp/otel_shell/sdk_factory."$USER".pipe; rm -rf /tmp/otel_shell; fi
   timeout 5s sh -c 'while fuser /opt/opentelemetry_shell/venv/bin/python; do sleep 1; done; true' &> /dev/null || echo "Found leaked SDK processes (this may be due to leaked processes that are still being observed)."
   
+cat /var/log/otelcol."$$".log
   kill -SIGINT "$OTEL_COLLECTOR_PID"
   wait "$OTEL_COLLECTOR_PID"
   local collector_pipe_warning="$(mktemp -u)"
