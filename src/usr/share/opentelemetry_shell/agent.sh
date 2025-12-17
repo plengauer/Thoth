@@ -425,7 +425,7 @@ _otel_inject_and_exec_by_location() {
   \printf '%s\n' "$(_otel_escape_args export OTEL_SHELL_AUTO_INJECTED=TRUE)"
   \printf '%s\n' "$(_otel_escape_args export OTEL_SHELL_COMMANDLINE_OVERRIDE="$(_otel_command_self)")"
   \printf '%s\n' "$(_otel_escape_args export OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE="$PPID")"
-  \echo -n '"exec" '; _otel_escape_args  "$_otel_shell" -c '. otel.sh
+  \echo -n '"exec" '; _otel_escape_args "$_otel_shell" -c '. otel.sh
 _otel_inject '"$command"; \echo -n ' "$0" "$@"'
 }
 
