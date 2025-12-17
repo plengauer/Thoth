@@ -382,28 +382,28 @@ _otel_instrument_and_source() {
 _otel_inject_and_exec_directly() { # this function assumes there is no fd fuckery
   if \[ "$#" = 1 ]; then
     \export OTEL_SHELL_CONSERVATIVE_EXEC=TRUE
-    _otel_sdk_communicate 'SPAN_AUTO_END'
+    _otel_end_script
     if \[ -n "$_otel_commandline_override" ]; then
       \export OTEL_SHELL_COMMANDLINE_OVERRIDE="$_otel_commandline_override"
       \export OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE="$PPID"
     fi
-    \eval '"exec"' "$(\xargs -0 sh -c '. otelapi.sh; _otel_escape_args "$@"' sh < /proc/$$/cmdline)"
+    \eval '"exec"' "$(\xargs -0 "$_otel_shell" -c '. otelapi.sh; _otel_escape_args "$@"' "$_otel_shell" < /proc/$$/cmdline)"
   fi
-  
+
   local span_id="$(otel_span_start INTERNAL "$@")"
   otel_span_activate "$span_id"
   local my_traceparent="$TRACEPARENT"
   otel_span_deactivate "$span_id"
   otel_span_end "$span_id"
-  _otel_sdk_communicate 'SPAN_AUTO_END'
-  
+  _otel_end_script
+
   \export TRACEPARENT="$my_traceparent"
   \export OTEL_SHELL_AUTO_INJECTED=TRUE
   \export OTEL_SHELL_COMMANDLINE_OVERRIDE="$(_otel_command_self)"
   \export OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE="$PPID"
   shift
-  \exec sh -c '. otel.sh
-eval _otel_inject "$(_otel_escape_args "$@")"' sh "$@"
+  \exec "$_otel_shell" -c '. otel.sh
+eval _otel_inject "$(_otel_escape_args "$@")"' "$_otel_shell" "$@"
 }
 
 _otel_inject_and_exec_by_location() {
@@ -419,13 +419,13 @@ _otel_inject_and_exec_by_location() {
   local my_traceparent="$TRACEPARENT"
   otel_span_deactivate "$span_id"
   otel_span_end "$span_id"
-  _otel_sdk_communicate 'SPAN_AUTO_END'
+  _otel_end_script
 
   \printf '%s\n' "$(_otel_escape_args export TRACEPARENT="$my_traceparent")"
   \printf '%s\n' "$(_otel_escape_args export OTEL_SHELL_AUTO_INJECTED=TRUE)"
   \printf '%s\n' "$(_otel_escape_args export OTEL_SHELL_COMMANDLINE_OVERRIDE="$(_otel_command_self)")"
   \printf '%s\n' "$(_otel_escape_args export OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE="$PPID")"
-  \echo -n '"exec" '; _otel_escape_args sh -c '. otel.sh
+  \echo -n '"exec" '; _otel_escape_args  "$_otel_shell" -c '. otel.sh
 _otel_inject '"$command"; \echo -n ' "$0" "$@"'
 }
 
