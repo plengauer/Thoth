@@ -400,14 +400,14 @@ root4job_end() {
   if [ -p /tmp/otel_shell/sdk_factory."$USER".pipe ]; then echo "EOF" > /tmp/otel_shell/sdk_factory."$USER".pipe; rm -rf /tmp/otel_shell; fi
   timeout 5s sh -c 'while fuser /opt/opentelemetry_shell/venv/bin/python; do sleep 1; done; true' &> /dev/null || echo "Found leaked SDK processes (this may be due to leaked processes that are still being observed)."
   
-  killall -SIGINT otelcol-contrib || INPUT_DEBUG=1
+  kill -SIGINT "$OTEL_COLLECTOR_PID" || INPUT_DEBUG=1
   wait "$OTEL_COLLECTOR_PID"
   local collector_pipe_warning="$(mktemp -u)"
   local collector_pipe_error="$(mktemp -u)"
   mkfifo "$collector_pipe_warning" "$collector_pipe_error"
   cat "$collector_pipe_warning" | grep '^warn ' | cut -d ' ' -f 2- | sort -u | while read -r line; do echo ::warning::"$line"; done &
   cat "$collector_pipe_error" | grep '^err ' | cut -d ' ' -f 2- | sort -u | while read -r line; do echo ::error::"$line"; done &
-  cat /var/log/otelcol."$$".log | tr '\t' ' ' | cut -d ' ' -f 2- | tee "$collector_pipe_warning" | tee "$collector_pipe_error" | { if [ -n "$INPUT_DEBUG" ]; then cat; else cat > /dev/null; fi; }
+  cat otelcol."$$".log | tr '\t' ' ' | cut -d ' ' -f 2- | tee "$collector_pipe_warning" | tee "$collector_pipe_error" | { if [ -n "$INPUT_DEBUG" ]; then cat; else cat > /dev/null; fi; }
   
   if [ -n "${INTERNAL_OTEL_DEFERRED_EXPORT_DIR:-}" ]; then
     export -f gh_artifact_upload
@@ -424,7 +424,7 @@ root4job() {
   exec 1> /tmp/opentelemetry_shell.github.debug.log
   exec 2> /tmp/opentelemetry_shell.github.debug.log
   export OTEL_GITHUB_COLLECTOR_CONFIG="$(cat collector.yml)"
-  otelcol-contrib --config=env:OTEL_GITHUB_COLLECTOR_CONFIG 2>&1 | sudo tee /var/log/otelcol."$$".log &> /dev/null &
+  otelcol-contrib --config=env:OTEL_GITHUB_COLLECTOR_CONFIG &> otelcol."$$".log &
   OTEL_COLLECTOR_PID="$!"
   rm -rf collector.yml 2> /dev/null
   rm /tmp/opentelemetry_shell.github.error 2> /dev/null
