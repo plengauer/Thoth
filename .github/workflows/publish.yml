@@ -118,7 +118,7 @@ jobs:
               sudo docker image tag "$image_name" "$tag_full"
             done
             sudo docker image remove "$image_name":latest
-            sudo docker push "$image_name" --all-tags
+            sudo docker push "ghcr.io/${GITHUB_REPOSITORY%/*}/$image_name" --all-tags
           done
       - run: |
           gh release create "v${{ steps.version.outputs.version }}" \
