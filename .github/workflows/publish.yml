@@ -117,7 +117,7 @@ jobs:
               tag_full=ghcr.io/"${GITHUB_REPOSITORY%/*}"/"$image_name":"$tag_simple"
               sudo docker image tag "$image_name" "$tag_full"
             done
-            sudo docker image remove "$image_name":latest
+            sudo docker image remove "$image_name"
             sudo docker push "ghcr.io/${GITHUB_REPOSITORY%/*}/$image_name" --all-tags
           done
       - run: |
