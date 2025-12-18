@@ -10,7 +10,7 @@ on:
 jobs:
 
   setup:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     outputs:
       refs: ${{ steps.dynamic.outputs.refs }}
     permissions:
@@ -65,7 +65,7 @@ jobs:
     strategy:
       matrix:
         ref: ${{ fromJSON(needs.setup.outputs.refs) }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     permissions:
       actions: read
       contents: write
