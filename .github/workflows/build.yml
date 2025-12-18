@@ -363,7 +363,7 @@ jobs:
           min_version_shell="$(cat meta/debian/control | grep '^Pre-Depends:' | tr ',' '\n' | grep -F -- 'python3 (>=' | cut -d '(' -f 2- | cut -d ')' -f 1 | cut -d ' ' -f 2 | cut -d . -f 2)"
           [ "$min_version_shell" -ge "$min_version_otel" ] || (echo "::error::Minimum version is $min_version_shell but otel requires at least $min_version_otel!" && exit 1)
   verify-deb-dependencies:
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       actions: read
