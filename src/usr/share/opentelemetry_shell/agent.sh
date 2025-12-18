@@ -387,7 +387,7 @@ _otel_inject_and_exec_directly() { # this function assumes there is no fd fucker
       \export OTEL_SHELL_COMMANDLINE_OVERRIDE="$_otel_commandline_override"
       \export OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE="$PPID"
     fi
-    \eval '"exec"' "$(\xargs -0 "$_otel_shell" -c '. otelapi.sh; _otel_escape_args "$@"' "$_otel_shell" < /proc/$$/cmdline)"
+    \eval '"exec"' "$(\xargs -0 "$_otel_shell" -c '. otelapi.sh; _otel_escape_args "$@"' sh < /proc/$$/cmdline)"
   fi
 
   local span_id="$(otel_span_start INTERNAL "$@")"
@@ -403,7 +403,7 @@ _otel_inject_and_exec_directly() { # this function assumes there is no fd fucker
   \export OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE="$PPID"
   shift
   \exec "$_otel_shell" -c '. otel.sh
-eval _otel_inject "$(_otel_escape_args "$@")"' "$_otel_shell" "$@"
+eval _otel_inject "$(_otel_escape_args "$@")"' sh "$@"
 }
 
 _otel_inject_and_exec_by_location() {
