@@ -6,7 +6,7 @@ on:
       - .github/workflows/**
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     concurrency:
       group: deploy-otel-job
     permissions:

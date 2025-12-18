@@ -9,7 +9,7 @@ concurrency:
 
 jobs:
   autoassign:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.38.0
         env:

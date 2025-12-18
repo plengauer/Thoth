@@ -9,7 +9,7 @@ concurrency:
   group: rerun-${{ github.event.workflow_run.id }}
 jobs:
   rerun:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     permissions:
       contents: none
       actions: read
