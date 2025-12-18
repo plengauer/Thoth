@@ -19,7 +19,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.37.4
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.38.0
         with:
           secrets_to_redact: '["${{ github.token }}"]'
       - run: echo hello world
@@ -41,7 +41,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.37.4
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.38.0
         with:
           secrets_to_redact: '["${{ github.token }}"]'
       - uses: actions/checkout@v6.0.1
@@ -63,7 +63,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.37.4
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.38.0
         with:
           secrets_to_redact: '["${{ github.token }}"]'
           cache: '${{ matrix.cache }}'
