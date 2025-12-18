@@ -501,7 +501,6 @@ jobs:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
       - run: echo hello world
   job-ubuntu-slim:
-    if: false
     needs: job-smoke
     runs-on: ubuntu-slim
     timeout-minutes: 60
