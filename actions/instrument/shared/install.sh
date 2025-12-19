@@ -13,7 +13,7 @@ if ! type otel.sh 2> /dev/null; then
     gh_releases | if [ "$action_tag_name" = main ]; then
       jq '.[0]'
     else
-      jq '.[] | select(.tag_name=="'"$(cat ../../../VERSION)"'")'
+      jq '.[] | select(.tag_name=="v'"$(cat ../../../VERSION)"'")'
     fi | jq '.assets[] | select(.name | endswith(".deb")) | .url' -r | xargs -0 -I '{}' wget --header "Authorization: Bearer $INPUT_GITHUB_TOKEN" --header 'Accept: application/octet-stream' -O - '{}' | sudo tee "$debian_file" > /dev/null
     sudo -E -H eatmydata apt-get -o Binary::apt::APT::Keep-Downloaded-Packages=true install -y "$debian_file"
   fi || (
