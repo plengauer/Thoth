@@ -46,7 +46,7 @@ jobs:
     secrets: inherit
   join:
     needs: [shell, github]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     outputs:
       success: ${{ steps.tests.outputs.success }}
     permissions:
@@ -64,7 +64,7 @@ jobs:
   all:
     if: ${{ success() || failure() }} # this is because we need this to fail and not skipped to avoid PRs getting merged without this passing
     needs: join
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     permissions:
       contents: none
       actions: read

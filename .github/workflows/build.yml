@@ -56,7 +56,7 @@ jobs:
           if-no-files-found: error
   merge-http:
     needs: build-http
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     permissions:
       contents: read
       actions: read
@@ -83,7 +83,7 @@ jobs:
           path: bin/
 
   list-node-versions:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     outputs:
       versions: ${{ steps.dynamic.outputs.versions }}
     permissions:
@@ -141,7 +141,7 @@ jobs:
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules
   merge-node-modules:
     needs: build-node-modules
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     permissions:
       contents: read
       actions: read
@@ -169,7 +169,7 @@ jobs:
           path: node_modules.tar.xz
 
   list-python-versions:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     outputs:
       versions: ${{ steps.dynamic.outputs.versions }}
     permissions:
@@ -245,7 +245,7 @@ jobs:
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.python/venv/lib/python${{ matrix.version }}/site-packages
   merge-python-site-packages:
     needs: build-python-site-packages
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     permissions:
       contents: read
       actions: read
@@ -339,7 +339,7 @@ jobs:
       actions: read
       
   verify-deb-python-dependency:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     permissions:
       contents: read
       actions: read
@@ -452,7 +452,7 @@ jobs:
           path: package.deb
 
   verify-rpm-python-dependency:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     permissions:
       contents: read
       actions: read
@@ -605,7 +605,7 @@ jobs:
           path: package.apk
   merge-packages:
     needs: [build-deb, build-rpm, build-apk]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     permissions:
       contents: read
       actions: read

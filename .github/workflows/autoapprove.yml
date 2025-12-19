@@ -5,7 +5,7 @@ concurrency:
   group: approve-${{ github.event.pull_request.number }}
 jobs:
   approve:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     permissions:
       pull-requests: write
       actions: read
