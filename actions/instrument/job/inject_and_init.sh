@@ -84,7 +84,7 @@ if ! type otel.sh && [ -r /var/cache/apt/archives/opentelemetry-shell_*_all.deb 
   if [ "${FAST_DEB_INSTALL:-FALSE}" = TRUE ]; then # lets assume exactly one postinst script, no triggers
     control_dir="$(mktemp -d)"
     dpkg-deb --control /var/cache/apt/archives/opentelemetry-shell_*_all.deb "$control_dir"
-    if cat "$control_dir"/control | grep -E '^Pre-Depends:|^Depends:' | cut -d ':' -f 2 - | tr ',' '\n' | grep -v '|' | tr -d ' ' | cut -d '(' -f 1 | sed 's/awk/gawk/g' | xargs -I '{}' [ -r /var/lib/dpkg/info/'{}'.list ]; then
+    if cat "$control_dir"/control | grep -E '^Pre-Depends:|^Depends:' | cut -d ':' -f 2- | tr ',' '\n' | grep -v '|' | tr -d ' ' | cut -d '(' -f 1 | sed 's/awk/gawk/g' | xargs -I '{}' [ -r /var/lib/dpkg/info/'{}'.list ]; then
       run eval sudo dpkg-deb --extract /var/cache/apt/archives/opentelemetry-shell_*_all.deb / '&&' sudo "$control_dir"/postinst configure '&&' rm -rf "$control_dir"
       export OTEL_SHELL_PACKAGE_VERSION_CACHE_opentelemetry_shell="$(cat ../../../VERSION)"
     else
@@ -100,8 +100,9 @@ if ! type otelcol-contrib; then
     GITHUB_REPOSITORY=open-telemetry/opentelemetry-collector-releases gh_curl /releases/tags/v"$(cat Dockerfile | grep '^FROM ' | cut -d ' ' -f 2- | cut -d : -f 2)" | jq '.assets[] | select(.name | endswith(".deb")) | [ .name, .url ] | @tsv' -r | grep contrib | grep linux | grep "$(arch | sed 's/x86_64/amd64/g')" | head -n 1 | cut -d $'\t' -f 2 \
       | xargs -I '{}' wget -q --header "Authorization: Bearer $INPUT_GITHUB_TOKEN" --header "Accept: application/octet-stream" '{}' -O - | sudo tee /var/cache/apt/archives/otelcol-contrib.deb > /dev/null
   fi
-  if [ "${FAST_DEB_INSTALL:-FALSE}" = TRUE ] && false; then # lets assume no install scripts or dependencies or triggers
-    run sudo dpkg-deb --extract /var/cache/apt/archives/otelcol-contrib.deb /
+  if [ "${FAST_DEB_INSTALL:-FALSE}" = TRUE ]; then # lets assume no install scripts or dependencies or triggers
+    extract_dir="$(mktemp -d)"
+    run eval dpkg-deb --extract /var/cache/apt/archives/otelcol-contrib.deb "$extract_dir" '&&' sudo mv "$extract_dir"/usr/bin/otelcol-contrib /usr/bin '&&' rm -rf "$extract_dir"
   else
     run eval sudo apt-get install -y /var/cache/apt/archives/otelcol-contrib.deb '&&' '(' sudo systemctl stop otelcol-contrib.service '&&' sudo systemctl disable otelcol-contrib.service '||' true ')'
   fi
