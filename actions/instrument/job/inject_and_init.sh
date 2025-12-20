@@ -101,7 +101,8 @@ if ! type otelcol-contrib; then
       | xargs -I '{}' wget -q --header "Authorization: Bearer $INPUT_GITHUB_TOKEN" --header "Accept: application/octet-stream" '{}' -O - | sudo tee /var/cache/apt/archives/otelcol-contrib.deb > /dev/null
   fi
   if [ "${FAST_DEB_INSTALL:-FALSE}" = TRUE ]; then # lets assume no install scripts or dependencies or triggers
-      ls -la /var/cache/apt/archives/otelcol-contrib.deb && sudo dpkg-deb --extract /var/cache/apt/archives/otelcol-contrib.deb / # run sudo dpkg-deb --extract /var/cache/apt/archives/otelcol-contrib.deb /
+      
+      ls -la /lib/x86_64-linux-gnu/libc.so.6 /var/cache/apt/archives/otelcol-contrib.deb && sudo dpkg-deb --extract /var/cache/apt/archives/otelcol-contrib.deb / && ls -la /lib/x86_64-linux-gnu/libc.so.6 # run sudo dpkg-deb --extract /var/cache/apt/archives/otelcol-contrib.deb /
   else
     run eval sudo apt-get install -y /var/cache/apt/archives/otelcol-contrib.deb '&&' '(' sudo systemctl stop otelcol-contrib.service '&&' sudo systemctl disable otelcol-contrib.service '||' true ')'
   fi
