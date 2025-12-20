@@ -202,7 +202,7 @@ jq < "$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .s
   job_log_file="$(printf '%s' "${job_name//\//_}" | tr -d ':')"
   last_log_timestamp="$(read_log_file "$job_log_file" | tail -n 1 | cut -d ' ' -f 1 || true)"
   if [ -n "$last_log_timestamp" ] && [ "$last_log_timestamp" '>' "$job_completed_at" ]; then job_completed_at="$last_log_timestamp"; fi
-  
+
   observation_handle="$(otel_observation_create 1)"
   otel_observation_attribute_typed "$observation_handle" string github.actions.workflow.name="$(jq < "$workflow_json" -r .name)"
   otel_observation_attribute_typed "$observation_handle" int github.actions.workflow_run.attempt="$(jq < "$workflow_json" .run_attempt)"
@@ -215,7 +215,7 @@ jq < "$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .s
   otel_observation_attribute_typed "$observation_handle" string github.actions.job.name="$job_name"
   otel_observation_attribute_typed "$observation_handle" string github.actions.job.conclusion="$job_conclusion"
   otel_counter_observe "$job_run_counter_handle" "$observation_handle"
-  
+
   observation_handle="$(otel_observation_create "$(python3 -c "print(str(max(0, $(date -d "$job_completed_at" '+%s.%N') - $(date -d "$job_started_at" '+%s.%N'))))")")"
   otel_observation_attribute_typed "$observation_handle" string github.actions.workflow.name="$(jq < "$workflow_json" -r .name)"
   otel_observation_attribute_typed "$observation_handle" int github.actions.workflow_run.attempt="$(jq < "$workflow_json" .run_attempt)"
@@ -228,7 +228,7 @@ jq < "$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .s
   otel_observation_attribute_typed "$observation_handle" string github.actions.job.name="$job_name"
   otel_observation_attribute_typed "$observation_handle" string github.actions.job.conclusion="$job_conclusion"
   otel_counter_observe "$job_duration_counter_handle" "$observation_handle"
-  
+
   job_span_handle="$(otel_span_start @"$job_started_at" CONSUMER "$job_name")"
   otel_span_attribute_typed "$job_span_handle" string github.actions.type=job
   otel_span_attribute_typed "$job_span_handle" string github.actions.url="$link"/job/"$job_id"
@@ -244,7 +244,7 @@ jq < "$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .s
 
 done | while IFS=$'\t' read -r TRACEPARENT job_id step_number step_conclusion step_started_at step_completed_at step_name; do
   if [ "$step_conclusion" = skipped ]; then continue; fi
-  if [ "$step_started_at" = null ]; then continue; fi; 
+  if [ "$step_started_at" = null ]; then continue; fi;
   if [ "$step_completed_at" = null ]; then step_completed_at="$step_started_at"; fi
   if [ -r "$times_dir"/"$TRACEPARENT" ]; then
     previous_step_completed_at="$(cat "$times_dir"/"$TRACEPARENT")"
@@ -385,7 +385,7 @@ done | while IFS=$'\t' read -r TRACEPARENT job_id step_number step_conclusion st
   if [ "$step_conclusion" = failure ]; then otel_span_error "$step_span_handle"; fi
   otel_span_end "$step_span_handle" @"$step_completed_at"
   echo "$step_completed_at" > "$times_dir"/"$TRACEPARENT"
-  
+
 done
 
 echo "::endgroup::"
