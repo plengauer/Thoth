@@ -30,7 +30,7 @@ gh_release() {
   if [ "$tag" = main ]; then
     local path=latest
   else
-    local path=tag/"$tag"
+    local path=tags/"$tag"
   fi
   gh_curl /releases/"$path"
 }
