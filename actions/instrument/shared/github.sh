@@ -28,7 +28,7 @@ gh_ensure_min_rate_limit_remaining() {
     local delay=$((delay * 2))
   done
 }
-export -f gh_ensure_rate_limit
+export -f gh_ensure_min_rate_limit_remaining
 
 gh_releases() {
   GITHUB_REPOSITORY="$GITHUB_ACTION_REPOSITORY" gh_curl_paginated /releases'?per_page=100'
