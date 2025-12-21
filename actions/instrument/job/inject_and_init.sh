@@ -24,6 +24,12 @@ export OTEL_SHELL_CONFIG_OBSERVE_SIGNALS="${OTEL_SHELL_CONFIG_OBSERVE_SIGNALS:-T
 . ../shared/config_validation.sh
 echo "::endgroup::"
 
+. ../shared/github.sh
+
+echo "::group::Ensuring rate limit"
+gh_ensure_min_rate_limit_remaining 0.05
+echo "::endgroup::"
+
 if [ "${OTEL_LOGS_EXPORTER:-otlp}" = deferred ]; then
   export OTEL_LOGS_EXPORTER=otlp
   export OTEL_EXPORTER_OTLP_LOGS_ENDPOINT=http://localhost:4320/v1/logs
