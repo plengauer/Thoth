@@ -25,6 +25,17 @@ gh_releases() {
 }
 export -f gh_releases
 
+gh_release() {
+  local tag="$1"
+  if [ "$tag" = main ]; then
+    local path=latest
+  else
+    local path=tag/"$tag"
+  fi
+  GITHUB_REPOSITORY="$GITHUB_ACTION_REPOSITORY" gh_curl /releases/"$path"
+}
+export -f gh_release
+
 gh_workflow_runs() {
   gh_curl_paginated /actions/runs'?per_page=100'
 }
