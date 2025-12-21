@@ -10,7 +10,7 @@ echo "::endgroup::"
 
 echo "::group::Ensuring rate limit"
 gh_ensure_min_rate_limit_remaining 0.2
-echo "::endgroup::
+echo "::endgroup::"
 
 echo "::group::Install Dependencies"
 bash -e -o pipefail ../shared/install.sh curl wget jq sed unzip parallel
