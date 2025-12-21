@@ -36,7 +36,7 @@ gh_workflow_run() {
 export -f gh_workflow_run
 
 gh_workflow_run_logs() {
-  wget --header="Authorization: Bearer $INPUT_GITHUB_TOKEN" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_REPOSITORY"/actions/runs/"$1"/attempts/"$2"/logs -O "$3"
+  wget -q --header="Authorization: Bearer $INPUT_GITHUB_TOKEN" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_REPOSITORY"/actions/runs/"$1"/attempts/"$2"/logs -O "$3"
 }
 export -f gh_workflow_run_logs
 
@@ -57,7 +57,7 @@ export -f gh_artifacts
 
 gh_artifact_download() {
   local artifact_filename="$(mktemp)"
-  gh_curl /actions/runs/"$1"/artifacts'?per_page=1&'name="$3" | jq '.artifacts[0].id' | grep -v '^null$' | xargs -r -I '{}' bash -c 'gh_curl "$@"' bash /actions/artifacts/'{}'/zip --head | tr -d '\r' | grep '^location:' | cut -d ' ' -f 2- | xargs -r wget -O "$artifact_filename" && [ -r "$artifact_filename" ] && unzip "$artifact_filename" -d "$4" && rm "$artifact_filename"
+  gh_curl /actions/runs/"$1"/artifacts'?per_page=1&'name="$3" | jq '.artifacts[0].id' | grep -v '^null$' | xargs -r -I '{}' bash -c 'gh_curl "$@"' bash /actions/artifacts/'{}'/zip --head | tr -d '\r' | grep '^location:' | cut -d ' ' -f 2- | xargs -r wget -q -O "$artifact_filename" && [ -r "$artifact_filename" ] && unzip "$artifact_filename" -d "$4" >&2 && rm "$artifact_filename"
 }
 export -f gh_artifact_download
 
@@ -77,3 +77,13 @@ gh_artifact_delete() {
   '
 }
 export -f gh_artifact_delete
+
+gh_check_suite() {
+  gh_curl /check-suites/"$1"
+}
+export -f gh_check_suite
+
+gh_check_runs() {
+  gh_curl_paginated /check-suites/"$1"/check-runs'?per_page=100'
+}
+export -f gh_check_runs

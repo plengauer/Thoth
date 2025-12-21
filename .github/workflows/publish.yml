@@ -10,13 +10,20 @@ on:
 jobs:
 
   setup:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     outputs:
       refs: ${{ steps.dynamic.outputs.refs }}
     permissions:
       contents: read
+      actions: read
     steps:
-      - uses: actions/checkout@v5.0.1
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.38.0
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: '["${{ github.token }}"]'
+      - uses: actions/checkout@v6.0.1
         with:
           fetch-depth: 0
           fetch-tags: true
@@ -28,7 +35,7 @@ jobs:
             fi
           done | while read -r ref; do echo \""$ref"\"; done | jq -s | tr -d '\n' | tr -d ' ' | xargs -0 -I {} echo 'refs={}' >> "$GITHUB_OUTPUT"
   
-  test:
+  ci:
     needs: setup
     strategy:
       matrix:
@@ -49,62 +56,69 @@ jobs:
       security-events: none
       statuses: none
     secrets: inherit
-    uses: ./.github/workflows/test.yml
+    uses: ./.github/workflows/ci.yml
     with:
       ref: ${{ matrix.ref }}
     
   publish:
-    needs: [ setup, test ]
+    needs: [ setup, ci ]
     strategy:
       matrix:
         ref: ${{ fromJSON(needs.setup.outputs.refs) }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     permissions:
       actions: read
       contents: write
       id-token: write
       attestations: write
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.36.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.38.0
         with:
           secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}"]'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - uses: actions/checkout@v5.0.1
+      - uses: actions/checkout@v6.0.1
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }} # need to use this token for later pushes of tags
           ref: ${{ matrix.ref }}
       - run: echo "version=$(cat VERSION)" >> "$GITHUB_OUTPUT"
         id: version
-      - uses: actions/download-artifact@v6.0.0
+      - uses: actions/download-artifact@v7.0.0
         with:
           name: packages_${{ matrix.ref }}
-      - uses: actions/attest-build-provenance@v3.0.0
+      - uses: actions/attest-build-provenance@v3.1.0
         with:
           subject-path: ./package.deb
           subject-name: opentelemetry-shell_${{ steps.version.outputs.version }}.deb
-      - uses: actions/attest-build-provenance@v3.0.0
+      - uses: actions/attest-build-provenance@v3.1.0
         with:
           subject-path: ./package.rpm
           subject-name: opentelemetry-shell_${{ steps.version.outputs.version }}.rpm
-      - uses: actions/attest-build-provenance@v3.0.0
+      - uses: actions/attest-build-provenance@v3.1.0
         with:
           subject-path: ./package.apk
           subject-name: opentelemetry-shell_${{ steps.version.outputs.version }}.apk
-      - uses: actions/download-artifact@v6.0.0
+      - uses: actions/download-artifact@v7.0.0
         with:
           name: images_${{ matrix.ref }}
       - run: |
+          version="${{ steps.version.outputs.version }}"
+          major=$(echo "$version" | cut -d . -f 1)
+          minor=$(echo "$version" | cut -d . -f 2)
+          patch=$(echo "$version" | cut -d . -f 3)
           echo ${{ secrets.ACTIONS_GITHUB_TOKEN }} | sudo docker login ghcr.io -u "$(GH_TOKEN=${{ secrets.ACTIONS_GITHUB_TOKEN }} gh api user -q .login)" --password-stdin
           find . -iname '*.image' | while read -r image_file; do
+            sudo docker load < "$image_file"
             image_name="$image_file"
             image_name="${image_name#./}"
             image_name="${image_name%.image}"
-            tag=ghcr.io/"${GITHUB_REPOSITORY%/*}"/"$image_name":v${{ steps.version.outputs.version }}
-            sudo docker load < "$image_file"
-            sudo docker image tag "$image_name" "$tag"
-            sudo docker push "$tag"
+            for tag_simple in "v${major}.${minor}.${patch}" "v${major}.${minor}" "v${major}" "${{ matrix.ref }}"; do
+              tag_full=ghcr.io/"${GITHUB_REPOSITORY%/*}"/"$image_name":"$tag_simple"
+              sudo docker image tag "$image_name" "$tag_full"
+            done
+            sudo docker image remove "$image_name"
+            sudo docker push "ghcr.io/${GITHUB_REPOSITORY%/*}/$image_name" --all-tags
           done
       - run: |
           gh release create "v${{ steps.version.outputs.version }}" \
@@ -146,15 +160,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         with:
           release_id: ${{ steps.create_release.outputs.id }}
-      - id: version_parts
-        run: |
-          version="${{ steps.version.outputs.version }}"
-          major=$(echo "$version" | cut -d. -f1)
-          minor=$(echo "$version" | cut -d. -f2)
-          echo "major=$major" >> "$GITHUB_OUTPUT"
-          echo "minor=$minor" >> "$GITHUB_OUTPUT"
-          echo "major_minor=$major.$minor" >> "$GITHUB_OUTPUT"
       - run: |
-          git tag -f "v${{ steps.version_parts.outputs.major_minor }}"
-          git tag -f "v${{ steps.version_parts.outputs.major }}"
-          git push -f origin "v${{ steps.version_parts.outputs.major_minor }}" "v${{ steps.version_parts.outputs.major }}"
+          version="${{ steps.version.outputs.version }}"
+          major=$(echo "$version" | cut -d . -f 1)
+          minor=$(echo "$version" | cut -d . -f 2)
+          git tag -f "v${major}.${minor}"
+          git tag -f "v${major}"
+          git push -f origin "v${major}.${minor}" "v${major}"

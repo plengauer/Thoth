@@ -61,9 +61,20 @@ assert_equals "netcat -w 5 www.google.com 80" "$(\echo "$span" | \jq -r '.name')
 \echo "TEST 2" >&2
 http_body() {
   while read -r line; do
+    case "$(\printf '%s' "$line" | \tr '[:upper:]' '[:lower:]')" in
+      'transfer-encoding: chunked'*) local chunked=1;;
+      *) ;;
+    esac
     if \[ "${#line}" = 1 ]; then break; fi
   done
-  \cat
+  \[ "${chunked:-0}" = 0 ] && \cat || {
+    while \read length && \[ "$length" != 0 ]; do
+      length_length="${#length}"
+      length="$(\printf '%s' "$length" | \head -c "$(($length_length - 1))")"
+      \head -c "$(\printf '%d' '0x'"$length")"
+      \head -c 2 > /dev/null
+    done
+  }
 }
 \printf 'GET /index.html HTTP/1.1\r\nUser-agent: netcat/1.0\r\nAccept: */*\r\nHost: www.example.com\r\n\r\n' | \netcat -w 5 www.example.com 80 | http_body > "$expected"
 \printf 'GET /index.html HTTP/1.1\r\nUser-agent: netcat/1.0\r\nAccept: */*\r\nHost: www.example.com\r\n\r\n' |  netcat -w 5 www.example.com 80 | http_body >   "$actual"

@@ -9,12 +9,12 @@ concurrency:
   group: rerun-${{ github.event.workflow_run.id }}
 jobs:
   rerun:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     permissions:
       contents: none
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.36.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.38.0
         with:
           secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}"]'
         env:

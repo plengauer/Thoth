@@ -8,12 +8,12 @@ on:
 jobs:
   bump:
     if: ${{ !github.event.repository.fork }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     permissions:
       contents: none
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.36.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.38.0
         with:
           secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}","${{ secrets.OPENAI_TOKEN }}"]'
         env:
@@ -25,7 +25,7 @@ jobs:
             pull_request) cat "$GITHUB_EVENT_PATH" | jq .pull_request.base.ref -r | grep -q '^main$' && cat "$GITHUB_EVENT_PATH" | jq .pull_request.number -r | xargs -I '{}' curl ${GITHUB_API_URL:-https://api.github.com}/repos/"$GITHUB_REPOSITORY"/issues/'{}'/comments'?per_page=100' | jq '.[] | select(.body == "!release") | .author_association' -r | grep -q OWNER && echo true || echo false;;
             *) echo true;;
           esac | xargs -I '{}' echo result='{}' >> "$GITHUB_OUTPUT"
-      - uses: plengauer/autoversion@v2.1.0
+      - uses: plengauer/autoversion@v2.2.0
         if: ${{ steps.should-autoversion.outputs.result == 'true' }}
         with:
           github_token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}

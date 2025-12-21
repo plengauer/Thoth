@@ -17,10 +17,10 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v5.0.1
+      - uses: actions/checkout@v6.0.1
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v6.0.0
+      - uses: actions/download-artifact@v7.0.0
         with:
           name: packages_${{ inputs.ref }}
       - run: sudo apt-get -y install ./package.deb apt-file
@@ -28,13 +28,13 @@ jobs:
       - run: sudo apt-get -y remove opentelemetry-shell
   list-released-versions:
     needs: smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     outputs:
       versions: ${{ steps.dynamic.outputs.versions }}
     permissions:
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.36.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.38.0
         with:
           secrets_to_redact: '["${{ github.token }}"]'
         env:
@@ -63,7 +63,7 @@ jobs:
       - run: |
           curl --no-progress-meter --fail --header "Authorization: Bearer ${{ github.token }}" https://api.github.com/repos/"$GITHUB_REPOSITORY"/releases/tags/${{ matrix.version }} | jq -r '.assets[] | select(.name | endswith(".deb")) | .url' | xargs wget --header "Authorization: Bearer ${{ github.token }}" --header "Accept: application/octet-stream" -O package.deb
       - run: sudo apt-get -y install ./*.deb
-      - uses: actions/download-artifact@v6.0.0
+      - uses: actions/download-artifact@v7.0.0
         with:
           name: packages_${{ inputs.ref }}
       - run: sudo apt-get -y install --allow-downgrades ./package.deb
@@ -76,29 +76,29 @@ jobs:
     permissions:
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.36.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.38.0
         with:
           secrets_to_redact: '["${{ github.token }}","${{ secrets.DOCKERHUB_TOKEN }}","${{ secrets.DOCKERHUB_USERNAME }}"]'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - uses: actions/checkout@v5.0.1
+      - uses: actions/checkout@v6.0.1
         with:
           ref: ${{ inputs.ref }}
       - id: key
-        run: cat .github/workflows/images.json .github/workflows/test_shell.yml meta/*/* | md5sum | cut -d ' ' -f 1 | xargs -I '{}' echo "key={}" >> "$GITHUB_OUTPUT"
-      - uses: actions/cache@v4.3.0
+        run: cat .github/images.json .github/workflows/test_shell.yml meta/*/* | md5sum | cut -d ' ' -f 1 | xargs -I '{}' echo "key={}" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v5.0.1
         with:
           path: images.json
           key: images ${{ steps.key.outputs.key }}
       - if: ${{ hashFiles('images.json') == '' }}
-        uses: actions/download-artifact@v6.0.0
+        uses: actions/download-artifact@v7.0.0
         with:
           name: packages_${{ inputs.ref }}
       - if: ${{ hashFiles('images.json') == '' }}
         run: |
           sudo docker login -u '${{ secrets.DOCKERHUB_USERNAME }}' -p '${{ secrets.DOCKERHUB_TOKEN }}'
-          cat .github/workflows/images.json | jq 'to_entries[] | [ .key, .value.oldest, .value.stable, .value.latest, .value.dev ] | @tsv' -r | sed 's/\t/ /g' | while read -r name oldest stable latest dev; do
+          cat .github/images.json | jq 'to_entries[] | [ .key, .value.oldest, .value.stable, .value.latest, .value.dev ] | @tsv' -r | sed 's/\t/ /g' | while read -r name oldest stable latest dev; do
             echo "$oldest" "$name" oldest
             echo "$stable" "$name" stable
             echo "$latest" "$name" latest
@@ -124,20 +124,20 @@ jobs:
         id: dynamic
   list-shells:
     needs: smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     outputs:
       shells: ${{ steps.dynamic.outputs.shells }}
     permissions:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.36.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.38.0
         with:
           secrets_to_redact: '["${{ github.token }}"]'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - uses: actions/checkout@v5.0.1
+      - uses: actions/checkout@v6.0.1
         with:
           ref: ${{ inputs.ref }}
       - run: |
@@ -157,26 +157,26 @@ jobs:
     permissions:
       actions: read
     steps:
-      - uses: actions/download-artifact@v6.0.0
+      - uses: actions/download-artifact@v7.0.0
         with:
           name: packages_${{ inputs.ref }}
       - run: "echo '\n  apt-get update\n  apt-get -y install /root/package.deb \n  apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y dist-upgrade && apt-get -y autoremove && apt-get -y autoclean\n  case \"$(cat /etc/os-release | grep '^NAME=' | cut -d = -f 2 | tr -d \"\\\"\")\" in\n    Ubuntu)\n      DEBIAN_FRONTEND=noninteractive apt-get -y install sed systemctl update-manager-core\n      sed -i \"/Prompt/d\" /etc/update-manager/release-upgrades && echo \"Prompt=normal\" >> /etc/update-manager/release-upgrades\n      do-release-upgrade -c || exit 0 && RELEASE_UPGRADER_ALLOW_THIRD_PARTY=1 do-release-upgrade -f DistUpgradeViewNonInteractive\n      ;;\n    Debian*)\n      DEBIAN_FRONTEND=noninteractive apt-get -y install curl sed\n      version_destination=\"$(curl -sL https://deb.debian.org/debian/dists/testing/InRelease | grep \"^Codename:\" | cut -d \" \" -f 2)\"\n      version_source=\"$(cat /etc/os-release | grep '^VERSION_CODENAME' | cut -d = -f 2)\"\n      sed -i \"s/$version_source/$version_destination/g\" /etc/apt/sources.list /etc/apt/sources.list.d/*\n      sed -i \"s/oldstable/testing/g\" /etc/apt/sources.list /etc/apt/sources.list.d/*\n      sed -i \"s/stable/testing/g\" /etc/apt/sources.list /etc/apt/sources.list.d/*\n      ;;\n    *) exit 1;;\n  esac\n  apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y dist-upgrade && apt-get -y autoremove && apt-get -y autoclean\n' | sudo docker run -v $(pwd)/package.deb:/root/package.deb --rm --network=host -i --entrypoint=/bin/sh ${{ matrix.image }} -e\n"
   list-dependencies:
     needs: smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     outputs:
       dependencies: ${{ steps.dynamic.outputs.dependencies }}
     permissions:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.36.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.38.0
         with:
           secrets_to_redact: '["${{ github.token }}"]'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - uses: actions/checkout@v5.0.1
+      - uses: actions/checkout@v6.0.1
         with:
           ref: ${{ inputs.ref }}
       - run: |
@@ -197,7 +197,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/download-artifact@v6.0.0
+      - uses: actions/download-artifact@v7.0.0
         with:
           name: packages_${{ inputs.ref }}
       - env:
@@ -244,7 +244,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v5.0.1
+      - uses: actions/checkout@v6.0.1
         with:
           ref: ${{ inputs.ref }}
       - run: cat INSTALL.sh | sh -e
@@ -260,7 +260,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v5.0.1
+      - uses: actions/checkout@v6.0.1
         with:
           ref: ${{ inputs.ref }}
       - run: |
@@ -292,10 +292,10 @@ jobs:
       actions: read
     steps:
       # - run: sudo docker login -u '${{ secrets.DOCKERHUB_USERNAME }}' -p '${{ secrets.DOCKERHUB_TOKEN }}'
-      - uses: actions/checkout@v5.0.1
+      - uses: actions/checkout@v6.0.1
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v6.0.0
+      - uses: actions/download-artifact@v7.0.0
         with:
           name: packages_${{ inputs.ref }}
       - run: mv ./package.* tests
@@ -319,10 +319,10 @@ jobs:
         with:
           distribution: Ubuntu-24.04
           wsl-version: ${{ matrix.version }}
-      - uses: actions/checkout@v5.0.1
+      - uses: actions/checkout@v6.0.1
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v6.0.0
+      - uses: actions/download-artifact@v7.0.0
         with:
           name: packages_${{ inputs.ref }}
       - shell: wsl-bash {0}
@@ -340,14 +340,14 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   prepare-performance:
     needs: smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     outputs:
       versions: ${{ steps.dynamic.outputs.versions }}
     permissions:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.36.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.38.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -371,7 +371,7 @@ jobs:
       actions: read
     steps:
       - if: matrix.version == '~local'
-        uses: actions/download-artifact@v6.0.0
+        uses: actions/download-artifact@v7.0.0
         with:
           name: packages_${{ inputs.ref }}
       - if: matrix.version != '~local'
@@ -382,12 +382,12 @@ jobs:
           export OTEL_SHELL_SDK_OUTPUT_REDIRECT=/dev/null
           command time -f '%U' bash -c '. /usr/bin/opentelemetry_shell.sh' 2>> performance.${{ matrix.version }}.coldstart.list
           for i in $(seq 1 100); do command time -f '%U' bash -c '. /usr/bin/opentelemetry_shell.sh' 2>> performance.${{ matrix.version }}.warmstart.list; done
-      - uses: actions/upload-artifact@v5.0.0
+      - uses: actions/upload-artifact@v6.0.0
         with:
           name: performance.${{ matrix.version }}.coldstart.list
           path: performance.${{ matrix.version }}.coldstart.list
           retention-days: 1
-      - uses: actions/upload-artifact@v5.0.0
+      - uses: actions/upload-artifact@v6.0.0
         with:
           name: performance.${{ matrix.version }}.warmstart.list
           path: performance.${{ matrix.version }}.warmstart.list
@@ -398,13 +398,13 @@ jobs:
     permissions:
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.36.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.38.0
         with:
           secrets_to_redact: '["${{ github.token }}"]'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - uses: actions/download-artifact@v6.0.0
+      - uses: actions/download-artifact@v7.0.0
         with:
           pattern: 'performance.*.list'
           merge-multiple: true
@@ -427,7 +427,7 @@ jobs:
             plot "coldstart.list" using 0:2:xticlabels(1) with linespoints title "Cold Start" lt rgb "blue", "warmstart.list" using 0:2:xticlabels(1) with linespoints title "Warm Start" lt rgb "red"
           ' > plot.gp
           gnuplot plot.gp
-      - uses: actions/upload-artifact@v5.0.0
+      - uses: actions/upload-artifact@v6.0.0
         with:
           name: performance.png
           path: performance.png
