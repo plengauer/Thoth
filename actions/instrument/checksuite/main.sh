@@ -82,12 +82,34 @@ _otel_resource_attributes_custom() {
 }
 
 otel_init
+check_suite_counter_handle="$(otel_counter_create counter github.checks.suites 1 'Number of check suites')"
+check_suite_duration_counter_handle="$(otel_counter_create counter github.checks.suites.duration s 'Duration of check suites')"
 check_run_counter_handle="$(otel_counter_create counter github.checks.runs 1 'Number of check runs')"
 check_run_duration_counter_handle="$(otel_counter_create counter github.checks.runs.duration s 'Duration of check runs')"
 
 link="${GITHUB_SERVER_URL:-https://github.com}"/"$GITHUB_REPOSITORY"/runs
 check_suite_started_at="$(jq < "$check_runs_json" -r .started_at | sort | head -n 1)"
 check_suite_ended_at="$(jq < "$check_runs_json" -r .completed_at | sort -r | head -n 1)"
+
+observation_handle="$(otel_observation_create 1)"
+otel_observation_attribute_typed "$observation_handle" string github.actions.checks.suite.id="$(jq < "$check_suite_json" .id)"
+otel_observation_attribute_typed "$observation_handle" string github.actions.checks.suite.conclusion="$(jq < "$check_suite_json" -r .conclusion)"
+otel_observation_attribute_typed "$observation_handle" string github.actions.checks.suite.ref="/refs/heads/$(jq < "$check_suite_json" -r .head_branch)"
+otel_observation_attribute_typed "$observation_handle" string github.actions.checks.suite.ref.sha="$(jq < "$check_suite_json" -r .head_sha)"
+otel_observation_attribute_typed "$observation_handle" string github.actions.checks.suite.ref.name="$(jq < "$check_suite_json" -r .head_branch)"
+otel_observation_attribute_typed "$observation_handle" string github.actions.checks.app.name="$(jq < "$check_suite_json" -r .app.name)"
+otel_observation_attribute_typed "$observation_handle" string github.actions.checks.app.slug="$(jq < "$check_suite_json" -r .app.slug)"
+otel_counter_observe "$check_suite_counter_handle" "$observation_handle"
+
+observation_handle="$(otel_observation_create "$(python3 -c "print(str(max(0, $(date -d "$check_suite_ended_at" '+%s.%N') - $(date -d "$check_suite_started_at" '+%s.%N'))))")")"
+otel_observation_attribute_typed "$observation_handle" string github.actions.checks.suite.id="$(jq < "$check_suite_json" .id)"
+otel_observation_attribute_typed "$observation_handle" string github.actions.checks.suite.conclusion="$(jq < "$check_suite_json" -r .conclusion)"
+otel_observation_attribute_typed "$observation_handle" string github.actions.checks.suite.ref="/refs/heads/$(jq < "$check_suite_json" -r .head_branch)"
+otel_observation_attribute_typed "$observation_handle" string github.actions.checks.suite.ref.sha="$(jq < "$check_suite_json" -r .head_sha)"
+otel_observation_attribute_typed "$observation_handle" string github.actions.checks.suite.ref.name="$(jq < "$check_suite_json" -r .head_branch)"
+otel_observation_attribute_typed "$observation_handle" string github.actions.checks.app.name="$(jq < "$check_suite_json" -r .app.name)"
+otel_observation_attribute_typed "$observation_handle" string github.actions.checks.app.slug="$(jq < "$check_suite_json" -r .app.slug)"
+otel_counter_observe "$check_suite_duration_counter_handle" "$observation_handle"
 
 check_suite_span_handle="$(otel_span_start @"$check_suite_started_at" CONSUMER "$(jq < "$check_suite_json" -r '.app.name')")"
 otel_span_attribute_typed "$check_suite_span_handle" string github.actions.type=checksuite
