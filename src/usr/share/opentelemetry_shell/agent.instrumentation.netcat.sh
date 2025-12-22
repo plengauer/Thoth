@@ -207,32 +207,32 @@ _otel_netcat_parse_args() {
     local host=""
     local port=31337
     while \[ "$#" -gt 0 ]; do
-        if \[ "$1" = -u ] || \[ "$1" = --udp ]; then local transport=udp
-        elif \[ "$1" = --sctp ]; then local transport=sctp
-        elif \[ "$1" = -p ] && \[ "$#" -ge 2 ]; then local port="$2"; shift
-        elif _otel_string_starts_with "$1" - && \[ "$#" -gt 1 ] && _otel_is_netcat_arg_arg "$1"; then shift
-        elif _otel_string_starts_with "$1" -; then \true
+      if \[ "$1" = -u ] || \[ "$1" = --udp ]; then local transport=udp
+      elif \[ "$1" = --sctp ]; then local transport=sctp
+      elif \[ "$1" = -p ] && \[ "$#" -ge 2 ]; then local port="$2"; shift
+      elif _otel_string_starts_with "$1" - && \[ "$#" -gt 1 ] && _otel_is_netcat_arg_arg "$1"; then shift
+      elif _otel_string_starts_with "$1" -; then \true
+      else
+        if \[ "$1" -eq "$1" ] 2> /dev/null; then
+          local port="$1"
+        elif _otel_is_ip "$1"; then
+          local ip="$1"
+          local host="$1"
         else
-          if \[ "$1" -eq "$1" ] 2> /dev/null; then
-            local port="$1"
-          elif _otel_is_ip "$1"; then
-            local ip="$1"
-            local host="$1"
-          else
-            local host="$1"
-          fi
+          local host="$1"
         fi
-        shift
-      done
-      otel_span_attribute_typed "$span_handle" string network.transport="$transport"
-      if \[ "$is_server_side" != 1 ]; then
-        if \[ -n "$ip" ]; then otel_span_attribute_typed "$span_handle" string network.peer.address="$ip"; fi
-        if \[ -n "$port" ]; then otel_span_attribute_typed "$span_handle" int network.peer.port="$port"; fi
       fi
-      if \[ -n "$host" ]; then otel_span_attribute_typed "$span_handle" string server.address="$host"; fi
-      if \[ -n "$port" ]; then otel_span_attribute_typed "$span_handle" int server.port="$port"; fi
+      shift
+    done
+    otel_span_attribute_typed "$span_handle" string network.transport="$transport"
+    if \[ "$is_server_side" != 1 ]; then
+      if \[ -n "$ip" ]; then otel_span_attribute_typed "$span_handle" string network.peer.address="$ip"; fi
+      if \[ -n "$port" ]; then otel_span_attribute_typed "$span_handle" int network.peer.port="$port"; fi
     fi
-    \echo "$host:$port"
+    if \[ -n "$host" ]; then otel_span_attribute_typed "$span_handle" string server.address="$host"; fi
+    if \[ -n "$port" ]; then otel_span_attribute_typed "$span_handle" int server.port="$port"; fi
+  fi
+  \echo "$host:$port"
 }
 
 _otel_is_ip() {
@@ -293,7 +293,8 @@ _otel_binary_contains_null() {
   local i=0
   while \[ "$i" -lt "${#string}" ]; do
     if \[ "$(\printf '%s' "$string" | \cut -c $((i + 1))-$((i + 1 + 2 - 1)))" = 00 ]; then return 0; fi
-    local i=$(($i + 2))
+    if \[ "$(\printf '%s' "$string" | \cut -c "$((i + 1))"-"$((i + 1 + 2 - 1))")" = 00 ]; then return 0; fi
+    local i="$((i + 2))"
   done
   return 1
 }
