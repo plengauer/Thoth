@@ -395,7 +395,7 @@ done | while IFS=$'\t' read -r TRACEPARENT job_id step_number step_conclusion st
     esac
     [ -z "${INPUT_DEBUG}" ] || echo "log $TRACEPARENT $job_name $timestamp $severity $line" >&2
     _otel_log_record "$TRACEPARENT" "$timestamp" "$severity" "$line"
-  done
+  done &
   [ -z "${INPUT_DEBUG}" ] || echo "span step $TRACEPARENT $step_name" >&2
   otel_span_deactivate "$step_span_handle"
   if [ "$step_conclusion" = failure ]; then otel_span_error "$step_span_handle"; fi
