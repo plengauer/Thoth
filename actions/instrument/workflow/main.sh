@@ -45,14 +45,18 @@ fi
 
 export OTEL_SERVICE_NAME="${OTEL_SERVICE_NAME:-"$(echo "$GITHUB_REPOSITORY" | cut -d / -f 2-) CI"}"
 
-echo "::group::Resolving Workflow Run Attempt, Jobs, Steps, Logs, and Artifacts"
+echo "::group::Resolving Workflow Run Attempt"
 workflow_json="$(mktemp)"
+jq < "$GITHUB_EVENT_PATH" > "$workflow_json" .workflow_run
+if [ "$INPUT_WORKFLOW_RUN_ID" != "$(jq < "$workflow_json" .id)" ] || [ "$INPUT_WORKFLOW_RUN_ATTEMPT" != "$(jq < "$workflow_json" .run_attempt)" ]; then gh_workflow_run "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" > "$workflow_json"; fi
+if [ "$(jq < "$workflow_json" -r .status)" != completed ]; then echo "::error ::Workflow not completed yet." && exit 1; fi
+echo "::endgroup::"
+
+echo "::group::Resolving Jobs, Steps, Logs, and Artifacts"
 jobs_json="$(mktemp)"
 logs_zip="$(mktemp)"
 artifacts_json="$(mktemp)"
-jq < "$GITHUB_EVENT_PATH" > "$workflow_json" .workflow_run
-if [ "$INPUT_WORKFLOW_RUN_ID" != "$(jq < "$workflow_json" .id)" ] || [ "$INPUT_WORKFLOW_RUN_ATTEMPT" != "$(jq < "$workflow_json" .run_attempt)" ]; then gh_workflow_run "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" > "$workflow_json" && echo "Workflow Run ... done" >&2 && ( [ "$(jq < "$workflow_json" -r .status)" = completed ] || (echo "::error ::Workflow not completed yet." && exit 1 ) ) &; fi
-gh_jobs "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" | jq .jobs[] > "$jobs_json" && echo "Jobs ... done" >&2 &
+gh_jobs "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" | jq .jobs[] > "$jobs_json" && echo "Jobs and Steps ... done" >&2 &
 gh_artifacts "$INPUT_WORKFLOW_RUN_ID" | jq -r .artifacts[] > "$artifacts_json" && echo "Artifacts ... done" >&2 &
 count=1
 while [ "$count" -lt 60 ] && !(gh_workflow_run_logs "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" "$logs_zip" && unzip -t "$logs_zip" 1> /dev/null 2> /dev/null); do # sometimes downloads fail
