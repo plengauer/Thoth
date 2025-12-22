@@ -9,7 +9,15 @@ jobs:
   bump:
     runs-on: ubuntu-slim
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.38.2
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}","${{ secrets.OPENAI_TOKEN }}"]'
       - uses: plengauer/autoversion@v2.2.0
         with:
           github_token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           openai_token: ${{ secrets.OPENAI_TOKEN }} # TODO remove if no token is available
+    permissions:
+      actions: read

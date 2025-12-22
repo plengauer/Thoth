@@ -1,7 +1,7 @@
 name: OpenTelemetry
 on:
   workflow_run:
-    workflows: [.github/workflows/copilot-setup-steps.yml, Analyze, Autoapprove, Autoassign, Autorerun, Autoversion Main, Autoversion Release, Backport, Build, CI, Copilot coding agent, Experiment, GitHub, Greetings, Initialize Fork, Performance GitHub Job, Publish, Refresh Demos, Renovate, Shell, Test, Workflow Example]
+    workflows: [.github/workflows/copilot-setup-steps.yml, Analyze, Autoapprove, Autoassign, Autorerun, Autoversion, Autoversion Main, Autoversion Release, Backport, Build, CI, Copilot coding agent, Experiment, GitHub, Greetings, Initialize Fork, Performance GitHub Job, Publish, Refresh Demos, Renovate, Shell, Test, Workflow Example]
     types:
       - completed
 jobs:
