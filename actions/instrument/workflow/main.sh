@@ -9,7 +9,11 @@ echo "::endgroup::"
 . ../shared/id_printer.sh
 
 echo "::group::Install Dependencies"
-bash -e -o pipefail ../shared/install.sh curl wget jq sed unzip parallel
+if type dpkg; then
+  bash -e -o pipefail ../shared/install.sh curl wget jq sed unzip parallel
+else
+  echo 'No debian, assuming dependencies are preinstalled.'
+fi
 echo "::endgroup::"
 
 # selfmonitoring
