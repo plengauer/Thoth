@@ -158,6 +158,7 @@ runs:
         if cat "$path" | yq '.jobs.export.container' | grep -q '^null$'; then
           name=opentelemetry-github-workflow-instrumentation-runner
           version=${{ steps.determine-instrumentation-version.outputs.version }}
+          [ "$version" != main ] || exit 0
           image=ghcr.io/${{ github.repository_owner }}/"$name":"$version"
           if curl -s --fail --retry 8 --header "Authorization: Bearer ${{ inputs.github_token }}" "${GITHUB_API_URL:-https://api.github.com}"/users/${{ github.repository_owner }}/packages/container/"$name"/versions | jq .[].metadata.container.tags[] -r | grep -qE '^'"$version"'$' \
             || (type docker 1> /dev/null 2> /dev/null && sudo docker pull "$image"); then
@@ -230,6 +231,7 @@ runs:
         if cat "$path" | yq '.jobs.export.container' | grep -q '^null$'; then
           name=opentelemetry-github-workflow-instrumentation-runner
           version=${{ steps.determine-instrumentation-version.outputs.version }}
+          [ "$version" != main ] || exit 0
           image=ghcr.io/${{ github.repository_owner }}/"$name":"$version"
           if curl -s --fail --retry 8 --header "Authorization: Bearer ${{ inputs.github_token }}" "${GITHUB_API_URL:-https://api.github.com}"/users/${{ github.repository_owner }}/packages/container/"$name"/versions | jq .[].metadata.container.tags[] -r | grep -qE '^'"$version"'$' \
             || (type docker 1> /dev/null 2> /dev/null && sudo docker pull "$image"); then
