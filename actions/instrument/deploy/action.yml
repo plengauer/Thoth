@@ -156,12 +156,15 @@ runs:
       run: |
         if [ -w "${{ steps.find-workflow-level-instrumentation.outputs.path }}" ]; then path="${{ steps.find-workflow-level-instrumentation.outputs.path }}"; else path="${{ inputs.workflows_directory }}/${{ inputs.workflow_level_instrumentation_file_name }}"; fi
         if cat "$path" | yq '.jobs.export.container' | grep -q '^null$'; then
-          image=ghcr.io/"$(echo ${{ steps.determine-repository.outputs.repository }} | cut -d / -f 1)"/opentelemetry-github-workflow-instrumentation-runner:${{ steps.determine-instrumentation-version.outputs.version }}
-          if ! sudo docker pull "$image"; then
-            echo ::warning::'Runner image '"$image"' is unavailable, skipping configuration since it its only for optimization. A common cause for this is that the package is not publicly visible in the ghcr. This needs to be configured manually.'
-            exit 0
+          name=opentelemetry-github-workflow-instrumentation-runner
+          version=${{ steps.determine-instrumentation-version.outputs.version }}
+          [ "$version" != main ] || exit 0
+          image=ghcr.io/${{ github.repository_owner }}/"$name":"$version"
+          if curl -s --fail --retry 8 --header "Authorization: Bearer ${{ inputs.github_token }}" "${GITHUB_API_URL:-https://api.github.com}"/users/${{ github.repository_owner }}/packages/container/"$name"/versions | jq .[].metadata.container.tags[] -r | grep -qE '^'"$version"'$' \
+            || (type docker 1> /dev/null 2> /dev/null && sudo docker pull "$image"); then
+            yq -i ".jobs.export.container = \"$image\"" "$path" && exit 0
           fi
-          yq -i ".jobs.export.container = \"$image\"" "$path"
+          echo ::warning::'Runner image '"$image"' is unavailable, skipping configuration since it its only for optimization. A common cause for this is that the package is not publicly visible in the ghcr. This needs to be configured manually. Another possible cause is that it cannot be identified (no docker command available and token cannot read packages)'
         fi
     - name: "Update workflow-level observability triggers"
       if: ${{ inputs.workflow_level_instrumentation == 'true' }}
@@ -226,12 +229,15 @@ runs:
       run: |
         if [ -w "${{ steps.find-check-suite-level-instrumentation.outputs.path }}" ]; then path="${{ steps.find-check-suite-level-instrumentation.outputs.path }}"; else path="${{ inputs.workflows_directory }}/${{ inputs.check_suite_level_instrumentation_file_name }}"; fi
         if cat "$path" | yq '.jobs.export.container' | grep -q '^null$'; then
-          image=ghcr.io/"$(echo ${{ steps.determine-repository.outputs.repository }} | cut -d / -f 1)"/opentelemetry-github-workflow-instrumentation-runner:${{ steps.determine-instrumentation-version.outputs.version }}
-          if ! sudo docker pull "$image"; then
-            echo ::warning::'Runner image '"$image"' is unavailable, skipping configuration since it its only for optimization. A common cause for this is that the package is not publicly visible in the ghcr. This needs to be configured manually.'
-            exit 0
+          name=opentelemetry-github-workflow-instrumentation-runner
+          version=${{ steps.determine-instrumentation-version.outputs.version }}
+          [ "$version" != main ] || exit 0
+          image=ghcr.io/${{ github.repository_owner }}/"$name":"$version"
+          if curl -s --fail --retry 8 --header "Authorization: Bearer ${{ inputs.github_token }}" "${GITHUB_API_URL:-https://api.github.com}"/users/${{ github.repository_owner }}/packages/container/"$name"/versions | jq .[].metadata.container.tags[] -r | grep -qE '^'"$version"'$' \
+            || (type docker 1> /dev/null 2> /dev/null && sudo docker pull "$image"); then
+            yq -i ".jobs.export.container = \"$image\"" "$path" && exit 0
           fi
-          yq -i ".jobs.export.container = \"$image\"" "$path"
+          echo ::warning::'Runner image '"$image"' is unavailable, skipping configuration since it its only for optimization. A common cause for this is that the package is not publicly visible in the ghcr. This needs to be configured manually. Another possible cause is that it cannot be identified (no docker command available and token cannot read packages)'
         fi
   
     - name: "Deploy Copilot Setup"
