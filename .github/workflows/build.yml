@@ -9,6 +9,16 @@ on:
 
 jobs:
 
+  verify-scripts:
+    runs-on: ubuntu-slim
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6.0.1
+        with:
+          ref: ${{ inputs.ref }}
+      - run: find . -iname '*.sh' -exec bash -n '{}' ';'
+
   build-http:
     runs-on: ubuntu-latest
     strategy:
@@ -400,7 +410,7 @@ jobs:
           }
           find meta/debian | grep -vE '^meta/debian$|^meta/debian/control$|^meta/debian/triggers$' | verify '^Pre-Depends:' && find src -iname '*.sh' | verify '^Pre-Depends:|^Depends:|^Recommends:|^Suggests:'
   build-deb:
-    needs: [verify-deb-dependencies, verify-deb-python-dependency, merge-http, merge-node-modules, merge-python-site-packages, build-java-agents]
+    needs: [verify-scripts, verify-deb-dependencies, verify-deb-python-dependency, merge-http, merge-node-modules, merge-python-site-packages, build-java-agents]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -476,7 +486,7 @@ jobs:
           min_version_shell="$(cat meta/rpm/*.spec | grep '^Requires:' | tr ',' '\n' | grep -F -- 'python3 >=' | cut -d '=' -f 2- | cut -d . -f 2)"
           [ "$min_version_shell" -ge "$min_version_otel" ] || (echo "::error::Minimum version is $min_version_shell but otel requires at least $min_version_otel!" && exit 1)
   build-rpm:
-    needs: [verify-rpm-python-dependency, merge-http, merge-node-modules, merge-python-site-packages, build-java-agents]
+    needs: [verify-scripts, verify-rpm-python-dependency, merge-http, merge-node-modules, merge-python-site-packages, build-java-agents]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -553,7 +563,7 @@ jobs:
           path: package.rpm
 
   build-apk:
-    needs: [merge-node-modules, merge-python-site-packages, build-java-agents]
+    needs: [verify-scripts, merge-node-modules, merge-python-site-packages, build-java-agents]
     runs-on: ubuntu-latest
     permissions:
       contents: read
