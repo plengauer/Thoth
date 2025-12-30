@@ -65,7 +65,7 @@ jobs:
     strategy:
       matrix:
         ref: ${{ fromJSON(needs.setup.outputs.refs) }}
-    runs-on: ubuntu-slim
+    runs-on: ubuntu
     permissions:
       actions: read
       contents: write
