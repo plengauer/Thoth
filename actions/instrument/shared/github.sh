@@ -21,9 +21,20 @@ gh_rate_limit() {
 export -f gh_rate_limit
 
 gh_releases() {
-  GITHUB_REPOSITORY="$GITHUB_ACTION_REPOSITORY" gh_curl_paginated /releases'?per_page=100'
+  gh_curl_paginated /releases'?per_page=100'
 }
 export -f gh_releases
+
+gh_release() {
+  local tag="$1"
+  if [ "$tag" = main ]; then
+    local path=latest
+  else
+    local path=tags/"$tag"
+  fi
+  gh_curl /releases/"$path"
+}
+export -f gh_release
 
 gh_workflow_runs() {
   gh_curl_paginated /actions/runs'?per_page=100'
