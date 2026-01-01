@@ -23,3 +23,5 @@ jobs:
       - uses: plengauer/autorerun@v0.35.0
         with:
           github_token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          custom_patterns: |
+            fatal: 'v.*' is not a commit and a branch 'release/.*' cannot be created from it
