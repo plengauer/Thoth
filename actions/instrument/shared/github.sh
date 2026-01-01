@@ -20,6 +20,16 @@ gh_rate_limit() {
 }
 export -f gh_rate_limit
 
+gh_ensure_min_rate_limit_remaining() {
+  local threshold="$1"
+  local delay=1
+  while [ "$(gh_rate_limit | jq '.resources.core | .remaining / .limit * 100 | floor')" -lt "$(echo "$threshold" | jq '. * 100 | floor')" ]; do
+    sleep "$delay"
+    local delay=$((delay * 2))
+  done
+}
+export -f gh_ensure_min_rate_limit_remaining
+
 gh_releases() {
   gh_curl_paginated /releases'?per_page=100'
 }
