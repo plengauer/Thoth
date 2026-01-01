@@ -21,6 +21,7 @@ port=12345
 response_file="$(\mktemp)"
 netcat -l "$port" < /dev/null > "$response_file" &
 pid="$!"
+\sleep 1
 \echo -n hello world | netcat -w 1 127.0.0.1 "$port" > /dev/null
 \wait "$pid"
 assert_equals "hello world" "$(\cat "$response_file")"
