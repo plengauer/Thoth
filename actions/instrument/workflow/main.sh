@@ -45,31 +45,27 @@ fi
 
 export OTEL_SERVICE_NAME="${OTEL_SERVICE_NAME:-"$(echo "$GITHUB_REPOSITORY" | cut -d / -f 2-) CI"}"
 
-echo "::group::Resolve Workflow Run Attempt"
+echo "::group::Resolving Workflow Run Attempt"
 workflow_json="$(mktemp)"
 jq < "$GITHUB_EVENT_PATH" > "$workflow_json" .workflow_run
 if [ "$INPUT_WORKFLOW_RUN_ID" != "$(jq < "$workflow_json" .id)" ] || [ "$INPUT_WORKFLOW_RUN_ATTEMPT" != "$(jq < "$workflow_json" .run_attempt)" ]; then gh_workflow_run "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" > "$workflow_json"; fi
-if [ "$(jq < "$workflow_json" -r .status)" != completed ]; then echo "::error ::Workflow not completed yet."; exit 1; fi
+if [ "$(jq < "$workflow_json" -r .status)" != completed ]; then echo "::error ::Workflow not completed yet." && exit 1; fi
 echo "::endgroup::"
 
-echo "::group::Resolve Jobs"
+echo "::group::Resolving Jobs, Steps, Logs, and Artifacts"
 jobs_json="$(mktemp)"
-gh_jobs "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" | jq .jobs[] > "$jobs_json"
-echo "::endgroup::"
-
-echo "::group::Resolve Artifacts Metadata"
-artifacts_json="$(mktemp)"
-gh_artifacts "$INPUT_WORKFLOW_RUN_ID" | jq -r .artifacts[] > "$artifacts_json"
-echo "::endgroup::"
-
-echo "::group::Resolve Logs"
 logs_zip="$(mktemp)"
+artifacts_json="$(mktemp)"
+gh_jobs "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" | jq .jobs[] > "$jobs_json" && echo "Jobs and Steps ... done" >&2 &
+gh_artifacts "$INPUT_WORKFLOW_RUN_ID" | jq -r .artifacts[] > "$artifacts_json" && echo "Artifacts ... done" >&2 &
 count=1
 while [ "$count" -lt 60 ] && !(gh_workflow_run_logs "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" "$logs_zip" && unzip -t "$logs_zip" 1> /dev/null 2> /dev/null); do # sometimes downloads fail
   sleep "$count"
   count=$((count * 2))
 done
-if [ -r "$logs_zip" ] && unzip -t "$logs_zip"; then
+echo "Logs ... done" >&2
+wait
+if [ -r "$logs_zip" ] && unzip -t "$logs_zip" 1> /dev/null 2> /dev/null; then
   read_log_file() {
     unzip -Z1 "$logs_zip" | grep '.txt$' | grep -E "$(printf '%s' "$1" | sed 's/[.[\(*^$+?{|]/\\\\&/g')" | xargs -d '\n' -r unzip -p "$logs_zip" | sed '1s/^\xEF\xBB\xBF//' | sed '1s/^\xFE\xFF//' | sed '1s/^\x00\x00\xFE\xFF//'
   }
