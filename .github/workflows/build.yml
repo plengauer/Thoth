@@ -626,7 +626,7 @@ jobs:
           path: package.*
 
   build-workflow-image:
-    needs: [build-deb]
+    needs: [build-apk]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -643,14 +643,14 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v7.0.0
         with:
-          name: package.deb_${{ inputs.ref }}
+          name: package.apk_${{ inputs.ref }}
       - run: |
-          cp package.deb actions/instrument/workflow
+          cp package.apk actions/instrument/workflow
           pushd actions/instrument/workflow
           sudo docker build --build-arg=repository="$GITHUB_REPOSITORY" --network host --tag opentelemetry-github-workflow-instrumentation-runner .
           popd
           sudo docker save opentelemetry-github-workflow-instrumentation-runner > opentelemetry-github-workflow-instrumentation-runner.image
-          rm actions/instrument/workflow/package.deb
+          rm actions/instrument/workflow/package.apk
       - uses: actions/upload-artifact@v6.0.0
         with:
           name: images_${{ inputs.ref }}
