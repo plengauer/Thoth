@@ -9,7 +9,7 @@ jobs:
   bump:
     runs-on: ubuntu-slim
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.38.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.41.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
