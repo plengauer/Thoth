@@ -16,7 +16,7 @@ jobs:
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - uses: plengauer/autoapprove@v0.2.0
+      - uses: plengauer/autoapprove@v1.0.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           user_to_approve: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
