@@ -74,19 +74,20 @@ jobs:
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.41.0
         with:
-          secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}"]'
+          secrets_to_redact: '["${{ github.token }}","${{ secrets.PACKAGES_GITHUB_TOKEN }}"]'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
+
       - uses: actions/checkout@v6.0.1
         with:
-          token: ${{ secrets.ACTIONS_GITHUB_TOKEN }} # need to use this token for later pushes of tags
           ref: ${{ matrix.ref }}
       - run: echo "version=$(cat VERSION)" >> "$GITHUB_OUTPUT"
         id: version
       - uses: actions/download-artifact@v7.0.0
         with:
           name: packages_${{ matrix.ref }}
+
       - uses: actions/attest-build-provenance@v3.1.0
         with:
           subject-path: ./package.deb
@@ -102,12 +103,13 @@ jobs:
       - uses: actions/download-artifact@v7.0.0
         with:
           name: images_${{ matrix.ref }}
+
       - run: |
           version="${{ steps.version.outputs.version }}"
           major=$(echo "$version" | cut -d . -f 1)
           minor=$(echo "$version" | cut -d . -f 2)
           patch=$(echo "$version" | cut -d . -f 3)
-          echo ${{ secrets.ACTIONS_GITHUB_TOKEN }} | sudo docker login ghcr.io -u "$(GH_TOKEN=${{ secrets.ACTIONS_GITHUB_TOKEN }} gh api user -q .login)" --password-stdin
+          echo ${{ secrets.PACKAGES_GITHUB_TOKEN }} | sudo docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
           find . -iname '*.image' | while read -r image_file; do
             sudo docker load < "$image_file"
             image_name="$image_file"
@@ -120,6 +122,7 @@ jobs:
             sudo docker image remove "$image_name"
             sudo docker push "ghcr.io/${GITHUB_REPOSITORY%/*}/$image_name" --all-tags
           done
+
       - run: |
           gh release create "v${{ steps.version.outputs.version }}" \
             --title "Release v${{ steps.version.outputs.version }}" \
@@ -130,10 +133,11 @@ jobs:
           echo "upload_url=$(gh api repos/${{ github.repository }}/releases | jq '.[] | select(.tag_name == "v${{ steps.version.outputs.version }}") | .upload_url' -r)" >> "$GITHUB_OUTPUT"
         id: create_release
         env:
-          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+
       - uses: actions/upload-release-asset@v1.0.2
         env:
-          GITHUB_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./package.deb
@@ -141,7 +145,7 @@ jobs:
           asset_content_type: application/octet-stream
       - uses: actions/upload-release-asset@v1.0.2
         env:
-          GITHUB_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./package.rpm
@@ -149,7 +153,7 @@ jobs:
           asset_content_type: application/octet-stream
       - uses: actions/upload-release-asset@v1.0.2
         env:
-          GITHUB_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./package.apk
@@ -157,7 +161,7 @@ jobs:
           asset_content_type: application/octet-stream
       - uses: eregon/publish-release@v1.0.6
         env:
-          GITHUB_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
         with:
           release_id: ${{ steps.create_release.outputs.id }}
       - run: |
