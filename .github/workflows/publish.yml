@@ -134,10 +134,6 @@ jobs:
         id: create_release
         env:
           GH_TOKEN: ${{ github.token }}
-      - uses: docker/metadata-action@v5.10.0
-        id: meta
-        with:
-          images: ghcr.io/opentelemetry-github-workflow-instrumentation-runner
 
       - uses: actions/upload-release-asset@v1.0.2
         env:
