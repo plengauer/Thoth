@@ -139,7 +139,7 @@ case "${OTEL_TRACES_EXPORTER:-otlp}" in
   none) collector_traces_exporter=nop;;
   *) echo ::error::Unsupported traces exporter: "${OTEL_TRACES_EXPORTER:-otlp}" && exit 1;;
 esac
-( set +x && echo "$INPUT_SECRETS_TO_REDACT" | jq -r '. | to_entries[].value' | sed 's/[.[\(*^$+?{|]/\\\\&/g' | xargs -I '{}' echo '::add-mask::{}' ) && mask_patterns="$(echo "$INPUT_SECRETS_TO_REDACT" | jq -r '. | to_entries[].value' | grep -v '^$' | sed 's/[.[\(*^$+?{|]/\\\\&/g')"
+( set +x && echo "$INPUT_SECRETS_TO_REDACT" | jq '. | to_entries[].value' -r | ( grep -v '^$' || true ) | sed 's/[.[\(*^$+?{|]/\\\\&/g' | xargs -I '{}' echo '::add-mask::{}' ) && mask_patterns="$(echo "$INPUT_SECRETS_TO_REDACT" | jq -r '. | to_entries[].value' | grep -v '^$' | sed 's/[.[\(*^$+?{|]/\\\\&/g')"
 cat > collector.yml <<EOF
 receivers:
   otlp:
