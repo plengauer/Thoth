@@ -115,7 +115,7 @@ if ! type otelcol-contrib; then
 fi
 if [ "${write_back_cache:-FALSE}" = TRUE ] && [ -n "${cache_key:-}" ]; then
   wait # only join in case we wanna write back, this will be rare and is necessary to have a good cache
-  ( sudo -E -H node -e "require('@actions/cache').saveCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip'], '$cache_key');" &> /dev/null & )
+  run sudo -E -H node -e "require('@actions/cache').saveCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip'], '$cache_key');"
 fi
 echo "::endgroup::"
 
