@@ -64,7 +64,7 @@ runs:
           key="${env%%=*}"
           value="${env#*=}"
           case "$key" in
-            OTEL_*) [ -n "$value" ] || { echo "::error::Aborting deploy because configuration variable $key is empty!"; false; }
+            OTEL_*) [ -n "$value" ] || { echo "::error::Aborting deploy because configuration variable $key is empty!"; false; } ;;
             *) ;;
           esac
         done
