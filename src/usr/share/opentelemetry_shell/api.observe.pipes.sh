@@ -87,11 +87,13 @@ if \type lsof 1> /dev/null 2> /dev/null; then
     \lsof -p "$1" -ad "$2" -O -b -t 2> /dev/null | \grep -qF -- "$1"
   }
 elif \[ -d /proc ]; then
-  # this is hacky!
-  # the fd's in the proc file system are always symbolic links.
-  # in our case, the fd is either pointing to a pipe, or nothing.
-  # so, a quick -p check will identify whether the fd is still open or not
-  \[ -p /proc/"$1"/fd/"$2" ]
+  _otel_is_stream_open() {
+    # this is hacky!
+    # the fd's in the proc file system are always symbolic links.
+    # in our case, the fd is either pointing to a pipe, or nothing.
+    # so, a quick -p check will identify whether the fd is still open or not
+    \[ -p /proc/"$1"/fd/"$2" ]
+  }
 else
   _otel_is_stream_open() {
     \kill -0 "$1" 1> /dev/null 2> /dev/null
