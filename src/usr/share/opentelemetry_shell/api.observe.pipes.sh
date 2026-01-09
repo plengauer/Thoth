@@ -82,9 +82,21 @@ _otel_call_and_record_pipes() {
   return "$exit_code"
 }
 
-_otel_is_stream_open() {
-  \lsof -p "$1" -ad "$2" -O -b -t 2> /dev/null | \grep -qF -- "$1"
-}
+if \type lsof 1> /dev/null 2> /dev/null; then
+  _otel_is_stream_open() {
+    \lsof -p "$1" -ad "$2" -O -b -t 2> /dev/null | \grep -qF -- "$1"
+  }
+elif \[ -d /proc ]; then
+  # this is hacky!
+  # the fd's in the proc file system are always symbolic links.
+  # in our case, the fd is either pointing to a pipe, or nothing.
+  # so, a quick -p check will identify whether the fd is still open or not
+  \[ -p /proc/"$1"/fd/"$2" ]
+else
+  _otel_is_stream_open() {
+    \kill -0 "$1" 1> /dev/null 2> /dev/null
+  }
+fi
 
 _otel_record_pipes() {
      ( \[ -t "$3" ]      && otel_span_attribute_typed "$1" string pipe."$2".type=tty    ) \
