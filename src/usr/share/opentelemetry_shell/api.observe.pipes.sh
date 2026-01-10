@@ -84,7 +84,7 @@ _otel_call_and_record_pipes() {
 
 if \type lsof 1> /dev/null 2> /dev/null; then
   _otel_is_stream_open() {
-    \lsof -p "$1" -ad "$2" -O -b -t 2> /dev/null | \grep -qF -- "$1"
+    \lsof -p "$1" -ad "$2" -O -b -t 2> /dev/null | \grep -qF -- "$1" # SKIP_DEPENDENCY_CHECK
   }
 elif \[ -d /proc ]; then
   _otel_is_stream_open() {
