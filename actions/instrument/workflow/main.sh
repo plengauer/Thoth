@@ -195,7 +195,7 @@ jq < "$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .s
         *) return 1;;
       esac
       read -r content_type < "$file"
-      curl --retry 8 "$endpoint" -H "Content-Type: $content_type" -H @"$headers" --data-binary @<(tail -n +2 "$file")
+      curl -s --fail --retry 8 "$endpoint" -H "Content-Type: $content_type" -H @"$headers" --data-binary @<(tail -n +2 "$file")
       rm "$headers"
     }
     export -f export_deferred_signal_file
