@@ -57,6 +57,18 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: "Verify environment"
+      shell: bash
+      run: |
+        printenv | while read -r env; do
+          key="${env%%=*}"
+          value="${env#*=}"
+          case "$key" in
+            OTEL_*) [ -n "$value" ] || { echo "::error::Aborting deploy because configuration variable $key is empty!"; false; } ;;
+            *) ;;
+          esac
+        done
+
     - name: "Install dependencies"
       shell: bash
       run: type yq || (sudo apt-get update && sudo apt-get -y install yq)
