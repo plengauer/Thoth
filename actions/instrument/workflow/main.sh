@@ -75,7 +75,7 @@ echo "Logs ... done" >&2
 wait
 if [ -r "$logs_zip" ] && unzip -t "$logs_zip" 1> /dev/null 2> /dev/null; then
   read_log_file() {
-    unzip -Z1 "$logs_zip" | grep '.txt$' | grep -E "$(printf '%s' "$1" | sed 's/[.[\(*^$+?{|]/\\\\&/g')" | xargs -d '\n' -r unzip -p "$logs_zip" | sed '1s/^\xEF\xBB\xBF//' | sed '1s/^\xFE\xFF//' | sed '1s/^\x00\x00\xFE\xFF//'
+    unzip -Z1 "$logs_zip" | grep '.txt$' | grep -E "$(printf '%s' "$1" | sed 's/[.[\(*^$+?{|]/\\\\&/g')" | xargs -d '\n' -r unzip -p "$logs_zip" | sed 's/^\xEF\xBB\xBF//' | sed 's/^\xFE\xFF//' | sed 's/^\x00\x00\xFE\xFF//'
   }
 else
   read_log_file() { true; }
