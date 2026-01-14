@@ -1,0 +1,14 @@
+name: Update Debian Repository
+
+on:
+  release:
+    types: published
+      
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - uses: plengauer/publish-deb-repository@v0.0.8
