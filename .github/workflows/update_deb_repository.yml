@@ -3,6 +3,11 @@ name: Update Debian Repository
 on:
   release:
     types: published
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/update_deb_repository.yml
       
 jobs:
   publish:
