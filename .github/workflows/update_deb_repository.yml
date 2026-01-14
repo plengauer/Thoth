@@ -11,4 +11,8 @@ jobs:
       pages: write
       id-token: write
     steps:
-      - uses: plengauer/publish-deb-repository@v0.0.8
+      - uses: plengauer/create-deb-repository@v0.0.9
+      - uses: actions/upload-pages-artifact@v4.0.0
+        with:
+          path: .
+      - uses: actions/deploy-pages@v4.0.5
