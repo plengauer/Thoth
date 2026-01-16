@@ -1,13 +1,28 @@
  WARN: cli config dryRun property has been changed to full
- INFO: Repository started (repository=plengauer/opentelemetry-bash)
-       "renovateVersion": "42.64.1"
- INFO: Repository has been renamed - skipping (repository=plengauer/opentelemetry-bash)
- INFO: Repository has been renamed - skipping (repository=plengauer/opentelemetry-bash)
- INFO: Repository finished (repository=plengauer/opentelemetry-bash)
-       "cloned": undefined,
-       "durationMs": 303,
-       "result": "renamed",
-       "status": "disabled",
-       "enabled": false,
-       "onboarded": undefined
+ INFO: Repository started (repository=plengauer/Thoth)
+       "renovateVersion": "42.82.3"
+ INFO: Dependency extraction complete (repository=plengauer/Thoth, baseBranch=main)
+       "stats": {
+         "managers": {
+           "dockerfile": {"fileCount": 4, "depCount": 4},
+           "github-actions": {"fileCount": 24, "depCount": 293},
+           "gradle": {"fileCount": 4, "depCount": 3},
+           "gradle-wrapper": {"fileCount": 1, "depCount": 1},
+           "maven": {"fileCount": 1, "depCount": 2},
+           "npm": {"fileCount": 2, "depCount": 14},
+           "pip_requirements": {"fileCount": 2, "depCount": 16},
+           "regex": {"fileCount": 3, "depCount": 4}
+         },
+         "total": {"fileCount": 41, "depCount": 337}
+       }
+ INFO: DRY-RUN: Would ensure Dependency Dashboard (repository=plengauer/Thoth)
+       "title": "Dependency Dashboard"
+ INFO: DRY-RUN: Would save repository cache. (repository=plengauer/Thoth)
+ INFO: Repository finished (repository=plengauer/Thoth)
+       "cloned": true,
+       "durationMs": 31985,
+       "result": "done",
+       "status": "onboarded",
+       "enabled": true,
+       "onboarded": true
  INFO: Renovate was run at log level "info". Set LOG_LEVEL=debug in environment variables to see extended debug logs.
