@@ -87,7 +87,7 @@ jobs:
           ref: ${{ inputs.ref }}
       - id: key
         run: cat .github/images.json .github/workflows/test_shell.yml meta/*/* | md5sum | cut -d ' ' -f 1 | xargs -I '{}' echo "key={}" >> "$GITHUB_OUTPUT"
-      - uses: actions/cache@v5.0.1
+      - uses: actions/cache@v5.0.2
         with:
           path: images.json
           key: images ${{ steps.key.outputs.key }}
