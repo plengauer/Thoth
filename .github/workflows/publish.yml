@@ -161,7 +161,7 @@ jobs:
           asset_content_type: application/octet-stream
       - uses: eregon/publish-release@v1.0.6
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         with:
           release_id: ${{ steps.create_release.outputs.id }}
       - run: |
