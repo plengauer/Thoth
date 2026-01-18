@@ -84,9 +84,9 @@ action_tag_name="$(echo "$GITHUB_ACTION_REF" | cut -sd @ -f 2-)"
 if [ -z "$action_tag_name" ]; then action_tag_name="v$(cat ../../../VERSION)"; fi
 if [ "$INPUT_CACHE" = "true" ]; then
   export INSTRUMENTATION_CACHE_KEY="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} instrumentation $GITHUB_WORKFLOW $GITHUB_JOB"
-  run sudo -E -H node -e "await require('@actions/cache').restoreCache(['/tmp/*.aliases'], '$INSTRUMENTATION_CACHE_KEY');"
+  run sudo -E -H node -e "require('@actions/cache').restoreCache(['/tmp/*.aliases'], '$INSTRUMENTATION_CACHE_KEY');"
   cache_key="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} dependencies $({ cat /etc/os-release; python3 --version || true; node --version || true; printenv | grep -E '^OTEL_SHELL_CONFIG_INSTALL_' || true; } | md5sum | cut -d ' ' -f 1)"
-  sudo -E -H node -e "await require('@actions/cache').restoreCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip'], '$cache_key');"
+  sudo -E -H node -e "require('@actions/cache').restoreCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip'], '$cache_key');"
   [ "$(find /var/cache/apt/archives/ -name '*.deb' | wc -l)" -gt 0 ] || write_back_cache=TRUE
 fi
 if ! type otel.sh && [ -r /var/cache/apt/archives/opentelemetry-shell_*_all.deb ]; then
@@ -94,7 +94,7 @@ if ! type otel.sh && [ -r /var/cache/apt/archives/opentelemetry-shell_*_all.deb 
     control_dir="$(mktemp -d)"
     dpkg-deb --control /var/cache/apt/archives/opentelemetry-shell_*_all.deb "$control_dir"
     if cat "$control_dir"/control | grep -E '^Pre-Depends:|^Depends:' | cut -d ':' -f 2- | tr ',' '\n' | grep -v '|' | tr -d ' ' | cut -d '(' -f 1 | sed 's/awk/gawk/g' | xargs -I '{}' [ -r /var/lib/dpkg/info/'{}'.list ]; then
-      run eval sudo dpkg-deb --extract /var/cache/apt/archives/opentelemetry-shell_*_all.deb / '&&' sudo "$control_dir"/postinst configure '&&' rm -rf "$control_dir"
+      sudo dpkg-deb --extract /var/cache/apt/archives/opentelemetry-shell_*_all.deb / && run eval sudo "$control_dir"/postinst configure '&&' rm -rf "$control_dir"
       export OTEL_SHELL_PACKAGE_VERSION_CACHE_opentelemetry_shell="$(cat ../../../VERSION)"
     else
       rm -rf "$control_dir"
