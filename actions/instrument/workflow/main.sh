@@ -176,9 +176,6 @@ otel_span_end "$workflow_span_handle" @"$workflow_ended_at"
 jq < "$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .started_at, .completed_at, .name] | @tsv' | while IFS=$'\t' read -r TRACEPARENT job_id job_conclusion job_started_at job_completed_at job_name; do
   if [ "$job_conclusion" = skipped ]; then continue; fi
   if jq < "$artifacts_json" -r .name | grep -qE '^opentelemetry_job_'"$job_id"'_signals_.*$'; then
-    export OTEL_EXPORTER_OTLP_HEADERS OTEL_EXPORTER_OTLP_LOGS_HEADERS OTEL_EXPORTER_OTLP_METRICS_HEADERS OTEL_EXPORTER_OTLP_TRACES_HEADERS
-    export OTEL_EXPORTER_OTLP_LOGS_ENDPOINT OTEL_EXPORTER_OTLP_METRICS_ENDPOINT OTEL_EXPORTER_OTLP_TRACES_ENDPOINT OTEL_EXPORTER_OTLP_ENDPOINT
-    export INPUT_WORKFLOW_RUN_ID INPUT_WORKFLOW_RUN_ATTEMPT
     export_deferred_signal_artifacts() {
       artifact_name="$1"
       dir="$(mktemp -d)"
@@ -190,11 +187,11 @@ jq < "$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .s
     export_deferred_signal_file() {
       file="$1"
       headers="$(mktemp)"
-      echo "$OTEL_EXPORTER_OTLP_HEADERS" >> "$headers"
+      echo "$OTEL_EXPORTER_OTLP_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /g' >> "$headers"
       case "$file" in
-        *.logs) endpoint="${OTEL_EXPORTER_OTLP_LOGS_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/logs}"; echo "$OTEL_EXPORTER_OTLP_LOGS_HEADERS" >> "$headers";;
-        *.metrics) endpoint="${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/metrics}"; echo "$OTEL_EXPORTER_OTLP_METRICS_HEADERS" >> "$headers";;
-        *.traces) endpoint="${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/traces}"; echo "$OTEL_EXPORTER_OTLP_TRACES_HEADERS" >> "$headers";;
+        *.logs) endpoint="${OTEL_EXPORTER_OTLP_LOGS_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/logs}"; echo "$OTEL_EXPORTER_OTLP_LOGS_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /g' >> "$headers";;
+        *.metrics) endpoint="${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/metrics}"; echo "$OTEL_EXPORTER_OTLP_METRICS_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /g' >> "$headers";;
+        *.traces) endpoint="${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/traces}"; echo "$OTEL_EXPORTER_OTLP_TRACES_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /g' >> "$headers";;
         *) return 1;;
       esac
       read -r content_type < "$file"
