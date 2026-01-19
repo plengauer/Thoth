@@ -267,6 +267,16 @@ Flags that are marked as `stable` are tested and verified in tests and real-worl
 
 While OpenTelemetry for shell provides comprehensive automatic instrumentation, there are some technical limitations to be aware of:
 
+### Shell Functions
+By design, shell functions are not automatically instrumented. The aliasing mechanism used for auto-instrumentation only works for external commands, built-ins, and aliases, but cannot intercept function calls within the shell's execution context.
+
+**Workaround:** Use `otel_observe` to manually instrument function calls where observability is needed.
+
+### Absolute and Relative Path Commands
+Commands called via absolute or relative paths (e.g., `/bin/cat` or `./mycommand`) are not automatically instrumented by default. The auto-instrumentation mechanism relies on command name resolution through the shell's normal lookup process, which bypasses aliasing for explicit paths.
+
+**Workaround:** Use `otel_observe` to manually instrument these commands, or enable `OTEL_SHELL_CONFIG_INSTRUMENT_ABSOLUTE_PATHS=TRUE` (experimental) to instrument them automatically.
+
 ### Shell Functions Without the `function` Keyword
 Shell functions can be defined in two ways: using the `function` keyword (`function mycommand() { ... }`) or without it (`mycommand() { ... }`). When a function is defined without the `function` keyword and its name collides with an actual command on the system (e.g., defining `curl() { ... }` when `/usr/bin/curl` exists), the instrumentation system may not correctly distinguish between the function and the command. This is because the aliasing mechanism used for auto-instrumentation relies on command type detection, which can be ambiguous in these cases.
 
@@ -277,17 +287,13 @@ The instrumentation uses file descriptor 7 as a communication channel to the Ope
 
 **Workaround:** Avoid using file descriptor 7 in your scripts. If you must use a specific file descriptor, choose a different number (e.g., 8, 9, or higher). You can also override the file descriptor used by OpenTelemetry by setting the `OTEL_REMOTE_SDK_FD` environment variable to a different number before sourcing the instrumentation.
 
+### Restricted Mode
+Shells running in restricted mode (`set -r`) are not supported. The instrumentation requires the ability to modify the shell environment, set aliases, and execute arbitrary commands, which are prohibited in restricted mode.
+
 ### PID Tracking for Background Processes
 When commands are instrumented, they are wrapped in shell functions rather than being executed directly. This means that if you save the PID of a background process (using `$!`) and later try to kill it, you may end up killing the instrumentation wrapper subshell instead of the actual command. This can result in the command continuing to run even though you attempted to terminate it.
 
 **Workaround:** Instead of relying on `$!` immediately after launching a background command, use `ps` and `grep` to find the actual process by its command name and then use `kill <PID>` with the specific numeric PID. For example: `pid=$(ps -o pid,comm | grep mycommand | grep -v grep | awk '{print $1}')` followed by `kill $pid`. Alternatively, implement proper process tracking using PID files or other inter-process communication mechanisms.
-
-### Restricted Mode
-Shells running in restricted mode (`set -r`) are not supported. The instrumentation requires the ability to modify the shell environment, set aliases, and execute arbitrary commands, which are prohibited in restricted mode.
-
-### Additional Known Limitations
-- Shell functions (as mentioned above) are not automatically instrumented. Use `otel_observe` to manually instrument function calls.
-- Commands called via absolute or relative paths (e.g., `/bin/cat` or `./mycommand`) are not automatically instrumented by default. Use `otel_observe` or enable `OTEL_SHELL_CONFIG_INSTRUMENT_ABSOLUTE_PATHS=TRUE` (experimental) to instrument these commands.
 
 ## Traces
 The API described below is for manually creating and customizing spans. We recommend to do this only if the automatic instrumentation is not sufficient.
