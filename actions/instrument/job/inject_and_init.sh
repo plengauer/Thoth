@@ -142,7 +142,7 @@ case "${OTEL_TRACES_EXPORTER:-otlp}" in
   none) collector_traces_exporter=nop;;
   *) echo ::error::Unsupported traces exporter: "${OTEL_TRACES_EXPORTER:-otlp}" && exit 1;;
 esac
-( set +x && echo "$INPUT_SECRETS_TO_REDACT" | jq -r '. | to_entries[].value' | sed 's/[.[\(*^$+?{|]/\\\\&/g' | xargs -I '{}' echo '::add-mask::{}' ) && mask_patterns="$(echo "$INPUT_SECRETS_TO_REDACT" | jq -r '. | to_entries[].value' | grep -v '^$' | sed 's/\\/\\\\/g; s/"/\\"/g; s/[.[\(*^$+?{|]/\\&/g')"
+mask_patterns="$(echo "$INPUT_SECRETS_TO_REDACT" | jq -r '. | to_entries[].value' | grep -v '^$' | sed 's/\\/\\\\/g; s/"/\\"/g; s/[.[\(*^$+?{|]/\\&/g')"
 cat > collector.yml <<EOF
 receivers:
   otlp:
@@ -437,6 +437,7 @@ root4job() {
   otelcol-contrib --config=env:OTEL_GITHUB_COLLECTOR_CONFIG &> otelcol."$$".log &
   OTEL_COLLECTOR_PID="$!"
   rm -rf collector.yml 2> /dev/null
+  ( set +x && echo "$INPUT_SECRETS_TO_REDACT" | jq -r '. | to_entries[].value' | xargs -I '{}' echo '::add-mask::{}' )
   rm /tmp/opentelemetry_shell.github.error 2> /dev/null
   traceparent_file="$1"
   . otelapi.sh
