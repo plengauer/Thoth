@@ -34,7 +34,7 @@ jobs:
           - language: actions
             build-mode: none
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.42.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.42.1
         with:
           secrets_to_redact: '["${{ github.token }}"]'
         env:
