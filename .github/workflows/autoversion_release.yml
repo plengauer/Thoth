@@ -47,7 +47,7 @@ jobs:
           echo "::endgroup::"
       
       - id: open-pr
-        uses: peter-evans/create-pull-request@v8.0.0
+        uses: peter-evans/create-pull-request@v8.1.0
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           commit-message: "Bump Version"
