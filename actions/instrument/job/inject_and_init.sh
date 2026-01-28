@@ -94,7 +94,7 @@ if ! type otel.sh && [ -r /var/cache/apt/archives/opentelemetry-shell_*_all.deb 
     control_dir="$(mktemp -d)"
     dpkg-deb --control /var/cache/apt/archives/opentelemetry-shell_*_all.deb "$control_dir"
     if cat "$control_dir"/control | grep -E '^Pre-Depends:|^Depends:' | cut -d ':' -f 2- | tr ',' '\n' | grep -v '|' | tr -d ' ' | cut -d '(' -f 1 | sed 's/awk/gawk/g' | xargs -I '{}' [ -r /var/lib/dpkg/info/'{}'.list ]; then
-      run eval sudo dpkg-deb --extract /var/cache/apt/archives/opentelemetry-shell_*_all.deb / '&&' sudo "$control_dir"/postinst configure '&&' rm -rf "$control_dir"
+      sudo dpkg-deb --extract /var/cache/apt/archives/opentelemetry-shell_*_all.deb / && run eval sudo "$control_dir"/postinst configure '&&' rm -rf "$control_dir"
       export OTEL_SHELL_PACKAGE_VERSION_CACHE_opentelemetry_shell="$(cat ../../../VERSION)"
     else
       rm -rf "$control_dir"
