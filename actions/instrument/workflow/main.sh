@@ -165,7 +165,7 @@ otel_counter_observe "$workflow_duration_counter_handle" "$observation_handle"
 
 observation_handle="$(otel_observation_create "$(python3 -c "print(str(max(0, $(date -d "$workflow_ended_at" '+%s.%N') - $(date -d "$workflow_started_at" '+%s.%N'))))")")"
 otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.name="$(jq < "$workflow_json" -r .name)"
-otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.run.state=executing
+otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.run.state=finalizing
 otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result="$(map_github_conclusion_to_cicd_result "$(jq < "$workflow_json" -r .conclusion)")"
 otel_observation_attribute_typed "$observation_handle" string github.actions.workflow.id="$(jq < "$workflow_json" -r .workflow_id)"
 otel_observation_attribute_typed "$observation_handle" string github.actions.workflow.name="$(jq < "$workflow_json" -r .name)"
@@ -194,7 +194,7 @@ otel_span_attribute_typed "$workflow_span_handle" string github.actions.event.re
 otel_span_attribute_typed "$workflow_span_handle" string github.actions.event.ref.sha="$(jq < "$workflow_json" -r .head_sha)"
 otel_span_attribute_typed "$workflow_span_handle" string github.actions.event.ref.name="$(jq < "$workflow_json" -r .head_branch)"
 otel_span_attribute_typed "$workflow_span_handle" string cicd.pipeline.name="$(jq < "$workflow_json" -r .name)"
-otel_span_attribute_typed "$workflow_span_handle" string cicd.pipeline.run.state=executing
+otel_span_attribute_typed "$workflow_span_handle" string cicd.pipeline.run.state=finalizing
 otel_span_attribute_typed "$workflow_span_handle" string cicd.pipeline.result="$(map_github_conclusion_to_cicd_result "$(jq < "$workflow_json" -r .conclusion)")"
 if [ "$INPUT_WORKFLOW_RUN_ATTEMPT" -gt 1 ] && gh_artifact_download "$INPUT_WORKFLOW_RUN_ID" "$((INPUT_WORKFLOW_RUN_ATTEMPT - 1))" opentelemetry_workflow_run_"$((INPUT_WORKFLOW_RUN_ATTEMPT - 1))" opentelemetry_workflow_run_prev; then
   otel_link_add "$(otel_link_create "$(cat opentelemetry_workflow_run_prev/traceparent)" "")" "$workflow_span_handle"
