@@ -1,2 +1,3 @@
-(node:5703) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(node:5703) [DEP0151] DeprecationWarning: No "main" or "exports" field defined in the package.json for /usr/local/renovate/node_modules/@renovatebot/pgp/ resolving the main entry point "index.js", imported from /usr/local/renovate/dist/config/decrypt/bcpgp.js.
+Default "index" lookups for the main are deprecated for ES modules.
 (Use `node --trace-deprecation ...` to show where the warning was created)
