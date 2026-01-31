@@ -84,9 +84,9 @@ action_tag_name="$(echo "$GITHUB_ACTION_REF" | cut -sd @ -f 2-)"
 if [ -z "$action_tag_name" ]; then action_tag_name="v$(cat ../../../VERSION)"; fi
 if [ "$INPUT_CACHE" = "true" ]; then
   export INSTRUMENTATION_CACHE_KEY="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} instrumentation $GITHUB_WORKFLOW $GITHUB_JOB"
-  run sudo -E -H node --import-type=module -e "import * as cache from '@actions/cache'; await cache.restoreCache(['/tmp/*.aliases'], '$INSTRUMENTATION_CACHE_KEY');"
+  run sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.restoreCache(['/tmp/*.aliases'], '$INSTRUMENTATION_CACHE_KEY');"
   cache_key="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} dependencies $({ cat /etc/os-release; python3 --version || true; node --version || true; printenv | grep -E '^OTEL_SHELL_CONFIG_INSTALL_' || true; } | md5sum | cut -d ' ' -f 1)"
-  sudo -E -H node --import-type=module -e "import * as cache from '@actions/cache'; await cache.restoreCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip'], '$cache_key');"
+  sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.restoreCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip'], '$cache_key');"
   [ "$(find /var/cache/apt/archives/ -name '*.deb' | wc -l)" -gt 0 ] || write_back_cache=TRUE
 fi
 if ! type otel.sh && [ -r /var/cache/apt/archives/opentelemetry-shell_*_all.deb ]; then
@@ -118,7 +118,7 @@ if ! type otelcol-contrib; then
 fi
 if [ "${write_back_cache:-FALSE}" = TRUE ] && [ -n "${cache_key:-}" ]; then
   wait # only join in case we wanna write back, this will be rare and is necessary to have a good cache
-  run sudo -E -H node --import-type=module -e "import * as cache from '@actions/cache'; await cache.saveCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip'], '$cache_key');"
+  run sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.saveCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip'], '$cache_key');"
 fi
 echo "::endgroup::"
 
