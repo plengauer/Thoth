@@ -143,6 +143,7 @@ case "${OTEL_TRACES_EXPORTER:-otlp}" in
   *) echo ::error::Unsupported traces exporter: "${OTEL_TRACES_EXPORTER:-otlp}" && exit 1;;
 esac
 ( set +x && echo "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_LOGS_HEADERS","$OTEL_EXPORTER_OTLP_METRICS_HEADERS","$OTEL_EXPORTER_OTLP_TRACES_HEADERS" | tr ',' '\n' | grep -v '^$' | cut -d = -f 2- | xargs -I '{}' echo '::add-mask::{}' && echo "$INPUT_SECRETS_TO_REDACT" | jq -r '. | to_entries[].value' | sed 's/[.[\(*^$+?{|]/\\\\&/g' | sed 's/"/\\"/g' | xargs -I '{}' echo '::add-mask::{}' ) && mask_patterns="$(echo "$INPUT_SECRETS_TO_REDACT" | jq -r '. | to_entries[].value' | grep -v '^$' | sed 's/[.[\(*^$+?{|]/\\\\&/g' | sed 's/"/\\"/g')"
+printf '%s\n' "$mask_patterns" # TODO remove me before merging
 cat > collector.yml <<EOF
 receivers:
   otlp:
