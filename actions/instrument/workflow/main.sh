@@ -118,6 +118,20 @@ workflow_duration_counter_handle="$(otel_counter_create counter github.actions.w
 job_duration_counter_handle="$(otel_counter_create counter github.actions.jobs.duration s 'Duration of job runs')"
 step_duration_counter_handle="$(otel_counter_create counter github.actions.steps.duration s 'Duration of step runs')"
 action_duration_counter_handle="$(otel_counter_create counter github.actions.actions.duration s 'Duration of action runs')"
+cicd_pipeline_run_duration_handle="$(otel_counter_create counter cicd.pipeline.run.duration s 'Duration of a pipeline run grouped by pipeline, state and result')"
+cicd_pipeline_run_errors_handle="$(otel_counter_create counter cicd.pipeline.run.errors '{error}' 'The number of errors encountered in pipeline runs')"
+
+map_github_conclusion_to_cicd_result() {
+  conclusion="$1"
+  case "$conclusion" in
+    success) echo success;;
+    failure) echo failure;;
+    cancelled) echo cancellation;;
+    skipped) echo skip;;
+    timed_out) echo timeout;;
+    *) echo failure;;
+  esac
+}
 
 link="${GITHUB_SERVER_URL:-https://github.com}"/"$(jq < "$workflow_json" -r .repository.owner.login)"/"$(jq < "$workflow_json" -r .repository.name)"/actions/runs/"$(jq < "$workflow_json" -r .id)"
 workflow_started_at="$(jq < "$workflow_json" -r .run_started_at)"
@@ -149,6 +163,21 @@ otel_observation_attribute_typed "$observation_handle" string github.actions.eve
 otel_observation_attribute_typed "$observation_handle" string github.actions.event.ref.name="$(jq < "$workflow_json" -r .head_branch)"
 otel_counter_observe "$workflow_duration_counter_handle" "$observation_handle"
 
+observation_handle="$(otel_observation_create "$(python3 -c "print(str(max(0, $(date -d "$workflow_ended_at" '+%s.%N') - $(date -d "$workflow_started_at" '+%s.%N'))))")")"
+otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.name="$(jq < "$workflow_json" -r .name)"
+otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.run.state=executing
+otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result="$(map_github_conclusion_to_cicd_result "$(jq < "$workflow_json" -r .conclusion)")"
+otel_observation_attribute_typed "$observation_handle" string github.actions.workflow.id="$(jq < "$workflow_json" -r .workflow_id)"
+otel_observation_attribute_typed "$observation_handle" string github.actions.workflow.name="$(jq < "$workflow_json" -r .name)"
+otel_observation_attribute_typed "$observation_handle" int github.actions.workflow_run.attempt="$(jq < "$workflow_json" .run_attempt)"
+otel_observation_attribute_typed "$observation_handle" string github.actions.workflow_run.conclusion="$(jq < "$workflow_json" -r .conclusion)"
+otel_observation_attribute_typed "$observation_handle" int github.actions.actor.id="$(jq < "$workflow_json" .actor.id)"
+otel_observation_attribute_typed "$observation_handle" string github.actions.actor.name="$(jq < "$workflow_json" -r .actor.login)"
+otel_observation_attribute_typed "$observation_handle" string github.actions.event.name="$(jq < "$workflow_json" -r .event)"
+otel_observation_attribute_typed "$observation_handle" string github.actions.event.ref="/refs/heads/$(jq < "$workflow_json" -r .head_branch)"
+otel_observation_attribute_typed "$observation_handle" string github.actions.event.ref.name="$(jq < "$workflow_json" -r .head_branch)"
+otel_counter_observe "$cicd_pipeline_run_duration_handle" "$observation_handle"
+
 workflow_span_handle="$(otel_span_start @"$workflow_started_at" CONSUMER "$(jq < "$workflow_json" -r .name)")"
 otel_span_attribute_typed "$workflow_span_handle" string github.actions.type=workflow
 otel_span_attribute_typed "$workflow_span_handle" string github.actions.url="$link"/attempts/"$(jq < "$workflow_json" -r .run_attempt)"
@@ -164,6 +193,9 @@ otel_span_attribute_typed "$workflow_span_handle" string github.actions.event.na
 otel_span_attribute_typed "$workflow_span_handle" string github.actions.event.ref="/refs/heads/$(jq < "$workflow_json" -r .head_branch)"
 otel_span_attribute_typed "$workflow_span_handle" string github.actions.event.ref.sha="$(jq < "$workflow_json" -r .head_sha)"
 otel_span_attribute_typed "$workflow_span_handle" string github.actions.event.ref.name="$(jq < "$workflow_json" -r .head_branch)"
+otel_span_attribute_typed "$workflow_span_handle" string cicd.pipeline.name="$(jq < "$workflow_json" -r .name)"
+otel_span_attribute_typed "$workflow_span_handle" string cicd.pipeline.run.state=executing
+otel_span_attribute_typed "$workflow_span_handle" string cicd.pipeline.result="$(map_github_conclusion_to_cicd_result "$(jq < "$workflow_json" -r .conclusion)")"
 if [ "$INPUT_WORKFLOW_RUN_ATTEMPT" -gt 1 ] && gh_artifact_download "$INPUT_WORKFLOW_RUN_ID" "$((INPUT_WORKFLOW_RUN_ATTEMPT - 1))" opentelemetry_workflow_run_"$((INPUT_WORKFLOW_RUN_ATTEMPT - 1))" opentelemetry_workflow_run_prev; then
   otel_link_add "$(otel_link_create "$(cat opentelemetry_workflow_run_prev/traceparent)" "")" "$workflow_span_handle"
 fi
@@ -172,6 +204,15 @@ otel_span_activate "$workflow_span_handle"
 if [ "$(jq < "$workflow_json" .conclusion -r)" = failure ]; then otel_span_error "$workflow_span_handle"; fi
 echo ::notice title=Observability Information::"Trace ID: $(echo "$TRACEPARENT" | cut -d - -f 2), Span ID: $(echo "$TRACEPARENT" | cut -d - -f 3), Trace Deep Link: $(print_trace_link "$workflow_started_at" || echo unavailable), GitHub Workflow Run: $link/attempts/$(jq < "$workflow_json" -r .run_attempt)"
 otel_span_end "$workflow_span_handle" @"$workflow_ended_at"
+
+if [ "$(jq < "$workflow_json" .conclusion -r)" = failure ]; then
+  observation_handle="$(otel_observation_create 1)"
+  otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.name="$(jq < "$workflow_json" -r .name)"
+  otel_observation_attribute_typed "$observation_handle" string error.type=workflow_failure
+  otel_observation_attribute_typed "$observation_handle" string github.actions.workflow.id="$(jq < "$workflow_json" -r .workflow_id)"
+  otel_observation_attribute_typed "$observation_handle" string github.actions.workflow.name="$(jq < "$workflow_json" -r .name)"
+  otel_counter_observe "$cicd_pipeline_run_errors_handle" "$observation_handle"
+fi
 
 jq < "$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .started_at, .completed_at, .name] | @tsv' | while IFS=$'\t' read -r TRACEPARENT job_id job_conclusion job_started_at job_completed_at job_name; do
   if [ "$job_conclusion" = skipped ]; then continue; fi
