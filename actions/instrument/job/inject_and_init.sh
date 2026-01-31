@@ -462,6 +462,9 @@ root4job() {
   otel_span_attribute_typed $span_handle string github.actions.runner.os="$RUNNER_OS"
   otel_span_attribute_typed $span_handle string github.actions.runner.arch="$RUNNER_ARCH"
   otel_span_attribute_typed $span_handle string github.actions.runner.environment="$RUNNER_ENVIRONMENT"
+  otel_span_attribute_typed $span_handle string cicd.pipeline.name="${GITHUB_WORKFLOW}"
+  otel_span_attribute_typed $span_handle string cicd.pipeline.task.name="${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}"
+  otel_span_attribute_typed $span_handle string cicd.pipeline.task.type=job
   otel_span_activate "$span_handle"
   echo "$TRACEPARENT" > "$traceparent_file"
   if [ -n "${GITHUB_JOB_ID:-}" ]; then
