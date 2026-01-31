@@ -16,4 +16,4 @@ jobs:
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
-    container: ghcr.io/plengauer/opentelemetry-github-workflow-instrumentation-runner:v5.42.1
+    container: ghcr.io/plengauer/opentelemetry-github-workflow-instrumentation-runner:v5.42.2
