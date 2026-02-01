@@ -82,85 +82,85 @@ repository_url="${GITHUB_SERVER_URL:-https://github.com}/$GITHUB_REPOSITORY"
 owner_name="$GITHUB_REPOSITORY_OWNER"
 repo_name="$(echo "$GITHUB_REPOSITORY" | cut -d / -f 2)"
 
+event_action="$(jq < "$GITHUB_EVENT_PATH" -r .action)"
+
 case "$GITHUB_EVENT_NAME" in
-  issues|pull_request|pull_request_target)
-    echo "Processing $GITHUB_EVENT_NAME event"
-    
-    if [ "$GITHUB_EVENT_NAME" = issues ]; then
-      if [ "$(jq < "$GITHUB_EVENT_PATH" -r .action)" = opened ]; then
-        observation_handle="$(otel_observation_create 1)"
-        otel_observation_attribute_typed "$observation_handle" string vcs.repository.url.full="$repository_url"
-        otel_observation_attribute_typed "$observation_handle" string vcs.owner.name="$owner_name"
-        otel_observation_attribute_typed "$observation_handle" string vcs.repository.name="$repo_name"
-        otel_observation_attribute_typed "$observation_handle" string vcs.provider.name=github
-        otel_observation_attribute_typed "$observation_handle" string vcs.change.state=open
-        otel_observation_attribute_typed "$observation_handle" string vcs.change.type=issue
-        otel_counter_observe "$vcs_change_count_handle" "$observation_handle"
-      elif [ "$(jq < "$GITHUB_EVENT_PATH" -r .action)" = closed ]; then
-        observation_handle="$(otel_observation_create -1)"
-        otel_observation_attribute_typed "$observation_handle" string vcs.repository.url.full="$repository_url"
-        otel_observation_attribute_typed "$observation_handle" string vcs.owner.name="$owner_name"
-        otel_observation_attribute_typed "$observation_handle" string vcs.repository.name="$repo_name"
-        otel_observation_attribute_typed "$observation_handle" string vcs.provider.name=github
-        otel_observation_attribute_typed "$observation_handle" string vcs.change.state=open
-        otel_observation_attribute_typed "$observation_handle" string vcs.change.type=issue
-        otel_counter_observe "$vcs_change_count_handle" "$observation_handle"
-        
-        observation_handle="$(otel_observation_create 1)"
-        otel_observation_attribute_typed "$observation_handle" string vcs.repository.url.full="$repository_url"
-        otel_observation_attribute_typed "$observation_handle" string vcs.owner.name="$owner_name"
-        otel_observation_attribute_typed "$observation_handle" string vcs.repository.name="$repo_name"
-        otel_observation_attribute_typed "$observation_handle" string vcs.provider.name=github
-        otel_observation_attribute_typed "$observation_handle" string vcs.change.state=closed
-        otel_observation_attribute_typed "$observation_handle" string vcs.change.type=issue
-        otel_counter_observe "$vcs_change_count_handle" "$observation_handle"
-      fi
+  issues)
+    echo "Processing issues event: $event_action"
+    if [ "$event_action" = opened ]; then
+      observation_handle="$(otel_observation_create 1)"
+      otel_observation_attribute_typed "$observation_handle" string vcs.repository.url.full="$repository_url"
+      otel_observation_attribute_typed "$observation_handle" string vcs.owner.name="$owner_name"
+      otel_observation_attribute_typed "$observation_handle" string vcs.repository.name="$repo_name"
+      otel_observation_attribute_typed "$observation_handle" string vcs.provider.name=github
+      otel_observation_attribute_typed "$observation_handle" string vcs.change.state=open
+      otel_observation_attribute_typed "$observation_handle" string vcs.change.type=issue
+      otel_counter_observe "$vcs_change_count_handle" "$observation_handle"
+    elif [ "$event_action" = closed ]; then
+      observation_handle="$(otel_observation_create -1)"
+      otel_observation_attribute_typed "$observation_handle" string vcs.repository.url.full="$repository_url"
+      otel_observation_attribute_typed "$observation_handle" string vcs.owner.name="$owner_name"
+      otel_observation_attribute_typed "$observation_handle" string vcs.repository.name="$repo_name"
+      otel_observation_attribute_typed "$observation_handle" string vcs.provider.name=github
+      otel_observation_attribute_typed "$observation_handle" string vcs.change.state=open
+      otel_observation_attribute_typed "$observation_handle" string vcs.change.type=issue
+      otel_counter_observe "$vcs_change_count_handle" "$observation_handle"
+      
+      observation_handle="$(otel_observation_create 1)"
+      otel_observation_attribute_typed "$observation_handle" string vcs.repository.url.full="$repository_url"
+      otel_observation_attribute_typed "$observation_handle" string vcs.owner.name="$owner_name"
+      otel_observation_attribute_typed "$observation_handle" string vcs.repository.name="$repo_name"
+      otel_observation_attribute_typed "$observation_handle" string vcs.provider.name=github
+      otel_observation_attribute_typed "$observation_handle" string vcs.change.state=closed
+      otel_observation_attribute_typed "$observation_handle" string vcs.change.type=issue
+      otel_counter_observe "$vcs_change_count_handle" "$observation_handle"
     fi
+    ;;
     
-    if [ "$GITHUB_EVENT_NAME" = pull_request ] || [ "$GITHUB_EVENT_NAME" = pull_request_target ]; then
-      if [ "$(jq < "$GITHUB_EVENT_PATH" -r .action)" = opened ]; then
-        observation_handle="$(otel_observation_create 1)"
-        otel_observation_attribute_typed "$observation_handle" string vcs.repository.url.full="$repository_url"
-        otel_observation_attribute_typed "$observation_handle" string vcs.owner.name="$owner_name"
-        otel_observation_attribute_typed "$observation_handle" string vcs.repository.name="$repo_name"
-        otel_observation_attribute_typed "$observation_handle" string vcs.provider.name=github
-        otel_observation_attribute_typed "$observation_handle" string vcs.change.state=open
-        otel_observation_attribute_typed "$observation_handle" string vcs.change.type=pull_request
-        otel_counter_observe "$vcs_change_count_handle" "$observation_handle"
-      elif [ "$(jq < "$GITHUB_EVENT_PATH" -r .action)" = closed ]; then
-        observation_handle="$(otel_observation_create -1)"
-        otel_observation_attribute_typed "$observation_handle" string vcs.repository.url.full="$repository_url"
-        otel_observation_attribute_typed "$observation_handle" string vcs.owner.name="$owner_name"
-        otel_observation_attribute_typed "$observation_handle" string vcs.repository.name="$repo_name"
-        otel_observation_attribute_typed "$observation_handle" string vcs.provider.name=github
-        otel_observation_attribute_typed "$observation_handle" string vcs.change.state=open
-        otel_observation_attribute_typed "$observation_handle" string vcs.change.type=pull_request
-        otel_counter_observe "$vcs_change_count_handle" "$observation_handle"
+  pull_request|pull_request_target)
+    echo "Processing pull request event: $event_action"
+    if [ "$event_action" = opened ]; then
+      observation_handle="$(otel_observation_create 1)"
+      otel_observation_attribute_typed "$observation_handle" string vcs.repository.url.full="$repository_url"
+      otel_observation_attribute_typed "$observation_handle" string vcs.owner.name="$owner_name"
+      otel_observation_attribute_typed "$observation_handle" string vcs.repository.name="$repo_name"
+      otel_observation_attribute_typed "$observation_handle" string vcs.provider.name=github
+      otel_observation_attribute_typed "$observation_handle" string vcs.change.state=open
+      otel_observation_attribute_typed "$observation_handle" string vcs.change.type=pull_request
+      otel_counter_observe "$vcs_change_count_handle" "$observation_handle"
+    elif [ "$event_action" = closed ]; then
+      observation_handle="$(otel_observation_create -1)"
+      otel_observation_attribute_typed "$observation_handle" string vcs.repository.url.full="$repository_url"
+      otel_observation_attribute_typed "$observation_handle" string vcs.owner.name="$owner_name"
+      otel_observation_attribute_typed "$observation_handle" string vcs.repository.name="$repo_name"
+      otel_observation_attribute_typed "$observation_handle" string vcs.provider.name=github
+      otel_observation_attribute_typed "$observation_handle" string vcs.change.state=open
+      otel_observation_attribute_typed "$observation_handle" string vcs.change.type=pull_request
+      otel_counter_observe "$vcs_change_count_handle" "$observation_handle"
+      
+      observation_handle="$(otel_observation_create 1)"
+      otel_observation_attribute_typed "$observation_handle" string vcs.repository.url.full="$repository_url"
+      otel_observation_attribute_typed "$observation_handle" string vcs.owner.name="$owner_name"
+      otel_observation_attribute_typed "$observation_handle" string vcs.repository.name="$repo_name"
+      otel_observation_attribute_typed "$observation_handle" string vcs.provider.name=github
+      otel_observation_attribute_typed "$observation_handle" string vcs.change.state=closed
+      otel_observation_attribute_typed "$observation_handle" string vcs.change.type=pull_request
+      otel_counter_observe "$vcs_change_count_handle" "$observation_handle"
+      
+      if [ "$(jq < "$GITHUB_EVENT_PATH" -r .pull_request.merged)" = true ]; then
+        pr_created_at="$(jq < "$GITHUB_EVENT_PATH" -r .pull_request.created_at)"
+        pr_merged_at="$(jq < "$GITHUB_EVENT_PATH" -r .pull_request.merged_at)"
+        time_to_merge="$(python3 -c "print(str(max(0, $(date -d "$pr_merged_at" '+%s.%N') - $(date -d "$pr_created_at" '+%s.%N'))))")"
         
-        observation_handle="$(otel_observation_create 1)"
+        vcs_change_time_to_merge_handle="$(otel_gauge_create gauge vcs.change.time_to_merge s 'The amount of time since its creation it took a change (pull request/merge request/changelist) to get merged into the target(base) ref')"
+        observation_handle="$(otel_observation_create "$time_to_merge")"
         otel_observation_attribute_typed "$observation_handle" string vcs.repository.url.full="$repository_url"
         otel_observation_attribute_typed "$observation_handle" string vcs.owner.name="$owner_name"
         otel_observation_attribute_typed "$observation_handle" string vcs.repository.name="$repo_name"
         otel_observation_attribute_typed "$observation_handle" string vcs.provider.name=github
-        otel_observation_attribute_typed "$observation_handle" string vcs.change.state=closed
-        otel_observation_attribute_typed "$observation_handle" string vcs.change.type=pull_request
-        otel_counter_observe "$vcs_change_count_handle" "$observation_handle"
-        
-        if [ "$(jq < "$GITHUB_EVENT_PATH" -r .pull_request.merged)" = true ]; then
-          pr_created_at="$(jq < "$GITHUB_EVENT_PATH" -r .pull_request.created_at)"
-          pr_merged_at="$(jq < "$GITHUB_EVENT_PATH" -r .pull_request.merged_at)"
-          time_to_merge="$(python3 -c "print(str(max(0, $(date -d "$pr_merged_at" '+%s.%N') - $(date -d "$pr_created_at" '+%s.%N'))))")"
-          
-          vcs_change_time_to_merge_handle="$(otel_gauge_create gauge vcs.change.time_to_merge s 'The amount of time since its creation it took a change (pull request/merge request/changelist) to get merged into the target(base) ref')"
-          observation_handle="$(otel_observation_create "$time_to_merge")"
-          otel_observation_attribute_typed "$observation_handle" string vcs.repository.url.full="$repository_url"
-          otel_observation_attribute_typed "$observation_handle" string vcs.owner.name="$owner_name"
-          otel_observation_attribute_typed "$observation_handle" string vcs.repository.name="$repo_name"
-          otel_observation_attribute_typed "$observation_handle" string vcs.provider.name=github
-          otel_observation_attribute_typed "$observation_handle" string vcs.ref.head.name="$(jq < "$GITHUB_EVENT_PATH" -r .pull_request.head.ref)"
-          otel_observation_attribute_typed "$observation_handle" string vcs.ref.base.name="$(jq < "$GITHUB_EVENT_PATH" -r .pull_request.base.ref)"
-          otel_gauge_observe "$vcs_change_time_to_merge_handle" "$observation_handle"
-        fi
+        otel_observation_attribute_typed "$observation_handle" string vcs.ref.head.name="$(jq < "$GITHUB_EVENT_PATH" -r .pull_request.head.ref)"
+        otel_observation_attribute_typed "$observation_handle" string vcs.ref.base.name="$(jq < "$GITHUB_EVENT_PATH" -r .pull_request.base.ref)"
+        otel_gauge_observe "$vcs_change_time_to_merge_handle" "$observation_handle"
       fi
     fi
     ;;

@@ -132,10 +132,6 @@ observation_handle="$(otel_observation_create "$(python3 -c "print(str(max(0, $(
 otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.name="$(jq < "$check_suite_json" -r .app.name)"
 otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.run.state=finalizing
 otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result="$(map_github_conclusion_to_cicd_result "$(jq < "$check_suite_json" -r .conclusion)")"
-otel_observation_attribute_typed "$observation_handle" string github.actions.checks.suite.id="$(jq < "$check_suite_json" .id)"
-otel_observation_attribute_typed "$observation_handle" string github.actions.checks.suite.conclusion="$(jq < "$check_suite_json" -r .conclusion)"
-otel_observation_attribute_typed "$observation_handle" string github.actions.checks.app.name="$(jq < "$check_suite_json" -r .app.name)"
-otel_observation_attribute_typed "$observation_handle" string github.actions.checks.app.slug="$(jq < "$check_suite_json" -r .app.slug)"
 otel_counter_observe "$cicd_pipeline_run_duration_handle" "$observation_handle"
 
 check_suite_span_handle="$(otel_span_start @"$check_suite_started_at" CONSUMER "$(jq < "$check_suite_json" -r '.app.name')")"
@@ -147,9 +143,6 @@ otel_span_attribute_typed "$check_suite_span_handle" string github.actions.check
 otel_span_attribute_typed "$check_suite_span_handle" string github.actions.checks.suite.ref.name="$(jq < "$check_suite_json" -r .head_branch)"
 otel_span_attribute_typed "$check_suite_span_handle" string github.actions.checks.app.name="$(jq < "$check_suite_json" -r .app.name)"
 otel_span_attribute_typed "$check_suite_span_handle" string github.actions.checks.app.slug="$(jq < "$check_suite_json" -r .app.slug)"
-otel_span_attribute_typed "$check_suite_span_handle" string cicd.pipeline.name="$(jq < "$check_suite_json" -r .app.name)"
-otel_span_attribute_typed "$check_suite_span_handle" string cicd.pipeline.run.state=finalizing
-otel_span_attribute_typed "$check_suite_span_handle" string cicd.pipeline.result="$(map_github_conclusion_to_cicd_result "$(jq < "$check_suite_json" -r .conclusion)")"
 otel_span_activate "$check_suite_span_handle"
 [ -z "${INPUT_DEBUG}" ] || echo "span checksuite $TRACEPARENT $check_suite_name" >&2
 if [ "$(jq < "$check_suite_json" -r .conclusion)" = failure ]; then otel_span_error "$check_suite_span_handle"; fi

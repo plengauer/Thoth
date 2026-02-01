@@ -167,15 +167,6 @@ observation_handle="$(otel_observation_create "$(python3 -c "print(str(max(0, $(
 otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.name="$(jq < "$workflow_json" -r .name)"
 otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.run.state=finalizing
 otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result="$(map_github_conclusion_to_cicd_result "$(jq < "$workflow_json" -r .conclusion)")"
-otel_observation_attribute_typed "$observation_handle" string github.actions.workflow.id="$(jq < "$workflow_json" -r .workflow_id)"
-otel_observation_attribute_typed "$observation_handle" string github.actions.workflow.name="$(jq < "$workflow_json" -r .name)"
-otel_observation_attribute_typed "$observation_handle" int github.actions.workflow_run.attempt="$(jq < "$workflow_json" .run_attempt)"
-otel_observation_attribute_typed "$observation_handle" string github.actions.workflow_run.conclusion="$(jq < "$workflow_json" -r .conclusion)"
-otel_observation_attribute_typed "$observation_handle" int github.actions.actor.id="$(jq < "$workflow_json" .actor.id)"
-otel_observation_attribute_typed "$observation_handle" string github.actions.actor.name="$(jq < "$workflow_json" -r .actor.login)"
-otel_observation_attribute_typed "$observation_handle" string github.actions.event.name="$(jq < "$workflow_json" -r .event)"
-otel_observation_attribute_typed "$observation_handle" string github.actions.event.ref="/refs/heads/$(jq < "$workflow_json" -r .head_branch)"
-otel_observation_attribute_typed "$observation_handle" string github.actions.event.ref.name="$(jq < "$workflow_json" -r .head_branch)"
 otel_counter_observe "$cicd_pipeline_run_duration_handle" "$observation_handle"
 
 workflow_span_handle="$(otel_span_start @"$workflow_started_at" CONSUMER "$(jq < "$workflow_json" -r .name)")"

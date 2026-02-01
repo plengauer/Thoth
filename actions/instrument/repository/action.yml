@@ -1,9 +1,15 @@
-name: 'OpenTelemetry for GitHub Repository Events'
-description: 'Collect VCS and repository-level metrics from GitHub events'
+name: 'OpenTelemetry Repository'
+description: 'Observe GitHub Repository with OpenTelemetry'
 branding:
   icon: 'activity'
   color: 'blue'
 inputs:
+  github_token:
+    description: 'A GitHub token for API access (read-only)'
+    default: '${{ github.token }}'
+  cache:
+    description: 'Whether to use GitHub Actions Cache to cache dependencies'
+    default: true
   self_monitoring:
     description: 'Submit self-monitoring metrics to the OpenTelemetry project'
     default: auto
@@ -14,13 +20,5 @@ inputs:
     description: 'Enable debug logging'
     default: ${{ runner.debug }}
 runs:
-  using: composite
-  steps:
-    - name: 'Instrument Repository Events'
-      shell: bash
-      working-directory: ${{ github.action_path }}
-      env:
-        INPUT_SELF_MONITORING: ${{ inputs.self_monitoring }}
-        INPUT_SELF_MONITORING_ANONYMIZE: ${{ inputs.self_monitoring_anonymize }}
-        INPUT_DEBUG: ${{ inputs.debug }}
-      run: bash main.sh
+  using: 'node24'
+  main: 'main.js'
