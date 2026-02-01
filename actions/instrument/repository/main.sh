@@ -74,13 +74,78 @@ _otel_resource_attributes_custom() {
 }
 
 otel_init
-vcs_contributor_count_handle="$(otel_counter_create updowncounter vcs.contributor.count '{contributor}' 'The number of contributors in a repository')"
-vcs_change_count_handle="$(otel_counter_create updowncounter vcs.change.count '{change}' 'The number of changes (pull requests/merge requests) by their state')"
-vcs_ref_count_handle="$(otel_counter_create updowncounter vcs.ref.count '{ref}' 'The number of refs of type branch or tag in a repository')"
 
-repository_url="${GITHUB_SERVER_URL:-https://github.com}/$GITHUB_REPOSITORY"
-owner_name="$GITHUB_REPOSITORY_OWNER"
-repo_name="$(echo "$GITHUB_REPOSITORY" | cut -d / -f 2)"
+otel_github_repository_observation_create() {
+  local observation_handle="$(otel_observation_create "$1")"
+  otel_observation_attribute_typed "$observation_handle" string vcs.provider.name=github
+  otel_observation_attribute_typed "$observation_handle" string vcs.owner.name="$GITHUB_REPOSITORY_OWNER"
+  otel_observation_attribute_typed "$observation_handle" string vcs.repository.name="${GITHUB_REPOSITORY#*/}"
+  otel_observation_attribute_typed "$observation_handle" string vcs.repository.url.full="${GITHUB_SERVER_URL:-https://github.com}/$GITHUB_REPOSITORY"
+  echo "$observation_handle"
+}
+
+vcs_repository_count_handle="$(otel_counter_create up_down_counter vcs.change.count '{repository}' 'The number of repositories in an organization')"
+observation_handle="$(otel_observation_create 0)" # TODO shouldnt this be a gauge and report the full count?
+otel_observation_attribute_typed "$observation_handle" string vcs.provider.name=github
+otel_observation_attribute_typed "$observation_handle" string vcs.owner.name="$GITHUB_REPOSITORY_OWNER"
+otel_counter_observe "$vcs_repository_count_handle" "$observation_handle"
+
+vcs_contributor_count_handle="$(otel_counter_create gauge vcs.contributor.count '{contributor}' 'The number of unique contributors to a repository')"
+observation_handle="$(otel_github_repository_observation_create "$(gh_curl_paginated /contributors'&per_page=100' | jq '.[]' | jq -s length)")"
+otel_counter_observe "$vcs_contributor_count_handle" "$observation_handle"
+
+export EVENT="${GITHUB_EVENT_NAME}_$(jq < "$GITHUB_EVENT_PATH" .action -r)"
+
+case "$EVENT" in
+  pull_request_opened|pull_request_reopened|pull_request_closed)
+    vcs_change_count_handle="$(otel_counter_create up_down_counter vcs.change.count '{change}' 'The number of changes (pull requests/merge requests) by their state')"
+    vcs_change_time_to_merge_handle="$(otel_counter_create gauge vcs.change.time_to_merge 's' 'The amount of time since its creation it took a change (pull request/merge request/changelist) to get the first approval.')"
+    if [ "$EVENT" = pull_request_opened ]; then state_now=open; state_prev=null
+    elif [ "$EVENT" = pull_request_closed ] && [ "$(jq < "$GITHUB_EVENT_PATH" .pull_request.merge_commit_sha -r)" != null ]; then state_now=merged; state_prev=open
+    elif [ "$EVENT" = pull_request_closed ] && [ "$(jq < "$GITHUB_EVENT_PATH" .pull_request.merge_commit_sha -r)" = null ]; then state_now=closed; state_prev=open
+    elif [ "$EVENT" = pull_request_reopened ] && [ "$(jq < "$GITHUB_EVENT_PATH" .pull_request.merge_commit_sha -r)" != null ]; then state_now=open; state_prev=merged
+    elif [ "$EVENT" = pull_request_reopened ] && [ "$(jq < "$GITHUB_EVENT_PATH" .pull_request.merge_commit_sha -r)" = null ]; then state_now=open; state_prev=closed
+    fi
+    if [ "$state_prev" != null ]; then
+      observation_handle="$(otel_github_repository_observation_create -1)"
+      otel_observation_attribute_typed "$observation_handle" string vcs.change.state="$state_prev"
+      otel_counter_observe "$vcs_change_count_handle" "$observation_handle"
+    fi
+    observation_handle="$(otel_github_repository_observation_create 1)"
+    otel_observation_attribute_typed "$observation_handle" string vcs.change.state="$state_now"
+    otel_counter_observe "$vcs_change_count_handle" "$observation_handle"
+    if [ "$(jq < "$GITHUB_EVENT_PATH" .pull_request.merge_commit_sha -r)" != null ]; then
+      observation_handle="$(otel_github_repository_observation_create 0)" # TODO
+      otel_observation_attribute_typed "$observation_handle" string vcs.ref.base.name= # TODO
+      otel_observation_attribute_typed "$observation_handle" string vcs.ref.base.revision= # TODO
+      otel_observation_attribute_typed "$observation_handle" string vcs.ref.head.name= # TODO
+      otel_observation_attribute_typed "$observation_handle" string vcs.ref.head.revision= # TODO
+      otel_counter_observe "$vcs_change_time_to_merge_handle" "$observation_handle"
+    fi
+    ;;
+  *) ;;
+esac
+
+
+
+# vcs_change_duration_handle="$(otel_counter_create gauge vcs.change.duration 's' 'The time duration a change (pull request/merge request/changelist) has been in a given state.')"
+# vcs_change_time_to_approval_handle="$(otel_counter_create gauge vcs.change.time_to_approval 's' 'The amount of time since its creation it took a change (pull request/merge request/changelist) to get the first approval.')"
+# vcs_ref_count_handle="$(otel_counter_create up_down_counter vcs.ref.count '{ref}' 'The number of refs of type branch or tag in a repository')"
+# vcs_ref_lines_delta_handle="$(otel_counter_create gauge vcs.ref.lines_delta '{line}' 'The number of lines added/removed in a ref (branch) relative to the base ref')"
+# vcs_ref_lines_delta_handle="$(otel_counter_create gauge vcs.ref.revisions_delta '{revision}' 'The number of revisions ahead/behind in a ref (branch) relative to the base ref')"
+# vcs_ref_time_handle="$(otel_counter_create gauge vcs.ref.time 's' 'Time a ref (branch) created from the default branch (trunk has existed)')"
+
+
+
+
+
+
+
+
+
+
+
+
 
 event_action="$(jq < "$GITHUB_EVENT_PATH" -r .action)"
 
