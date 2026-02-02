@@ -121,18 +121,6 @@ job_duration_counter_handle="$(otel_counter_create counter github.actions.jobs.d
 step_duration_counter_handle="$(otel_counter_create counter github.actions.steps.duration s 'Duration of step runs')"
 action_duration_counter_handle="$(otel_counter_create counter github.actions.actions.duration s 'Duration of action runs')"
 
-map_github_conclusion_to_cicd_result() {
-  conclusion="$1"
-  case "$conclusion" in
-    success) echo success;;
-    failure) echo failure;;
-    cancelled) echo cancellation;;
-    skipped) echo skip;;
-    timed_out) echo timeout;;
-    *) echo failure;;
-  esac
-}
-
 link="${GITHUB_SERVER_URL:-https://github.com}"/"$(jq < "$workflow_json" -r .repository.owner.login)"/"$(jq < "$workflow_json" -r .repository.name)"/actions/runs/"$(jq < "$workflow_json" -r .id)"
 workflow_started_at="$(jq < "$workflow_json" -r .run_started_at)"
 workflow_ended_at="$(jq < "$jobs_json" -r .completed_at | sort -r | head -n 1)"
