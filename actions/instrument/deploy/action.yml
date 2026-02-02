@@ -280,17 +280,13 @@ runs:
         echo '
         name: OpenTelemetry
         on:
-          issues:
-            types:
-              - opened
-              - closed
           pull_request:
-            types:
-              - opened
-              - closed
-          schedule:
-            - cron: '"'"'0 0 * * *'"'"'
-          workflow_dispatch:
+            types: [ opened, reopened, closed ]
+          pull_request_review:
+            types: [ submitted ]
+          create:
+          delete:
+          push:
         jobs:
           collect:
             runs-on: ubuntu-latest
