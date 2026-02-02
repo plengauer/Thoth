@@ -7,6 +7,9 @@ inputs:
   github_token:
     description: 'A GitHub token for API access (read-only)'
     default: '${{ github.token }}'
+  repository:
+    description: 'The repository of the check suite'
+    default: ${{ github.repository }}
   workflow_run_id:
     description: 'The workflow run to observe (id)'
     default: ${{ github.event.workflow_run.id }}
