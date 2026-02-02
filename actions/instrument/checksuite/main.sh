@@ -92,11 +92,6 @@ check_suite_duration_counter_handle="$(otel_counter_create counter github.checks
 check_run_counter_handle="$(otel_counter_create counter github.checks.runs 1 'Number of check runs')"
 check_run_duration_counter_handle="$(otel_counter_create counter github.checks.runs.duration s 'Duration of check runs')"
 
-map_github_conclusion_to_cicd_result() {
-  conclusion="$1"
-
-}
-
 link="${GITHUB_SERVER_URL:-https://github.com}"/"$GITHUB_REPOSITORY"/runs
 check_suite_started_at="$(jq < "$check_runs_json" -r .started_at | sort | head -n 1)"
 check_suite_ended_at="$(jq < "$check_runs_json" -r .completed_at | sort -r | head -n 1)"
