@@ -175,15 +175,6 @@ if [ "$(jq < "$workflow_json" .conclusion -r)" = failure ]; then otel_span_error
 echo ::notice title=Observability Information::"Trace ID: $(echo "$TRACEPARENT" | cut -d - -f 2), Span ID: $(echo "$TRACEPARENT" | cut -d - -f 3), Trace Deep Link: $(print_trace_link "$workflow_started_at" || echo unavailable), GitHub Workflow Run: $link/attempts/$(jq < "$workflow_json" -r .run_attempt)"
 otel_span_end "$workflow_span_handle" @"$workflow_ended_at"
 
-if [ "$(jq < "$workflow_json" .conclusion -r)" = failure ]; then
-  observation_handle="$(otel_observation_create 1)"
-  otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.name="$(jq < "$workflow_json" -r .name)"
-  otel_observation_attribute_typed "$observation_handle" string error.type=workflow_failure
-  otel_observation_attribute_typed "$observation_handle" string github.actions.workflow.id="$(jq < "$workflow_json" -r .workflow_id)"
-  otel_observation_attribute_typed "$observation_handle" string github.actions.workflow.name="$(jq < "$workflow_json" -r .name)"
-  otel_counter_observe "$cicd_pipeline_run_errors_handle" "$observation_handle"
-fi
-
 jq < "$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .started_at, .completed_at, .name] | @tsv' | while IFS=$'\t' read -r TRACEPARENT job_id job_conclusion job_started_at job_completed_at job_name; do
   if [ "$job_conclusion" = skipped ]; then continue; fi
   if jq < "$artifacts_json" -r .name | grep -qE '^opentelemetry_job_'"$job_id"'_signals_.*$'; then
