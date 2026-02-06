@@ -214,6 +214,7 @@ jq < "$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .s
   case "$job_conclusion" in
     neutral) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result=success;;
     skipped) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result=skip;;
+    cancelled) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result=cancellation;;
     timed_out) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result=timeout;;
     *) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result="$job_conclusion";;
   esac
@@ -265,20 +266,14 @@ jq < "$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .s
   [ -z "${INPUT_DEBUG}" ] || echo "span job $TRACEPARENT $job_name" >&2
   jq < "$jobs_json" -r --unbuffered '. | select(.id == '"$job_id"') | .steps[] | ["'"$TRACEPARENT"'", "'"$job_id"'", .number, .conclusion, if .started_at == null or .started_at == "" then "null" else .started_at end, if .completed_at == null or .completed_at == "" then "null" else .completed_at end, .name] | @tsv'
   otel_span_deactivate "$job_span_handle"
-  if [ "$job_conclusion" = failure ]; then
-    otel_span_attribute_typed "$job_span_handle" string cicd.pipeline.result=failure
-    otel_span_error "$job_span_handle"
-  elif [ "$job_conclusion" = cancelled ]; then
-    otel_span_attribute_typed "$job_span_handle" string cicd.pipeline.result=cancellation
-  elif [ "$job_conclusion" = neutral ]; then
-    otel_span_attribute_typed "$job_span_handle" string cicd.pipeline.result=success
-  elif [ "$job_conclusion" = timed_out ]; then
-    otel_span_attribute_typed "$job_span_handle" string cicd.pipeline.result=timeout
-  elif [ "$job_conclusion" = skipped ]; then
-    otel_span_attribute_typed "$job_span_handle" string cicd.pipeline.result=skip
-  else
-    otel_span_attribute_typed "$job_span_handle" string cicd.pipeline.result="$job_conclusion"
-  fi
+  case "$job_conclusion" in
+    failure) otel_span_attribute_typed "$job_span_handle" string cicd.pipeline.result=failure; otel_span_error "$job_span_handle";;
+    neutral) otel_span_attribute_typed "$job_span_handle" string cicd.pipeline.result=success;;
+    cancelled) otel_span_attribute_typed "$job_span_handle" string cicd.pipeline.result=cancellation;;
+    timed_out) otel_span_attribute_typed "$job_span_handle" string cicd.pipeline.result=timeout;;
+    skipped) otel_span_attribute_typed "$job_span_handle" string cicd.pipeline.result=skip;;
+    *) otel_span_attribute_typed "$job_span_handle" string cicd.pipeline.result="$job_conclusion";;
+  esac
   otel_span_end "$job_span_handle" @"$job_completed_at"
 
 done | while IFS=$'\t' read -r TRACEPARENT job_id step_number step_conclusion step_started_at step_completed_at step_name; do
@@ -424,20 +419,14 @@ done | while IFS=$'\t' read -r TRACEPARENT job_id step_number step_conclusion st
   done
   [ -z "${INPUT_DEBUG}" ] || echo "span step $TRACEPARENT $step_name" >&2
   otel_span_deactivate "$step_span_handle"
-  if [ "$step_conclusion" = failure ]; then
-    otel_span_attribute_typed "$step_span_handle" string cicd.pipeline.task.run.result=failure
-    otel_span_error "$step_span_handle"
-  elif [ "$step_conclusion" = cancelled ]; then
-    otel_span_attribute_typed "$step_span_handle" string cicd.pipeline.task.run.result=cancellation
-  elif [ "$step_conclusion" = neutral ]; then
-    otel_span_attribute_typed "$step_span_handle" string cicd.pipeline.task.run.result=success
-  elif [ "$step_conclusion" = timed_out ]; then
-    otel_span_attribute_typed "$step_span_handle" string cicd.pipeline.task.run.result=timeout
-  elif [ "$step_conclusion" = skipped ]; then
-    otel_span_attribute_typed "$step_span_handle" string cicd.pipeline.task.run.result=skip
-  else
-    otel_span_attribute_typed "$step_span_handle" string cicd.pipeline.task.run.result="$step_conclusion"
-  fi
+  case "$step_conclusion" in
+    failure) otel_span_attribute_typed "$step_span_handle" string cicd.pipeline.task.run.result=failure; otel_span_error "$step_span_handle";;
+    neutral) otel_span_attribute_typed "$step_span_handle" string cicd.pipeline.task.run.result=success;;
+    cancelled) otel_span_attribute_typed "$step_span_handle" string cicd.pipeline.task.run.result=cancellation;;
+    timed_out) otel_span_attribute_typed "$step_span_handle" string cicd.pipeline.task.run.result=timeout;;
+    skipped) otel_span_attribute_typed "$step_span_handle" string cicd.pipeline.task.run.result=skip;;
+    *) otel_span_attribute_typed "$step_span_handle" string cicd.pipeline.task.run.result="$step_conclusion";;
+  esac
   otel_span_end "$step_span_handle" @"$step_completed_at"
   echo "$step_completed_at" > "$times_dir"/"$TRACEPARENT"
 
