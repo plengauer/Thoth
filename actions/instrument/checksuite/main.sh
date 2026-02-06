@@ -97,19 +97,6 @@ link="${GITHUB_SERVER_URL:-https://github.com}"/"$GITHUB_REPOSITORY"/runs
 check_suite_started_at="$(jq < "$check_runs_json" -r .started_at | sort | head -n 1)"
 check_suite_ended_at="$(jq < "$check_runs_json" -r .completed_at | sort -r | head -n 1)"
 
-observation_handle="$(otel_observation_create "$(python3 -c "print(str(max(0, $(date -d "$check_suite_ended_at" '+%s.%N') - $(date -d "$check_suite_started_at" '+%s.%N'))))")")"
-otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.name="$(jq < "$check_suite_json" -r .app.name)"
-otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.run.state=executing
-case "$(jq < "$check_suite_json" -r .conclusion)" in
-  success) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result=success;;
-  failure) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result=failure;;
-  cancelled) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result=timeout;; # this could be timeout or cancelled, and there is no cancelled
-  skipped) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result=skipped;;
-  timeout) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result=timeout;;
-  *) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result=failure;;
-esac
-otel_counter_observe "$cicd_pipeline_run_duration_handle" "$observation_handle"
-
 observation_handle="$(otel_observation_create 1)"
 otel_observation_attribute_typed "$observation_handle" string github.actions.checks.suite.id="$(jq < "$check_suite_json" .id)"
 otel_observation_attribute_typed "$observation_handle" string github.actions.checks.suite.conclusion="$(jq < "$check_suite_json" -r .conclusion)"
@@ -149,6 +136,24 @@ jq < "$check_runs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusi
   if [ "$check_run_started_at" = null ] || [ -z "$check_run_started_at" ]; then continue; fi
   if [ "$check_run_completed_at" = null ] || [ -z "$check_run_completed_at" ]; then check_run_completed_at="$check_run_started_at"; fi
 
+  observation_handle="$(otel_observation_create "$(python3 -c "print(str(max(0, $(date -d "$check_run_completed_at" '+%s.%N') - $(date -d "$check_run_started_at" '+%s.%N'))))")")"
+  otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.name="$check_run_name)"
+  otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.run.state=executing
+  case "$check_run_conclusion" in
+    neutral) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result=success;;
+    skipped) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result=skip;;
+    cancelled) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result=cancellation;;
+    timed_out) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result=timeout;;
+    *) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result="$check_run_conclusion";;
+  esac
+  otel_counter_observe "$cicd_pipeline_run_duration_handle" "$observation_handle"
+
+  if [ "$job_conclusion" = failure ]; then
+    observation_handle="$(otel_observation_create 1)"
+    otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.name="$job_name)"
+    otel_counter_observe "$cicd_pipeline_run_errors_handle" "$observation_handle"
+  fi
+
   observation_handle="$(otel_observation_create 1)"
   otel_observation_attribute_typed "$observation_handle" string github.actions.checks.run.name="$check_run_name"
   otel_observation_attribute_typed "$observation_handle" string github.actions.checks.run.conclusion="$check_run_conclusion"
@@ -162,7 +167,10 @@ jq < "$check_runs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusi
   otel_counter_observe "$check_run_duration_counter_handle" "$observation_handle"
 
   check_run_span_handle="$(otel_span_start @"$check_run_started_at" SERVER "$check_run_name")"
+  otel_span_attribute_typed "$job_span_handle" string cicd.pipeline.run_id="$check_run_id"
+  otel_span_attribute_typed "$job_span_handle" string cicd.pipeline.name="$check_run_name"
   otel_span_attribute_typed "$job_span_handle" string cicd.pipeline.action.name=RUN
+  otel_span_attribute_typed "$job_span_handle" string cicd.pipeline.run.url.full="$link"/"$check_run_id"
   otel_span_attribute_typed "$check_run_span_handle" string github.actions.type=check
   otel_span_attribute_typed "$check_run_span_handle" string github.actions.url.full="$link"/"$check_run_id"
   otel_span_attribute_typed "$check_run_span_handle" int github.actions.checks.run.id="$check_run_id"
@@ -170,20 +178,14 @@ jq < "$check_runs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusi
   otel_span_attribute_typed "$check_run_span_handle" string github.actions.conclusion="$check_run_conclusion"
   otel_span_attribute_typed "$check_run_span_handle" string github.actions.checks.app.slug="$app_slug"
   [ -z "${INPUT_DEBUG}" ] || echo "span check $TRACEPARENT $check_run_name" >&2
-  if [ "$check_run_conclusion" = failure ]; then
-    otel_span_attribute_typed "$check_run_span_handle" string cicd.pipeline.result=failure
-    otel_span_error "$check_run_span_handle"
-  elif [ "$check_run_conclusion" = cancelled ]; then
-    otel_span_attribute_typed "$check_run_span_handle" string cicd.pipeline.result=cancellation
-  elif [ "$check_run_conclusion" = neutral ]; then
-    otel_span_attribute_typed "$check_run_span_handle" string cicd.pipeline.result=success
-  elif [ "$check_run_conclusion" = timed_out ]; then
-    otel_span_attribute_typed "$check_run_span_handle" string cicd.pipeline.result=timeout
-  elif [ "$check_run_conclusion" = skipped ]; then
-    otel_span_attribute_typed "$check_run_span_handle" string cicd.pipeline.result=skip
-  else
-    otel_span_attribute_typed "$check_run_span_handle" string cicd.pipeline.result="$check_run_conclusion"
-  fi
+  case "$check_run_conclusion" in
+    failure) otel_span_attribute_typed "$check_run_span_handle" string cicd.pipeline.result=failure; otel_span_error "$check_run_span_handle";;
+    neutral) otel_span_attribute_typed "$check_run_span_handle" string cicd.pipeline.result=success;;
+    cancelled) otel_span_attribute_typed "$check_run_span_handle" string cicd.pipeline.result=cancellation;;
+    timed_out) otel_span_attribute_typed "$check_run_span_handle" string cicd.pipeline.result=timeout;;
+    skipped) otel_span_attribute_typed "$check_run_span_handle" string cicd.pipeline.result=skip;;
+    *) otel_span_attribute_typed "$check_run_span_handle" string cicd.pipeline.result="$check_run_conclusion";;
+  esac
   otel_span_end "$check_run_span_handle" @"$check_run_completed_at"
 done
 
