@@ -221,10 +221,6 @@ runs:
       shell: bash
       run: |
         path="${{ inputs.workflows_directory }}/${{ inputs.check_suite_instrumentation_file_name }}"
-        if [ -r "$path" ]; then
-          echo "Check suite instrumentation already exists at $path"
-          exit 0
-        fi
         echo '
         name: OpenTelemetry
         on:
@@ -273,10 +269,6 @@ runs:
       shell: bash
       run: |
         path="${{ inputs.workflows_directory }}/${{ inputs.repository_level_instrumentation_file_name }}"
-        if [ -r "$path" ]; then
-          echo "Repository instrumentation already exists at $path"
-          exit 0
-        fi
         echo '
         name: OpenTelemetry
         on:
