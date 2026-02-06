@@ -149,9 +149,9 @@ case "$EVENT" in
     observation_handle="$(otel_github_repository_observation_create -1)"
     otel_counter_observe "$vcs_ref_count_handle" "$observation_handle"
     ;;
-  push_null)
-    vcs_ref_lines_delta_handle="$(otel_counter_create gauge vcs.ref.lines_delta '{line}' 'The number of lines added/removed in a ref (branch) relative to the base ref')" # TODO
-    vcs_ref_revisions_delta_handle="$(otel_counter_create gauge vcs.ref.revisions_delta '{revision}' 'The number of revisions ahead/behind in a ref (branch) relative to the base ref')" # TODO
+  # push_null)
+    # vcs_ref_lines_delta_handle="$(otel_counter_create gauge vcs.ref.lines_delta '{line}' 'The number of lines added/removed in a ref (branch) relative to the base ref')" # TODO
+    # vcs_ref_revisions_delta_handle="$(otel_counter_create gauge vcs.ref.revisions_delta '{revision}' 'The number of revisions ahead/behind in a ref (branch) relative to the base ref')" # TODO
     # vcs_ref_time_handle="$(otel_counter_create gauge vcs.ref.time 's' 'Time a ref (branch) created from the default branch (trunk) has existed')" # lets intentionally not record this metric, its stupid.
   *) ;;
 esac
