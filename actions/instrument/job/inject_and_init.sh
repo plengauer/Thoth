@@ -345,7 +345,11 @@ root4job_end() {
     observation_handle="$(otel_observation_create 1)"
     otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.name="${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}"
     otel_counter_observe "$cicd_pipeline_run_errors_handle" "$observation_handle"
-  fi  
+  fi
+  observation_handle="$(otel_observation_create -1)"
+  otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.name="${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}"
+  otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.run.state=executing
+  otel_counter_observe "$cicd_pipeline_run_active_handle" "$observation_handle"
   local counter_handle="$(otel_counter_create counter github.actions.jobs 1 'Number of job runs')"
   local observation_handle="$(otel_observation_create 1)"
   otel_observation_attribute_typed "$observation_handle" string github.actions.workflow.name="$GITHUB_WORKFLOW"
@@ -370,6 +374,12 @@ root4job_end() {
   otel_observation_attribute_typed "$observation_handle" string github.actions.job.name="${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}"
   otel_observation_attribute_typed "$observation_handle" string github.actions.job.conclusion="$conclusion"
   otel_counter_observe "$counter_handle" "$observation_handle"
+  observation_handle="$(otel_observation_create -1)"
+  otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.worker.state=busy
+  otel_counter_observe "$cicd_worker_count_handle" "$observation_handle"
+  observation_handle="$(otel_observation_create 1)"
+  otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.worker.state=available
+  otel_counter_observe "$cicd_worker_count_handle" "$observation_handle"
   otel_shutdown
 
   if ([ "$INPUT_SELF_MONITORING" = true ] || ([ "$INPUT_SELF_MONITORING" = auto ] && [ "$GITHUB_API_URL" = 'https://api.github.com' ])); then
@@ -474,6 +484,18 @@ root4job() {
   otel_init
   touch /tmp/opentelemetry_shell.github.observe_rate_limits
   observe_rate_limit &> /dev/null &
+  cicd_worker_count_handle="$(otel_counter_create up_down_counter cicd.worker.count '{worker}' 'The number of workers of the CICD system by state')"
+  observation_handle="$(otel_observation_create -1)"
+  otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.worker.state=available
+  otel_counter_observe "$cicd_worker_count_handle" "$observation_handle"
+  observation_handle="$(otel_observation_create 1)"
+  otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.worker.state=busy
+  otel_counter_observe "$cicd_worker_count_handle" "$observation_handle"
+  cicd_pipeline_run_active_handle="$(otel_counter_create up_down_counter cicd.pipeline.run.active '{run}' 'The number of pipeline runs currently active in the system by state')"
+  observation_handle="$(otel_observation_create 1)"
+  otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.name="${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}"
+  otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.run.state=executing
+  otel_counter_observe "$cicd_pipeline_run_active_handle" "$observation_handle"
   time_start="$(date +%s.%N)"
   span_handle="$(otel_span_start SERVER "${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}")"
   otel_span_attribute_typed "$span_handle" string cicd.pipeline.run_id="${GITHUB_JOB_ID:-}"
