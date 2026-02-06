@@ -209,7 +209,7 @@ jq < "$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .s
   if [ -n "$last_log_timestamp" ] && [ "$last_log_timestamp" '>' "$job_completed_at" ]; then job_completed_at="$last_log_timestamp"; fi
 
   observation_handle="$(otel_observation_create "$(python3 -c "print(str(max(0, $(date -d "$job_completed_at" '+%s.%N') - $(date -d "$job_started_at" '+%s.%N'))))")")"
-  otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.name="$job_name)"
+  otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.name="$job_name"
   otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.run.state=executing
   case "$job_conclusion" in
     neutral) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result=success;;
@@ -222,7 +222,7 @@ jq < "$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .s
 
   if [ "$job_conclusion" = failure ]; then
     observation_handle="$(otel_observation_create 1)"
-    otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.name="$job_name)"
+    otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.name="$job_name"
     otel_counter_observe "$cicd_pipeline_run_errors_handle" "$observation_handle"
   fi
 
