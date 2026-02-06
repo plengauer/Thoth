@@ -142,7 +142,9 @@ case "${OTEL_TRACES_EXPORTER:-otlp}" in
   none) collector_traces_exporter=nop;;
   *) echo ::error::Unsupported traces exporter: "${OTEL_TRACES_EXPORTER:-otlp}" && exit 1;;
 esac
-( set +x && echo "$INPUT_SECRETS_TO_REDACT" | jq -r '. | to_entries[].value' | sed 's/[.[\(*^$+?{|]/\\\\&/g' | xargs -I '{}' echo '::add-mask::{}' ) && mask_patterns="$(echo "$INPUT_SECRETS_TO_REDACT" | jq -r '. | to_entries[].value' | grep -v '^$' | sed 's/[.[\(*^$+?{|]/\\\\&/g')"
+( set +x && printf '%s' "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_LOGS_HEADERS","$OTEL_EXPORTER_OTLP_METRICS_HEADERS","$OTEL_EXPORTER_OTLP_TRACES_HEADERS" | tr ',' '\n' | ( grep -v '^$' || true ) | cut -d = -f 2- | xargs -d '\n' -I '{}' echo '::add-mask::{}' >&2 )
+( set +x && printf '%s' "$INPUT_SECRETS_TO_REDACT" | jq -r '. | to_entries[].value' | sed 's/[.[\(*^$+?{|]/\\\\&/g' | ( grep -v '^$' || true ) | xargs -d '\n' -I '{}' echo '::add-mask::{}' >&2 )
+mask_patterns="$(printf '%s' "$INPUT_SECRETS_TO_REDACT" | jq -r '. | to_entries[].value' | sed 's/[.[\(*^$+?{|]/\\\\&/g' | ( grep -v '^$' || true ) | sed 's/"/\\"/g')"
 cat > collector.yml <<EOF
 receivers:
   otlp:
