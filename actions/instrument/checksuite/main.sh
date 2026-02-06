@@ -137,7 +137,7 @@ jq < "$check_runs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusi
   if [ "$check_run_completed_at" = null ] || [ -z "$check_run_completed_at" ]; then check_run_completed_at="$check_run_started_at"; fi
 
   observation_handle="$(otel_observation_create "$(python3 -c "print(str(max(0, $(date -d "$check_run_completed_at" '+%s.%N') - $(date -d "$check_run_started_at" '+%s.%N'))))")")"
-  otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.name="$check_run_name)"
+  otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.name="$check_run_name"
   otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.run.state=executing
   case "$check_run_conclusion" in
     neutral) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result=success;;
@@ -150,7 +150,7 @@ jq < "$check_runs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusi
 
   if [ "$check_run_conclusion" = failure ]; then
     observation_handle="$(otel_observation_create 1)"
-    otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.name="$check_run_name)"
+    otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.name="$check_run_name"
     otel_counter_observe "$cicd_pipeline_run_errors_handle" "$observation_handle"
   fi
 
