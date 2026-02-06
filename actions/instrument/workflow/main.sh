@@ -166,7 +166,7 @@ otel_counter_observe "$workflow_duration_counter_handle" "$observation_handle"
 
 workflow_span_handle="$(otel_span_start @"$workflow_started_at" CONSUMER "$(jq < "$workflow_json" -r .name)")"
 otel_span_attribute_typed "$workflow_span_handle" string github.actions.type=workflow
-otel_span_attribute_typed "$workflow_span_handle" string github.actions.url="$link"/attempts/"$(jq < "$workflow_json" -r .run_attempt)"
+otel_span_attribute_typed "$workflow_span_handle" string github.actions.url.full="$link"/attempts/"$(jq < "$workflow_json" -r .run_attempt)"
 otel_span_attribute_typed "$workflow_span_handle" string github.actions.workflow.id="$(jq < "$workflow_json" -r .workflow_id)"
 otel_span_attribute_typed "$workflow_span_handle" string github.actions.workflow.name="$(jq < "$workflow_json" -r .name)"
 otel_span_attribute_typed "$workflow_span_handle" int github.actions.workflow_run.id="$(jq < "$workflow_json" .id)"
@@ -259,9 +259,10 @@ jq < "$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .s
   otel_observation_attribute_typed "$observation_handle" string github.actions.job.conclusion="$job_conclusion"
   otel_counter_observe "$job_duration_counter_handle" "$observation_handle"
 
-  job_span_handle="$(otel_span_start @"$job_started_at" CONSUMER "$job_name")"
+  job_span_handle="$(otel_span_start @"$job_started_at" SERVER "$job_name")"
+  otel_span_attribute_typed "$job_span_handle" string cicd.pipeline.action.name=RUN
   otel_span_attribute_typed "$job_span_handle" string github.actions.type=job
-  otel_span_attribute_typed "$job_span_handle" string github.actions.url="$link"/job/"$job_id"
+  otel_span_attribute_typed "$job_span_handle" string github.actions.url.full="$link"/job/"$job_id"
   otel_span_attribute_typed "$job_span_handle" int github.actions.job.id="$job_id"
   otel_span_attribute_typed "$job_span_handle" string github.actions.job.name="$job_name"
   otel_span_attribute_typed "$job_span_handle" string github.actions.conclusion="$job_conclusion"
@@ -269,7 +270,20 @@ jq < "$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .s
   [ -z "${INPUT_DEBUG}" ] || echo "span job $TRACEPARENT $job_name" >&2
   jq < "$jobs_json" -r --unbuffered '. | select(.id == '"$job_id"') | .steps[] | ["'"$TRACEPARENT"'", "'"$job_id"'", .number, .conclusion, if .started_at == null or .started_at == "" then "null" else .started_at end, if .completed_at == null or .completed_at == "" then "null" else .completed_at end, .name] | @tsv'
   otel_span_deactivate "$job_span_handle"
-  if [ "$job_conclusion" = failure ]; then otel_span_error "$job_span_handle"; fi
+  if [ "$job_conclusion" = failure ]; then
+    otel_span_attribute_typed "$job_span_handle" string cicd.pipeline.result=failure
+    otel_span_error "$job_span_handle"
+  elif [ "$job_conclusion" = cancelled ]; then
+    otel_span_attribute_typed "$job_span_handle" string cicd.pipeline.result=cancellation
+  elif [ "$job_conclusion" = neutral ]; then
+    otel_span_attribute_typed "$job_span_handle" string cicd.pipeline.result=success
+  elif [ "$job_conclusion" = timed_out ]; then
+    otel_span_attribute_typed "$job_span_handle" string cicd.pipeline.result=timeout
+  elif [ "$job_conclusion" = skipped ]; then
+    otel_span_attribute_typed "$job_span_handle" string cicd.pipeline.result=skip
+  else
+    otel_span_attribute_typed "$job_span_handle" string cicd.pipeline.result="$job_conclusion"
+  fi
   otel_span_end "$job_span_handle" @"$job_completed_at"
 
 done | while IFS=$'\t' read -r TRACEPARENT job_id step_number step_conclusion step_started_at step_completed_at step_name; do
@@ -367,8 +381,11 @@ done | while IFS=$'\t' read -r TRACEPARENT job_id step_number step_conclusion st
   fi
 
   step_span_handle="$(otel_span_start @"$step_started_at" INTERNAL "$step_name")"
+  otel_span_attribute_typed "$step_span_handle" string cicd.pipeline.task.id="$step_number"
+  otel_span_attribute_typed "$step_span_handle" string cicd.pipeline.task.name="$step_name"
+  otel_span_attribute_typed "$step_span_handle" string cicd.pipeline.task.url.full="$link"/job/"$job_id"'#'step:"$step_number":1
   otel_span_attribute_typed "$step_span_handle" string github.actions.type=step
-  otel_span_attribute_typed "$step_span_handle" string github.actions.url="$link"/job/"$job_id"'#'step:"$step_number":1
+  otel_span_attribute_typed "$step_span_handle" string github.actions.url.full="$link"/job/"$job_id"'#'step:"$step_number":1
   otel_span_attribute_typed "$step_span_handle" string github.actions.step.name="$step_name"
   otel_span_attribute_typed "$step_span_handle" string github.actions.action.name="${action_name:-}"
   otel_span_attribute_typed "$step_span_handle" string github.actions.action.ref="${action_tag:-}"
@@ -412,7 +429,20 @@ done | while IFS=$'\t' read -r TRACEPARENT job_id step_number step_conclusion st
   done
   [ -z "${INPUT_DEBUG}" ] || echo "span step $TRACEPARENT $step_name" >&2
   otel_span_deactivate "$step_span_handle"
-  if [ "$step_conclusion" = failure ]; then otel_span_error "$step_span_handle"; fi
+  if [ "$step_conclusion" = failure ]; then
+    otel_span_attribute_typed "$step_span_handle" string cicd.pipeline.task.run.result=failure
+    otel_span_error "$step_span_handle"
+  elif [ "$step_conclusion" = cancelled ]; then
+    otel_span_attribute_typed "$step_span_handle" string cicd.pipeline.task.run.result=cancellation
+  elif [ "$step_conclusion" = neutral ]; then
+    otel_span_attribute_typed "$step_span_handle" string cicd.pipeline.task.run.result=success
+  elif [ "$step_conclusion" = timed_out ]; then
+    otel_span_attribute_typed "$step_span_handle" string cicd.pipeline.task.run.result=timeout
+  elif [ "$step_conclusion" = skipped ]; then
+    otel_span_attribute_typed "$step_span_handle" string cicd.pipeline.task.run.result=skip
+  else
+    otel_span_attribute_typed "$step_span_handle" string cicd.pipeline.task.run.result="$step_conclusion"
+  fi
   otel_span_end "$step_span_handle" @"$step_completed_at"
   echo "$step_completed_at" > "$times_dir"/"$TRACEPARENT"
 
