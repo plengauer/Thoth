@@ -148,9 +148,9 @@ jq < "$check_runs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusi
   esac
   otel_counter_observe "$cicd_pipeline_run_duration_handle" "$observation_handle"
 
-  if [ "$job_conclusion" = failure ]; then
+  if [ "$check_run_conclusion" = failure ]; then
     observation_handle="$(otel_observation_create 1)"
-    otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.name="$job_name)"
+    otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.name="$check_run_name)"
     otel_counter_observe "$cicd_pipeline_run_errors_handle" "$observation_handle"
   fi
 
