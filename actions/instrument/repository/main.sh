@@ -100,8 +100,8 @@ export EVENT="${GITHUB_EVENT_NAME}_$(jq < "$GITHUB_EVENT_PATH" .action -r)"
 case "$EVENT" in
   pull_request_opened|pull_request_reopened|pull_request_closed)
     vcs_change_count_handle="$(otel_counter_create up_down_counter vcs.change.count '{change}' 'The number of changes (pull requests/merge requests) by their state')"
-    vcs_change_duration_handle="$(otel_counter_create gauge vcs.change.duration 's' 'The time duration a change (pull request/merge request/changelist) has been in a given state.')"
-    vcs_change_time_to_merge_handle="$(otel_counter_create gauge vcs.change.time_to_merge 's' 'The amount of time since its creation it took a change (pull request/merge request/changelist) to get the first approval.')"
+    vcs_change_duration_handle="$(otel_counter_create gauge vcs.change.duration 's' 'The time duration a change (pull request/merge_request/changelist) has been in a given state.')"
+    vcs_change_time_to_merge_handle="$(otel_counter_create gauge vcs.change.time_to_merge 's' 'The amount of time from creation until merge for a change (pull request/merge request/changelist).')"
     if [ "$EVENT" = pull_request_opened ]; then state_now=open; state_prev=null
     elif [ "$EVENT" = pull_request_closed ] && [ "$(jq < "$GITHUB_EVENT_PATH" .pull_request.merge_commit_sha -r)" != null ]; then state_now=merged; state_prev=open
     elif [ "$EVENT" = pull_request_closed ] && [ "$(jq < "$GITHUB_EVENT_PATH" .pull_request.merge_commit_sha -r)" = null ]; then state_now=closed; state_prev=open
