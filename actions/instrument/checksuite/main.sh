@@ -167,10 +167,10 @@ jq < "$check_runs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusi
   otel_counter_observe "$check_run_duration_counter_handle" "$observation_handle"
 
   check_run_span_handle="$(otel_span_start @"$check_run_started_at" SERVER "$check_run_name")"
-  otel_span_attribute_typed "$job_span_handle" string cicd.pipeline.run_id="$check_run_id"
-  otel_span_attribute_typed "$job_span_handle" string cicd.pipeline.name="$check_run_name"
-  otel_span_attribute_typed "$job_span_handle" string cicd.pipeline.action.name=RUN
-  otel_span_attribute_typed "$job_span_handle" string cicd.pipeline.run.url.full="$link"/"$check_run_id"
+  otel_span_attribute_typed "$check_run_span_handle" string cicd.pipeline.run_id="$check_run_id"
+  otel_span_attribute_typed "$check_run_span_handle" string cicd.pipeline.name="$check_run_name"
+  otel_span_attribute_typed "$check_run_span_handle" string cicd.pipeline.action.name=RUN
+  otel_span_attribute_typed "$check_run_span_handle" string cicd.pipeline.run.url.full="$link"/"$check_run_id"
   otel_span_attribute_typed "$check_run_span_handle" string github.actions.type=check
   otel_span_attribute_typed "$check_run_span_handle" string github.actions.url.full="$link"/"$check_run_id"
   otel_span_attribute_typed "$check_run_span_handle" int github.actions.checks.run.id="$check_run_id"
