@@ -209,11 +209,11 @@ _otel_curl_record_api_response_llm_openai() {
     'chat.completion')
       otel_span_attribute_typed "$span_handle" string gen_ai.operation.name=chat
       otel_span_attribute_typed "$span_handle" string gen_ai.output.type=text
-      otel_span_attribute_typed "$span_handle" gen_ai.response.id="$(\jq < "$file" .id -r)"
-      otel_span_attribute_typed "$span_handle" gen_ai.response.model="$(\jq < "$file" .model -r)"
+      otel_span_attribute_typed "$span_handle" string gen_ai.response.id="$(\jq < "$file" .id -r)"
+      otel_span_attribute_typed "$span_handle" string gen_ai.response.model="$(\jq < "$file" .model -r)"
       \jq < "$file" .choices[].finish_reason -r | while \read -r finish_reason; do otel_span_attribute_typed "$span_handle" +string[1] gen_ai.response.finish_reasons="$finish_reason"; done
-      otel_span_attribute_typed "$span_handle" gen_ai.usage.input_tokens="$(\jq < "$file" .usage.prompt_tokens)"
-      otel_span_attribute_typed "$span_handle" gen_ai.usage.output_tokens="$(\jq < "$file" .usage.completion_tokens)"
+      otel_span_attribute_typed "$span_handle" int gen_ai.usage.input_tokens="$(\jq < "$file" .usage.prompt_tokens)"
+      otel_span_attribute_typed "$span_handle" int gen_ai.usage.output_tokens="$(\jq < "$file" .usage.completion_tokens)"
       ;;
     *) ;;
   esac
