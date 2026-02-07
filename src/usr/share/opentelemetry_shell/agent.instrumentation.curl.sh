@@ -160,13 +160,13 @@ _otel_call_curl_api() {
     llm_openai) local request_processor=_otel_curl_record_api_request_llm_openai; local response_processor=_otel_curl_record_api_response_llm_openai;;
     *) local request_processor=cat; local response_processor=cat;;
   esac
-  local request="$(_otel_curl_get_input_type)"
+  local request="$(_otel_curl_get_input_type "$@")"
   local exit_code_file="$(\mktemp)"
-  echo 0 > "$exit_code_file"
+  \echo 0 > "$exit_code_file"
   case "$request" in
     @-) $request_processor | { _otel_call "$@" || \echo "$?" > "$exit_code_file"; } | $response_processor;;
     @*) $request_processor < "${request#@}" > /dev/null; { _otel_call "$@" || \echo "$?" > "$exit_code_file"; } | $response_processor;;
-    *) $request_processor <<< "$request" > /dev/null; { _otel_call "$@" || \echo "$?" > "$exit_code_file"; } | $response_processor;;
+    *) \printf '%s' "$request" | $request_processor > /dev/null; { _otel_call "$@" || \echo "$?" > "$exit_code_file"; } | $response_processor;;
   esac
   local exit_code="$(\cat "$exit_code_file")"
   \rm -rf "$exit_code_file"
