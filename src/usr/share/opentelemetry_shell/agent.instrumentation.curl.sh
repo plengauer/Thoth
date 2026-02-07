@@ -205,7 +205,7 @@ _otel_curl_record_api_response_llm_openai() {
   \cat > "$file"
   local span_handle="$(otel_span_current)"
   otel_span_attribute_typed "$span_handle" string gen_ai.provider.name=openai
-  case "$(\jq < "$file" .object -r)"
+  case "$(\jq < "$file" .object -r)" in
     'chat.completion')
       otel_span_attribute_typed "$span_handle" string gen_ai.operation.name=chat
       otel_span_attribute_typed "$span_handle" string gen_ai.output.type=text
