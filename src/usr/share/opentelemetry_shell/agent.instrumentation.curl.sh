@@ -190,7 +190,7 @@ _otel_curl_record_api_request_llm_openai() {
   otel_span_attribute_typed "$span_handle" string gen_ai.request.model="$(\jq < "$file" .model -r)"
   otel_span_attribute_typed "$span_handle" string gen_ai.request.seed="$(\jq < "$file" '.seed // empty')"
   otel_span_attribute_typed "$span_handle" string gen_ai.request.choice.count="$(\jq < "$file" '.n // empty')"
-  otel_span_attribute_typed "$span_handle" string gen_ai.request.max_tokens="$(\jq < "$file" '.max_completion_tokens // .max_tokens')"
+  otel_span_attribute_typed "$span_handle" string gen_ai.request.max_tokens="$(\jq < "$file" '.max_completion_tokens // .max_tokens // empty')"
   otel_span_attribute_typed "$span_handle" string gen_ai.request.temperature="$(\jq < "$file" '.temperature // empty')"
   otel_span_attribute_typed "$span_handle" string gen_ai.request.top_k="$(\jq < "$file" '.top_k // empty')"
   otel_span_attribute_typed "$span_handle" string gen_ai.request.top_p="$(\jq < "$file" '.top_p // empty')"
