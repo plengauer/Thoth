@@ -135,7 +135,7 @@ case "$EVENT" in
   pull_request_submitted)
     if [ "$(jq < "$GITHUB_EVENT_PATH" .review.state -r)" = approved ]; then # TODO limit to only record on the first approving review, not on every one
       vcs_change_time_to_approval_handle="$(otel_counter_create gauge vcs.change.time_to_approval 's' 'The amount of time since its creation it took a change (pull request/merge request/changelist) to get the first approval.')"
-      observation_handle="$(otel_github_repository_observation_create "$(python3 -c "print(str(max(0, $(date -d "$(jq < "$GITHUB_EVENT_PATH" '.pull_request.merged_at // .pull_request.closed_at' -r)" '+%s.%N') - $(date -d "$(jq < "$GITHUB_EVENT_PATH" .pull_request.created_at -r)" '+%s.%N'))))")")"
+      observation_handle="$(otel_github_repository_observation_create "$(python3 -c "print(str(max(0, $(date -d "$(jq < "$GITHUB_EVENT_PATH" .review.submitted_at -r)" '+%s.%N') - $(date -d "$(jq < "$GITHUB_EVENT_PATH" .pull_request.created_at -r)" '+%s.%N'))))")")"
       otel_counter_observe "$vcs_change_time_to_approval_handle" "$observation_handle"
     fi
     ;;
