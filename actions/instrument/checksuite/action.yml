@@ -7,9 +7,9 @@ inputs:
   github_token:
     description: 'A GitHub token for API access (read-only)'
     default: '${{ github.token }}'
-  cache:
-    description: 'Whether to use GitHub Actions Cache to cache dependencies'
-    default: true
+  repository:
+    description: 'The repository of the check suite'
+    default: ${{ github.repository }}
   check_suite_id:
     description: 'The check suite to observe (id)'
     default: ${{ github.event.check_suite.id }}

@@ -7,9 +7,9 @@ inputs:
   github_token:
     description: 'A GitHub token for API access (read-only)'
     default: '${{ github.token }}'
-  cache:
-    description: 'Whether to use GitHub Actions Cache to cache dependencies'
-    default: true
+  repository:
+    description: 'The repository containing the workflow run to observe'
+    default: ${{ github.repository }}
   workflow_run_id:
     description: 'The workflow run to observe (id)'
     default: ${{ github.event.workflow_run.id }}
