@@ -178,7 +178,7 @@ _otel_curl_get_input_type() {
     case "$1" in
       -d|--data|--data-*) \echo "$2"; break;;
     esac
-    shift; shift
+    shift
   done
 }
 
