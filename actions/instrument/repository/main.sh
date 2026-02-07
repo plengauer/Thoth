@@ -85,12 +85,6 @@ otel_github_repository_observation_create() {
   echo "$observation_handle"
 }
 
-vcs_repository_count_handle="$(otel_counter_create up_down_counter vcs.change.count '{repository}' 'The number of repositories in an organization')"
-observation_handle="$(otel_observation_create 0)" # TODO shouldnt this be a gauge and report the full count?
-otel_observation_attribute_typed "$observation_handle" string vcs.provider.name=github
-otel_observation_attribute_typed "$observation_handle" string vcs.owner.name="$GITHUB_REPOSITORY_OWNER"
-otel_counter_observe "$vcs_repository_count_handle" "$observation_handle"
-
 vcs_contributor_count_handle="$(otel_counter_create gauge vcs.contributor.count '{contributor}' 'The number of unique contributors to a repository')"
 observation_handle="$(otel_github_repository_observation_create "$(gh_curl_paginated /contributors'&per_page=100' | jq '.[]' | jq -s length)")"
 otel_counter_observe "$vcs_contributor_count_handle" "$observation_handle"
