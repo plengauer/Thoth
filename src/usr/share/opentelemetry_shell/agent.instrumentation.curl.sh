@@ -220,6 +220,8 @@ _otel_curl_record_api_response_llm_openai() {
           observation_handle="$(otel_observation_create $prompt_tokens)"
           otel_observation_attribute_typed "$observation_handle" string gen_ai.provider.name=openai
           otel_observation_attribute_typed "$observation_handle" string gen_ai.operation.name=chat
+          \[ "$system_fingerprint" = null ] || otel_observation_attribute_typed "$observation_handle" string openai.response.system_fingerprint="$system_fingerprint"
+          \[ "$service_tier" = null ] || otel_observation_attribute_typed "$observation_handle" string openai.response.service_tier="$service_tier"
           otel_observation_attribute_typed "$observation_handle" string gen_ai.token.type=input
           \[ "$model" = null ] || otel_observation_attribute_typed "$observation_handle" string gen_ai.response.model="$model"
           otel_counter_observe "$gen_ai_client_token_usage_handle" "$observation_handle"
@@ -229,6 +231,8 @@ _otel_curl_record_api_response_llm_openai() {
           observation_handle="$(otel_observation_create $completion_tokens)"
           otel_observation_attribute_typed "$observation_handle" string gen_ai.provider.name=openai
           otel_observation_attribute_typed "$observation_handle" string gen_ai.operation.name=chat
+          \[ "$system_fingerprint" = null ] || otel_observation_attribute_typed "$observation_handle" string openai.response.system_fingerprint="$system_fingerprint"
+          \[ "$service_tier" = null ] || otel_observation_attribute_typed "$observation_handle" string openai.response.service_tier="$service_tier"
           otel_observation_attribute_typed "$observation_handle" string gen_ai.token.type=input
           \[ "$model" = null ] || otel_observation_attribute_typed "$observation_handle" string gen_ai.response.model="$model"
           otel_counter_observe "$gen_ai_client_token_usage_handle" "$observation_handle"
