@@ -207,7 +207,7 @@ _otel_curl_record_api_response_llm_openai() {
   local gen_ai_client_token_usage_handle="$(otel_counter_create counter gen_ai.client.token.usage '{token}' 'Number of input and output tokens used')"
   local span_handle="$(otel_span_current)"
   otel_span_attribute_typed "$span_handle" string gen_ai.provider.name=openai
-  \jq '[ .object // "null", .id // "null", .model // "null" .system_fingerprint // "null", .service_tier // "null", ([ .choices[] | select(.finish_reason != null) | .finish_reason ] | join(";")), .usage.prompt_tokens // "null", .usage.completion_tokens // "null", ( . | tostring ) ] | @tsv' -c -r --unbuffered | while IFS=$'\t' read -r object id model system_fingerprint service_tier finish_reasons prompt_tokens completion_tokens json; do
+  \jq '[ .object // "null", .id // "null", .model // "null", .system_fingerprint // "null", .service_tier // "null", ([ .choices[] | select(.finish_reason != null) | .finish_reason ] | join(";")), .usage.prompt_tokens // "null", .usage.completion_tokens // "null", ( . | tostring ) ] | @tsv' -c -r --unbuffered | while IFS=$'\t' read -r object id model system_fingerprint service_tier finish_reasons prompt_tokens completion_tokens json; do
     \printf '%s\n' "$json"
     case "$object" in
       'chat.completion'|'chat.completion.chunk')
