@@ -217,7 +217,7 @@ _otel_curl_record_api_response_llm_openai() {
   \jq '[ .object // "null", .id // "null", .model // "null", .system_fingerprint // "null", .service_tier // "null", ([ .choices[] | select(.finish_reason != null) | .finish_reason ] | join(";")), .usage.prompt_tokens // "null", .usage.completion_tokens // "null", ( . | tostring ) ] | @tsv' -c -r --unbuffered | while IFS="$(\printf '\t')" read -r object id model system_fingerprint service_tier finish_reasons prompt_tokens completion_tokens json; do
     case "$object" in
       'chat.completion'|'chat.completion.chunk')
-        otel_span_name "$span_handle" "chat $(jq < "$request_file" .model -r)"
+        otel_span_name "$span_handle" "chat $(\jq < "$request_file" .model -r)"
         otel_span_attribute_typed "$span_handle" string gen_ai.operation.name=chat
         otel_span_attribute_typed "$span_handle" string gen_ai.output.type=text
         \[ "$id" = null ] || otel_span_attribute_typed "$span_handle" string gen_ai.response.id="$id"
