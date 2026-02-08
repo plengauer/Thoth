@@ -27,7 +27,7 @@ _otel_propagate_curl() {
   \set -- "$@" -H "traceparent: $TRACEPARENT" -H "tracestate: $TRACESTATE" -v --no-progress-meter
   local api="$(_otel_curl_guess_api "$@")"
   local exit_code=0
-  if \[ -n "$api" ]; then _otel_call_curl_api "$span_handle_forward" "$api_recording_finished" "$api" "$@"; else : > "$api_recording_finished" &; _otel_call "$@"; fi 2> "$stderr_pipe" || exit_code="$?"
+  if \[ -n "$api" ]; then _otel_call_curl_api "$span_handle_forward" "$api_recording_finished" "$api" "$@"; else : > "$api_recording_finished" & ; _otel_call "$@"; fi 2> "$stderr_pipe" || exit_code="$?"
   \wait "$stderr_pid"
   \rm -rf "$stderr_pipe" "$span_handle_forward" "$api_recording_finished"
   if \[ -f /opt/opentelemetry_shell/libinjecthttpheader.so ]; then
@@ -174,7 +174,7 @@ _otel_call_curl_api() {
     @-) \tee "$request_file" | { _otel_call "$@" || \echo "$?" > "$exit_code_file"; };;
     @*) \cat < "${request#@}" > "$request_file"; { _otel_call "$@" || \echo "$?" > "$exit_code_file"; };;
     *) \printf '%s' "$request" > "$request_file"; { _otel_call "$@" || \echo "$?" > "$exit_code_file"; };;
-  esac | if \[ -n "${response_processor:-}" ]; then $response_processor "$request_file" "$span_handle_file" "$api_recording_finished"; else : > "$api_recording_finished" &; \cat; fi
+  esac | if \[ -n "${response_processor:-}" ]; then $response_processor "$request_file" "$span_handle_file" "$api_recording_finished"; else : > "$api_recording_finished" & ; \cat; fi
   local exit_code="$(\cat "$exit_code_file")"
   \rm -rf "$exit_code_file" "$request_file"
   return "$exit_code"
