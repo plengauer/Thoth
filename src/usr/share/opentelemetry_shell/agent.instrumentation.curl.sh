@@ -191,11 +191,11 @@ _otel_curl_record_api_request_llm_openai() {
     \[ "$seed" = null ] || otel_span_attribute_typed "$span_handle" int gen_ai.request.seed="$seed"
     \[ "$n" = null ] || otel_span_attribute_typed "$span_handle" int gen_ai.request.choice.count="$n"
     \[ "$max_tokens" = null ] || otel_span_attribute_typed "$span_handle" int gen_ai.request.max_tokens="$max_tokens"
-    \[ "$temperature" = null ] || otel_span_attribute_typed "$span_handle" double gen_ai.request.temperature="$temperature"
-    \[ "$top_k" = null ] || otel_span_attribute_typed "$span_handle" double gen_ai.request.top_k="$top_k"
-    \[ "$top_p" = null ] || otel_span_attribute_typed "$span_handle" double gen_ai.request.top_p="$top_p"
-    \[ "$frequency_penalty" = null ] || otel_span_attribute_typed "$span_handle" double gen_ai.request.frequency_penalty="$frequency_penalty"
-    \[ "$presence_penalty" = null ] || otel_span_attribute_typed "$span_handle" double gen_ai.request.presence_penalty="$presence_penalty"
+    \[ "$temperature" = null ] || otel_span_attribute_typed "$span_handle" float gen_ai.request.temperature="$temperature"
+    \[ "$top_k" = null ] || otel_span_attribute_typed "$span_handle" float gen_ai.request.top_k="$top_k"
+    \[ "$top_p" = null ] || otel_span_attribute_typed "$span_handle" float gen_ai.request.top_p="$top_p"
+    \[ "$frequency_penalty" = null ] || otel_span_attribute_typed "$span_handle" float gen_ai.request.frequency_penalty="$frequency_penalty"
+    \[ "$presence_penalty" = null ] || otel_span_attribute_typed "$span_handle" float gen_ai.request.presence_penalty="$presence_penalty"
     \printf '%s\n' "$json"    
   done
 }
