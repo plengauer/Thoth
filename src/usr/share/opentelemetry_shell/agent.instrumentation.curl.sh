@@ -164,10 +164,10 @@ _otel_call_curl_api() {
   local exit_code_file="$(\mktemp)"
   \echo 0 > "$exit_code_file"
   case "$request" in
-    @-) $request_processor | { _otel_call "$@" || \echo "$?" > "$exit_code_file"; } | $response_processor;;
-    @*) $request_processor < "${request#@}" > /dev/null; { _otel_call "$@" || \echo "$?" > "$exit_code_file"; } | $response_processor;;
-    *) \printf '%s' "$request" | $request_processor > /dev/null; { _otel_call "$@" || \echo "$?" > "$exit_code_file"; } | $response_processor;;
-  esac
+    @-) $request_processor | { _otel_call "$@" || \echo "$?" > "$exit_code_file"; };;
+    @*) $request_processor < "${request#@}" > /dev/null; { _otel_call "$@" || \echo "$?" > "$exit_code_file"; };;
+    *) \printf '%s' "$request" | $request_processor > /dev/null; { _otel_call "$@" || \echo "$?" > "$exit_code_file"; };;
+  esac | $response_processor
   local exit_code="$(\cat "$exit_code_file")"
   \rm -rf "$exit_code_file"
   return "$exit_code"
@@ -183,42 +183,64 @@ _otel_curl_get_input_type() {
 }
 
 _otel_curl_record_api_request_llm_openai() {
-  local file="$(\mktemp)"
-  \cat > "$file"
   local span_handle="$(otel_span_current)"
   otel_span_attribute_typed "$span_handle" string gen_ai.provider.name=openai
-  otel_span_attribute_typed "$span_handle" string gen_ai.request.model="$(\jq < "$file" .model -r)"
-  otel_span_attribute_typed "$span_handle" int gen_ai.request.seed="$(\jq < "$file" '.seed // empty')"
-  otel_span_attribute_typed "$span_handle" int gen_ai.request.choice.count="$(\jq < "$file" '.n // empty')"
-  otel_span_attribute_typed "$span_handle" int gen_ai.request.max_tokens="$(\jq < "$file" '.max_completion_tokens // .max_tokens // empty')"
-  otel_span_attribute_typed "$span_handle" double gen_ai.request.temperature="$(\jq < "$file" '.temperature // empty')"
-  otel_span_attribute_typed "$span_handle" double gen_ai.request.top_k="$(\jq < "$file" '.top_k // empty')"
-  otel_span_attribute_typed "$span_handle" double gen_ai.request.top_p="$(\jq < "$file" '.top_p // empty')"
-  otel_span_attribute_typed "$span_handle" double gen_ai.request.frequency_penalty="$(\jq < "$file" '.frequency_penalty // empty')"
-  otel_span_attribute_typed "$span_handle" double gen_ai.request.presence_penalty="$(\jq < "$file" '.presence_penalty // empty')"
-  \cat < "$file"
-  \rm -rf "$file"
+  \jq '[ .model // "null", .service_tier // "null", .seed // "null", .n // "null", .max_completion_tokens // .max_tokens // "null", .temperature // "null", .top_k // "null", .top_p // "null", .frequency_penalty // "null", .presence_penalty // "null", ( . | tostring ) ] | @tsv' -c -r --unbuffered | while IFS=$'\t' read -r model service_tier seed n max_tokens temperature top_k top_p frequency_penalty presence_penalty json; do
+    \[ "$model" = null ] || otel_span_attribute_typed "$span_handle" string gen_ai.request.model="$model"
+    \[ "$service_tier" = null ] || otel_span_attribute_typed "$span_handle" string openai.request.service_tier="$service_tier"
+    \[ "$seed" = null ] || otel_span_attribute_typed "$span_handle" int gen_ai.request.seed="$seed"
+    \[ "$n" = null ] || otel_span_attribute_typed "$span_handle" int gen_ai.request.choice.count="$n"
+    \[ "$max_tokens" = null ] || otel_span_attribute_typed "$span_handle" int gen_ai.request.max_tokens="$max_tokens"
+    \[ "$temperature" = null ] || otel_span_attribute_typed "$span_handle" float gen_ai.request.temperature="$temperature"
+    \[ "$top_k" = null ] || otel_span_attribute_typed "$span_handle" float gen_ai.request.top_k="$top_k"
+    \[ "$top_p" = null ] || otel_span_attribute_typed "$span_handle" float gen_ai.request.top_p="$top_p"
+    \[ "$frequency_penalty" = null ] || otel_span_attribute_typed "$span_handle" float gen_ai.request.frequency_penalty="$frequency_penalty"
+    \[ "$presence_penalty" = null ] || otel_span_attribute_typed "$span_handle" float gen_ai.request.presence_penalty="$presence_penalty"
+    \printf '%s\n' "$json"    
+  done
 }
 
 _otel_curl_record_api_response_llm_openai() {
-  local file="$(\mktemp)"
-  \cat > "$file"
+  local gen_ai_client_token_usage_handle="$(otel_counter_create counter gen_ai.client.token.usage 1 'Number of input and output tokens used')"
   local span_handle="$(otel_span_current)"
   otel_span_attribute_typed "$span_handle" string gen_ai.provider.name=openai
-  case "$(\jq < "$file" .object -r)" in
-    'chat.completion')
-      otel_span_attribute_typed "$span_handle" string gen_ai.operation.name=chat
-      otel_span_attribute_typed "$span_handle" string gen_ai.output.type=text
-      otel_span_attribute_typed "$span_handle" string gen_ai.response.id="$(\jq < "$file" .id -r)"
-      otel_span_attribute_typed "$span_handle" string gen_ai.response.model="$(\jq < "$file" .model -r)"
-      \jq < "$file" .choices[].finish_reason -r | while \read -r finish_reason; do otel_span_attribute_typed "$span_handle" +string[1] gen_ai.response.finish_reasons="$finish_reason"; done
-      otel_span_attribute_typed "$span_handle" int gen_ai.usage.input_tokens="$(\jq < "$file" .usage.prompt_tokens)"
-      otel_span_attribute_typed "$span_handle" int gen_ai.usage.output_tokens="$(\jq < "$file" .usage.completion_tokens)"
-      ;;
-    *) ;;
-  esac
-  \cat < "$file"
-  \rm -rf "$file"
+  \jq '[ .object // "null", .id // "null", .model // "null" .system_fingerprint // "null", .service_tier // "null", ([ .choices[] | select(.finish_reason != null) | .finish_reason ] | join(";")), .usage.prompt_tokens // "null", .usage.completion_tokens // "null", ( . | tostring ) ] | @tsv' -c -r --unbuffered | while IFS=$'\t' read -r object id model system_fingerprint service_tier finish_reasons prompt_tokens completion_tokens json; do
+    \printf '%s\n' "$json"
+    case "$object" in
+      'chat.completion'|'chat.completion.chunk')
+        otel_span_attribute_typed "$span_handle" string gen_ai.operation.name=chat
+        otel_span_attribute_typed "$span_handle" string gen_ai.output.type=text
+        \[ "$id" = null ] || otel_span_attribute_typed "$span_handle" string gen_ai.response.id="$id"
+        \[ "$model" = null ] || otel_span_attribute_typed "$span_handle" string gen_ai.response.model="$model"
+        \[ "$system_fingerprint" = null ] || otel_span_attribute_typed "$span_handle" string openai.response.system_fingerprint="$system_fingerprint"
+        \[ "$service_tier" = null ] || otel_span_attribute_typed "$span_handle" string openai.response.service_tier="$service_tier"
+        \printf '%s' "$finish_reasons" | \tr '\t' '\n' | while \read -r finish_reason; do otel_span_attribute_typed "$span_handle" +string[1] gen_ai.response.finish_reasons="$finish_reason"; done
+        if \[ "$prompt_tokens" != null ]; then
+          otel_span_attribute_typed "$span_handle" int gen_ai.usage.input_tokens="$prompt_tokens"
+          observation_handle="$(otel_observation_create $prompt_tokens)"
+          otel_observation_attribute_typed "$observation_handle" string gen_ai.provider.name=openai
+          otel_observation_attribute_typed "$observation_handle" string gen_ai.operation.name=chat
+          \[ "$system_fingerprint" = null ] || otel_observation_attribute_typed "$observation_handle" string openai.response.system_fingerprint="$system_fingerprint"
+          \[ "$service_tier" = null ] || otel_observation_attribute_typed "$observation_handle" string openai.response.service_tier="$service_tier"
+          otel_observation_attribute_typed "$observation_handle" string gen_ai.token.type=input
+          \[ "$model" = null ] || otel_observation_attribute_typed "$observation_handle" string gen_ai.response.model="$model"
+          otel_counter_observe "$gen_ai_client_token_usage_handle" "$observation_handle"
+        fi
+        if \[ "$completion_tokens" != null ]; then
+          otel_span_attribute_typed "$span_handle" int gen_ai.usage.output_tokens="$completion_tokens"
+          observation_handle="$(otel_observation_create $completion_tokens)"
+          otel_observation_attribute_typed "$observation_handle" string gen_ai.provider.name=openai
+          otel_observation_attribute_typed "$observation_handle" string gen_ai.operation.name=chat
+          \[ "$system_fingerprint" = null ] || otel_observation_attribute_typed "$observation_handle" string openai.response.system_fingerprint="$system_fingerprint"
+          \[ "$service_tier" = null ] || otel_observation_attribute_typed "$observation_handle" string openai.response.service_tier="$service_tier"
+          otel_observation_attribute_typed "$observation_handle" string gen_ai.token.type=input
+          \[ "$model" = null ] || otel_observation_attribute_typed "$observation_handle" string gen_ai.response.model="$model"
+          otel_counter_observe "$gen_ai_client_token_usage_handle" "$observation_handle"
+        fi
+        ;;
+      *) ;;
+    esac
+  done
 }
 
 _otel_alias_prepend curl _otel_propagate_curl
