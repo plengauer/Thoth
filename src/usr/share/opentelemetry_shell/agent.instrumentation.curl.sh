@@ -25,7 +25,7 @@ _otel_propagate_curl() {
     \mkfifo "$span_handle_forward" "$api_recording_finished"
   fi
   local stderr_pipe="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell_$$.stderr.curl.pipe.XXXXXXXXXX)"
-  \mkfifo "$stderr_pipe" "$span_handle_forward" "$api_recording_finished"
+  \mkfifo "$stderr_pipe"
   _otel_pipe_curl_stderr "$is_verbose" "${OTEL_SHELL_INJECT_HTTP_HANDLE_FILE:-}" "${span_handle_forward:-/dev/null}" "${api_recording_finished:-/dev/null}" < "$stderr_pipe" >&2 &
   local stderr_pid="$!"
   \set -- "$@" -H "traceparent: $TRACEPARENT" -H "tracestate: $TRACESTATE" -v --no-progress-meter
