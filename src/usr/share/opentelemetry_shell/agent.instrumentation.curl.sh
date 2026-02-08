@@ -69,6 +69,7 @@ _otel_propagate_curl() {
 # * Connection #0 to host www.google.at left intact
 
 _otel_pipe_curl_stderr() {
+  \set -x
   local is_verbose="$1"
   local span_handle_file="$2"
   local span_handle_file_forward="${3:-/dev/null}"
