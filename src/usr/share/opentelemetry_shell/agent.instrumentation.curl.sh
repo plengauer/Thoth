@@ -217,7 +217,7 @@ _otel_curl_record_api_response_llm_openai() {
         \[ "$model" = null ] || otel_span_attribute_typed "$span_handle" string gen_ai.response.model="$model"
         \[ "$system_fingerprint" = null ] || otel_span_attribute_typed "$span_handle" string openai.response.system_fingerprint="$system_fingerprint"
         \[ "$service_tier" = null ] || otel_span_attribute_typed "$span_handle" string openai.response.service_tier="$service_tier"
-        \printf '%s' "$finish_reasons" | \tr '\t' '\n' | while \read -r finish_reason; do otel_span_attribute_typed "$span_handle" +string[1] gen_ai.response.finish_reasons="$finish_reason"; done
+        \printf '%s' "$finish_reasons" | \tr ';' '\n' | while \read -r finish_reason; do otel_span_attribute_typed "$span_handle" +string[1] gen_ai.response.finish_reasons="$finish_reason"; done
         if \[ "$prompt_tokens" != null ]; then
           otel_span_attribute_typed "$span_handle" int gen_ai.usage.input_tokens="$prompt_tokens"
           observation_handle="$(otel_observation_create $prompt_tokens)"
