@@ -203,8 +203,8 @@ _otel_curl_record_api_request_llm_openai() {
 
 _otel_curl_record_api_response_llm_openai() {
   local time_start="$(\date +%s.%N)"
-  local gen_ai_client_operation_duration_handle="$(otel_counter_create counter gen_ai.client.operation_duration.usage s 'GenAI operation duration')"
   local gen_ai_client_token_usage_handle="$(otel_counter_create counter gen_ai.client.token.usage '{token}' 'Number of input and output tokens used')"
+  local gen_ai_client_operation_duration_handle="$(otel_counter_create counter gen_ai.client.operation_duration.usage s 'GenAI operation duration')"
   local span_handle="$(otel_span_current)"
   otel_span_attribute_typed "$span_handle" string gen_ai.provider.name=openai
   \jq '[ .object // "null", .id // "null", .model // "null", .system_fingerprint // "null", .service_tier // "null", ([ .choices[] | select(.finish_reason != null) | .finish_reason ] | join(";")), .usage.prompt_tokens // "null", .usage.completion_tokens // "null", ( . | tostring ) ] | @tsv' -c -r --unbuffered | while IFS=$'\t' read -r object id model system_fingerprint service_tier finish_reasons prompt_tokens completion_tokens json; do
