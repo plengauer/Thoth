@@ -197,9 +197,9 @@ _otel_curl_record_api_response_llm_openai() {
   local request_file="$1"
   local span_handle_file="$2"
   local api_recording_finished="$3"
-  local time_start="$(\date +%s.%N)"
+  # local time_start="$(\date +%s.%N)"
+  # local gen_ai_client_operation_duration_handle="$(otel_counter_create histogram gen_ai.client.operation.duration s 'GenAI operation duration')"
   local gen_ai_client_token_usage_handle="$(otel_counter_create counter gen_ai.client.token.usage '{token}' 'Number of input and output tokens used')"
-  local gen_ai_client_operation_duration_handle="$(otel_histogram_create histogram gen_ai.client.operation.duration s 'GenAI operation duration')"
   local span_handle="$(\cat "$span_handle_file")"
   otel_span_attribute_typed "$span_handle" string gen_ai.provider.name=openai
   \jq < "$request_file" '[ .model // "null", .service_tier // "null", .seed // "null", .n // "null", .max_completion_tokens // .max_tokens // "null", .temperature // "null", .top_k // "null", .top_p // "null", .frequency_penalty // "null", .presence_penalty // "null", ( . | tostring ) ] | @tsv' -c -r --unbuffered | while IFS="$(\printf '\t')" read -r model service_tier seed n max_tokens temperature top_k top_p frequency_penalty presence_penalty json; do
@@ -247,16 +247,16 @@ _otel_curl_record_api_response_llm_openai() {
           \[ "$model" = null ] || otel_observation_attribute_typed "$observation_handle" string gen_ai.response.model="$model"
           otel_counter_observe "$gen_ai_client_token_usage_handle" "$observation_handle"
         fi
-        if \[ "$prompt_tokens" != null ] || \[ "$completion_tokens" != null ] || \[ -n "$finish_reasons" ]; then
-          local time_end="$(\date +%s.%N)"
-          local observation_handle="$(otel_observation_create "$(\python3 -c "print(str($time_end - $time_start))")")"
-          otel_observation_attribute_typed "$observation_handle" string gen_ai.provider.name=openai
-          otel_observation_attribute_typed "$observation_handle" string gen_ai.operation.name=chat
-          \[ "$system_fingerprint" = null ] || otel_observation_attribute_typed "$observation_handle" string openai.response.system_fingerprint="$system_fingerprint"
-          \[ "$service_tier" = null ] || otel_observation_attribute_typed "$observation_handle" string openai.response.service_tier="$service_tier"
-          \[ "$model" = null ] || otel_observation_attribute_typed "$observation_handle" string gen_ai.response.model="$model"
-          otel_counter_observe "$gen_ai_client_operation_duration_handle" "$observation_handle"
-        fi
+        # if \[ "$prompt_tokens" != null ] || \[ "$completion_tokens" != null ] || \[ -n "$finish_reasons" ]; then
+        #   local time_end="$(\date +%s.%N)"
+        #   local observation_handle="$(otel_observation_create "$(\python3 -c "print(str($time_end - $time_start))")")"
+        #   otel_observation_attribute_typed "$observation_handle" string gen_ai.provider.name=openai
+        #   otel_observation_attribute_typed "$observation_handle" string gen_ai.operation.name=chat
+        #   \[ "$system_fingerprint" = null ] || otel_observation_attribute_typed "$observation_handle" string openai.response.system_fingerprint="$system_fingerprint"
+        #   \[ "$service_tier" = null ] || otel_observation_attribute_typed "$observation_handle" string openai.response.service_tier="$service_tier"
+        #   \[ "$model" = null ] || otel_observation_attribute_typed "$observation_handle" string gen_ai.response.model="$model"
+        #   otel_counter_observe "$gen_ai_client_operation_duration_handle" "$observation_handle"
+        # fi
         ;;
       *) ;;
     esac
