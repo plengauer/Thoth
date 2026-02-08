@@ -220,7 +220,7 @@ _otel_curl_record_api_response_llm_openai() {
         \printf '%s' "$finish_reasons" | \tr ';' '\n' | while \read -r finish_reason; do otel_span_attribute_typed "$span_handle" +string[1] gen_ai.response.finish_reasons="$finish_reason"; done
         if \[ "$prompt_tokens" != null ]; then
           otel_span_attribute_typed "$span_handle" int gen_ai.usage.input_tokens="$prompt_tokens"
-          observation_handle="$(otel_observation_create $prompt_tokens)"
+          local observation_handle="$(otel_observation_create $prompt_tokens)"
           otel_observation_attribute_typed "$observation_handle" string gen_ai.provider.name=openai
           otel_observation_attribute_typed "$observation_handle" string gen_ai.operation.name=chat
           \[ "$system_fingerprint" = null ] || otel_observation_attribute_typed "$observation_handle" string openai.response.system_fingerprint="$system_fingerprint"
@@ -231,7 +231,7 @@ _otel_curl_record_api_response_llm_openai() {
         fi
         if \[ "$completion_tokens" != null ]; then
           otel_span_attribute_typed "$span_handle" int gen_ai.usage.output_tokens="$completion_tokens"
-          observation_handle="$(otel_observation_create $completion_tokens)"
+          local observation_handle="$(otel_observation_create $completion_tokens)"
           otel_observation_attribute_typed "$observation_handle" string gen_ai.provider.name=openai
           otel_observation_attribute_typed "$observation_handle" string gen_ai.operation.name=chat
           \[ "$system_fingerprint" = null ] || otel_observation_attribute_typed "$observation_handle" string openai.response.system_fingerprint="$system_fingerprint"
