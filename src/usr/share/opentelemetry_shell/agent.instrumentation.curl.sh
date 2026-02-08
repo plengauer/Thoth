@@ -240,7 +240,7 @@ _otel_curl_record_api_response_llm_openai() {
           \[ "$model" = null ] || otel_observation_attribute_typed "$observation_handle" string gen_ai.response.model="$model"
           otel_counter_observe "$gen_ai_client_token_usage_handle" "$observation_handle"
         fi
-        if \[ "$prompt_tokens" != null ] || \[ "$completion_tokens" != null ] || [ -n "$finish_reasons" ]; then
+        if \[ "$prompt_tokens" != null ] || \[ "$completion_tokens" != null ] || \[ -n "$finish_reasons" ]; then
           local time_end="$(\date +%s.%N)"
           local observation_handle="$(otel_observation_create "$(\python3 -c "print(str($time_end - $time_start))")")"
           otel_observation_attribute_typed "$observation_handle" string gen_ai.provider.name=openai
