@@ -186,6 +186,7 @@ _otel_curl_record_api_request_llm_openai() {
   local span_handle="$(otel_span_current)"
   otel_span_attribute_typed "$span_handle" string gen_ai.provider.name=openai
   \jq '[ .model // "null", .service_tier // "null", .seed // "null", .n // "null", .max_completion_tokens // .max_tokens // "null", .temperature // "null", .top_k // "null", .top_p // "null", .frequency_penalty // "null", .presence_penalty // "null", ( . | tostring ) ] | @tsv' -c -r --unbuffered | while IFS=$'\t' read -r model service_tier seed n max_tokens temperature top_k top_p frequency_penalty presence_penalty json; do
+    otel_span_name "$span_handle" "chat $model"
     \[ "$model" = null ] || otel_span_attribute_typed "$span_handle" string gen_ai.request.model="$model"
     \[ "$service_tier" = null ] || otel_span_attribute_typed "$span_handle" string openai.request.service_tier="$service_tier"
     \[ "$seed" = null ] || otel_span_attribute_typed "$span_handle" int gen_ai.request.seed="$seed"
