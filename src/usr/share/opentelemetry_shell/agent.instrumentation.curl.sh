@@ -176,7 +176,7 @@ _otel_call_curl_api() {
     *) \printf '%s' "$request" > "$request_file"; { _otel_call "$@" || \echo "$?" > "$exit_code_file"; };;
   esac | if \[ -n "${response_processor:-}" ]; then $response_processor "$request_file" "$span_handle_file" "$api_recording_finished"; else \cat; : > "$api_recording_finished"; fi
   local exit_code="$(\cat "$exit_code_file")"
-  \rm -rf "$exit_code_file" "$request_file" "$api_recording_finished"
+  \rm -rf "$exit_code_file" "$request_file"
   return "$exit_code"
 }
 
