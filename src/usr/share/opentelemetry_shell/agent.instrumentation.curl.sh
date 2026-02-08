@@ -18,18 +18,22 @@ _otel_propagate_curl() {
     fi
   fi
   if _otel_string_contains "$(_otel_dollar_star "$@")" " -v "; then local is_verbose=1; else local is_verbose=0; fi
-  local stderr_pipe="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell_$$.stderr.curl.pipe.XXXXXXXXXX)"
-  local span_handle_forward="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell_$$.span_handle_forward.curl.pipe.XXXXXXXXXX)"
-  local api_recording_finished="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell_$$.api.finished.curl.pipe.XXXXXXXXXX)"
-  \mkfifo "$stderr_pipe" "$span_handle_forward" "$api_recording_finished"
   local api="$(_otel_curl_guess_api "$@")"
-  _otel_pipe_curl_stderr "$is_verbose" "${OTEL_SHELL_INJECT_HTTP_HANDLE_FILE:-}" "$span_handle_forward" "$api_recording_finished" < "$stderr_pipe" >&2 &
+  if \[ -n "$api" ]; then
+    local span_handle_forward="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell_$$.span_handle_forward.curl.pipe.XXXXXXXXXX)"
+    local api_recording_finished="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell_$$.api.finished.curl.pipe.XXXXXXXXXX)"
+    \mkfifo "$span_handle_forward" "$api_recording_finished"
+  fi
+  local stderr_pipe="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell_$$.stderr.curl.pipe.XXXXXXXXXX)"
+  \mkfifo "$stderr_pipe" "$span_handle_forward" "$api_recording_finished"
+  _otel_pipe_curl_stderr "$is_verbose" "${OTEL_SHELL_INJECT_HTTP_HANDLE_FILE:-}" "${span_handle_forward:-/dev/null}" "${api_recording_finished:-/dev/null}" < "$stderr_pipe" >&2 &
   local stderr_pid="$!"
   \set -- "$@" -H "traceparent: $TRACEPARENT" -H "tracestate: $TRACESTATE" -v --no-progress-meter
   local exit_code=0
-  if \[ -n "$api" ]; then _otel_call_curl_api "$span_handle_forward" "$api_recording_finished" "$api" "$@"; else ( : > "$api_recording_finished" & ); ( \cat < "$span_handle_forward" > /dev/null & ); _otel_call "$@"; fi 2> "$stderr_pipe" || exit_code="$?"
+  if \[ -n "$api" ]; then _otel_call_curl_api "$span_handle_forward" "$api_recording_finished" "$api" "$@"; else _otel_call "$@"; fi 2> "$stderr_pipe" || exit_code="$?"
   \wait "$stderr_pid"
-  \rm -rf "$stderr_pipe" "$span_handle_forward" "$api_recording_finished"
+  \rm -rf "$stderr_pipe"
+  if \[ -n "$api" ]; then \rm -rf "$stderr_pipe" "$span_handle_forward" "$api_recording_finished"; fi
   if \[ -f /opt/opentelemetry_shell/libinjecthttpheader.so ]; then
     if \[ -n "${OLD_LD_PRELOAD:-}" ]; then
       export LD_PRELOAD="$OLD_LD_PRELOAD"
