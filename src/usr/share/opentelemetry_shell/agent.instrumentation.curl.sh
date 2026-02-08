@@ -248,7 +248,7 @@ _otel_curl_record_api_response_llm_openai() {
           \[ "$system_fingerprint" = null ] || otel_observation_attribute_typed "$observation_handle" string openai.response.system_fingerprint="$system_fingerprint"
           \[ "$service_tier" = null ] || otel_observation_attribute_typed "$observation_handle" string openai.response.service_tier="$service_tier"
           \[ "$model" = null ] || otel_observation_attribute_typed "$observation_handle" string gen_ai.response.model="$model"
-          otel_counter_observe "$gen_ai_client_token_usage_handle" "$observation_handle"
+          otel_counter_observe "$gen_ai_client_operation_duration_handle" "$observation_handle"
         fi
         ;;
       *) ;;
