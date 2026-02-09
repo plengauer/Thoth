@@ -140,6 +140,18 @@ def guess_cloud_resource_detectors():
 def handle(scope, version, command, arguments):
     global initialized_traces, initialized_metrics, initialized_logs, final_resources
     
+    if command == 'COUNTER_CREATE' and not initialized_metrics:
+        tokens = arguments.split(' ', 5)
+        type = tokens[1] if len(tokens) > 1 else None
+        if type == 'histogram':
+            name = tokens[2] if len(tokens) > 2 else None
+            if len(tokens) == 6:
+                explicit_bucket_boundaries = tokens[4]
+                if explicit_bucket_boundaries and name:
+                    boundaries = [float(b) for b in explicit_bucket_boundaries.split(',') if b]
+                    if boundaries:
+                        histogram_views[name] = boundaries
+    
     if command.startswith("SPAN_") and not initialized_traces:
         from opentelemetry.trace import set_tracer_provider, get_current_span
         from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
@@ -213,6 +225,8 @@ def handle(scope, version, command, arguments):
         from opentelemetry.sdk.metrics import MeterProvider
         from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader, ConsoleMetricExporter
         from opentelemetry.exporter.otlp.proto.http.metric_exporter import OTLPMetricExporter
+        from opentelemetry.sdk.metrics.view import View
+        from opentelemetry.sdk.metrics.aggregation import ExplicitBucketHistogramAggregation
         metrics_exporters = os.environ.get('OTEL_METRICS_EXPORTER', 'otlp')
         if metrics_exporters:
             metric_readers = []
@@ -227,7 +241,13 @@ def handle(scope, version, command, arguments):
                     metric_readers.append(PeriodicExportingMetricReader(OTLPMetricExporter()))
                 else:
                     raise Exception('Unknown exporter: ' + metrics_exporter)
-            set_meter_provider(MeterProvider(metric_readers = metric_readers, resource=final_resources))
+            views = []
+            for histogram_name, boundaries in histogram_views.items():
+                views.append(View(
+                    instrument_name=histogram_name,
+                    aggregation=ExplicitBucketHistogramAggregation(boundaries=boundaries)
+                ))
+            set_meter_provider(MeterProvider(metric_readers = metric_readers, resource=final_resources, views=views if views else None))
         initialized_metrics = True
     
     if command.startswith("LOG_") and not initialized_logs:
@@ -476,13 +496,6 @@ def handle(scope, version, command, arguments):
         elif type == 'gauge':
             counters[counter_id] = meter.create_gauge(name, unit=unit, description=description)
         elif type == 'histogram':
-            if explicit_bucket_boundaries:
-                try:
-                    boundaries = [float(b) for b in explicit_bucket_boundaries.split(',') if b]
-                    if boundaries:
-                        histogram_views[name] = boundaries
-                except ValueError as e:
-                    print(f'SDK Warning: Invalid bucket boundaries for histogram {name}: {explicit_bucket_boundaries}', file=sys.stderr)
             counters[counter_id] = meter.create_histogram(name, unit=unit, description=description)
         elif type == 'observable_counter':
             import functools
