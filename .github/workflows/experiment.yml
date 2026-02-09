@@ -37,4 +37,3 @@ jobs:
           RENOVATE_DRY_RUN: full
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
-      - run: sudo docker logs "$(sudo docker container ls -q)"
