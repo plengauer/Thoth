@@ -22,8 +22,7 @@ jobs:
         with:
           github_token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           job_level_instrumentation_exclude: 'Refresh Demos,Shell,GitHub,Workflow Example,Experiment'
-          job_level_instrumentation_secret_redaction_strategy: list
-          job_level_instrumentation_copilot: true
+          repository_level_instrumentation: true
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
