@@ -142,8 +142,8 @@ def handle(scope, version, command, arguments):
     
     if command == 'COUNTER_CREATE' and not initialized_metrics:
         tokens = arguments.split(' ', 5)
-        type = tokens[1] if len(tokens) > 1 else None
-        if type == 'histogram':
+        instrument_type = tokens[1] if len(tokens) > 1 else None
+        if instrument_type == 'histogram':
             name = tokens[2] if len(tokens) > 2 else None
             if len(tokens) == 6:
                 explicit_bucket_boundaries = tokens[4]
@@ -247,7 +247,7 @@ def handle(scope, version, command, arguments):
                     instrument_name=histogram_name,
                     aggregation=ExplicitBucketHistogramAggregation(boundaries=boundaries)
                 ))
-            set_meter_provider(MeterProvider(metric_readers = metric_readers, resource=final_resources, views=views if views else None))
+            set_meter_provider(MeterProvider(metric_readers = metric_readers, resource=final_resources, views=views))
         initialized_metrics = True
     
     if command.startswith("LOG_") and not initialized_logs:
