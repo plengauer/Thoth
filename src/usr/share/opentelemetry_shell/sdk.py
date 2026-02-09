@@ -475,9 +475,7 @@ def handle(scope, version, command, arguments):
         elif type == 'gauge':
             counters[counter_id] = meter.create_gauge(name, unit=unit, description=description)
         elif type == 'histogram':
-            if explicit_bucket_boundaries:
-                [float(b) for b in explicit_bucket_boundaries.split(',') if b]
-            counters[counter_id] = meter.create_histogram(name, unit=unit, description=description)
+            counters[counter_id] = meter.create_histogram(name, unit=unit, explicit_bucket_boundaries_advisory=[float(b) for b in explicit_bucket_boundaries.split(',') if b] if explicit_bucket_boundaries else None, description=description)
         elif type == 'observable_counter':
             import functools
             delayed_observations[counter_id] = {}
