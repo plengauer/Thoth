@@ -30,6 +30,15 @@ inputs:
   check_suite_level_instrumentation_use_container:
     description: 'Use a container image to avoid repeated installation on every run.'
     default: true
+  repository_level_instrumentation:
+    description: 'Deploy repository-level instrumentation to collect VCS metrics (opt-in)'
+    default: false
+  repository_level_instrumentation_file_name:
+    description: 'File name for repository instrumentation workflow'
+    default: 'observability_repository.yml'
+  repository_level_instrumentation_use_container:
+    description: 'Use a container image to avoid repeated installation on every run.'
+    default: true
   job_level_instrumentation:
     default: true
   job_level_instrumentation_exclude:
@@ -212,10 +221,6 @@ runs:
       shell: bash
       run: |
         path="${{ inputs.workflows_directory }}/${{ inputs.check_suite_instrumentation_file_name }}"
-        if [ -r "$path" ]; then
-          echo "Check suite instrumentation already exists at $path"
-          exit 0
-        fi
         echo '
         name: OpenTelemetry
         on:
@@ -252,6 +257,59 @@ runs:
           echo ::warning::'Runner image '"$image"' is unavailable, skipping configuration since it its only for optimization. A common cause for this is that the package is not publicly visible in the ghcr. This needs to be configured manually. Another possible cause is that it cannot be identified (no docker command available and token cannot read packages)'
         fi
   
+    - name: "Find repository-level observability"
+      id: find-repository-level-instrumentation
+      shell: bash
+      run: |
+        (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
+          cat "$workflow_file" | yq .jobs.*.steps[].uses | grep -q /actions/instrument/repository && echo path="$workflow_file" >> "$GITHUB_OUTPUT" && break || true
+        done
+    - name: "Deploy repository-level instrumentation"
+      if: ${{ inputs.repository_level_instrumentation == 'true' }}
+      shell: bash
+      run: |
+        path="${{ inputs.workflows_directory }}/${{ inputs.repository_level_instrumentation_file_name }}"
+        echo '
+        name: OpenTelemetry
+        on:
+          pull_request:
+            types: [ opened, reopened, closed ]
+          pull_request_review:
+            types: [ submitted ]
+          create:
+          delete:
+          push:
+        jobs:
+          collect:
+            runs-on: ubuntu-latest
+            concurrency:
+              group: otel-repository
+            permissions:
+              contents: read
+            steps:
+              - uses: ${{ steps.determine-repository.outputs.repository }}/actions/instrument/repository@${{ steps.determine-instrumentation-version.outputs.version }}
+        ' > "$path"
+        cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/deploy*") | .env | keys[]' | grep '^OTEL_' | while read -r key; do
+          value="$(cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/deploy*") | .env.'"$key")"
+          yq -i '.jobs[].steps[0].env.'"$key"' = "'"$value"'"' "$path"
+        done
+    - name: "Deploy repository-level startup optimization"
+      if: ${{ inputs.repository_level_instrumentation == 'true' && inputs.repository_level_instrumentation_use_container == 'true' }}
+      shell: bash
+      run: |
+        if [ -w "${{ steps.find-repository-level-instrumentation.outputs.path }}" ]; then path="${{ steps.find-repository-level-instrumentation.outputs.path }}"; else path="${{ inputs.workflows_directory }}/${{ inputs.repository_level_instrumentation_file_name }}"; fi
+        if cat "$path" | yq '.jobs.collect.container' | grep -q '^null$'; then
+          name=opentelemetry-github-workflow-instrumentation-runner
+          version=${{ steps.determine-instrumentation-version.outputs.version }}
+          [ "$version" != main ] || exit 0
+          image=ghcr.io/${{ github.repository_owner }}/"$name":"$version"
+          if curl -s --fail --retry 8 --header "Authorization: Bearer ${{ inputs.github_token }}" "${GITHUB_API_URL:-https://api.github.com}"/users/${{ github.repository_owner }}/packages/container/"$name"/versions | jq .[].metadata.container.tags[] -r | grep -qE '^'"$version"'$' \
+            || (type docker 1> /dev/null 2> /dev/null && sudo docker pull "$image"); then
+            yq -i ".jobs.collect.container = \"$image\"" "$path" && exit 0
+          fi
+          echo ::warning::'Runner image '"$image"' is unavailable, skipping configuration since it its only for optimization. A common cause for this is that the package is not publicly visible in the ghcr. This needs to be configured manually. Another possible cause is that it cannot be identified (no docker command available and token cannot read packages)'
+        fi
+
     - name: "Deploy Copilot Setup"
       if: ${{ inputs.job_level_instrumentation == 'true' && inputs.job_level_instrumentation_copilot == 'true' }}
       shell: bash
