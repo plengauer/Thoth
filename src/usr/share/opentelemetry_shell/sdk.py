@@ -458,9 +458,12 @@ def handle(scope, version, command, arguments):
         type = tokens[1]
         name = tokens[2]
         unit = tokens[3]
-        if type == 'histogram' and len(tokens) > 5:
+        if type == 'histogram' and len(tokens) == 6:
             explicit_bucket_boundaries = tokens[4]
             description = tokens[5]
+        elif type == 'histogram' and len(tokens) == 5:
+            explicit_bucket_boundaries = None
+            description = tokens[4]
         else:
             explicit_bucket_boundaries = None
             description = tokens[4] if len(tokens) > 4 else ''
@@ -478,8 +481,8 @@ def handle(scope, version, command, arguments):
                     boundaries = [float(b) for b in explicit_bucket_boundaries.split(',') if b]
                     if boundaries:
                         histogram_views[name] = boundaries
-                except ValueError:
-                    pass
+                except ValueError as e:
+                    print(f'SDK Warning: Invalid bucket boundaries for histogram {name}: {explicit_bucket_boundaries}', file=sys.stderr)
             counters[counter_id] = meter.create_histogram(name, unit=unit, description=description)
         elif type == 'observable_counter':
             import functools
