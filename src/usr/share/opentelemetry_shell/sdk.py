@@ -20,6 +20,7 @@ next_counter_id = 0
 observations = {}
 next_observation_id = 0
 delayed_observations = {}
+histogram_views = {}
 
 auto_end = False
 
@@ -452,12 +453,17 @@ def handle(scope, version, command, arguments):
         from opentelemetry.metrics import get_meter
         from opentelemetry.sdk.metrics import MeterProvider
         global next_counter_id
-        tokens = arguments.split(' ', 4)
+        tokens = arguments.split(' ', 5)
         response_path = tokens[0]
         type = tokens[1]
         name = tokens[2]
         unit = tokens[3]
-        description = tokens[4]
+        if type == 'histogram' and len(tokens) > 5:
+            explicit_bucket_boundaries = tokens[4]
+            description = tokens[5]
+        else:
+            explicit_bucket_boundaries = None
+            description = tokens[4] if len(tokens) > 4 else ''
         meter = get_meter(scope, version)
         counter_id = str(next_counter_id)
         if type == 'counter':
@@ -466,6 +472,15 @@ def handle(scope, version, command, arguments):
             counters[counter_id] = meter.create_up_down_counter(name, unit=unit, description=description)
         elif type == 'gauge':
             counters[counter_id] = meter.create_gauge(name, unit=unit, description=description)
+        elif type == 'histogram':
+            if explicit_bucket_boundaries:
+                try:
+                    boundaries = [float(b) for b in explicit_bucket_boundaries.split(',') if b]
+                    if boundaries:
+                        histogram_views[name] = boundaries
+                except ValueError:
+                    pass
+            counters[counter_id] = meter.create_histogram(name, unit=unit, description=description)
         elif type == 'observable_counter':
             import functools
             delayed_observations[counter_id] = {}
@@ -489,7 +504,9 @@ def handle(scope, version, command, arguments):
         observation_id = tokens[1]
         observation = observations[observation_id]
         counter = counters[counter_id]
-        if hasattr(counter, 'add'):
+        if hasattr(counter, 'record'):
+            counter.record(observation['amount'], observation['attributes'])
+        elif hasattr(counter, 'add'):
             counter.add(observation['amount'], observation['attributes'])
         elif hasattr(counter, 'set'):
             counter.set(observation['amount'], observation['attributes'])
