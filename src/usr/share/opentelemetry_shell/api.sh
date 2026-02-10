@@ -317,10 +317,16 @@ otel_counter_create() {
   local type="$1"
   local name="$2"
   local unit="${3:-1}"
-  local description="${4:-}"
   local response_pipe="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.counter_handle.pipe.XXXXXXXXXX)"
   \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
-  _otel_sdk_communicate "COUNTER_CREATE" "$response_pipe" "$type" "$name" "$unit" "$description"
+  if \[ "$type" = histogram ]; then
+    local buckets="${4:-}"
+    local description="${5:-}"
+    _otel_sdk_communicate "COUNTER_CREATE" "$response_pipe" "$type" "$name" "$unit" "$buckets" "$description"
+  else
+    local description="${4:-}"
+    _otel_sdk_communicate "COUNTER_CREATE" "$response_pipe" "$type" "$name" "$unit" "$description"
+  fi
   local handle
   \read handle < "$response_pipe" || \true
   \echo "$handle"
