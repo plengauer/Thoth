@@ -13,7 +13,7 @@ observation_handle=$(otel_observation_create 72)
 otel_observation_attribute $observation_handle foo=bar
 otel_counter_observe $counter_handle $observation_handle
 
-histogram_handle=$(otel_counter_create histogram my.histogram ms 'this is a histogram')
+histogram_handle=$(otel_counter_create histogram my.histogram ms '' 'this is a histogram')
 observation_handle=$(otel_observation_create 2.5)
 otel_observation_attribute $observation_handle operation=test
 otel_counter_observe $histogram_handle $observation_handle
