@@ -77,7 +77,7 @@ jobs:
         with:
           name: packages_${{ inputs.ref }}
       - run: cp package.deb tests/package.deb
-      - uses: docker/build-push-action@v6.18.0 # some docker actions have otel built-in
+      - uses: docker/build-push-action@v6.19.1 # some docker actions have otel built-in
         with:
           context: ./tests/
           tags: test
