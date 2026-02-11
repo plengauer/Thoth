@@ -373,7 +373,7 @@ otel_counter_observe "$counter_handle" "$observation_handle"
 For histograms, you can optionally specify explicit bucket boundaries as a comma-separated list of values as an additional parameter after the unit. Currently, histograms use default buckets; explicit bucket boundary configuration via Views is planned for a future enhancement:
 ```bash
 # Histogram without explicit buckets (uses defaults)
-histogram_handle="$(otel_counter_create histogram my.duration.histogram ms 'this is a histogram metric')"
+histogram_handle="$(otel_counter_create histogram my.duration.histogram ms '' 'this is a histogram metric')"
 observation_handle="$(otel_observation_create 2.5)"
 otel_observation_attribute "$observation_handle" operation=fetch
 otel_counter_observe "$histogram_handle" "$observation_handle"
