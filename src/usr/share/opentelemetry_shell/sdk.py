@@ -452,20 +452,16 @@ def handle(scope, version, command, arguments):
         from opentelemetry.metrics import get_meter
         from opentelemetry.sdk.metrics import MeterProvider
         global next_counter_id
-        tokens = arguments.split(' ', 5)
+        tokens = arguments.split(' ', 4)
         response_path = tokens[0]
         type = tokens[1]
         name = tokens[2]
         unit = tokens[3]
-        if type == 'histogram' and len(tokens) == 6:
-            explicit_bucket_boundaries = tokens[4]
-            description = tokens[5]
-        elif type == 'histogram' and len(tokens) == 5:
-            explicit_bucket_boundaries = None
-            description = tokens[4]
-        else:
-            explicit_bucket_boundaries = None
-            description = tokens[4] if len(tokens) > 4 else ''
+        description = tokens[4]
+        if type == 'histogram':
+            tokens = description.split(' ', 1)
+            explicit_bucket_boundaries = tokens[0]
+            description = tokens[1]
         meter = get_meter(scope, version)
         counter_id = str(next_counter_id)
         if type == 'counter':
