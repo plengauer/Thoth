@@ -136,6 +136,13 @@ _otel_pipe_curl_stderr() {
       otel_counter_observe "$http_client_open_connections_handle" "$observation_handle"
     fi
     if \[ -z "$span_handle" ] && \[ -n "$host" ] && \[ -n "$ip" ] && \[ -n "$port" ] && _otel_string_starts_with "$line" "> " && \[ "$is_receiving" = 1 ]; then
+      local is_receiving=0
+      local time_start="$(\date +%s.%N)"
+      local protocol="$(\printf '%s' "$line" | \cut -d ' ' -f 4 | \cut -d / -f 1 | \tr '[:upper:]' '[:lower:]')"
+      local version="$(\printf '%s' "$line" | \cut -d ' ' -f 4 | \cut -d / -f 2)"
+      if \[ "$protocol" = http ] && \[ "$port" = 443 ]; then local protocol=https; fi
+      local path_and_query="$(\printf '%s' "$line" | \cut -d ' ' -f 3)"
+      local method="$(\printf '%s' "$line" | \cut -d ' ' -f 2)"
       local observation_handle="$(otel_observation_create 1)"
       otel_observation_attribute_typed "$observation_handle" string network.protocol.name="$protocol"
       otel_observation_attribute_typed "$observation_handle" string network.protocol.version="$version"
@@ -151,13 +158,6 @@ _otel_pipe_curl_stderr() {
       otel_observation_attribute_typed "$observation_handle" string url.scheme="$scheme"
       otel_observation_attribute_typed "$observation_handle" string http.request.method="$method"
       otel_counter_observe "$http_client_active_requests" "$observation_handle"
-      local is_receiving=0
-      local time_start="$(\date +%s.%N)"
-      local protocol="$(\printf '%s' "$line" | \cut -d ' ' -f 4 | \cut -d / -f 1 | \tr '[:upper:]' '[:lower:]')"
-      local version="$(\printf '%s' "$line" | \cut -d ' ' -f 4 | \cut -d / -f 2)"
-      if \[ "$protocol" = http ] && \[ "$port" = 443 ]; then local protocol=https; fi
-      local path_and_query="$(\printf '%s' "$line" | \cut -d ' ' -f 3)"
-      local method="$(\printf '%s' "$line" | \cut -d ' ' -f 2)"
       if \[ -n "$span_handle_file" ] && \[ -f "$span_handle_file" ]; then local span_handle="$(\cat "$span_handle_file")"; \rm "$span_handle_file"; fi
       if \[ -z "$span_handle" ]; then
         local span_handle="$(otel_span_start CLIENT "$(\printf '%s' "$line" | \cut -d ' ' -f 2)")"
