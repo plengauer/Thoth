@@ -138,7 +138,7 @@ _otel_pipe_wget_stderr() {
       otel_observation_attribute_typed "$observation_handle" string server.port="$port"
       otel_observation_attribute_typed "$observation_handle" string url.scheme="$protocol"
       otel_observation_attribute_typed "$observation_handle" string http.request.method=GET
-      otel_counter_observe "$http_client_active_requests" "$observation_handle"
+      otel_counter_observe "$http_client_active_requests_handle" "$observation_handle"
       if \[ -n "$span_handle_file" ]; then while ! \[ -f "$span_handle_file" ]; do \sleep 1; done; local span_handle="$(\cat "$span_handle_file")"; \rm "$span_handle_file"; fi
       if \[ -z "$span_handle" ]; then
         local span_handle="$(otel_span_start CLIENT GET)"
