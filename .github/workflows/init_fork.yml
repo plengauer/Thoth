@@ -8,7 +8,7 @@ jobs:
     permissions:
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.42.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.42.2
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
@@ -19,7 +19,7 @@ jobs:
       - run: |
           curl --fail -H "Authorization: Bearer ${{ secrets.ACTIONS_GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_REPOSITORY"/actions/workflows'?per_page=100' | jq '.workflows[].id' \
             | xargs -I '{}' curl --fail -H "Authorization: Bearer ${{ secrets.ACTIONS_GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_REPOSITORY"/actions/workflows/'{}'/enable -X PUT
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
       - run: |

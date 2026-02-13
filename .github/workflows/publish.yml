@@ -17,13 +17,13 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.42.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.42.2
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
         with:
           secrets_to_redact: '["${{ github.token }}"]'
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
         with:
           fetch-depth: 0
           fetch-tags: true
@@ -72,14 +72,14 @@ jobs:
       id-token: write
       attestations: write
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.42.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.42.2
         with:
-          secrets_to_redact: '["${{ github.token }}","${{ secrets.PACKAGES_GITHUB_TOKEN }}"]'
+          secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}","${{ secrets.PACKAGES_GITHUB_TOKEN }}"]'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
 
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ matrix.ref }}
       - run: echo "version=$(cat VERSION)" >> "$GITHUB_OUTPUT"
@@ -88,15 +88,15 @@ jobs:
         with:
           name: packages_${{ matrix.ref }}
 
-      - uses: actions/attest-build-provenance@v3.1.0
+      - uses: actions/attest-build-provenance@v3.2.0
         with:
           subject-path: ./package.deb
           subject-name: opentelemetry-shell_${{ steps.version.outputs.version }}.deb
-      - uses: actions/attest-build-provenance@v3.1.0
+      - uses: actions/attest-build-provenance@v3.2.0
         with:
           subject-path: ./package.rpm
           subject-name: opentelemetry-shell_${{ steps.version.outputs.version }}.rpm
-      - uses: actions/attest-build-provenance@v3.1.0
+      - uses: actions/attest-build-provenance@v3.2.0
         with:
           subject-path: ./package.apk
           subject-name: opentelemetry-shell_${{ steps.version.outputs.version }}.apk

@@ -15,7 +15,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v7.0.0
@@ -35,7 +35,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v7.0.0
@@ -58,7 +58,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v7.0.0
@@ -77,7 +77,7 @@ jobs:
         with:
           name: packages_${{ inputs.ref }}
       - run: cp package.deb tests/package.deb
-      - uses: docker/build-push-action@v6.18.0 # some docker actions have otel built-in
+      - uses: docker/build-push-action@v6.19.2 # some docker actions have otel built-in
         with:
           context: ./tests/
           tags: test
@@ -94,7 +94,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v7.0.0
@@ -122,7 +122,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v7.0.0
@@ -134,7 +134,7 @@ jobs:
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
-      - uses: plengauer/autoversion@v2.2.0
+      - uses: plengauer/autoversion@v2.3.0
         with:
           github_token: ${{ github.token }}
           path_exclude: ./
@@ -148,7 +148,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v7.0.0
@@ -160,7 +160,7 @@ jobs:
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
-      - uses: renovatebot/github-action@v44.2.4 # node action with call to docker, docker flags that make injection more complicated, then call a node script via exec that already is injected with otel
+      - uses: renovatebot/github-action@v44.2.6 # node action with call to docker, docker flags that make injection more complicated, then call a node script via exec that already is injected with otel
         env:
           RENOVATE_DRY_RUN: full
           RENOVATE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -186,19 +186,19 @@ jobs:
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
-      - uses: github/codeql-action/init@v4.31.10 # node action will call java will call node
+      - uses: github/codeql-action/init@v4.32.2 # node action will call java will call node
         with:
           languages: javascript-typescript
           build-mode: none
-      - uses: github/codeql-action/analyze@v4.31.10 # node action will call java will call node
+      - uses: github/codeql-action/analyze@v4.32.2 # node action will call java will call node
         with:
           category: "/language:javascript-typescript"
           upload: never
-      - uses: github/codeql-action/init@v4.31.10
+      - uses: github/codeql-action/init@v4.32.2
         with:
           languages: python
           build-mode: none
-      - uses: github/codeql-action/analyze@v4.31.10 # node action will call java will call python
+      - uses: github/codeql-action/analyze@v4.32.2 # node action will call java will call python
         with:
           category: "/language:python"
           upload: never
@@ -248,7 +248,7 @@ jobs:
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
         with:
           path: repo_with_submodules
           repository: robocorp/example-use-git-submodule-for-shared-code
@@ -285,7 +285,7 @@ jobs:
     outputs:
       foo: ${{ steps.my-step.outputs.foo }}
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v7.0.0
@@ -307,7 +307,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v7.0.0
@@ -327,7 +327,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v7.0.0
@@ -349,7 +349,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
       - uses: actions/download-artifact@v7.0.0
         with:
           name: packages_${{ inputs.ref }}
@@ -374,7 +374,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v7.0.0
@@ -395,7 +395,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v7.0.0
@@ -406,7 +406,7 @@ jobs:
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
-          secrets_to_redact: '{"github.token": "${{ github.token }}", "url": "https://example.com/foo/bar", "regex": "[a-zA-Z]*"}'
+          secrets_to_redact: '{"github.token": "${{ github.token }}", "url": "https://example.com/foo/bar", "regex": "[a-zA-Z]*", "quote": "foo\"bar"}'
         env:
           OTEL_LOGS_EXPORTER: otlp
           OTEL_METRICS_EXPORTER: otlp
@@ -437,7 +437,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v7.0.0
@@ -474,7 +474,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v7.0.0
@@ -510,7 +510,7 @@ jobs:
       security-events: none
       statuses: none
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v7.0.0
@@ -534,7 +534,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v7.0.0
@@ -560,7 +560,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v7.0.0
@@ -578,7 +578,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v7.0.0
@@ -596,7 +596,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v7.0.0
@@ -613,7 +613,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v7.0.0
@@ -656,7 +656,7 @@ jobs:
     steps:
       - id: filename
         run: echo "otlp=$(mktemp)" >> "$GITHUB_OUTPUT"
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v7.0.0
@@ -713,7 +713,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v7.0.0
@@ -743,7 +743,7 @@ jobs:
     permissions:
       actions: read
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
       - uses: ./actions/instrument/deploy
@@ -773,7 +773,7 @@ jobs:
       REPOSITORY_TEMPLATE: thoth-deploy-test-repository-${{ matrix.private  }}-${{ matrix.secret_redaction_strategy }}
       ASSERT_RECEIVING_DATA: 'false'
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.42.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.42.2
         with:
           secrets_to_redact: '["${{ github.token }}","${{ secrets.TEST_GITHUB_TOKEN }}"]'
         env:
@@ -787,7 +787,7 @@ jobs:
           curl -L -H "Authorization: Bearer ${{ secrets.TEST_GITHUB_TOKEN }}" -X DELETE "${GITHUB_API_URL:-https://api.github.com}"/repos/${{ steps.config.outputs.user }}/${{ steps.config.outputs.repository }} || true
       - run: |
           curl -L -H "Authorization: Bearer ${{ secrets.TEST_GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/user/repos -d '{"name":"${{ steps.config.outputs.repository }}","private":${{ matrix.private }},"auto_init":true}'
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
         with:
           repository: "${{ steps.config.outputs.user }}/${{ steps.config.outputs.repository }}"
           token: ${{ secrets.TEST_GITHUB_TOKEN }}

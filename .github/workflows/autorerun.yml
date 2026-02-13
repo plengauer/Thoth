@@ -14,14 +14,15 @@ jobs:
       contents: none
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.42.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.42.2
         with:
           secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}"]'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - uses: plengauer/autorerun@v0.35.0
+      - uses: plengauer/autorerun@v0.37.0
         with:
           github_token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           custom_patterns: |
             fatal: 'v.*' is not a commit and a branch 'release/.*' cannot be created from it
+            jq: parse error: Invalid string: control characters from .* through .* must be escaped

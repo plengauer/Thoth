@@ -17,7 +17,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v7.0.0
@@ -34,7 +34,7 @@ jobs:
     permissions:
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.42.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.42.2
         with:
           secrets_to_redact: '["${{ github.token }}"]'
         env:
@@ -76,18 +76,18 @@ jobs:
     permissions:
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.42.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.42.2
         with:
           secrets_to_redact: '["${{ github.token }}","${{ secrets.DOCKERHUB_TOKEN }}","${{ secrets.DOCKERHUB_USERNAME }}"]'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
       - id: key
         run: cat .github/images.json .github/workflows/test_shell.yml meta/*/* | md5sum | cut -d ' ' -f 1 | xargs -I '{}' echo "key={}" >> "$GITHUB_OUTPUT"
-      - uses: actions/cache@v5.0.2
+      - uses: actions/cache@v5.0.3
         with:
           path: images.json
           key: images ${{ steps.key.outputs.key }}
@@ -131,13 +131,13 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.42.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.42.2
         with:
           secrets_to_redact: '["${{ github.token }}"]'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
       - run: |
@@ -170,13 +170,13 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.42.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.42.2
         with:
           secrets_to_redact: '["${{ github.token }}"]'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
       - run: |
@@ -244,7 +244,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
       - run: cat INSTALL.sh | sh -e
@@ -260,7 +260,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
       - run: |
@@ -292,7 +292,7 @@ jobs:
       actions: read
     steps:
       # - run: sudo docker login -u '${{ secrets.DOCKERHUB_USERNAME }}' -p '${{ secrets.DOCKERHUB_TOKEN }}'
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v7.0.0
@@ -319,7 +319,7 @@ jobs:
         with:
           distribution: Ubuntu-24.04
           wsl-version: ${{ matrix.version }}
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v7.0.0
@@ -347,7 +347,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.42.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.42.2
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -398,7 +398,7 @@ jobs:
     permissions:
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.42.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.42.2
         with:
           secrets_to_redact: '["${{ github.token }}"]'
         env:

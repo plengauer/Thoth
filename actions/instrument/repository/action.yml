@@ -1,0 +1,21 @@
+name: 'OpenTelemetry Repository'
+description: 'Observe GitHub Repository with OpenTelemetry'
+branding:
+  icon: 'activity'
+  color: 'blue'
+inputs:
+  github_token:
+    description: 'A GitHub token for API access (read-only)'
+    default: '${{ github.token }}'
+  self_monitoring:
+    description: 'Submit self-monitoring metrics to the OpenTelemetry project'
+    default: auto
+  self_monitoring_anonymize:
+    description: 'Anonymize self-monitoring metrics'
+    default: auto
+  debug:
+    description: 'Enable debug logging'
+    default: ${{ runner.debug }}
+runs:
+  using: 'node24'
+  main: 'main.js'

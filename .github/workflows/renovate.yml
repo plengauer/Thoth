@@ -14,13 +14,13 @@ jobs:
       contents: none
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.42.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.42.2
         with:
           secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}"]'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - uses: renovatebot/github-action@v44.2.4
+      - uses: renovatebot/github-action@v44.2.6
         env:
           RENOVATE_REPOSITORIES: ${{ github.repository }}
         with:
@@ -32,13 +32,13 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.42.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.42.2
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
         with:
           secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}"]'
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
       - run: |
           python3 -m venv venv
           . venv/bin/activate
@@ -51,7 +51,7 @@ jobs:
           min_version_rpm="$(cat meta/rpm/*.spec | grep '^Requires:' | tr ',' '\n' | grep -F -- 'python3 >=' | cut -d '=' -f 2- | cut -d . -f 2)"
           [ "$min_version_debian" -ge "$min_version_otel" ] || sed -i "s/python3 >= $min_version_rpm/python3 >= 3.$min_version_otel/g" meta/rpm/*.spec
       - id: open-pr
-        uses: peter-evans/create-pull-request@v8.0.0
+        uses: peter-evans/create-pull-request@v8.1.0
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           commit-message: "Renovate python dependency"
@@ -76,13 +76,13 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.42.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.42.2
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
         with:
           secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}"]'
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
       - run: |
           curl -s --fail https://api.launchpad.net/devel/debian/series > /tmp/launchpad.debian.json
           oldest="debian:$(jq < /tmp/launchpad.debian.json '.entries[] | select(.active == true) | select(.status == "Supported") | .name' -r | head -n 2 | tail -n 1)"
@@ -127,7 +127,7 @@ jobs:
           dev="$latest"
           cat .github/images.json | jq ".alpine.oldest = \"$oldest\"" | jq ".alpine.stable = \"$stable\"" | jq ".alpine.latest = \"$latest\"" | jq ".alpine.dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/images.json
       - id: open-pr
-        uses: peter-evans/create-pull-request@v8.0.0
+        uses: peter-evans/create-pull-request@v8.1.0
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           commit-message: "Update test images"
@@ -152,17 +152,17 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.42.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.42.2
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
         with:
           secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}"]'
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
       - run: |
           sed -i "s/$(($(date +%Y) - 1))/$(date +%Y)/g" LICENSE
       - id: open-pr
-        uses: peter-evans/create-pull-request@v8.0.0
+        uses: peter-evans/create-pull-request@v8.1.0
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           commit-message: "Renovate license date"
