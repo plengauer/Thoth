@@ -67,7 +67,7 @@ _otel_pipe_wget_stderr() {
   local http_client_response_body_size_handle="$(otel_counter_create histogram http.client.response.body.size By '' 'Size of HTTP client response bodies')"
   local http_client_open_connections_handle="$(otel_counter_create up_down_counter http.client.open_connections '{connection}' 'Number of outbound HTTP connections that are currently active or idle on the client')"
   local http_client_connection_duration_handle="$(otel_counter_create histogram http.client.connection.duration s '0.01,0.02,0.05,0.1,0.2,0.5,1,2,5,10,30,60,120,300' 'The duration of the successfully established outbound HTTP connections')"
-  local http_client_active_requests="$(otel_counter_create up_down_counter http.client.active_requests '{request}' 'Number of active HTTP requests')"
+  local http_client_active_requests_handle="$(otel_counter_create up_down_counter http.client.active_requests '{request}' 'Number of active HTTP requests')"
   while \read -r line; do
     \echo "$line"
     if _otel_string_starts_with "$line" --; then
