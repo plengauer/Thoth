@@ -113,7 +113,7 @@ _otel_pipe_wget_stderr() {
         otel_observation_attribute_typed "$observation_handle" string server.port="$port"
         otel_observation_attribute_typed "$observation_handle" string url.scheme="$protocol"
         otel_observation_attribute_typed "$observation_handle" string http.request.method=GET
-        otel_counter_observe "$http_client_active_requests" "$observation_handle"
+        otel_counter_observe "$http_client_active_requests_handle" "$observation_handle"
         local observation_handle="$(otel_observation_create -1)"
         otel_observation_attribute_typed "$observation_handle" string network.protocol.name="$protocol"
         otel_observation_attribute_typed "$observation_handle" string network.peer.address="$ip"
