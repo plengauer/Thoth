@@ -21,7 +21,7 @@ jobs:
     outputs:
       dirs: ${{ steps.demos.outputs.dirs }}
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.42.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.43.1
         with:
           secrets_to_redact: '["${{ github.token }}"]'
         env:
