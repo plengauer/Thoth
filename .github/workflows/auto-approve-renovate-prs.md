@@ -27,8 +27,7 @@ safe-outputs:
       permissions:
         pull-requests: write
       steps:
-        - name: Approve Pull Request
-          env:
+        - env:
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             PR_NUMBER: ${{ github.event.pull_request.number }}
             REPO: ${{ github.repository }}
@@ -53,12 +52,11 @@ Carefully analyze the current pull request to determine if it meets ALL of the f
 
 ### 1. PR Status Check
 - The PR must NOT be a draft
-- Use the GitHub toolset to check `github.event.pull_request.draft` status
 
 ### 2. Author Verification
 Verify that ALL commits in the PR branch are authored by ONLY:
-- Renovate bot (username: `renovate[bot]` or email like `renovate[bot]@users.noreply.github.com`)
-- Repository owner: `plengauer` (the owner of the repository `plengauer/Thoth`)
+- Renovate bot
+- Repository owner
 
 Use the GitHub toolset to:
 - List all commits in the PR
@@ -71,9 +69,7 @@ Verify that ALL file changes in the PR are ONLY:
   - `package.json` and `package-lock.json` (Node.js)
   - `requirements.txt` (Python)
   - `pom.xml` (Java/Maven)
-  - `meta/debian/control` (Debian dependencies)
   - `meta/rpm/*.spec` (RPM dependencies)
-  - `.github/images.json` (Docker images)
   - Any other package manager lock files
 - Version bump in the root-level `VERSION` file ONLY
 
