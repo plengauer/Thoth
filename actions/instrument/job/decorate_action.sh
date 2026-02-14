@@ -89,6 +89,7 @@ record_github_logs() {
   done
 }
 
+export OTEL_SHELL_CONFIG_OBSERVE_PIPES=FALSE
 . otelapi.sh
 _otel_resource_attributes_process() {
   :
@@ -218,6 +219,4 @@ rm "$log_0_pipe" "$log_1_pipe"
 
 otel_shutdown
 echo "$_OTEL_GITHUB_STEP_ACTION_TYPE" "$GITHUB_ACTION_REPOSITORY" >> /tmp/opentelemetry_shell.github.step.log
-pstree -a $$ >&2
-pstree -a >&2
 exit "$exit_code"
