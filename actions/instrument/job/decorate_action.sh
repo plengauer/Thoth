@@ -89,7 +89,7 @@ record_github_logs() {
   done
 }
 
-[ -z "$INPUT_DEBUG" ] || while true; do sleep 10; pstree -a -l -A -c -T "$$"; done
+\set -x
 
 . otelapi.sh
 _otel_resource_attributes_process() {
