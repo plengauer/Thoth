@@ -226,7 +226,10 @@ _otel_curl_record_api_response_llm_openai() {
         local output_type=text
         \printf '%s' "$json" |  \jq '.choices[] | select(.finish_reason != null) | .finish_reason' -r | while \read -r finish_reason; do otel_span_attribute_typed "$span_handle" +string[1] gen_ai.response.finish_reasons="$finish_reason"; done
         ;;
-      *) ;;
+      *)
+        local operation_name=null
+        local output_type=null
+        ;;
     esac
     \[ "$operation_name" = null ] || otel_span_name "$span_handle" "$operation_name $(\jq < "$request_file" .model -r)"
     \[ "$operation_name" = null ] || otel_span_attribute_typed "$span_handle" string gen_ai.operation.name="$operation_name"
