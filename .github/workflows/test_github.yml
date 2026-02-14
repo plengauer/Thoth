@@ -77,7 +77,7 @@ jobs:
         with:
           name: packages_${{ inputs.ref }}
       - run: cp package.deb tests/package.deb
-      - uses: docker/build-push-action@v6.19.1 # some docker actions have otel built-in
+      - uses: docker/build-push-action@v6.19.2 # some docker actions have otel built-in
         with:
           context: ./tests/
           tags: test
@@ -691,7 +691,7 @@ jobs:
       REPOSITORY_TEMPLATE: thoth-deploy-test-repository-${{ matrix.private  }}-${{ matrix.secret_redaction_strategy }}
       ASSERT_RECEIVING_DATA: 'false'
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.42.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.43.1
         with:
           secrets_to_redact: '["${{ github.token }}","${{ secrets.TEST_GITHUB_TOKEN }}"]'
         env:
