@@ -171,7 +171,14 @@ _otel_pipe_wget_stderr() {
         # Length: 17826 (17K) [application/octet-stream]
         otel_span_attribute_typed "$span_handle" string[1] http.response.header.content-type="$(\printf '%s' "$line" | \cut -d '[' -f 2 | \tr -d '[]')"
         otel_span_attribute_typed "$span_handle" string[1] http.response.header.content-length="$(\printf '%s' "$line" | \cut -d ' ' -f 2)"
-        local observation_handle="$(otel_observation_create "$(\printf '%s' "$line" | \cut -d ' ' -f 3)")"
+      elif _otel_string_contains "$line" " written to " || _otel_string_contains "$line" " saved "; then
+        # 2024-04-01 11:32:28 (12.3 MB/s) - written to stdout [128]
+        # 2024-04-01 11:23:16 (18.4 MB/s) - ‘index.html’ saved [18739]
+        # 2024-04-06 17:37:30 (102 MB/s) - written to stdout [17826/17826]
+        local body_size="$(\printf '%s' "$line" | \cut -d '[' -f 2 | \tr -d '[]' | \cut -d / -f 1)"
+        otel_span_attribute_typed "$span_handle" int http.response.body.size="$body_size"
+        otel_span_attribute_typed "$span_handle" string[1] http.response.header.content-length="$body_size"
+        local observation_handle="$(otel_observation_create "$body_size")"
         otel_observation_attribute_typed "$observation_handle" string network.protocol.name="$protocol"
         otel_observation_attribute_typed "$observation_handle" string network.protocol.version="$version"
         otel_observation_attribute_typed "$observation_handle" string server.address="$host"
@@ -180,13 +187,6 @@ _otel_pipe_wget_stderr() {
         otel_observation_attribute_typed "$observation_handle" string http.request.method=GET
         otel_observation_attribute_typed "$observation_handle" string http.response.status_code="$response_code"
         otel_counter_observe "$http_client_response_body_size_handle" "$observation_handle"
-      elif _otel_string_contains "$line" " written to " || _otel_string_contains "$line" " saved "; then
-        # 2024-04-01 11:32:28 (12.3 MB/s) - written to stdout [128]
-        # 2024-04-01 11:23:16 (18.4 MB/s) - ‘index.html’ saved [18739]
-        # 2024-04-06 17:37:30 (102 MB/s) - written to stdout [17826/17826]
-        local body_size="$(\printf '%s' "$line" | \cut -d '[' -f 2 | \tr -d '[]' | \cut -d / -f 1)"
-        otel_span_attribute_typed "$span_handle" int http.response.body.size="$body_size"
-        otel_span_attribute_typed "$span_handle" string[1] http.response.header.content-length="$body_size"
       elif _otel_string_starts_with "$line" "HTTP/"; then # only available in debug mode, but splits up the usual response code line
         local response_code="$(\printf '%s' "$line" | \cut -d ' ' -f 2)"
         otel_span_attribute_typed "$span_handle" int http.response.status_code="$response_code"
