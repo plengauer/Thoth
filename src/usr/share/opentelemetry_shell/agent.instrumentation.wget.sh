@@ -180,7 +180,6 @@ _otel_pipe_wget_stderr() {
         otel_span_attribute_typed "$span_handle" string[1] http.response.header.content-length="$body_size"
         local observation_handle="$(otel_observation_create "$body_size")"
         otel_observation_attribute_typed "$observation_handle" string network.protocol.name="$protocol"
-        otel_observation_attribute_typed "$observation_handle" string network.protocol.version="$version"
         otel_observation_attribute_typed "$observation_handle" string server.address="$host"
         otel_observation_attribute_typed "$observation_handle" int server.port="$port"
         otel_observation_attribute_typed "$observation_handle" string url.scheme="$protocol"
