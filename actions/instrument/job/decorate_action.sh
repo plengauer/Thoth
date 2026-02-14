@@ -89,7 +89,6 @@ record_github_logs() {
   done
 }
 
-export OTEL_SHELL_CONFIG_OBSERVE_PIPES=FALSE
 . otelapi.sh
 _otel_resource_attributes_process() {
   :
