@@ -26,7 +26,9 @@ jobs:
         run: |
           set -e
           # Install gh-aw extension for GitHub Agentic Workflows
-          gh extension install github/gh-aw || true
+          if ! gh extension list | grep -q gh-aw; then
+            gh extension install github/gh-aw
+          fi
           gh aw --version
       - name: Recompile agentic workflows
         run: |
@@ -43,8 +45,8 @@ jobs:
       - name: Check for changes
         id: diff
         run: |
-          git add --intent-to-add .github/workflows/*.lock.yml
-          if ! git diff --quiet .github/workflows/*.lock.yml 2>/dev/null; then
+          git add --intent-to-add .github/workflows/*.lock.yml 2>/dev/null || true
+          if git status --porcelain | grep -q "^.M.*\.lock\.yml$\|^A.*\.lock\.yml$"; then
             echo "dirty=true" >> "$GITHUB_OUTPUT"
           fi
       - name: "Resolve Reviewers"
