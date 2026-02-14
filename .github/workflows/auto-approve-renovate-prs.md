@@ -57,12 +57,12 @@ Carefully analyze the current pull request to determine if it meets ALL of the f
 
 ### 2. Author Verification
 Verify that ALL commits in the PR branch are authored by ONLY:
-- Renovate bot (username: `renovate[bot]` or email containing `renovate`)
+- Renovate bot (username: `renovate[bot]` or email like `renovate[bot]@users.noreply.github.com`)
 - Repository owner: `plengauer` (the owner of the repository `plengauer/Thoth`)
 
 Use the GitHub toolset to:
 - List all commits in the PR
-- Check the author of each commit
+- Check the author and committer of each commit
 - Ensure NO commits are from any other users
 
 ### 3. Changes Verification
