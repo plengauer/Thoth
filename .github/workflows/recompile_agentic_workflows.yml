@@ -50,7 +50,7 @@ jobs:
         id: diff
         run: |
           git add --intent-to-add .github/workflows/*.lock.yml 2>/dev/null || true
-          if git status --porcelain | grep -q "^[AM].*\.lock\.yml$"; then
+          if git status --porcelain | grep -q "^[AM]. .github/workflows/.*\.lock\.yml$"; then
             echo "dirty=true" >> "$GITHUB_OUTPUT"
           fi
       - name: "Resolve Reviewers"
