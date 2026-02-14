@@ -39,7 +39,7 @@ When a new issue is created, you should:
 
 - **Be accurate**: Only apply labels that truly match the issue content
 - **Be conservative**: When in doubt, apply fewer labels rather than over-labeling
-- **Limit labels**: Apply at most 3-5 labels to keep issues manageable
+- **Limit labels**: Apply at most 5 labels (hard limit enforced by configuration)
 - **Consider context**: Look at how existing issues are labeled for consistency
 - **Explain your reasoning**: Briefly explain why you selected each label
 
@@ -64,6 +64,7 @@ You can apply labels using the `add-labels` safe output:
 
 ## Important Notes
 
-- This workflow only has read access to repository contents and write access to issues
+- This workflow has read-only permissions for repository contents and issues
+- Write operations (adding labels) are performed through safe-outputs, not direct permissions
 - You cannot create new labels, only apply existing ones
 - If no suitable label exists, mention this in your analysis but don't apply inappropriate labels
