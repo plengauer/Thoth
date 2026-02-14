@@ -23,7 +23,7 @@
 #
 # Automatically approves pull requests that only contain dependency updates or version bumps from trusted sources
 #
-# frontmatter-hash: dc3b2ce3c02d326879ddd7432d65bc2469d0f57e7f0b60afc18881594175a877
+# frontmatter-hash: 26d19711e78137b51f2b02c54a2f037f4c14584041d7a1d2509d46ebeb4cf366
 
 name: "Auto-Approve Renovate PRs"
 "on":
@@ -201,7 +201,7 @@ jobs:
           mkdir -p /tmp/gh-aw/safeoutputs
           mkdir -p /tmp/gh-aw/mcp-logs/safeoutputs
           cat > /opt/gh-aw/safeoutputs/config.json << 'GH_AW_SAFE_OUTPUTS_CONFIG_EOF'
-          {"add_comment":{"max":1},"approve-pr":{},"missing_data":{},"missing_tool":{},"noop":{"max":1}}
+          {"add_comment":{"max":1},"approve-pr":{"inputs":{"body":{"default":null,"description":"","required":true,"type":"string"}}},"missing_data":{},"missing_tool":{},"noop":{"max":1}}
           GH_AW_SAFE_OUTPUTS_CONFIG_EOF
           cat > /opt/gh-aw/safeoutputs/tools.json << 'GH_AW_SAFE_OUTPUTS_TOOLS_EOF'
           [
@@ -299,7 +299,14 @@ jobs:
               "description": "Execute the approve_pr custom job",
               "inputSchema": {
                 "additionalProperties": false,
-                "properties": {},
+                "properties": {
+                  "body": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "body"
+                ],
                 "type": "object"
               },
               "name": "approve_pr"
@@ -764,7 +771,7 @@ jobs:
           echo "GH_AW_AGENT_OUTPUT=/opt/gh-aw/safe-jobs/agent_output.json" >> "$GITHUB_ENV"
       - name: Approve Pull Request
         run: |-
-          body=$(cat "$GH_AW_SAFE_OUTPUTS" | jq -r '.body')
+          body=$(cat "$GH_AW_AGENT_OUTPUT" | jq -r '.body')
           gh api \
             --method POST \
             -H "Accept: application/vnd.github+json" \

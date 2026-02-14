@@ -20,6 +20,10 @@ safe-outputs:
   noop:
   jobs:
     approve-pr:
+      inputs:
+        body:
+          type: string
+          required: true
       permissions:
         pull-requests: write
       steps:
@@ -29,7 +33,7 @@ safe-outputs:
             PR_NUMBER: ${{ github.event.pull_request.number }}
             REPO: ${{ github.repository }}
           run: |
-            body=$(cat "$GH_AW_SAFE_OUTPUTS" | jq -r '.body')
+            body=$(cat "$GH_AW_AGENT_OUTPUT" | jq -r '.body')
             gh api \
               --method POST \
               -H "Accept: application/vnd.github+json" \
