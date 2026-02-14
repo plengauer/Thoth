@@ -142,7 +142,9 @@ case "${OTEL_TRACES_EXPORTER:-otlp}" in
   none) collector_traces_exporter=nop;;
   *) echo ::error::Unsupported traces exporter: "${OTEL_TRACES_EXPORTER:-otlp}" && exit 1;;
 esac
-( set +x && echo "$INPUT_SECRETS_TO_REDACT" | jq -r '. | to_entries[].value' | sed 's/[.[\(*^$+?{|]/\\\\&/g' | xargs -I '{}' echo '::add-mask::{}' ) && mask_patterns="$(echo "$INPUT_SECRETS_TO_REDACT" | jq -r '. | to_entries[].value' | grep -v '^$' | sed 's/[.[\(*^$+?{|]/\\\\&/g')"
+( set +x && printf '%s' "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_LOGS_HEADERS","$OTEL_EXPORTER_OTLP_METRICS_HEADERS","$OTEL_EXPORTER_OTLP_TRACES_HEADERS" | tr ',' '\n' | ( grep -v '^$' || true ) | cut -d = -f 2- | xargs -d '\n' -I '{}' echo '::add-mask::{}' >&2 )
+( set +x && printf '%s' "$INPUT_SECRETS_TO_REDACT" | jq -r '. | to_entries[].value' | sed 's/[.[\(*^$+?{|]/\\\\&/g' | ( grep -v '^$' || true ) | xargs -d '\n' -I '{}' echo '::add-mask::{}' >&2 )
+mask_patterns="$(printf '%s' "$INPUT_SECRETS_TO_REDACT" | jq -r '. | to_entries[].value' | sed 's/[.[\(*^$+?{|]/\\\\&/g' | ( grep -v '^$' || true ) | sed 's/"/\\"/g')"
 cat > collector.yml <<EOF
 receivers:
   otlp:
@@ -318,9 +320,38 @@ root4job_end() {
 
   if [ -f /tmp/opentelemetry_shell.github.error ]; then local conclusion=failure; else local conclusion=success; fi
   otel_span_attribute_typed $span_handle string github.actions.conclusion="$conclusion"
-  if [ "$conclusion" = failure ]; then otel_span_error "$span_handle"; fi
+  case "$conclusion" in
+    failure) otel_span_attribute_typed "$span_handle" string cicd.pipeline.result=failure; otel_span_error "$span_handle";;
+    neutral) otel_span_attribute_typed "$span_handle" string cicd.pipeline.result=success;;
+    cancelled) otel_span_attribute_typed "$span_handle" string cicd.pipeline.result=cancellation;;
+    timed_out) otel_span_attribute_typed "$span_handle" string cicd.pipeline.result=timeout;;
+    skipped) otel_span_attribute_typed "$span_handle" string cicd.pipeline.result=skip;;
+    *) otel_span_attribute_typed "$span_handle" string cicd.pipeline.result="$conclusion";;
+  esac
   otel_span_end "$span_handle"
   time_end="$(date +%s.%N)"
+  local cicd_pipeline_run_duration_handle="$(otel_counter_create counter cicd.pipeline.run.duration s 'Duration of a pipeline run grouped by pipeline, state and result')"
+  observation_handle="$(otel_observation_create "$(python3 -c "print(str($time_end - $time_start))")")"
+  otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.name="${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}"
+  otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.run.state=executing
+  case "$conclusion" in
+    neutral) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result=success;;
+    skipped) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result=skip;;
+    cancelled) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result=cancellation;;
+    timed_out) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result=timeout;;
+    *) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result="$conclusion";;
+  esac
+  otel_counter_observe "$cicd_pipeline_run_duration_handle" "$observation_handle"
+  if [ "$conclusion" = failure ]; then
+    local cicd_pipeline_run_errors_handle="$(otel_counter_create counter cicd.pipeline.run.errors '{error}' 'The number of errors encountered in pipeline runs')"
+    observation_handle="$(otel_observation_create 1)"
+    otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.name="${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}"
+    otel_counter_observe "$cicd_pipeline_run_errors_handle" "$observation_handle"
+  fi
+  observation_handle="$(otel_observation_create -1)"
+  otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.name="${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}"
+  otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.run.state=executing
+  otel_counter_observe "$cicd_pipeline_run_active_handle" "$observation_handle"
   local counter_handle="$(otel_counter_create counter github.actions.jobs 1 'Number of job runs')"
   local observation_handle="$(otel_observation_create 1)"
   otel_observation_attribute_typed "$observation_handle" string github.actions.workflow.name="$GITHUB_WORKFLOW"
@@ -345,6 +376,12 @@ root4job_end() {
   otel_observation_attribute_typed "$observation_handle" string github.actions.job.name="${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}"
   otel_observation_attribute_typed "$observation_handle" string github.actions.job.conclusion="$conclusion"
   otel_counter_observe "$counter_handle" "$observation_handle"
+  observation_handle="$(otel_observation_create -1)"
+  otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.worker.state=busy
+  otel_counter_observe "$cicd_worker_count_handle" "$observation_handle"
+  observation_handle="$(otel_observation_create 1)"
+  otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.worker.state=available
+  otel_counter_observe "$cicd_worker_count_handle" "$observation_handle"
   otel_shutdown
 
   if ([ "$INPUT_SELF_MONITORING" = true ] || ([ "$INPUT_SELF_MONITORING" = auto ] && [ "$GITHUB_API_URL" = 'https://api.github.com' ])); then
@@ -449,11 +486,27 @@ root4job() {
   otel_init
   touch /tmp/opentelemetry_shell.github.observe_rate_limits
   observe_rate_limit &> /dev/null &
+  cicd_worker_count_handle="$(otel_counter_create up_down_counter cicd.worker.count '{worker}' 'The number of workers of the CICD system by state')"
+  observation_handle="$(otel_observation_create -1)"
+  otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.worker.state=available
+  otel_counter_observe "$cicd_worker_count_handle" "$observation_handle"
+  observation_handle="$(otel_observation_create 1)"
+  otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.worker.state=busy
+  otel_counter_observe "$cicd_worker_count_handle" "$observation_handle"
+  cicd_pipeline_run_active_handle="$(otel_counter_create up_down_counter cicd.pipeline.run.active '{run}' 'The number of pipeline runs currently active in the system by state')"
+  observation_handle="$(otel_observation_create 1)"
+  otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.name="${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}"
+  otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.run.state=executing
+  otel_counter_observe "$cicd_pipeline_run_active_handle" "$observation_handle"
   time_start="$(date +%s.%N)"
-  span_handle="$(otel_span_start CONSUMER "${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}")"
+  span_handle="$(otel_span_start SERVER "${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}")"
+  otel_span_attribute_typed "$span_handle" string cicd.pipeline.run_id="${GITHUB_JOB_ID:-}"
+  otel_span_attribute_typed "$span_handle" string cicd.pipeline.name="${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}"
+  otel_span_attribute_typed "$span_handle" string cicd.pipeline.action.name=RUN
   otel_span_attribute_typed $span_handle string github.actions.type=job
   if [ -n "$GITHUB_JOB_ID" ]; then
-    otel_span_attribute_typed $span_handle string github.actions.url="${GITHUB_SERVER_URL:-https://github.com}"/"$GITHUB_REPOSITORY"/actions/runs/"$GITHUB_RUN_ID"/job/"$GITHUB_JOB_ID"
+    otel_span_attribute_typed "$span_handle" string cicd.pipeline.run.url.full="${GITHUB_SERVER_URL:-https://github.com}"/"$GITHUB_REPOSITORY"/actions/runs/"$GITHUB_RUN_ID"/job/"$GITHUB_JOB_ID"
+    otel_span_attribute_typed $span_handle string github.actions.url.full="${GITHUB_SERVER_URL:-https://github.com}"/"$GITHUB_REPOSITORY"/actions/runs/"$GITHUB_RUN_ID"/job/"$GITHUB_JOB_ID"
   fi
   otel_span_attribute_typed $span_handle int github.actions.job.id="${GITHUB_JOB_ID:-}"
   otel_span_attribute_typed $span_handle string github.actions.job.name="${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}"
@@ -462,6 +515,9 @@ root4job() {
   otel_span_attribute_typed $span_handle string github.actions.runner.os="$RUNNER_OS"
   otel_span_attribute_typed $span_handle string github.actions.runner.arch="$RUNNER_ARCH"
   otel_span_attribute_typed $span_handle string github.actions.runner.environment="$RUNNER_ENVIRONMENT"
+  otel_span_attribute_typed $span_handle string cicd.pipeline.name="${GITHUB_WORKFLOW}"
+  otel_span_attribute_typed $span_handle string cicd.pipeline.task.name="${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}"
+  otel_span_attribute_typed $span_handle string cicd.pipeline.task.type=job
   otel_span_activate "$span_handle"
   echo "$TRACEPARENT" > "$traceparent_file"
   if [ -n "${GITHUB_JOB_ID:-}" ]; then
