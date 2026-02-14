@@ -33,38 +33,14 @@ When a new issue is created, you should:
    - Component or area affected
    - Priority or severity indicators
    - Any other relevant categorization
-5. **Apply the labels**: Use the `add-labels` safe output to apply your selected label(s)
+5. **Apply the labels**: Apply all fitting labels to the issue
 
 ## Guidelines
 
 - **Be accurate**: Only apply labels that truly match the issue content
 - **Be conservative**: When in doubt, apply fewer labels rather than over-labeling
 - **Limit labels**: Apply at most 5 labels (hard limit enforced by configuration)
-- **Consider context**: Look at how existing issues are labeled for consistency
-- **Explain your reasoning**: Briefly explain why you selected each label
 
 ## Example Analysis
 
-For an issue titled "Installation script fails on macOS":
-- Label it with: `bug`, `macos`, `installation` (if these labels exist)
-- Reasoning: It's a bug report specific to macOS during installation
-
-## Available GitHub Tools
-
-You have access to the following GitHub toolset:
-- Read issue details (title, body, author)
-- List repository labels
-- Check existing label usage patterns
-
-## Safe Outputs
-
-You can apply labels using the `add-labels` safe output:
-- Specify the issue number and label names
-- Maximum 5 labels per issue (as configured)
-
-## Important Notes
-
-- This workflow has read-only permissions for repository contents and issues
-- Write operations (adding labels) are performed through safe-outputs, not direct permissions
-- You cannot create new labels, only apply existing ones
-- If no suitable label exists, mention this in your analysis but don't apply inappropriate labels
+For an issue titled "Installation script fails on macOS", label it with: `bug`, `macos`, `installation` (if these labels exist)
