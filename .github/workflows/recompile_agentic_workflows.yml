@@ -5,7 +5,6 @@ on:
       - main
     paths:
       - '.github/workflows/*.md'
-      - '!.github/workflows/*.lock.yml'
       - '.github/workflows/recompile_agentic_workflows.yml'
 jobs:
   recompile:
@@ -22,46 +21,17 @@ jobs:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
       - uses: actions/checkout@v6.0.2
-      - name: Install gh-aw extension
-        env:
+      - env:
+          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+        run: gh extension install github/gh-aw
+      - env:
           GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         run: |
-          set -e
-          # Install gh-aw extension for GitHub Agentic Workflows
-          if ! gh extension list | grep -q gh-aw; then
-            gh extension install github/gh-aw
-          fi
-          gh aw --version
-      - name: Recompile agentic workflows
-        env:
-          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
-        run: |
-          set -e
-          
-          # Find all markdown workflow files
           cd .github/workflows
           for md_file in *.md; do
-            if [ -f "$md_file" ]; then
-              echo "Compiling $md_file..."
-              gh aw compile "$md_file"
-            fi
+            gh aw compile "$md_file"
           done
-      - name: Check for changes
-        id: diff
-        run: |
-          git add --intent-to-add .github/workflows/*.lock.yml 2>/dev/null || true
-          if git status --porcelain | grep -q "^[AM]. .github/workflows/.*\.lock\.yml$"; then
-            echo "dirty=true" >> "$GITHUB_OUTPUT"
-          fi
-      - name: "Resolve Reviewers"
-        if: steps.diff.outputs.dirty
-        id: reviewers
-        run: |
-          if ! [ -f .github/renovate.json ]; then exit 0; fi
-          echo "reviewers=$(jq -r '.reviewers | join(",")' .github/renovate.json)" >> "$GITHUB_OUTPUT"
-      - name: "Open Pull Request"
-        if: steps.diff.outputs.dirty
-        id: open-pr
+      - id: open-pr
         uses: peter-evans/create-pull-request@v8.1.0
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
@@ -71,7 +41,6 @@ jobs:
           title: "Recompile Agentic Workflows"
           body: |
             (this PR is automatically generated)
-          reviewers: ${{ steps.reviewers.outputs.reviewers }}
           delete-branch: true
       - run: sleep 60 # make sure PR state is updated and API can catch up
         if: steps.open-pr.outputs.pull-request-number != null
