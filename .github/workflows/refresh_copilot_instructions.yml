@@ -38,7 +38,7 @@ jobs:
         id: diff
         run: |
           git add --intent-to-add .github/copilot-instructions.md
-          if git diff .github/copilot-instructions.md | grep -q '^+'; then
+          if ! git diff --quiet .github/copilot-instructions.md; then
             echo "dirty=true" >> "$GITHUB_OUTPUT"
           fi
       - name: "Resolve Reviewers"
