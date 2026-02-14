@@ -1,15 +1,16 @@
-name: 'Refresh Copilot Instructions'
+name: 'Recompile Agentic Workflows'
 on:
   push:
     branches:
       - main
     paths:
-      - '.github/copilot-instructions.md'
-      - '.github/workflows/refresh_copilot_instructions.yml'
+      - '.github/workflows/*.md'
+      - '!.github/workflows/*.lock.yml'
+      - '.github/workflows/recompile_agentic_workflows.yml'
 jobs:
-  refresh:
+  recompile:
     if: ${{ !github.event.repository.fork }}
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       actions: read
@@ -21,24 +22,29 @@ jobs:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
       - uses: actions/checkout@v6.0.2
-      - name: Recompile copilot instructions
+      - name: Install gh-aw extension
+        run: |
+          set -e
+          # Install gh-aw extension for GitHub Agentic Workflows
+          gh extension install github/gh-aw || true
+          gh aw --version
+      - name: Recompile agentic workflows
         run: |
           set -e
           
-          # Format and normalize the copilot instructions file
-          # Remove trailing whitespace
-          sed -i 's/[[:space:]]*$//' .github/copilot-instructions.md
-          
-          # Ensure file ends with newline
-          [ -n "$(tail -c 1 .github/copilot-instructions.md)" ] && echo >> .github/copilot-instructions.md || true
-          
-          # Normalize line endings to LF
-          dos2unix .github/copilot-instructions.md 2>/dev/null || sed -i 's/\r$//' .github/copilot-instructions.md
+          # Find all markdown workflow files
+          cd .github/workflows
+          for md_file in *.md; do
+            if [ -f "$md_file" ]; then
+              echo "Compiling $md_file..."
+              gh aw compile "$md_file"
+            fi
+          done
       - name: Check for changes
         id: diff
         run: |
-          git add --intent-to-add .github/copilot-instructions.md
-          if ! git diff --quiet .github/copilot-instructions.md; then
+          git add --intent-to-add .github/workflows/*.lock.yml
+          if ! git diff --quiet .github/workflows/*.lock.yml 2>/dev/null; then
             echo "dirty=true" >> "$GITHUB_OUTPUT"
           fi
       - name: "Resolve Reviewers"
@@ -53,10 +59,10 @@ jobs:
         uses: peter-evans/create-pull-request@v8.1.0
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
-          commit-message: "Recompile copilot instructions"
+          commit-message: "Recompile agentic workflows"
           base: main
-          branch: "copilot-instructions/auto-recompile"
-          title: "Recompile Copilot Instructions"
+          branch: "agentic-workflows/auto-recompile"
+          title: "Recompile Agentic Workflows"
           body: |
             (this PR is automatically generated)
           reviewers: ${{ steps.reviewers.outputs.reviewers }}
