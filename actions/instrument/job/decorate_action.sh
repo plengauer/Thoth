@@ -218,4 +218,6 @@ rm "$log_0_pipe" "$log_1_pipe"
 
 otel_shutdown
 echo "$_OTEL_GITHUB_STEP_ACTION_TYPE" "$GITHUB_ACTION_REPOSITORY" >> /tmp/opentelemetry_shell.github.step.log
+pstree -a $$ >&2
+pstree -a >&2
 exit "$exit_code"
