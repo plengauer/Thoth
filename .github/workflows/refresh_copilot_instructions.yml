@@ -1,0 +1,71 @@
+name: 'Refresh Copilot Instructions'
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/copilot-instructions.md'
+      - '.github/workflows/refresh_copilot_instructions.yml'
+jobs:
+  refresh:
+    if: ${{ !github.event.repository.fork }}
+    runs-on: ubuntu-slim
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.43.1
+        with:
+          secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}"]'
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
+          OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
+      - uses: actions/checkout@v6.0.2
+      - name: Recompile copilot instructions
+        run: |
+          set -e
+          
+          # Format and normalize the copilot instructions file
+          # Remove trailing whitespace
+          sed -i 's/[[:space:]]*$//' .github/copilot-instructions.md
+          
+          # Ensure file ends with newline
+          [ -n "$(tail -c 1 .github/copilot-instructions.md)" ] && echo >> .github/copilot-instructions.md || true
+          
+          # Normalize line endings to LF
+          dos2unix .github/copilot-instructions.md 2>/dev/null || sed -i 's/\r$//' .github/copilot-instructions.md
+      - name: Check for changes
+        id: diff
+        run: |
+          git add --intent-to-add .github/copilot-instructions.md
+          if git diff .github/copilot-instructions.md | grep -q '^+'; then
+            echo "dirty=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: "Resolve Reviewers"
+        if: steps.diff.outputs.dirty
+        id: reviewers
+        run: |
+          if ! [ -f .github/renovate.json ]; then exit 0; fi
+          echo "reviewers=$(cat .github/renovate.json | jq -r '.reviewers | join(",")')" >> "$GITHUB_OUTPUT"
+      - name: "Open Pull Request"
+        if: steps.diff.outputs.dirty
+        id: open-pr
+        uses: peter-evans/create-pull-request@v8.1.0
+        with:
+          token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          commit-message: "Recompile copilot instructions"
+          base: main
+          branch: "copilot-instructions/auto-recompile"
+          title: "Recompile Copilot Instructions"
+          body: |
+            (this PR is automatically generated)
+          reviewers: ${{ steps.reviewers.outputs.reviewers }}
+          delete-branch: true
+      - run: sleep 60 # make sure PR state is updated and API can catch up
+        if: steps.open-pr.outputs.pull-request-number != null
+      - if: steps.open-pr.outputs.pull-request-number != null
+        shell: bash
+        run: gh pr merge --squash --auto ${{ steps.open-pr.outputs.pull-request-number }}
+        env:
+          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+        continue-on-error: true
