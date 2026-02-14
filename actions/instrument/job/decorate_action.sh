@@ -89,8 +89,6 @@ record_github_logs() {
   done
 }
 
-\set -x
-
 . otelapi.sh
 _otel_resource_attributes_process() {
   :
@@ -204,10 +202,15 @@ if [ -n "${GITHUB_ACTION_REPOSITORY:-}" ]; then
   otel_counter_observe "$counter_handle" "$observation_handle"
 fi
 
-if ( type lsof &> /dev/null && lsof -p "$redirect_github_logs_pid" -ad 0 -O -b -t 2> /dev/null | \grep -qF -- "$redirect_github_logs_pid" ) || ( kill -0 "$redirect_github_logs_pid" &> /dev/null ); then
+if type lsof &> /dev/null; then
+  lsof -p "$redirect_github_logs_pid" -ad 0 -O -b -t 2> /dev/null | \grep -qF -- "$redirect_github_logs_pid" && stream_open=1 || true
+elif
+  kill -0 "$redirect_github_logs_pid" &> /dev/null && stream_open=1 || true
+fi
+if [ "${stream_open:-0}" = 1 ]; then
   sleep 3
   kill -9 "$redirect_github_logs_pid" &> /dev/null || true
-else
+fi
   wait "$redirect_github_logs_pid"
 fi
 wait "$record_github_logs_pid"
