@@ -197,8 +197,8 @@ _otel_curl_record_api_response_llm_openai() {
   local request_file="$1"
   local span_handle_file="$2"
   local api_recording_finished="$3"
-  # local time_start="$(\date +%s.%N)"
-  # local gen_ai_client_operation_duration_handle="$(otel_counter_create histogram gen_ai.client.operation.duration s 'GenAI operation duration')"
+  local time_start="$(\date +%s.%N)"
+  local gen_ai_client_operation_duration_handle="$(otel_counter_create histogram gen_ai.client.operation.duration s '0.01,0.02,0.04,0.08,0.16,0.32,0.64,1.28,2.56,5.12,10.24,20.48,40.96,81.92' 'GenAI operation duration')"
   local gen_ai_client_token_usage_handle="$(otel_counter_create counter gen_ai.client.token.usage '{token}' 'Number of input and output tokens used')"
   local span_handle="$(\cat "$span_handle_file")"
   otel_span_attribute_typed "$span_handle" string gen_ai.provider.name=openai
