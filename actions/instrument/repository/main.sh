@@ -200,7 +200,7 @@ case "$INPUT_EVENT_NAME" in
       otel_observation_attribute_typed "$observation_handle" string vcs.ref.base.name="$base"
       otel_observation_attribute_typed "$observation_handle" string vcs.ref.base.type="$base_ref_type"
       otel_observation_attribute_typed "$observation_handle" string vcs.ref.head.name="$ref"
-      otel_observation_attribute_typed "$observation_handle" string vcs.ref.head.type="$ref_type"      
+      otel_observation_attribute_typed "$observation_handle" string vcs.ref.head.type="$ref_type"
       otel_counter_observe "$vcs_ref_lines_delta_handle" "$observation_handle"
       observation_handle="$(otel_github_repository_observation_create "$(jq < compare.json .ahead_by)")"
       otel_observation_attribute_typed "$observation_handle" string vcs.revision_delta.direction=ahead
