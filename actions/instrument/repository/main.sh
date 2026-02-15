@@ -187,7 +187,7 @@ case "$INPUT_EVENT_NAME" in
       curl --no-progress-meter --fail --retry 16 --header "Authorization: Bearer $INPUT_GITHUB_TOKEN" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_REPOSITORY"/compare/"$base"..."$ref" > compare.json
       vcs_ref_lines_delta_handle="$(otel_counter_create gauge vcs.ref.lines_delta '{line}' 'The number of lines added/removed in a ref (branch) relative to the base ref')"
       vcs_ref_revisions_delta_handle="$(otel_counter_create gauge vcs.ref.revisions_delta '{revision}' 'The number of revisions ahead/behind in a ref (branch) relative to the base ref')"
-      vcs_ref_time_handle="$(otel_counter_create gauge vcs.ref.time 's' 'Time a ref (branch) created from the default branch (trunk) has existed')"  
+      vcs_ref_time_handle="$(otel_counter_create gauge vcs.ref.time 's' 'Time a ref (branch) created from the default branch (trunk) has existed')"
       observation_handle="$(otel_github_repository_observation_create "$(jq < compare.json .files[].additions | jq -s add)")"
       otel_observation_attribute_typed "$observation_handle" string vcs.line_change.type=added
       otel_observation_attribute_typed "$observation_handle" string vcs.ref.base.name="$base"
