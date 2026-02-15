@@ -184,8 +184,8 @@ case "$INPUT_EVENT_NAME" in
     base="$(jq <<< "$INPUT_EVENT_BODY" | '.base_ref // empty')"
     ref="$(jq <<< "$INPUT_EVENT_BODY" | .ref)"
     if [ -n "$base" ]; then
-      [ "${base#/refs/tags/}" = "$base" ] && base_ref_type=branch || base_ref_type=tag
-      [ "${ref#/refs/tags/}" = "$ref" ] && ref_type=branch || ref_type=tag
+      [ "${base#refs/tags/}" = "$base" ] && base_ref_type=branch || base_ref_type=tag
+      [ "${ref#refs/tags/}" = "$ref" ] && ref_type=branch || ref_type=tag
       curl --no-progress-meter --fail --retry 16 --header "Authorization: Bearer $INPUT_GITHUB_TOKEN" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_REPOSITORY"/compare/"$base"..."$ref" > compare.json
       vcs_ref_lines_delta_handle="$(otel_counter_create gauge vcs.ref.lines_delta '{line}' 'The number of lines added/removed in a ref (branch) relative to the base ref')"
       vcs_ref_revisions_delta_handle="$(otel_counter_create gauge vcs.ref.revisions_delta '{revision}' 'The number of revisions ahead/behind in a ref (branch) relative to the base ref')"
