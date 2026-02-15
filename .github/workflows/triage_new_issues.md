@@ -1,5 +1,5 @@
 ---
-name: Label New Issues
+name: Triage New Issues
 description: Automatically applies appropriate labels to newly created issues based on their content
 on:
   issues:
