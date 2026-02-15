@@ -82,7 +82,7 @@ _otel_call_and_record_pipes() {
   return "$exit_code"
 }
 
-if \[ -n "${WSL_DISTRO_NAME:-}" ] && \[ -d /proc ]; then
+if \[ -d /proc ] && \[ -z "${WSL_DISTRO_NAME:-}" ]; then
   _otel_is_stream_open() {
     # this is hacky!
     # the fd's in the proc file system are always symbolic links.
