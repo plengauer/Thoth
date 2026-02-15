@@ -214,13 +214,13 @@ case "$INPUT_EVENT_NAME" in
       otel_observation_attribute_typed "$observation_handle" string vcs.ref.base.name="$base"
       otel_observation_attribute_typed "$observation_handle" string vcs.ref.base.type="$base_ref_type"
       otel_observation_attribute_typed "$observation_handle" string vcs.ref.head.name="$ref"
-      otel_observation_attribute_typed "$observation_handle" string vcs.ref.head.type="$ref_type"      
+      otel_observation_attribute_typed "$observation_handle" string vcs.ref.head.type="$ref_type"
       otel_counter_observe "$vcs_ref_revisions_delta_handle" "$observation_handle"
       observation_handle="$(otel_github_repository_observation_create "$(python3 -c "print(str(max(0, $(date -d "$(jq < compare.json .commits[].commit.committer.date -r | sort | tail -n 1)" '+%s.%N') - $(date -d "$(jq < compare.json .commits[].commit.committer.date -r | sort | head -n 1)" '+%s.%N'))))")")"
       otel_observation_attribute_typed "$observation_handle" string vcs.ref.base.name="$base"
       otel_observation_attribute_typed "$observation_handle" string vcs.ref.base.type="$base_ref_type"
       otel_observation_attribute_typed "$observation_handle" string vcs.ref.head.name="$ref"
-      otel_observation_attribute_typed "$observation_handle" string vcs.ref.head.type="$ref_type"    
+      otel_observation_attribute_typed "$observation_handle" string vcs.ref.head.type="$ref_type"
       otel_counter_observe "$vcs_ref_time_handle" "$observation_handle"
     fi
     ;;
