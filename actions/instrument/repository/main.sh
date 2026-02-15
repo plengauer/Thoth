@@ -154,15 +154,15 @@ case "$INPUT_EVENT_NAME" in
         otel_observation_attribute_typed "$observation_handle" string vcs.change.state=open
         otel_counter_observe "$vcs_change_count_handle" "$observation_handle"
         ;;
-      submitted)
-        if [ "$(jq <<< "$INPUT_EVENT_BODY" .review.state -r)" = approved ]; then
-          vcs_change_time_to_approval_handle="$(otel_counter_create gauge vcs.change.time_to_approval 's' 'The amount of time since its creation it took a change (pull request/merge request/changelist) to get the first approval.')"
-          created_at="$(jq <<< "$INPUT_EVENT_BODY" .pull_request.created_at -r)"
-          observation_handle="$(otel_github_repository_observation_create "$(python3 -c "print(str(max(0, $(date -d "$(jq <<< "$INPUT_EVENT_BODY" .review.submitted_at -r)" '+%s.%N') - $(date -d "$created_at" '+%s.%N'))))")")"
-          otel_counter_observe "$vcs_change_time_to_approval_handle" "$observation_handle"
-        fi
-        ;;
     esac
+    ;;
+
+  pull_request_review)
+    if [ "$(jq <<< "$INPUT_EVENT_BODY" .review.state -r)" = approved ]; then
+      vcs_change_time_to_approval_handle="$(otel_counter_create gauge vcs.change.time_to_approval 's' 'The amount of time since its creation it took a change (pull request/merge request/changelist) to get the first approval.')"
+      observation_handle="$(otel_github_repository_observation_create "$(python3 -c "print(str(max(0, $(date -d "$(jq <<< "$INPUT_EVENT_BODY" .review.submitted_at -r)" '+%s.%N') - $(date -d "$(jq <<< "$INPUT_EVENT_BODY" .pull_request.created_at -r)" '+%s.%N'))))")")"
+      otel_counter_observe "$vcs_change_time_to_approval_handle" "$observation_handle"
+    fi
     ;;
 
   create)
