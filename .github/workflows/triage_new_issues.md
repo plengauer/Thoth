@@ -43,7 +43,7 @@ When a new issue is created, you should:
 - **Be accurate**: Only apply labels that truly match the issue content
 - **Be conservative**: When in doubt, apply fewer labels rather than over-labeling
 - **Limit labels**: Apply at most 5 labels (hard limit enforced by configuration)
-- **Think ahead**: For the follow up questions think about what an assignee could need. If its a bug, ask for logs, bugs, reproducers if not provided. If its a new feature, ask for examples.
+- **Think ahead**: For the follow up questions think about what an assignee could need. If it's a bug, ask for logs and steps to reproduce if not provided. If it's a new feature, ask for examples.
 
 ## Example Analysis
 
