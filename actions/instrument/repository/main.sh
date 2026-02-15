@@ -179,8 +179,8 @@ case "$INPUT_EVENT_NAME" in
     ;;
 
   push)
-    base="$(jq <<< "$INPUT_EVENT_BODY" | '.base_ref // empty')"
-    ref="$(jq <<< "$INPUT_EVENT_BODY" | .ref)"
+    base="$(jq <<< "$INPUT_EVENT_BODY" '.base_ref // empty' -r)"
+    ref="$(jq <<< "$INPUT_EVENT_BODY" .ref -r)"
     if [ -n "$base" ]; then
       [ "${base#refs/tags/}" = "$base" ] && base_ref_type=branch || base_ref_type=tag
       [ "${ref#refs/tags/}" = "$ref" ] && ref_type=branch || ref_type=tag
