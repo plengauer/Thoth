@@ -71,11 +71,11 @@ _otel_call_and_record_pipes() {
     _otel_record_pipes "$span_handle" stdin 0 "$stdin_bytes_result" "$stdin_lines_result"
   fi
   if ! _otel_is_stream_open "$stdout_pid" 0; then
-    # \wait "$stdout_bytes_pid" "$stdout_lines_pid"
+    \wait "$stdout_bytes_pid" "$stdout_lines_pid"
     _otel_record_pipes "$span_handle" stdout 1 "$stdout_bytes_result" "$stdout_lines_result"
   fi
   if ! _otel_is_stream_open "$stderr_pid" 0; then
-    # \wait "$stderr_bytes_pid" "$stderr_lines_pid"
+    \wait "$stderr_bytes_pid" "$stderr_lines_pid"
     _otel_record_pipes "$span_handle" stderr 2 "$stderr_bytes_result" "$stderr_lines_result"
   fi
   \rm "$stdout" "$stderr" "$stdin_bytes" "$stdin_lines" "$stdout_bytes" "$stdout_lines" "$stderr_bytes" "$stderr_lines" "$stdin_bytes_result" "$stdin_lines_result" "$stdout_bytes_result" "$stdout_lines_result" "$stderr_bytes_result" "$stderr_lines_result" 2> /dev/null
