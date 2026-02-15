@@ -1,5 +1,5 @@
 ---
-name: Auto-Approve Renovate PRs
+name: Autoapprove
 description: Automatically approves pull requests that only contain dependency updates or version bumps from trusted sources
 on:
   pull_request:
