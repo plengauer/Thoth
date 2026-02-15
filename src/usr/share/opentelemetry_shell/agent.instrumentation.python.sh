@@ -104,7 +104,7 @@ runpy.run_module('$arg', run_name='__main__')"
 import sys, os # SKIP_DEPENDENCY_CHECK
 sys.path.insert(0, os.path.abspath(os.path.dirname('$arg'))) # SKIP_DEPENDENCY_CHECK
 with open('$arg', 'r') as file: # SKIP_DEPENDENCY_CHECK
-  exec(file.read())"
+  exec('__file__=\"$arg\"\n' + file.read())"
       _otel_python_file="$arg"
       _otel_python_code_source=file
     else
