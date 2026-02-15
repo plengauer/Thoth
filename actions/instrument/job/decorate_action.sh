@@ -1,6 +1,6 @@
 #!/bin/sh
 if [ -z "$GITHUB_RUN_ID" ] || [ "$(cat /proc/$PPID/cmdline | tr '\000-\037' ' ' | cut -d ' ' -f 1 | rev | cut -d / -f 1 | rev)" != "Runner.Worker" ]; then unset OTEL_SHELL_COMMAND_OVERRIDE; exec "$@"; fi
-export OTEL_SHELL_CONFIG_OBSERVE_PIPES=FALSE
+export OTEL_SHELL_CONFIG_OBSERVE_PIPES=TRUE
 
 variable_name_2_attribute_key() {
   printf '%s' "$1" | tr '[:upper:]' '[:lower:]'
