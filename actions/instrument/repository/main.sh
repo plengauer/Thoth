@@ -97,8 +97,6 @@ vcs_contributor_count_handle="$(otel_counter_create gauge vcs.contributor.count 
 observation_handle="$(otel_github_repository_observation_create "$(gh_curl_paginated /contributors'&per_page=100' | jq '.[]' | jq -s length)")"
 otel_counter_observe "$vcs_contributor_count_handle" "$observation_handle"
 
-export EVENT="${GITHUB_EVENT_NAME}_$(jq < "$GITHUB_EVENT_PATH" .action -r)"
-
 case "$INPUT_EVENT_NAME" in
   pull_request)
     vcs_change_count_handle="$(otel_counter_create up_down_counter vcs.change.count '{change}' 'The number of changes (pull requests/merge requests) by their state')"
