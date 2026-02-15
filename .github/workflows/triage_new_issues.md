@@ -19,7 +19,7 @@ safe-outputs:
     max: 1
 ---
 
-# Label New Issues
+# Triage New Issues
 
 You are an AI assistant that helps automatically label newly created issues in this repository.
 
