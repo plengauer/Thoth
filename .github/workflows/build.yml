@@ -231,7 +231,7 @@ jobs:
           from opentelemetry.instrumentation.bootstrap_gen import (default_instrumentations, libraries)
           print(*default_instrumentations, sep="\n")
           print(*map(lambda element: element["instrumentation"], libraries), sep="\n")
-          ' | \python3 | grep -v opentelemetry-instrumentation-system-metrics | tee /dev/stderr | xargs pip3 install
+          ' | \python3 | grep -v opentelemetry-instrumentation-system-metrics | xargs pip3 install
           deactivate
       - run: |
           set +f
