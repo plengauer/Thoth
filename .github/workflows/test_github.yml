@@ -253,28 +253,6 @@ jobs:
           path: repo_with_submodules
           repository: robocorp/example-use-git-submodule-for-shared-code
           submodules: recursive
-  job-integration-gcloud:
-    needs: job-smoke
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
-    permissions:
-      contents: read
-      actions: read
-    steps:
-      - uses: actions/checkout@v6.0.1
-        with:
-          ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
-        with:
-          name: packages_${{ inputs.ref }}
-      - uses: ./actions/instrument/job
-        with:
-          cache: 'false'
-        env:
-          OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
-          OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
-      - uses: google-github-actions/auth@v3
-      - uses: google-github-actions/setup-gcloud@v3
   job-io-1:
     needs: job-smoke
     runs-on: ubuntu-latest
