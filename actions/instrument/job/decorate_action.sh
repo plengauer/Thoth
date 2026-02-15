@@ -202,16 +202,9 @@ if [ -n "${GITHUB_ACTION_REPOSITORY:-}" ]; then
   otel_counter_observe "$counter_handle" "$observation_handle"
 fi
 
-if type lsof &> /dev/null; then
-  lsof -p "$redirect_github_logs_pid" -ad 0 -O -b -t 2> /dev/null | \grep -qF -- "$redirect_github_logs_pid" && stream_open=1 || true
-else
-  kill -0 "$redirect_github_logs_pid" &> /dev/null && stream_open=1 || true
-fi
-if [ "${stream_open:-0}" = 1 ]; then
+if _otel_is_stream_open "$redirect_github_logs_pid" 0; then
   sleep 3
   kill -9 "$redirect_github_logs_pid" &> /dev/null || true
-else
-  wait "$redirect_github_logs_pid"
 fi
 wait "$record_github_logs_pid"
 rm "$log_0_pipe" "$log_1_pipe"
