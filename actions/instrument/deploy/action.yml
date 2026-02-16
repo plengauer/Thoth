@@ -217,6 +217,7 @@ runs:
             | xargs -I '{}' curl -s --fail --retry 8 --header "Authorization: Bearer ${{ inputs.github_token }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/${{ github.repository }}/actions/runs'?per_page=100&page={}' | jq '.workflow_runs[].workflow_id' | sort -u \
             | xargs -I '{}' curl -s --fail --retry 8 --header "Authorization: Bearer ${{ inputs.github_token }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/${{ github.repository }}/actions/workflows/'{}' | jq 'select(.path | startswith("dynamic/")) | .name' -r
           echo Copilot coding agent
+          echo Copilot code review
         } | sort -u > "$names_file"
         names=""
         while IFS= read -r line; do
