@@ -1,0 +1,52 @@
+name: 'Recompile Agentic Workflows'
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/*.md'
+      - '.github/workflows/recompile_agentic_workflows.yml'
+jobs:
+  recompile:
+    if: ${{ !github.event.repository.fork }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.43.1
+        with:
+          secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}"]'
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
+          OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
+      - uses: actions/checkout@v6.0.2
+      - env:
+          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+        run: gh extension install github/gh-aw
+      - env:
+          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+        run: |
+          cd .github/workflows
+          for md_file in *.md; do
+            gh aw compile "$md_file"
+          done
+      - id: open-pr
+        uses: peter-evans/create-pull-request@v8.1.0
+        with:
+          token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          commit-message: "Recompile agentic workflows"
+          base: main
+          branch: "agentic-workflows/auto-recompile"
+          title: "Recompile Agentic Workflows"
+          body: |
+            (this PR is automatically generated)
+          delete-branch: true
+      - run: sleep 60 # make sure PR state is updated and API can catch up
+        if: steps.open-pr.outputs.pull-request-number != null
+      - if: steps.open-pr.outputs.pull-request-number != null
+        shell: bash
+        run: gh pr merge --squash --auto ${{ steps.open-pr.outputs.pull-request-number }}
+        env:
+          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+        continue-on-error: true
