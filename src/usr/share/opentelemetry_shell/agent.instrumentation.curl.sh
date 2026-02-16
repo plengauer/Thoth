@@ -232,6 +232,9 @@ _otel_curl_guess_api() {
   while \[ "$#" -gt 0 ]; do
     case "$1" in
       'https://api.openai.com/'*) \echo llm_openai; break;;
+      'https://models.github.ai/inference/*') \echo llm_openai; break;;
+      'https://models.github.ai/*/inference/*') \echo llm_openai; break;;
+      'https://api.githubcopilot.com/responses') \echo llm_openai; break;;
     esac
     shift
   done
