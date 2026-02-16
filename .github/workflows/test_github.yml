@@ -140,7 +140,7 @@ jobs:
           path_exclude: ./
           working_directory: ./autoversion
           dry_run: 'true'
-  job-integration:
+  job-integration-renovate:
     needs: job-smoke
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -166,6 +166,26 @@ jobs:
           RENOVATE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RENOVATE_REPOSITORIES: ${{ github.repository }}
           LOG_LEVEL: debug
+  job-integration-codeql:
+    needs: job-smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v6.0.1
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/download-artifact@v7.0.0
+        with:
+          name: packages_${{ inputs.ref }}
+      - uses: ./actions/instrument/job
+        with:
+          cache: 'false'
+        env:
+          OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
+          OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
       - uses: github/codeql-action/init@v4.32.2 # node action will call java will call node
         with:
           languages: javascript-typescript
@@ -182,12 +202,52 @@ jobs:
         with:
           category: "/language:python"
           upload: never
+  job-integration-python-venv:
+    needs: job-smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v6.0.1
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/download-artifact@v7.0.0
+        with:
+          name: packages_${{ inputs.ref }}
+      - uses: ./actions/instrument/job
+        with:
+          cache: 'false'
+        env:
+          OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
+          OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
       - run: |
           # initializing a python venv because venv have a lot of corner cases about injection, users, file permissions, changing paths and on-the-fly instrumentation
           python3 -m venv venv
           . venv/bin/activate
           pip3 install -r src/usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.txt
           deactivate
+  job-integration-checkout-submodules:
+    needs: job-smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v6.0.1
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/download-artifact@v7.0.0
+        with:
+          name: packages_${{ inputs.ref }}
+      - uses: ./actions/instrument/job
+        with:
+          cache: 'false'
+        env:
+          OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
+          OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
       - uses: actions/checkout@v6.0.2
         with:
           path: repo_with_submodules
