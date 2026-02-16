@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e -o pipefail
+set -e
 
 echo "::group::Validate Configuration"
 . ../shared/config_validation.sh
