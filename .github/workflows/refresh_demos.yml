@@ -237,12 +237,6 @@ jobs:
           git add --intent-to-add README.md output.stdout output.stderr otlp.json
           git diff README.md | grep -v '^+++' | grep -v '^---' | grep -v '/tmp' | grep -v Id | grep -v _id | grep -v .id | grep -v Time | grep -v time | grep -v timestamp | grep -v github. | grep -v vcs. | grep -v .version | grep -v .ip | grep -v .port | grep -v peer. | grep -v process.pid | grep -v process.parent_pid | grep -v http.user_agent | grep -v host.name | grep -v host.type | grep -v cloud.region | grep -v '"00-' | grep -q '^+' && echo dirty=true >> "$GITHUB_OUTPUT" || true
         id: diff
-      - name: "Resolve Reviewers"
-        if: steps.diff.outputs.dirty
-        id: reviewers
-        run: |
-          if ! [ -f .github/renovate.json ]; then exit 0; fi
-          echo "reviewers=$(cat .github/renovate.json | jq -r '.reviewers | join(",")')" >> "$GITHUB_OUTPUT"
       - name: "Open Pull Request"
         if: steps.diff.outputs.dirty
         id: open-pr
@@ -255,7 +249,6 @@ jobs:
           title: "Update Demo ${{ matrix.demo_directory }}"
           body: |
             (this PR is automatically generated)
-          reviewers: ${{ steps.reviewers.outputs.reviewers }}
           delete-branch: true
       - run: sleep 60 # make sure PR state is updated and API can catch up
         if: steps.open-pr.outputs.pull-request-number != null
