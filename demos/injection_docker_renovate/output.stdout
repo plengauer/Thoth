@@ -1,26 +1,27 @@
  WARN: cli config dryRun property has been changed to full
  INFO: Repository started (repository=plengauer/Thoth)
-       "renovateVersion": "42.82.3"
+       "renovateVersion": "43.18.0"
  INFO: Dependency extraction complete (repository=plengauer/Thoth, baseBranch=main)
        "stats": {
          "managers": {
            "dockerfile": {"fileCount": 4, "depCount": 4},
-           "github-actions": {"fileCount": 24, "depCount": 293},
+           "github-actions": {"fileCount": 24, "depCount": 304},
            "gradle": {"fileCount": 4, "depCount": 3},
            "gradle-wrapper": {"fileCount": 1, "depCount": 1},
            "maven": {"fileCount": 1, "depCount": 2},
-           "npm": {"fileCount": 2, "depCount": 14},
-           "pip_requirements": {"fileCount": 2, "depCount": 16},
+           "npm": {"fileCount": 2, "depCount": 15},
+           "pip_requirements": {"fileCount": 2, "depCount": 17},
            "regex": {"fileCount": 3, "depCount": 4}
          },
-         "total": {"fileCount": 41, "depCount": 337}
+         "total": {"fileCount": 41, "depCount": 350}
        }
+ INFO: DRY-RUN: Would commit files to branch renovate/traceloop-sdk-0.x (repository=plengauer/Thoth, branch=renovate/traceloop-sdk-0.x)
  INFO: DRY-RUN: Would ensure Dependency Dashboard (repository=plengauer/Thoth)
        "title": "Dependency Dashboard"
  INFO: DRY-RUN: Would save repository cache. (repository=plengauer/Thoth)
  INFO: Repository finished (repository=plengauer/Thoth)
        "cloned": true,
-       "durationMs": 31985,
+       "durationMs": 36215,
        "result": "done",
        "status": "onboarded",
        "enabled": true,
