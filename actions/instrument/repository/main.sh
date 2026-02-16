@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e -o pipefail
+set -e
 if [ -n "${INPUT_DEBUG:-}" ]; then cat "$GITHUB_EVENT_PATH" >&2; fi
 
 echo "::group::Validate Configuration"
