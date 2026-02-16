@@ -158,7 +158,7 @@ jobs:
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules
   merge-node-modules:
     needs: build-node-modules
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       actions: read
@@ -250,7 +250,7 @@ jobs:
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.python/venv/lib/python${{ matrix.version }}/site-packages
   merge-python-site-packages:
     needs: build-python-site-packages
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       actions: read
@@ -610,7 +610,7 @@ jobs:
           path: package.apk
   merge-packages:
     needs: [build-deb, build-rpm, build-apk]
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       actions: read
