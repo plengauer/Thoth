@@ -409,7 +409,7 @@ runs:
         commit-message: "Deploy OpenTelemetry"
         title: "Deploy OpenTelemetry"
         body: |
-          This PR deploys workflow-level and job-level OpenTelemetry instrumentation to every workflow.
+          This PR deploys workflow-level, job-level, check suite-level as well as repository-level OpenTelemetry instrumentation to every workflow.
           (this PR is automatically generated)
         delete-branch: true
     - name: "Delay" # to let the api and PR state catch up ...
