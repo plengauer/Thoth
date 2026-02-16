@@ -149,6 +149,13 @@ runs:
         (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
           cat "$workflow_file" | yq .on.check_suite 2> /dev/null | grep -qv '^null$' && cat "$workflow_file" | yq .jobs.*.steps[].uses | grep -q /actions/instrument/checksuite && echo path="$workflow_file" >> "$GITHUB_OUTPUT" && break || true
         done
+    - name: "Find repository-level observability"
+      id: find-repository-level-instrumentation
+      shell: bash
+      run: |
+        (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
+          cat "$workflow_file" | yq .jobs.*.steps[].uses | grep -q /actions/instrument/repository && echo path="$workflow_file" >> "$GITHUB_OUTPUT" && break || true
+        done
   
     - name: "Deploy workflow-level observability"
       if: ${{ inputs.workflow_level_instrumentation == 'true' && steps.find-workflow-level-instrumentation.outputs.path == null }}
@@ -219,7 +226,7 @@ runs:
         yq -i ".on.workflow_run.workflows = [${names}]" "$path"
   
     - name: "Deploy check suite-level instrumentation"
-      if: ${{ inputs.check_suite_level_instrumentation == 'true' }}
+      if: ${{ inputs.check_suite_level_instrumentation == 'true' && steps.find-check-suite-level-instrumentation.outputs.path == null }}
       shell: bash
       run: |
         path="${{ inputs.workflows_directory }}/${{ inputs.check_suite_instrumentation_file_name }}"
@@ -259,15 +266,8 @@ runs:
           echo ::warning::'Runner image '"$image"' is unavailable, skipping configuration since it its only for optimization. A common cause for this is that the package is not publicly visible in the ghcr. This needs to be configured manually. Another possible cause is that it cannot be identified (no docker command available and token cannot read packages)'
         fi
   
-    - name: "Find repository-level observability"
-      id: find-repository-level-instrumentation
-      shell: bash
-      run: |
-        (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
-          cat "$workflow_file" | yq .jobs.*.steps[].uses | grep -q /actions/instrument/repository && echo path="$workflow_file" >> "$GITHUB_OUTPUT" && break || true
-        done
     - name: "Deploy repository-level instrumentation"
-      if: ${{ inputs.repository_level_instrumentation == 'true' }}
+      if: ${{ inputs.repository_level_instrumentation == 'true' && steps.find-repository-level-instrumentation.outputs.path == null }}
       shell: bash
       run: |
         path="${{ inputs.workflows_directory }}/${{ inputs.repository_level_instrumentation_file_name }}"
