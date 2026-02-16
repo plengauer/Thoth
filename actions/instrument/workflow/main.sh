@@ -311,7 +311,7 @@ done | while IFS=$'\t' read -r TRACEPARENT job_id step_number step_conclusion st
   else
     unset action_name action_tag
   fi
-  
+
   observation_handle="$(otel_observation_create 1)"
   otel_observation_attribute_typed "$observation_handle" string github.actions.workflow.name="$(jq < "$workflow_json" -r .name)"
   otel_observation_attribute_typed "$observation_handle" int github.actions.workflow_run.attempt="$(jq < "$workflow_json" .run_attempt)"
@@ -324,7 +324,7 @@ done | while IFS=$'\t' read -r TRACEPARENT job_id step_number step_conclusion st
   otel_observation_attribute_typed "$observation_handle" string github.actions.step.name="$step_name"
   otel_observation_attribute_typed "$observation_handle" string github.actions.step.conclusion="$step_conclusion"
   otel_counter_observe "$step_run_counter_handle" "$observation_handle"
-  
+
   observation_handle="$(otel_observation_create "$(python3 -c "print(str(max(0, $(date -d "$step_completed_at" '+%s.%N') - $(date -d "$step_started_at" '+%s.%N'))))")")"
   otel_observation_attribute_typed "$observation_handle" string github.actions.workflow.name="$(jq < "$workflow_json" -r .name)"
   otel_observation_attribute_typed "$observation_handle" int github.actions.workflow_run.attempt="$(jq < "$workflow_json" .run_attempt)"
@@ -353,7 +353,7 @@ done | while IFS=$'\t' read -r TRACEPARENT job_id step_number step_conclusion st
     otel_observation_attribute_typed "$observation_handle" string github.actions.action.ref="$action_tag"
     otel_observation_attribute_typed "$observation_handle" string github.actions.action.conclusion="$step_conclusion"
     otel_counter_observe "$action_run_counter_handle" "$observation_handle"
-    
+  
     observation_handle="$(otel_observation_create "$(python3 -c "print(str(max(0, $(date -d "$step_completed_at" '+%s.%N') - $(date -d "$step_started_at" '+%s.%N'))))")")"
     otel_observation_attribute_typed "$observation_handle" string github.actions.workflow.name="$(jq < "$workflow_json" -r .name)"
     otel_observation_attribute_typed "$observation_handle" int github.actions.workflow_run.attempt="$(jq < "$workflow_json" .run_attempt)"
