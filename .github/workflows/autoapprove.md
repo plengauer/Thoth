@@ -20,26 +20,13 @@ safe-outputs:
   noop:
   jobs:
     approve-pr:
-      inputs:
-        body:
-          type: string
-          required: true
       permissions:
         pull-requests: write
       steps:
-        - env:
-            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            PR_NUMBER: ${{ github.event.pull_request.number }}
-            REPO: ${{ github.repository }}
-          run: |
-            body=$(cat "$GH_AW_AGENT_OUTPUT" | jq -r '.body')
-            gh api \
-              --method POST \
-              -H "Accept: application/vnd.github+json" \
-              -H "X-GitHub-Api-Version: 2022-11-28" \
-              "/repos/${REPO}/pulls/${PR_NUMBER}/reviews" \
-              -f event='APPROVE' \
-              -f body="${body}"
+        - run: |
+            if [ "$(jq < "$GH_AW_AGENT_OUTPUT" '.type' -r)" = approve-pr ]; then
+              gh api --method POST "/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews" -f event='APPROVE' -f body="$(jq < "$GH_AW_AGENT_OUTPUT" '.body' -r)"
+            fi
 ---
 
 # Auto-Approve Renovate Pull Requests
