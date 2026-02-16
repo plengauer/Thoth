@@ -458,6 +458,10 @@ def handle(scope, version, command, arguments):
         name = tokens[2]
         unit = tokens[3]
         description = tokens[4]
+        if type == 'histogram':
+            tokens = description.split(' ', 1)
+            explicit_bucket_boundaries = tokens[0]
+            description = tokens[1]
         meter = get_meter(scope, version)
         counter_id = str(next_counter_id)
         if type == 'counter':
@@ -466,6 +470,8 @@ def handle(scope, version, command, arguments):
             counters[counter_id] = meter.create_up_down_counter(name, unit=unit, description=description)
         elif type == 'gauge':
             counters[counter_id] = meter.create_gauge(name, unit=unit, description=description)
+        elif type == 'histogram':
+            counters[counter_id] = meter.create_histogram(name, unit=unit, explicit_bucket_boundaries_advisory=[float(b) for b in explicit_bucket_boundaries.split(',') if b] if explicit_bucket_boundaries else None, description=description)
         elif type == 'observable_counter':
             import functools
             delayed_observations[counter_id] = {}
@@ -489,7 +495,9 @@ def handle(scope, version, command, arguments):
         observation_id = tokens[1]
         observation = observations[observation_id]
         counter = counters[counter_id]
-        if hasattr(counter, 'add'):
+        if hasattr(counter, 'record'):
+            counter.record(observation['amount'], observation['attributes'])
+        elif hasattr(counter, 'add'):
             counter.add(observation['amount'], observation['attributes'])
         elif hasattr(counter, 'set'):
             counter.set(observation['amount'], observation['attributes'])
