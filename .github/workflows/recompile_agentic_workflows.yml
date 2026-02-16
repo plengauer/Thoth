@@ -23,14 +23,9 @@ jobs:
       - uses: actions/checkout@v6.0.2
       - env:
           GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
-        run: gh extension install github/gh-aw
-      - env:
-          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         run: |
-          cd .github/workflows
-          for md_file in *.md; do
-            gh aw compile "$md_file"
-          done
+          gh extension install github/gh-aw
+          gh aw compile
       - id: open-pr
         uses: peter-evans/create-pull-request@v8.1.0
         with:
@@ -42,8 +37,8 @@ jobs:
           body: |
             (this PR is automatically generated)
           delete-branch: true
-      - run: sleep 60 # make sure PR state is updated and API can catch up
-        if: steps.open-pr.outputs.pull-request-number != null
+      - if: steps.open-pr.outputs.pull-request-number != null
+        run: sleep 60 # make sure PR state is updated and API can catch up
       - if: steps.open-pr.outputs.pull-request-number != null
         shell: bash
         run: gh pr merge --squash --auto ${{ steps.open-pr.outputs.pull-request-number }}
