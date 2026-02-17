@@ -26,9 +26,7 @@ safe-outputs:
         - env:
             GITHUB_PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
           run: |
-            if [ "$(jq < "$GH_AW_AGENT_OUTPUT" '.type' -r)" = approve-pr ]; then
-              gh api --method POST "/repos/"$GITHUB_REPOSITORY"/pulls/"$GITHUB_PULL_REQUEST_NUMBER"/reviews" -f event='APPROVE' -f body="$(jq < "$GH_AW_AGENT_OUTPUT" '.body' -r)"
-            fi
+            gh api --method POST "/repos/"$GITHUB_REPOSITORY"/pulls/"$GITHUB_PULL_REQUEST_NUMBER"/reviews" -f event='APPROVE' -f body="$(jq < "$GH_AW_AGENT_OUTPUT" '.body' -r)"
 ---
 
 # Auto-Approve Renovate Pull Requests
