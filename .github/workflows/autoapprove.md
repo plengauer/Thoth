@@ -25,6 +25,7 @@ safe-outputs:
       steps:
         - env:
             GITHUB_PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
+            GH_TOKEN: ${{ github.token }}
           run: |
             gh api --method POST "/repos/"$GITHUB_REPOSITORY"/pulls/"$GITHUB_PULL_REQUEST_NUMBER"/reviews" -f event='APPROVE' -f body="$(jq < "$GH_AW_AGENT_OUTPUT" '.body' -r)"
 ---
