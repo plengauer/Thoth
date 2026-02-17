@@ -96,7 +96,7 @@ jobs:
           oldest="ubuntu:$(jq < /tmp/launchpad.ubuntu.json '.entries[] | select(.active == true) | select(.status == "Supported") | .name' -r | head -n 2 | tail -n 1)"
           stable="ubuntu:$(jq < /tmp/launchpad.ubuntu.json '.entries[] | select(.active == true) | select(.status == "Supported") | .name' -r | head -n 1)"
           latest="ubuntu:$(jq < /tmp/launchpad.ubuntu.json '.entries[] | select(.active == true) | select(.status == "Current Stable Release") | .name' -r)"
-          if [ "$oldest" = jammy ]; then oldest="$stable"; fi # for some reason, jammy is still listed, but its not supported, it seems to be a one-off. lets fix it like this here
+          if [ "$oldest" = 'ubuntu:jammy' ]; then oldest="$stable"; fi # for some reason, jammy is still listed, but its not supported, it seems to be a one-off. lets fix it like this here
           dev="ubuntu:$(jq < /tmp/launchpad.ubuntu.json '.entries[] | select(.active == true) | select(.status == "Active Development" or .status == "Pre-release Freeze") | .name' -r | head -n 1)"
           cat .github/images.json | jq ".ubuntu.oldest = \"$oldest\"" | jq ".ubuntu.stable = \"$stable\"" | jq ".ubuntu.latest = \"$latest\"" | jq ".ubuntu.dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/images.json
       - run: |
