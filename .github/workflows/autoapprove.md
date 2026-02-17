@@ -23,9 +23,11 @@ safe-outputs:
       permissions:
         pull-requests: write
       steps:
-        - run: |
+        - env:
+            GITHUB_PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
+          run: |
             if [ "$(jq < "$GH_AW_AGENT_OUTPUT" '.type' -r)" = approve-pr ]; then
-              gh api --method POST "/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews" -f event='APPROVE' -f body="$(jq < "$GH_AW_AGENT_OUTPUT" '.body' -r)"
+              gh api --method POST "/repos/"$GITHUB_REPOSITORY"/pulls/"$GITHUB_PULL_REQUEST_NUMBER"/reviews" -f event='APPROVE' -f body="$(jq < "$GH_AW_AGENT_OUTPUT" '.body' -r)"
             fi
 ---
 
