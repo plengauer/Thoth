@@ -89,7 +89,6 @@ jobs:
           stable="debian:$(jq < /tmp/launchpad.debian.json '.entries[] | select(.active == true) | select(.status == "Supported") | .name' -r | head -n 1)"
           latest="debian:$(jq < /tmp/launchpad.debian.json '.entries[] | select(.active == true) | select(.status == "Current Stable Release") | .name' -r)"
           dev="debian:$(jq < /tmp/launchpad.debian.json '.entries[] | select(.active == true) | select(.status == "Active Development" or .status == "Pre-release Freeze") | .name' -r | head -n 1)"
-          if [ "$oldest" = jammy ]; then 
           cat .github/images.json | jq ".debian.oldest = \"$oldest\"" | jq ".debian.stable = \"$stable\"" | jq ".debian.latest = \"$latest\"" | jq ".debian.dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/images.json
           cat .github/images.json | jq ".\"debian-slim\".oldest = \"$oldest-slim\"" | jq ".\"debian-slim\".stable = \"$stable-slim\"" | jq ".\"debian-slim\".latest = \"$latest-slim\"" | jq ".\"debian-slim\".dev = \"$dev-slim\"" > /tmp/images.json && cat < /tmp/images.json > .github/images.json
       - run: |
