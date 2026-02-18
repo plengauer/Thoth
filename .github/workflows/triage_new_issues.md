@@ -37,7 +37,7 @@ When a new issue is created, you should:
    - Any other relevant categorization
 5. **Apply the labels**: Apply all fitting labels to the issue
 6. **Conditionally ask followup questions**: If there are open questions, put them as comment onto the issue and mention the original author.
-7. **Conditionally assign an agent**: If there are no open questions and the issue seems simply enough to be handled by copilot itself, first comment the analysis and potential solution ideas onto the issue and then assign an agent.
+7. **Conditionally assign an agent**: If there are no open questions and the issue seems simple enough to be handled by copilot itself, first comment the analysis and potential solution ideas onto the issue and then assign an agent.
 
 ## Guidelines
 
