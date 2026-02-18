@@ -9,9 +9,9 @@ permissions:
   pull-requests: read
 tools:
   github:
-    toolsets:
-      - repos
-      - pull_requests
+    toolsets: [ context, repos, pull_requests ]
+  web-search:
+  web-fetch:
 safe-outputs:
   add-comment:
     max: 1
