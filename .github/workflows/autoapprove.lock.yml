@@ -23,7 +23,7 @@
 #
 # Automatically approves pull requests that only contain dependency updates or version bumps from trusted sources
 #
-# gh-aw-metadata: {"schema_version":"v1","frontmatter_hash":"93989d3bd4c338c68d84a459e41bfd9b9883fca72dcd329e9e94034017565c71"}
+# gh-aw-metadata: {"schema_version":"v1","frontmatter_hash":"bf9a8a983d18671e55bad3c2d7b1b2f8d1e0f030eca954dad39ccdcf5648e6cc"}
 
 name: "Autoapprove"
 "on":
@@ -373,7 +373,7 @@ jobs:
           mkdir -p /tmp/gh-aw/safeoutputs
           mkdir -p /tmp/gh-aw/mcp-logs/safeoutputs
           cat > /opt/gh-aw/safeoutputs/config.json << 'GH_AW_SAFE_OUTPUTS_CONFIG_EOF'
-          {"add_comment":{"max":1},"approve-pr":{},"missing_data":{},"missing_tool":{},"noop":{"max":1}}
+          {"add_comment":{"max":1},"approve-pr":{"inputs":{"body":{"default":null,"description":"The body of the review comment","required":true,"type":"string"}},"output":"PR approved!"},"missing_data":{},"missing_tool":{},"noop":{"max":1}}
           GH_AW_SAFE_OUTPUTS_CONFIG_EOF
           cat > /opt/gh-aw/safeoutputs/tools.json << 'GH_AW_SAFE_OUTPUTS_TOOLS_EOF'
           [
@@ -471,7 +471,15 @@ jobs:
               "description": "Execute the approve_pr custom job",
               "inputSchema": {
                 "additionalProperties": false,
-                "properties": {},
+                "properties": {
+                  "body": {
+                    "description": "The body of the review comment",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "body"
+                ],
                 "type": "object"
               },
               "name": "approve_pr"
