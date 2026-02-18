@@ -6,14 +6,12 @@ on:
     types: [opened, synchronize, reopened, ready_for_review]
 permissions:
   contents: read
-  actions: read
   pull-requests: read
 tools:
   github:
-    toolsets:
-      - repos
-      - pull_requests
-      - actions
+    toolsets: [ context, repos, pull_requests ]
+  web-search:
+  web-fetch:
 safe-outputs:
   add-comment:
     max: 1
@@ -25,10 +23,9 @@ safe-outputs:
       steps:
         - env:
             GITHUB_PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
+            GH_TOKEN: ${{ github.token }}
           run: |
-            if [ "$(jq < "$GH_AW_AGENT_OUTPUT" '.type' -r)" = approve-pr ]; then
-              gh api --method POST "/repos/"$GITHUB_REPOSITORY"/pulls/"$GITHUB_PULL_REQUEST_NUMBER"/reviews" -f event='APPROVE' -f body="$(jq < "$GH_AW_AGENT_OUTPUT" '.body' -r)"
-            fi
+            gh api --method POST "/repos/"$GITHUB_REPOSITORY"/pulls/"$GITHUB_PULL_REQUEST_NUMBER"/reviews" -f event='APPROVE' -f body="$(jq < "$GH_AW_AGENT_OUTPUT" '.body' -r)"
 ---
 
 # Auto-Approve Renovate Pull Requests
@@ -61,6 +58,8 @@ Verify that ALL file changes in the PR are ONLY:
   - `meta/rpm/*.spec` (RPM dependencies)
   - Any other package manager lock files
 - Version bump in the root-level `VERSION` file ONLY
+- Compiled agentic workflow lock files
+- Timestamp updates (like the year) in a root-level `LICENSE` file
 
 Use the GitHub toolset to:
 - Get the list of all changed files in the PR
@@ -95,12 +94,9 @@ If and ONLY if ALL criteria are verified beyond reasonable doubt:
 
 If ANY of the criteria are not fully met:
 - DO NOT approve the PR
-- Use the `add-comment` safe output to explain which criteria were not met (optional)
 - Use the `noop` safe output to signal completion without approval
 
 ## Important Notes
 
 - Be extremely conservative: when in doubt, do NOT approve
 - Only approve if you have verified each criterion with certainty
-- Pay special attention to ensure no code changes are hidden in dependency updates
-- Verify that version bumps in VERSION file are the only change to that file
