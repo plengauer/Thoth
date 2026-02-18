@@ -18,6 +18,12 @@ safe-outputs:
   noop:
   jobs:
     approve-pr:
+      output: "PR approved!"
+      inputs:
+        body:
+          description: "The body of the review comment"
+          required: true
+          type: string
       permissions:
         pull-requests: write
       steps:
