@@ -6,7 +6,7 @@ on:
     types: [opened]
 permissions:
   contents: read
-  issues: write
+  issues: read
 roles: all
 tools:
   github:
