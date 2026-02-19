@@ -17,6 +17,7 @@ safe-outputs:
   add-labels:
   add-comment:
   assign-to-agent:
+    github-token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
 ---
 
 # Triage New Issues
