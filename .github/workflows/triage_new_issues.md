@@ -4,10 +4,10 @@ description: Automatically applies appropriate labels to newly created issues ba
 on:
   issues:
     types: [opened]
+  roles: all
 permissions:
   contents: read
   issues: read
-roles: all
 tools:
   github:
     toolsets: [context, repos, issues, labels]
