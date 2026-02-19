@@ -425,22 +425,22 @@ otel_observe() {
 
 if ! \type which 1> /dev/null 2> /dev/null; then
   if \[ "$_otel_shell" = bash ]; then
-    which() {
-      \type -P "$1"
-    }
+which() {
+  \type -P "$1"
+}
   else
-    which() {
-      if \[ -x "$1" ]; then \echo "$1"; return 0; fi
-      local IFS=:
-      for directory in $PATH; do
-        local path="$directory"/"$1"
-        if \[ -x "$path" ]; then
-          \echo "$path"
-          return 0
-        fi
-      done
-      return 1
-    }
+which() {
+  if \[ -x "$1" ]; then \echo "$1"; return 0; fi
+  local IFS=:
+  for directory in $PATH; do
+    local path="$directory"/"$1"
+    if \[ -x "$path" ]; then
+      \echo "$path"
+      return 0
+    fi
+  done
+  return 1
+}
   fi
 fi
 
