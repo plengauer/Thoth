@@ -5,6 +5,10 @@ package-lock.json
 requirements.txt
 pom.xml
 Dockerfile
-actions.lock.json
-*.lock.yml
-/demos/
+/.github/images.json
+/.github/aw/actions.lock.json
+/.github/workflows/*.yml
+/demos/*/README.md
+/demos/*/otlp.json
+/demos/*/output.stdout
+/demos/*/output.stderr
