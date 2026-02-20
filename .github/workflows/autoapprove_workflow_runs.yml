@@ -12,11 +12,11 @@ jobs:
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.43.1
         with:
-          secrets_to_redact: '["${{ github.token }}"]'
+          secrets_to_redact: '["${{ github.token }}", "${{ secrets.ACTIONS_GITHUB_TOKEN }}"]'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
       - env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           RUN_ID: ${{ github.event.workflow_run.id }}
         run: gh api --method POST /repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID/approve
