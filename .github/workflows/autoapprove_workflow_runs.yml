@@ -1,11 +1,11 @@
-name: Autoapprove Workflow Runs
+name: Autoapprove Workflow Run
 on:
   workflow_run:
-    workflows: ['*']
     types: [completed]
+    branches: [main]
 jobs:
   approve:
-    if: ${{ github.event.workflow_run.conclusion == 'action_required' && github.event.workflow_run.head_branch == 'main' }}
+    if: ${{ github.event.workflow_run.conclusion == 'action_required' && github.event.workflow_run.head_repository.full_name == github.repository.full_name }}
     runs-on: ubuntu-slim
     permissions:
       actions: write
