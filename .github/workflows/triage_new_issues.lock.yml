@@ -41,8 +41,6 @@ run-name: "Triage New Issues"
 
 jobs:
   activation:
-    needs: pre_activation
-    if: needs.pre_activation.outputs.activated == 'true'
     runs-on: ubuntu-slim
     permissions:
       contents: read
@@ -1130,44 +1128,4 @@ jobs:
             setupGlobals(core, github, context, exec, io);
             const { main } = require('/opt/gh-aw/actions/assign_to_agent.cjs');
             await main();
-
-  pre_activation:
-    runs-on: ubuntu-slim
-    permissions:
-      actions: read
-      contents: read
-    outputs:
-      activated: ${{ steps.check_rate_limit.outputs.activated }}
-    steps:
-      - name: Check rate limit
-        id: check_rate_limit
-        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const authorAssociation = context.payload.issue.author_association;
-            const privilegedAssociations = ['OWNER', 'MEMBER', 'COLLABORATOR'];
-            if (privilegedAssociations.includes(authorAssociation)) {
-              core.info(`${context.actor} (${authorAssociation}) is exempt from rate limit`);
-              core.setOutput('activated', 'true');
-              return;
-            }
-            const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
-            const { data: runsData } = await github.rest.actions.listWorkflowRuns({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: 'triage_new_issues.lock.yml',
-              per_page: 10
-            });
-            const recentRuns = runsData.workflow_runs.filter(run =>
-              new Date(run.created_at) >= oneHourAgo && run.id !== context.runId
-            );
-            core.info(`Found ${recentRuns.length} recent run(s) in the last hour (excluding current)`);
-            if (recentRuns.length >= 2) {
-              core.info('Rate limit exceeded: maximum 2 runs per hour for non-privileged users');
-              core.setOutput('activated', 'false');
-            } else {
-              core.info(`Rate limit OK: ${recentRuns.length}/2 runs used in the last hour`);
-              core.setOutput('activated', 'true');
-            }
 
