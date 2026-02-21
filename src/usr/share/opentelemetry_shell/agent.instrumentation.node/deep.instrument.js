@@ -1,6 +1,7 @@
 const opentelemetry_api = require('@opentelemetry/api');
 const opentelemetry_sdk = require('@opentelemetry/sdk-node');
 const opentelemetry_auto_instrumentations = require('@opentelemetry/auto-instrumentations-node');
+const traceloop = require('"@traceloop/node-server-sdk"');
 const opentelemetry_resources = require('@opentelemetry/resources');
 const opentelemetry_resources_git = require('opentelemetry-resource-detector-git');
 const opentelemetry_resources_github = require('@opentelemetry/resource-detector-github');
@@ -45,7 +46,16 @@ process.env.OTEL_BSP_MAX_EXPORT_BATCH_SIZE=1
 
 const sdk = new opentelemetry_sdk.NodeSDK({
   contextManager: context_manager.enable(),
-  instrumentations: [ opentelemetry_auto_instrumentations.getNodeAutoInstrumentations() ],
+  instrumentations: [
+    opentelemetry_auto_instrumentations.getNodeAutoInstrumentations(),
+    require("@traceloop/node-server-sdk").traceloopInstrumentationLibraries.filter(library => library.startsWith("@traceloop/instrumentation-")).map(function(library) {
+      try {
+        return require(library);
+      } catch {
+        return null;
+      }
+    }).filter(library => library != null).flatMap(library => Object.entries(library)).filter(entry => entry[0].endsWith("Instrumentation")).map(entry => entry[1]).map(clazz => new clazz)
+  ],
   resourceDetectors: [
     // opentelemetry_resources_alibaba_cloud.alibabaCloudEcsDetector, // TODO this one takes a full second to just time out when its not alibaba
     opentelemetry_resources_azure.azureAppServiceDetector,
