@@ -240,7 +240,7 @@ jobs:
             find venv_instrumentations -name METADATA -exec cat '{}' ';' | grep '^Requires-Dist:' | cut -d ' ' -f 2- | grep '^opentelemetry-instrumentation-'
             deactivate
             rm -rf venv_instrumentations
-          ) | grep -v opentelemetry-instrumentation-system-metrics | (
+          ) | grep -v opentelemetry-instrumentation-system-metrics | tee /dev/stderr | (
             . venv/bin/activate
             xargs -r pip3 install
             deactivate
