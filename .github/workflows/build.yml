@@ -228,18 +228,18 @@ jobs:
           pip3 install -r requirements.txt
           deactivate
           (
+            python3 -m venv venv_instrumentations
+            . venv_instrumentations/bin/activate
+            pip3 install -r instrumentation_roots_requirements.txt
             \python3 << EOF
           from opentelemetry.instrumentation.bootstrap_gen import (default_instrumentations, libraries)
           print(*default_instrumentations, sep="\n")
           print(*map(lambda element: element["instrumentation"], libraries), sep="\n")
           EOF
-            python3 -m venv venv_additional
-            . venv_additional/bin/activate
-            pip3 install -r instrumentation_roots_requirements.txt
-            find venv_additional -name METADATA -exec cat '{}' ';' | grep '^Requires-Dist:' | cut -d ' ' -f 2- | grep '^opentelemetry-instrumentation-'
+            find venv_instrumentations -name METADATA -exec cat '{}' ';' | grep '^Requires-Dist:' | cut -d ' ' -f 2- | grep '^opentelemetry-instrumentation-'
             deactivate
             rm -rf venv_additional
-          ) | grep -v opentelemetry-instrumentation-system-metrics | (
+          ) | grep -v opentelemetry-instrumentation-system-metrics | tee /dev/stderr | (
             . venv/bin/activate
             xargs -r pip3 install
             deactivate
