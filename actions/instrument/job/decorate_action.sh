@@ -2,7 +2,9 @@
 if [ -z "$GITHUB_RUN_ID" ] || [ "$(cat /proc/$PPID/cmdline | tr '\000-\037' ' ' | cut -d ' ' -f 1 | rev | cut -d / -f 1 | rev)" != "Runner.Worker" ]; then unset OTEL_SHELL_COMMAND_OVERRIDE; exec "$@"; fi
 if [ "$_OTEL_GITHUB_STEP_ACTION_TYPE" = javascript ]; then
   seq 1 60 | while read -r line; do
-    sleep 10; pstree -a -c -l -T "$$" >&2
+    sleep 10
+    pstree -a -c -l -T "$$" >&2
+    sudo docker container ls -a
   done &
 fi
 
