@@ -213,11 +213,9 @@ runs:
             | grep -vF "$([ -r "${{ steps.find-workflow-level-instrumentation.outputs.path }}" ] && cat "${{ steps.find-workflow-level-instrumentation.outputs.path }}" | yq .name || cat "${{ inputs.workflows_directory }}/${{ inputs.workflow_level_instrumentation_file_name }}" | yq .name)" \
             | grep -vF "$([ -r "${{ steps.find-check-suite-level-instrumentation.outputs.path }}" ] && cat "${{ steps.find-check-suite-level-instrumentation.outputs.path }}" | yq .name || cat "${{ inputs.workflows_directory }}/${{ inputs.check_suite_level_instrumentation_file_name }}" | yq .name)" \
             | grep -vF "$([ -r "${{ steps.find-repository-level-instrumentation.outputs.path }}" ] && cat "${{ steps.find-repository-level-instrumentation.outputs.path }}" | yq .name || cat "${{ inputs.workflows_directory }}/${{ inputs.repository_level_instrumentation_file_name }}" | yq .name)"
-          seq 1 10 \
-            | xargs -I '{}' curl -s --fail --retry 8 --header "Authorization: Bearer ${{ inputs.github_token }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/${{ github.repository }}/actions/runs'?per_page=100&page={}' | jq '.workflow_runs[].workflow_id' | sort -u \
-            | xargs -I '{}' curl -s --fail --retry 8 --header "Authorization: Bearer ${{ inputs.github_token }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/${{ github.repository }}/actions/workflows/'{}' | jq 'select(.path | startswith("dynamic/")) | .name' -r
-          echo Copilot coding agent
-          echo Copilot code review
+          seq 1 10 | xargs -I '{}' curl -s --fail --retry 8 --header "Authorization: Bearer ${{ inputs.github_token }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/${{ github.repository }}/actions/workflows'?per_page=100&page={}' | jq '.workflows[] | select(.path | startswith("dynamic/")) | .name' -r
+          echo Copilot coding agent # this one should be prefilled because it needs deferred export
+          echo Copilot code review # this one should be prefilled because its very common and new
         } | sort -u > "$names_file"
         names=""
         while IFS= read -r line; do
