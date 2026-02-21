@@ -1,7 +1,6 @@
 const opentelemetry_api = require('@opentelemetry/api');
 const opentelemetry_sdk = require('@opentelemetry/sdk-node');
 const opentelemetry_auto_instrumentations = require('@opentelemetry/auto-instrumentations-node');
-const traceloop = require('"@traceloop/node-server-sdk"');
 const opentelemetry_resources = require('@opentelemetry/resources');
 const opentelemetry_resources_git = require('opentelemetry-resource-detector-git');
 const opentelemetry_resources_github = require('@opentelemetry/resource-detector-github');
