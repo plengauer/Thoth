@@ -3,7 +3,9 @@ name: Autoapprove
 description: Automatically approves pull requests that only contain dependency updates or version bumps from trusted sources
 on:
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
+    types: [ opened, ready_for_review ]
+  pull_request_review:
+    types: [ dismissed ]
 permissions:
   contents: read
   pull-requests: read
