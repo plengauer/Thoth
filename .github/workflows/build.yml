@@ -225,14 +225,25 @@ jobs:
       - run: |
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.python
           python3 -m venv venv
-          . venv/bin/activate
           pip3 install -r requirements.txt
-          printf '%s' '
+          deactivate
+          (
+            \python3 << EOF
           from opentelemetry.instrumentation.bootstrap_gen import (default_instrumentations, libraries)
           print(*default_instrumentations, sep="\n")
           print(*map(lambda element: element["instrumentation"], libraries), sep="\n")
-          ' | \python3 | grep -v opentelemetry-instrumentation-system-metrics | xargs pip3 install
-          deactivate
+          EOF
+            python3 -m venv venv_additional
+            . venv_additional/bin/activate
+            pip3 install -r requirements_additional.txt
+            find venv_additional -name METADATA -exec cat '{}' ';' | grep '^Requires-Dist:' | cut -d ' ' -f 2- | grep '^opentelemetry-instrumentation-'
+            deactivate
+            rm -rf venv_additional
+          ) | grep -v opentelemetry-instrumentation-system-metrics | (
+            . venv/bin/activate
+            xargs -r pip3 install
+            deactivate
+          )
       - run: |
           set +f
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.python
