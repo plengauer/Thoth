@@ -5,7 +5,6 @@ on:
       - main
     paths:
       - '.github/workflows/*.md'
-      - '.github/workflows/recompile_agentic_workflows.yml'
 jobs:
   recompile:
     if: ${{ !github.event.repository.fork }}
