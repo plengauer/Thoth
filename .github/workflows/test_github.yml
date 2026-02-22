@@ -144,6 +144,10 @@ jobs:
     needs: job-smoke
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    strategy:
+      matrix:
+        run: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      fail-fast: false
     permissions:
       contents: read
       actions: read

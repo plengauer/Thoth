@@ -95,7 +95,7 @@ _otel_inject_docker_args() {
     local pipes_dir="$(\mktemp -u)_opentelemetry_shell_$$.docker"; \mkdir -p "$pipes_dir"; \chmod 777 "$pipes_dir"
     \echo -n ' '; _otel_escape_args --mount type=bind,source="$pipes_dir",target="$pipes_dir"
     \echo -n ' '; _otel_escape_args --env OTEL_SHELL_PIPE_DIR="$pipes_dir"
-    \echo -n ' '; _otel_escape_args --env OTEL_SHELL_AUTO_INJECTED=TRUE
+    \echo -n ' '; _otel_escape_args --env OTEL_SHELL_AUTO_INJECTED=TRUE --env OTEL_SHELL_CONFIG_OBSERVE_PIPES=FALSE
     if \[ -z "${docker_network:-}" ] && \[ "$GITHUB_ACTIONS" = true ]; then
       \echo -n ' '; _otel_escape_args --network host
     fi
