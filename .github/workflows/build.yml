@@ -237,7 +237,7 @@ jobs:
           print(*default_instrumentations, sep="\n")
           print(*map(lambda element: element["instrumentation"], libraries), sep="\n")
           EOF
-            find venv_instrumentations -name METADATA -exec cat '{}' ';' | grep '^Requires-Dist:' | cut -d ':' -f 2- | tr -d ' ' | grep '^opentelemetry-instrumentation-'
+            find venv_instrumentations -name METADATA -exec cat '{}' ';' | grep '^Requires-Dist:' | cut -d ':' -f 2- | tr -d ' ' | grep '^opentelemetry-instrumentation-' | cat
             deactivate
             rm -rf venv_instrumentations
           ) | grep -v opentelemetry-instrumentation-system-metrics | (
