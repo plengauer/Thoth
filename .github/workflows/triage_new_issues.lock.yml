@@ -44,6 +44,7 @@ jobs:
     runs-on: ubuntu-slim
     permissions:
       contents: read
+      actions: read
     outputs:
       body: ${{ steps.sanitized.outputs.body }}
       comment_id: ""
@@ -51,6 +52,12 @@ jobs:
       text: ${{ steps.sanitized.outputs.text }}
       title: ${{ steps.sanitized.outputs.title }}
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.43.1
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: ${{ github.token }}
       - name: Setup Scripts
         uses: github/gh-aw/actions/setup@f5a6c65a740bb4286bfdcb27dea7691bbd7ebc07 # v0.46.4
         with:
@@ -102,78 +109,7 @@ jobs:
           GH_AW_GITHUB_REPOSITORY: ${{ github.repository }}
           GH_AW_GITHUB_RUN_ID: ${{ github.run_id }}
           GH_AW_GITHUB_WORKSPACE: ${{ github.workspace }}
-        run: |
-          bash /opt/gh-aw/actions/create_prompt_first.sh
-          cat << 'GH_AW_PROMPT_EOF' > "$GH_AW_PROMPT"
-          <system>
-          GH_AW_PROMPT_EOF
-          cat "/opt/gh-aw/prompts/xpia.md" >> "$GH_AW_PROMPT"
-          cat "/opt/gh-aw/prompts/temp_folder_prompt.md" >> "$GH_AW_PROMPT"
-          cat "/opt/gh-aw/prompts/markdown.md" >> "$GH_AW_PROMPT"
-          cat << 'GH_AW_PROMPT_EOF' >> "$GH_AW_PROMPT"
-          <safe-outputs>
-          <description>GitHub API Access Instructions</description>
-          <important>
-          The gh CLI is NOT authenticated. Do NOT use gh commands for GitHub operations.
-          </important>
-          <instructions>
-          To create or modify GitHub resources (issues, discussions, pull requests, etc.), you MUST call the appropriate safe output tool. Simply writing content will NOT work - the workflow requires actual tool calls.
-          
-          Temporary IDs: Some safe output tools support a temporary ID field (usually named temporary_id) so you can reference newly-created items elsewhere in the SAME agent output (for example, using #aw_abc1 in a later body). 
-          
-          **IMPORTANT - temporary_id format rules:**
-          - If you DON'T need to reference the item later, OMIT the temporary_id field entirely (it will be auto-generated if needed)
-          - If you DO need cross-references/chaining, you MUST match this EXACT validation regex: /^aw_[A-Za-z0-9]{3,8}$/i
-          - Format: aw_ prefix followed by 3 to 8 alphanumeric characters (A-Z, a-z, 0-9, case-insensitive)
-          - Valid alphanumeric characters: ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789
-          - INVALID examples: aw_ab (too short), aw_123456789 (too long), aw_test-id (contains hyphen), aw_id_123 (contains underscore)
-          - VALID examples: aw_abc, aw_abc1, aw_Test123, aw_A1B2C3D4, aw_12345678
-          - To generate valid IDs: use 3-8 random alphanumeric characters or omit the field to let the system auto-generate
-          
-          Do NOT invent other aw_* formats — downstream steps will reject them with validation errors matching against /^aw_[A-Za-z0-9]{3,8}$/i.
-          
-          Discover available tools from the safeoutputs MCP server.
-          
-          **Critical**: Tool calls write structured data that downstream jobs process. Without tool calls, follow-up actions will be skipped.
-          
-          **Note**: If you made no other safe output tool calls during this workflow execution, call the "noop" tool to provide a status message indicating completion or that no actions were needed.
-          </instructions>
-          </safe-outputs>
-          <github-context>
-          The following GitHub context information is available for this workflow:
-          {{#if __GH_AW_GITHUB_ACTOR__ }}
-          - **actor**: __GH_AW_GITHUB_ACTOR__
-          {{/if}}
-          {{#if __GH_AW_GITHUB_REPOSITORY__ }}
-          - **repository**: __GH_AW_GITHUB_REPOSITORY__
-          {{/if}}
-          {{#if __GH_AW_GITHUB_WORKSPACE__ }}
-          - **workspace**: __GH_AW_GITHUB_WORKSPACE__
-          {{/if}}
-          {{#if __GH_AW_GITHUB_EVENT_ISSUE_NUMBER__ }}
-          - **issue-number**: #__GH_AW_GITHUB_EVENT_ISSUE_NUMBER__
-          {{/if}}
-          {{#if __GH_AW_GITHUB_EVENT_DISCUSSION_NUMBER__ }}
-          - **discussion-number**: #__GH_AW_GITHUB_EVENT_DISCUSSION_NUMBER__
-          {{/if}}
-          {{#if __GH_AW_GITHUB_EVENT_PULL_REQUEST_NUMBER__ }}
-          - **pull-request-number**: #__GH_AW_GITHUB_EVENT_PULL_REQUEST_NUMBER__
-          {{/if}}
-          {{#if __GH_AW_GITHUB_EVENT_COMMENT_ID__ }}
-          - **comment-id**: __GH_AW_GITHUB_EVENT_COMMENT_ID__
-          {{/if}}
-          {{#if __GH_AW_GITHUB_RUN_ID__ }}
-          - **workflow-run-id**: __GH_AW_GITHUB_RUN_ID__
-          {{/if}}
-          </github-context>
-          
-          GH_AW_PROMPT_EOF
-          cat << 'GH_AW_PROMPT_EOF' >> "$GH_AW_PROMPT"
-          </system>
-          GH_AW_PROMPT_EOF
-          cat << 'GH_AW_PROMPT_EOF' >> "$GH_AW_PROMPT"
-          {{#runtime-import .github/workflows/triage_new_issues.md}}
-          GH_AW_PROMPT_EOF
+        run: "bash /opt/gh-aw/actions/create_prompt_first.sh\ncat << 'GH_AW_PROMPT_EOF' > \"$GH_AW_PROMPT\"\n<system>\nGH_AW_PROMPT_EOF\ncat \"/opt/gh-aw/prompts/xpia.md\" >> \"$GH_AW_PROMPT\"\ncat \"/opt/gh-aw/prompts/temp_folder_prompt.md\" >> \"$GH_AW_PROMPT\"\ncat \"/opt/gh-aw/prompts/markdown.md\" >> \"$GH_AW_PROMPT\"\ncat << 'GH_AW_PROMPT_EOF' >> \"$GH_AW_PROMPT\"\n<safe-outputs>\n<description>GitHub API Access Instructions</description>\n<important>\nThe gh CLI is NOT authenticated. Do NOT use gh commands for GitHub operations.\n</important>\n<instructions>\nTo create or modify GitHub resources (issues, discussions, pull requests, etc.), you MUST call the appropriate safe output tool. Simply writing content will NOT work - the workflow requires actual tool calls.\n\nTemporary IDs: Some safe output tools support a temporary ID field (usually named temporary_id) so you can reference newly-created items elsewhere in the SAME agent output (for example, using #aw_abc1 in a later body). \n\n**IMPORTANT - temporary_id format rules:**\n- If you DON'T need to reference the item later, OMIT the temporary_id field entirely (it will be auto-generated if needed)\n- If you DO need cross-references/chaining, you MUST match this EXACT validation regex: /^aw_[A-Za-z0-9]{3,8}$/i\n- Format: aw_ prefix followed by 3 to 8 alphanumeric characters (A-Z, a-z, 0-9, case-insensitive)\n- Valid alphanumeric characters: ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\n- INVALID examples: aw_ab (too short), aw_123456789 (too long), aw_test-id (contains hyphen), aw_id_123 (contains underscore)\n- VALID examples: aw_abc, aw_abc1, aw_Test123, aw_A1B2C3D4, aw_12345678\n- To generate valid IDs: use 3-8 random alphanumeric characters or omit the field to let the system auto-generate\n\nDo NOT invent other aw_* formats — downstream steps will reject them with validation errors matching against /^aw_[A-Za-z0-9]{3,8}$/i.\n\nDiscover available tools from the safeoutputs MCP server.\n\n**Critical**: Tool calls write structured data that downstream jobs process. Without tool calls, follow-up actions will be skipped.\n\n**Note**: If you made no other safe output tool calls during this workflow execution, call the \"noop\" tool to provide a status message indicating completion or that no actions were needed.\n</instructions>\n</safe-outputs>\n<github-context>\nThe following GitHub context information is available for this workflow:\n{{#if __GH_AW_GITHUB_ACTOR__ }}\n- **actor**: __GH_AW_GITHUB_ACTOR__\n{{/if}}\n{{#if __GH_AW_GITHUB_REPOSITORY__ }}\n- **repository**: __GH_AW_GITHUB_REPOSITORY__\n{{/if}}\n{{#if __GH_AW_GITHUB_WORKSPACE__ }}\n- **workspace**: __GH_AW_GITHUB_WORKSPACE__\n{{/if}}\n{{#if __GH_AW_GITHUB_EVENT_ISSUE_NUMBER__ }}\n- **issue-number**: #__GH_AW_GITHUB_EVENT_ISSUE_NUMBER__\n{{/if}}\n{{#if __GH_AW_GITHUB_EVENT_DISCUSSION_NUMBER__ }}\n- **discussion-number**: #__GH_AW_GITHUB_EVENT_DISCUSSION_NUMBER__\n{{/if}}\n{{#if __GH_AW_GITHUB_EVENT_PULL_REQUEST_NUMBER__ }}\n- **pull-request-number**: #__GH_AW_GITHUB_EVENT_PULL_REQUEST_NUMBER__\n{{/if}}\n{{#if __GH_AW_GITHUB_EVENT_COMMENT_ID__ }}\n- **comment-id**: __GH_AW_GITHUB_EVENT_COMMENT_ID__\n{{/if}}\n{{#if __GH_AW_GITHUB_RUN_ID__ }}\n- **workflow-run-id**: __GH_AW_GITHUB_RUN_ID__\n{{/if}}\n</github-context>\n\nGH_AW_PROMPT_EOF\ncat << 'GH_AW_PROMPT_EOF' >> \"$GH_AW_PROMPT\"\n</system>\nGH_AW_PROMPT_EOF\ncat << 'GH_AW_PROMPT_EOF' >> \"$GH_AW_PROMPT\"\n{{#runtime-import .github/workflows/triage_new_issues.md}}\nGH_AW_PROMPT_EOF\n"
       - name: Interpolate variables and render templates
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         env:
@@ -243,6 +179,7 @@ jobs:
     permissions:
       contents: read
       issues: read
+      actions: read
     env:
       DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
       GH_AW_ASSETS_ALLOWED_EXTS: ""
@@ -261,6 +198,17 @@ jobs:
       output_types: ${{ steps.collect_output.outputs.output_types }}
       secret_verification_result: ${{ steps.validate-secret.outputs.verification_result }}
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.43.1
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: |-
+            ${{ github.token }}
+            ${{ secrets.COPILOT_GITHUB_TOKEN }}
+            ${{ secrets.GH_AW_GITHUB_MCP_SERVER_TOKEN }}
+            ${{ secrets.GH_AW_GITHUB_TOKEN }}
+            ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Scripts
         uses: github/gh-aw/actions/setup@f5a6c65a740bb4286bfdcb27dea7691bbd7ebc07 # v0.46.4
         with:
@@ -876,11 +824,18 @@ jobs:
       discussions: write
       issues: write
       pull-requests: write
+      actions: read
     outputs:
       noop_message: ${{ steps.noop.outputs.noop_message }}
       tools_reported: ${{ steps.missing_tool.outputs.tools_reported }}
       total_count: ${{ steps.missing_tool.outputs.total_count }}
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.43.1
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: ${{ github.token }}
       - name: Setup Scripts
         uses: github/gh-aw/actions/setup@f5a6c65a740bb4286bfdcb27dea7691bbd7ebc07 # v0.46.4
         with:
@@ -966,11 +921,20 @@ jobs:
     needs: agent
     if: needs.agent.outputs.output_types != '' || needs.agent.outputs.has_patch == 'true'
     runs-on: ubuntu-latest
-    permissions: {}
+    permissions:
+      actions: read
     timeout-minutes: 10
     outputs:
       success: ${{ steps.parse_results.outputs.success }}
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.43.1
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: |-
+            ${{ github.token }}
+            ${{ secrets.COPILOT_GITHUB_TOKEN }}
       - name: Setup Scripts
         uses: github/gh-aw/actions/setup@f5a6c65a740bb4286bfdcb27dea7691bbd7ebc07 # v0.46.4
         with:
@@ -1072,6 +1036,7 @@ jobs:
       discussions: write
       issues: write
       pull-requests: write
+      actions: read
     timeout-minutes: 15
     env:
       GH_AW_ENGINE_ID: "copilot"
@@ -1086,6 +1051,14 @@ jobs:
       process_safe_outputs_processed_count: ${{ steps.process_safe_outputs.outputs.processed_count }}
       process_safe_outputs_temporary_id_map: ${{ steps.process_safe_outputs.outputs.temporary_id_map }}
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.43.1
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: |-
+            ${{ github.token }}
+            ${{ secrets.ACTIONS_GITHUB_TOKEN }}
       - name: Setup Scripts
         uses: github/gh-aw/actions/setup@f5a6c65a740bb4286bfdcb27dea7691bbd7ebc07 # v0.46.4
         with:
