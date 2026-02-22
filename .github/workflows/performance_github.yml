@@ -4,9 +4,9 @@ on:
   push:
     paths:
       - .github/workflows/performance_github.yml
-    # branches:
-    #   - main
-      
+    branches:
+      - main
+
 env:
   OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
   OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -44,20 +44,6 @@ jobs:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.43.1
         with:
           secrets_to_redact: '["${{ github.token }}"]'
-      - uses: actions/checkout@v6.0.2
-      - run: echo hello world | cat
-
-  default-no-sdk-factory:
-    needs: [ warmup ]
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      actions: read
-    steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.43.1
-        with:
-          secrets_to_redact: '["${{ github.token }}"]'
-      - run: rm -rf /tmp/otel_shell/sdk_factory."$USER".pipe
       - uses: actions/checkout@v6.0.2
       - run: echo hello world | cat
 
