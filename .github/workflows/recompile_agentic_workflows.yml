@@ -1,11 +1,15 @@
 name: 'Recompile Agentic Workflows'
+
 on:
   push:
     branches:
       - main
     paths:
       - '.github/workflows/*.md'
-      - '.github/workflows/recompile_agentic_workflows.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+
 jobs:
   recompile:
     if: ${{ !github.event.repository.fork }}
