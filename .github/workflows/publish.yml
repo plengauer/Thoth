@@ -71,6 +71,7 @@ jobs:
       contents: write
       id-token: write
       attestations: write
+      packages: write
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.43.1
         with:
@@ -109,7 +110,7 @@ jobs:
           major=$(echo "$version" | cut -d . -f 1)
           minor=$(echo "$version" | cut -d . -f 2)
           patch=$(echo "$version" | cut -d . -f 3)
-          echo ${{ secrets.PACKAGES_GITHUB_TOKEN }} | sudo docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
+          echo ${{ github.token }} | sudo docker login ghcr.io -u ${{ github.actor }} --password-stdin
           find . -iname '*.image' | while read -r image_file; do
             sudo docker load < "$image_file"
             image_name="$image_file"
@@ -123,7 +124,10 @@ jobs:
             sudo docker push "ghcr.io/${GITHUB_REPOSITORY%/*}/$image_name" --all-tags
           done
 
-      - run: |
+      - id: create_release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
           gh release create "v${{ steps.version.outputs.version }}" \
             --title "Release v${{ steps.version.outputs.version }}" \
             --generate-notes \
@@ -131,9 +135,6 @@ jobs:
           sleep 60 # let API catch up
           echo "id=$(gh api repos/${{ github.repository }}/releases | jq '.[] | select(.tag_name == "v${{ steps.version.outputs.version }}") | .id' -r)" >> "$GITHUB_OUTPUT"
           echo "upload_url=$(gh api repos/${{ github.repository }}/releases | jq '.[] | select(.tag_name == "v${{ steps.version.outputs.version }}") | .upload_url' -r)" >> "$GITHUB_OUTPUT"
-        id: create_release
-        env:
-          GH_TOKEN: ${{ github.token }}
 
       - uses: actions/upload-release-asset@v1.0.2
         env:
@@ -164,6 +165,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         with:
           release_id: ${{ steps.create_release.outputs.id }}
+
       - run: |
           version="${{ steps.version.outputs.version }}"
           major=$(echo "$version" | cut -d . -f 1)
