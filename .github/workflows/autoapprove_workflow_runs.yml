@@ -1,6 +1,7 @@
 name: Autoapprove Workflow Run
 on:
   workflow_run:
+    workflows: [OpenTelemetry]
     types: [completed]
     branches: [main]
 jobs:
