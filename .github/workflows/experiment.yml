@@ -17,23 +17,29 @@ jobs:
   experiment:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
       actions: read
+      contents: write
+      id-token: write
+      attestations: write
+      packages: write
     steps:
-      - uses: actions/checkout@v6
-      - uses: ./actions/instrument/job
-        with:
-          # secrets_to_redact: '{"foo":"*"}'        
-          secrets_to_redact: '${{ toJSON(secrets) }}'
-          debug: 1
-        env:
-          OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
-          OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
-          OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-          OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/stderr
-      - uses: renovatebot/github-action@v46.1.2
-        env:
-          RENOVATE_REPOSITORIES: ${{ github.repository }}
-          RENOVATE_DRY_RUN: full
-        with:
-          token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+      - run: sudo docker save ubuntu:latest > opentelemetry-github-workflow-instrumentation-runner.image
+      - run: |
+          version="0.0.0"
+          major=$(echo "$version" | cut -d . -f 1)
+          minor=$(echo "$version" | cut -d . -f 2)
+          patch=$(echo "$version" | cut -d . -f 3)
+          echo ${{ github.token }} | sudo docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          find . -iname '*.image' | while read -r image_file; do
+            sudo docker load < "$image_file"
+            image_name="$image_file"
+            image_name="${image_name#./}"
+            image_name="${image_name%.image}"
+            for tag_simple in "v${major}.${minor}.${patch}" "v${major}.${minor}" "v${major}" "${{ matrix.ref }}"; do
+              tag_full=ghcr.io/"${GITHUB_REPOSITORY%/*}"/"$image_name":"$tag_simple"
+              sudo docker image tag "$image_name" "$tag_full"
+            done
+            sudo docker image remove "$image_name"
+            sudo docker push "ghcr.io/${GITHUB_REPOSITORY%/*}/$image_name" --all-tags
+          done
+    
