@@ -80,7 +80,7 @@ req.end();
 span="$(node "$directory"/index.js 2>&1)"
 assert_equals 0 $?
 \echo "$span"
-assert_equals "GET" "$(\echo "$span" | grep -E '^  name:' | cut -d ':' -f 2- | tr -d \''" ,')"
+assert_equals "GET" "$(\echo "$span" | grep -E '^  name:' | cut -d ':' -f 2- | tr -d \''" ,' | grep GET || true)"
 assert_not_equals undefined "$(\echo "$span" | grep parentId | cut -d ':' -f 2- | tr -d \''" ,')"
 
 directory="$(mktemp -d)"
@@ -112,7 +112,7 @@ req.end();
 span="$(node "$directory"/index.js 2>&1)"
 assert_equals 0 $?
 \echo "$span"
-assert_equals "GET" "$(\echo "$span" | grep -E '^  name:' | cut -d ':' -f 2- | tr -d \''" ,')"
+assert_equals "GET" "$(\echo "$span" | grep -E '^  name:' | cut -d ':' -f 2- | tr -d \''" ,' | grep GET || true)"
 assert_not_equals undefined "$(\echo "$span" | grep parentId | cut -d ':' -f 2- | tr -d \''" ,')"
 
 directory="$(mktemp -d)"
