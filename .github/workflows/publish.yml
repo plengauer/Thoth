@@ -17,7 +17,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.43.1
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.45.1
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
@@ -73,7 +73,7 @@ jobs:
       attestations: write
       packages: write
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.43.1
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.45.1
         with:
           secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}","${{ secrets.PACKAGES_GITHUB_TOKEN }}"]'
         env:
