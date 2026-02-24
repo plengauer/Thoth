@@ -193,6 +193,12 @@ jobs:
       contents: read
       actions: read
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.45.1
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: ${{ github.token }}
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
@@ -216,6 +222,12 @@ jobs:
       contents: read
       actions: read
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.45.1
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: ${{ github.token }}
       - uses: actions/setup-python@v6.2.0
         with:
           python-version: ${{ matrix.version }}

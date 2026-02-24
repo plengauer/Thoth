@@ -9,11 +9,13 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'action_required' && github.event.workflow_run.head_repository.full_name == github.repository.full_name }}
     runs-on: ubuntu-slim
     permissions:
-      actions: write
+      actions: read
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.45.1
         with:
-          secrets_to_redact: '["${{ github.token }}", "${{ secrets.ACTIONS_GITHUB_TOKEN }}"]'
+          secrets_to_redact: '${{ github.token }}
+
+            ${{ secrets.ACTIONS_GITHUB_TOKEN }}'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'

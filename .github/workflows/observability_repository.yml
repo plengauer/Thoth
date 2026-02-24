@@ -1,0 +1,24 @@
+
+name: OpenTelemetry
+on:
+  pull_request:
+    types: [opened, reopened, closed]
+  pull_request_review:
+    types: [submitted]
+  create:
+  delete:
+  push:
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: otel-repository
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/repository@v5.45.1
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+    container: ghcr.io/plengauer/opentelemetry-github-workflow-instrumentation-runner:v5.45.1
