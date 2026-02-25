@@ -362,12 +362,14 @@ jobs:
       - uses: actions/download-artifact@v7.0.0
         with:
           name: packages_${{ inputs.ref }}
+      - run: ls -la /opt
       - uses: ./actions/instrument/job
         with:
           cache: ${{ matrix.cache }}
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
+      - run: ls -la /opt
       - run: echo hello world
   job-exporter-local:
     needs: job-smoke
