@@ -128,7 +128,7 @@ echo "$TRACEPARENT"
 echo '
 import requests
 requests.get("http://example.com/foo")
-' | python3 | grep -- '/foo' || exit 1
+' | python3 | tee /dev/stderr | grep -- '/foo' || exit 1
 
 python3 -c '
 import requests
