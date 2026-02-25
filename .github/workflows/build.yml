@@ -254,7 +254,7 @@ jobs:
             rm -rf venv_instrumentations
           ) | grep -v opentelemetry-instrumentation-system-metrics | (
             . venv/bin/activate
-            xargs -r pip3 install
+            xargs -t -r pip3 install
             deactivate
           )
       - run: |
