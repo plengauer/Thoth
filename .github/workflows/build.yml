@@ -244,11 +244,11 @@ jobs:
             python3 -m venv venv_instrumentations
             . venv_instrumentations/bin/activate
             pip3 install -r instrumentation_roots_requirements.txt >&2
-            \python3 << EOF
+            \python3 -c '
           from opentelemetry.instrumentation.bootstrap_gen import (default_instrumentations, libraries)
           print(*default_instrumentations, sep="\n")
           print(*map(lambda element: element["instrumentation"], libraries), sep="\n")
-          EOF
+          '
             find venv_instrumentations -name METADATA -exec cat '{}' ';' | grep '^Requires-Dist:' | cut -d ':' -f 2- | tr -d ' ' | grep '^opentelemetry-instrumentation-' | cat
             deactivate
             rm -rf venv_instrumentations
