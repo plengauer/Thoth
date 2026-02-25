@@ -236,14 +236,14 @@ jobs:
           ref: ${{ inputs.ref }}
       - run: |
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.python
-          python3 -m venv venv
-          . venv/bin/activate
-          pip3 install -r requirements.txt
+          \python3 -m venv venv
+          \. venv/bin/activate
+          \pip3 install -r requirements.txt
           deactivate
           (
-            python3 -m venv venv_instrumentations
-            . venv_instrumentations/bin/activate
-            pip3 install -r instrumentation_roots_requirements.txt >&2
+            \python3 -m venv venv_instrumentations
+            \. venv_instrumentations/bin/activate
+            \pip3 install -r instrumentation_roots_requirements.txt >&2
             \python3 -c '
           from opentelemetry.instrumentation.bootstrap_gen import (default_instrumentations, libraries)
           print(*default_instrumentations, sep="\n")
@@ -253,8 +253,8 @@ jobs:
             deactivate
             rm -rf venv_instrumentations
           ) | grep -v opentelemetry-instrumentation-system-metrics | (
-            . venv/bin/activate
-            xargs -t pip3 install
+            \. venv/bin/activate
+            \xargs -t pip3 install
             deactivate
           )
       - run: |
