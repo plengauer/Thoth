@@ -1,5 +1,6 @@
 if ! which python3; then exit 0; fi
 if ! [ -d /usr/share/opentelemetry_shell/agent.instrumentation.python/"$(python3 --version | cut -d ' ' -f 2 | cut -d . -f -2)" ]; then exit 0; fi
+find /usr/share/opentelemetry_shell/agent.instrumentation.python/"$(python3 --version | cut -d ' ' -f 2 | cut -d . -f -2)"
 . ./assert.sh
 
 . otel.sh
