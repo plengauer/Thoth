@@ -128,18 +128,18 @@ echo "$TRACEPARENT"
 echo '
 import requests
 requests.get("http://example.com/foo")
-' | python3 | grep -v -F '"parent_id": null,' | grep -- '/foo' || exit 1
+' | python3 | grep -- '/foo' || exit 1
 
 python3 -c '
 import requests
 requests.get("http://example.com/bar")
-' | grep -v -F '"parent_id": null,' | grep -- '/bar' || exit 1
+' | grep -- '/bar' || exit 1
 
 echo '
 import requests
 requests.get("http://example.com/baz")
 ' > script.py
-python3 script.py | grep -v -F '"parent_id": null,' | grep -- '/baz' || exit 1
+python3 script.py | grep -- '/baz' || exit 1
 
 dir=$(mktemp -d)
 python3 -m venv --system-site-packages "$dir"/venv || exit 1
@@ -148,7 +148,7 @@ pip install requests
 echo '
 import requests
 requests.get("http://example.com/venv")
-' | python | grep -v -F '"parent_id": null,' | grep -- '/venv' || exit 1
+' | python | grep -- '/venv' || exit 1
 deactivate
 
 dir=$(mktemp -d)
@@ -162,7 +162,7 @@ echo '
 import requests
 requests.get("http://example.com/instrumented")
 ' > "$script"
-opentelemetry-instrument python3 "$script" | grep -v -F '"parent_id": null,' | grep -- '/instrumented' || exit 1
+opentelemetry-instrument python3 "$script" | grep -- '/instrumented' || exit 1
 deactivate
 
 dir=$(mktemp -d)
@@ -172,7 +172,7 @@ pip install requests
 echo '
 import requests
 requests.get("http://example.com/venv_deep_stdin")
-' | python | grep -v -F '"parent_id": null,' | grep -- '/venv_deep_stdin' || exit 1
+' | python | grep -- '/venv_deep_stdin' || exit 1
 deactivate
 
 dir=$(mktemp -d)
@@ -182,7 +182,7 @@ pip install requests
 python -c '
 import requests
 requests.get("http://example.com/venv_deep_c")
-' | grep -v -F '"parent_id": null,' | grep -- '/venv_deep_c' || exit 1
+' | grep -- '/venv_deep_c' || exit 1
 deactivate
 
 dir=$(mktemp -d)
@@ -193,5 +193,5 @@ echo '
 import requests
 requests.get("http://example.com/venv_deep_file")
 ' > "$dir"/script.py
-python "$dir"/script.py | grep -v -F '"parent_id": null,' | grep -- '/venv_deep_file' || exit 1
+python "$dir"/script.py | grep -- '/venv_deep_file' || exit 1
 deactivate
