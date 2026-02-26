@@ -184,6 +184,8 @@ python -c '
 import requests
 requests.get("http://example.com/venv_deep_c")
 ' | grep -- '/venv_deep_c' || exit 1
+parent_id=$(resolve_span 'select(.name=="/venv_deep_c") | .parent_id')
+[ -n "$parent_id" ] || exit 1
 deactivate
 
 dir=$(mktemp -d)
