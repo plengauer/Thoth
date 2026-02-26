@@ -196,3 +196,4 @@ import requests
 requests.get("http://example.com/venv_deep_file")
 ' > "$dir"/script.py
 python "$dir"/script.py | grep -- '/venv_deep_file' || exit 1
+deactivate
