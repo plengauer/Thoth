@@ -240,6 +240,7 @@ jobs:
             python3 -m venv venv_instrumentations
             . venv_instrumentations/bin/activate
             \pip3 install -r instrumentation_roots_requirements.txt >&2
+            find venv_instrumentations >&2
             \python3 -c '
           from opentelemetry.instrumentation.bootstrap_gen import (default_instrumentations, libraries)
           print(*default_instrumentations, sep="\n")
