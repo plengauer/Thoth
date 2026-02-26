@@ -173,6 +173,7 @@ echo '
 import requests
 requests.get("http://example.com/venv_deep_stdin")
 ' | python | grep -- '/venv_deep_stdin' || exit 1
+resolve_span ".attributes[\"http.url\"] == \"http://example.com/venv_deep_stdin\" and .parent_id != null"
 deactivate
 
 dir=$(mktemp -d)
