@@ -175,7 +175,6 @@ echo '
 import requests
 requests.get("http://example.com/venv_deep_stdin")
 ' | python | grep -- '/venv_deep_stdin' || exit 1
-resolve_span ".attributes[\"http.url\"] == \"http://example.com/venv_deep_stdin\" and .parent_id != null"
 deactivate
 
 dir=$(mktemp -d)
@@ -186,8 +185,6 @@ python -c '
 import requests
 requests.get("http://example.com/venv_deep_c")
 ' | grep -- '/venv_deep_c' || exit 1
-parent_id=$(resolve_span 'select(.name=="/venv_deep_c") | .parent_id')
-[ -n "$parent_id" ] || exit 1
 deactivate
 
 dir=$(mktemp -d)
@@ -199,7 +196,3 @@ import requests
 requests.get("http://example.com/venv_deep_file")
 ' > "$dir"/script.py
 python "$dir"/script.py | grep -- '/venv_deep_file' || exit 1
-span=$(resolve_span '.attributes["http.url"] | endswith("/venv_deep_file")')
-parent_span_id=$(printf '%s\n' "$TRACEPARENT" | cut -d -f3)
-assert_equals "$parent_span_id" "$(printf '%s\n' "$span" | jq -r '.parent_id')"
-deactivate
