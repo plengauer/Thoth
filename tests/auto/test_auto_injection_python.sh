@@ -129,6 +129,8 @@ echo '
 import requests
 requests.get("http://example.com/foo")
 ' | python3 | grep -- '/foo' || exit 1
+span="$(resolve_span '.attributes["http.url"] | endswith("/foo")')"
+assert_not_equals null $(\echo "$span" | \jq -r '.parent_id')
 
 python3 -c '
 import requests
