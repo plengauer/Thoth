@@ -197,4 +197,7 @@ import requests
 requests.get("http://example.com/venv_deep_file")
 ' > "$dir"/script.py
 python "$dir"/script.py | grep -- '/venv_deep_file' || exit 1
+span=$(resolve_span '.attributes["http.url"] | endswith("/venv_deep_file")')
+parent_span_id=$(printf '%s\n' "$TRACEPARENT" | cut -d -f3)
+assert_equals "$parent_span_id" "$(printf '%s\n' "$span" | jq -r '.parent_id')"
 deactivate
