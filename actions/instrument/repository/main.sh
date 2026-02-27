@@ -94,7 +94,7 @@ otel_github_repository_observation_create() {
 }
 
 vcs_contributor_count_handle="$(otel_counter_create gauge vcs.contributor.count '{contributor}' 'The number of unique contributors to a repository')"
-observation_handle="$(otel_github_repository_observation_create "$(gh_curl_paginated /contributors'&per_page=100' | jq '.[]' | jq -s length)")"
+observation_handle="$(otel_github_repository_observation_create "$(gh_curl_paginated /contributors'?per_page=100' | jq '.[]' | jq -s length)")"
 otel_counter_observe "$vcs_contributor_count_handle" "$observation_handle"
 
 case "$INPUT_EVENT_NAME" in
