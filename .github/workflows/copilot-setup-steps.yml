@@ -6,12 +6,13 @@ on:
 jobs:
   copilot-setup-steps:
     runs-on: ubuntu-latest
+    permissions:
+      actions: write
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.45.1
         env:
-          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
-          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+          OTEL_TRACES_EXPORTER: deferred
+          OTEL_METRICS_EXPORTER: deferred
+          OTEL_LOGS_EXPORTER: deferred
         with: {}
       - run: printenv
-    permissions:
-      actions: read

@@ -37,16 +37,19 @@ if [ "${OTEL_LOGS_EXPORTER:-otlp}" = deferred ]; then
   export OTEL_LOGS_EXPORTER=otlp
   export OTEL_EXPORTER_OTLP_LOGS_ENDPOINT=http://localhost:4320/v1/logs
   deferred=true
+  deferred_logs=true
 fi
 if [ "${OTEL_METRICS_EXPORTER:-otlp}" = deferred ]; then
   export OTEL_METRICS_EXPORTER=otlp
   export OTEL_EXPORTER_OTLP_METRICS_ENDPOINT=http://localhost:4320/v1/metrics
   deferred=true
+  deferred_metrics=true
 fi
 if [ "${OTEL_TRACES_EXPORTER:-otlp}" = deferred ]; then
   export OTEL_TRACES_EXPORTER=otlp
   export OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://localhost:4320/v1/traces
   deferred=true
+  deferred_traces=true
 fi
 if [ "$deferred" = true ]; then
   echo "::group::Setup Deferred Export"
@@ -221,13 +224,13 @@ if type yq; then
 fi
 if [ -n "$INPUT_DEBUG" ]; then cat collector.yml; fi
 export OTEL_LOGS_EXPORTER=otlp
-export OTEL_EXPORTER_OTLP_LOGS_ENDPOINT=http://localhost:4318/v1/logs
+[ "${deferred_logs:-false}" = true ] || export OTEL_EXPORTER_OTLP_LOGS_ENDPOINT=http://localhost:4318/v1/logs
 export OTEL_EXPORTER_OTLP_LOGS_PROTOCOL=http/protobuf
 export OTEL_METRICS_EXPORTER=otlp
-export OTEL_EXPORTER_OTLP_METRICS_ENDPOINT=http://localhost:4318/v1/metrics
+[ "${deferred_metrics:-false}" = true ] || export OTEL_EXPORTER_OTLP_METRICS_ENDPOINT=http://localhost:4318/v1/metrics
 export OTEL_EXPORTER_OTLP_METRICS_PROTOCOL=http/protobuf
 export OTEL_TRACES_EXPORTER=otlp
-export OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://localhost:4318/v1/traces
+[ "${deferred_traces:-false}" = true ] || export OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://localhost:4318/v1/traces
 export OTEL_EXPORTER_OTLP_TRACES_PROTOCOL=http/protobuf
 unset OTEL_EXPORTER_OTLP_HEADERS OTEL_EXPORTER_OTLP_ENDPOINT OTEL_EXPORTER_OTLP_LOGS_HEADERS OTEL_EXPORTER_OTLP_METRICS_HEADERS OTEL_EXPORTER_OTLP_TRACES_HEADERS
 echo "::endgroup::"
