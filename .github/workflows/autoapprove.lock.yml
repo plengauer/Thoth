@@ -1055,7 +1055,8 @@ jobs:
             setupGlobals(core, github, context, exec, io);
             const { main } = require('/opt/gh-aw/actions/check_membership.cjs');
             await main();
-
+    permissions:
+      actions: read
   safe_outputs:
     needs:
       - agent
