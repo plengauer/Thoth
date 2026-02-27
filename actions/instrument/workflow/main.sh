@@ -188,16 +188,17 @@ jq < "$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .s
     export -f export_deferred_signal_artifacts
     export_deferred_signal_file() {
       file="$1"
-      headers="$(mktemp)"
       case "$file" in
-        *.logs) endpoint="${OTEL_EXPORTER_OTLP_LOGS_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/logs}"; OTEL_EXPORTER_OTLP_SIGNAL_HEADERS="$OTEL_EXPORTER_OTLP_LOGS_HEADERS";;
-        *.metrics) endpoint="${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/metrics}"; OTEL_EXPORTER_OTLP_SIGNAL_HEADERS="$OTEL_EXPORTER_OTLP_METRICS_HEADERS";;
-        *.traces) endpoint="${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/traces}"; OTEL_EXPORTER_OTLP_SIGNAL_HEADERS="$OTEL_EXPORTER_OTLP_TRACES_HEADERS";;
+        *.logs) OTEL_EXPORTER_OTLP_SIGNAL_ENDPOINT="${OTEL_EXPORTER_OTLP_LOGS_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/logs}"; OTEL_EXPORTER_OTLP_SIGNAL_HEADERS="$OTEL_EXPORTER_OTLP_LOGS_HEADERS";;
+        *.metrics) OTEL_EXPORTER_OTLP_SIGNAL_ENDPOINT="${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/metrics}"; OTEL_EXPORTER_OTLP_SIGNAL_HEADERS="$OTEL_EXPORTER_OTLP_METRICS_HEADERS";;
+        *.traces) OTEL_EXPORTER_OTLP_SIGNAL_ENDPOINT="${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/traces}"; OTEL_EXPORTER_OTLP_SIGNAL_HEADERS="$OTEL_EXPORTER_OTLP_TRACES_HEADERS";;
         *) return 1;;
       esac
+      headers="$(mktemp)"
       read -r content_type < "$file"
+      echo "Content-Type: $content_type" >> "$headers"
       echo "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_SIGNAL_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /g' >> "$headers"
-      tail -n +2 "$file" | curl -s --fail --retry 8 "$endpoint" --header "Content-Type: $content_type" --header @"$headers" --data-binary @-
+      tail -n +2 "$file" | curl -s --fail --retry 8 "$OTEL_EXPORTER_OTLP_SIGNAL_ENDPOINT" --header @"$headers" --data-binary @-
       rm "$headers"
     }
     export -f export_deferred_signal_file
