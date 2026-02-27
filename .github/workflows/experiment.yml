@@ -21,4 +21,6 @@ jobs:
       actions: read
     steps:
       - run: |
+          type awk
+          which awk
           echo 'Depends: coreutils, util-linux, findutils, python3 (>= 3.9), python3-pip, python3-venv, tar, grep, sed, awk, dpkg, procps, jq, xxd, libc-bin' | grep -E '^Pre-Depends:|^Depends:' | cut -d ':' -f 2- | tr ',' '\n' | grep -v '|' | tr -d ' ' | cut -d '(' -f 1 | sed 's/awk/gawk/g' | xargs -I '{}' ls -la /var/lib/dpkg/info/'{}'.list
