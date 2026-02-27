@@ -6,7 +6,7 @@ on:
       - .github/workflows/performance_github.yml
     branches:
       - main
-      
+
 env:
   OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
   OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
