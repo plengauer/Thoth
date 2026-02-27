@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -38,7 +38,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -47,7 +47,7 @@ jobs:
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
-      - uses: actions/download-artifact@v7.0.0 # check if node action works
+      - uses: actions/download-artifact@v8.0.0 # check if node action works
         with:
           name: packages_${{ inputs.ref }}
   job-docker:
@@ -61,7 +61,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -73,7 +73,7 @@ jobs:
       - uses: actions/hello-world-docker-action@main # check if docker action works
       - uses: docker/setup-qemu-action@v3.7.0 # some docker actions have otel built-in
       - uses: docker/setup-buildx-action@v3.12.0 # some docker actions have otel built-in
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - run: cp package.deb tests/package.deb
@@ -97,7 +97,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -125,7 +125,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -155,7 +155,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -181,7 +181,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -217,7 +217,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -243,7 +243,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -270,7 +270,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -292,7 +292,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -312,7 +312,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -332,7 +332,7 @@ jobs:
       actions: read
     steps:
       - uses: actions/checkout@v6.0.2
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -359,7 +359,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -380,7 +380,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - run: |
@@ -422,7 +422,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - run: |
@@ -459,7 +459,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -495,7 +495,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -519,7 +519,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - run: |
@@ -545,7 +545,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -563,7 +563,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -581,7 +581,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -598,7 +598,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - id: workflow_run
@@ -641,7 +641,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - id: workflow_run
@@ -698,7 +698,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - id: check_suite
