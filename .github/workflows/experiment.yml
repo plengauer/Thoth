@@ -15,25 +15,10 @@ jobs:
     steps:
       - run: printenv
   experiment:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     permissions:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v6
-      - uses: ./actions/instrument/job
-        with:
-          # secrets_to_redact: '{"foo":"*"}'        
-          secrets_to_redact: '${{ toJSON(secrets) }}'
-          debug: 1
-        env:
-          OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
-          OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
-          OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-          OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/stderr
-      - uses: renovatebot/github-action@v46.1.2
-        env:
-          RENOVATE_REPOSITORIES: ${{ github.repository }}
-          RENOVATE_DRY_RUN: full
-        with:
-          token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+      - run: |
+          echo 'coreutils, util-linux, findutils, python3 (>= 3.9), python3-pip, python3-venv, tar, grep, sed, awk, dpkg, procps, jq, xxd, libc-bin' | grep -E '^Pre-Depends:|^Depends:' | cut -d ':' -f 2- | tr ',' '\n' | grep -v '|' | tr -d ' ' | cut -d '(' -f 1 | sed 's/awk/gawk/g' | xargs -I '{}' ls -la /var/lib/dpkg/info/'{}'.list
