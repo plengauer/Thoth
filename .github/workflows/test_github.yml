@@ -738,7 +738,7 @@ jobs:
           OTEL_LOGS_EXPORTER: console
           OTEL_TRACES_EXPORTER: console
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
-  repository:
+  repository-pull-request-opened:
     needs: repository-smoke
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -762,6 +762,20 @@ jobs:
           OTEL_LOGS_EXPORTER: console
           OTEL_TRACES_EXPORTER: console
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
+  repository-pull-request-closed:
+    needs: repository-smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v6.0.2
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/download-artifact@v7.0.0
+        with:
+          name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/repository
         with:
           event_name: pull_request
@@ -772,6 +786,20 @@ jobs:
           OTEL_LOGS_EXPORTER: console
           OTEL_TRACES_EXPORTER: console
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
+  repository-pull-request-merged:
+    needs: repository-smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v6.0.2
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/download-artifact@v7.0.0
+        with:
+          name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/repository
         with:
           event_name: pull_request
@@ -782,6 +810,20 @@ jobs:
           OTEL_LOGS_EXPORTER: console
           OTEL_TRACES_EXPORTER: console
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
+  repository-pull-request-reopened:
+    needs: repository-smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v6.0.2
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/download-artifact@v7.0.0
+        with:
+          name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/repository
         with:
           event_name: pull_request
@@ -792,6 +834,20 @@ jobs:
           OTEL_LOGS_EXPORTER: console
           OTEL_TRACES_EXPORTER: console
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
+  repository-pull-request-review-submitted:
+    needs: repository-smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v6.0.2
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/download-artifact@v7.0.0
+        with:
+          name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/repository
         with:
           event_name: pull_request_review
@@ -802,6 +858,20 @@ jobs:
           OTEL_LOGS_EXPORTER: console
           OTEL_TRACES_EXPORTER: console
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
+  repository-create:
+    needs: repository-smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v6.0.2
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/download-artifact@v7.0.0
+        with:
+          name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/repository
         with:
           event_name: create
@@ -811,6 +881,20 @@ jobs:
           OTEL_LOGS_EXPORTER: console
           OTEL_TRACES_EXPORTER: console
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
+  repository-delete:
+    needs: repository-smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v6.0.2
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/download-artifact@v7.0.0
+        with:
+          name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/repository
         with:
           event_name: delete
@@ -820,6 +904,20 @@ jobs:
           OTEL_LOGS_EXPORTER: console
           OTEL_TRACES_EXPORTER: console
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
+  repository-push:
+    needs: repository-smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v6.0.2
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/download-artifact@v7.0.0
+        with:
+          name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/repository
         with:
           event_name: push
