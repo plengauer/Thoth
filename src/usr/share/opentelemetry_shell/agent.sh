@@ -195,7 +195,7 @@ _otel_filter_commands_by_mode() {
 _otel_filter_commands_by_special() {
   # we need to exclude all well-known builtins that would change their semantics if they are used in an alias or within a function.
   # for example, set resets options but also arguments of the current script and/or function. since instrumentation is done via functions, instrumenting set would change its behavior
-  \grep -vE '^(break|command|continue|builtin|\.|source|eval|exec|exit|export|hash|local|return|set|shift|trap|:|unalias|unset|alias|read|nohup)$' | \grep -vE '^(OTEL_|_otel_|otel_)'
+  \grep -vE '^(break|command|continue|builtin|declare|\.|source|eval|exec|exit|export|hash|local|return|set|shift|trap|:|unalias|unset|alias|read|nohup)$' | \grep -vE '^(OTEL_|_otel_|otel_)'
 }
 
 _otel_filter_by_validity() {
