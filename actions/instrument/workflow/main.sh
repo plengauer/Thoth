@@ -194,6 +194,7 @@ jq < "$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .s
         *.traces) OTEL_EXPORTER_OTLP_SIGNAL_ENDPOINT="${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/traces}"; OTEL_EXPORTER_OTLP_SIGNAL_HEADERS="$OTEL_EXPORTER_OTLP_TRACES_HEADERS";;
         *) return 1;;
       esac
+      headers="$(mktemp)"
       { read -r content_type; read -r content_encoding; } < "$file"
       echo "Content-Type: $content_type" >> "$headers"
       [ -n "$content_encoding" ] && echo "Content-Encoding: $content_encoding" >> "$headers"
