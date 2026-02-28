@@ -70,11 +70,9 @@ _otel_auto_instrument() {
   local cache_key="$({ _otel_list_path_commands | _otel_filter_commands_by_special | _otel_filter_commands_by_hint "$hint" | \sort -u; \alias; \echo "$PATH" "$_otel_shell_conservative_exec" "${OTEL_SHELL_CONFIG_MUTE_INTERNALS:-}" "${OTEL_SHELL_CONFIG_MUTE_BUILTINS:-}"; } | \md5sum | \cut -d ' ' -f 1)"
   local cache_file="$TMPDIR/opentelemetry_shell_$(_otel_package_version opentelemetry-shell)"_"$_otel_shell"_instrumentation_cache_"$cache_key".aliases
   if \[ -r "$cache_file" ]; then
-    \echo "DEBUG DEBUG DEBUG using cache" >&2
     \eval "$(\grep -vh '_otel_alias_prepend ' $(_otel_list_special_auto_instrument_files))"
     \. "$cache_file" && return 0 || \true
   fi
-  \echo "DEBUG DEBUG DEBUG instrumenting ..." >&2
 
   # special instrumentations
   _otel_alias_prepend alias _otel_alias_and_instrument
@@ -450,9 +448,11 @@ command() {
 }
 
 _otel_inject() {
+\echo "DEBUG DEBUG DEBUG _otel_inject $*" >&2
   if _otel_string_contains "$1" / && \[ -x "$1" ]; then
     local path="$1"
     if ! \alias "${path##*/}" 1> /dev/null 2> /dev/null; then # in case its an absolute command that is not on the path at all, we need to make sure it is to have proper shebang resolution and the resulting instrumentation on hand
+\echo "DEBUG DEBUG DEBUG _otel_inject reinstrumenting ..." >&2
       local PATH="${path%/*}:$PATH"
       _otel_auto_instrument "$path " # this is a load-bearing whitespace so its not interpreted as a file hint
     fi
