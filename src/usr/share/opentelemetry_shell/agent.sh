@@ -448,11 +448,9 @@ command() {
 }
 
 _otel_inject() {
-\echo "DEBUG DEBUG DEBUG _otel_inject $*" >&2
   if _otel_string_contains "$1" / && \[ -x "$1" ]; then
     local path="$1"
     if ! \alias "${path##*/}" 1> /dev/null 2> /dev/null; then # in case its an absolute command that is not on the path at all, we need to make sure it is to have proper shebang resolution and the resulting instrumentation on hand
-\echo "DEBUG DEBUG DEBUG _otel_inject reinstrumenting ..." >&2
       local PATH="${path%/*}:$PATH"
       _otel_auto_instrument "$path " # this is a load-bearing whitespace so its not interpreted as a file hint
     fi
