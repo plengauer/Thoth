@@ -195,10 +195,11 @@ jq < "$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .s
         *) return 1;;
       esac
       headers="$(mktemp)"
-      read -r content_type < "$file"
+      { read -r content_type; read -r content_encoding; } < "$file"
       echo "Content-Type: $content_type" >> "$headers"
-      echo "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_SIGNAL_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /g' >> "$headers"
-      tail -n +2 "$file" | curl -s --fail --retry 8 "$OTEL_EXPORTER_OTLP_SIGNAL_ENDPOINT" --header @"$headers" --data-binary @-
+      [ -n "$content_encoding" ] && echo "Content-Encoding: $content_encoding" >> "$headers"
+      echo "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_SIGNAL_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /' >> "$headers"
+      tail -n +3 "$file" | curl -s --fail --retry 8 "$OTEL_EXPORTER_OTLP_SIGNAL_ENDPOINT" --header @"$headers" --data-binary @-
       rm "$headers"
     }
     export -f export_deferred_signal_file
