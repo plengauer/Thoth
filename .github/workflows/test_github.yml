@@ -719,6 +719,116 @@ jobs:
           OTEL_LOGS_EXPORTER: console
           OTEL_TRACES_EXPORTER: console
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
+  repository-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v6.0.2
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/download-artifact@v7.0.0
+        with:
+          name: packages_${{ inputs.ref }}
+      - uses: ./actions/instrument/repository
+        env:
+          OTEL_METRICS_EXPORTER: console
+          OTEL_LOGS_EXPORTER: console
+          OTEL_TRACES_EXPORTER: console
+          OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
+  repository:
+    needs: repository-smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v6.0.2
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/download-artifact@v7.0.0
+        with:
+          name: packages_${{ inputs.ref }}
+      - uses: ./actions/instrument/repository
+        with:
+          event_name: pull_request
+          event_action: opened
+          event_body: '{"pull_request":{"created_at":"2024-01-01T00:00:00Z","head":{"label":"user:branch","sha":"abc123"},"base":{"label":"user:main","sha":"def456"}}}'
+        env:
+          OTEL_METRICS_EXPORTER: console
+          OTEL_LOGS_EXPORTER: console
+          OTEL_TRACES_EXPORTER: console
+          OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
+      - uses: ./actions/instrument/repository
+        with:
+          event_name: pull_request
+          event_action: closed
+          event_body: '{"pull_request":{"created_at":"2024-01-01T00:00:00Z","closed_at":"2024-01-02T00:00:00Z","head":{"label":"user:branch","sha":"abc123"},"base":{"label":"user:main","sha":"def456"}}}'
+        env:
+          OTEL_METRICS_EXPORTER: console
+          OTEL_LOGS_EXPORTER: console
+          OTEL_TRACES_EXPORTER: console
+          OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
+      - uses: ./actions/instrument/repository
+        with:
+          event_name: pull_request
+          event_action: closed
+          event_body: '{"pull_request":{"created_at":"2024-01-01T00:00:00Z","merged_at":"2024-01-02T00:00:00Z","merge_commit_sha":"abc123","head":{"label":"user:branch","sha":"abc123"},"base":{"label":"user:main","sha":"def456"}}}'
+        env:
+          OTEL_METRICS_EXPORTER: console
+          OTEL_LOGS_EXPORTER: console
+          OTEL_TRACES_EXPORTER: console
+          OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
+      - uses: ./actions/instrument/repository
+        with:
+          event_name: pull_request
+          event_action: reopened
+          event_body: '{"pull_request":{"head":{"label":"user:branch","sha":"abc123"},"base":{"label":"user:main","sha":"def456"}}}'
+        env:
+          OTEL_METRICS_EXPORTER: console
+          OTEL_LOGS_EXPORTER: console
+          OTEL_TRACES_EXPORTER: console
+          OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
+      - uses: ./actions/instrument/repository
+        with:
+          event_name: pull_request_review
+          event_action: submitted
+          event_body: '{"review":{"state":"approved","submitted_at":"2024-01-02T00:00:00Z"},"pull_request":{"created_at":"2024-01-01T00:00:00Z"}}'
+        env:
+          OTEL_METRICS_EXPORTER: console
+          OTEL_LOGS_EXPORTER: console
+          OTEL_TRACES_EXPORTER: console
+          OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
+      - uses: ./actions/instrument/repository
+        with:
+          event_name: create
+          event_body: '{"ref_type":"branch"}'
+        env:
+          OTEL_METRICS_EXPORTER: console
+          OTEL_LOGS_EXPORTER: console
+          OTEL_TRACES_EXPORTER: console
+          OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
+      - uses: ./actions/instrument/repository
+        with:
+          event_name: delete
+          event_body: '{"ref_type":"branch"}'
+        env:
+          OTEL_METRICS_EXPORTER: console
+          OTEL_LOGS_EXPORTER: console
+          OTEL_TRACES_EXPORTER: console
+          OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
+      - uses: ./actions/instrument/repository
+        with:
+          event_name: push
+          event_body: '{"ref":"refs/heads/main"}'
+        env:
+          OTEL_METRICS_EXPORTER: console
+          OTEL_LOGS_EXPORTER: console
+          OTEL_TRACES_EXPORTER: console
+          OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
   deploy-smoke:
     runs-on: ubuntu-latest
     timeout-minutes: 60
