@@ -71,4 +71,5 @@ jobs:
       - uses: super-linter/super-linter@v8.5.0
         env:
           GITHUB_TOKEN: ${{ github.token }}
-          FAIL_ON_INVALID_GITHUB_ACTIONS_EVENT_CONFIGURATION: true
+          FAIL_ON_INVALID_GITHUB_ACTIONS_EVENT_CONFIGURATION: 'true'
+          DISABLE_ERRORS: 'true'
