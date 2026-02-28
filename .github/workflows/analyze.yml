@@ -56,7 +56,8 @@ jobs:
     permissions:
       contents: read
       statuses: write
-      actions: read
+      pull-requests: write
+      issues: write
     steps:
       - uses: actions/checkout@v6.0.2
         with:
