@@ -59,9 +59,16 @@ jobs:
       pull-requests: write
       issues: write
     steps:
+      - run: |
+          if [ "$GITHUB_REF_NAME" = main ]; then
+            echo VALIDATE_ALL_CODEBASE=true
+          else
+            echo VALIDATE_ALL_CODEBASE=false
+          fi >> "$GITHUB_ENV"
       - uses: actions/checkout@v6.0.2
         with:
           fetch-depth: 0
       - uses: super-linter/super-linter@v8.5.0
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          FAIL_ON_INVALID_GITHUB_ACTIONS_EVENT_CONFIGURATION: true
