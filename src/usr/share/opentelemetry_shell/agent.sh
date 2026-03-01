@@ -18,6 +18,14 @@ esac
 _otel_shell_conservative_exec="${OTEL_SHELL_CONSERVATIVE_EXEC:-FALSE}"
 unset OTEL_SHELL_CONSERVATIVE_EXEC
 
+if \[ "$_otel_shell" = bash ]; then
+  _otel_observe() {
+    while \[ "$#" -gt 0 ] && ( \[ "${1#_otel_}" != "$1" ] || \[ "${1#otel_}" != "$1" ] ); do shift; done
+    "$@"
+  }
+  export -f _otel_observe
+fi
+
 \. /usr/share/opentelemetry_shell/api.sh
 _otel_package_version opentelemetry-shell > /dev/null # to build the cache outside a subshell
 
@@ -306,14 +314,6 @@ _otel_unquote() {
   # '\'' => ', '"'"' => ', '"'"$ => '', '"''"$ => ''' => '
   \sed -e 's/'\''\\'\'''\''/'\''/g' -e 's/'\''"'\''"'\''/'\''/g' -e 's/'\''"'\''"$/'\'''\''/g' -e 's/'\''"'\'\''"$/'\''/g' -e "s/^'\(.*\)'$/\1/"
 }
-
-if \[ "$_otel_shell" = bash ]; then
-  _otel_observe() {
-    while \[ "$#" -gt 0 ] && \[ "${1#_otel_}" != "$1" ]; do shift; done
-    "$@"
-  }
-  export -f _otel_observe
-fi
 
 _otel_observe() {
   otel_observe "$@"
