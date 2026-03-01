@@ -232,6 +232,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           VALIDATE_ALL_CODEBASE: 'true'
           DISABLE_ERRORS: 'true'
+          RUN_LOCAL: 'true'
   job-integration-python-venv:
     needs: job-smoke
     runs-on: ubuntu-latest
