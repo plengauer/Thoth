@@ -281,7 +281,7 @@ runs:
           delete:
           push:
         jobs:
-          collect:
+          export:
             runs-on: ubuntu-latest
             concurrency:
               group: otel-repository
@@ -299,14 +299,14 @@ runs:
       shell: bash
       run: |
         if [ -w "${{ steps.find-repository-level-instrumentation.outputs.path }}" ]; then path="${{ steps.find-repository-level-instrumentation.outputs.path }}"; else path="${{ inputs.workflows_directory }}/${{ inputs.repository_level_instrumentation_file_name }}"; fi
-        if cat "$path" | yq '.jobs.collect.container' | grep -q '^null$'; then
+        if cat "$path" | yq '.jobs.export.container' | grep -q '^null$'; then
           name=opentelemetry-github-workflow-instrumentation-runner
           version=${{ steps.determine-instrumentation-version.outputs.version }}
           [ "$version" != main ] || exit 0
           image=ghcr.io/${{ github.repository_owner }}/"$name":"$version"
           if curl -s --fail --retry 8 --header "Authorization: Bearer ${{ inputs.github_token }}" "${GITHUB_API_URL:-https://api.github.com}"/users/${{ github.repository_owner }}/packages/container/"$name"/versions | jq .[].metadata.container.tags[] -r | grep -qE '^'"$version"'$' \
             || (type docker 1> /dev/null 2> /dev/null && sudo docker pull "$image"); then
-            yq -i ".jobs.collect.container = \"$image\"" "$path" && exit 0
+            yq -i ".jobs.export.container = \"$image\"" "$path" && exit 0
           fi
           echo ::warning::'Runner image '"$image"' is unavailable, skipping configuration since it its only for optimization. A common cause for this is that the package is not publicly visible in the ghcr. This needs to be configured manually. Another possible cause is that it cannot be identified (no docker command available and token cannot read packages)'
         fi
