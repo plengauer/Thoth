@@ -233,6 +233,7 @@ jobs:
           VALIDATE_ALL_CODEBASE: 'true'
           DISABLE_ERRORS: 'true'
           RUN_LOCAL: 'true'
+          DEFAULT_BRANCH: main
   job-integration-python-venv:
     needs: job-smoke
     runs-on: ubuntu-latest
