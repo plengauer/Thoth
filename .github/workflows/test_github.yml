@@ -140,6 +140,25 @@ jobs:
           path_exclude: ./
           working_directory: ./autoversion
           dry_run: 'true'
+  job-integration-simulated-opt-acl-modification:
+    needs: [job-smoke, job-cache ]
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v6.0.2
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/download-artifact@v7.0.0
+        with:
+          name: packages_${{ inputs.ref }}
+      - uses: ./actions/instrument/job
+        env:
+          OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
+          OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
+      - run: touch /opt/helloworld
   job-integration-renovate:
     needs: job-smoke
     runs-on: ubuntu-latest
