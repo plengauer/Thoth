@@ -23,12 +23,11 @@ if \[ -n "${BASHPID:-}" ]; then
     while \[ "$#" -gt 0 ] && ( \[ "${1#_otel_}" != "$1" ] || \[ "${1#otel_}" != "$1" ] ); do shift; done
     "$@"
   }
-  export -f _otel_observe
   otel_observe() {
     while \[ "$#" -gt 0 ] && ( \[ "${1#_otel_}" != "$1" ] || \[ "${1#otel_}" != "$1" ] ); do shift; done
     "$@"
   }
-  export -f otel_observe
+  \export -f _otel_observe otel_observe
 fi
 
 \. /usr/share/opentelemetry_shell/api.sh
@@ -481,6 +480,7 @@ _otel_inject() {
 }
 
 _otel_start_script() {
+  if \[ "$_otel_shell_auto_instrumentation_hint" = /action/lib/linter.sh ]; then \set -x; fi
   otel_init || return $?
   if \[ -n "${SSH_CLIENT:-}"  ] && \[ -n "${SSH_CONNECTION:-}" ] && \[ "${PPID:-}" != 0 ] && \[ "$(\cat /proc/$PPID/cmdline | \tr -d '\000' | \cut -d ' ' -f 1)" = "sshd:" ]; then
     _root_span_handle="$(otel_span_start SERVER ssh)"
@@ -513,7 +513,6 @@ _otel_start_script() {
     _root_span_handle="$(otel_span_start INTERNAL "$(_otel_command_self)")"
   fi
   if \[ -n "${_root_span_handle:-}" ]; then otel_span_activate "$_root_span_handle"; fi
-  \echo "$TRACEPARENT" "$(_otel_command_self)" >&2
   unset OTEL_SHELL_AUTO_INJECTED
 }
 
