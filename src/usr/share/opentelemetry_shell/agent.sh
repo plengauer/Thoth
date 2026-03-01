@@ -468,7 +468,6 @@ _otel_inject() {
 }
 
 _otel_start_script() {
-  if \[ "$_otel_shell_auto_instrumentation_hint" = /action/lib/linter.sh ]; then \set -x; fi
   otel_init || return $?
   if \[ -n "${SSH_CLIENT:-}"  ] && \[ -n "${SSH_CONNECTION:-}" ] && \[ "${PPID:-}" != 0 ] && \[ "$(\cat /proc/$PPID/cmdline | \tr -d '\000' | \cut -d ' ' -f 1)" = "sshd:" ]; then
     _root_span_handle="$(otel_span_start SERVER ssh)"
