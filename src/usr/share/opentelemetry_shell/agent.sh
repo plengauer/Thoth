@@ -371,14 +371,6 @@ _otel_export_PATH_and_reinstrument() {
   return "$exit_code"
 }
 
-_otel_declare_maybe_global() {
-  shift
-  if \[  ]; then
-    \set -- -g "$@"
-  fi
-  \declare 
-}
-
 _otel_instrument_and_source() {
   local n="$1"
   shift
