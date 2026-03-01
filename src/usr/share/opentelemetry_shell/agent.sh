@@ -508,6 +508,7 @@ _otel_start_script() {
     _root_span_handle="$(otel_span_start INTERNAL "$(_otel_command_self)")"
   fi
   if \[ -n "${_root_span_handle:-}" ]; then otel_span_activate "$_root_span_handle"; fi
+  \echo "$TRACEPARENT" "$(_otel_command_self)" >&2
   unset OTEL_SHELL_AUTO_INJECTED
 }
 
