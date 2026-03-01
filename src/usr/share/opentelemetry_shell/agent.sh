@@ -18,6 +18,9 @@ esac
 _otel_shell_conservative_exec="${OTEL_SHELL_CONSERVATIVE_EXEC:-FALSE}"
 unset OTEL_SHELL_CONSERVATIVE_EXEC
 
+\. /usr/share/opentelemetry_shell/api.sh
+_otel_package_version opentelemetry-shell > /dev/null # to build the cache outside a subshell
+
 if \[ "$_otel_shell" = bash ]; then
   _otel_observe() {
     while \[ "$#" -gt 0 ] && ( \[ "${1#_otel_}" != "$1" ] || \[ "${1#otel_}" != "$1" ] ); do shift; done
@@ -25,9 +28,6 @@ if \[ "$_otel_shell" = bash ]; then
   }
   export -f _otel_observe
 fi
-
-\. /usr/share/opentelemetry_shell/api.sh
-_otel_package_version opentelemetry-shell > /dev/null # to build the cache outside a subshell
 
 if \[ "$_otel_shell" = "bash" ] && \[ -n "${BASHPID:-}" ] && \[ "$$" != "$BASHPID" ]; then
   \echo "WARNING The OpenTelemetry shell file for auto-instrumentation is sourced in a subshell, automatic instrumentation will only be active within that subshell!" >&2
