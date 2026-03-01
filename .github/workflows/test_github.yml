@@ -617,7 +617,6 @@ jobs:
         with:
           workflow_run_id: ${{ steps.workflow_run.outputs.id }}
           workflow_run_attempt: ${{ steps.workflow_run.outputs.run_attempt }}
-          cache: false
         env:
           OTEL_METRICS_EXPORTER: console
           OTEL_LOGS_EXPORTER: console
@@ -663,7 +662,6 @@ jobs:
           workflow_run_attempt: ${{ steps.workflow_run.outputs.run_attempt }}
           self_monitoring: ${{ matrix.self_monitoring }}
           self_monitoring_anonymize: ${{ matrix.self_monitoring_anonymize }}
-          cache: false
         env:
           OTEL_METRICS_EXPORTER: console
           OTEL_LOGS_EXPORTER: console
@@ -713,7 +711,6 @@ jobs:
       - uses: ./actions/instrument/checksuite
         with:
           check_suite_id: ${{ steps.check_suite.outputs.id }}
-          cache: false
         env:
           OTEL_METRICS_EXPORTER: console
           OTEL_LOGS_EXPORTER: console
