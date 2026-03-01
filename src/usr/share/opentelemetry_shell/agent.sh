@@ -307,6 +307,14 @@ _otel_unquote() {
   \sed -e 's/'\''\\'\'''\''/'\''/g' -e 's/'\''"'\''"'\''/'\''/g' -e 's/'\''"'\''"$/'\'''\''/g' -e 's/'\''"'\'\''"$/'\''/g' -e "s/^'\(.*\)'$/\1/"
 }
 
+if \[ "$_otel_shell" = bash ]; then
+  _otel_observe() {
+    while \[ "$#" -gt 0 ] && \[ "${1#_otel_}" != "$1" ]; do shift; done
+    "$@"
+  }
+  export -f _otel_observe
+fi
+
 _otel_observe() {
   otel_observe "$@"
 }
