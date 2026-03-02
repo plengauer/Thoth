@@ -91,7 +91,7 @@ _otel_inject_parallel_arguments() {
 }
 
 _otel_inject_parallel() {
-  \printf '%s\n' "DEBUG DEBUG DEBUG $(_otel_inject_parallel_arguments "$@")" 1>&2
+  # \printf '%s\n' "DEBUG DEBUG DEBUG $(_otel_inject_parallel_arguments "$@")" 1>&2
   local cmdline="$(_otel_dollar_star "$@")"
   local cmdline="${cmdline#\\}"
   \eval OTEL_SHELL_COMMANDLINE_OVERRIDE="$(_otel_escape_arg "$cmdline")" OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE=0 OTEL_SHELL_AUTO_INJECTED=TRUE _otel_call "$(_otel_inject_parallel_arguments "$@")"
