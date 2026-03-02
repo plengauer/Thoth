@@ -60,7 +60,7 @@ jobs:
         with:
           secrets_to_redact: ${{ github.token }}
       - name: Setup Scripts
-        uses: github/gh-aw/actions/setup@fad43e3c91a4e1d43e458f68e96574127934e7d1 # v0.50.1
+        uses: github/gh-aw/actions/setup@88319be75ab1adc60640307a10e5cf04b3deff1e # v0.51.5
         with:
           destination: /opt/gh-aw/actions
       - name: Validate context variables
@@ -211,7 +211,7 @@ jobs:
             ${{ secrets.GH_AW_GITHUB_TOKEN }}
             ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Scripts
-        uses: github/gh-aw/actions/setup@fad43e3c91a4e1d43e458f68e96574127934e7d1 # v0.50.1
+        uses: github/gh-aw/actions/setup@88319be75ab1adc60640307a10e5cf04b3deff1e # v0.51.5
         with:
           destination: /opt/gh-aw/actions
       - name: Checkout repository
@@ -880,7 +880,7 @@ jobs:
         with:
           secrets_to_redact: ${{ github.token }}
       - name: Setup Scripts
-        uses: github/gh-aw/actions/setup@fad43e3c91a4e1d43e458f68e96574127934e7d1 # v0.50.1
+        uses: github/gh-aw/actions/setup@88319be75ab1adc60640307a10e5cf04b3deff1e # v0.51.5
         with:
           destination: /opt/gh-aw/actions
       - name: Download agent output artifact
@@ -979,7 +979,7 @@ jobs:
             ${{ github.token }}
             ${{ secrets.COPILOT_GITHUB_TOKEN }}
       - name: Setup Scripts
-        uses: github/gh-aw/actions/setup@fad43e3c91a4e1d43e458f68e96574127934e7d1 # v0.50.1
+        uses: github/gh-aw/actions/setup@88319be75ab1adc60640307a10e5cf04b3deff1e # v0.51.5
         with:
           destination: /opt/gh-aw/actions
       - name: Download agent artifacts
@@ -1084,7 +1084,7 @@ jobs:
             ${{ github.token }}
             ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Scripts
-        uses: github/gh-aw/actions/setup@fad43e3c91a4e1d43e458f68e96574127934e7d1 # v0.50.1
+        uses: github/gh-aw/actions/setup@88319be75ab1adc60640307a10e5cf04b3deff1e # v0.51.5
         with:
           destination: /opt/gh-aw/actions
       - name: Check user rate limit
@@ -1138,7 +1138,7 @@ jobs:
             ${{ github.token }}
             ${{ secrets.ACTIONS_GITHUB_TOKEN }}
       - name: Setup Scripts
-        uses: github/gh-aw/actions/setup@fad43e3c91a4e1d43e458f68e96574127934e7d1 # v0.50.1
+        uses: github/gh-aw/actions/setup@88319be75ab1adc60640307a10e5cf04b3deff1e # v0.51.5
         with:
           destination: /opt/gh-aw/actions
       - name: Download agent output artifact
