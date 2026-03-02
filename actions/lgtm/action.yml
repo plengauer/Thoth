@@ -1,0 +1,19 @@
+name: 'lgtm'
+description: 'Approve a pull request with a positive attitude'
+inputs:
+  github_repo:
+    description: 'The GitHub repository (owner/repo)'
+    required: true
+  pull_request_number:
+    description: 'The pull request number to approve'
+    required: true
+  token:
+    description: 'A GitHub token with permission to approve pull requests'
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    - run: gh pr review ${{ inputs.pull_request_number }} --approve --body "lgtm" --repo ${{ inputs.github_repo }}
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.token }}
