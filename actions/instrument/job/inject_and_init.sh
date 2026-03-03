@@ -55,7 +55,7 @@ if [ "$deferred" = true ]; then
     let counter = 0;
     require('http').createServer(function (req, res) {
       let filename = '$INTERNAL_OTEL_DEFERRED_EXPORT_DIR' + '/' + counter++ + '.' + req.url.split('/').pop();
-      require('fs').appendFileSync(filename, req.headers['content-type'] + '\n');
+      require('fs').appendFileSync(filename, req.headers['content-type'] + '\n' + (req.headers['content-encoding'] || '') + '\n');
       req.on('data', (chunk) => { require('fs').appendFileSync(filename, chunk); });
       req.on('end', () => { res.writeHead(200); res.end(); });
     }).listen(4320);
@@ -85,7 +85,7 @@ if [ -z "$action_tag_name" ]; then action_tag_name="v$(cat ../../../VERSION)"; f
 if [ "$INPUT_CACHE" = "true" ]; then
   export INSTRUMENTATION_CACHE_KEY="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} instrumentation $GITHUB_WORKFLOW $GITHUB_JOB"
   run sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.restoreCache(['/tmp/*.aliases'], '$INSTRUMENTATION_CACHE_KEY');"
-  cache_key="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} dependencies $({ cat /etc/os-release; python3 --version || true; node --version || true; printenv | grep -E '^OTEL_SHELL_CONFIG_INSTALL_' || true; } | md5sum | cut -d ' ' -f 1)"
+  cache_key="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} dependencies $({ cat /etc/os-release; python3 --version || true; printenv | grep -E '^OTEL_SHELL_CONFIG_INSTALL_' || true; } | md5sum | cut -d ' ' -f 1)"
   sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.restoreCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip'], '$cache_key');"
   [ "$(find /var/cache/apt/archives/ -name '*.deb' | wc -l)" -gt 0 ] || write_back_cache=TRUE
 fi
@@ -93,11 +93,12 @@ if ! type otel.sh && [ -r /var/cache/apt/archives/opentelemetry-shell_*_all.deb 
   if [ "${FAST_DEB_INSTALL:-FALSE}" = TRUE ]; then # lets assume exactly one postinst script, no triggers
     control_dir="$(mktemp -d)"
     dpkg-deb --control /var/cache/apt/archives/opentelemetry-shell_*_all.deb "$control_dir"
-    if cat "$control_dir"/control | grep -E '^Pre-Depends:|^Depends:' | cut -d ':' -f 2- | tr ',' '\n' | grep -v '|' | tr -d ' ' | cut -d '(' -f 1 | sed 's/awk/gawk/g' | xargs -I '{}' [ -r /var/lib/dpkg/info/'{}'.list ]; then
+    if cat "$control_dir"/control | grep -E '^Pre-Depends:|^Depends:' | cut -d ':' -f 2- | tr ',' '\n' | grep -v '|' | tr -d ' ' | cut -d '(' -f 1 | xargs -I '{}' bash -c 'type {} 1> /dev/null 2> /dev/null || [ -r /var/lib/dpkg/info/{}.list ]'; then
       sudo dpkg-deb --extract /var/cache/apt/archives/opentelemetry-shell_*_all.deb / && run eval sudo "$control_dir"/postinst configure '&&' rm -rf "$control_dir"
       export OTEL_SHELL_PACKAGE_VERSION_CACHE_opentelemetry_shell="$(cat ../../../VERSION)"
     else
       rm -rf "$control_dir"
+      sudo apt-get install -y /var/cache/apt/archives/opentelemetry-shell_*_all.deb
     fi
   else
     sudo apt-get install -y /var/cache/apt/archives/opentelemetry-shell_*_all.deb
@@ -157,12 +158,47 @@ processors:
   transform:
     error_mode: ignore
     log_statements:
+      - replace_all_patterns(log.attributes, "value", "[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
+      - replace_all_patterns(log.attributes, "value", "github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}", "***")
+      - replace_all_patterns(log.attributes, "value", "ghp_[a-zA-Z0-9]{36}", "***")
+      - replace_all_patterns(log.attributes, "value", "ghs_[a-zA-Z0-9]{36}", "***")
+      - replace_all_patterns(log.attributes, "value", "gho_[a-zA-Z0-9]{36}", "***")
+      - replace_all_patterns(log.attributes, "value", "ghu_[a-zA-Z0-9]{36}", "***")
+      - replace_all_patterns(log.attributes, "value", "ghr_[a-zA-Z0-9]{36}", "***")
 $(printf '%s' "$mask_patterns" | xargs -d '\n' -I '{}' printf '%s\n' '      - replace_all_patterns(log.attributes, "value", "{}", "***")')
+      - replace_pattern(log.body, "[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
+      - replace_pattern(log.body, "github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}", "***")
+      - replace_pattern(log.body, "ghp_[a-zA-Z0-9]{36}", "***")
+      - replace_pattern(log.body, "ghs_[a-zA-Z0-9]{36}", "***")
+      - replace_pattern(log.body, "gho_[a-zA-Z0-9]{36}", "***")
+      - replace_pattern(log.body, "ghu_[a-zA-Z0-9]{36}", "***")
+      - replace_pattern(log.body, "ghr_[a-zA-Z0-9]{36}", "***")
 $(printf '%s' "$mask_patterns" | xargs -d '\n' -I '{}' printf '%s\n' '      - replace_pattern(log.body, "{}", "***")')
     metric_statements:
+      - replace_all_patterns(datapoint.attributes, "value", "[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
+      - replace_all_patterns(datapoint.attributes, "value", "github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}", "***")
+      - replace_all_patterns(datapoint.attributes, "value", "ghp_[a-zA-Z0-9]{36}", "***")
+      - replace_all_patterns(datapoint.attributes, "value", "ghs_[a-zA-Z0-9]{36}", "***")
+      - replace_all_patterns(datapoint.attributes, "value", "gho_[a-zA-Z0-9]{36}", "***")
+      - replace_all_patterns(datapoint.attributes, "value", "ghu_[a-zA-Z0-9]{36}", "***")
+      - replace_all_patterns(datapoint.attributes, "value", "ghr_[a-zA-Z0-9]{36}", "***")
 $(printf '%s' "$mask_patterns" | xargs -d '\n' -I '{}' printf '%s\n' '      - replace_all_patterns(datapoint.attributes, "value", "{}", "***")')
     trace_statements:
+      - replace_all_patterns(span.attributes, "value", "[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
+      - replace_all_patterns(span.attributes, "value", "github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}", "***")
+      - replace_all_patterns(span.attributes, "value", "ghp_[a-zA-Z0-9]{36}", "***")
+      - replace_all_patterns(span.attributes, "value", "ghs_[a-zA-Z0-9]{36}", "***")
+      - replace_all_patterns(span.attributes, "value", "gho_[a-zA-Z0-9]{36}", "***")
+      - replace_all_patterns(span.attributes, "value", "ghu_[a-zA-Z0-9]{36}", "***")
+      - replace_all_patterns(span.attributes, "value", "ghr_[a-zA-Z0-9]{36}", "***")
 $(printf '%s' "$mask_patterns" | xargs -d '\n' -I '{}' printf '%s\n' '      - replace_all_patterns(span.attributes, "value", "{}", "***")')
+      - replace_pattern(span.name, "[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
+      - replace_pattern(span.name, "github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}", "***")
+      - replace_pattern(span.name, "ghp_[a-zA-Z0-9]{36}", "***")
+      - replace_pattern(span.name, "ghs_[a-zA-Z0-9]{36}", "***")
+      - replace_pattern(span.name, "gho_[a-zA-Z0-9]{36}", "***")
+      - replace_pattern(span.name, "ghu_[a-zA-Z0-9]{36}", "***")
+      - replace_pattern(span.name, "ghr_[a-zA-Z0-9]{36}", "***")
 $(printf '%s' "$mask_patterns" | xargs -d '\n' -I '{}' printf '%s\n' '      - replace_pattern(span.name, "{}", "***")')
 exporters:
   nop:
@@ -170,32 +206,32 @@ exporters:
   otlp/logs:
     endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:-${OTEL_EXPORTER_OTLP_LOGS_ENDPOINT%/v1/logs}}
     headers:
-$(echo "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_LOGS_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /g' | sed 's/^/      /g')
+$(echo "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_LOGS_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /' | sed 's/^/      /g')
   otlp/metrics:
     endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:-${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT%/v1/metrics}}
     headers:
-$(echo "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_METRICS_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /g' | sed 's/^/      /g')
+$(echo "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_METRICS_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /' | sed 's/^/      /g')
   otlp/traces:
     endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:-${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT%/v1/traces}}
     headers:
-$(echo "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_TRACES_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /g' | sed 's/^/      /g')
+$(echo "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_TRACES_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /' | sed 's/^/      /g')
   otlp_http/logs:
     endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:-${OTEL_EXPORTER_OTLP_LOGS_ENDPOINT%/v1/logs}}
     $([ -z "${OTEL_EXPORTER_OTLP_LOGS_ENDPOINT:-}" ] || echo "logs_endpoint: $OTEL_EXPORTER_OTLP_LOGS_ENDPOINT")
     headers:
-$(echo "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_LOGS_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /g' | sed 's/^/      /g')
+$(echo "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_LOGS_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /' | sed 's/^/      /g')
     encoding: $([ "${OTEL_EXPORTER_OTLP_LOGS_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/json ] && echo json || echo proto)
   otlp_http/metrics:
     endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:-${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT%/v1/metrics}}
     $([ -z "${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT:-}" ] || echo "metrics_endpoint: $OTEL_EXPORTER_OTLP_METRICS_ENDPOINT")
     headers:
-$(echo "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_METRICS_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /g' | sed 's/^/      /g')
+$(echo "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_METRICS_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /' | sed 's/^/      /g')
     encoding: $([ "${OTEL_EXPORTER_OTLP_METRICS_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/json ] && echo json || echo proto)
   otlp_http/traces:
     endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:-${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT%/v1/traces}}
     $([ -z "${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-}" ] || echo "traces_endpoint: $OTEL_EXPORTER_OTLP_TRACES_ENDPOINT")
     headers:
-$(echo "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_TRACES_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /g' | sed 's/^/      /g')
+$(echo "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_TRACES_HEADERS" | tr ',' '\n' | grep -v '^$' | sed 's/=/: /' | sed 's/^/      /g')
     encoding: $([ "${OTEL_EXPORTER_OTLP_TRACES_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/json ] && echo json || echo proto)
 service:
   pipelines:
@@ -515,9 +551,6 @@ root4job() {
   otel_span_attribute_typed $span_handle string github.actions.runner.os="$RUNNER_OS"
   otel_span_attribute_typed $span_handle string github.actions.runner.arch="$RUNNER_ARCH"
   otel_span_attribute_typed $span_handle string github.actions.runner.environment="$RUNNER_ENVIRONMENT"
-  otel_span_attribute_typed $span_handle string cicd.pipeline.name="${GITHUB_WORKFLOW}"
-  otel_span_attribute_typed $span_handle string cicd.pipeline.task.name="${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}"
-  otel_span_attribute_typed $span_handle string cicd.pipeline.task.type=job
   otel_span_activate "$span_handle"
   echo "$TRACEPARENT" > "$traceparent_file"
   if [ -n "${GITHUB_JOB_ID:-}" ]; then
