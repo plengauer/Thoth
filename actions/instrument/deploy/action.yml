@@ -283,8 +283,6 @@ runs:
         jobs:
           collect:
             runs-on: ubuntu-latest
-            concurrency:
-              group: otel-repository
             permissions:
               contents: read
             steps:

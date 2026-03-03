@@ -11,8 +11,6 @@ on:
 jobs:
   collect:
     runs-on: ubuntu-latest
-    concurrency:
-      group: otel-repository
     permissions:
       contents: read
       actions: read
