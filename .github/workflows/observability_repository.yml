@@ -9,10 +9,8 @@ on:
   delete:
   push:
 jobs:
-  collect:
+  export:
     runs-on: ubuntu-latest
-    concurrency:
-      group: otel-repository
     permissions:
       contents: read
       actions: read

@@ -13,7 +13,7 @@ on:
 env:
   CODEQL_EXTRACTOR_CPP_BUILD_MODE_NONE: 'true' # scanning c/c++ without building it is an experimental feature and needs to be enabled like this until released
 jobs:
-  codeql:
+  security:
     runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
     permissions:
       security-events: write
@@ -51,3 +51,25 @@ jobs:
         uses: github/codeql-action/analyze@v4.32.4
         with:
           category: "/language:${{matrix.language}}"
+  lint:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      statuses: write
+      pull-requests: write
+      issues: write
+    steps:
+      - run: |
+          if [ "$GITHUB_REF_NAME" = main ]; then
+            echo VALIDATE_ALL_CODEBASE=true
+          else
+            echo VALIDATE_ALL_CODEBASE=false
+          fi >> "$GITHUB_ENV"
+      - uses: actions/checkout@v6.0.2
+        with:
+          fetch-depth: 0
+      - uses: super-linter/super-linter@v8.5.0
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          FAIL_ON_INVALID_GITHUB_ACTIONS_EVENT_CONFIGURATION: 'true'
+          DISABLE_ERRORS: 'true' # TODO remove me to enable
