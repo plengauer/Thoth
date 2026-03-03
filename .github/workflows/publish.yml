@@ -91,15 +91,15 @@ jobs:
         with:
           name: packages_${{ matrix.ref }}
 
-      - uses: actions/attest-build-provenance@v3.2.0
+      - uses: actions/attest-build-provenance@v4.1.0
         with:
           subject-path: ./package.deb
           subject-name: opentelemetry-shell_${{ steps.version.outputs.version }}.deb
-      - uses: actions/attest-build-provenance@v3.2.0
+      - uses: actions/attest-build-provenance@v4.1.0
         with:
           subject-path: ./package.rpm
           subject-name: opentelemetry-shell_${{ steps.version.outputs.version }}.rpm
-      - uses: actions/attest-build-provenance@v3.2.0
+      - uses: actions/attest-build-provenance@v4.1.0
         with:
           subject-path: ./package.apk
           subject-name: opentelemetry-shell_${{ steps.version.outputs.version }}.apk
