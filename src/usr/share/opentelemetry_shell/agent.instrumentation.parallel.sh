@@ -56,7 +56,7 @@ _otel_inject_parallel_gnu_arguments() {
     \echo -n ' '
     if \[ "$in_exec" -eq 0 ] && _otel_string_contains "$arg" =; then
       _otel_escape_arg "$arg"
-    elif \[ "$in_exec" -eq 0 ] && ! _otel_string_starts_with "$arg" - && ( \[ -x "$(\which "$arg")" ] || ( \[ "$_otel_shell" = bash ] && \type "$arg" 2> /dev/null | \head -n1 | \grep -q ' function$' ) ); then
+    elif \[ "$in_exec" -eq 0 ] && ! _otel_string_starts_with "$arg" - && ( \[ -x "$(\which "$arg" 2> /dev/null)" ] || ( \[ "$_otel_shell" = bash ] && \type "$arg" 2> /dev/null | \head -n1 | \grep -q ' function$' ) ); then
       local in_exec=1
       \echo -n "$_otel_shell -c '. otel.sh
 _otel_inject "
