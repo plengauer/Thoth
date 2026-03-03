@@ -80,7 +80,7 @@ _otel_auto_instrument() {
   if \type hash 1> /dev/null 2> /dev/null; then
     _otel_alias_prepend hash _otel_hash_and_reinstrument
   fi
-  _otel_alias_prepend export _otel_export_PATH_and_reinstrument
+  _otel_alias_prepend export _otel_export
   _otel_alias_prepend . _otel_instrument_and_source
   if \[ "$_otel_shell" = bash ]; then _otel_alias_prepend source _otel_instrument_and_source; fi
 
@@ -352,11 +352,18 @@ _otel_hash_and_reinstrument() {
   return "$exit_code"
 }
 
-_otel_export_PATH_and_reinstrument() {
+_otel_export() {
   shift
   local exit_code=0
+  if \[ "$1" = -f ]; then
+    \shopt -u expand_aliases 1> /dev/null 2> /dev/null
+    local reenable_alias=1
+  fi
   \export "$@" || local exit_code="$?"
-  if \[ "$1" = PATH ] || _otel_string_starts_with "$1" PATH=; then
+  if \[ "${reenable_alias:-0}" = 1 ]; then
+    \shopt -s expand_aliases 1> /dev/null 2> /dev/null
+  fi
+  if \[ "${1%%=*}" = PATH ]; then
     local aliases_pre="$(\mktemp)"
     local aliases_new="$(\mktemp)"
     \alias | \sed 's/^alias //' | \awk '{print "\\alias " $0 }' > "$aliases_pre"
