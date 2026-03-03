@@ -58,7 +58,6 @@ _otel_inject_parallel_gnu_arguments() {
       _otel_escape_arg "$arg"
     elif \[ "$in_exec" -eq 0 ] && ! _otel_string_starts_with "$arg" - && ( \[ -x "$(\which "$arg")" ] || ( \[ "$_otel_shell" = bash ] && \type "$arg" 2> /dev/null | \head -n1 | \grep -q ' function$' ) ); then
       local in_exec=1
-      while \[ "$#" -gt 0 ] && _otel_string_contains "$arg" =; do shift; arg="$1"; done # TODO this doesnt work
       \echo -n "$_otel_shell -c '. otel.sh
 _otel_inject "
       no_quote=1 _otel_escape_arg "$arg"
