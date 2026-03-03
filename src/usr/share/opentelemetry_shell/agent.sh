@@ -81,8 +81,6 @@ _otel_auto_instrument() {
     _otel_alias_prepend hash _otel_hash_and_reinstrument
   fi
   _otel_alias_prepend export _otel_export_PATH_and_reinstrument
-  _otel_alias_prepend . _otel_instrument_and_source
-  if \[ "$_otel_shell" = bash ]; then _otel_alias_prepend source _otel_instrument_and_source; fi
 
   # deshebangify commands, do special instrumentations, propagate special instrumentations into aliases, instrument all commands
   ## (both otel_filter_commands_by_file and _otel_filter_commands_by_instrumentation are functionally optional, but helps optimizing time because the following loop AND otel_instrument itself is expensive!)
