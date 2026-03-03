@@ -169,7 +169,6 @@ jobs:
           RENOVATE_DRY_RUN: full
           RENOVATE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RENOVATE_REPOSITORIES: ${{ github.repository }}
-          LOG_LEVEL: debug
   job-integration-codeql:
     needs: job-smoke
     runs-on: ubuntu-latest
