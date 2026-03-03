@@ -50,18 +50,16 @@ _otel_inject $arg'\'' parallel'"
 _otel_inject_parallel_gnu_arguments() {
   if _otel_string_ends_with "$1" "/env"; then _otel_escape_arg "$1"; shift; \echo -n ' '; fi
   if _otel_string_ends_with "$1" "/perl" || \[ "$1" = perl ]; then _otel_escape_arg "$1"; shift; \echo -n ' '; fi
-  _otel_escape_args "$1"; shift
+  _otel_escape_args "$1" -q; shift
   local in_exec=0
   for arg in "$@"; do
     \echo -n ' '
-    if \[ "$in_exec" -eq 0 ] && ! _otel_string_starts_with "$arg" - && \[ -x "$(\which "$arg")" ]; then
+    if \[ "$in_exec" -eq 0 ] && _otel_string_contains "$arg" =; then
+      _otel_escape_arg "$arg"
+    elif \[ "$in_exec" -eq 0 ] && ! _otel_string_starts_with "$arg" - && ( \[ -x "$(\which "$arg")" ] || ( \[ "$_otel_shell" = bash ] && \type "$arg" 2> /dev/null | \head -n1 | \grep -q ' function$' ) ); then
       local in_exec=1
-      \echo -n "-q $_otel_shell -c '. otel.sh
-_otel_inject "
-      no_quote=1 _otel_escape_arg "$arg"
-    elif \[ "$in_exec" -eq 0 ] && ! _otel_string_starts_with "$arg" - && \[ "$_otel_shell" = bash ] && \type "$arg" 2> /dev/null | \head -n1 | \grep -q ' function$'; then
-      local in_exec=1
-      \echo -n "-q $_otel_shell -c '. otel.sh
+      while \[ "$#" -gt 0 ] && _otel_string_contains "$arg" =; do shift; arg="$1"; done # TODO this doesnt work
+      \echo -n "$_otel_shell -c '. otel.sh
 _otel_inject "
       no_quote=1 _otel_escape_arg "$arg"
       # even if the command is an exported bash function, the instrumentation works properly because the function is exported with expanded aliases
@@ -91,7 +89,6 @@ _otel_inject_parallel_arguments() {
 }
 
 _otel_inject_parallel() {
-  # \printf '%s\n' "DEBUG DEBUG DEBUG $(_otel_inject_parallel_arguments "$@")" 1>&2
   local cmdline="$(_otel_dollar_star "$@")"
   local cmdline="${cmdline#\\}"
   \eval OTEL_SHELL_COMMANDLINE_OVERRIDE="$(_otel_escape_arg "$cmdline")" OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE=0 OTEL_SHELL_AUTO_INJECTED=TRUE _otel_call "$(_otel_inject_parallel_arguments "$@")"
