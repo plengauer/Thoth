@@ -5,5 +5,7 @@ if \[ "${GITHUB_ACTIONS:-false}" = true ] && \[ "${GITHUB_ACTION_REPOSITORY:-}" 
   \find /action/lib -iname '*.sh' | while \read -r path; do
     \sed -i -E 's/\| ("\$\{[a-zA-Z0-9_]*\[@\]\}")/| \\eval "$(_otel_escape_args \1)"/g' "$path" || \true
     \sed -i -E 's/! ("\$\{[a-zA-Z0-9_]*\[@\]\}")/! \\eval "$(_otel_escape_args \1)"/g' "$path" || \true
+    \sed -i -E 's/^PARALLEL_COMMAND_OUTPUT=/_otel_inject_parallel_arguments "${PARALLEL_COMMAND[@]}" >&2; PARALLEL_COMMAND_OUTPUT=/g' "$path" || \true
+    # 
   done
 fi
