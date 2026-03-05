@@ -67,6 +67,7 @@ Verify that ALL file changes in the PR are ONLY:
   - Any other package manager lock files
 - Version bump in the root-level `VERSION` file ONLY
 - Compiled agentic workflow lock files
+- Deployment of OpenTelemetry instrumentation in GitHub Actions
 - Timestamp updates (like the year) in a root-level `LICENSE` file
 
 Use the GitHub toolset to:
