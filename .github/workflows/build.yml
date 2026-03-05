@@ -46,7 +46,7 @@ jobs:
         with:
           ref: ${{ inputs.ref }}
       - if: ${{ matrix.architecture != 'amd64' }}
-        uses: docker/setup-qemu-action@v3.7.0
+        uses: docker/setup-qemu-action@v4.0.0
       - id: build
         run: |
           debian_architecture="$(echo ${{ matrix.architecture }} | cut -d / -f 1 | sed 's/le$/el/g')"
