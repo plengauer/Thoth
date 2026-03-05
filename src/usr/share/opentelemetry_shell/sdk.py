@@ -274,6 +274,8 @@ def handle(scope, version, command, arguments):
                         'github.repository.name': os.environ.get('GITHUB_REPOSITORY', '/').split('/', 1)[1],
                         'github.repository.owner.id': os.environ.get('GITHUB_REPOSITORY_OWNER_ID', ''),
                         'github.repository.owner.name': os.environ.get('GITHUB_REPOSITORY_OWNER', ''),
+                        'github.workflow.ref': os.environ.get('GITHUB_WORKFLOW_REF', ''),
+                        'github.workflow.sha': os.environ.get('GITHUB_WORKFLOW_SHA', ''),
                         'github.actions.workflow.ref': os.environ.get('GITHUB_WORKFLOW_REF', ''),
                         'github.actions.workflow.sha': os.environ.get('GITHUB_WORKFLOW_SHA', ''),
                         'github.actions.workflow.name': os.environ.get('GITHUB_WORKFLOW', ''),
