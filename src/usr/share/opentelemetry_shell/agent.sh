@@ -437,6 +437,18 @@ _otel_record_exec() {
   \export TRACEPARENT="$my_traceparent"
 }
 
+_otel_trap() {
+  local command="$1"; shift
+  while \[ "$#" -gt 0 ]; do
+    signal="$1"; shift
+    if \[ "$signal" = EXIT ] || \[ "$signal" = 0 ]; then
+      _otel_deferred_exit_command="$command"
+    else
+      \trap "$command" "$signal"
+    fi
+  done
+}
+
 command() {
   if \[ "$#" = 2 ] && \[ "$1" = -v ] && _otel_string_contains "$(\alias "$2")" " OTEL_SHELL_COMMAND_TYPE_OVERRIDE=file "; then
     \which "$2"
@@ -502,6 +514,9 @@ _otel_start_script() {
 
 _otel_end_script() {
   local exit_code="$?"
+  if \[ -n "${_otel_deferred_exit_command:-}" ]; then
+    \eval "$(_otel_escape_args "$_otel_deferred_exit_command")"
+  fi
   if \[ -n "${_root_span_handle:-}" ]; then
     if \[ "$exit_code" -ne 0 ]; then
       otel_span_error "$_root_span_handle"
