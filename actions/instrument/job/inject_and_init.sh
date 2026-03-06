@@ -320,6 +320,10 @@ export TRACEPARENT="$(cat "$opentelemetry_root_dir"/traceparent)"
 rm -rf "$opentelemetry_root_dir"
 echo "::endgroup::"
 
+echo "::group::Calculate Resource Attributes"
+export OTEL_RESOURCE_ATTRIBUTES=github.repository.id="$GITHUB_REPOSITORY_ID",github.repository.name="${GITHUB_REPOSITORY#*/}",github.repository.owner.id="$GITHUB_REPOSITORY_OWNER_ID",github.repository.owner.name="$GITHUB_REPOSITORY_OWNER",github.actions.workflow.ref="$GITHUB_WORKFLOW_REF",github.actions.workflow.sha="$GITHUB_WORKFLOW_SHA",github.actions.workflow.name="$GITHUB_WORKFLOW"
+echo "::endgroup::"
+
 echo "::group::Resolve Job ID and Job name"
 OTEL_SHELL_GITHUB_JOB="$GITHUB_JOB"
 job_arguments="$(printf '%s' "$INPUT___JOB_MATRIX" | jq -r '. | [.. | scalars] | @tsv' | sed 's/\t/, /g')"
