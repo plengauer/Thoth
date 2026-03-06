@@ -68,6 +68,17 @@ if [ "$TEST_SHELL" = bash ]; then
   assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
   span="$(resolve_span '.name == "echo e3"')"
   assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
+  my_echo() { echo "$1"; }
+
+  parallel FOO=BAR my_echo ::: f1 f2 f3
+  span="$(resolve_span '.name | endswith("/parallel my_echo ::: f1 f2 f3")')"
+  assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
+  span="$(resolve_span '.name == "echo f1"')"
+  assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
+  span="$(resolve_span '.name == "echo f2"')"
+  assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
+  span="$(resolve_span '.name == "echo f3"')"
+  assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
 
   my_wget() { wget -O - "$1"; }
   export -f my_wget
