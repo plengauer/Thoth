@@ -441,7 +441,7 @@ _otel_record_exec() {
 _otel_trap() {
   local command="$1"; shift
   while \[ "$#" -gt 0 ]; do
-    signal="$1"; shift
+    local signal="$1"; shift
     if \[ "$signal" = EXIT ] || \[ "$signal" = 0 ]; then
       _otel_deferred_exit_command="$command"
     else
