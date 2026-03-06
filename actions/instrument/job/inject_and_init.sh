@@ -321,7 +321,7 @@ rm -rf "$opentelemetry_root_dir"
 echo "::endgroup::"
 
 echo "::group::Calculate Resource Attributes"
-export OTEL_RESOURCE_ATTRIBUTES=github.repository.id="$GITHUB_REPOSITORY_ID",github.repository.name="${GITHUB_REPOSITORY#*/}",github.repository.owner.id="$GITHUB_REPOSITORY_OWNER_ID",github.repository.owner.name="$GITHUB_REPOSITORY_OWNER",github.actions.workflow.ref="$GITHUB_WORKFLOW_REF",github.actions.workflow.sha="$GITHUB_WORKFLOW_SHA",github.actions.workflow.name="$GITHUB_WORKFLOW"
+export OTEL_RESOURCE_ATTRIBUTES=github.repository.id="$GITHUB_REPOSITORY_ID",github.repository.name="${GITHUB_REPOSITORY#*/}",github.repository.owner.id="$GITHUB_REPOSITORY_OWNER_ID",github.repository.owner.name="$GITHUB_REPOSITORY_OWNER",github.actions.workflow.ref="$GITHUB_WORKFLOW_REF",github.actions.workflow.sha="$GITHUB_WORKFLOW_SHA",github.actions.workflow.name="$GITHUB_WORKFLOW","${OTEL_RESOURCE_ATTRIBUTES:-}"
 echo "::endgroup::"
 
 echo "::group::Resolve Job ID and Job name"
