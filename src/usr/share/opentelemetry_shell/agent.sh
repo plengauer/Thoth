@@ -102,6 +102,7 @@ _otel_auto_instrument() {
   else
     \alias exec='_otel_inject_and_exec_directly exec'
   fi
+  \alias trap=_otel_trap
 
   # cache
   \[ "$(\alias | \wc -l)" -gt 25 ] && \alias | \sed 's/^alias //' | { \[ -n "$hint" ] && \grep "$(_otel_resolve_instrumentation_hint "$hint" | \sed 's/[]\.^*[]/\\&/g' | \awk '$0=$0"="')" || \cat; } | \awk '{print "\\alias " $0 }' > "$cache_file" || \true
