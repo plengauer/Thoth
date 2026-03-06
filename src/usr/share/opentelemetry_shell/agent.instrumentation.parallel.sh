@@ -54,9 +54,13 @@ _otel_inject_parallel_gnu_arguments() {
   local in_exec=0
   for arg in "$@"; do
     \echo -n ' '
-    if \[ "$in_exec" -eq 0 ] && ! _otel_string_starts_with "$arg" - && ! _otel_string_contains "$arg" = && ( \[ -x "$(\which "$arg" 2> /dev/null)" ] || ( \[ "$_otel_shell" = bash ] && \type "$arg" 2> /dev/null | \head -n1 | \grep -q ' function$' ) ); then
+    if \[ "$in_exec" -eq 0 ] && _otel_string_contains "$arg" =; then
+      local additional_code="export '$arg'
+${additional_code:-}"
+    elif \[ "$in_exec" -eq 0 ] && ! _otel_string_starts_with "$arg" - && ! _otel_string_contains "$arg" = && ( \[ -x "$(\which "$arg" 2> /dev/null)" ] || ( \[ "$_otel_shell" = bash ] && \type "$arg" 2> /dev/null | \head -n1 | \grep -q ' function$' ) ); then
       local in_exec=1
-      \echo -n "$_otel_shell -c '. otel.sh
+      \echo -n "$_otel_shell -c '${additional_code:-}
+. otel.sh
 _otel_inject "
       no_quote=1 _otel_escape_arg "$arg"
       # even if the command is an exported bash function, the instrumentation works properly because the function is exported with expanded aliases
