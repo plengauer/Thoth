@@ -270,6 +270,7 @@ jobs:
         with:
           name: python_site_packages_${{ matrix.version }}_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.python/venv/lib/python${{ matrix.version }}/site-packages
+          if-no-files-found: error
   merge-python-site-packages:
     needs: build-python-site-packages
     runs-on: ubuntu-latest
