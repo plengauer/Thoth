@@ -516,7 +516,7 @@ _otel_start_script() {
 _otel_end_script() {
   local exit_code="$?"
   if \[ -n "${_otel_deferred_exit_command:-}" ]; then
-    \eval "$(_otel_escape_args "$_otel_deferred_exit_command")" || local exit_code="$?"
+    \eval "$(_otel_escape_args $_otel_deferred_exit_command)" || local exit_code="$?"
   fi
   if \[ -n "${_root_span_handle:-}" ]; then
     if \[ "$exit_code" -ne 0 ]; then
