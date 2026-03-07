@@ -5,13 +5,13 @@ ensure_installed() { for item in "$@"; do type "${item%%;*}" 1> /dev/null 2> /de
 ensure_installed jq curl wget "$@" || (sudo apt-get update && ensure_installed jq curl wget "$@")
 
 if ! type otel.sh 2> /dev/null; then
-  \echo "Installing ..." >&2
+  echo "::debug::Installing ..."
   action_tag_name="${GITHUB_ACTION_REF#*@}"
   if [ "$GITHUB_REPOSITORY" = "$GITHUB_ACTION_REPOSITORY" ] && [ -f "$GITHUB_WORKSPACE"/package.deb ]; then
-    \echo "Installing local debian ..." >&2
+    echo "::debug::Installing local debian ..."
     sudo -E -H apt-get install -y "$GITHUB_WORKSPACE"/package.deb
   else
-    \echo "Downloading debian and installing ..." >&2
+    echo "::debug::Downloading debian and installing ..."
     debian_file=/var/cache/apt/archives/opentelemetry-shell_"$(cat ../../../VERSION)"_all.deb
     [ "$action_tag_name" = main ] || action_tag_name=v"$(cat ../../../VERSION)"
     GITHUB_REPOSITORY="$GITHUB_ACTION_REPOSITORY" gh_release "$action_tag_name" | jq '.assets[] | select(.name | endswith(".deb")) | .url' -r | xargs -0 -I '{}' wget --header "Authorization: Bearer $INPUT_GITHUB_TOKEN" --header 'Accept: application/octet-stream' -O - '{}' | sudo tee "$debian_file" > /dev/null
