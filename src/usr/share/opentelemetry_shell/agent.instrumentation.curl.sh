@@ -34,7 +34,7 @@ _otel_propagate_curl() {
   \wait "$stderr_pid"
   \rm -rf "$stderr_pipe"
   if \[ -n "$api" ]; then \rm -rf "$stderr_pipe" "$span_handle_forward" "$api_recording_finished"; fi
-  if \[ -f /opt/opentelemetry_shell/libinjecthttpheader.so ]; then
+  if \[ -f "$file" ]; then
     if \[ -n "${OLD_LD_PRELOAD:-}" ]; then
       export LD_PRELOAD="$OLD_LD_PRELOAD"
     else
