@@ -131,6 +131,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release create "v${{ steps.version.outputs.version }}" \
+            --target "${{ matrix.ref }}" \
             --title "Release v${{ steps.version.outputs.version }}" \
             --generate-notes \
             --draft
