@@ -529,6 +529,6 @@ _otel_end_script() {
 }
 
 _otel_auto_instrument "$_otel_shell_auto_instrumentation_hint"
-trap _otel_end_script EXIT
+\trap _otel_end_script EXIT
 
 _otel_start_script
