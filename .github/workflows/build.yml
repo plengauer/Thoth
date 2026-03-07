@@ -235,6 +235,7 @@ jobs:
         with:
           ref: ${{ inputs.ref }}
       - run: |
+          \unalias -a # disable all instrumentations, cant build the instrumentations while instrumentations are active, pip resolution then pretends to it already being installed
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.python
           (
             python3 -m venv venv_instrumentations
