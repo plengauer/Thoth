@@ -1,0 +1,59 @@
+name: Rerequest Reviews
+on:
+  pull_request_review:
+    types: [dismissed]
+jobs:
+  rerequest:
+    if: github.event.pull_request.state == 'open'
+    runs-on: ubuntu-slim
+    permissions:
+      actions: read
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.47.1
+        with:
+          secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}"]'
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
+          OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
+      - name: Rerequest dismissed approval
+        uses: actions/github-script@v7.0.1
+        with:
+          github-token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          script: |
+            const { pull_request: pr, review } = context.payload;
+            if (!pr || !review) {
+              core.info('Missing pull request or review payload');
+              return;
+            }
+            const dismissedState = (review.dismissed_review?.state || review.state || '').toLowerCase();
+            if (dismissedState && dismissedState !== 'approved' && dismissedState !== 'dismissed') {
+              core.info(`Dismissed review state ${dismissedState} is not an approval, skipping`);
+              return;
+            }
+            const reviewer = review.user?.login;
+            if (!reviewer) {
+              core.info('No reviewer to re-request');
+              return;
+            }
+            if ((review.user.type || '').toLowerCase() !== 'user') {
+              core.info('Reviewer is not a user, skipping');
+              return;
+            }
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const pull_number = pr.number;
+            const { data: current } = await github.rest.pulls.get({ owner, repo, pull_number });
+            const reviewerLower = reviewer.toLowerCase();
+            if ((current.user?.login || '').toLowerCase() === reviewerLower) {
+              core.info('Reviewer is the author, skipping');
+              return;
+            }
+            const requested = new Set((current.requested_reviewers || []).map(r => r.login.toLowerCase()));
+            if (requested.has(reviewerLower)) {
+              core.info('Review already requested');
+              return;
+            }
+            await github.rest.pulls.requestReviewers({ owner, repo, pull_number, reviewers: [reviewer] });
+            core.info(`Re-requested review from ${reviewer}`);
