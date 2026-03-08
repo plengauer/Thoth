@@ -173,6 +173,7 @@ name: 'Deploy OpenTelemetry'
 
 on:
   push:
+    branches: main
     paths:
       - .github/workflows/**
 
