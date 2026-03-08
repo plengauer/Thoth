@@ -31,8 +31,8 @@ inputs:
     description: 'Use a container image to avoid repeated installation on every run.'
     default: true
   repository_level_instrumentation:
-    description: 'Deploy repository-level instrumentation to collect VCS metrics (opt-in)'
-    default: false
+    description: 'Deploy repository-level instrumentation to collect VCS metrics'
+    default: true
   repository_level_instrumentation_file_name:
     description: 'File name for repository instrumentation workflow'
     default: 'observability_repository.yml'
