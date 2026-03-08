@@ -1,5 +1,2 @@
 import requests
-try:
-    requests.get('https://example.com')
-except:
-    pass
+requests.get('http://example.com')
