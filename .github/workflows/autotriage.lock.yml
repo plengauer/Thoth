@@ -25,7 +25,7 @@
 #
 # gh-aw-metadata: {"schema_version":"v1","frontmatter_hash":"dbe10a8e49c70217df79dada9601903cd07aa3693a5124dca8f198e386d70cb5","compiler_version":"v0.52.1"}
 
-name: "Triage New Issues"
+name: "Autotriage"
 "on":
   issues:
     types:
@@ -36,7 +36,7 @@ permissions:
 concurrency:
   group: "gh-aw-${{ github.workflow }}-${{ github.event.issue.number || github.run_id }}"
 
-run-name: "Triage New Issues"
+run-name: "Autotriage"
 
 jobs:
   activation:
@@ -76,7 +76,7 @@ jobs:
           GH_AW_INFO_VERSION: ""
           GH_AW_INFO_AGENT_VERSION: "0.0.420"
           GH_AW_INFO_CLI_VERSION: "v0.52.1"
-          GH_AW_INFO_WORKFLOW_NAME: "Triage New Issues"
+          GH_AW_INFO_WORKFLOW_NAME: "Autotriage"
           GH_AW_INFO_EXPERIMENTAL: "false"
           GH_AW_INFO_SUPPORTS_TOOLS_ALLOWLIST: "true"
           GH_AW_INFO_STAGED: "false"
@@ -107,7 +107,7 @@ jobs:
       - name: Check workflow file timestamps
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         env:
-          GH_AW_WORKFLOW_FILE: "triage_new_issues.lock.yml"
+          GH_AW_WORKFLOW_FILE: "autotriage.lock.yml"
         with:
           script: |
             const { setupGlobals } = require('/opt/gh-aw/actions/setup_globals.cjs');
@@ -182,7 +182,7 @@ jobs:
           </system>
           GH_AW_PROMPT_EOF
           cat << 'GH_AW_PROMPT_EOF'
-          {{#runtime-import .github/workflows/triage_new_issues.md}}
+          {{#runtime-import .github/workflows/autotriage.md}}
           GH_AW_PROMPT_EOF
           } > "$GH_AW_PROMPT"
       - name: Interpolate variables and render templates
@@ -264,7 +264,7 @@ jobs:
       GH_AW_SAFE_OUTPUTS: /opt/gh-aw/safeoutputs/outputs.jsonl
       GH_AW_SAFE_OUTPUTS_CONFIG_PATH: /opt/gh-aw/safeoutputs/config.json
       GH_AW_SAFE_OUTPUTS_TOOLS_PATH: /opt/gh-aw/safeoutputs/tools.json
-      GH_AW_WORKFLOW_ID_SANITIZED: triage_new_issues
+      GH_AW_WORKFLOW_ID_SANITIZED: autotriage
     outputs:
       checkout_pr_success: ${{ steps.checkout-pr.outputs.checkout_pr_success || 'true' }}
       detection_conclusion: ${{ steps.detection_conclusion.outputs.conclusion }}
@@ -920,7 +920,7 @@ jobs:
         if: always() && steps.detection_guard.outputs.run_detection == 'true'
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         env:
-          WORKFLOW_NAME: "Triage New Issues"
+          WORKFLOW_NAME: "Autotriage"
           WORKFLOW_DESCRIPTION: "Automatically applies appropriate labels to newly created issues based on their content"
           HAS_PATCH: ${{ steps.collect_output.outputs.has_patch }}
         with:
@@ -1046,7 +1046,7 @@ jobs:
         env:
           GH_AW_AGENT_OUTPUT: ${{ env.GH_AW_AGENT_OUTPUT }}
           GH_AW_NOOP_MAX: "1"
-          GH_AW_WORKFLOW_NAME: "Triage New Issues"
+          GH_AW_WORKFLOW_NAME: "Autotriage"
         with:
           github-token: ${{ secrets.GH_AW_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
           script: |
@@ -1059,7 +1059,7 @@ jobs:
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         env:
           GH_AW_AGENT_OUTPUT: ${{ env.GH_AW_AGENT_OUTPUT }}
-          GH_AW_WORKFLOW_NAME: "Triage New Issues"
+          GH_AW_WORKFLOW_NAME: "Autotriage"
         with:
           github-token: ${{ secrets.GH_AW_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
           script: |
@@ -1072,10 +1072,10 @@ jobs:
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         env:
           GH_AW_AGENT_OUTPUT: ${{ env.GH_AW_AGENT_OUTPUT }}
-          GH_AW_WORKFLOW_NAME: "Triage New Issues"
+          GH_AW_WORKFLOW_NAME: "Autotriage"
           GH_AW_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           GH_AW_AGENT_CONCLUSION: ${{ needs.agent.result }}
-          GH_AW_WORKFLOW_ID: "triage_new_issues"
+          GH_AW_WORKFLOW_ID: "autotriage"
           GH_AW_SECRET_VERIFICATION_RESULT: ${{ needs.activation.outputs.secret_verification_result }}
           GH_AW_CHECKOUT_PR_SUCCESS: ${{ needs.agent.outputs.checkout_pr_success }}
           GH_AW_INFERENCE_ACCESS_ERROR: ${{ needs.agent.outputs.inference_access_error }}
@@ -1095,7 +1095,7 @@ jobs:
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         env:
           GH_AW_AGENT_OUTPUT: ${{ env.GH_AW_AGENT_OUTPUT }}
-          GH_AW_WORKFLOW_NAME: "Triage New Issues"
+          GH_AW_WORKFLOW_NAME: "Autotriage"
           GH_AW_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           GH_AW_AGENT_CONCLUSION: ${{ needs.agent.result }}
           GH_AW_NOOP_MESSAGE: ${{ steps.noop.outputs.noop_message }}
@@ -1156,10 +1156,10 @@ jobs:
       actions: read
     timeout-minutes: 15
     env:
-      GH_AW_CALLER_WORKFLOW_ID: "${{ github.repository }}/triage_new_issues"
+      GH_AW_CALLER_WORKFLOW_ID: "${{ github.repository }}/autotriage"
       GH_AW_ENGINE_ID: "copilot"
-      GH_AW_WORKFLOW_ID: "triage_new_issues"
-      GH_AW_WORKFLOW_NAME: "Triage New Issues"
+      GH_AW_WORKFLOW_ID: "autotriage"
+      GH_AW_WORKFLOW_NAME: "Autotriage"
     outputs:
       assign_to_agent_assigned: ${{ steps.assign_to_agent.outputs.assigned }}
       assign_to_agent_assignment_error_count: ${{ steps.assign_to_agent.outputs.assignment_error_count }}
