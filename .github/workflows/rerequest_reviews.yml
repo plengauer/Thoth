@@ -18,7 +18,7 @@ jobs:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
       - name: Rerequest dismissed approval
-        uses: actions/github-script@v7.0.1
+        uses: actions/github-script@v7.1.0
         with:
           github-token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           script: |
