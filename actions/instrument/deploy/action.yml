@@ -395,8 +395,21 @@ runs:
       run: |
         git diff
   
-    - name: "Open Pull Request"
+    - name: "Push"
       if: ${{ inputs.dry_run != 'true' }}
+      id: push
+      shell: bash
+      run: |
+        if git diff --quiet HEAD; then exit 0; fi
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git add -A
+        git commit -m "Deploy OpenTelemetry"
+        git push && echo "pushed=true" >> "$GITHUB_OUTPUT" || echo "pushed=false" >> "$GITHUB_OUTPUT"
+      env:
+        GH_TOKEN: ${{ inputs.github_token }}
+    - name: "Open Pull Request"
+      if: ${{ inputs.dry_run != 'true' && steps.push.outputs.pushed == 'false' }}
       id: open-pr
       uses: peter-evans/create-pull-request@v8.1.0
       with:

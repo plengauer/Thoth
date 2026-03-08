@@ -167,13 +167,12 @@ Both methods of instrumentation can be combined arbitrarily. Deploying them both
 To steer roadmap and maintenance efforts, job-level and workflow-level instrumentations report high-level usage metrics to the maintainers. This data includes invocation counts of the individual instrumentations and features therein, as well as resuable action names (e.g., `actions/checkout`), runner operating systems (e.g., `ubuntu`), architectures (e.g., `x64`) and types (e.g., `self-hosted`). The data is automatically collected for all repositories that are hosted on GitHub SaaS. For self-hosted GitHub servers, no data at all is collected. In all cases, no workflow data, code, secrets, artifacts, dynamic data or any personal data is collected. This default behavior can be overwritten on job-level and workflow-level instrumentations with the `self_monitoring` and `self_monitoring_anonymize` parameters.
 
 ### Automatic Deployment of Workflow-level and Job-level Instrumentations
-To automatically deploy workflow-level and job-level instrumentations to all your GitHub actions, copy the following workflow into your `.github/workflows` directory. Make sure, the GitHub token has permissions to open pull requests (configurable in the repository settings) or specify a token with the correct permissions explicitly with the `github_token` parameter. This workflow will also update instrumentations when a new workflow is created. The configuration in the `env` section will be deployed to all instrumentations.
+To automatically deploy workflow-level and job-level instrumentations to all your GitHub actions, copy the following workflow into your `.github/workflows` directory. Make sure, the GitHub token has permissions to push contents or open pull requests (configurable in the repository settings) or specify a token with the correct permissions explicitly with the `github_token` parameter. This workflow will also update instrumentations when a new workflow is created. The configuration in the `env` section will be deployed to all instrumentations.
 ```yaml
 name: 'Deploy OpenTelemetry'
 
 on:
   push:
-    branches: main
     paths:
       - .github/workflows/**
 
