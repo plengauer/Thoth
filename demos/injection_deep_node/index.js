@@ -8,4 +8,4 @@ const options = {
 https.request(options, response => {
   response.on('data', function (chunk) {});
   response.on('end', function () {});  
-}).end();
+}).on('error', err => {}).end();
