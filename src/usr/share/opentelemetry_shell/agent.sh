@@ -102,6 +102,7 @@ _otel_auto_instrument() {
   else
     \alias exec='_otel_inject_and_exec_directly exec'
   fi
+  \alias trap=_otel_trap
 
   # cache
   \[ "$(\alias | \wc -l)" -gt 25 ] && \alias | \sed 's/^alias //' | { \[ -n "$hint" ] && \grep "$(_otel_resolve_instrumentation_hint "$hint" | \sed 's/[]\.^*[]/\\&/g' | \awk '$0=$0"="')" || \cat; } | \awk '{print "\\alias " $0 }' > "$cache_file" || \true
@@ -437,6 +438,18 @@ _otel_record_exec() {
   \export TRACEPARENT="$my_traceparent"
 }
 
+_otel_trap() {
+  local command="$1"; shift
+  while \[ "$#" -gt 0 ]; do
+    local signal="$1"; shift
+    if \[ "$signal" = EXIT ] || \[ "$signal" = 0 ]; then
+      _otel_deferred_exit_command="$command"
+    else
+      \trap "$command" "$signal"
+    fi
+  done
+}
+
 command() {
   if \[ "$#" = 2 ] && \[ "$1" = -v ] && _otel_string_contains "$(\alias "$2")" " OTEL_SHELL_COMMAND_TYPE_OVERRIDE=file "; then
     \which "$2"
@@ -502,6 +515,9 @@ _otel_start_script() {
 
 _otel_end_script() {
   local exit_code="$?"
+  if \[ -n "${_otel_deferred_exit_command:-}" ]; then
+    \eval "$_otel_deferred_exit_command" || local exit_code="$?"
+  fi
   if \[ -n "${_root_span_handle:-}" ]; then
     if \[ "$exit_code" -ne 0 ]; then
       otel_span_error "$_root_span_handle"
@@ -513,6 +529,6 @@ _otel_end_script() {
 }
 
 _otel_auto_instrument "$_otel_shell_auto_instrumentation_hint"
-trap _otel_end_script EXIT
+\trap _otel_end_script EXIT
 
 _otel_start_script
