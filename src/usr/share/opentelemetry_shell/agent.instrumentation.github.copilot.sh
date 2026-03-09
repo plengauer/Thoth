@@ -1,6 +1,6 @@
 #!/bin/false
 
-if \[ "${GITHUB_ACTIONS:-false}" = true ] && \[ "$GITHUB_WORKFLOW" = 'Copilot coding agent' ] && \[ "$GITHUB_JOB" = copilot ] && \[ -n "${COPILOT_AGENT_RUNTIME_VERSION:-}" ] && \[ -n "${GITHUB_COPILOT_ACTION_DOWNLOAD_URL:-}" ]; then
+if \[ "${GITHUB_ACTIONS:-false}" = true ] && \[ "$GITHUB_EVENT_NAME" = dynamic ] && \[ -n "${COPILOT_AGENT_RUNTIME_VERSION:-}" ] && \[ -n "${GITHUB_COPILOT_ACTION_DOWNLOAD_URL:-}" ] && ( \[ "$GITHUB_JOB" = copilot ] || \[ "$GITHUB_JOB" = claude ] || \[ "$GITHUB_JOB" = codex ] ); then
   _otel_inject_copilot() {
     local exit_code=0
     _otel_call "$@" || local exit_code=$?
