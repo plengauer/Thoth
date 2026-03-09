@@ -61,8 +61,7 @@ if [ "$(jq < "$workflow_json" -r .status)" != completed ]; then echo "::error ::
 echo "::endgroup::"
 
 echo "::group::Resolving Workflow Name"
-workflow_id="$(jq < "$workflow_json" -r .workflow_id)"
-workflow_name="$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/$workflow_id" | jq -r .name)"
+workflow_name="$(gh_curl /actions/workflows/"$(jq < "$workflow_json" -r .workflow_id)" | jq -r .name)"
 echo "::endgroup::"
 
 echo "::group::Resolving Jobs, Steps, Logs, and Artifacts"
