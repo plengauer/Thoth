@@ -1,5 +1,5 @@
 ---
-name: Triage New Issues
+name: Autotriage
 description: Automatically applies appropriate labels to newly created issues based on their content
 on:
   issues:
@@ -23,7 +23,7 @@ safe-outputs:
     github-token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
 ---
 
-# Triage New Issues
+# Autotriage
 
 You are an AI assistant that helps automatically triage newly created issues in this repository.
 
