@@ -1,13 +1,13 @@
  INFO: Renovate started
-       "renovateVersion": "43.56.0"
+       "renovateVersion": "43.59.2"
  WARN: cli config dryRun property has been changed to full
  INFO: Repository started (repository=plengauer/Thoth)
-       "renovateVersion": "43.56.0"
+       "renovateVersion": "43.59.2"
  INFO: Dependency extraction complete (repository=plengauer/Thoth, baseBranch=main)
        "stats": {
          "managers": {
            "dockerfile": {"fileCount": 4, "depCount": 4},
-           "github-actions": {"fileCount": 29, "depCount": 496},
+           "github-actions": {"fileCount": 29, "depCount": 477},
            "gradle": {"fileCount": 4, "depCount": 3},
            "gradle-wrapper": {"fileCount": 1, "depCount": 1},
            "maven": {"fileCount": 1, "depCount": 2},
@@ -15,14 +15,14 @@
            "pip_requirements": {"fileCount": 3, "depCount": 18},
            "regex": {"fileCount": 3, "depCount": 4}
          },
-         "total": {"fileCount": 47, "depCount": 543}
+         "total": {"fileCount": 47, "depCount": 524}
        }
  INFO: DRY-RUN: Would ensure Dependency Dashboard (repository=plengauer/Thoth)
        "title": "Dependency Dashboard"
  INFO: DRY-RUN: Would save repository cache. (repository=plengauer/Thoth)
  INFO: Repository finished (repository=plengauer/Thoth)
        "cloned": true,
-       "durationMs": 49225,
+       "durationMs": 39739,
        "result": "done",
        "status": "onboarded",
        "enabled": true,
