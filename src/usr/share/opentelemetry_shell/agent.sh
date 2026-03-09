@@ -80,7 +80,7 @@ _otel_auto_instrument() {
   if \type hash 1> /dev/null 2> /dev/null; then
     _otel_alias_prepend hash _otel_hash_and_reinstrument
   fi
-  _otel_alias_prepend export _otel_export
+  _otel_alias_prepend export _otel_export_PATH_and_reinstrument
 
   # deshebangify commands, do special instrumentations, propagate special instrumentations into aliases, instrument all commands
   ## (both otel_filter_commands_by_file and _otel_filter_commands_by_instrumentation are functionally optional, but helps optimizing time because the following loop AND otel_instrument itself is expensive!)
@@ -350,17 +350,10 @@ _otel_hash_and_reinstrument() {
   return "$exit_code"
 }
 
-_otel_export() {
+_otel_export_PATH_and_reinstrument() {
   shift
   local exit_code=0
-  if \[ "$1" = -f ]; then
-    \shopt -u expand_aliases 1> /dev/null 2> /dev/null
-    local reenable_alias=1
-  fi
   \export "$@" || local exit_code="$?"
-  if \[ "${reenable_alias:-0}" = 1 ]; then
-    \shopt -s expand_aliases 1> /dev/null 2> /dev/null
-  fi
   if \[ "${1%%=*}" = PATH ]; then
     local aliases_pre="$(\mktemp)"
     local aliases_new="$(\mktemp)"
