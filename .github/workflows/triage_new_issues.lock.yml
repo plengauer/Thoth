@@ -35,7 +35,7 @@ name: "Triage New Issues"
     types:
     - opened
   # roles: all # Roles processed as role check in pre-activation job
-  # slash_command: triage # Slash commands processed as command check in pre-activation job
+  # slash_command: triage # Slash commands (issue comments only) processed as command check in pre-activation job
 permissions:
   actions: read
 concurrency:

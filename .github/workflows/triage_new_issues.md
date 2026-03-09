@@ -6,6 +6,7 @@ on:
     types: [opened]
   slash_command:
     name: triage
+    events: [issue_comment]
   roles: all
 permissions:
   contents: read
