@@ -27,10 +27,15 @@
 
 name: "Triage New Issues"
 "on":
+  issue_comment:
+    types:
+    - created
+    - edited
   issues:
     types:
     - opened
   # roles: all # Roles processed as role check in pre-activation job
+  # slash_command: triage # Slash commands processed as command check in pre-activation job
 permissions:
   actions: read
 concurrency:
@@ -41,7 +46,9 @@ run-name: "Triage New Issues"
 jobs:
   activation:
     needs: pre_activation
-    if: needs.pre_activation.outputs.activated == 'true'
+    if: >
+      (needs.pre_activation.outputs.activated == 'true') && (github.event_name == 'issues' || ((github.event_name == 'issue_comment') && ((startsWith(github.event.comment.body, '/triage ')) ||
+      (github.event.comment.body == '/triage')) && (github.event.issue.pull_request == null)))
     runs-on: ubuntu-slim
     permissions:
       contents: read
@@ -52,6 +59,7 @@ jobs:
       comment_repo: ""
       model: ${{ steps.generate_aw_info.outputs.model }}
       secret_verification_result: ${{ steps.validate-secret.outputs.verification_result }}
+      slash_command: ${{ needs.pre_activation.outputs.matched_command }}
       text: ${{ steps.sanitized.outputs.text }}
       title: ${{ steps.sanitized.outputs.title }}
     steps:
@@ -208,6 +216,7 @@ jobs:
           GH_AW_GITHUB_RUN_ID: ${{ github.run_id }}
           GH_AW_GITHUB_WORKSPACE: ${{ github.workspace }}
           GH_AW_NEEDS_PRE_ACTIVATION_OUTPUTS_ACTIVATED: ${{ needs.pre_activation.outputs.activated }}
+          GH_AW_NEEDS_PRE_ACTIVATION_OUTPUTS_MATCHED_COMMAND: ${{ needs.pre_activation.outputs.matched_command }}
         with:
           script: |
             const { setupGlobals } = require('/opt/gh-aw/actions/setup_globals.cjs');
@@ -227,7 +236,8 @@ jobs:
                 GH_AW_GITHUB_REPOSITORY: process.env.GH_AW_GITHUB_REPOSITORY,
                 GH_AW_GITHUB_RUN_ID: process.env.GH_AW_GITHUB_RUN_ID,
                 GH_AW_GITHUB_WORKSPACE: process.env.GH_AW_GITHUB_WORKSPACE,
-                GH_AW_NEEDS_PRE_ACTIVATION_OUTPUTS_ACTIVATED: process.env.GH_AW_NEEDS_PRE_ACTIVATION_OUTPUTS_ACTIVATED
+                GH_AW_NEEDS_PRE_ACTIVATION_OUTPUTS_ACTIVATED: process.env.GH_AW_NEEDS_PRE_ACTIVATION_OUTPUTS_ACTIVATED,
+                GH_AW_NEEDS_PRE_ACTIVATION_OUTPUTS_MATCHED_COMMAND: process.env.GH_AW_NEEDS_PRE_ACTIVATION_OUTPUTS_MATCHED_COMMAND
               }
             });
       - name: Validate prompt placeholders
@@ -1109,12 +1119,16 @@ jobs:
             await main();
 
   pre_activation:
+    if: >
+      github.event_name == 'issues' ||
+      ((github.event_name == 'issue_comment') && ((startsWith(github.event.comment.body, '/triage ')) || (github.event.comment.body == '/triage')) && (github.event.issue.pull_request == null))
     runs-on: ubuntu-slim
     permissions:
       actions: read
+      issues: write
     outputs:
-      activated: ${{ steps.check_rate_limit.outputs.rate_limit_ok == 'true' }}
-      matched_command: ''
+      activated: ${{ (steps.check_rate_limit.outputs.rate_limit_ok == 'true') || (steps.check_membership.outputs.is_team_member == 'true' && steps.check_command_position.outputs.command_position_ok == 'true') }}
+      matched_command: ${{ steps.check_command_position.outputs.matched_command }}
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.47.2
         env:
@@ -1130,6 +1144,7 @@ jobs:
           destination: /opt/gh-aw/actions
       - name: Check user rate limit
         id: check_rate_limit
+        if: github.event_name == 'issues'
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         env:
           GH_AW_RATE_LIMIT_MAX: "2"
@@ -1142,6 +1157,44 @@ jobs:
             const { setupGlobals } = require('/opt/gh-aw/actions/setup_globals.cjs');
             setupGlobals(core, github, context, exec, io);
             const { main } = require('/opt/gh-aw/actions/check_rate_limit.cjs');
+            await main();
+      - name: Add eyes reaction for immediate feedback
+        id: react
+        if: github.event_name == 'issue_comment'
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
+        env:
+          GH_AW_REACTION: "eyes"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { setupGlobals } = require('/opt/gh-aw/actions/setup_globals.cjs');
+            setupGlobals(core, github, context, exec, io);
+            const { main } = require('/opt/gh-aw/actions/add_reaction.cjs');
+            await main();
+      - name: Check team membership for command workflow
+        id: check_membership
+        if: github.event_name == 'issue_comment'
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
+        env:
+          GH_AW_REQUIRED_ROLES: admin,maintainer,write
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { setupGlobals } = require('/opt/gh-aw/actions/setup_globals.cjs');
+            setupGlobals(core, github, context, exec, io);
+            const { main } = require('/opt/gh-aw/actions/check_membership.cjs');
+            await main();
+      - name: Check command position
+        id: check_command_position
+        if: github.event_name == 'issue_comment'
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
+        env:
+          GH_AW_COMMANDS: "[\"triage\"]"
+        with:
+          script: |
+            const { setupGlobals } = require('/opt/gh-aw/actions/setup_globals.cjs');
+            setupGlobals(core, github, context, exec, io);
+            const { main } = require('/opt/gh-aw/actions/check_command_position.cjs');
             await main();
 
   safe_outputs:

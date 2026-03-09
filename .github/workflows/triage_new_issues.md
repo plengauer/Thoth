@@ -4,6 +4,8 @@ description: Automatically applies appropriate labels to newly created issues ba
 on:
   issues:
     types: [opened]
+  slash_command:
+    name: triage
   roles: all
 permissions:
   contents: read
