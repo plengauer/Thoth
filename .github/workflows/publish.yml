@@ -87,7 +87,7 @@ jobs:
           ref: ${{ matrix.ref }}
       - run: echo "version=$(cat VERSION)" >> "$GITHUB_OUTPUT"
         id: version
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ matrix.ref }}
 
@@ -103,7 +103,7 @@ jobs:
         with:
           subject-path: ./package.apk
           subject-name: opentelemetry-shell_${{ steps.version.outputs.version }}.apk
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: images_${{ matrix.ref }}
 
