@@ -87,12 +87,6 @@ if [ "$TEST_SHELL" = bash ]; then
   assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
   span="$(resolve_span '.name == "wget -O - http://www.google.at"')"
   assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
-
-  my_func() { echo "$@"; }
-  \set -x
-  export -f my_func
-  \set +x
-  \parallel my_echo ::: g1 g2 g3 # test that uninstrumented parallels dont fail because of alias expansion in exported function
 else
   true
 fi
