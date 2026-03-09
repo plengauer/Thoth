@@ -1,11 +1,11 @@
-const https = require('https');
+const http = require('http');
 const options = {
   hostname: 'example.com',
-  port: 443,
+  port: 80,
   path: '/',
   method: 'GET'
 };
-https.request(options, response => {
+http.request(options, response => {
   response.on('data', function (chunk) {});
   response.on('end', function () {});  
 }).end();
