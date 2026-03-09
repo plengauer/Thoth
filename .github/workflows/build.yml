@@ -235,12 +235,13 @@ jobs:
         with:
           ref: ${{ inputs.ref }}
       - run: |
+          \unalias -a # disable all instrumentations, cant build the instrumentations while instrumentations are active, pip resolution then pretends to it already being installed
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.python
           (
             python3 -m venv venv_instrumentations
             . venv_instrumentations/bin/activate
-            \pip3 install -r instrumentation_roots_requirements.txt >&2
-            \python3 -c '
+            pip3 install -r instrumentation_roots_requirements.txt >&2
+            python3 -c '
           from opentelemetry.instrumentation.bootstrap_gen import (default_instrumentations, libraries)
           print(*default_instrumentations, sep="\n")
           print(*map(lambda element: element["instrumentation"], libraries), sep="\n")
@@ -252,7 +253,7 @@ jobs:
             python3 -m venv venv
             . venv/bin/activate
             pip3 install -r requirements.txt
-            xargs -r pip3 install
+            xargs pip3 install
             deactivate
           )
       - run: |
@@ -270,6 +271,7 @@ jobs:
         with:
           name: python_site_packages_${{ matrix.version }}_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.python/venv/lib/python${{ matrix.version }}/site-packages
+          if-no-files-found: error
   merge-python-site-packages:
     needs: build-python-site-packages
     runs-on: ubuntu-latest
