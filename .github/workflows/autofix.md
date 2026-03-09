@@ -1,5 +1,5 @@
 ---
-name: Create Analysis Issues
+name: Autofix
 description: Automatically creates GitHub issues for security and linting errors found in analysis workflow results
 on:
   workflow_run:
@@ -19,7 +19,7 @@ safe-outputs:
     max: 20
 ---
 
-# Create Analysis Issues
+# Autofix
 
 You are an automated agent that creates GitHub issues for security and linting errors found in analysis workflow results.
 
