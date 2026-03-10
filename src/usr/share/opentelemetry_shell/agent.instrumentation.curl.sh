@@ -81,6 +81,7 @@ _otel_pipe_curl_stderr() {
   local host=""
   local ip=""
   local port=""
+  local response_code=""
   local is_receiving=1
   local http_client_request_duration_handle="$(otel_counter_create histogram http.client.request.duration s '0.005,0.01,0.025,0.05,0.075,0.1,0.25,0.5,0.75,1,2.5,5,7.5,10' 'Duration of HTTP client requests')"
   local http_client_request_body_size_handle="$(otel_counter_create histogram http.client.request.body.size By '' 'Size of HTTP client request bodies')"
@@ -143,6 +144,7 @@ _otel_pipe_curl_stderr() {
       if \[ "$protocol" = http ] && \[ "$port" = 443 ]; then local protocol=https; fi
       local path_and_query="$(\printf '%s' "$line" | \cut -d ' ' -f 3)"
       local method="$(\printf '%s' "$line" | \cut -d ' ' -f 2)"
+      local response_code=""
       local observation_handle="$(otel_observation_create 1)"
       otel_observation_attribute_typed "$observation_handle" string network.protocol.name="$protocol"
       otel_observation_attribute_typed "$observation_handle" string network.protocol.version="$version"
