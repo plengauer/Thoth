@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -38,7 +38,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -47,7 +47,7 @@ jobs:
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
-      - uses: actions/download-artifact@v7.0.0 # check if node action works
+      - uses: actions/download-artifact@v8.0.0 # check if node action works
         with:
           name: packages_${{ inputs.ref }}
   job-docker:
@@ -61,7 +61,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -71,13 +71,13 @@ jobs:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
       - uses: actions/hello-world-docker-action@main # check if docker action works
-      - uses: docker/setup-qemu-action@v3.7.0 # some docker actions have otel built-in
-      - uses: docker/setup-buildx-action@v3.12.0 # some docker actions have otel built-in
-      - uses: actions/download-artifact@v7.0.0
+      - uses: docker/setup-qemu-action@v4.0.0 # some docker actions have otel built-in
+      - uses: docker/setup-buildx-action@v4.0.0 # some docker actions have otel built-in
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - run: cp package.deb tests/package.deb
-      - uses: docker/build-push-action@v6.19.2 # some docker actions have otel built-in
+      - uses: docker/build-push-action@v7.0.0 # some docker actions have otel built-in
         with:
           context: ./tests/
           tags: test
@@ -97,7 +97,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -125,7 +125,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -140,6 +140,25 @@ jobs:
           path_exclude: ./
           working_directory: ./autoversion
           dry_run: 'true'
+  job-integration-simulated-opt-acl-modification:
+    needs: [job-smoke, job-cache ]
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v6.0.2
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/download-artifact@v8.0.0
+        with:
+          name: packages_${{ inputs.ref }}
+      - uses: ./actions/instrument/job
+        env:
+          OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
+          OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
+      - run: touch /opt/helloworld
   job-integration-renovate:
     needs: job-smoke
     runs-on: ubuntu-latest
@@ -155,7 +174,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -164,7 +183,7 @@ jobs:
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
-      - uses: renovatebot/github-action@v46.1.2 # node action with call to docker, docker flags that make injection more complicated, then call a node script via exec that already is injected with otel
+      - uses: renovatebot/github-action@v46.1.4 # node action with call to docker, docker flags that make injection more complicated, then call a node script via exec that already is injected with otel
         env:
           RENOVATE_DRY_RUN: full
           RENOVATE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -181,7 +200,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -190,19 +209,19 @@ jobs:
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
-      - uses: github/codeql-action/init@v4.32.4 # node action will call java will call node
+      - uses: github/codeql-action/init@v4.32.6 # node action will call java will call node
         with:
           languages: javascript-typescript
           build-mode: none
-      - uses: github/codeql-action/analyze@v4.32.4 # node action will call java will call node
+      - uses: github/codeql-action/analyze@v4.32.6 # node action will call java will call node
         with:
           category: "/language:javascript-typescript"
           upload: never
-      - uses: github/codeql-action/init@v4.32.4
+      - uses: github/codeql-action/init@v4.32.6
         with:
           languages: python
           build-mode: none
-      - uses: github/codeql-action/analyze@v4.32.4 # node action will call java will call python
+      - uses: github/codeql-action/analyze@v4.32.6 # node action will call java will call python
         with:
           category: "/language:python"
           upload: never
@@ -245,7 +264,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -271,7 +290,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -298,7 +317,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -320,7 +339,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -340,7 +359,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -360,7 +379,7 @@ jobs:
       actions: read
     steps:
       - uses: actions/checkout@v6.0.2
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -387,7 +406,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -408,7 +427,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - run: |
@@ -450,7 +469,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - run: |
@@ -487,7 +506,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -523,7 +542,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -547,7 +566,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - run: |
@@ -573,7 +592,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -591,7 +610,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -609,7 +628,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -626,7 +645,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - id: workflow_run
@@ -668,7 +687,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - id: workflow_run
@@ -724,7 +743,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - id: check_suite
@@ -754,7 +773,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/repository
@@ -774,7 +793,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/repository
@@ -798,7 +817,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/repository
@@ -822,7 +841,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/repository
@@ -846,7 +865,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/repository
@@ -870,7 +889,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/repository
@@ -894,7 +913,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/repository
@@ -917,7 +936,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/repository
@@ -940,7 +959,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/repository
@@ -988,7 +1007,7 @@ jobs:
       REPOSITORY_TEMPLATE: thoth-deploy-test-repository-${{ matrix.private  }}-${{ matrix.secret_redaction_strategy }}
       ASSERT_RECEIVING_DATA: 'false'
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.45.1
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.47.2
         with:
           secrets_to_redact: '["${{ github.token }}","${{ secrets.TEST_GITHUB_TOKEN }}"]'
         env:

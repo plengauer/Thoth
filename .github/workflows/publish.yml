@@ -17,7 +17,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.45.1
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.47.2
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
@@ -73,7 +73,7 @@ jobs:
       attestations: write
       packages: write
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.45.1
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.47.2
         with:
           secrets_to_redact: '${{ github.token }}
 
@@ -87,7 +87,7 @@ jobs:
           ref: ${{ matrix.ref }}
       - run: echo "version=$(cat VERSION)" >> "$GITHUB_OUTPUT"
         id: version
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: packages_${{ matrix.ref }}
 
@@ -103,7 +103,7 @@ jobs:
         with:
           subject-path: ./package.apk
           subject-name: opentelemetry-shell_${{ steps.version.outputs.version }}.apk
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.0
         with:
           name: images_${{ matrix.ref }}
 
@@ -131,6 +131,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release create "v${{ steps.version.outputs.version }}" \
+            --target "${{ matrix.ref }}" \
             --title "Release v${{ steps.version.outputs.version }}" \
             --generate-notes \
             --draft

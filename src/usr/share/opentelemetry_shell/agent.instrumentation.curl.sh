@@ -34,7 +34,7 @@ _otel_propagate_curl() {
   \wait "$stderr_pid"
   \rm -rf "$stderr_pipe"
   if \[ -n "$api" ]; then \rm -rf "$stderr_pipe" "$span_handle_forward" "$api_recording_finished"; fi
-  if \[ -f /opt/opentelemetry_shell/libinjecthttpheader.so ]; then
+  if \[ -f "$file" ]; then
     if \[ -n "${OLD_LD_PRELOAD:-}" ]; then
       export LD_PRELOAD="$OLD_LD_PRELOAD"
     else
@@ -123,7 +123,7 @@ _otel_pipe_curl_stderr() {
       otel_observation_attribute_typed "$observation_handle" string server.address="$host"
       otel_observation_attribute_typed "$observation_handle" int server.port="$port"
       otel_observation_attribute_typed "$observation_handle" string url.scheme="$protocol"
-      otel_observation_attribute_typed "$observation_handle" int http.request.method="$method"
+      otel_observation_attribute_typed "$observation_handle" string http.request.method="$method"
       otel_counter_observe "$http_client_active_requests" "$observation_handle"
       local observation_handle="$(otel_observation_create -1)"
       otel_observation_attribute_typed "$observation_handle" string network.protocol.name="$protocol"
@@ -156,7 +156,7 @@ _otel_pipe_curl_stderr() {
       otel_observation_attribute_typed "$observation_handle" string server.address="$host"
       otel_observation_attribute_typed "$observation_handle" int server.port="$port"
       otel_observation_attribute_typed "$observation_handle" string url.scheme="$protocol"
-      otel_observation_attribute_typed "$observation_handle" int http.request.method="$method"
+      otel_observation_attribute_typed "$observation_handle" string http.request.method="$method"
       otel_counter_observe "$http_client_active_requests" "$observation_handle"
       if \[ -n "$span_handle_file" ] && \[ -f "$span_handle_file" ]; then local span_handle="$(\cat "$span_handle_file")"; \rm "$span_handle_file"; fi
       if \[ -z "$span_handle" ]; then
