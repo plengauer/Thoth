@@ -7,7 +7,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     concurrency:
-      group: deploy-otel-job
+      group: deploy-otel-job-${{ github.ref_name }}
     permissions:
       actions: read
     steps:
