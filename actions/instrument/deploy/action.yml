@@ -418,6 +418,7 @@ runs:
       with:
         token: ${{ inputs.github_token }}
         branch: "deploy-otel-${{ github.ref_name }}"
+        base: ${{ github.ref_name }}
         commit-message: "Deploy OpenTelemetry"
         title: "Deploy OpenTelemetry"
         body: |
