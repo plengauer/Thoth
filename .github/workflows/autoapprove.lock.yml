@@ -69,7 +69,7 @@ jobs:
             ${{ github.token }}
             ${{ secrets.COPILOT_GITHUB_TOKEN }}
       - name: Setup Scripts
-        uses: github/gh-aw/actions/setup@a86e657586e4ac5f549a790628971ec02f6a4a8f # v0.52.1
+        uses: github/gh-aw/actions/setup@902845080df391b1f71845fcd7c303dfc0ac90b3 # v0.57.0
         with:
           destination: /opt/gh-aw/actions
       - name: Generate agentic run info
@@ -298,7 +298,7 @@ jobs:
             ${{ secrets.GH_AW_GITHUB_TOKEN }}
             ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Scripts
-        uses: github/gh-aw/actions/setup@a86e657586e4ac5f549a790628971ec02f6a4a8f # v0.52.1
+        uses: github/gh-aw/actions/setup@902845080df391b1f71845fcd7c303dfc0ac90b3 # v0.57.0
         with:
           destination: /opt/gh-aw/actions
       - name: Checkout repository
@@ -987,7 +987,7 @@ jobs:
         with:
           secrets_to_redact: ${{ github.token }}
       - name: Setup Scripts
-        uses: github/gh-aw/actions/setup@a86e657586e4ac5f549a790628971ec02f6a4a8f # v0.52.1
+        uses: github/gh-aw/actions/setup@902845080df391b1f71845fcd7c303dfc0ac90b3 # v0.57.0
         with:
           destination: /opt/gh-aw/actions
       - name: Download agent output artifact
@@ -1083,7 +1083,7 @@ jobs:
             ${{ github.token }}
             ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Scripts
-        uses: github/gh-aw/actions/setup@a86e657586e4ac5f549a790628971ec02f6a4a8f # v0.52.1
+        uses: github/gh-aw/actions/setup@902845080df391b1f71845fcd7c303dfc0ac90b3 # v0.57.0
         with:
           destination: /opt/gh-aw/actions
       - name: Check team membership for workflow
@@ -1133,7 +1133,7 @@ jobs:
         with:
           secrets_to_redact: ${{ github.token }}
       - name: Setup Scripts
-        uses: github/gh-aw/actions/setup@a86e657586e4ac5f549a790628971ec02f6a4a8f # v0.52.1
+        uses: github/gh-aw/actions/setup@902845080df391b1f71845fcd7c303dfc0ac90b3 # v0.57.0
         with:
           destination: /opt/gh-aw/actions
       - name: Download agent output artifact
