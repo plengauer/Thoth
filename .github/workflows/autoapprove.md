@@ -38,7 +38,7 @@ safe-outputs:
 
 # Auto-Approve Automation Pull Requests
 
-You are an automated approval agent for pull requests containing only dependency updates,  version bumps, and other automated changes.
+You are an automated approval agent for pull requests containing only dependency updates, version bumps, and other automated changes.
 
 ## Your Task
 
@@ -70,7 +70,7 @@ Verify that ALL file changes in the PR are ONLY:
 - Deployment of OpenTelemetry instrumentation in GitHub Actions
 - Timestamp updates (like the year) in a root-level `LICENSE` file
 - Updates to the test images configuration
-- Updates to Readmes or jsons our stdout/stderr output of demos
+- Updates to Readmes, jsons, or stdout/stderr output of demos
 
 
 Use the GitHub toolset to:
