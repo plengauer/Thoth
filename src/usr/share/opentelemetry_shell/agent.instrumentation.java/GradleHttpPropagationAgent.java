@@ -6,6 +6,7 @@ import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.utility.JavaModule;
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
+import java.security.ProtectionDomain
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.Span;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.SpanKind;
@@ -33,13 +34,13 @@ public class GradleHttpPropagationAgent {
             .ignore(ElementMatchers.nameStartsWith("net.bytebuddy.").or(ElementMatchers.nameStartsWith("java.")).or(ElementMatchers.nameStartsWith("sun.")).or(ElementMatchers.nameStartsWith("com.sun.")).or(ElementMatchers.nameStartsWith("jdk.")))
             .type(ElementMatchers.nameContains("DaemonClientConnection").or(ElementMatchers.nameContains("DaemonClient")).and(ElementMatchers.not(ElementMatchers.isInterface())))
             .transform(new AgentBuilder.Transformer() {
-                public DynamicType.Builder<?> transform(DynamicType.Builder<?> builder, TypeDescription typeDescription, ClassLoader classLoader, JavaModule module) {
+                public DynamicType.Builder<?> transform(DynamicType.Builder<?> builder, TypeDescription typeDescription, ClassLoader classLoader, JavaModule module, ProtectionDomain domain) {
                     return builder.visit(Advice.to(ClientConnectionAdvice.class).on(ElementMatchers.named("execute").or(ElementMatchers.named("dispatch"))));
                 }
             })
             .type(ElementMatchers.nameContains("DaemonConnection").or(ElementMatchers.nameContains("DaemonRequestHandler")).and(ElementMatchers.not(ElementMatchers.isInterface())))
             .transform(new AgentBuilder.Transformer() {
-                public DynamicType.Builder<?> transform(DynamicType.Builder<?> builder, TypeDescription typeDescription, ClassLoader classLoader, JavaModule module) {
+                public DynamicType.Builder<?> transform(DynamicType.Builder<?> builder, TypeDescription typeDescription, ClassLoader classLoader, JavaModule module, ProtectionDomain domain) {
                     return builder.visit(Advice.to(DaemonConnectionAdvice.class).on(ElementMatchers.named("receive").or(ElementMatchers.named("handle"))));
                 }
             })
