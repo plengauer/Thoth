@@ -661,5 +661,5 @@ jobs:
           rm actions/instrument/workflow/*.apk
       - uses: actions/upload-artifact@v7.0.0
         with:
-          name: images_${{ inputs.ref }}
+          name: images.${{ inputs.ref }}
           path: '*.image'
