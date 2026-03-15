@@ -474,11 +474,11 @@ jobs:
           printf '%s' "${{ needs.list-python-versions.outputs.versions }}" | jq -r '.[]' | while read -r version; do
             cat src/DEBIAN/triggers | grep 'python3$' | sed "s~/python3~/python$version~g" >> src/DEBIAN/triggers
           done
-      - run: cd src && dpkg-deb --root-owner-group -Zgzip --build . ../package.deb
+      - run: cd src && dpkg-deb --root-owner-group -Zgzip --build . ../opentelemetry-shell_"$(cat ../VERSION)"_all.deb
       - uses: actions/upload-artifact@v7.0.0
         with:
-          name: package.deb_${{ inputs.ref }}
-          path: package.deb
+          name: packages.deb.${{ inputs.ref }}
+          path: opentelemetry-shell_*_*.deb
 
   verify-rpm-python-dependency:
     runs-on: ubuntu-slim
@@ -575,11 +575,11 @@ jobs:
             ( cd src && find . | grep -v '.spec$' | while read -r file; do echo "${file#.}"; done | grep -v '^$' | while read -r file; do if [ -d "$file" ]; then if ! echo "$file" | grep opentelemetry-shell; then continue; fi; echo -n '%dir '; fi; echo \""$file"\"; done )
           } >> opentelemetry-shell.spec
           rpmbuild -bb --buildroot="$(pwd)/src" opentelemetry-shell.spec
-          mv /home/runner/rpmbuild/RPMS/noarch/opentelemetry-shell-*.noarch.rpm package.rpm
+          mv /home/runner/rpmbuild/RPMS/noarch/opentelemetry-shell-*.noarch.rpm .
       - uses: actions/upload-artifact@v7.0.0
         with:
-          name: package.rpm_${{ inputs.ref }}
-          path: package.rpm
+          name: packages.rpm.${{ inputs.ref }}
+          path: opentelemetry-shell-*.noarch.rpm
 
   build-apk:
     needs: [verify-scripts, merge-node-modules, merge-python-site-packages, build-java-agents]
@@ -627,35 +627,14 @@ jobs:
           cat meta/debian/prerm >> "$workspace"/opentelemetry-shell.pre-upgrade
           cp -r src "$workspace"/my_src
           echo 'cd ~/workspace && apk add abuild && SUDO=env abuild-keygen -a -i -n && abuild -F -r && find ~/packages -iname '\''*.apk'\'' | xargs -I "{}" mv "{}" .' | \sudo docker run --rm --network host -v "$workspace":/root/workspace -i alpine:latest
-          mv "$workspace"/*.apk package.apk
+          mv "$workspace"/*.apk .
       - uses: actions/upload-artifact@v7.0.0
         with:
-          name: package.apk_${{ inputs.ref }}
-          path: package.apk
-  merge-packages:
-    needs: [build-deb, build-rpm, build-apk]
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      actions: read
-    steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.47.2
-        env:
-          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
-          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
-        with:
-          secrets_to_redact: '["${{ github.token }}"]'
-      - uses: actions/download-artifact@v8.0.0
-        with:
-          pattern: package.*
-          merge-multiple: true
-      - uses: actions/upload-artifact@v7.0.0
-        with:
-          name: packages_${{ inputs.ref }}
-          path: package.*
+          name: packages.apk.${{ inputs.ref }}
+          path: *.apk
 
   build-workflow-image:
-    needs: [build-apk]
+    needs: build-apk
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -672,14 +651,14 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v8.0.0
         with:
-          name: package.apk_${{ inputs.ref }}
+          name: packages.apk.${{ inputs.ref }}
       - run: |
-          cp package.apk actions/instrument/workflow
+          cp *.apk actions/instrument/workflow
           pushd actions/instrument/workflow
           sudo docker build --build-arg=repository="$GITHUB_REPOSITORY" --network host --tag opentelemetry-github-workflow-instrumentation-runner .
           popd
           sudo docker save opentelemetry-github-workflow-instrumentation-runner > opentelemetry-github-workflow-instrumentation-runner.image
-          rm actions/instrument/workflow/package.apk
+          rm actions/instrument/workflow/*.apk
       - uses: actions/upload-artifact@v7.0.0
         with:
           name: images_${{ inputs.ref }}
