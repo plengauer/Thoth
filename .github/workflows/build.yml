@@ -356,6 +356,13 @@ jobs:
           jar cmf manifest.txt subprocessinjectionagent.jar SubprocessInjectionAgent*.class
       - run: |
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.java
+          javac -classpath ./opentelemetry-javaagent.jar GradleHttpPropagationAgent.java
+          printf '%s\n\n' 'Premain-Class: GradleHttpPropagationAgent
+          Boot-Class-Path: /usr/share/opentelemetry_shell/agent.instrumentation.java/gradlehttppropagationagent.jar
+          ' > manifest.txt
+          jar cmf manifest.txt gradlehttppropagationagent.jar GradleHttpPropagationAgent*.class
+      - run: |
+          cd src/usr/share/opentelemetry_shell/agent.instrumentation.java
           echo "${{ steps.determine-minimum-version.outputs.version }}" > version
       - uses: actions/upload-artifact@v7.0.0
         with:
