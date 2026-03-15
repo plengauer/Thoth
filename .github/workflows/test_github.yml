@@ -453,11 +453,11 @@ jobs:
             req.on('data', chunk => { body += chunk.toString(); });
             req.on('end', () => {
               if (req.url === '/v1/traces') {
-                fs.appendFileSync('/tmp/traces.txt', body + '\\n');
+                fs.appendFileSync('/tmp/traces.json', body + '\n');
               } else if (req.url === '/v1/logs') {
-                fs.appendFileSync('/tmp/logs.txt', body + '\\n');
+                fs.appendFileSync('/tmp/logs.json', body + '\n');
               } else if (req.url === '/v1/metrics') {
-                fs.appendFileSync('/tmp/metrics.txt', body + '\\n');
+                fs.appendFileSync('/tmp/metrics.json', body + '\n');
               }
               res.writeHead(200);
               res.end();
@@ -482,11 +482,7 @@ jobs:
       - run: cat /tmp/http.log | grep -q '^POST /v1/logs$'
         if: ${{ matrix.exporter_logs == 'otlp' }}
       - run: |
-          if [ ! -f /tmp/logs.txt ]; then
-            echo "No logs file found, skipping log validation"
-            exit 0
-          fi
-          cat /tmp/logs.txt | jq -s '.' > /tmp/logs.json
+          cat /tmp/logs.json
           logs_with_span_id=$(cat /tmp/logs.json | jq '[.[] | .resourceLogs[]?.scopeLogs[]?.logRecords[]? | select(.spanId != "" and .spanId != null)] | length')
           logs_with_trace_id=$(cat /tmp/logs.json | jq '[.[] | .resourceLogs[]?.scopeLogs[]?.logRecords[]? | select(.traceId != "" and .traceId != null)] | length')
           all_logs=$(cat /tmp/logs.json | jq '[.[] | .resourceLogs[]?.scopeLogs[]?.logRecords[]?] | length')
@@ -499,11 +495,7 @@ jobs:
       - run: cat /tmp/http.log | grep -q '^POST /v1/metrics$'
         if: ${{ matrix.exporter_metrics == 'otlp' }}
       - run: |
-          if [ ! -f /tmp/metrics.txt ]; then
-            echo "No metrics file found, skipping metrics validation"
-            exit 0
-          fi
-          cat /tmp/metrics.txt | jq -s '.' > /tmp/metrics.json
+          cat /tmp/metrics.json
           job_metrics=$(cat /tmp/metrics.json | jq '[.[] | .resourceMetrics[]?.scopeMetrics[]?.metrics[]? | select(.name | contains("job"))] | length')
           step_metrics=$(cat /tmp/metrics.json | jq '[.[] | .resourceMetrics[]?.scopeMetrics[]?.metrics[]? | select(.name | contains("step"))] | length')
           all_metrics=$(cat /tmp/metrics.json | jq '[.[] | .resourceMetrics[]?.scopeMetrics[]?.metrics[]?] | length')
@@ -516,11 +508,7 @@ jobs:
       - run: cat /tmp/http.log | grep -q '^POST /v1/traces$'
         if: ${{ matrix.exporter_traces == 'otlp' }}
       - run: |
-          if [ ! -f /tmp/traces.txt ]; then
-            echo "No traces file found, skipping trace validation"
-            exit 0
-          fi
-          cat /tmp/traces.txt | jq -s '.' > /tmp/traces.json
+          cat /tmp/traces.json
           job_span_count=$(cat /tmp/traces.json | jq '[.[] | .resourceSpans[]?.scopeSpans[]?.spans[]? | select(.attributes[]? | select(.key == "github.actions.type" and .value.stringValue == "job"))] | length')
           step_span_count=$(cat /tmp/traces.json | jq '[.[] | .resourceSpans[]?.scopeSpans[]?.spans[]? | select(.attributes[]? | select(.key == "github.actions.type" and .value.stringValue == "step"))] | length')
           all_spans=$(cat /tmp/traces.json | jq '[.[] | .resourceSpans[]?.scopeSpans[]?.spans[]?] | length')
