@@ -71,8 +71,39 @@ jobs:
           name: http_${{ steps.build.outputs.architecture }}_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.http/libinjecthttpheader.so
           if-no-files-found: error
+  build-http-macos:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        architecture: [ 'arm64', 'x86_64' ]
+      fail-fast: false
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.47.2
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: '["${{ github.token }}"]'
+      - uses: actions/checkout@v6.0.2
+        with:
+          ref: ${{ inputs.ref }}
+      - run: |
+          cd src/usr/share/opentelemetry_shell/agent.instrumentation.http/
+          clang -arch ${{ matrix.architecture }} -shared -fPIC -o libinjecthttpheader.dylib agent.injection.http_header.c
+          echo 'architecture=${{ matrix.architecture }}' >> "$GITHUB_OUTPUT"
+        id: build
+      - run: |
+          [ -r src/usr/share/opentelemetry_shell/agent.instrumentation.http/libinjecthttpheader.dylib ]
+      - uses: actions/upload-artifact@v7.0.0
+        with:
+          name: http_macos_${{ matrix.architecture }}_${{ inputs.ref }}
+          path: src/usr/share/opentelemetry_shell/agent.instrumentation.http/libinjecthttpheader.dylib
+          if-no-files-found: error
   merge-http:
-    needs: build-http
+    needs: [build-http, build-http-macos]
     runs-on: ubuntu-slim
     permissions:
       contents: read
@@ -632,8 +663,65 @@ jobs:
         with:
           name: package.apk_${{ inputs.ref }}
           path: package.apk
+
+  build-homebrew:
+    needs: [verify-scripts, merge-node-modules, merge-python-site-packages, build-java-agents, build-http-macos]
+    runs-on: macos-latest
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.47.2
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: '["${{ github.token }}"]'
+      - uses: actions/checkout@v6.0.2
+        with:
+          ref: ${{ inputs.ref }}
+      - run: |
+          {
+            find src -iname 'Dockerfile' -type f
+            find src -iname '*.c' -type f
+            find src -iname '*.java' -type f
+            find src -iname 'manifest.txt' -type f
+            find src -iname 'pom.xml' -type f
+          } | xargs -n 1 rm
+      - uses: actions/download-artifact@v8.0.0
+        with:
+          name: node_modules_${{ inputs.ref }}
+          path: src/usr/share/opentelemetry_shell/agent.instrumentation.node
+      - uses: actions/download-artifact@v8.0.0
+        with:
+          name: python_site_packages_${{ inputs.ref }}
+          path: src/usr/share/opentelemetry_shell/agent.instrumentation.python
+      - uses: actions/download-artifact@v8.0.0
+        with:
+          name: java_${{ inputs.ref }}
+          path: src/usr/share/opentelemetry_shell/agent.instrumentation.java
+      - uses: actions/download-artifact@v8.0.0
+        with:
+          pattern: http_macos_*_${{ inputs.ref }}
+      - run: |
+          mkdir -p src/usr/share/opentelemetry_shell/agent.instrumentation.http/arm64
+          mkdir -p src/usr/share/opentelemetry_shell/agent.instrumentation.http/x86_64
+          if [ -d http_macos_arm64_${{ inputs.ref }} ]; then
+            mv http_macos_arm64_${{ inputs.ref }}/libinjecthttpheader.dylib src/usr/share/opentelemetry_shell/agent.instrumentation.http/arm64/
+          fi
+          if [ -d http_macos_x86_64_${{ inputs.ref }} ]; then
+            mv http_macos_x86_64_${{ inputs.ref }}/libinjecthttpheader.dylib src/usr/share/opentelemetry_shell/agent.instrumentation.http/x86_64/
+          fi
+      - run: |
+          cd src
+          tar czf ../opentelemetry-shell_$(cat ../VERSION).tar.gz .
+      - uses: actions/upload-artifact@v7.0.0
+        with:
+          name: package.tar.gz_${{ inputs.ref }}
+          path: opentelemetry-shell_*.tar.gz
+
   merge-packages:
-    needs: [build-deb, build-rpm, build-apk]
+    needs: [build-deb, build-rpm, build-apk, build-homebrew]
     runs-on: ubuntu-latest
     permissions:
       contents: read
