@@ -6,7 +6,7 @@ import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.utility.JavaModule;
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
-import java.security.ProtectionDomain
+import java.security.ProtectionDomain;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.Span;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.SpanKind;
