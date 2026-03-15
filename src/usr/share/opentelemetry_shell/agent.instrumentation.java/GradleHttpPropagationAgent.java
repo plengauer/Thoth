@@ -87,7 +87,6 @@ public class GradleHttpPropagationAgent {
         @Advice.OnMethodExit(onThrowable = Throwable.class)
         public static void onExit(@Advice.Thrown Throwable throwable) {
             try {
-                System.clearProperty("otel.gradle.client.traceparent");
                 Scope scope = clientScope.get();
                 if (scope != null) {
                     scope.close();
