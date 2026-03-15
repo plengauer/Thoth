@@ -87,12 +87,14 @@ if [ "$INPUT_CACHE" = "true" ]; then
   echo "::debug::Resolving cache ..."
   export INSTRUMENTATION_CACHE_KEY="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} instrumentation $GITHUB_WORKFLOW $GITHUB_JOB"
   run sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.restoreCache(['/tmp/*.aliases'], '$INSTRUMENTATION_CACHE_KEY');"
-  cache_key="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} dependencies $({ cat /etc/os-release; python3 --version || true; printenv | grep -E '^OTEL_SHELL_CONFIG_INSTALL_' || true; } | md5sum | cut -d ' ' -f 1)"
-  if [ "$GITHUB_ACTION_REPOSITORY" = "$GITHUB_REPOSITORY" ] && [ -f "$GITHUB_WORKSPACE"/package.deb ]; then cache_key="$cache_key local"; fi
-  sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.restoreCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip'], '$cache_key');"
-  [ "$(find /var/cache/apt/archives/ -name '*.deb' | wc -l)" -gt 0 ] || write_back_cache=TRUE
+  if [ "$(uname -s)" != "Darwin" ]; then
+    cache_key="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} dependencies $({ cat /etc/os-release; python3 --version || true; printenv | grep -E '^OTEL_SHELL_CONFIG_INSTALL_' || true; } | md5sum | cut -d ' ' -f 1)"
+    if [ "$GITHUB_ACTION_REPOSITORY" = "$GITHUB_REPOSITORY" ] && [ -f "$GITHUB_WORKSPACE"/package.deb ]; then cache_key="$cache_key local"; fi
+    sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.restoreCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip'], '$cache_key');"
+    [ "$(find /var/cache/apt/archives/ -name '*.deb' | wc -l)" -gt 0 ] || write_back_cache=TRUE
+  fi
 fi
-if ! type otel.sh && [ -r /var/cache/apt/archives/opentelemetry-shell_*_all.deb ]; then
+if [ "$(uname -s)" != "Darwin" ] && ! type otel.sh && [ -r /var/cache/apt/archives/opentelemetry-shell_*_all.deb ]; then
   echo "::debug::Cached debian file found ..."
   if [ "${FAST_DEB_INSTALL:-FALSE}" = TRUE ]; then # lets assume exactly one postinst script, no triggers
     echo "::debug::Attempting fast install ..."
