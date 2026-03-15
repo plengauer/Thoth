@@ -59,7 +59,7 @@ jobs:
     uses: ./.github/workflows/ci.yml
     with:
       ref: ${{ matrix.ref }}
-    
+
   publish:
     needs: [ setup, ci ]
     strategy:
@@ -75,37 +75,34 @@ jobs:
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.47.2
         with:
-          secrets_to_redact: '${{ github.token }}
-
-            ${{ secrets.ACTIONS_GITHUB_TOKEN }}'
+          secrets_to_redact: |-
+            ${{ github.token }}
+            ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ matrix.ref }}
       - run: echo "version=$(cat VERSION)" >> "$GITHUB_OUTPUT"
         id: version
+
       - uses: actions/download-artifact@v8.0.0
         with:
-          name: packages_${{ matrix.ref }}
+          name: images.${{ matrix.ref }}
+      - uses: actions/download-artifact@v8.0.0
+        with:
+          name: packages.*.${{ matrix.ref }}
 
       - uses: actions/attest-build-provenance@v4.1.0
         with:
-          subject-path: ./package.deb
-          subject-name: opentelemetry-shell_${{ steps.version.outputs.version }}.deb
+          subject-path: *.deb
       - uses: actions/attest-build-provenance@v4.1.0
         with:
-          subject-path: ./package.rpm
-          subject-name: opentelemetry-shell_${{ steps.version.outputs.version }}.rpm
+          subject-path: *.rpm
       - uses: actions/attest-build-provenance@v4.1.0
         with:
-          subject-path: ./package.apk
-          subject-name: opentelemetry-shell_${{ steps.version.outputs.version }}.apk
-      - uses: actions/download-artifact@v8.0.0
-        with:
-          name: images_${{ matrix.ref }}
+          subject-path: *.apk
 
       - run: |
           version="${{ steps.version.outputs.version }}"
@@ -126,48 +123,18 @@ jobs:
             sudo docker push "ghcr.io/${GITHUB_REPOSITORY%/*}/$image_name" --all-tags
           done
 
-      - id: create_release
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh release create "v${{ steps.version.outputs.version }}" \
-            --target "${{ matrix.ref }}" \
-            --title "Release v${{ steps.version.outputs.version }}" \
-            --generate-notes \
-            --draft
-          sleep 60 # let API catch up
-          echo "id=$(gh api repos/${{ github.repository }}/releases | jq '.[] | select(.tag_name == "v${{ steps.version.outputs.version }}") | .id' -r)" >> "$GITHUB_OUTPUT"
-          echo "upload_url=$(gh api repos/${{ github.repository }}/releases | jq '.[] | select(.tag_name == "v${{ steps.version.outputs.version }}") | .upload_url' -r)" >> "$GITHUB_OUTPUT"
-
-      - uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+      - uses: softprops/gh-action-release@v2.6.0
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./package.deb
-          asset_name: opentelemetry-shell_${{ steps.version.outputs.version }}.deb
-          asset_content_type: application/octet-stream
-      - uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./package.rpm
-          asset_name: opentelemetry-shell_${{ steps.version.outputs.version }}.rpm
-          asset_content_type: application/octet-stream
-      - uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./package.apk
-          asset_name: opentelemetry-shell_${{ steps.version.outputs.version }}.apk
-          asset_content_type: application/octet-stream
-      - uses: eregon/publish-release@v1.0.6
-        env:
-          GITHUB_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
-        with:
-          release_id: ${{ steps.create_release.outputs.id }}
+          token: ${{ secrets.ACTION_GITHUB_TOKEN }}
+          target_committish: ${{ matrix.ref }}
+          tag_name: v${{ steps.version.outputs.version }}
+          name: Release v${{ steps.version.outputs.version }}
+          generate_release_notes: true
+          files: |-
+            *.deb
+            *.rpm
+            *.apk
+          fail_on_unmatched_files: true
 
       - run: |
           version="${{ steps.version.outputs.version }}"
