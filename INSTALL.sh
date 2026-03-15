@@ -7,8 +7,13 @@ elif type rpm 1> /dev/null 2> /dev/null; then
   extension=rpm
 elif type apk 1> /dev/null 2> /dev/null; then
   extension=apk
+elif [ "$(uname -s)" = "Darwin" ] && type brew 1> /dev/null 2> /dev/null; then
+  echo "Installing opentelemetry-shell via Homebrew..."
+  brew tap plengauer/opentelemetry-shell https://github.com/plengauer/Thoth || true
+  brew install opentelemetry-shell
+  exit 0
 else
-  echo "Unsupported operating system (no apt-get, no rpm, and no apk available)" >&2
+  echo "Unsupported operating system (no apt-get, no rpm, no apk, and no brew available)" >&2
   exit 1
 fi
 

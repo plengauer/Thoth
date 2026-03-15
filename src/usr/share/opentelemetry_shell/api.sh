@@ -27,10 +27,17 @@ _otel_remote_sdk_stdout_redirect="${OTEL_SHELL_SDK_STDOUT_REDIRECT:-${OTEL_SHELL
 _otel_remote_sdk_stderr_redirect="${OTEL_SHELL_SDK_STDERR_REDIRECT:-${OTEL_SHELL_SDK_OUTPUT_REDIRECT:-/dev/stderr}}"
 if ! \[ -w "$_otel_remote_sdk_stdout_redirect" ]; then _otel_remote_sdk_stdout_redirect=/dev/null; fi
 if ! \[ -w "$_otel_remote_sdk_stderr_redirect" ]; then _otel_remote_sdk_stderr_redirect=/dev/null; fi
-_otel_shell="$(\readlink "/proc/$$/exe")"
-_otel_shell="${_otel_shell##*/}"
-if \[ "$_otel_shell" = busybox ]; then _otel_shell="busybox sh"; fi
-if \[ "${OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE:-}" = 0 ] || \[ "${OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE:-}" = "$PPID" ] || \[ "${PPID:-}" = 0 ] || \[ "$(\tr '\000-\037' ' ' < /proc/$PPID/cmdline)" = "$(\tr '\000-\037' ' ' < /proc/${OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE:-}/cmdline)" ]; then _otel_commandline_override="$OTEL_SHELL_COMMANDLINE_OVERRIDE"; fi
+if \[ -d /proc ]; then
+  _otel_shell="$(\readlink "/proc/$$/exe")"
+  _otel_shell="${_otel_shell##*/}"
+  if \[ "$_otel_shell" = busybox ]; then _otel_shell="busybox sh"; fi
+  if \[ "${OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE:-}" = 0 ] || \[ "${OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE:-}" = "$PPID" ] || \[ "${PPID:-}" = 0 ] || \[ "$(\tr '\000-\037' ' ' < /proc/$PPID/cmdline)" = "$(\tr '\000-\037' ' ' < /proc/${OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE:-}/cmdline)" ]; then _otel_commandline_override="$OTEL_SHELL_COMMANDLINE_OVERRIDE"; fi
+else
+  _otel_shell="${SHELL##*/}"
+  if \[ -z "$_otel_shell" ]; then _otel_shell=sh; fi
+  if \[ "$_otel_shell" = busybox ]; then _otel_shell="busybox sh"; fi
+  if \[ "${OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE:-}" = 0 ] || \[ "${OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE:-}" = "$PPID" ] || \[ "${PPID:-}" = 0 ]; then _otel_commandline_override="$OTEL_SHELL_COMMANDLINE_OVERRIDE"; fi
+fi
 unset OTEL_SHELL_COMMANDLINE_OVERRIDE
 unset OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE
 unset OTEL_SHELL_COMMAND_TYPE_OVERRIDE
@@ -97,7 +104,11 @@ _otel_resource_attributes_service() {
 
 _otel_resource_attributes_process() {
   local process_command="$(_otel_command_self)"
-  local process_executable_path="$(\readlink -f "/proc/$$/exe")"
+  if \[ -d /proc ]; then
+    local process_executable_path="$(\readlink -f "/proc/$$/exe")"
+  else
+    local process_executable_path="$(\ps -p $$ -o comm= 2> /dev/null || \echo "$_otel_shell")"
+  fi
   local process_executable_name="${process_executable_path##*/}" # "$(\printf '%s' "$process_executable_path" | \rev | \cut -d / -f 1 | \rev)"
   _otel_resource_attribute int process.pid="$$"
   _otel_resource_attribute int process.parent_pid="$PPID"
@@ -142,7 +153,11 @@ _otel_command_self() {
 }
 
 _otel_resolve_command_self() {
-  \tr '\000-\037' ' ' < "/proc/$$/cmdline"
+  if \[ -d /proc ]; then
+    \tr '\000-\037' ' ' < "/proc/$$/cmdline"
+  else
+    \ps -p $$ -o args= 2> /dev/null || \echo "$_otel_shell"
+  fi
 }
 
 if \[ "$_otel_shell" = bash ]; then
@@ -163,7 +178,7 @@ else
 fi
 
 _otel_resolve_package_version() {
-  (\dpkg -s "$1" || \rpm -qi "$1" || \apk version "$1" | \tail -n 1 | \cut -d ' ' -f 3 | \cut -d - -f 1 | { \echo -n 'Version: '; \cat; }) 2> /dev/null | \grep Version | \cut -d : -f 2 | tr -d ' ' || \true
+  (\dpkg -s "$1" || \rpm -qi "$1" || \apk version "$1" | \tail -n 1 | \cut -d ' ' -f 3 | \cut -d - -f 1 | { \echo -n 'Version: '; \cat; } || \brew list --versions "$1" | \cut -d ' ' -f 2 | { \echo -n 'Version: '; \cat; }) 2> /dev/null | \grep Version | \cut -d : -f 2 | tr -d ' ' || \true
 }
 
 otel_span_current() {

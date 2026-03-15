@@ -4,6 +4,11 @@ _otel_call_and_record_subprocesses() {
   local span_handle="$1"; shift
   local call_command="$1"; shift
   local command="$1"; shift
+  if \[ "$(\\uname -s)" = "Darwin" ]; then
+    local exit_code=0
+    $call_command "${command#\\}" "$@" || local exit_code="$?"
+    return "$exit_code"
+  fi
   local strace_data="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.strace.pipe.XXXXXXXXXX)"
   local strace_signal="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.strace.signal.XXXXXXXXXX)"
   \mkfifo "$strace_data" "$strace_signal"
