@@ -79,7 +79,6 @@ public class GradleHttpPropagationAgent {
                     } catch (Exception e) {
                     }
                 }
-                System.setProperty("otel.gradle.client.traceparent", traceparent);
             } catch (Exception e) {
             }
         }
