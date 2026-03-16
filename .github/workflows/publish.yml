@@ -93,6 +93,7 @@ jobs:
       - uses: actions/download-artifact@v8.0.0
         with:
           name: packages.*.${{ matrix.ref }}
+          merge-multiple: true
 
       - uses: actions/attest-build-provenance@v4.1.0
         with:
