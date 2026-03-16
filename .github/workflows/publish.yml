@@ -97,13 +97,13 @@ jobs:
 
       - uses: actions/attest-build-provenance@v4.1.0
         with:
-          subject-path: *.deb
+          subject-path: '*.deb'
       - uses: actions/attest-build-provenance@v4.1.0
         with:
-          subject-path: *.rpm
+          subject-path: '*.rpm'
       - uses: actions/attest-build-provenance@v4.1.0
         with:
-          subject-path: *.apk
+          subject-path: '*.apk'
 
       - run: |
           version="${{ steps.version.outputs.version }}"
