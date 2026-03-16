@@ -628,7 +628,7 @@ jobs:
           cp -r src "$workspace"/my_src
           echo 'cd ~/workspace && apk add abuild && SUDO=env abuild-keygen -a -i -n && abuild -F -r && find ~/packages -iname '\''*.apk'\'' | xargs -I "{}" mv "{}" .' | \sudo docker run --rm --network host -v "$workspace":/root/workspace -i alpine:latest
           mv "$workspace"/*.apk .
-#       - uses: actions/upload-artifact@v7.0.0
+      - uses: actions/upload-artifact@v7.0.0
 #         with:
 #           name: packages.apk.${{ inputs.ref }}
 #           path: *.apk
