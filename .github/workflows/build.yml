@@ -477,7 +477,7 @@ jobs:
       - run: |
           cd src
           replaced_binaries="$(mktemp -d)"
-          mv src/usr/share/opentelemetry_shell/agent.instrumentation.http/* "$replaced_binaries"
+          mv usr/share/opentelemetry_shell/agent.instrumentation.http/* "$replaced_binaries"
           ls "$replaced_binaries" | while read -r arch; do
             debain_arch="${arch%/v*}"
             if [ "$debian_arch" != "${debian_arch%64le}" ]; then
