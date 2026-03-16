@@ -7,9 +7,10 @@ ensure_installed jq curl wget "$@" || (sudo apt-get update && ensure_installed j
 if ! type otel.sh 2> /dev/null; then
   echo "::debug::Installing ..."
   action_tag_name="${GITHUB_ACTION_REF#*@}"
-  if [ "$GITHUB_REPOSITORY" = "$GITHUB_ACTION_REPOSITORY" ] && [ -f "$GITHUB_WORKSPACE"/package.deb ]; then
+  arch="$(arch | sed s/x86_64/amd64/g | sed 's/le$/el/g')"
+  if [ "$GITHUB_REPOSITORY" = "$GITHUB_ACTION_REPOSITORY" ] && [ -f "$GITHUB_WORKSPACE"/opentelemetry-shell_*_"$arch".deb ]; then
     echo "::debug::Installing local debian ..."
-    sudo -E -H apt-get install -y "$GITHUB_WORKSPACE"/package.deb
+    sudo -E -H apt-get install -y "$GITHUB_WORKSPACE"/opentelemetry-shell_*_"$arch".deb
   else
     echo "::debug::Downloading debian and installing ..."
     debian_file=/var/cache/apt/archives/opentelemetry-shell_"$(cat ../../../VERSION)"_all.deb
