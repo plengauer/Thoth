@@ -631,7 +631,7 @@ jobs:
       - uses: actions/upload-artifact@v7.0.0
         with:
           name: packages.apk.${{ inputs.ref }}
-#           path: *.apk
+          path: *.apk
 
   build-workflow-image:
     needs: build-apk
