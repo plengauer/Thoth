@@ -77,7 +77,7 @@ jobs:
         with:
           secrets_to_redact: |-
             ${{ github.token }}
-            ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+            ${{ secrets.ACTION_GITHUB_TOKEN }}
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
