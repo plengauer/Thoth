@@ -480,12 +480,12 @@ jobs:
           mv usr/share/opentelemetry_shell/agent.instrumentation.http/* "$replaced_binaries"
           dpkg-deb --root-owner-group -Zgzip --build . ../opentelemetry-shell_"$(cat ../VERSION)"_all.deb
           ls "$replaced_binaries" | while read -r arch; do
-            debain_arch="${arch%/v*}"
+            debian_arch="${arch%/v*}"
             if [ "$debian_arch" != "${debian_arch%le}" ]; then
               debian_arch="${debian_arch%le}"el
             fi
             cp "$replaced_binaries"/"$arch"/*.so usr/share/opentelemetry_shell/agent.instrumentation.http
-            sed -i "s/Architecture: */Architecture: $debian_architecture/g" DEBIAN/control
+            sed -i "s/Architecture: */Architecture: $debian_arch/g" DEBIAN/control
             dpkg-deb --root-owner-group -Zgzip --build . ../opentelemetry-shell_"$(cat ../VERSION)"_"$debian_arch".deb
             rm usr/share/opentelemetry_shell/agent.instrumentation.http/*.so
           done
