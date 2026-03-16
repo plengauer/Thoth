@@ -8,7 +8,7 @@ if ! type otel.sh 2> /dev/null; then
   echo "::debug::Installing ..."
   action_tag_name="${GITHUB_ACTION_REF#*@}"
   version="$(cat ../../../VERSION)"
-  arch="$(arch | sed s/x86_64/amd64/g | sed 's/le$/el/g')"
+  arch="$(arch | sed s/x86_64/amd64/g | sed s/aarch64/arm64/g | sed 's/le$/el/g')"
   if [ "$GITHUB_REPOSITORY" = "$GITHUB_ACTION_REPOSITORY" ] && [ -f "$GITHUB_WORKSPACE"/opentelemetry-shell_"$version"_"$arch".deb ]; then
     echo "::debug::Installing local debian ..."
     sudo -E -H apt-get install -y "$GITHUB_WORKSPACE"/opentelemetry-shell_"$version"_"$arch".deb
