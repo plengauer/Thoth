@@ -483,10 +483,10 @@ jobs:
             if [ "$debian_arch" != "${debian_arch%64le}" ]; then
               debian_arch="${debian_arch%64le}"64el
             fi
-            cp "$replaced_binaries"/"$arch"/*.so src/usr/share/opentelemetry_shell/agent.instrumentation.http
-            sed -i "s/Architecture: */Architecture: $debian_architecture/g" src/DEBIAN/control
+            cp "$replaced_binaries"/"$arch"/*.so usr/share/opentelemetry_shell/agent.instrumentation.http
+            sed -i "s/Architecture: */Architecture: $debian_architecture/g" DEBIAN/control
             dpkg-deb --root-owner-group -Zgzip --build . ../opentelemetry-shell_"$(cat ../VERSION)"_"$debian_arch".deb
-            rm src/usr/share/opentelemetry_shell/agent.instrumentation.http/*.so
+            rm usr/share/opentelemetry_shell/agent.instrumentation.http/*.so
           done
       - uses: actions/upload-artifact@v7.0.0
         with:
