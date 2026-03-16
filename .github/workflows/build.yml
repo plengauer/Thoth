@@ -474,7 +474,20 @@ jobs:
           printf '%s' "${{ needs.list-python-versions.outputs.versions }}" | jq -r '.[]' | while read -r version; do
             cat src/DEBIAN/triggers | grep 'python3$' | sed "s~/python3~/python$version~g" >> src/DEBIAN/triggers
           done
-      - run: cd src && dpkg-deb --root-owner-group -Zgzip --build . ../opentelemetry-shell_"$(cat ../VERSION)"_all.deb
+      - run: |
+          cd src
+          replaced_binaries="$(mktemp -d)"
+          mv src/usr/share/opentelemetry_shell/agent.instrumentation.http/* "$replaced_binaries"
+          ls "$replaced_binaries" | while read -r arch; do
+            debain_arch="${arch%/v*}"
+            if [ "$debian_arch" != "${debian_arch%64le}" ]; then
+              debian_arch="${debian_arch%64le}"64el
+            fi
+            cp "$replaced_binaries"/"$arch"/*.so src/usr/share/opentelemetry_shell/agent.instrumentation.http
+            sed -i "s/Architecture: */Architecture: $debian_architecture/g" src/DEBIAN/control
+            dpkg-deb --root-owner-group -Zgzip --build . ../opentelemetry-shell_"$(cat ../VERSION)"_"$debian_arch".deb
+            rm src/usr/share/opentelemetry_shell/agent.instrumentation.http/*.so
+          done
       - uses: actions/upload-artifact@v7.0.0
         with:
           name: packages.deb.${{ inputs.ref }}
