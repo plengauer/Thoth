@@ -478,6 +478,7 @@ jobs:
           cd src
           replaced_binaries="$(mktemp -d)"
           mv usr/share/opentelemetry_shell/agent.instrumentation.http/* "$replaced_binaries"
+          dpkg-deb --root-owner-group -Zgzip --build . ../opentelemetry-shell_"$(cat ../VERSION)"_all.deb
           ls "$replaced_binaries" | while read -r arch; do
             debain_arch="${arch%/v*}"
             if [ "$debian_arch" != "${debian_arch%64le}" ]; then
