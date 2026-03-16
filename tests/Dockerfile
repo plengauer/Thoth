@@ -17,7 +17,7 @@ RUN <<EOF
     type "$shell" || DEBIAN_FRONTEND=noninteractive apt-get install -y "$shell"
     DEBIAN_FRONTEND=noninteractive apt-get install -y $packages_mandatory debconf debconf-utils python3-venv
     DEBIAN_FRONTEND=noninteractive apt-get install -y $packages_optional || true
-    DEBIAN_FRONTEND=noninteractive apt-get install -y ./opentelemetry-shell_*_"$(arch | sed s/x86_64/amd64/g)".deb && rm ./*.deb
+    DEBIAN_FRONTEND=noninteractive apt-get install -y ./opentelemetry-shell_*_"$(arch | sed s/x86_64/amd64/g | sed s/aarch64/arm64/g | sed 's/le$/el/g')".deb && rm ./*.deb
   elif type dnf; then
     [ "$update" = TRUE ] && dnf -y upgrade --refresh
     type "$shell" || dnf -y install "$shell"
