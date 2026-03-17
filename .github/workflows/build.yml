@@ -479,13 +479,15 @@ jobs:
           replaced_binaries="$(mktemp -d)"
           mv usr/share/opentelemetry_shell/agent.instrumentation.http/* "$replaced_binaries"
           dpkg-deb --root-owner-group -Zgzip --build . ../opentelemetry-shell_"$(cat ../VERSION)"_all.deb
+          dpkg-deb -I ../opentelemetry-shell_"$(cat ../VERSION)"_all.deb
           ls "$replaced_binaries" | while read -r arch; do
             debian_arch="$(echo "$arch" | sed s/x86_64/amd64/g | sed s/aarch64/arm64/g | sed 's/le$/el/g')"
             cp "$replaced_binaries"/"$arch"/*.so usr/share/opentelemetry_shell/agent.instrumentation.http
             sed -i "s/Architecture: */Architecture: $debian_arch/g" DEBIAN/control
             dpkg-deb --root-owner-group -Zgzip --build . ../opentelemetry-shell_"$(cat ../VERSION)"_"$debian_arch".deb
+            dpkg-deb -I ../opentelemetry-shell_"$(cat ../VERSION)"_"$debian_arch".deb
             rm usr/share/opentelemetry_shell/agent.instrumentation.http/*.so
-          done
+          done          
       - uses: actions/upload-artifact@v7.0.0
         with:
           name: packages.deb.${{ inputs.ref }}
