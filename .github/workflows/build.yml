@@ -590,6 +590,7 @@ jobs:
           rpmbuild -bb --buildroot="$(pwd)/src" opentelemetry-shell.spec
           mv /home/runner/rpmbuild/RPMS/noarch/opentelemetry-shell-*.noarch.rpm .
           echo /usr/share/opentelemetry_shell/agent.instrumentation.http/libinjecthttpheader.so >> opentelemetry-shell.spec
+          mkdir -p src/usr/share/opentelemetry_shell/agent.instrumentation.http
           ls "$replaced_binaries" | while read -r arch; do
             cp "$replaced_binaries"/"$arch"/*.so src/usr/share/opentelemetry_shell/agent.instrumentation.http
             sed -i "s/BuildArch: .*/BuildArch: $arch/g" opentelemetry-shell.spec
