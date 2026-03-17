@@ -596,6 +596,8 @@ jobs:
           ls "$replaced_binaries" | while read -r arch; do
             cp -r "$src_backup" src
             cp "$replaced_binaries"/"$arch"/*.so src/usr/share/opentelemetry_shell/agent.instrumentation.http
+            find src
+            cat opentelemetry-shell.spec
             # sed -i "s/BuildArch: .*/BuildArch: $arch/g" opentelemetry-shell.spec
             rpmbuild -bb --buildroot="$(pwd)/src" opentelemetry-shell.spec
             mv /home/runner/rpmbuild/RPMS/noarch/opentelemetry-shell-*."$arch".rpm .
