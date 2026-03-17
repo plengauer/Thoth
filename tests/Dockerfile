@@ -17,25 +17,25 @@ RUN <<EOF
     type "$shell" || DEBIAN_FRONTEND=noninteractive apt-get install -y "$shell"
     DEBIAN_FRONTEND=noninteractive apt-get install -y $packages_mandatory debconf debconf-utils python3-venv
     DEBIAN_FRONTEND=noninteractive apt-get install -y $packages_optional || true
-    DEBIAN_FRONTEND=noninteractive apt-get install -y ./opentelemetry-shell_*_"$(arch | sed s/x86_64/amd64/g | sed s/aarch64/arm64/g | sed 's/le$/el/g')".deb && rm ./*.deb
+    DEBIAN_FRONTEND=noninteractive apt-get install -y ./opentelemetry-shell_*_"$(arch | sed s/x86_64/amd64/g | sed s/aarch64/arm64/g | sed 's/le$/el/g')".deb
   elif type dnf; then
     [ "$update" = TRUE ] && dnf -y upgrade --refresh
     type "$shell" || dnf -y install "$shell"
     dnf -y install --allowerasing $packages_mandatory
     for package in $packages_optional; do dnf -y install --allowerasing $package || true; done
-    dnf -y install ./*.rpm
+    dnf -y install ./opentelemetry-shell-*."$(arch)".rpm
   elif type yum; then
     [ "$update" = TRUE ] && yum -y upgrade
     type "$shell" || yum -y install "$shell"
     yum -y install --allowerasing $packages_mandatory
     for package in $packages_optional; do yum -y install --allowerasing $package || true; done
-    yum -y install ./*.rpm
+    yum -y install ./opentelemetry-shell-*."$(arch)".rpm
   elif type zypper; then
     [ "$update" = TRUE ] && zypper --non-interactive update
     type "$shell" || zypper --non-interactive install "$shell"
     zypper --non-interactive install $packages_mandatory
     for package in $packages_optional; do zypper --non-interactive install $package || true; done
-    zypper --non-interactive install --allow-unsigned-rpm ./*.rpm
+    zypper --non-interactive install --allow-unsigned-rpm ./opentelemetry-shell-*."$(arch)".rpm
   elif type apk; then
     [ "$update" = TRUE ] && apk upgrade
     type "$shell" || apk add "$shell"
