@@ -583,12 +583,13 @@ jobs:
           } >> opentelemetry-shell.spec
           {
             echo '%files'
-            ( cd src && find . | grep -v '.spec$' | while read -r file; do echo "${file#.}"; done | grep -v '^$' | while read -r file; do if [ -d "$file" ]; then if ! echo "$file" | grep opentelemetry-shell; then continue; fi; echo -n '%dir '; fi; echo \""$file"\"; done )
+            ( cd src && find . | grep -v '.spec$' | grep -v 'libinjecthttpheader.so' | while read -r file; do echo "${file#.}"; done | grep -v '^$' | while read -r file; do if [ -d "$file" ]; then if ! echo "$file" | grep opentelemetry-shell; then continue; fi; echo -n '%dir '; fi; echo \""$file"\"; done )
           } >> opentelemetry-shell.spec
           replaced_binaries="$(mktemp -d)"
           mv src/usr/share/opentelemetry_shell/agent.instrumentation.http/* "$replaced_binaries"
           rpmbuild -bb --buildroot="$(pwd)/src" opentelemetry-shell.spec
           mv /home/runner/rpmbuild/RPMS/noarch/opentelemetry-shell-*.noarch.rpm .
+          echo /usr/share/opentelemetry_shell/agent.instrumentation.http/libinjecthttpheader.so >> opentelemetry-shell.spec
           ls "$replaced_binaries" | while read -r arch; do
             cp "$replaced_binaries"/"$arch"/*.so src/usr/share/opentelemetry_shell/agent.instrumentation.http
             sed -i "s/BuildArch: .*/BuildArch: $arch/g" opentelemetry-shell.spec
