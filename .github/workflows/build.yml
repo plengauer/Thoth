@@ -585,6 +585,8 @@ jobs:
             echo '%files'
             ( cd src && find . | grep -v '.spec$' | grep -v 'libinjecthttpheader.so' | while read -r file; do echo "${file#.}"; done | grep -v '^$' | while read -r file; do if [ -d "$file" ]; then if ! echo "$file" | grep opentelemetry-shell; then continue; fi; echo -n '%dir '; fi; echo \""$file"\"; done )
           } >> opentelemetry-shell.spec
+          src_backup="$(mktemp -d -u)"
+          cp -r src "$src_backup"
           replaced_binaries="$(mktemp -d)"
           mv src/usr/share/opentelemetry_shell/agent.instrumentation.http/* "$replaced_binaries"
           rpmbuild -bb --buildroot="$(pwd)/src" opentelemetry-shell.spec
@@ -592,6 +594,7 @@ jobs:
           echo /usr/share/opentelemetry_shell/agent.instrumentation.http/libinjecthttpheader.so >> opentelemetry-shell.spec
           mkdir -p src/usr/share/opentelemetry_shell/agent.instrumentation.http
           ls "$replaced_binaries" | while read -r arch; do
+            cp -r "$src_backup" src
             cp "$replaced_binaries"/"$arch"/*.so src/usr/share/opentelemetry_shell/agent.instrumentation.http
             # sed -i "s/BuildArch: .*/BuildArch: $arch/g" opentelemetry-shell.spec
             rpmbuild -bb --buildroot="$(pwd)/src" opentelemetry-shell.spec
