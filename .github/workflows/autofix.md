@@ -6,6 +6,10 @@ on:
     workflows: ["Analyze"]
     types: [completed]
     branches: [main]
+if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+rate-limit:
+  max: 1
+  window: 180
 permissions:
   contents: read
   actions: read
