@@ -224,13 +224,16 @@ jobs:
       contents: read
       actions: read
     steps:
+      - uses: actions/checkout@v6.0.2
+        with:
+          ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v8.0.0
         with:
           name: packages.deb.${{ inputs.ref }}
       - env:
           DEPENDENCY: ${{ matrix.dependency }}
         run: |
-          sudo -E docker run -v $(pwd)/opentelemetry-shell_*_all.deb:/root/package.deb -v $(pwd)/package.rpm:/root/package.rpm -v $(pwd)/package.apk:/root/package.apk --rm --network=host -e DEPENDENCY -i --entrypoint=/bin/sh ${{ matrix.image }} -e <<EOF
+          sudo -E docker run --mount $(pwd)/opentelemetry-shell_"$(cat VERSION)"_all.deb:/root/package.deb --mount type=bind,src="$(pwd)"/opentelemetry-shell-"$(cat VERSION)"-1.noarch.rpm,dst=/package.rpm --mount type=bind,src="$(pwd)"/opentelemetry-shell-"$(cat VERSION)"-r0.apk,dst=/package.apk --rm --network=host -e DEPENDENCY -i --entrypoint=/bin/sh ${{ matrix.image }} -e <<EOF
           if type apt-get; then
             apt-get update
             apt-get -y remove $DEPENDENCY
