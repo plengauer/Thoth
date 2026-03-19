@@ -407,7 +407,7 @@ runs:
         git config user.email "${user_id}+${user_name}@users.noreply.github.com"
         git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
         git add -A
-        git commit -m "Deploy OpenTelemetry"
+        git commit -m "deploy opentelemetry"
         git push && echo "pushed=true" >> "$GITHUB_OUTPUT" || echo "pushed=false" >> "$GITHUB_OUTPUT"
       env:
         GH_TOKEN: ${{ inputs.github_token }}
@@ -419,7 +419,7 @@ runs:
         token: ${{ inputs.github_token }}
         branch: "deploy-otel-${{ github.ref_name }}"
         base: ${{ github.ref_name }}
-        commit-message: "Deploy OpenTelemetry"
+        commit-message: "deploy opentelemetry"
         title: "Deploy OpenTelemetry"
         body: |
           This PR deploys workflow-level, job-level, check suite-level as well as repository-level OpenTelemetry instrumentation to every workflow.
