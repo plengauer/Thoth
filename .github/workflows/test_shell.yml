@@ -321,7 +321,7 @@ jobs:
         with:
           pattern: packages.*.${{ inputs.ref }}
           merge-multiple: true
-      - run: mv ./package.* tests
+      - run: mv *.deb *.rpm *.apk tests
       - run: bash -c 'cd tests && bash run_tests_containerized.sh "${{ matrix.image }}" "${{ matrix.update }}" "${{ matrix.shell }}"'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
