@@ -140,6 +140,27 @@ jobs:
           path_exclude: ./
           working_directory: ./autoversion
           dry_run: 'true'
+  job-arm:
+    needs: job-smoke
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v6.0.2
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/download-artifact@v8.0.0
+        with:
+          name: packages.deb.${{ inputs.ref }}
+      - uses: ./actions/instrument/job
+        with:
+          cache: 'false'
+        env:
+          OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
+          OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
+      - run: echo hello world
   job-integration-simulated-opt-acl-modification:
     needs: [job-smoke, job-cache ]
     runs-on: ubuntu-latest
