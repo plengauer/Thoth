@@ -15,6 +15,7 @@ fi
 
 echo "::group::Validate Configuration"
 export OTEL_SERVICE_NAME="${OTEL_SERVICE_NAME:-"$(echo "$GITHUB_REPOSITORY" | cut -d / -f 2-) CI"}"
+export OTEL_SEMCONV_STABILITY_OPT_IN="${OTEL_SEMCONV_STABILITY_OPT_IN:-http,database,messaging}"
 export OTEL_SHELL_CONFIG_MUTE_BUILTINS="${OTEL_SHELL_CONFIG_MUTE_BUILTINS:-TRUE}"
 export OTEL_SHELL_CONFIG_INJECT_DEEP="${OTEL_SHELL_CONFIG_INJECT_DEEP:-TRUE}"
 export OTEL_SHELL_CONFIG_OBSERVE_STDERR="${OTEL_SHELL_CONFIG_OBSERVE_STDERR:-TRUE}"
@@ -83,32 +84,40 @@ npm --no-audit ci
 action_tag_name="$(echo "$GITHUB_ACTION_REF" | cut -sd @ -f 2-)"
 if [ -z "$action_tag_name" ]; then action_tag_name="v$(cat ../../../VERSION)"; fi
 if [ "$INPUT_CACHE" = "true" ]; then
+  echo "::debug::Resolving cache ..."
   export INSTRUMENTATION_CACHE_KEY="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} instrumentation $GITHUB_WORKFLOW $GITHUB_JOB"
   run sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.restoreCache(['/tmp/*.aliases'], '$INSTRUMENTATION_CACHE_KEY');"
   cache_key="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} dependencies $({ cat /etc/os-release; python3 --version || true; printenv | grep -E '^OTEL_SHELL_CONFIG_INSTALL_' || true; } | md5sum | cut -d ' ' -f 1)"
+  if [ "$GITHUB_ACTION_REPOSITORY" = "$GITHUB_REPOSITORY" ] && [ -f "$GITHUB_WORKSPACE"/package.deb ]; then cache_key="$cache_key local"; fi
   sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.restoreCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip'], '$cache_key');"
   [ "$(find /var/cache/apt/archives/ -name '*.deb' | wc -l)" -gt 0 ] || write_back_cache=TRUE
 fi
 if ! type otel.sh && [ -r /var/cache/apt/archives/opentelemetry-shell_*_all.deb ]; then
+  echo "::debug::Cached debian file found ..."
   if [ "${FAST_DEB_INSTALL:-FALSE}" = TRUE ]; then # lets assume exactly one postinst script, no triggers
+    echo "::debug::Attempting fast install ..."
     control_dir="$(mktemp -d)"
     dpkg-deb --control /var/cache/apt/archives/opentelemetry-shell_*_all.deb "$control_dir"
     if cat "$control_dir"/control | grep -E '^Pre-Depends:|^Depends:' | cut -d ':' -f 2- | tr ',' '\n' | grep -v '|' | tr -d ' ' | cut -d '(' -f 1 | sed 's/awk/gawk/g' | xargs -I '{}' bash -c 'type {} 1> /dev/null 2> /dev/null || [ -r /var/lib/dpkg/info/{}.list ]'; then
       if [ "${FAST_DEB_INSTALL_PRESERVE_ACL:-TRUE}" = TRUE ]; then
+        echo "::debug::Fast install tediously to preserve ACL ..."
         extract_dir="$(mktemp -d)"
         sudo dpkg-deb --extract /var/cache/apt/archives/opentelemetry-shell_*_all.deb "$extract_dir"
         tar -C "$extract_dir" -cf - . | sudo tar -C / -xf - --no-overwrite-dir
         sudo rm -rf "$extract_dir"
         run eval sudo "$control_dir"/postinst configure '&&' rm -rf "$control_dir"
       else
+        echo "::debug::Fast install ..."
         sudo dpkg-deb --extract /var/cache/apt/archives/opentelemetry-shell_*_all.deb / && run eval sudo "$control_dir"/postinst configure '&&' rm -rf "$control_dir"
       fi
       export OTEL_SHELL_PACKAGE_VERSION_CACHE_opentelemetry_shell="$(cat ../../../VERSION)"
     else
+      echo "::debug::Slow install ..."
       rm -rf "$control_dir"
       sudo apt-get install -y /var/cache/apt/archives/opentelemetry-shell_*_all.deb
     fi
   else
+    echo "::debug::Slow install ..."
     sudo apt-get install -y /var/cache/apt/archives/opentelemetry-shell_*_all.deb
   fi
 fi
@@ -166,7 +175,8 @@ processors:
   transform:
     error_mode: ignore
     log_statements:
-      # - replace_all_patterns(log.attributes, "value", "[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***") # this masks too many others things (like host names) accidentally
+      - replace_all_patterns(log.attributes, "value", "(?i)bearer [A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
+      - replace_all_patterns(log.attributes, "value", "jwt=[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
       - replace_all_patterns(log.attributes, "value", "github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}", "***")
       - replace_all_patterns(log.attributes, "value", "ghp_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(log.attributes, "value", "ghs_[a-zA-Z0-9]{36}", "***")
@@ -174,7 +184,8 @@ processors:
       - replace_all_patterns(log.attributes, "value", "ghu_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(log.attributes, "value", "ghr_[a-zA-Z0-9]{36}", "***")
 $(printf '%s' "$mask_patterns" | xargs -d '\n' -I '{}' printf '%s\n' '      - replace_all_patterns(log.attributes, "value", "{}", "***")')
-      # - replace_pattern(log.body, "[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***") # this masks too many others things (like host names) accidentally
+      - replace_pattern(log.body, "(?i)bearer [A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
+      - replace_pattern(log.body, "jwt=[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
       - replace_pattern(log.body, "github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}", "***")
       - replace_pattern(log.body, "ghp_[a-zA-Z0-9]{36}", "***")
       - replace_pattern(log.body, "ghs_[a-zA-Z0-9]{36}", "***")
@@ -183,8 +194,9 @@ $(printf '%s' "$mask_patterns" | xargs -d '\n' -I '{}' printf '%s\n' '      - re
       - replace_pattern(log.body, "ghr_[a-zA-Z0-9]{36}", "***")
 $(printf '%s' "$mask_patterns" | xargs -d '\n' -I '{}' printf '%s\n' '      - replace_pattern(log.body, "{}", "***")')
     metric_statements:
-      # - replace_all_patterns(datapoint.attributes, "value", "[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
-      - replace_all_patterns(datapoint.attributes, "value", "github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}", "***") # this masks too many others things (like host names) accidentally
+      - replace_all_patterns(datapoint.attributes, "value", "(?i)bearer [A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
+      - replace_all_patterns(datapoint.attributes, "value", "jwt=[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
+      - replace_all_patterns(datapoint.attributes, "value", "github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}", "***")
       - replace_all_patterns(datapoint.attributes, "value", "ghp_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(datapoint.attributes, "value", "ghs_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(datapoint.attributes, "value", "gho_[a-zA-Z0-9]{36}", "***")
@@ -192,15 +204,17 @@ $(printf '%s' "$mask_patterns" | xargs -d '\n' -I '{}' printf '%s\n' '      - re
       - replace_all_patterns(datapoint.attributes, "value", "ghr_[a-zA-Z0-9]{36}", "***")
 $(printf '%s' "$mask_patterns" | xargs -d '\n' -I '{}' printf '%s\n' '      - replace_all_patterns(datapoint.attributes, "value", "{}", "***")')
     trace_statements:
-      # - replace_all_patterns(span.attributes, "value", "[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
-      - replace_all_patterns(span.attributes, "value", "github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}", "***") # this masks too many others things (like host names) accidentally
+      - replace_all_patterns(span.attributes, "value", "(?i)bearer [A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
+      - replace_all_patterns(span.attributes, "value", "jwt=[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
+      - replace_all_patterns(span.attributes, "value", "github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}", "***")
       - replace_all_patterns(span.attributes, "value", "ghp_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(span.attributes, "value", "ghs_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(span.attributes, "value", "gho_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(span.attributes, "value", "ghu_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(span.attributes, "value", "ghr_[a-zA-Z0-9]{36}", "***")
 $(printf '%s' "$mask_patterns" | xargs -d '\n' -I '{}' printf '%s\n' '      - replace_all_patterns(span.attributes, "value", "{}", "***")')
-      # - replace_pattern(span.name, "[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***") # this masks too many others things (like host names) accidentally
+      - replace_pattern(span.name, "(?i)bearer [A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
+      - replace_pattern(span.name, "jwt=[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
       - replace_pattern(span.name, "github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}", "***")
       - replace_pattern(span.name, "ghp_[a-zA-Z0-9]{36}", "***")
       - replace_pattern(span.name, "ghs_[a-zA-Z0-9]{36}", "***")
@@ -320,6 +334,10 @@ export TRACEPARENT="$(cat "$opentelemetry_root_dir"/traceparent)"
 rm -rf "$opentelemetry_root_dir"
 echo "::endgroup::"
 
+echo "::group::Calculate Resource Attributes"
+export OTEL_RESOURCE_ATTRIBUTES=github.repository.id="$GITHUB_REPOSITORY_ID",github.repository.name="${GITHUB_REPOSITORY#*/}",github.repository.owner.id="$GITHUB_REPOSITORY_OWNER_ID",github.repository.owner.name="$GITHUB_REPOSITORY_OWNER",github.actions.workflow.ref="$GITHUB_WORKFLOW_REF",github.actions.workflow.sha="$GITHUB_WORKFLOW_SHA",github.actions.workflow.name="$GITHUB_WORKFLOW","${OTEL_RESOURCE_ATTRIBUTES:-}"
+echo "::endgroup::"
+
 echo "::group::Resolve Job ID and Job name"
 OTEL_SHELL_GITHUB_JOB="$GITHUB_JOB"
 job_arguments="$(printf '%s' "$INPUT___JOB_MATRIX" | jq -r '. | [.. | scalars] | @tsv' | sed 's/\t/, /g')"
@@ -405,7 +423,7 @@ root4job_end() {
   otel_observation_attribute_typed "$observation_handle" string github.actions.event.name="$GITHUB_EVENT_NAME"
   otel_observation_attribute_typed "$observation_handle" string github.actions.event.ref="/refs/heads/$GITHUB_REF_NAME"
   otel_observation_attribute_typed "$observation_handle" string github.actions.event.ref.name="$GITHUB_REF_NAME"
-  otel_observation_attribute_typed "$observation_handle" string github.actions.job.name="${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}"
+  otel_observation_attribute_typed "$observation_handle" string github.actions.job.name="$GITHUB_JOB"
   otel_observation_attribute_typed "$observation_handle" string github.actions.job.conclusion="$conclusion"
   otel_counter_observe "$counter_handle" "$observation_handle"
   local counter_handle="$(otel_counter_create counter github.actions.jobs.duration s 'Duration of job runs')"
@@ -417,7 +435,7 @@ root4job_end() {
   otel_observation_attribute_typed "$observation_handle" string github.actions.event.name="$GITHUB_EVENT_NAME"
   otel_observation_attribute_typed "$observation_handle" string github.actions.event.ref="/refs/heads/$GITHUB_REF_NAME"
   otel_observation_attribute_typed "$observation_handle" string github.actions.event.ref.name="$GITHUB_REF_NAME"
-  otel_observation_attribute_typed "$observation_handle" string github.actions.job.name="${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}"
+  otel_observation_attribute_typed "$observation_handle" string github.actions.job.name="$GITHUB_JOB"
   otel_observation_attribute_typed "$observation_handle" string github.actions.job.conclusion="$conclusion"
   otel_counter_observe "$counter_handle" "$observation_handle"
   observation_handle="$(otel_observation_create -1)"
@@ -553,7 +571,7 @@ root4job() {
     otel_span_attribute_typed $span_handle string github.actions.url.full="${GITHUB_SERVER_URL:-https://github.com}"/"$GITHUB_REPOSITORY"/actions/runs/"$GITHUB_RUN_ID"/job/"$GITHUB_JOB_ID"
   fi
   otel_span_attribute_typed $span_handle int github.actions.job.id="${GITHUB_JOB_ID:-}"
-  otel_span_attribute_typed $span_handle string github.actions.job.name="${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}"
+  otel_span_attribute_typed $span_handle string github.actions.job.name="$GITHUB_JOB"
   printf '%s' "$INPUT___JOB_MATRIX" | jq 'to_entries | .[] | [ .key, .value ] | @tsv' -r | while IFS=$'\t' read -r key value; do otel_span_attribute_typed $span_handle string github.actions.job.matrix."$key"="$value"; done
   otel_span_attribute_typed $span_handle string github.actions.runner.name="$RUNNER_NAME"
   otel_span_attribute_typed $span_handle string github.actions.runner.os="$RUNNER_OS"

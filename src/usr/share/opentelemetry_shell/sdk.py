@@ -264,24 +264,7 @@ def handle(scope, version, command, arguments):
         from opentelemetry.sdk.resources import Resource, ResourceDetector, OTELResourceDetector, OsResourceDetector, get_aggregated_resources
         from opentelemetry_resourcedetector_docker import DockerResourceDetector
         from opentelemetry_resourcedetector_kubernetes import KubernetesResourceDetector
-        class GithubActionResourceDetector(ResourceDetector):
-            def detect(self) -> Resource:
-                try:
-                    if os.environ.get('GITHUB_ACTIONS', 'false') != 'true':
-                        return Resource.create({});
-                    return Resource.create({
-                        'github.repository.id': os.environ.get('GITHUB_REPOSITORY_ID', ''),
-                        'github.repository.name': os.environ.get('GITHUB_REPOSITORY', '/').split('/', 1)[1],
-                        'github.repository.owner.id': os.environ.get('GITHUB_REPOSITORY_OWNER_ID', ''),
-                        'github.repository.owner.name': os.environ.get('GITHUB_REPOSITORY_OWNER', ''),
-                        'github.actions.workflow.ref': os.environ.get('GITHUB_WORKFLOW_REF', ''),
-                        'github.actions.workflow.sha': os.environ.get('GITHUB_WORKFLOW_SHA', ''),
-                        'github.actions.workflow.name': os.environ.get('GITHUB_WORKFLOW', ''),
-                    })
-                except:
-                    return Resource.create({})
         final_resources = get_aggregated_resources(guess_cloud_resource_detectors() + [
-                GithubActionResourceDetector(),
                 KubernetesResourceDetector(),
                 DockerResourceDetector(),
                 OsResourceDetector(),

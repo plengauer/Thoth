@@ -46,7 +46,7 @@ else
 fi
 
 if \[ "$_otel_shell" = "bash" ]; then
-  _otel_source_file_resolver='${BASH_SOURCE[0]}'
+  _otel_source_file_resolver='${BASH_SOURCE:-}'
 else
   _otel_source_file_resolver='$0'
 fi
@@ -91,6 +91,7 @@ _otel_auto_instrument() {
   for cmd in $(_otel_list_all_commands | _otel_filter_commands_by_special | _otel_filter_commands_by_instrumentation | _otel_filter_commands_by_mode | _otel_filter_commands_by_hint "$hint"); do otel_instrument "$cmd"; done
 
   # super special instrumentations
+  if \[ "$_otel_shell" = bash ]; then \alias declare='declare $( ( _otel_string_starts_with "${FUNCNAME:-}" _otel_ || \[ "${FUNCNAME:-}" = source ] || \[ "${FUNCNAME:-}" = . ] ) && \printf '%s' -g || \true)'; fi
   \alias .='_otel_instrument_and_source "$#" "$@" .'
   if \[ "$_otel_shell" = bash ]; then \alias source='_otel_instrument_and_source "$#" "$@" source'; fi
   if \[ "$_otel_shell_conservative_exec" = TRUE ]; then
@@ -102,6 +103,7 @@ _otel_auto_instrument() {
   else
     \alias exec='_otel_inject_and_exec_directly exec'
   fi
+  \alias trap=_otel_trap
 
   # cache
   \[ "$(\alias | \wc -l)" -gt 25 ] && \alias | \sed 's/^alias //' | { \[ -n "$hint" ] && \grep "$(_otel_resolve_instrumentation_hint "$hint" | \sed 's/[]\.^*[]/\\&/g' | \awk '$0=$0"="')" || \cat; } | \awk '{print "\\alias " $0 }' > "$cache_file" || \true
@@ -193,7 +195,7 @@ _otel_filter_commands_by_mode() {
 _otel_filter_commands_by_special() {
   # we need to exclude all well-known builtins that would change their semantics if they are used in an alias or within a function.
   # for example, set resets options but also arguments of the current script and/or function. since instrumentation is done via functions, instrumenting set would change its behavior
-  \grep -vE '^(break|command|continue|builtin|\.|source|eval|exec|exit|export|hash|local|return|set|shift|trap|:|unalias|unset|alias|read|nohup)$' | \grep -vE '^(OTEL_|_otel_|otel_)'
+  \grep -vE '^(break|command|continue|builtin|declare|\.|source|eval|exec|exit|export|hash|local|return|set|shift|trap|:|unalias|unset|alias|read|nohup)$' | \grep -vE '^(OTEL_|_otel_|otel_)'
 }
 
 _otel_filter_by_validity() {
@@ -353,7 +355,7 @@ _otel_export_PATH_and_reinstrument() {
   shift
   local exit_code=0
   \export "$@" || local exit_code="$?"
-  if \[ "$1" = PATH ] || _otel_string_starts_with "$1" PATH=; then
+  if \[ "${1%%=*}" = PATH ]; then
     local aliases_pre="$(\mktemp)"
     local aliases_new="$(\mktemp)"
     \alias | \sed 's/^alias //' | \awk '{print "\\alias " $0 }' > "$aliases_pre"
@@ -437,6 +439,18 @@ _otel_record_exec() {
   \export TRACEPARENT="$my_traceparent"
 }
 
+_otel_trap() {
+  local command="$1"; shift
+  while \[ "$#" -gt 0 ]; do
+    local signal="$1"; shift
+    if \[ "$signal" = EXIT ] || \[ "$signal" = 0 ]; then
+      _otel_deferred_exit_command="$command"
+    else
+      \trap "$command" "$signal"
+    fi
+  done
+}
+
 command() {
   if \[ "$#" = 2 ] && \[ "$1" = -v ] && _otel_string_contains "$(\alias "$2")" " OTEL_SHELL_COMMAND_TYPE_OVERRIDE=file "; then
     \which "$2"
@@ -502,6 +516,9 @@ _otel_start_script() {
 
 _otel_end_script() {
   local exit_code="$?"
+  if \[ -n "${_otel_deferred_exit_command:-}" ]; then
+    \eval "$_otel_deferred_exit_command" || local exit_code="$?"
+  fi
   if \[ -n "${_root_span_handle:-}" ]; then
     if \[ "$exit_code" -ne 0 ]; then
       otel_span_error "$_root_span_handle"
@@ -513,6 +530,6 @@ _otel_end_script() {
 }
 
 _otel_auto_instrument "$_otel_shell_auto_instrumentation_hint"
-trap _otel_end_script EXIT
+\trap _otel_end_script EXIT
 
 _otel_start_script

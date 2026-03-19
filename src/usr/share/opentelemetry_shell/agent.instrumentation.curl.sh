@@ -34,7 +34,7 @@ _otel_propagate_curl() {
   \wait "$stderr_pid"
   \rm -rf "$stderr_pipe"
   if \[ -n "$api" ]; then \rm -rf "$stderr_pipe" "$span_handle_forward" "$api_recording_finished"; fi
-  if \[ -f /opt/opentelemetry_shell/libinjecthttpheader.so ]; then
+  if \[ -f "$file" ]; then
     if \[ -n "${OLD_LD_PRELOAD:-}" ]; then
       export LD_PRELOAD="$OLD_LD_PRELOAD"
     else
@@ -81,6 +81,7 @@ _otel_pipe_curl_stderr() {
   local host=""
   local ip=""
   local port=""
+  local response_code=""
   local is_receiving=1
   local http_client_request_duration_handle="$(otel_counter_create histogram http.client.request.duration s '0.005,0.01,0.025,0.05,0.075,0.1,0.25,0.5,0.75,1,2.5,5,7.5,10' 'Duration of HTTP client requests')"
   local http_client_request_body_size_handle="$(otel_counter_create histogram http.client.request.body.size By '' 'Size of HTTP client request bodies')"
@@ -143,6 +144,7 @@ _otel_pipe_curl_stderr() {
       if \[ "$protocol" = http ] && \[ "$port" = 443 ]; then local protocol=https; fi
       local path_and_query="$(\printf '%s' "$line" | \cut -d ' ' -f 3)"
       local method="$(\printf '%s' "$line" | \cut -d ' ' -f 2)"
+      local response_code=""
       local observation_handle="$(otel_observation_create 1)"
       otel_observation_attribute_typed "$observation_handle" string network.protocol.name="$protocol"
       otel_observation_attribute_typed "$observation_handle" string network.protocol.version="$version"
@@ -292,7 +294,9 @@ _otel_curl_record_api_response_llm_openai() {
     \[ "$frequency_penalty" = null ] || otel_span_attribute_typed "$span_handle" float gen_ai.request.frequency_penalty="$frequency_penalty"
     \[ "$presence_penalty" = null ] || otel_span_attribute_typed "$span_handle" float gen_ai.request.presence_penalty="$presence_penalty"
   done
-  \jq '[ .object // "null", .id // "null", .model // "null", .system_fingerprint // "null", .service_tier // "null", .temperature // "null", .top_k // "null", .top_p // "null", .frequency_penalty // "null", .presence_penalty // "null", .usage.prompt_tokens // .usage.input_tokens // "null", .usage.completion_tokens // .usage.output_tokens // "null", ( . | tostring ) ] | @tsv' -c -r --unbuffered | while IFS="$(\printf '\t')" read -r object id model system_fingerprint service_tier temperature top_k top_p frequency_penalty presence_penalty prompt_tokens completion_tokens json; do
+  local stdout="$(\mktemp -p "$_otel_shell_pipe_dir" opentelemetry_shell_$$.api.request.curl.pipe.XXXXXXXXXX)"
+  \cat "$stdout" &
+  \tee "$stdout" | \jq '[ .object // "null", .id // "null", .model // "null", .system_fingerprint // "null", .service_tier // "null", .temperature // "null", .top_k // "null", .top_p // "null", .frequency_penalty // "null", .presence_penalty // "null", .usage.prompt_tokens // .usage.input_tokens // "null", .usage.completion_tokens // .usage.output_tokens // "null" ] | @tsv' -c -r --unbuffered | while IFS="$(\printf '\t')" read -r object id model system_fingerprint service_tier temperature top_k top_p frequency_penalty presence_penalty prompt_tokens completion_tokens; do
     case "$object" in
       'response'|'response.chunk')
         local operation_name=chat
@@ -352,8 +356,8 @@ _otel_curl_record_api_response_llm_openai() {
       \[ "$model" = null ] || otel_observation_attribute_typed "$observation_handle" string gen_ai.response.model="$model"
       otel_counter_observe "$gen_ai_client_operation_duration_handle" "$observation_handle"
     fi
-    \printf '%s\n' "$json"
   done
+  \rm -rf "$stdout"
   : > "$api_recording_finished"
 }
 

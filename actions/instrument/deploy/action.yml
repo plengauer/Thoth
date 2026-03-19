@@ -31,8 +31,8 @@ inputs:
     description: 'Use a container image to avoid repeated installation on every run.'
     default: true
   repository_level_instrumentation:
-    description: 'Deploy repository-level instrumentation to collect VCS metrics (opt-in)'
-    default: false
+    description: 'Deploy repository-level instrumentation to collect VCS metrics'
+    default: true
   repository_level_instrumentation_file_name:
     description: 'File name for repository instrumentation workflow'
     default: 'observability_repository.yml'
@@ -213,8 +213,10 @@ runs:
             | grep -vF "$([ -r "${{ steps.find-check-suite-level-instrumentation.outputs.path }}" ] && cat "${{ steps.find-check-suite-level-instrumentation.outputs.path }}" | yq .name || cat "${{ inputs.workflows_directory }}/${{ inputs.check_suite_level_instrumentation_file_name }}" | yq .name)" \
             | grep -vF "$([ -r "${{ steps.find-repository-level-instrumentation.outputs.path }}" ] && cat "${{ steps.find-repository-level-instrumentation.outputs.path }}" | yq .name || cat "${{ inputs.workflows_directory }}/${{ inputs.repository_level_instrumentation_file_name }}" | yq .name)"
           seq 1 10 | xargs -I '{}' curl -s --fail --retry 8 --header "Authorization: Bearer ${{ inputs.github_token }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/${{ github.repository }}/actions/workflows'?per_page=100&page={}' | jq '.workflows[] | select(.path | startswith("dynamic/")) | .name' -r
-          echo Copilot coding agent # this one should be prefilled because it needs deferred export
           echo Copilot code review # this one should be prefilled because its very common and new
+          echo Copilot coding agent # this one should be prefilled because it needs deferred export
+          echo Claude # this one should be prefilled because it needs deferred export
+          echo OpenAI Codex # this one should be prefilled because it needs deferred export
         } | sort -u > "$names_file"
         names=""
         while IFS= read -r line; do
@@ -393,13 +395,30 @@ runs:
       run: |
         git diff
   
-    - name: "Open Pull Request"
+    - name: "Push"
       if: ${{ inputs.dry_run != 'true' }}
+      id: push
+      shell: bash
+      run: |
+        if git diff --quiet HEAD; then exit 0; fi
+        user_name="$(gh api user --jq .login)"
+        user_id="$(gh api user --jq .id)"
+        git config user.name "$user_name"
+        git config user.email "${user_id}+${user_name}@users.noreply.github.com"
+        git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+        git add -A
+        git commit -m "Deploy OpenTelemetry"
+        git push && echo "pushed=true" >> "$GITHUB_OUTPUT" || echo "pushed=false" >> "$GITHUB_OUTPUT"
+      env:
+        GH_TOKEN: ${{ inputs.github_token }}
+    - name: "Open Pull Request"
+      if: ${{ inputs.dry_run != 'true' && steps.push.outputs.pushed == 'false' }}
       id: open-pr
       uses: peter-evans/create-pull-request@v8.1.0
       with:
         token: ${{ inputs.github_token }}
-        branch: "deploy-otel"
+        branch: "deploy-otel-${{ github.ref_name }}"
+        base: ${{ github.ref_name }}
         commit-message: "Deploy OpenTelemetry"
         title: "Deploy OpenTelemetry"
         body: |

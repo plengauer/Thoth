@@ -13,9 +13,9 @@ if [ "${OTEL_TRACES_EXPORTER:-otlp}" != otlp ] && [ "${OTEL_TRACES_EXPORTER:-otl
 fi
 if [ "$GITHUB_EVENT_NAME" = dynamic ]; then
   echo "::notice ::OpenTelemetry for GitHub actions detected a dynamic workflow, which is unable to extract data directly, reconfiguring all otlp exporters for deferred export. This needs the workflow-level instrumentation to forward the data."
-  [ "${OTEL_LOGS_EXPORTER:-otlp}" != otlp ] || export OTEL_LOGS_EXPORTER=deferred
-  [ "${OTEL_METRICS_EXPORTER:-otlp}" != otlp ] || export OTEL_METRICS_EXPORTER=deferred
-  [ "${OTEL_TRACES_EXPORTER:-otlp}" != otlp ] || export OTEL_TRACES_EXPORTER=deferred
+  [ -n "${OTEL_EXPORTER_OTLP_LOGS_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT:-}}" ] || export OTEL_LOGS_EXPORTER=deferred
+  [ -n "${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT:-}}" ] || export OTEL_METRICS_EXPORTER=deferred
+  [ -n "${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT:-}}" ] || export OTEL_TRACES_EXPORTER=deferred
 fi
 if [ -z "${OTEL_EXPORTER_OTLP_LOGS_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT:-}}" ] && [ -z "${OTEL_LOGS_EXPORTER:-}" ]; then
   export OTEL_LOGS_EXPORTER=none

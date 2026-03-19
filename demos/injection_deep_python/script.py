@@ -1,2 +1,2 @@
 import requests
-requests.get('https://example.com')
+requests.get('http://example.com')
