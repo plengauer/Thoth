@@ -550,7 +550,7 @@ jobs:
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.java
       - run: |
           replaced_binaries="$(mktemp -d)"
-          mv src/usr/share/opentelemetry_shell/agent.instrumentation.http/* "$replaced_binaries"
+          mv src/usr/share/opentelemetry_shell/agent.instrumentation.http/*/ "$replaced_binaries"
           { echo noarch; ls "$replaced_binaries"; } | while read -r arch; do
             rm -rf src/tmp.* /home/runner/rpmbuild
             git checkout .
@@ -592,7 +592,7 @@ jobs:
               ( cd src && find . | grep -v '.spec$' | while read -r file; do echo "${file#.}"; done | grep -v '^$' | while read -r file; do if [ -d "$file" ]; then if ! echo "$file" | grep opentelemetry-shell; then continue; fi; echo -n '%dir '; fi; echo \""$file"\"; done )
             } >> opentelemetry-shell.spec
             rpmbuild -bb --buildroot="$(pwd)/src" opentelemetry-shell.spec
-            mv /home/runner/rpmbuild/RPMS/noarch/opentelemetry-shell-*.noarch.rpm opentelemetry-shell-*."$arch".rpm
+            mv /home/runner/rpmbuild/RPMS/noarch/opentelemetry-shell-"$(cat VERSION)"-1.noarch.rpm opentelemetry-shell-"$(cat VERSION)"-1."$arch".rpm
           done
       - run: ls
       - uses: actions/upload-artifact@v7.0.0
