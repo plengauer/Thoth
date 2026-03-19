@@ -490,6 +490,7 @@ jobs:
         with:
           name: packages.deb.${{ inputs.ref }}
           path: opentelemetry-shell_*_*.deb
+          if-no-files-found: error
 
   verify-rpm-python-dependency:
     runs-on: ubuntu-slim
@@ -597,6 +598,7 @@ jobs:
         with:
           name: packages.rpm.${{ inputs.ref }}
           path: opentelemetry-shell-*.*.rpm
+          if-no-files-found: error
 
   build-apk:
     needs: [verify-scripts, merge-node-modules, merge-python-site-packages, build-java-agents]
@@ -649,6 +651,7 @@ jobs:
         with:
           name: packages.apk.${{ inputs.ref }}
           path: opentelemetry-shell-*.apk
+          if-no-files-found: error
 
   build-workflow-image:
     needs: build-apk
