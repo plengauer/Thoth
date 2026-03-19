@@ -41,11 +41,12 @@ jobs:
           git push && echo "pushed=true" >> "$GITHUB_OUTPUT" || echo "pushed=false" >> "$GITHUB_OUTPUT"
         env:
           GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
-      - id: open-pr
+      - if: steps.push.outputs.pushed == 'false'
+        id: open-pr
         uses: peter-evans/create-pull-request@v8.1.0
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
-          commit-message: "Recompile agentic workflows"
+          commit-message: "recompile agentic workflows"
           base: main
           branch: "agentic-workflows/auto-recompile"
           title: "Recompile Agentic Workflows"
