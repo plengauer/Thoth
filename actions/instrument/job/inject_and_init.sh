@@ -174,7 +174,8 @@ processors:
   transform:
     error_mode: ignore
     log_statements:
-      # - replace_all_patterns(log.attributes, "value", "[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***") # this masks too many others things (like host names) accidentally
+      - replace_all_patterns(log.attributes, "value", "(?i)bearer [A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
+      - replace_all_patterns(log.attributes, "value", "jwt=[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
       - replace_all_patterns(log.attributes, "value", "github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}", "***")
       - replace_all_patterns(log.attributes, "value", "ghp_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(log.attributes, "value", "ghs_[a-zA-Z0-9]{36}", "***")
@@ -182,7 +183,8 @@ processors:
       - replace_all_patterns(log.attributes, "value", "ghu_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(log.attributes, "value", "ghr_[a-zA-Z0-9]{36}", "***")
 $(printf '%s' "$mask_patterns" | xargs -d '\n' -I '{}' printf '%s\n' '      - replace_all_patterns(log.attributes, "value", "{}", "***")')
-      # - replace_pattern(log.body, "[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***") # this masks too many others things (like host names) accidentally
+      - replace_pattern(log.body, "(?i)bearer [A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
+      - replace_pattern(log.body, "jwt=[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
       - replace_pattern(log.body, "github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}", "***")
       - replace_pattern(log.body, "ghp_[a-zA-Z0-9]{36}", "***")
       - replace_pattern(log.body, "ghs_[a-zA-Z0-9]{36}", "***")
@@ -191,8 +193,9 @@ $(printf '%s' "$mask_patterns" | xargs -d '\n' -I '{}' printf '%s\n' '      - re
       - replace_pattern(log.body, "ghr_[a-zA-Z0-9]{36}", "***")
 $(printf '%s' "$mask_patterns" | xargs -d '\n' -I '{}' printf '%s\n' '      - replace_pattern(log.body, "{}", "***")')
     metric_statements:
-      # - replace_all_patterns(datapoint.attributes, "value", "[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
-      - replace_all_patterns(datapoint.attributes, "value", "github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}", "***") # this masks too many others things (like host names) accidentally
+      - replace_all_patterns(datapoint.attributes, "value", "(?i)bearer [A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
+      - replace_all_patterns(datapoint.attributes, "value", "jwt=[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
+      - replace_all_patterns(datapoint.attributes, "value", "github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}", "***")
       - replace_all_patterns(datapoint.attributes, "value", "ghp_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(datapoint.attributes, "value", "ghs_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(datapoint.attributes, "value", "gho_[a-zA-Z0-9]{36}", "***")
@@ -200,15 +203,17 @@ $(printf '%s' "$mask_patterns" | xargs -d '\n' -I '{}' printf '%s\n' '      - re
       - replace_all_patterns(datapoint.attributes, "value", "ghr_[a-zA-Z0-9]{36}", "***")
 $(printf '%s' "$mask_patterns" | xargs -d '\n' -I '{}' printf '%s\n' '      - replace_all_patterns(datapoint.attributes, "value", "{}", "***")')
     trace_statements:
-      # - replace_all_patterns(span.attributes, "value", "[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
-      - replace_all_patterns(span.attributes, "value", "github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}", "***") # this masks too many others things (like host names) accidentally
+      - replace_all_patterns(span.attributes, "value", "(?i)bearer [A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
+      - replace_all_patterns(span.attributes, "value", "jwt=[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
+      - replace_all_patterns(span.attributes, "value", "github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}", "***")
       - replace_all_patterns(span.attributes, "value", "ghp_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(span.attributes, "value", "ghs_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(span.attributes, "value", "gho_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(span.attributes, "value", "ghu_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(span.attributes, "value", "ghr_[a-zA-Z0-9]{36}", "***")
 $(printf '%s' "$mask_patterns" | xargs -d '\n' -I '{}' printf '%s\n' '      - replace_all_patterns(span.attributes, "value", "{}", "***")')
-      # - replace_pattern(span.name, "[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***") # this masks too many others things (like host names) accidentally
+      - replace_pattern(span.name, "(?i)bearer [A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
+      - replace_pattern(span.name, "jwt=[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
       - replace_pattern(span.name, "github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}", "***")
       - replace_pattern(span.name, "ghp_[a-zA-Z0-9]{36}", "***")
       - replace_pattern(span.name, "ghs_[a-zA-Z0-9]{36}", "***")
