@@ -95,6 +95,7 @@ jobs:
         uses: actions/download-artifact@v8.0.0
         with:
           pattern: packages.*.${{ inputs.ref }}
+          merge-multiple: true
       - if: ${{ hashFiles('images.json') == '' }}
         run: |
           sudo docker login -u '${{ secrets.DOCKERHUB_USERNAME }}' -p '${{ secrets.DOCKERHUB_TOKEN }}'
