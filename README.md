@@ -181,7 +181,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     concurrency:
-      group: otel-deploy-job
+      group: otel-deploy-job-${{ github.ref_name }}
     steps:
       - uses: plengauer/Thoth/actions/instrument/deploy@v5
         env:

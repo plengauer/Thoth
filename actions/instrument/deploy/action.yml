@@ -417,7 +417,8 @@ runs:
       uses: peter-evans/create-pull-request@v8.1.0
       with:
         token: ${{ inputs.github_token }}
-        branch: "deploy-otel"
+        branch: "deploy-otel-${{ github.ref_name }}"
+        base: ${{ github.ref_name }}
         commit-message: "Deploy OpenTelemetry"
         title: "Deploy OpenTelemetry"
         body: |
