@@ -28,6 +28,15 @@
       "matchPackageNames": [
         "/.*/"
       ]
+    },
+    {
+      "matchManagers": [
+        "dockerfile"
+      ],
+      "matchPackageNames": [
+        "node"
+      ],
+      "ignoreUnstable": false
     }
   ],
   "customManagers": [
