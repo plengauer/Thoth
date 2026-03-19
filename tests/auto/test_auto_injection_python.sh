@@ -195,3 +195,15 @@ requests.get("http://example.com/venv_deep_file")
 ' > "$dir"/script.py
 python "$dir"/script.py | grep -- '/venv_deep_file' || exit 1
 deactivate
+# Test Python file with __future__ imports (issue with google-github-actions/setup-gcloud)
+dir=$(mktemp -d)
+cat > "$dir"/test_future.py << 'PYEOF'
+from __future__ import absolute_import
+from __future__ import print_function
+
+import os
+print("Success: __file__ is set correctly with __future__ imports")
+PYEOF
+
+python3 "$dir"/test_future.py
+assert_equals 0 $?
