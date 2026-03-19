@@ -68,7 +68,7 @@ jobs:
           name: packages.deb.${{ inputs.ref }}
       - run: sudo apt-get -y install --allow-downgrades ./package.deb
   list-images:
-    needs: smoke
+    # needs: smoke
     runs-on: ubuntu-latest
     outputs:
       images: ${{ steps.dynamic.outputs.images }}
