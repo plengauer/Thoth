@@ -594,6 +594,7 @@ jobs:
             rpmbuild -bb --buildroot="$(pwd)/src" opentelemetry-shell.spec
             mv /home/runner/rpmbuild/RPMS/noarch/opentelemetry-shell-*.noarch.rpm opentelemetry-shell-*."$arch".rpm
           done
+      - run: ls
       - uses: actions/upload-artifact@v7.0.0
         with:
           name: packages.rpm.${{ inputs.ref }}
