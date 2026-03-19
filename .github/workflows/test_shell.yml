@@ -159,6 +159,9 @@ jobs:
     permissions:
       actions: read
     steps:
+      - uses: actions/checkout@v6.0.2
+        with:
+          ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v8.0.0
         with:
           name: packages.deb.${{ inputs.ref }}
@@ -295,9 +298,9 @@ jobs:
           elif type zypper; then zypper --non-interactive install wget jq gawk sudo findutils
           elif type apk; then apk add curl wget jq gawk sudo findutils
           else exit 1
-          "$(cat INSTALL.sh)"
-          type otel.sh
           fi
+          $(cat INSTALL.sh)
+          type otel.sh
           EOF
   linux-shell:
     needs: [list-images, list-shells, smoke]
