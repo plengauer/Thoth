@@ -46,7 +46,7 @@ else
 fi
 
 if \[ "$_otel_shell" = "bash" ]; then
-  _otel_source_file_resolver='${BASH_SOURCE[0]}'
+  _otel_source_file_resolver='${BASH_SOURCE:-}'
 else
   _otel_source_file_resolver='$0'
 fi
