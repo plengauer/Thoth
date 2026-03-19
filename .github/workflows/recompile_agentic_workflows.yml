@@ -2,8 +2,6 @@ name: 'Recompile Agentic Workflows'
 
 on:
   push:
-    branches:
-      - main
     paths:
       - '.github/workflows/*.md'
 
@@ -30,6 +28,19 @@ jobs:
         run: |
           gh extension install github/gh-aw
           gh aw compile
+      - id: push
+        run: |
+          if git diff --quiet HEAD; then exit 0; fi
+          user_name="$(gh api user --jq .login)"
+          user_id="$(gh api user --jq .id)"
+          git config user.name "$user_name"
+          git config user.email "${user_id}+${user_name}@users.noreply.github.com"
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git add -A
+          git commit -m "recompile agentic workflows"
+          git push && echo "pushed=true" >> "$GITHUB_OUTPUT" || echo "pushed=false" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
       - id: open-pr
         uses: peter-evans/create-pull-request@v8.1.0
         with:
