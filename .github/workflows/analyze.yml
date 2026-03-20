@@ -34,7 +34,7 @@ jobs:
           - language: actions
             build-mode: none
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.47.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.49.0
         with:
           secrets_to_redact: '["${{ github.token }}"]'
         env:
@@ -43,12 +43,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6.0.2
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v4.32.6
+        uses: github/codeql-action/init@v4.33.0
         with:
           languages: ${{ matrix.language }}
           build-mode: ${{ matrix.build-mode }}
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v4.32.6
+        uses: github/codeql-action/analyze@v4.33.0
         with:
           category: "/language:${{matrix.language}}"
   lint:
@@ -60,7 +60,7 @@ jobs:
       issues: write
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.47.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.49.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}

@@ -91,6 +91,7 @@ _otel_auto_instrument() {
   for cmd in $(_otel_list_all_commands | _otel_filter_commands_by_special | _otel_filter_commands_by_instrumentation | _otel_filter_commands_by_mode | _otel_filter_commands_by_hint "$hint"); do otel_instrument "$cmd"; done
 
   # super special instrumentations
+  if \[ "$_otel_shell" = bash ]; then \alias declare='declare $( ( _otel_string_starts_with "${FUNCNAME:-}" _otel_ || \[ "${FUNCNAME:-}" = source ] || \[ "${FUNCNAME:-}" = . ] ) && \printf '%s' -g || \true)'; fi
   \alias .='_otel_instrument_and_source "$#" "$@" .'
   if \[ "$_otel_shell" = bash ]; then \alias source='_otel_instrument_and_source "$#" "$@" source'; fi
   if \[ "$_otel_shell_conservative_exec" = TRUE ]; then
@@ -194,7 +195,7 @@ _otel_filter_commands_by_mode() {
 _otel_filter_commands_by_special() {
   # we need to exclude all well-known builtins that would change their semantics if they are used in an alias or within a function.
   # for example, set resets options but also arguments of the current script and/or function. since instrumentation is done via functions, instrumenting set would change its behavior
-  \grep -vE '^(break|command|continue|builtin|\.|source|eval|exec|exit|export|hash|local|return|set|shift|trap|:|unalias|unset|alias|read|nohup)$' | \grep -vE '^(OTEL_|_otel_|otel_)'
+  \grep -vE '^(break|command|continue|builtin|declare|\.|source|eval|exec|exit|export|hash|local|return|set|shift|trap|:|unalias|unset|alias|read|nohup)$' | \grep -vE '^(OTEL_|_otel_|otel_)'
 }
 
 _otel_filter_by_validity() {
@@ -354,7 +355,7 @@ _otel_export_PATH_and_reinstrument() {
   shift
   local exit_code=0
   \export "$@" || local exit_code="$?"
-  if \[ "$1" = PATH ] || _otel_string_starts_with "$1" PATH=; then
+  if \[ "${1%%=*}" = PATH ]; then
     local aliases_pre="$(\mktemp)"
     local aliases_new="$(\mktemp)"
     \alias | \sed 's/^alias //' | \awk '{print "\\alias " $0 }' > "$aliases_pre"

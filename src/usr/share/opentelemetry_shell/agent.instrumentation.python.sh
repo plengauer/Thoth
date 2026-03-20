@@ -104,7 +104,18 @@ runpy.run_module('$arg', run_name='__main__')"
 import sys, os # SKIP_DEPENDENCY_CHECK
 sys.path.insert(0, os.path.abspath(os.path.dirname('$arg'))) # SKIP_DEPENDENCY_CHECK
 with open('$arg', 'r') as file: # SKIP_DEPENDENCY_CHECK
-  exec('__file__=\"$arg\"\n' + file.read())"
+  content = file.read() # SKIP_DEPENDENCY_CHECK
+  lines = content.split('\\n') # SKIP_DEPENDENCY_CHECK
+  last_future_idx = -1 # SKIP_DEPENDENCY_CHECK
+  for i, line in enumerate(lines): # SKIP_DEPENDENCY_CHECK
+    stripped = line.strip() # SKIP_DEPENDENCY_CHECK
+    if stripped.startswith('from __future__ import'): # SKIP_DEPENDENCY_CHECK
+      last_future_idx = i # SKIP_DEPENDENCY_CHECK
+  if last_future_idx >= 0: # SKIP_DEPENDENCY_CHECK
+    lines.insert(last_future_idx + 1, '__file__=\"$arg\"') # SKIP_DEPENDENCY_CHECK
+    exec('\\n'.join(lines)) # SKIP_DEPENDENCY_CHECK
+  else: # SKIP_DEPENDENCY_CHECK
+    exec('__file__=\"$arg\"\\n' + content) # SKIP_DEPENDENCY_CHECK"
       _otel_python_file="$arg"
       _otel_python_code_source=file
     else
