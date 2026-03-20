@@ -564,6 +564,7 @@ jobs:
             cp meta/rpm/opentelemetry-shell.spec .
             sed -i "s/__VERSION__/$(cat VERSION)/g" opentelemetry-shell.spec
             # sed -i "s/BuildArch: .*/BuildArch: $arch/g" opentelemetry-shell.spec
+            cp "$replaced_binaries"/"$arch"/*.so usr/share/opentelemetry_shell/agent.instrumentation.http
             cat meta/debian/triggers | grep -v '^$' | cut -d ' ' -f 2 | rev | cut -d / -f 1 | rev | sort -u | grep -v python3 | while read -r package; do
               echo "%triggerin -- $package"
               echo '#/bin/sh -e'
