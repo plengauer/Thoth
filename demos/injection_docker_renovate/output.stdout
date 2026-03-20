@@ -1,13 +1,13 @@
  INFO: Renovate started
-       "renovateVersion": "43.60.5"
+       "renovateVersion": "43.84.0"
  WARN: cli config dryRun property has been changed to full
  INFO: Repository started (repository=plengauer/Thoth)
-       "renovateVersion": "43.60.5"
+       "renovateVersion": "43.84.0"
  INFO: Dependency extraction complete (repository=plengauer/Thoth, baseBranch=main)
        "stats": {
          "managers": {
            "dockerfile": {"fileCount": 4, "depCount": 4},
-           "github-actions": {"fileCount": 29, "depCount": 478},
+           "github-actions": {"fileCount": 29, "depCount": 466},
            "gradle": {"fileCount": 4, "depCount": 3},
            "gradle-wrapper": {"fileCount": 1, "depCount": 1},
            "maven": {"fileCount": 1, "depCount": 2},
@@ -15,14 +15,21 @@
            "pip_requirements": {"fileCount": 3, "depCount": 18},
            "regex": {"fileCount": 3, "depCount": 4}
          },
-         "total": {"fileCount": 47, "depCount": 525}
+         "total": {"fileCount": 47, "depCount": 513}
        }
+ WARN: github.com token 401 unauthorized (repository=plengauer/Thoth)
+ WARN: Package lookup failures (repository=plengauer/Thoth)
+       "warnings": [
+         "Failed to look up github-digest package actions/hello-world-docker-action",
+         "Failed to look up github-digest package ${{ steps.determine-repository.outputs.repository }}/actions"
+       ],
+       "files": [".github/workflows/test_github.yml", "actions/instrument/deploy/action.yml"]
  INFO: DRY-RUN: Would ensure Dependency Dashboard (repository=plengauer/Thoth)
        "title": "Dependency Dashboard"
  INFO: DRY-RUN: Would save repository cache. (repository=plengauer/Thoth)
  INFO: Repository finished (repository=plengauer/Thoth)
        "cloned": true,
-       "durationMs": 37566,
+       "durationMs": 40684,
        "result": "done",
        "status": "onboarded",
        "enabled": true,
