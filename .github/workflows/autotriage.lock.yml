@@ -56,7 +56,7 @@ jobs:
       title: ${{ steps.sanitized.outputs.title }}
     steps:
       - name: Setup Scripts
-        uses: github/gh-aw/actions/setup@f1073c5498ee46fec1530555a7c953445417c69b # v0.56.2
+        uses: github/gh-aw/actions/setup@ffa4a6614bd9a568f2e50ada9eaa4784f32d169a # v0.62.2
         with:
           destination: /opt/gh-aw/actions
       - name: Generate agentic run info
@@ -268,7 +268,7 @@ jobs:
       output_types: ${{ steps.collect_output.outputs.output_types }}
     steps:
       - name: Setup Scripts
-        uses: github/gh-aw/actions/setup@f1073c5498ee46fec1530555a7c953445417c69b # v0.56.2
+        uses: github/gh-aw/actions/setup@ffa4a6614bd9a568f2e50ada9eaa4784f32d169a # v0.62.2
         with:
           destination: /opt/gh-aw/actions
       - name: Checkout repository
@@ -1072,7 +1072,7 @@ jobs:
       total_count: ${{ steps.missing_tool.outputs.total_count }}
     steps:
       - name: Setup Scripts
-        uses: github/gh-aw/actions/setup@f1073c5498ee46fec1530555a7c953445417c69b # v0.56.2
+        uses: github/gh-aw/actions/setup@ffa4a6614bd9a568f2e50ada9eaa4784f32d169a # v0.62.2
         with:
           destination: /opt/gh-aw/actions
       - name: Download agent output artifact
@@ -1165,7 +1165,7 @@ jobs:
       matched_command: ''
     steps:
       - name: Setup Scripts
-        uses: github/gh-aw/actions/setup@f1073c5498ee46fec1530555a7c953445417c69b # v0.56.2
+        uses: github/gh-aw/actions/setup@ffa4a6614bd9a568f2e50ada9eaa4784f32d169a # v0.62.2
         with:
           destination: /opt/gh-aw/actions
       - name: Check user rate limit
@@ -1213,7 +1213,7 @@ jobs:
       process_safe_outputs_temporary_id_map: ${{ steps.process_safe_outputs.outputs.temporary_id_map }}
     steps:
       - name: Setup Scripts
-        uses: github/gh-aw/actions/setup@f1073c5498ee46fec1530555a7c953445417c69b # v0.56.2
+        uses: github/gh-aw/actions/setup@ffa4a6614bd9a568f2e50ada9eaa4784f32d169a # v0.62.2
         with:
           destination: /opt/gh-aw/actions
           safe-output-custom-tokens: 'true'
