@@ -204,7 +204,7 @@ jobs:
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
-      - uses: renovatebot/github-action@v46.1.4 # node action with call to docker, docker flags that make injection more complicated, then call a node script via exec that already is injected with otel
+      - uses: renovatebot/github-action@v46.1.5 # node action with call to docker, docker flags that make injection more complicated, then call a node script via exec that already is injected with otel
         env:
           RENOVATE_DRY_RUN: full
           RENOVATE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -230,22 +230,50 @@ jobs:
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
-      - uses: github/codeql-action/init@v4.32.6 # node action will call java will call node
+      - uses: github/codeql-action/init@v4.33.0 # node action will call java will call node
         with:
           languages: javascript-typescript
           build-mode: none
-      - uses: github/codeql-action/analyze@v4.32.6 # node action will call java will call node
+      - uses: github/codeql-action/analyze@v4.33.0 # node action will call java will call node
         with:
           category: "/language:javascript-typescript"
           upload: never
-      - uses: github/codeql-action/init@v4.32.6
+      - uses: github/codeql-action/init@v4.33.0
         with:
           languages: python
           build-mode: none
-      - uses: github/codeql-action/analyze@v4.32.6 # node action will call java will call python
+      - uses: github/codeql-action/analyze@v4.33.0 # node action will call java will call python
         with:
           category: "/language:python"
           upload: never
+  job-integration-superlinter:
+    needs: job-smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v6.0.2
+        with:
+          ref: ${{ inputs.ref }}
+          fetch-depth: 0
+      - uses: actions/download-artifact@v7.0.0
+        with:
+          name: packages_${{ inputs.ref }}
+      - uses: ./actions/instrument/job
+        with:
+          cache: 'false'
+        env:
+          OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
+          OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
+      - uses: super-linter/super-linter@v8.5.0
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          VALIDATE_ALL_CODEBASE: 'true'
+          DISABLE_ERRORS: 'true'
+          RUN_LOCAL: 'true'
+          DEFAULT_BRANCH: main
   job-integration-python-venv:
     needs: job-smoke
     runs-on: ubuntu-latest

@@ -175,7 +175,8 @@ processors:
   transform:
     error_mode: ignore
     log_statements:
-      # - replace_all_patterns(log.attributes, "value", "[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***") # this masks too many others things (like host names) accidentally
+      - replace_all_patterns(log.attributes, "value", "(?i)bearer [A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
+      - replace_all_patterns(log.attributes, "value", "jwt=[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
       - replace_all_patterns(log.attributes, "value", "github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}", "***")
       - replace_all_patterns(log.attributes, "value", "ghp_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(log.attributes, "value", "ghs_[a-zA-Z0-9]{36}", "***")
@@ -183,7 +184,8 @@ processors:
       - replace_all_patterns(log.attributes, "value", "ghu_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(log.attributes, "value", "ghr_[a-zA-Z0-9]{36}", "***")
 $(printf '%s' "$mask_patterns" | xargs -d '\n' -I '{}' printf '%s\n' '      - replace_all_patterns(log.attributes, "value", "{}", "***")')
-      # - replace_pattern(log.body, "[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***") # this masks too many others things (like host names) accidentally
+      - replace_pattern(log.body, "(?i)bearer [A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
+      - replace_pattern(log.body, "jwt=[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
       - replace_pattern(log.body, "github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}", "***")
       - replace_pattern(log.body, "ghp_[a-zA-Z0-9]{36}", "***")
       - replace_pattern(log.body, "ghs_[a-zA-Z0-9]{36}", "***")
@@ -192,8 +194,9 @@ $(printf '%s' "$mask_patterns" | xargs -d '\n' -I '{}' printf '%s\n' '      - re
       - replace_pattern(log.body, "ghr_[a-zA-Z0-9]{36}", "***")
 $(printf '%s' "$mask_patterns" | xargs -d '\n' -I '{}' printf '%s\n' '      - replace_pattern(log.body, "{}", "***")')
     metric_statements:
-      # - replace_all_patterns(datapoint.attributes, "value", "[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
-      - replace_all_patterns(datapoint.attributes, "value", "github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}", "***") # this masks too many others things (like host names) accidentally
+      - replace_all_patterns(datapoint.attributes, "value", "(?i)bearer [A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
+      - replace_all_patterns(datapoint.attributes, "value", "jwt=[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
+      - replace_all_patterns(datapoint.attributes, "value", "github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}", "***")
       - replace_all_patterns(datapoint.attributes, "value", "ghp_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(datapoint.attributes, "value", "ghs_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(datapoint.attributes, "value", "gho_[a-zA-Z0-9]{36}", "***")
@@ -201,15 +204,17 @@ $(printf '%s' "$mask_patterns" | xargs -d '\n' -I '{}' printf '%s\n' '      - re
       - replace_all_patterns(datapoint.attributes, "value", "ghr_[a-zA-Z0-9]{36}", "***")
 $(printf '%s' "$mask_patterns" | xargs -d '\n' -I '{}' printf '%s\n' '      - replace_all_patterns(datapoint.attributes, "value", "{}", "***")')
     trace_statements:
-      # - replace_all_patterns(span.attributes, "value", "[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
-      - replace_all_patterns(span.attributes, "value", "github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}", "***") # this masks too many others things (like host names) accidentally
+      - replace_all_patterns(span.attributes, "value", "(?i)bearer [A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
+      - replace_all_patterns(span.attributes, "value", "jwt=[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
+      - replace_all_patterns(span.attributes, "value", "github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}", "***")
       - replace_all_patterns(span.attributes, "value", "ghp_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(span.attributes, "value", "ghs_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(span.attributes, "value", "gho_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(span.attributes, "value", "ghu_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(span.attributes, "value", "ghr_[a-zA-Z0-9]{36}", "***")
 $(printf '%s' "$mask_patterns" | xargs -d '\n' -I '{}' printf '%s\n' '      - replace_all_patterns(span.attributes, "value", "{}", "***")')
-      # - replace_pattern(span.name, "[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***") # this masks too many others things (like host names) accidentally
+      - replace_pattern(span.name, "(?i)bearer [A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
+      - replace_pattern(span.name, "jwt=[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}\\\\.[A-Za-z0-9_-]{2,}", "***")
       - replace_pattern(span.name, "github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}", "***")
       - replace_pattern(span.name, "ghp_[a-zA-Z0-9]{36}", "***")
       - replace_pattern(span.name, "ghs_[a-zA-Z0-9]{36}", "***")
@@ -418,7 +423,7 @@ root4job_end() {
   otel_observation_attribute_typed "$observation_handle" string github.actions.event.name="$GITHUB_EVENT_NAME"
   otel_observation_attribute_typed "$observation_handle" string github.actions.event.ref="/refs/heads/$GITHUB_REF_NAME"
   otel_observation_attribute_typed "$observation_handle" string github.actions.event.ref.name="$GITHUB_REF_NAME"
-  otel_observation_attribute_typed "$observation_handle" string github.actions.job.name="${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}"
+  otel_observation_attribute_typed "$observation_handle" string github.actions.job.name="$GITHUB_JOB"
   otel_observation_attribute_typed "$observation_handle" string github.actions.job.conclusion="$conclusion"
   otel_counter_observe "$counter_handle" "$observation_handle"
   local counter_handle="$(otel_counter_create counter github.actions.jobs.duration s 'Duration of job runs')"
@@ -430,7 +435,7 @@ root4job_end() {
   otel_observation_attribute_typed "$observation_handle" string github.actions.event.name="$GITHUB_EVENT_NAME"
   otel_observation_attribute_typed "$observation_handle" string github.actions.event.ref="/refs/heads/$GITHUB_REF_NAME"
   otel_observation_attribute_typed "$observation_handle" string github.actions.event.ref.name="$GITHUB_REF_NAME"
-  otel_observation_attribute_typed "$observation_handle" string github.actions.job.name="${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}"
+  otel_observation_attribute_typed "$observation_handle" string github.actions.job.name="$GITHUB_JOB"
   otel_observation_attribute_typed "$observation_handle" string github.actions.job.conclusion="$conclusion"
   otel_counter_observe "$counter_handle" "$observation_handle"
   observation_handle="$(otel_observation_create -1)"
@@ -566,7 +571,7 @@ root4job() {
     otel_span_attribute_typed $span_handle string github.actions.url.full="${GITHUB_SERVER_URL:-https://github.com}"/"$GITHUB_REPOSITORY"/actions/runs/"$GITHUB_RUN_ID"/job/"$GITHUB_JOB_ID"
   fi
   otel_span_attribute_typed $span_handle int github.actions.job.id="${GITHUB_JOB_ID:-}"
-  otel_span_attribute_typed $span_handle string github.actions.job.name="${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}"
+  otel_span_attribute_typed $span_handle string github.actions.job.name="$GITHUB_JOB"
   printf '%s' "$INPUT___JOB_MATRIX" | jq 'to_entries | .[] | [ .key, .value ] | @tsv' -r | while IFS=$'\t' read -r key value; do otel_span_attribute_typed $span_handle string github.actions.job.matrix."$key"="$value"; done
   otel_span_attribute_typed $span_handle string github.actions.runner.name="$RUNNER_NAME"
   otel_span_attribute_typed $span_handle string github.actions.runner.os="$RUNNER_OS"
