@@ -14,11 +14,7 @@ gh_ensure_min_rate_limit_remaining 0.2
 echo "::endgroup::"
 
 echo "::group::Install dependencies"
-if type dpkg 1> /dev/null 2> /dev/null || type rpm 1> /dev/null 2> /dev/null || type apk 1> /dev/null 2> /dev/null; then
-  bash -e -o pipefail ../shared/install.sh curl wget jq sed
-else
-  echo 'No supported package manager found, assuming dependencies are preinstalled.'
-fi
+bash -e -o pipefail ../shared/install.sh curl wget jq sed
 echo "::endgroup::"
 
 if ([ "$INPUT_SELF_MONITORING" = true ] || ([ "$INPUT_SELF_MONITORING" = auto ] && [ "$GITHUB_API_URL" = 'https://api.github.com' ])); then

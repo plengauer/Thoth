@@ -3,31 +3,25 @@ export GITHUB_ACTION_REPOSITORY="${GITHUB_ACTION_REPOSITORY:-"$GITHUB_REPOSITORY
 
 if type dpkg 1> /dev/null 2> /dev/null; then
   pkg_ext=deb
-  ensure_installed() { for item in "$@"; do type "${item%%;*}" 1> /dev/null 2> /dev/null || echo "${item#*;}"; done | sort -u | xargs -r sudo apt-get -y install; }
-  install_package() { sudo -E -H apt-get install -y "$1"; }
-  ensure_installed jq curl wget "$@" || (sudo apt-get update && ensure_installed jq curl wget "$@")
+  install_package() { sudo -E -H apt-get install -y "$@"; }
 elif type rpm 1> /dev/null 2> /dev/null; then
   pkg_ext=rpm
   if type dnf 1> /dev/null 2> /dev/null; then
-    ensure_installed() { for item in "$@"; do type "${item%%;*}" 1> /dev/null 2> /dev/null || echo "${item#*;}"; done | sort -u | xargs -r sudo dnf -y install; }
-    install_package() { sudo -E -H dnf -y install "$1"; }
+    install_package() { sudo -E -H dnf -y install "$@"; }
   elif type yum 1> /dev/null 2> /dev/null; then
-    ensure_installed() { for item in "$@"; do type "${item%%;*}" 1> /dev/null 2> /dev/null || echo "${item#*;}"; done | sort -u | xargs -r sudo yum -y install; }
-    install_package() { sudo -E -H yum -y install "$1"; }
+    install_package() { sudo -E -H yum -y install "$@"; }
   elif type zypper 1> /dev/null 2> /dev/null; then
-    ensure_installed() { for item in "$@"; do type "${item%%;*}" 1> /dev/null 2> /dev/null || echo "${item#*;}"; done | sort -u | xargs -r sudo zypper --non-interactive install; }
-    install_package() { sudo -E -H zypper --non-interactive install --allow-unsigned-rpm "$1"; }
+    install_package() { sudo -E -H zypper --non-interactive install --allow-unsigned-rpm "$@"; }
   else
-    ensure_installed() { :; }
-    install_package() { sudo rpm --install "$1"; }
+    install_package() { sudo rpm --install "$@"; }
   fi
-  ensure_installed jq curl wget "$@"
 elif type apk 1> /dev/null 2> /dev/null; then
   pkg_ext=apk
-  ensure_installed() { for item in "$@"; do type "${item%%;*}" 1> /dev/null 2> /dev/null || echo "${item#*;}"; done | sort -u | xargs -r sudo apk add; }
-  install_package() { sudo apk add --allow-untrusted "$1"; }
-  ensure_installed jq curl wget "$@"
+  install_package() { sudo apk add --allow-untrusted "$@"; }
 fi
+ensure_installed() { for item in "$@"; do type "${item%%;*}" 1> /dev/null 2> /dev/null || echo "${item#*;}"; done | sort -u | xargs -r install_package; }
+export -f install_package
+ensure_installed jq curl wget "$@" || (type apt-get 1> /dev/null 2> /dev/null && sudo apt-get update && ensure_installed jq curl wget "$@")
 
 if ! type otel.sh 2> /dev/null; then
   echo "::debug::Installing ..."

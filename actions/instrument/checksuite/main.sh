@@ -9,11 +9,7 @@ echo "::endgroup::"
 . ../shared/id_printer.sh
 
 echo "::group::Install Dependencies"
-if type dpkg 1> /dev/null 2> /dev/null || type rpm 1> /dev/null 2> /dev/null || type apk 1> /dev/null 2> /dev/null; then
-  bash -e -o pipefail ../shared/install.sh curl wget jq sed
-else
-  echo 'No supported package manager found, assuming dependencies are preinstalled.'
-fi
+bash -e -o pipefail ../shared/install.sh curl wget jq sed
 echo "::endgroup::"
 
 # selfmonitoring
