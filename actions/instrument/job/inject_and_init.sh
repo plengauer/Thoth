@@ -80,10 +80,10 @@ echo "::group::Install Dependencies"
 . ../shared/github.sh
 . ../shared/id_printer.sh
 export GITHUB_ACTION_REPOSITORY="${GITHUB_ACTION_REPOSITORY:-"$GITHUB_REPOSITORY"}"
-npm --no-audit ci
 action_tag_name="$(echo "$GITHUB_ACTION_REF" | cut -sd @ -f 2-)"
 if [ -z "$action_tag_name" ]; then action_tag_name="v$(cat ../../../VERSION)"; fi
-if type dpkg 1> /dev/null 2> /dev/null && [ "$INPUT_CACHE" = "true" ]; then
+if [ "$INPUT_CACHE" = "true" ] && type npm 1> /dev/null 2> /dev/null && type dpkg 1> /dev/null 2> /dev/null; then
+  npm --no-audit ci
   echo "::debug::Resolving cache ..."
   export INSTRUMENTATION_CACHE_KEY="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} instrumentation $GITHUB_WORKFLOW $GITHUB_JOB"
   run sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.restoreCache(['/tmp/*.aliases'], '$INSTRUMENTATION_CACHE_KEY');"
@@ -122,6 +122,7 @@ if type dpkg 1> /dev/null 2> /dev/null && ! type otel.sh && [ -r /var/cache/apt/
   fi
 fi
 bash -e -o pipefail ../shared/install.sh perl curl wget jq sed unzip parallel 'node;nodejs' npm 'gcc;build-essential'
+[ -d node_modules ] || npm --no-audit ci
 if ! type otelcol-contrib; then
   if type dpkg 1> /dev/null 2> /dev/null; then
     if ! [ -r /var/cache/apt/archives/otelcol-contrib.deb ]; then
@@ -149,7 +150,7 @@ if ! type otelcol-contrib; then
     rm "$otelcol_file"
   fi
 fi
-if type dpkg 1> /dev/null 2> /dev/null && [ "${write_back_cache:-FALSE}" = TRUE ] && [ -n "${cache_key:-}" ]; then
+if [ "${write_back_cache:-FALSE}" = TRUE ] && [ -n "${cache_key:-}" ] && type dpkg 1> /dev/null 2> /dev/null; then
   wait # only join in case we wanna write back, this will be rare and is necessary to have a good cache
   run sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.saveCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip'], '$cache_key');"
 fi
