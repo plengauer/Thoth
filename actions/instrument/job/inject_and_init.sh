@@ -79,6 +79,11 @@ echo "::endgroup::"
 echo "::group::Install Dependencies"
 . ../shared/github.sh
 . ../shared/id_printer.sh
+if ! type sudo 1> /dev/null 2> /dev/null; then
+  function sudo() {
+    "$@"
+  }
+fi
 export GITHUB_ACTION_REPOSITORY="${GITHUB_ACTION_REPOSITORY:-"$GITHUB_REPOSITORY"}"
 action_tag_name="$(echo "$GITHUB_ACTION_REF" | cut -sd @ -f 2-)"
 if [ -z "$action_tag_name" ]; then action_tag_name="v$(cat ../../../VERSION)"; fi
