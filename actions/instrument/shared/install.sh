@@ -19,8 +19,8 @@ elif type apk 1> /dev/null 2> /dev/null; then
   pkg_ext=apk
   install_package() { sudo apk add --allow-untrusted "$@"; }
 fi
-ensure_installed() { for item in "$@"; do type "${item%%;*}" 1> /dev/null 2> /dev/null || echo "${item#*;}"; done | sort -u | xargs -r install_package; }
 export -f install_package
+ensure_installed() { for item in "$@"; do type "${item%%;*}" 1> /dev/null 2> /dev/null || echo "${item#*;}"; done | sort -u | xargs -r bash -c 'install_package "$@"' bash; }
 ensure_installed jq curl wget "$@" || (type apt-get 1> /dev/null 2> /dev/null && sudo apt-get update && ensure_installed jq curl wget "$@")
 
 if ! type otel.sh 2> /dev/null; then
