@@ -3,6 +3,7 @@ export GITHUB_ACTION_REPOSITORY="${GITHUB_ACTION_REPOSITORY:-"$GITHUB_REPOSITORY
 
 if ! type sudo 1> /dev/null 2> /dev/null; then
   function sudo() {
+    while [ "$1" != "${1#-}" ]; do shift; done
     "$@"
   }
   export -f sudo
