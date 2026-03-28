@@ -1,6 +1,12 @@
 #!/bin/sh -e
 export GITHUB_ACTION_REPOSITORY="${GITHUB_ACTION_REPOSITORY:-"$GITHUB_REPOSITORY"}"
 
+if ! type sudo 1> /dev/null 2> /dev/null; then
+  function sudo() {
+    "$@"
+  }
+  export -f sudo
+fi
 if type dpkg 1> /dev/null 2> /dev/null; then
   pkg_ext=deb
   install_package() { sudo -E -H apt-get install -y "$@"; }
