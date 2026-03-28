@@ -81,6 +81,7 @@ echo "::group::Install Dependencies"
 . ../shared/id_printer.sh
 if ! type sudo 1> /dev/null 2> /dev/null; then
   function sudo() {
+    while [ "$1" != "${1#-}" ]; do shift; done
     "$@"
   }
 fi
