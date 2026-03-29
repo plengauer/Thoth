@@ -127,7 +127,7 @@ if type dpkg 1> /dev/null 2> /dev/null && ! type otel.sh && [ -r /var/cache/apt/
     sudo apt-get install -y /var/cache/apt/archives/opentelemetry-shell_*_all.deb
   fi
 fi
-bash -e -o pipefail ../shared/install.sh perl curl wget jq sed unzip parallel 'node;nodejs' npm 'gcc;build-essential'
+bash -e -o pipefail ../shared/install.sh perl curl wget jq sed unzip 'node;nodejs' npm 'gcc'
 [ -d node_modules ] || npm --no-audit ci
 if ! type otelcol-contrib; then
   if type dpkg 1> /dev/null 2> /dev/null; then
@@ -542,7 +542,15 @@ root4job_end() {
   
   if [ -n "${INTERNAL_OTEL_DEFERRED_EXPORT_DIR:-}" ]; then
     export -f gh_artifact_upload
-    find "$INTERNAL_OTEL_DEFERRED_EXPORT_DIR" | grep -E '.logs$|.metrics$|.traces$' | parallel -X gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_job_"$GITHUB_JOB_ID"_signals_'{#}' '{}' &
+    find "$INTERNAL_OTEL_DEFERRED_EXPORT_DIR" | grep -E '.logs$|.metrics$|.traces$' | if type parallel &> /dev/null; then
+      parallel -X gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_job_"$GITHUB_JOB_ID"_signals_'{#}' '{}'
+    else
+      number=1
+      while read -r file; do
+        gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_job_"$GITHUB_JOB_ID"_signals_"$number" "$file"
+        number=$((number + 1))
+      done
+    fi &
   fi
   
   wait
