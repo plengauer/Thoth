@@ -1067,7 +1067,8 @@ jobs:
             setupGlobals(core, github, context, exec, io);
             const { main } = require('${{ runner.temp }}/gh-aw/actions/parse_threat_detection_results.cjs');
             await main();
-
+    permissions:
+      actions: read
   pre_activation:
     runs-on: ubuntu-slim
     permissions:
