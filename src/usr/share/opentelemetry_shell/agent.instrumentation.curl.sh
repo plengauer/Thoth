@@ -205,7 +205,7 @@ _otel_pipe_curl_stderr() {
         otel_counter_observe "$http_client_request_body_size_handle" "$observation_handle"
       elif _otel_string_starts_with "$(\printf '%s' "$line" | \tr '[:upper:]' '[:lower:]')" "< content-length: "; then
         otel_span_attribute_typed "$span_handle" int http.response.body.size="$(\printf '%s' "$line" | \cut -d ' ' -f 3)"
-        otel_span_attribute_typed "$span_handle" int http.request.body.size="$(\printf '%s' "$line" | \cut -d ' ' -f 3)"
+        otel_span_attribute_typed "$span_handle" int http.response.body.size="$(\printf '%s' "$line" | \cut -d ' ' -f 3)"
         local observation_handle="$(otel_observation_create "$(\printf '%s' "$line" | \cut -d ' ' -f 3)")"
         otel_observation_attribute_typed "$observation_handle" string network.protocol.name="$protocol"
         otel_observation_attribute_typed "$observation_handle" string network.protocol.version="$version"
