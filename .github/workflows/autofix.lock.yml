@@ -34,9 +34,8 @@ name: "Autofix"
     - completed
     workflows:
     - Analyze
-
-permissions: {}
-
+permissions:
+  actions: read
 concurrency:
   group: "gh-aw-${{ github.workflow }}"
 
@@ -47,12 +46,12 @@ jobs:
     needs: pre_activation
     # zizmor: ignore[dangerous-triggers] - workflow_run trigger is secured with role and fork validation
     if: >
-      (needs.pre_activation.outputs.activated == 'true' && (github.event.workflow_run.conclusion == 'failure')) &&
-      (github.event_name != 'workflow_run' || github.event.workflow_run.repository.id == github.repository_id &&
-      (!(github.event.workflow_run.repository.fork)))
+      (needs.pre_activation.outputs.activated == 'true' && (github.event.workflow_run.conclusion == 'failure')) && (github.event_name != 'workflow_run' || github.event.workflow_run.repository.id == github.repository_id && (!(github.event.workflow_run.repository.fork)))
+
     runs-on: ubuntu-slim
     permissions:
       contents: read
+      actions: read
     outputs:
       comment_id: ""
       comment_repo: ""
@@ -60,6 +59,14 @@ jobs:
       model: ${{ steps.generate_aw_info.outputs.model }}
       secret_verification_result: ${{ steps.validate-secret.outputs.verification_result }}
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.49.0
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: |-
+            ${{ github.token }}
+            ${{ secrets.COPILOT_GITHUB_TOKEN }}
       - name: Setup Scripts
         uses: github/gh-aw-actions/setup@15b2fa31e9a1b771c9773c162273924d8f5ea516 # v0.65.5
         with:
@@ -274,6 +281,18 @@ jobs:
       output: ${{ steps.collect_output.outputs.output }}
       output_types: ${{ steps.collect_output.outputs.output_types }}
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.49.0
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: |-
+            ${{ github.token }}
+            ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+            ${{ secrets.COPILOT_GITHUB_TOKEN }}
+            ${{ secrets.GH_AW_GITHUB_MCP_SERVER_TOKEN }}
+            ${{ secrets.GH_AW_GITHUB_TOKEN }}
+            ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Scripts
         uses: github/gh-aw-actions/setup@15b2fa31e9a1b771c9773c162273924d8f5ea516 # v0.65.5
         with:
@@ -754,6 +773,7 @@ jobs:
     permissions:
       contents: read
       issues: write
+      actions: read
     concurrency:
       group: "gh-aw-conclusion-autofix"
       cancel-in-progress: false
@@ -762,6 +782,12 @@ jobs:
       tools_reported: ${{ steps.missing_tool.outputs.tools_reported }}
       total_count: ${{ steps.missing_tool.outputs.total_count }}
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.49.0
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: ${{ github.token }}
       - name: Setup Scripts
         uses: github/gh-aw-actions/setup@15b2fa31e9a1b771c9773c162273924d8f5ea516 # v0.65.5
         with:
@@ -858,10 +884,19 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      actions: read
     outputs:
       detection_conclusion: ${{ steps.detection_conclusion.outputs.conclusion }}
       detection_success: ${{ steps.detection_conclusion.outputs.success }}
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.49.0
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: |-
+            ${{ github.token }}
+            ${{ secrets.COPILOT_GITHUB_TOKEN }}
       - name: Setup Scripts
         uses: github/gh-aw-actions/setup@15b2fa31e9a1b771c9773c162273924d8f5ea516 # v0.65.5
         with:
@@ -1003,6 +1038,14 @@ jobs:
       activated: ${{ steps.check_membership.outputs.is_team_member == 'true' && steps.check_rate_limit.outputs.rate_limit_ok == 'true' }}
       matched_command: ''
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.49.0
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: |-
+            ${{ github.token }}
+            ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Scripts
         uses: github/gh-aw-actions/setup@15b2fa31e9a1b771c9773c162273924d8f5ea516 # v0.65.5
         with:
@@ -1043,6 +1086,7 @@ jobs:
     permissions:
       contents: read
       issues: write
+      actions: read
     timeout-minutes: 15
     env:
       GH_AW_CALLER_WORKFLOW_ID: "${{ github.repository }}/autofix"
@@ -1060,6 +1104,14 @@ jobs:
       process_safe_outputs_processed_count: ${{ steps.process_safe_outputs.outputs.processed_count }}
       process_safe_outputs_temporary_id_map: ${{ steps.process_safe_outputs.outputs.temporary_id_map }}
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.49.0
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: |-
+            ${{ github.token }}
+            ${{ secrets.ACTIONS_GITHUB_TOKEN }}
       - name: Setup Scripts
         uses: github/gh-aw-actions/setup@15b2fa31e9a1b771c9773c162273924d8f5ea516 # v0.65.5
         with:
