@@ -1112,7 +1112,8 @@ jobs:
             setupGlobals(core, github, context, exec, io);
             const { main } = require('${{ runner.temp }}/gh-aw/actions/check_membership.cjs');
             await main();
-
+    permissions:
+      actions: read
   safe_outputs:
     needs:
       - agent
