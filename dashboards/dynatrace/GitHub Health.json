@@ -1,0 +1,2204 @@
+{
+  "version": 21,
+  "variables": [
+    {
+      "version": 2,
+      "key": "Repository",
+      "type": "query",
+      "visible": true,
+      "editable": true,
+      "input": "timeseries sum(github.actions.jobs), by: { github.repository.name }\n| summarize distinctRepositoryNames = collectDistinct(github.repository.name)\n| expand distinctRepositoryNames\n| sort distinctRepositoryNames",
+      "multiple": false
+    },
+    {
+      "version": 2,
+      "key": "Branch",
+      "type": "query",
+      "visible": true,
+      "editable": true,
+      "input": "timeseries sum(github.actions.jobs), filter: { matchesValue(github.repository.name, $Repository) }, by: { github.actions.event.ref.name }\n/*\nfetch spans\n| filter not isNull(github.actions.event.ref.name)\n| filter github.repository.name == $Repository\n| fields github.actions.event.ref.name\n*/\n| summarize distinctRef = collectDistinct(github.actions.event.ref.name)\n| expand distinctRef\n| sort distinctRef",
+      "multiple": false,
+      "defaultValue": "main"
+    }
+  ],
+  "tiles": {
+    "16": {
+      "title": "Health State",
+      "type": "data",
+      "query": "fetch spans\n| filter github.repository.name == $Repository and (endsWith(github.actions.workflow.ref, $Branch) or endsWith(github.actions.checks.suite.ref.name, $Branch))\n| filter (github.actions.type == \"workflow\" or github.actions.type == \"checksuite\") and (not isNull(github.actions.workflow.name) or not isNull(github.actions.checks.app.name)) and not isNull(github.actions.conclusion)\n| filter github.actions.conclusion == \"success\" or github.actions.conclusion == \"failure\"\n| fieldsAdd github.actions.workflow.name = coalesce(github.actions.workflow.name, github.actions.checks.app.name)\n| sort start_time\n| summarize github.actions.conclusion=takeLast(github.actions.conclusion), by: { github.actions.workflow.name, github.actions.event.ref.name }",
+      "visualization": "honeycomb",
+      "visualizationSettings": {
+        "honeycomb": {
+          "legend": {
+            "hidden": true
+          },
+          "dataMappings": {
+            "value": "github.actions.conclusion"
+          },
+          "displayedFields": [
+            "github.actions.workflow.name"
+          ]
+        },
+        "coloring": {
+          "colorRules": [
+            {
+              "colorMode": "custom-color",
+              "customColor": {
+                "Default": "var(--dt-colors-charts-loglevel-emergency-default, #ae132d)"
+              },
+              "field": "github.actions.conclusion",
+              "value": "failure",
+              "comparator": "="
+            },
+            {
+              "colorMode": "custom-color",
+              "customColor": {
+                "Default": "var(--dt-colors-charts-categorical-color-09-default, #649438)"
+              },
+              "field": "github.actions.conclusion",
+              "value": "success",
+              "comparator": "="
+            }
+          ]
+        },
+        "autoSelectVisualization": false
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 1,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      },
+      "davis": {
+        "enabled": false,
+        "davisVisualization": {
+          "isAvailable": true
+        }
+      },
+      "timeframe": {
+        "tileTimeframeEnabled": true,
+        "tileTimeframe": {
+          "from": "now()-30d",
+          "to": "now()"
+        }
+      }
+    },
+    "17": {
+      "title": "Workflow Runs",
+      "type": "data",
+      "query": "timeseries sum(github.actions.workflows), filter: { matchesValue(github.repository.name, $Repository) and matchesValue(github.actions.event.ref.name, $Branch) }\n| fieldsAdd githup.actions.workflows = \"sum(github.actions.workflows)\"\n| fieldsAdd value.A = toLong(arraySum(`sum(github.actions.workflows)`))",
+      "visualization": "singleValue",
+      "visualizationSettings": {
+        "singleValue": {
+          "labelMode": "none",
+          "label": "value.A",
+          "recordField": "value.A",
+          "isIconVisible": true,
+          "prefixIcon": "WorkflowsIcon",
+          "sparklineSettings": {
+            "variant": "area",
+            "record": "sum(github.actions.workflows)",
+            "lineType": "smooth"
+          },
+          "trend": {
+            "isVisible": true,
+            "isRelative": false
+          }
+        },
+        "autoSelectVisualization": false
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 1,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      },
+      "davis": {
+        "davisVisualization": {
+          "isAvailable": true
+        }
+      }
+    },
+    "20": {
+      "title": "Workflow Conclusions",
+      "type": "data",
+      "query": "timeseries sum(github.actions.workflows), by: { github.actions.workflow_run.conclusion }, filter: { matchesValue(github.repository.name, $Repository) and matchesValue(github.actions.event.ref.name, $Branch) }\n| fieldsAdd value.A = toLong(arraySum(`sum(github.actions.workflows)`))",
+      "visualization": "pieChart",
+      "visualizationSettings": {
+        "chartSettings": {
+          "legend": {
+            "position": "right",
+            "hidden": true
+          },
+          "circleChartSettings": {
+            "valueType": "relative",
+            "groupingThresholdType": "relative"
+          }
+        },
+        "legend": {
+          "ratio": 20
+        },
+        "coloring": {
+          "colorRules": [
+            {
+              "field": "DT.name",
+              "comparator": "= *value*",
+              "value": "",
+              "type": "string",
+              "colorMode": "color-palette",
+              "colorPalette": "categorical"
+            },
+            {
+              "comparator": "=",
+              "value": "failure",
+              "field": "DT.name",
+              "type": "string",
+              "colorMode": "custom-color",
+              "customColor": "#C21930"
+            },
+            {
+              "colorMode": "custom-color",
+              "customColor": {
+                "Default": "var(--dt-colors-charts-categorical-color-09-default, #649438)"
+              },
+              "type": "string",
+              "field": "DT.name",
+              "comparator": "=",
+              "value": "success"
+            },
+            {
+              "colorMode": "custom-color",
+              "customColor": {
+                "Default": "var(--dt-colors-charts-categorical-color-02-default, #2c2f3f)"
+              },
+              "type": "string",
+              "field": "DT.name",
+              "comparator": "=",
+              "value": "cancelled"
+            }
+          ]
+        },
+        "autoSelectVisualization": false
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 1,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      },
+      "davis": {
+        "davisVisualization": {
+          "isAvailable": true
+        }
+      }
+    },
+    "21": {
+      "title": "Job Runs",
+      "type": "data",
+      "query": "timeseries sum(github.actions.jobs), filter: { matchesValue(github.repository.name, $Repository) and matchesValue(github.actions.event.ref.name, $Branch) }\n| fieldsAdd github.actions.jobs = \"sum(github.actions.jobs)\"\n| fieldsAdd value.A = toLong(arraySum(`sum(github.actions.jobs)`))",
+      "visualization": "singleValue",
+      "visualizationSettings": {
+        "singleValue": {
+          "labelMode": "none",
+          "label": "value.A",
+          "recordField": "value.A",
+          "isIconVisible": true,
+          "prefixIcon": "WorkflowsIcon",
+          "sparklineSettings": {
+            "variant": "area",
+            "record": "sum(github.actions.jobs)",
+            "lineType": "smooth"
+          },
+          "trend": {
+            "isVisible": true,
+            "isRelative": false
+          }
+        },
+        "autoSelectVisualization": false
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 1,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      },
+      "davis": {
+        "davisVisualization": {
+          "isAvailable": true
+        }
+      }
+    },
+    "23": {
+      "title": "Job Conclusions",
+      "type": "data",
+      "query": "timeseries sum(github.actions.jobs), by: { github.actions.job.conclusion }, filter: { matchesValue(github.repository.name, $Repository) and matchesValue(github.actions.event.ref.name, $Branch) }\n| fieldsAdd value.A = toLong(arraySum(`sum(github.actions.jobs)`))",
+      "visualization": "pieChart",
+      "visualizationSettings": {
+        "chartSettings": {
+          "legend": {
+            "position": "right",
+            "hidden": true
+          },
+          "circleChartSettings": {
+            "valueType": "relative",
+            "groupingThresholdType": "relative"
+          }
+        },
+        "legend": {
+          "ratio": 20
+        },
+        "coloring": {
+          "colorRules": [
+            {
+              "field": "DT.name",
+              "comparator": "= *value*",
+              "value": "",
+              "type": "string",
+              "colorMode": "color-palette",
+              "colorPalette": "categorical"
+            },
+            {
+              "colorMode": "custom-color",
+              "customColor": {
+                "Default": "var(--dt-colors-charts-loglevel-emergency-default, #ae132d)"
+              },
+              "type": "string",
+              "field": "DT.name",
+              "comparator": "=",
+              "value": "failure"
+            },
+            {
+              "colorMode": "custom-color",
+              "customColor": {
+                "Default": "var(--dt-colors-charts-categorical-color-09-default, #649438)"
+              },
+              "type": "string",
+              "field": "DT.name",
+              "comparator": "=",
+              "value": "success"
+            },
+            {
+              "colorMode": "custom-color",
+              "customColor": {
+                "Default": "var(--dt-colors-charts-categorical-color-02-default, #2c2f3f)"
+              },
+              "type": "string",
+              "field": "DT.name",
+              "comparator": "=",
+              "value": "cancelled"
+            },
+            {
+              "colorMode": "custom-color",
+              "customColor": {
+                "Default": "var(--dt-colors-charts-categorical-color-02-default, #2c2f3f)"
+              },
+              "type": "string",
+              "field": "DT.name",
+              "comparator": "=",
+              "value": "skipped"
+            }
+          ]
+        },
+        "autoSelectVisualization": false
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 1,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      },
+      "davis": {
+        "davisVisualization": {
+          "isAvailable": true
+        }
+      }
+    },
+    "24": {
+      "title": "Step Runs",
+      "type": "data",
+      "query": "timeseries sum(github.actions.steps), filter: { matchesValue(github.repository.name, $Repository) and matchesValue(github.actions.event.ref.name, $Branch) }\n| fieldsAdd github.actions.steps = \"sum(github.actions.steps)\"\n| fieldsAdd value.A = toLong(arraySum(`sum(github.actions.steps)`))",
+      "visualization": "singleValue",
+      "visualizationSettings": {
+        "singleValue": {
+          "labelMode": "none",
+          "label": "value.A",
+          "recordField": "value.A",
+          "isIconVisible": true,
+          "prefixIcon": "WorkflowsIcon",
+          "sparklineSettings": {
+            "variant": "area",
+            "record": "sum(github.actions.steps)",
+            "lineType": "smooth"
+          },
+          "trend": {
+            "isVisible": true,
+            "isRelative": false
+          }
+        },
+        "autoSelectVisualization": false
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 1,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      },
+      "davis": {
+        "davisVisualization": {
+          "isAvailable": true
+        }
+      }
+    },
+    "26": {
+      "title": "Step Conclusions",
+      "type": "data",
+      "query": "timeseries sum(github.actions.steps), by: { github.actions.step.conclusion }, filter: { matchesValue(github.repository.name, $Repository) and matchesValue(github.actions.event.ref.name, $Branch) }\n| fieldsAdd value.A = toLong(arraySum(`sum(github.actions.steps)`))",
+      "visualization": "pieChart",
+      "visualizationSettings": {
+        "chartSettings": {
+          "legend": {
+            "position": "right",
+            "hidden": true
+          },
+          "circleChartSettings": {
+            "valueType": "relative",
+            "groupingThresholdType": "relative"
+          }
+        },
+        "legend": {
+          "ratio": 22
+        },
+        "coloring": {
+          "colorRules": [
+            {
+              "field": "DT.name",
+              "comparator": "= *value*",
+              "value": "",
+              "type": "string",
+              "colorMode": "color-palette",
+              "colorPalette": "categorical"
+            },
+            {
+              "colorMode": "custom-color",
+              "customColor": {
+                "Default": "var(--dt-colors-charts-loglevel-emergency-default, #ae132d)"
+              },
+              "type": "string",
+              "field": "DT.name",
+              "comparator": "=",
+              "value": "failure"
+            },
+            {
+              "colorMode": "custom-color",
+              "customColor": {
+                "Default": "var(--dt-colors-charts-categorical-color-09-default, #649438)"
+              },
+              "type": "string",
+              "field": "DT.name",
+              "comparator": "=",
+              "value": "success"
+            },
+            {
+              "colorMode": "custom-color",
+              "customColor": {
+                "Default": "var(--dt-colors-charts-categorical-color-02-default, #2c2f3f)"
+              },
+              "type": "string",
+              "field": "DT.name",
+              "comparator": "=",
+              "value": "cancelled"
+            },
+            {
+              "colorMode": "custom-color",
+              "customColor": {
+                "Default": "var(--dt-colors-charts-categorical-color-02-default, #2c2f3f)"
+              },
+              "type": "string",
+              "field": "DT.name",
+              "comparator": "=",
+              "value": "skipped"
+            }
+          ]
+        },
+        "autoSelectVisualization": false
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 1,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      },
+      "davis": {
+        "davisVisualization": {
+          "isAvailable": true
+        }
+      }
+    },
+    "27": {
+      "title": "Workflow Health",
+      "type": "data",
+      "query": "fetch spans\n| filter github.repository.name == $Repository and endsWith(github.actions.workflow.ref, $Branch)\n| filter github.actions.type == \"workflow\" and not isNull(github.actions.workflow.name) and not isNull(github.actions.conclusion)\n| filter github.actions.conclusion == \"success\" or github.actions.conclusion == \"failure\"\n| summarize github.actions.conclusion.success=countIf(github.actions.conclusion == \"success\"), github.actions.conclusion.failure=countIf(github.actions.conclusion == \"failure\"), by: { github.actions.workflow.name }\n| fieldsAdd github.actions.workflow.name, github.actions.conclusion.success.ratio = 100 * toDouble(github.actions.conclusion.success) / toDouble(github.actions.conclusion.success + github.actions.conclusion.failure)",
+      "visualization": "honeycomb",
+      "visualizationSettings": {
+        "honeycomb": {
+          "legend": {
+            "hidden": true
+          },
+          "dataMappings": {
+            "value": "github.actions.conclusion.success.ratio"
+          },
+          "displayedFields": [
+            "github.actions.workflow.name"
+          ]
+        },
+        "coloring": {
+          "colorRules": [
+            {
+              "colorMode": "custom-color",
+              "customColor": {
+                "Default": "var(--dt-colors-charts-categorical-color-12-default, #cd3741)"
+              },
+              "field": "github.actions.conclusion.success.ratio",
+              "value": 0,
+              "comparator": "≥"
+            },
+            {
+              "colorMode": "custom-color",
+              "customColor": {
+                "Default": "var(--dt-colors-charts-categorical-themed-swamps-color-04-default, #8f4624)"
+              },
+              "field": "github.actions.conclusion.success.ratio",
+              "value": 20,
+              "comparator": "≥"
+            },
+            {
+              "colorMode": "custom-color",
+              "customColor": {
+                "Default": "var(--dt-colors-charts-categorical-color-14-default, #d56b1a)"
+              },
+              "field": "github.actions.conclusion.success.ratio",
+              "value": 40,
+              "comparator": "≥"
+            },
+            {
+              "colorMode": "custom-color",
+              "customColor": "#FFFF00",
+              "field": "github.actions.conclusion.success.ratio",
+              "value": 60,
+              "comparator": "≥"
+            },
+            {
+              "colorMode": "custom-color",
+              "customColor": {
+                "Default": "var(--dt-colors-charts-categorical-color-03-default, #2a7453)"
+              },
+              "field": "github.actions.conclusion.success.ratio",
+              "value": 80,
+              "comparator": "≥"
+            },
+            {
+              "colorMode": "custom-color",
+              "customColor": {
+                "Default": "var(--dt-colors-charts-categorical-color-09-default, #649438)"
+              },
+              "field": "github.actions.conclusion.success.ratio",
+              "value": 100,
+              "comparator": "≥"
+            }
+          ]
+        },
+        "autoSelectVisualization": false,
+        "unitsOverrides": [
+          {
+            "identifier": "github.actions.conclusion.success.ratio",
+            "unitCategory": "percentage",
+            "baseUnit": "percent",
+            "displayUnit": null,
+            "decimals": 2,
+            "suffix": "",
+            "delimiter": false,
+            "added": 1741107236230
+          }
+        ]
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 1,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      },
+      "davis": {
+        "enabled": false,
+        "davisVisualization": {
+          "isAvailable": true
+        }
+      },
+      "timeframe": {
+        "tileTimeframe": {
+          "from": "now()-30d",
+          "to": "now()"
+        },
+        "tileTimeframeEnabled": false
+      }
+    },
+    "28": {
+      "title": "Job Health",
+      "type": "data",
+      "query": "fetch spans\n| filter github.repository.name == $Repository and endsWith(github.actions.workflow.ref, $Branch)\n| filter github.actions.type == \"job\" and not isNull(github.actions.job.name) and not isNull(github.actions.conclusion)\n| filter github.actions.conclusion == \"success\" or github.actions.conclusion == \"failure\"\n| summarize github.actions.conclusion.success=countIf(github.actions.conclusion == \"success\"), github.actions.conclusion.failure=countIf(github.actions.conclusion == \"failure\"), by: { github.actions.job.name }\n| fieldsAdd github.actions.job.name, github.actions.conclusion.success.ratio = 100 * toDouble(github.actions.conclusion.success) / toDouble(github.actions.conclusion.success + github.actions.conclusion.failure)",
+      "visualization": "honeycomb",
+      "visualizationSettings": {
+        "honeycomb": {
+          "legend": {
+            "hidden": true
+          },
+          "dataMappings": {
+            "value": "github.actions.conclusion.success.ratio"
+          },
+          "displayedFields": [
+            "github.actions.job.name"
+          ]
+        },
+        "coloring": {
+          "colorRules": [
+            {
+              "colorMode": "custom-color",
+              "customColor": {
+                "Default": "var(--dt-colors-charts-categorical-color-12-default, #cd3741)"
+              },
+              "field": "github.actions.conclusion.success.ratio",
+              "value": 0,
+              "comparator": "≥"
+            },
+            {
+              "colorMode": "custom-color",
+              "customColor": {
+                "Default": "var(--dt-colors-charts-categorical-themed-swamps-color-04-default, #8f4624)"
+              },
+              "field": "github.actions.conclusion.success.ratio",
+              "value": 20,
+              "comparator": "≥"
+            },
+            {
+              "colorMode": "custom-color",
+              "customColor": {
+                "Default": "var(--dt-colors-charts-categorical-color-14-default, #d56b1a)"
+              },
+              "field": "github.actions.conclusion.success.ratio",
+              "value": 40,
+              "comparator": "≥"
+            },
+            {
+              "colorMode": "custom-color",
+              "customColor": "#FFFF00",
+              "field": "github.actions.conclusion.success.ratio",
+              "value": 60,
+              "comparator": "≥"
+            },
+            {
+              "colorMode": "custom-color",
+              "customColor": {
+                "Default": "var(--dt-colors-charts-categorical-color-03-default, #2a7453)"
+              },
+              "field": "github.actions.conclusion.success.ratio",
+              "value": 80,
+              "comparator": "≥"
+            },
+            {
+              "colorMode": "custom-color",
+              "customColor": {
+                "Default": "var(--dt-colors-charts-categorical-color-09-default, #649438)"
+              },
+              "field": "github.actions.conclusion.success.ratio",
+              "value": 100,
+              "comparator": "≥"
+            }
+          ]
+        },
+        "autoSelectVisualization": false,
+        "unitsOverrides": [
+          {
+            "identifier": "github.actions.conclusion.success.ratio",
+            "unitCategory": "percentage",
+            "baseUnit": "percent",
+            "displayUnit": null,
+            "decimals": 2,
+            "suffix": "",
+            "delimiter": false,
+            "added": 1741107542805
+          }
+        ]
+      },
+      "querySettings": {
+        "maxResultRecords": 10000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 1,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      },
+      "davis": {
+        "enabled": false,
+        "davisVisualization": {
+          "isAvailable": true
+        }
+      },
+      "timeframe": {
+        "tileTimeframe": {
+          "from": "now()-30d",
+          "to": "now()"
+        },
+        "tileTimeframeEnabled": false
+      }
+    },
+    "29": {
+      "title": "Step Health",
+      "type": "data",
+      "query": "fetch spans\n| filter github.repository.name == $Repository and endsWith(github.actions.workflow.ref, $Branch)\n| filter github.actions.type == \"step\" and not isNull(github.actions.step.name) and not isNull(github.actions.conclusion)\n| filter github.actions.conclusion == \"success\" or github.actions.conclusion == \"failure\"\n| summarize github.actions.conclusion.success=countIf(github.actions.conclusion == \"success\"), github.actions.conclusion.failure=countIf(github.actions.conclusion == \"failure\"), by: { github.actions.step.name }\n| fieldsAdd github.actions.step.name, github.actions.conclusion.success.ratio = 100 * toDouble(github.actions.conclusion.success) / toDouble(github.actions.conclusion.success + github.actions.conclusion.failure)",
+      "visualization": "honeycomb",
+      "visualizationSettings": {
+        "honeycomb": {
+          "legend": {
+            "hidden": true
+          },
+          "dataMappings": {
+            "value": "github.actions.conclusion.success.ratio"
+          },
+          "displayedFields": [
+            "github.actions.step.name"
+          ]
+        },
+        "coloring": {
+          "colorRules": [
+            {
+              "colorMode": "custom-color",
+              "customColor": {
+                "Default": "var(--dt-colors-charts-categorical-color-12-default, #cd3741)"
+              },
+              "field": "github.actions.conclusion.success.ratio",
+              "value": 0,
+              "comparator": "≥"
+            },
+            {
+              "colorMode": "custom-color",
+              "customColor": {
+                "Default": "var(--dt-colors-charts-categorical-themed-swamps-color-04-default, #8f4624)"
+              },
+              "field": "github.actions.conclusion.success.ratio",
+              "value": 20,
+              "comparator": "≥"
+            },
+            {
+              "colorMode": "custom-color",
+              "customColor": {
+                "Default": "var(--dt-colors-charts-categorical-color-14-default, #d56b1a)"
+              },
+              "field": "github.actions.conclusion.success.ratio",
+              "value": 40,
+              "comparator": "≥"
+            },
+            {
+              "colorMode": "custom-color",
+              "customColor": "#FFFF00",
+              "field": "github.actions.conclusion.success.ratio",
+              "value": 60,
+              "comparator": "≥"
+            },
+            {
+              "colorMode": "custom-color",
+              "customColor": {
+                "Default": "var(--dt-colors-charts-categorical-color-03-default, #2a7453)"
+              },
+              "field": "github.actions.conclusion.success.ratio",
+              "value": 80,
+              "comparator": "≥"
+            },
+            {
+              "colorMode": "custom-color",
+              "customColor": {
+                "Default": "var(--dt-colors-charts-categorical-color-09-default, #649438)"
+              },
+              "field": "github.actions.conclusion.success.ratio",
+              "value": 100,
+              "comparator": "≥"
+            }
+          ]
+        },
+        "autoSelectVisualization": false,
+        "unitsOverrides": [
+          {
+            "identifier": "github.actions.conclusion.success.ratio",
+            "unitCategory": "percentage",
+            "baseUnit": "percent",
+            "displayUnit": null,
+            "decimals": 2,
+            "suffix": "",
+            "delimiter": false,
+            "added": 1741107611168
+          }
+        ]
+      },
+      "querySettings": {
+        "maxResultRecords": 10000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 1,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      },
+      "davis": {
+        "enabled": false,
+        "davisVisualization": {
+          "isAvailable": true
+        }
+      },
+      "timeframe": {
+        "tileTimeframe": {
+          "from": "now()-30d",
+          "to": "now()"
+        },
+        "tileTimeframeEnabled": false
+      }
+    },
+    "30": {
+      "title": "Action Runs",
+      "type": "data",
+      "query": "timeseries sum(github.actions.actions), filter: { matchesValue(github.repository.name, $Repository) and matchesValue(github.actions.event.ref.name, $Branch) }\n| fieldsAdd github.actions.actions = \"sum(github.actions.actions)\"\n| fieldsAdd value.A = toLong(arraySum(`sum(github.actions.actions)`))",
+      "visualization": "singleValue",
+      "visualizationSettings": {
+        "singleValue": {
+          "labelMode": "none",
+          "label": "value.A",
+          "recordField": "value.A",
+          "isIconVisible": true,
+          "prefixIcon": "WorkflowsIcon",
+          "sparklineSettings": {
+            "variant": "area",
+            "record": "sum(github.actions.actions)",
+            "lineType": "smooth"
+          },
+          "trend": {
+            "isVisible": true,
+            "isRelative": false
+          }
+        },
+        "autoSelectVisualization": false
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 1,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      },
+      "davis": {
+        "davisVisualization": {
+          "isAvailable": true
+        }
+      }
+    },
+    "31": {
+      "title": "Action Conclusions",
+      "type": "data",
+      "query": "timeseries sum(github.actions.actions), by: { github.actions.action.conclusion }, filter: { matchesValue(github.repository.name, $Repository) and matchesValue(github.actions.event.ref.name, $Branch) }\n| fieldsAdd value.A = toLong(arraySum(`sum(github.actions.actions)`))",
+      "visualization": "pieChart",
+      "visualizationSettings": {
+        "chartSettings": {
+          "legend": {
+            "position": "right",
+            "hidden": true
+          },
+          "circleChartSettings": {
+            "valueType": "relative",
+            "groupingThresholdType": "relative"
+          }
+        },
+        "legend": {
+          "ratio": 20
+        },
+        "coloring": {
+          "colorRules": [
+            {
+              "field": "DT.name",
+              "comparator": "= *value*",
+              "value": "",
+              "type": "string",
+              "colorMode": "color-palette",
+              "colorPalette": "categorical"
+            },
+            {
+              "colorMode": "custom-color",
+              "customColor": {
+                "Default": "var(--dt-colors-charts-loglevel-emergency-default, #ae132d)"
+              },
+              "type": "string",
+              "field": "DT.name",
+              "comparator": "=",
+              "value": "failure"
+            },
+            {
+              "colorMode": "custom-color",
+              "customColor": "#62903C",
+              "type": "string",
+              "field": "DT.name",
+              "comparator": "=",
+              "value": "success"
+            },
+            {
+              "colorMode": "custom-color",
+              "customColor": {
+                "Default": "var(--dt-colors-charts-categorical-color-02-default, #2c2f3f)"
+              },
+              "type": "string",
+              "field": "DT.name",
+              "comparator": "=",
+              "value": "cancelled"
+            },
+            {
+              "colorMode": "custom-color",
+              "customColor": {
+                "Default": "var(--dt-colors-charts-categorical-color-02-default, #2c2f3f)"
+              },
+              "type": "string",
+              "field": "DT.name",
+              "comparator": "=",
+              "value": "skipped"
+            }
+          ]
+        },
+        "autoSelectVisualization": false
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 1,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      },
+      "davis": {
+        "davisVisualization": {
+          "isAvailable": true
+        }
+      }
+    },
+    "32": {
+      "title": "Action Health",
+      "type": "data",
+      "query": "fetch spans\n| filter github.repository.name == $Repository and endsWith(github.actions.workflow.ref, $Branch)\n| filter github.actions.type == \"step\" and not isNull(github.actions.action.name) and not isNull(github.actions.conclusion)\n| filter github.actions.conclusion == \"success\" or github.actions.conclusion == \"failure\"\n| summarize github.actions.conclusion.success=countIf(github.actions.conclusion == \"success\"), github.actions.conclusion.failure=countIf(github.actions.conclusion == \"failure\"), by: { github.actions.action.name }\n| fieldsAdd github.actions.action.name, github.actions.conclusion.success.ratio = 100 * toDouble(github.actions.conclusion.success) / toDouble(github.actions.conclusion.success + github.actions.conclusion.failure)",
+      "visualization": "honeycomb",
+      "visualizationSettings": {
+        "honeycomb": {
+          "dataMappings": {
+            "value": "github.actions.conclusion.success.ratio"
+          },
+          "displayedFields": [
+            "github.actions.action.name"
+          ],
+          "legend": {
+            "hidden": true
+          }
+        },
+        "autoSelectVisualization": false,
+        "unitsOverrides": [
+          {
+            "identifier": "github.actions.conclusion.success.ratio",
+            "unitCategory": "percentage",
+            "baseUnit": "percent",
+            "displayUnit": null,
+            "decimals": 2,
+            "suffix": "",
+            "delimiter": false,
+            "added": 1741107668473
+          }
+        ],
+        "coloring": {
+          "colorRules": [
+            {
+              "colorMode": "custom-color",
+              "customColor": {
+                "Default": "var(--dt-colors-charts-categorical-color-12-default, #cd3741)"
+              },
+              "field": "github.actions.conclusion.success.ratio",
+              "value": 0,
+              "comparator": "≥",
+              "type": "double"
+            },
+            {
+              "colorMode": "custom-color",
+              "customColor": {
+                "Default": "var(--dt-colors-charts-categorical-themed-swamps-color-04-default, #8f4624)"
+              },
+              "field": "github.actions.conclusion.success.ratio",
+              "value": 20,
+              "comparator": "≥",
+              "type": "double"
+            },
+            {
+              "colorMode": "custom-color",
+              "customColor": {
+                "Default": "var(--dt-colors-charts-categorical-color-14-default, #d56b1a)"
+              },
+              "field": "github.actions.conclusion.success.ratio",
+              "value": 40,
+              "comparator": "≥",
+              "type": "double"
+            },
+            {
+              "colorMode": "custom-color",
+              "customColor": "#FFFF00",
+              "field": "github.actions.conclusion.success.ratio",
+              "value": 60,
+              "comparator": "≥",
+              "type": "double"
+            },
+            {
+              "colorMode": "custom-color",
+              "customColor": {
+                "Default": "var(--dt-colors-charts-categorical-color-03-default, #2a7453)"
+              },
+              "field": "github.actions.conclusion.success.ratio",
+              "value": 80,
+              "comparator": "≥",
+              "type": "double"
+            },
+            {
+              "colorMode": "custom-color",
+              "customColor": {
+                "Default": "var(--dt-colors-charts-categorical-color-09-default, #649438)"
+              },
+              "field": "github.actions.conclusion.success.ratio",
+              "value": 100,
+              "comparator": "≥",
+              "type": "double"
+            }
+          ]
+        }
+      },
+      "querySettings": {
+        "maxResultRecords": 10000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 1,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      },
+      "davis": {
+        "enabled": false,
+        "davisVisualization": {
+          "isAvailable": true
+        }
+      },
+      "timeframe": {
+        "tileTimeframe": {
+          "from": "now()-30d",
+          "to": "now()"
+        },
+        "tileTimeframeEnabled": false
+      }
+    },
+    "33": {
+      "title": "Last Failed Traces",
+      "type": "data",
+      "query": "fetch spans\n| filter github.actions.type == \"workflow\"\n| filter github.repository.name == $Repository and github.actions.event.ref.name == $Branch\n| filter span.status_code == \"error\"\n| sort start_time desc\n| limit 10",
+      "visualization": "table",
+      "visualizationSettings": {
+        "table": {
+          "hiddenColumns": [
+            [
+              "span.events"
+            ],
+            [
+              "service.instance.id"
+            ],
+            [
+              "service.namespace"
+            ],
+            [
+              "service.version"
+            ],
+            [
+              "github.actions.workflow_run.conclusion"
+            ],
+            [
+              "supportability.endpoint_name_rule"
+            ],
+            [
+              "trace.id"
+            ],
+            [
+              "span.id"
+            ],
+            [
+              "start_time"
+            ],
+            [
+              "end_time"
+            ],
+            [
+              "dt.ingest.size"
+            ],
+            [
+              "span.status_code"
+            ],
+            [
+              "github.actions.event.ref.name"
+            ],
+            [
+              "github.actions.workflow_run.number"
+            ],
+            [
+              "github.actions.workflow_run.attempt"
+            ],
+            [
+              "dt.retain.size"
+            ],
+            [
+              "github.actions.event.ref.sha"
+            ],
+            [
+              "dt.openpipeline.pipelines"
+            ],
+            [
+              "github.actions.actor.id"
+            ],
+            [
+              "telemetry.sdk.language"
+            ],
+            [
+              "otel.scope.name"
+            ],
+            [
+              "telemetry.sdk.version"
+            ],
+            [
+              "github.actions.workflow.ref"
+            ],
+            [
+              "otel.scope.version"
+            ],
+            [
+              "github.actions.workflow_run.id"
+            ],
+            [
+              "github.actions.actor.name"
+            ],
+            [
+              "github.actions.workflow.sha"
+            ],
+            [
+              "github.actions.type"
+            ],
+            [
+              "span.name"
+            ],
+            [
+              "service.name"
+            ],
+            [
+              "github.actions.workflow.id"
+            ],
+            [
+              "telemetry.sdk.name"
+            ],
+            [
+              "github.repository.id"
+            ],
+            [
+              "span.kind"
+            ],
+            [
+              "dt.openpipeline.source"
+            ],
+            [
+              "dt.entity.service"
+            ],
+            [
+              "duration"
+            ],
+            [
+              "github.repository.owner.id"
+            ],
+            [
+              "github.actions.event.ref"
+            ],
+            [
+              "github.repository.owner.name"
+            ],
+            [
+              "github.repository.name"
+            ],
+            [
+              "github.actions.event.name"
+            ],
+            [
+              "dt.smartscape.service"
+            ],
+            [
+              "github.actions.conclusion"
+            ],
+            [
+              "dt.endpoint_detection.rule_id"
+            ],
+            [
+              "dt.service.name"
+            ],
+            [
+              "request.is_root_span"
+            ],
+            [
+              "dt.failure_detection.ruleset_id"
+            ],
+            [
+              "request.is_failed"
+            ],
+            [
+              "dt.failure_detection.verdict"
+            ],
+            [
+              "endpoint.name"
+            ],
+            [
+              "dt.failure_detection.results"
+            ],
+            [
+              "transaction.is_root_span"
+            ],
+            [
+              "transaction.is_failed"
+            ],
+            [
+              "transaction.is_endpoint_request"
+            ],
+            [
+              "span.links"
+            ]
+          ],
+          "hideColumnsForLargeResults": false,
+          "columnTypeOverrides": [
+            {
+              "id": 433056.59999999986,
+              "fields": [
+                "github.actions.url"
+              ],
+              "value": "markdown"
+            }
+          ],
+          "columnOrder": [
+            "[\"trace.id\"]",
+            "[\"span.id\"]",
+            "[\"start_time\"]",
+            "[\"end_time\"]",
+            "[\"dt.ingest.size\"]",
+            "[\"span.status_code\"]",
+            "[\"github.actions.event.ref.name\"]",
+            "[\"github.actions.workflow_run.number\"]",
+            "[\"github.actions.workflow_run.attempt\"]",
+            "[\"dt.retain.size\"]",
+            "[\"github.actions.event.ref.sha\"]",
+            "[\"dt.openpipeline.pipelines\"]",
+            "[\"github.actions.workflow.name\"]",
+            "[\"github.actions.actor.id\"]",
+            "[\"telemetry.sdk.language\"]",
+            "[\"otel.scope.name\"]",
+            "[\"telemetry.sdk.version\"]",
+            "[\"github.actions.workflow.ref\"]",
+            "[\"otel.scope.version\"]",
+            "[\"github.actions.workflow_run.id\"]",
+            "[\"github.actions.actor.name\"]",
+            "[\"github.actions.workflow.sha\"]",
+            "[\"github.actions.type\"]",
+            "[\"span.name\"]",
+            "[\"service.name\"]",
+            "[\"github.actions.workflow.id\"]",
+            "[\"telemetry.sdk.name\"]",
+            "[\"github.repository.id\"]",
+            "[\"span.kind\"]",
+            "[\"dt.openpipeline.source\"]",
+            "[\"dt.entity.service\"]",
+            "[\"duration\"]",
+            "[\"github.repository.owner.id\"]",
+            "[\"github.actions.event.ref\"]",
+            "[\"github.repository.owner.name\"]",
+            "[\"github.repository.name\"]",
+            "[\"github.actions.event.name\"]",
+            "[\"dt.smartscape.service\"]",
+            "[\"github.actions.conclusion\"]",
+            "[\"dt.endpoint_detection.rule_id\"]",
+            "[\"dt.service.name\"]",
+            "[\"github.actions.url.full\"]",
+            "[\"request.is_root_span\"]",
+            "[\"dt.failure_detection.ruleset_id\"]",
+            "[\"request.is_failed\"]",
+            "[\"dt.failure_detection.verdict\"]",
+            "[\"endpoint.name\"]",
+            "[\"dt.failure_detection.results\"]",
+            "[\"transaction.is_root_span\"]",
+            "[\"transaction.is_failed\"]",
+            "[\"transaction.is_endpoint_request\"]"
+          ]
+        },
+        "autoSelectVisualization": false
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 1,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      },
+      "davis": {
+        "davisVisualization": {
+          "isAvailable": true
+        }
+      }
+    },
+    "34": {
+      "title": "Last Abnormal Logs",
+      "type": "data",
+      "query": "fetch logs\n| filter github.repository.name == $Repository and endsWith(github.actions.workflow.ref, $Branch)\n| filter loglevel != \"NONE\" and loglevel != \"INFO\" and loglevel != \"DEBUG\" and loglevel != \"TRACE\"\n| sort timestamp desc\n| limit 10",
+      "visualization": "table",
+      "visualizationSettings": {
+        "table": {
+          "hiddenColumns": [
+            [
+              "github.actions.workflow.id"
+            ],
+            [
+              "event.type"
+            ],
+            [
+              "service.namespace"
+            ],
+            [
+              "service.version"
+            ],
+            [
+              "timestamp"
+            ],
+            [
+              "dt.source_entity"
+            ],
+            [
+              "service.name"
+            ],
+            [
+              "status"
+            ],
+            [
+              "dt.auth.origin"
+            ],
+            [
+              "dt.entity.service"
+            ],
+            [
+              "dt.openpipeline.pipelines"
+            ],
+            [
+              "github.actions.workflow.ref"
+            ],
+            [
+              "github.actions.workflow.sha"
+            ],
+            [
+              "github.repository.id"
+            ],
+            [
+              "github.repository.name"
+            ],
+            [
+              "github.repository.owner.id"
+            ],
+            [
+              "github.repository.owner.name"
+            ],
+            [
+              "otel.scope.name"
+            ],
+            [
+              "otel.scope.version"
+            ],
+            [
+              "span_id"
+            ],
+            [
+              "telemetry.sdk.language"
+            ],
+            [
+              "telemetry.sdk.name"
+            ],
+            [
+              "telemetry.sdk.version"
+            ],
+            [
+              "trace_id"
+            ],
+            [
+              "dt.openpipeline.source"
+            ],
+            [
+              "dt.smartscape.service"
+            ],
+            [
+              "os.type"
+            ],
+            [
+              "os.version"
+            ],
+            [
+              "cloud.provider"
+            ],
+            [
+              "host.type"
+            ],
+            [
+              "azure.vm.scaleset.name"
+            ],
+            [
+              "azure.vm.sku"
+            ],
+            [
+              "cloud.platform"
+            ],
+            [
+              "cloud.region"
+            ],
+            [
+              "host.id"
+            ],
+            [
+              "host.name"
+            ],
+            [
+              "service.instance.id"
+            ],
+            [
+              "cloud.resource_id"
+            ],
+            [
+              "host.arch"
+            ],
+            [
+              "os.description"
+            ],
+            [
+              "process.command_args"
+            ],
+            [
+              "process.executable.path"
+            ],
+            [
+              "process.pid"
+            ],
+            [
+              "process.runtime.description"
+            ],
+            [
+              "process.runtime.name"
+            ],
+            [
+              "process.runtime.version"
+            ],
+            [
+              "telemetry.distro.name"
+            ],
+            [
+              "telemetry.distro.version"
+            ]
+          ],
+          "hideColumnsForLargeResults": false,
+          "columnWidths": {
+            "[\"content\"]": 758.76
+          },
+          "columnTypeOverrides": [
+            {
+              "id": 38161374.5,
+              "fields": [
+                "content"
+              ],
+              "value": "log-content"
+            }
+          ],
+          "columnOrder": [
+            "[\"github.actions.workflow.name\"]",
+            "[\"loglevel\"]",
+            "[\"content\"]",
+            "[\"timestamp\"]",
+            "[\"dt.source_entity\"]",
+            "[\"service.name\"]",
+            "[\"status\"]",
+            "[\"dt.auth.origin\"]",
+            "[\"dt.entity.service\"]",
+            "[\"dt.openpipeline.pipelines\"]",
+            "[\"github.actions.workflow.ref\"]",
+            "[\"github.actions.workflow.sha\"]",
+            "[\"github.repository.id\"]",
+            "[\"github.repository.name\"]",
+            "[\"github.repository.owner.id\"]",
+            "[\"github.repository.owner.name\"]",
+            "[\"otel.scope.name\"]",
+            "[\"otel.scope.version\"]",
+            "[\"span_id\"]",
+            "[\"telemetry.sdk.language\"]",
+            "[\"telemetry.sdk.name\"]",
+            "[\"telemetry.sdk.version\"]",
+            "[\"trace_id\"]",
+            "[\"dt.openpipeline.source\"]",
+            "[\"dt.smartscape.service\"]",
+            "[\"os.type\"]",
+            "[\"os.version\"]",
+            "[\"cloud.provider\"]",
+            "[\"host.type\"]",
+            "[\"azure.vm.scaleset.name\"]",
+            "[\"azure.vm.sku\"]",
+            "[\"cloud.platform\"]",
+            "[\"cloud.region\"]",
+            "[\"host.id\"]",
+            "[\"host.name\"]",
+            "[\"service.instance.id\"]",
+            "[\"cloud.resource_id\"]",
+            "[\"host.arch\"]",
+            "[\"os.description\"]",
+            "[\"process.command_args\"]",
+            "[\"process.executable.path\"]",
+            "[\"process.pid\"]",
+            "[\"process.runtime.description\"]",
+            "[\"process.runtime.name\"]",
+            "[\"process.runtime.version\"]",
+            "[\"telemetry.distro.name\"]",
+            "[\"telemetry.distro.version\"]"
+          ]
+        },
+        "autoSelectVisualization": false
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 1,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      },
+      "davis": {
+        "davisVisualization": {
+          "isAvailable": true
+        }
+      }
+    },
+    "35": {
+      "type": "markdown",
+      "content": "![](https://avatars.githubusercontent.com/u/44036562?s=200&v=4)"
+    },
+    "36": {
+      "title": "API Rate Limit Used",
+      "type": "data",
+      "query": "timeseries { max(github.api.rate_limit.used), min(github.api.rate_limit.remaining) }, filter: { matchesValue(github.repository.name, $Repository) }, by: { github.api.resource }\n| fieldsAdd value.A = arrayAvg(`max(github.api.rate_limit.used)`)\n| fieldsAdd value.B = arrayAvg(`min(github.api.rate_limit.remaining)`)\n| fieldsAdd C = 100*`max(github.api.rate_limit.used)`[]/(`max(github.api.rate_limit.used)`[]+`min(github.api.rate_limit.remaining)`[])\n| filter arraySum(C) > 0\n| fieldsRemove `max(github.api.rate_limit.used)`\n| fieldsRemove `min(github.api.rate_limit.remaining)`",
+      "visualization": "lineChart",
+      "visualizationSettings": {
+        "chartSettings": {
+          "legend": {
+            "position": "bottom",
+            "hidden": true
+          },
+          "leftYAxisSettings": {
+            "label": "%",
+            "isLabelVisible": true,
+            "max": {
+              "mode": "custom",
+              "value": 100
+            }
+          },
+          "xAxisLabel": "timeframe",
+          "xAxisScaling": "analyzedTimeframe",
+          "seriesOverrides": [
+            {
+              "seriesId": [
+                "code_scanning_upload"
+              ],
+              "override": {
+                "color": "#b3007d"
+              }
+            }
+          ],
+          "fieldMapping": {
+            "leftAxisValues": [
+              "C"
+            ],
+            "timestamp": "timeframe"
+          },
+          "curve": "smooth"
+        },
+        "dataMapping": {
+          "displayedFields": [
+            "github.api.resource"
+          ]
+        },
+        "coloring": {
+          "colorRules": [
+            {
+              "field": "DT.name",
+              "comparator": "= *value*",
+              "value": "",
+              "type": "string",
+              "colorMode": "color-palette",
+              "colorPalette": "swamps"
+            },
+            {
+              "colorMode": "custom-color",
+              "type": "string",
+              "field": "DT.name",
+              "comparator": "=",
+              "customColor": "#b3007d",
+              "value": "code_scanning_upload"
+            }
+          ]
+        },
+        "autoSelectVisualization": false
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 1,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      },
+      "davis": {
+        "davisVisualization": {
+          "isAvailable": true
+        }
+      }
+    },
+    "40": {
+      "title": "HTTP Health",
+      "type": "data",
+      "query": "fetch spans\n| filter github.repository.name == $Repository AND endsWith(github.actions.workflow.ref, concat(\"/\", $Branch))\n| filter not isNull(http.request.method)\n| fieldsAdd http.response.status_code.string = toString(http.response.status_code)\n| summarize http.conclusion.success=countIf(startsWith(http.response.status_code.string, \"1\") or startsWith(http.response.status_code.string, \"2\") or startsWith(http.response.status_code.string, \"3\")), http.conclusion.failure=countIf(startsWith(http.response.status_code.string, \"4\") or startsWith(http.response.status_code.string, \"5\")), by: { server.address }\n| fieldsAdd server.address, http.conclusion.success.ratio = 100 * toDouble(http.conclusion.success) / toDouble(http.conclusion.success + http.conclusion.failure)",
+      "visualization": "honeycomb",
+      "visualizationSettings": {
+        "honeycomb": {
+          "legend": {
+            "hidden": true
+          },
+          "dataMappings": {
+            "value": "http.conclusion.success.ratio"
+          },
+          "displayedFields": [
+            "server.address"
+          ]
+        },
+        "coloring": {
+          "colorRules": [
+            {
+              "colorMode": "custom-color",
+              "customColor": {
+                "Default": "var(--dt-colors-charts-categorical-color-12-default, #cd3741)"
+              },
+              "field": "http.conclusion.success.ratio",
+              "value": 0,
+              "comparator": "≥",
+              "type": "double"
+            },
+            {
+              "colorMode": "custom-color",
+              "customColor": {
+                "Default": "var(--dt-colors-charts-categorical-themed-swamps-color-04-default, #8f4624)"
+              },
+              "field": "http.conclusion.success.ratio",
+              "value": 20,
+              "comparator": "≥",
+              "type": "double"
+            },
+            {
+              "colorMode": "custom-color",
+              "customColor": {
+                "Default": "var(--dt-colors-charts-categorical-color-14-default, #d56b1a)"
+              },
+              "field": "http.conclusion.success.ratio",
+              "value": 40,
+              "comparator": "≥",
+              "type": "double"
+            },
+            {
+              "colorMode": "custom-color",
+              "customColor": "#FFFF00",
+              "field": "http.conclusion.success.ratio",
+              "value": 60,
+              "comparator": "≥",
+              "type": "double"
+            },
+            {
+              "colorMode": "custom-color",
+              "customColor": {
+                "Default": "var(--dt-colors-charts-categorical-color-03-default, #2a7453)"
+              },
+              "field": "http.conclusion.success.ratio",
+              "value": 80,
+              "comparator": "≥",
+              "type": "double"
+            },
+            {
+              "colorMode": "custom-color",
+              "customColor": {
+                "Default": "var(--dt-colors-charts-categorical-color-09-default, #649438)"
+              },
+              "field": "http.conclusion.success.ratio",
+              "value": 100,
+              "comparator": "≥",
+              "type": "double"
+            }
+          ]
+        },
+        "autoSelectVisualization": false,
+        "unitsOverrides": [
+          {
+            "identifier": "http.conclusion.success.ratio",
+            "unitCategory": "percentage",
+            "baseUnit": "percent",
+            "displayUnit": null,
+            "decimals": 2,
+            "suffix": "",
+            "delimiter": false,
+            "added": 1741107668473
+          }
+        ]
+      },
+      "querySettings": {
+        "maxResultRecords": 10000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 1,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      },
+      "davis": {
+        "enabled": false,
+        "davisVisualization": {
+          "isAvailable": true
+        }
+      },
+      "timeframe": {
+        "tileTimeframe": {
+          "from": "now()-30d",
+          "to": "now()"
+        },
+        "tileTimeframeEnabled": false
+      }
+    },
+    "43": {
+      "title": "HTTP Requests",
+      "type": "data",
+      "query": "timeseries { count(http.client.request.duration), value.A = count(http.client.request.duration, scalar: true) }, filter: { matchesValue(github.repository.name, $Repository) AND endsWith(github.actions.workflow.ref, concat(\"/\", $Branch)) }",
+      "visualization": "singleValue",
+      "visualizationSettings": {
+        "singleValue": {
+          "labelMode": "none",
+          "isIconVisible": true,
+          "prefixIcon": "HttpIcon",
+          "sparklineSettings": {
+            "color": "#438FB1",
+            "lineType": "smooth"
+          }
+        },
+        "autoSelectVisualization": false,
+        "unitsOverrides": [
+          {
+            "identifier": "count(http.client.request.duration)",
+            "unitCategory": "unspecified",
+            "baseUnit": "count",
+            "displayUnit": null,
+            "decimals": 0,
+            "suffix": "",
+            "delimiter": false,
+            "added": 1772664349792
+          },
+          {
+            "identifier": "value.A",
+            "unitCategory": "unspecified",
+            "baseUnit": "count",
+            "displayUnit": null,
+            "decimals": 0,
+            "suffix": "",
+            "delimiter": false,
+            "added": 1772664682985
+          }
+        ]
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 1,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      },
+      "davis": {
+        "enabled": false,
+        "davisVisualization": {
+          "isAvailable": true
+        }
+      }
+    },
+    "44": {
+      "title": "HTTP Responses",
+      "type": "data",
+      "query": "timeseries { count(http.client.request.duration), value.A = count(http.client.request.duration, scalar: true) }, by: { http.response.status_code }, filter: { matchesValue(github.repository.name, $Repository) and endsWith(github.actions.workflow.ref, concat(\"/\", $Branch)) }",
+      "visualization": "pieChart",
+      "visualizationSettings": {
+        "chartSettings": {
+          "legend": {
+            "hidden": true
+          },
+          "circleChartSettings": {
+            "valueType": "relative"
+          }
+        },
+        "coloring": {
+          "colorRules": [
+            {
+              "colorMode": "single-color",
+              "comparator": ">",
+              "field": "interval",
+              "value": 0,
+              "type": "duration",
+              "color": "var(--dt-colors-charts-loglevel-none-default, #2c2f3f)"
+            },
+            {
+              "colorMode": "single-color",
+              "comparator": "!=",
+              "field": "http.response.status_code",
+              "value": "0",
+              "type": "string",
+              "color": "var(--dt-colors-charts-loglevel-none-default, #2c2f3f)"
+            },
+            {
+              "colorMode": "custom-color",
+              "comparator": "=",
+              "field": "http.response.status_code",
+              "value": "200",
+              "type": "string",
+              "customColor": "#62903C"
+            },
+            {
+              "colorMode": "custom-color",
+              "comparator": "=",
+              "field": "http.response.status_code",
+              "value": "201",
+              "type": "string",
+              "customColor": "#62903C"
+            },
+            {
+              "colorMode": "custom-color",
+              "comparator": "=",
+              "field": "http.response.status_code",
+              "value": "204",
+              "type": "string",
+              "customColor": "#62903C"
+            },
+            {
+              "colorMode": "custom-color",
+              "comparator": "=",
+              "field": "http.response.status_code",
+              "value": "205",
+              "type": "string",
+              "customColor": "#62903C"
+            },
+            {
+              "colorMode": "custom-color",
+              "comparator": "=",
+              "field": "http.response.status_code",
+              "value": "206",
+              "type": "string",
+              "customColor": "#62903C"
+            },
+            {
+              "colorMode": "custom-color",
+              "comparator": "=",
+              "field": "http.response.status_code",
+              "value": "300",
+              "type": "string",
+              "customColor": "#62903C"
+            },
+            {
+              "colorMode": "custom-color",
+              "comparator": "=",
+              "field": "http.response.status_code",
+              "value": "301",
+              "type": "string",
+              "customColor": "#62903C"
+            },
+            {
+              "colorMode": "custom-color",
+              "comparator": "=",
+              "field": "http.response.status_code",
+              "value": "302",
+              "type": "string",
+              "customColor": "#62903C"
+            },
+            {
+              "colorMode": "custom-color",
+              "comparator": "=",
+              "field": "http.response.status_code",
+              "value": "304",
+              "type": "string",
+              "customColor": "#62903C"
+            },
+            {
+              "colorMode": "custom-color",
+              "comparator": "=",
+              "field": "http.response.status_code",
+              "value": "307",
+              "type": "string",
+              "customColor": "#62903C"
+            },
+            {
+              "colorMode": "custom-color",
+              "comparator": "=",
+              "field": "http.response.status_code",
+              "value": "308",
+              "type": "string",
+              "customColor": "#62903C"
+            },
+            {
+              "colorMode": "custom-color",
+              "comparator": "=",
+              "field": "http.response.status_code",
+              "value": "400",
+              "type": "string",
+              "customColor": "#DC671E"
+            },
+            {
+              "colorMode": "custom-color",
+              "comparator": "=",
+              "field": "http.response.status_code",
+              "value": "401",
+              "type": "string",
+              "customColor": "#DC671E"
+            },
+            {
+              "colorMode": "custom-color",
+              "comparator": "=",
+              "field": "http.response.status_code",
+              "value": "402",
+              "type": "string",
+              "customColor": "#DC671E"
+            },
+            {
+              "colorMode": "custom-color",
+              "comparator": "=",
+              "field": "http.response.status_code",
+              "value": "403",
+              "type": "string",
+              "customColor": "#DC671E"
+            },
+            {
+              "colorMode": "custom-color",
+              "comparator": "=",
+              "field": "http.response.status_code",
+              "value": "404",
+              "type": "string",
+              "customColor": "#FFFF00"
+            },
+            {
+              "colorMode": "custom-color",
+              "comparator": "=",
+              "field": "http.response.status_code",
+              "value": "405",
+              "type": "string",
+              "customColor": "#DC671E"
+            },
+            {
+              "colorMode": "custom-color",
+              "comparator": "=",
+              "field": "http.response.status_code",
+              "value": "406",
+              "type": "string",
+              "customColor": "#DC671E"
+            },
+            {
+              "colorMode": "custom-color",
+              "comparator": "=",
+              "field": "http.response.status_code",
+              "value": "408",
+              "type": "string",
+              "customColor": "#DC671E"
+            },
+            {
+              "colorMode": "custom-color",
+              "comparator": "=",
+              "field": "http.response.status_code",
+              "value": "410",
+              "type": "string",
+              "customColor": "#DC671E"
+            },
+            {
+              "colorMode": "custom-color",
+              "comparator": "=",
+              "field": "http.response.status_code",
+              "value": "411",
+              "type": "string",
+              "customColor": "#DC671E"
+            },
+            {
+              "colorMode": "custom-color",
+              "comparator": "=",
+              "field": "http.response.status_code",
+              "value": "413",
+              "type": "string",
+              "customColor": "#DC671E"
+            },
+            {
+              "colorMode": "custom-color",
+              "comparator": "=",
+              "field": "http.response.status_code",
+              "value": "414",
+              "type": "string",
+              "customColor": "#DC671E"
+            },
+            {
+              "colorMode": "custom-color",
+              "comparator": "=",
+              "field": "http.response.status_code",
+              "value": "415",
+              "type": "string",
+              "customColor": "#DC671E"
+            },
+            {
+              "colorMode": "custom-color",
+              "comparator": "=",
+              "field": "http.response.status_code",
+              "value": "416",
+              "type": "string",
+              "customColor": "#DC671E"
+            },
+            {
+              "colorMode": "custom-color",
+              "comparator": "=",
+              "field": "http.response.status_code",
+              "value": "418",
+              "type": "string",
+              "customColor": "#DC671E"
+            },
+            {
+              "colorMode": "single-color",
+              "comparator": "=",
+              "field": "http.response.status_code",
+              "value": "429",
+              "type": "string",
+              "color": "var(--dt-colors-charts-loglevel-info-default, #134fc9)"
+            },
+            {
+              "colorMode": "custom-color",
+              "comparator": "=",
+              "field": "http.response.status_code",
+              "value": "431",
+              "type": "string",
+              "customColor": "#DC671E"
+            },
+            {
+              "colorMode": "custom-color",
+              "comparator": "=",
+              "field": "http.response.status_code",
+              "value": "500",
+              "type": "string",
+              "customColor": "#C21930"
+            },
+            {
+              "colorMode": "custom-color",
+              "comparator": "=",
+              "field": "http.response.status_code",
+              "value": "501",
+              "type": "string",
+              "customColor": "#C21930"
+            },
+            {
+              "colorMode": "custom-color",
+              "comparator": "=",
+              "field": "http.response.status_code",
+              "value": "502",
+              "type": "string",
+              "customColor": "#C21930"
+            },
+            {
+              "colorMode": "custom-color",
+              "comparator": "=",
+              "field": "http.response.status_code",
+              "value": "503",
+              "type": "string",
+              "customColor": "#C21930"
+            },
+            {
+              "colorMode": "custom-color",
+              "comparator": "=",
+              "field": "http.response.status_code",
+              "value": "504",
+              "type": "string",
+              "customColor": "#C21930"
+            }
+          ]
+        },
+        "autoSelectVisualization": false,
+        "unitsOverrides": [
+          {
+            "identifier": "count(http.client.request.duration)",
+            "unitCategory": "unspecified",
+            "baseUnit": "count",
+            "displayUnit": null,
+            "decimals": 0,
+            "suffix": "",
+            "delimiter": false,
+            "added": 1772664349792
+          },
+          {
+            "identifier": "value.A",
+            "unitCategory": "unspecified",
+            "baseUnit": "count",
+            "displayUnit": null,
+            "decimals": 0,
+            "suffix": "",
+            "delimiter": false,
+            "added": 1772664682985
+          }
+        ]
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 1,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      },
+      "davis": {
+        "enabled": false,
+        "davisVisualization": {
+          "isAvailable": true
+        }
+      }
+    }
+  },
+  "layouts": {
+    "16": {
+      "x": 0,
+      "y": 5,
+      "w": 4,
+      "h": 5
+    },
+    "17": {
+      "x": 4,
+      "y": 0,
+      "w": 4,
+      "h": 5
+    },
+    "20": {
+      "x": 4,
+      "y": 5,
+      "w": 4,
+      "h": 5
+    },
+    "21": {
+      "x": 8,
+      "y": 0,
+      "w": 4,
+      "h": 5
+    },
+    "23": {
+      "x": 8,
+      "y": 5,
+      "w": 4,
+      "h": 5
+    },
+    "24": {
+      "x": 12,
+      "y": 0,
+      "w": 4,
+      "h": 5
+    },
+    "26": {
+      "x": 12,
+      "y": 5,
+      "w": 4,
+      "h": 5
+    },
+    "27": {
+      "x": 4,
+      "y": 10,
+      "w": 4,
+      "h": 5
+    },
+    "28": {
+      "x": 8,
+      "y": 10,
+      "w": 4,
+      "h": 5
+    },
+    "29": {
+      "x": 12,
+      "y": 10,
+      "w": 4,
+      "h": 5
+    },
+    "30": {
+      "x": 16,
+      "y": 0,
+      "w": 4,
+      "h": 5
+    },
+    "31": {
+      "x": 16,
+      "y": 5,
+      "w": 4,
+      "h": 5
+    },
+    "32": {
+      "x": 16,
+      "y": 10,
+      "w": 4,
+      "h": 5
+    },
+    "33": {
+      "x": 0,
+      "y": 15,
+      "w": 12,
+      "h": 7
+    },
+    "34": {
+      "x": 12,
+      "y": 15,
+      "w": 12,
+      "h": 7
+    },
+    "35": {
+      "x": 0,
+      "y": 0,
+      "w": 3,
+      "h": 5
+    },
+    "36": {
+      "x": 0,
+      "y": 10,
+      "w": 4,
+      "h": 5
+    },
+    "40": {
+      "x": 20,
+      "y": 10,
+      "w": 4,
+      "h": 5
+    },
+    "43": {
+      "x": 20,
+      "y": 0,
+      "w": 4,
+      "h": 5
+    },
+    "44": {
+      "x": 20,
+      "y": 5,
+      "w": 4,
+      "h": 5
+    }
+  },
+  "importedWithCode": false,
+  "settings": {
+  },
+  "annotations": [
+  ]
+}
