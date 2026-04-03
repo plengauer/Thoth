@@ -167,6 +167,7 @@ jobs:
       matrix:
         run: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
       fail-fast: false
+      max-parallel: 1
     permissions:
       contents: read
       actions: read
