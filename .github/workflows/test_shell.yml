@@ -25,6 +25,8 @@ jobs:
           name: packages_${{ inputs.ref }}
       - run: sudo apt-get -y install ./package.deb apt-file
       - run: bash -c "cd tests && bash run_tests.sh bash"
+        env:
+          OPENAI_TOKEN: ${{ secrets.OPENAI_TOKEN }}
       - run: sudo apt-get -y remove opentelemetry-shell
   list-released-versions:
     needs: smoke
