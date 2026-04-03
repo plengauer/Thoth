@@ -87,7 +87,7 @@
     "17": {
       "title": "Workflow Runs",
       "type": "data",
-      "query": "timeseries sum(github.actions.workflows), filter: { matchesValue(github.repository.name, $Repository) and matchesValue(github.actions.event.ref.name, $Branch) }\n| fieldsAdd githup.actions.workflows = \"sum(github.actions.workflows)\"\n| fieldsAdd value.A = toLong(arraySum(`sum(github.actions.workflows)`))",
+      "query": "timeseries sum(github.actions.workflows), filter: { matchesValue(github.repository.name, $Repository) and matchesValue(github.actions.event.ref.name, $Branch) }\n| fieldsAdd github.actions.workflows = \"sum(github.actions.workflows)\"\n| fieldsAdd value.A = toLong(arraySum(`sum(github.actions.workflows)`))",
       "visualization": "singleValue",
       "visualizationSettings": {
         "singleValue": {
