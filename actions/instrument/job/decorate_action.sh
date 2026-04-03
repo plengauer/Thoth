@@ -124,12 +124,6 @@ cat < "$log_0_pipe" > "$log_1_pipe" &
 redirect_github_logs_pid="$!"
 exit_code=0
 otel_observe "$_OTEL_GITHUB_STEP_AGENT_INJECTION_FUNCTION" "$@" 1>> "$log_0_pipe" 2>> "$log_0_pipe" || exit_code="$?"
-if [ "$exit_code" = 0 ] && [ "${GITHUB_ACTION_REPOSITORY:-}" = "github/gh-aw" ] && case "${GITHUB_ACTION_PATH%/}" in */actions/setup) true;; *) false;; esac && [ -n "${INPUT_DESTINATION:-}" ]; then
-  find "${INPUT_DESTINATION}" -name "*.sh" 2>/dev/null | while IFS= read -r script_file; do
-    sed -i 's~#!/bin/sh~#!/bin/sh\n. otel.sh~g' "$script_file" 2>/dev/null || true
-    sed -i 's~#!/bin/bash~#!/bin/bash\n. otel.sh~g' "$script_file" 2>/dev/null || true
-  done || true
-fi
 
 otel_span_deactivate "$span_handle"
 ! [ -r "$GITHUB_STATE" ] || cat "$GITHUB_STATE" | github_properties_to_kvps | while read -r kvp; do otel_span_attribute_typed $span_handle string github.actions.step.state.after."$(variable_name_2_attribute_key "${kvp%%=*}")"="${kvp#*=}"; done
@@ -217,4 +211,10 @@ rm "$log_0_pipe" "$log_1_pipe"
 
 otel_shutdown
 echo "$_OTEL_GITHUB_STEP_ACTION_TYPE" "$GITHUB_ACTION_REPOSITORY" >> /tmp/opentelemetry_shell.github.step.log
+if [ "$exit_code" = 0 ] && [ "${GITHUB_ACTION_REPOSITORY:-}" = "github/gh-aw" ] && case "${GITHUB_ACTION_PATH%/}" in */actions/setup) true;; *) false;; esac && [ -n "${INPUT_DESTINATION:-}" ]; then
+  find "${INPUT_DESTINATION}" -name "*.sh" 2>/dev/null | while IFS= read -r script_file; do
+    sed -i 's~#!/bin/sh~#!/bin/sh\n. otel.sh~g' "$script_file" 2>/dev/null || true
+    sed -i 's~#!/bin/bash~#!/bin/bash\n. otel.sh~g' "$script_file" 2>/dev/null || true
+  done || true
+fi
 exit "$exit_code"
