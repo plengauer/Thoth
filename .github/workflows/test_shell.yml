@@ -229,7 +229,7 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v8.0.0
         with:
-          name: packages.*.${{ inputs.ref }}
+          pattern: packages.*.${{ inputs.ref }}
       - env:
           DEPENDENCY: ${{ matrix.dependency }}
         run: |
@@ -408,6 +408,9 @@ jobs:
           url="$(curl --no-progress-meter --fail --header "Authorization: Bearer ${{ github.token }}" https://api.github.com/repos/"$GITHUB_REPOSITORY"/releases/tags/${{ matrix.version }} | jq '.assets[] | select(.name | endswith("_all.deb")) | .url' -r)"
           if [ -z "$url" ]; then url="$(curl --no-progress-meter --fail --header "Authorization: Bearer ${{ github.token }}" https://api.github.com/repos/"$GITHUB_REPOSITORY"/releases/tags/${{ matrix.version }} | jq '.assets[] | select(.name | endswith(".deb")) | .url' -r)"; fi
           wget --header "Authorization: Bearer ${{ github.token }}" --header "Accept: application/octet-stream" -O opentelemetry-shell_${{ matrix.version }}_all.deb "$url"
+      - if: matrix.version == '~local'
+        run: |
+          mv opentelemetry-shell_*_all.deb opentelemetry-shell_${{ matrix.version }}_all.deb
       - run: sudo apt-get install -y ./opentelemetry-shell_${{ matrix.version }}_all.deb
       - run: |
           export OTEL_SHELL_SDK_OUTPUT_REDIRECT=/dev/null
