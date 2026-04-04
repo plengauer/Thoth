@@ -234,7 +234,7 @@ jobs:
       - env:
           DEPENDENCY: ${{ matrix.dependency }}
         run: |
-          sudo -E docker run --mount type=bind,src=$(pwd)/opentelemetry-shell_"$(cat VERSION)"_all.deb,dst=/root/package.deb --mount type=bind,src="$(pwd)"/opentelemetry-shell-"$(cat VERSION)"-1.noarch.rpm,dst=/package.rpm --mount type=bind,src="$(pwd)"/opentelemetry-shell-"$(cat VERSION)"-r0.apk,dst=/package.apk --rm --network=host -e DEPENDENCY -i --entrypoint=/bin/sh ${{ matrix.image }} -e <<EOF
+          sudo -E docker run --mount type=bind,src=$(pwd)/opentelemetry-shell_"$(cat VERSION)"_all.deb,dst=/root/package.deb --mount type=bind,src="$(pwd)"/opentelemetry-shell-"$(cat VERSION)"-1.noarch.rpm,dst=/root/package.rpm --mount type=bind,src="$(pwd)"/opentelemetry-shell-"$(cat VERSION)"-r0.apk,dst=/root/package.apk --rm --network=host -e DEPENDENCY -i --entrypoint=/bin/sh ${{ matrix.image }} -e <<EOF
           if type apt-get; then
             apt-get update
             apt-get -y remove $DEPENDENCY
