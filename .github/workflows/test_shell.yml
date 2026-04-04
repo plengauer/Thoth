@@ -230,6 +230,7 @@ jobs:
       - uses: actions/download-artifact@v8.0.0
         with:
           pattern: packages.*.${{ inputs.ref }}
+          merge-multiple: true
       - env:
           DEPENDENCY: ${{ matrix.dependency }}
         run: |
