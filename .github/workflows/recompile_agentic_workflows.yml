@@ -2,8 +2,6 @@ name: 'Recompile Agentic Workflows'
 
 on:
   push:
-    branches:
-      - main
     paths:
       - '.github/workflows/*.md'
 
@@ -18,7 +16,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.49.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.50.0
         with:
           secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}"]'
         env:
@@ -30,11 +28,25 @@ jobs:
         run: |
           gh extension install github/gh-aw
           gh aw compile
-      - id: open-pr
+      - id: push
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then exit 0; fi
+          user_name="$(gh api user --jq .login)"
+          user_id="$(gh api user --jq .id)"
+          git config user.name "$user_name"
+          git config user.email "${user_id}+${user_name}@users.noreply.github.com"
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git add -A
+          git commit -m "recompile agentic workflows"
+          git push && echo "pushed=true" >> "$GITHUB_OUTPUT" || echo "pushed=false" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+      - if: steps.push.outputs.pushed == 'false'
+        id: open-pr
         uses: peter-evans/create-pull-request@v8.1.0
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
-          commit-message: "Recompile agentic workflows"
+          commit-message: "recompile agentic workflows"
           base: main
           branch: "agentic-workflows/auto-recompile"
           title: "Recompile Agentic Workflows"
