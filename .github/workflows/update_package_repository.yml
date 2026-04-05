@@ -1,4 +1,4 @@
-name: Update Debian Repository
+name: Update Package Repository
 
 on:
   release:
@@ -7,7 +7,11 @@ on:
     branches:
       - main
     paths:
-      - .github/workflows/update_deb_repository.yml
+      - .github/workflows/update_package_repository.yml
+
+concurrency:
+  group: update-package-repository
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -16,13 +20,13 @@ jobs:
       id-token: write
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.49.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.50.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
         with:
           secrets_to_redact: '["${{ github.token }}"]'
-      - uses: plengauer/create-deb-repository@v0.1.0
+      - uses: plengauer/create-package-repository@v0.2.0
       - uses: actions/upload-pages-artifact@v4.0.0
         with:
           path: .
