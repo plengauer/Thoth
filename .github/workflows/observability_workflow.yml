@@ -1,7 +1,7 @@
 name: OpenTelemetry
 on:
   workflow_run:
-    workflows: [.github/workflows/copilot-setup-steps.yml, Analyze, Autoapprove, Autobackport, Autorerun, Autotriage, Autoversion Main, Autoversion Release, Build, CI, Claude, Copilot code review, Copilot coding agent, Create Analysis Issues, Experiment, GitHub, Greetings, Initialize Fork, OpenAI Codex, Performance GitHub Job, Publish, Recompile Agentic Workflows, Refresh Demos, Renovate, Rerequest Reviews, Shell, Test, Update Debian Repository, Workflow Example]
+    workflows: [.github/workflows/copilot-setup-steps.yml, Analyze, Autoapprove, Autobackport, Autorerun, Autotriage, Autoversion Main, Autoversion Release, Build, CI, Claude, Copilot code review, Copilot coding agent, Experiment, GitHub, Greetings, Initialize Fork, OpenAI Codex, Performance GitHub Job, Publish, Recompile Agentic Workflows, Refresh Demos, Renovate, Rerequest Reviews, Shell, Test, Update Package Repository, Workflow Example]
     types:
       - completed
 jobs:
@@ -10,7 +10,7 @@ jobs:
     permissions:
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/workflow@v5.49.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/workflow@v5.50.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
