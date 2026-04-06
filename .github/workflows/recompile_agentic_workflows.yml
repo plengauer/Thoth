@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - '.github/workflows/*.md'
+      - .github/workflows/recompile_agentic_workflows.yml
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -47,8 +48,8 @@ jobs:
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           commit-message: "recompile agentic workflows"
-          base: main
-          branch: "agentic-workflows/auto-recompile"
+          base: ${{ github.ref_name }}
+          branch: "agentic-workflows/auto-recompile-aw-${{ github.ref_name }}"
           title: "Recompile Agentic Workflows"
           body: |
             (this PR is automatically generated)
