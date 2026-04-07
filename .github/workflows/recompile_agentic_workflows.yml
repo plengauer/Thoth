@@ -49,7 +49,7 @@ jobs:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           commit-message: "recompile agentic workflows"
           base: ${{ github.ref_name }}
-          branch: "agentic-workflows/auto-recompile-aw-${{ github.ref_name }}"
+          branch: "recompile-aw/${{ github.ref_name }}"
           title: "Recompile Agentic Workflows"
           body: |
             (this PR is automatically generated)
