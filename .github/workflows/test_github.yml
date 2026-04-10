@@ -237,7 +237,7 @@ jobs:
         with:
           ref: ${{ inputs.ref }}
           fetch-depth: 0
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.1
         with:
           name: packages_${{ inputs.ref }}
       - uses: ./actions/instrument/job
