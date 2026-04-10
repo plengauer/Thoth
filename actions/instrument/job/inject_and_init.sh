@@ -98,7 +98,7 @@ if ! type otel.sh && [ -r /var/cache/apt/archives/opentelemetry-shell_*_all.deb 
     echo "::debug::Attempting fast install ..."
     control_dir="$(mktemp -d)"
     dpkg-deb --control /var/cache/apt/archives/opentelemetry-shell_*_all.deb "$control_dir"
-    if cat "$control_dir"/control | grep -E '^Pre-Depends:|^Depends:' | cut -d ':' -f 2- | tr ',' '\n' | grep -v '|' | tr -d ' ' | cut -d '(' -f 1 | sed 's/awk/gawk/g' | xargs -I '{}' bash -c 'type {} 1> /dev/null 2> /dev/null || [ -r /var/lib/dpkg/info/{}.list ]'; then
+    if cat "$control_dir"/control | grep -E '^Pre-Depends:|^Depends:' | cut -d ':' -f 2- | tr ',' '\n' | grep -v '|' | tr -d ' ' | cut -d '(' -f 1 | xargs -I '{}' bash -c 'type {} 1> /dev/null 2> /dev/null || dpkg -l {} 2> /dev/null | grep -q "^ii"'; then
       if [ "${FAST_DEB_INSTALL_PRESERVE_ACL:-TRUE}" = TRUE ]; then
         echo "::debug::Fast install tediously to preserve ACL ..."
         extract_dir="$(mktemp -d)"
