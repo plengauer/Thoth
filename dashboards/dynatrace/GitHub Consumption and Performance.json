@@ -1,0 +1,1574 @@
+{
+  "version": 21,
+  "variables": [
+    {
+      "version": 2,
+      "key": "Repository",
+      "type": "query",
+      "visible": true,
+      "editable": true,
+      "input": "timeseries sum(github.actions.jobs), by: { github.repository.name }\n| summarize distinctRepositoryNames = collectDistinct(github.repository.name)\n| expand distinctRepositoryNames\n| sort distinctRepositoryNames",
+      "multiple": true,
+      "defaultValue": [
+        "3420b2ac-f1cf-4b24-b62d-61ba1ba8ed05*"
+      ]
+    },
+    {
+      "version": 2,
+      "key": "Branch",
+      "type": "query",
+      "visible": true,
+      "editable": true,
+      "input": "timeseries sum(github.actions.jobs), filter: { in(github.repository.name, array($Repository)) }, by: { github.actions.event.ref.name }\n| summarize distinctRepositoryNames = collectDistinct(github.actions.event.ref.name)\n| expand distinctRepositoryNames\n| sort distinctRepositoryNames",
+      "multiple": true,
+      "defaultValue": [
+        "3420b2ac-f1cf-4b24-b62d-61ba1ba8ed05*"
+      ]
+    },
+    {
+      "version": 2,
+      "key": "Trigger",
+      "type": "query",
+      "visible": true,
+      "input": "timeseries sum(github.actions.jobs), filter: { in(github.repository.name, array($Repository)) }, by: { github.actions.event.name }\n| summarize distinctRepositoryNames = collectDistinct(github.actions.event.name)\n| expand distinctRepositoryNames\n| sort distinctRepositoryNames",
+      "multiple": true,
+      "defaultValue": [
+        "3420b2ac-f1cf-4b24-b62d-61ba1ba8ed05*"
+      ]
+    },
+    {
+      "version": 2,
+      "key": "Actor",
+      "type": "query",
+      "visible": true,
+      "editable": true,
+      "input": "timeseries sum(github.actions.jobs), filter: { in(github.repository.name, array($Repository)) }, by: { github.actions.actor.name }\n| summarize distinctRepositoryNames = collectDistinct(github.actions.actor.name)\n| expand distinctRepositoryNames\n| sort distinctRepositoryNames",
+      "multiple": true,
+      "defaultValue": [
+        "3420b2ac-f1cf-4b24-b62d-61ba1ba8ed05*"
+      ]
+    }
+  ],
+  "tiles": {
+    "35": {
+      "type": "markdown",
+      "content": "![](https://avatars.githubusercontent.com/u/44036562?s=200&v=4)"
+    },
+    "36": {
+      "title": "Top Consumption by Workflow",
+      "type": "data",
+      "query": "timeseries consumption = sum(github.actions.jobs.duration), filter: { in(github.repository.name, array($Repository)) and in(github.actions.event.ref.name, array($Branch)) and in(github.actions.event.name, array($Trigger)) and in(github.actions.actor.name, array($Actor)) }, by: { github.actions.workflow.name }\n| fieldsAdd consumption = arraySum(consumption)\n| sort consumption desc\n| limit 5",
+      "visualization": "categoricalBarChart",
+      "visualizationSettings": {
+        "chartSettings": {
+          "legend": {
+            "hidden": true
+          },
+          "categoryOverrides": {
+          },
+          "categoricalBarChartSettings": {
+            "categoryAxisLabel": "github.actions.workflow.name",
+            "isCategoryLabelVisible": false,
+            "categoryAxis": [
+              "github.actions.workflow.name"
+            ],
+            "valueAxis": [
+              "consumption"
+            ],
+            "valueAxisLabel": "consumption",
+            "isValueLabelVisible": false
+          }
+        },
+        "coloring": {
+          "colorRules": [
+            {
+              "field": "DT.name",
+              "comparator": "= *value*",
+              "value": "",
+              "type": "string",
+              "colorMode": "color-palette",
+              "colorPalette": "log-level"
+            }
+          ]
+        },
+        "autoSelectVisualization": false,
+        "unitsOverrides": [
+          {
+            "identifier": "consumption",
+            "unitCategory": "time",
+            "baseUnit": "second",
+            "displayUnit": null,
+            "decimals": 2,
+            "suffix": "",
+            "delimiter": false,
+            "added": 1741214575059
+          }
+        ]
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 1,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      },
+      "davis": {
+        "enabled": false,
+        "davisVisualization": {
+          "isAvailable": true
+        }
+      }
+    },
+    "37": {
+      "title": "Top Consumption by Job",
+      "type": "data",
+      "query": "timeseries consumption = sum(github.actions.jobs.duration), filter: { in(github.repository.name, array($Repository)) and in(github.actions.event.ref.name, array($Branch)) and in(github.actions.event.name, array($Trigger)) and in(github.actions.actor.name, array($Actor)) }, by: { github.actions.job.name }\n| fieldsAdd consumption = arraySum(consumption)\n| sort consumption desc\n| limit 5",
+      "visualization": "categoricalBarChart",
+      "visualizationSettings": {
+        "chartSettings": {
+          "legend": {
+            "hidden": true
+          },
+          "categoryOverrides": {
+          },
+          "categoricalBarChartSettings": {
+            "categoryAxisLabel": "github.actions.job.name",
+            "isCategoryLabelVisible": false,
+            "categoryAxis": [
+              "github.actions.job.name"
+            ],
+            "valueAxis": [
+              "consumption"
+            ],
+            "valueAxisLabel": "consumption",
+            "isValueLabelVisible": false
+          }
+        },
+        "legend": {
+          "ratio": 46
+        },
+        "coloring": {
+          "colorRules": [
+            {
+              "field": "DT.name",
+              "comparator": "= *value*",
+              "value": "",
+              "type": "string",
+              "colorMode": "color-palette",
+              "colorPalette": "log-level"
+            }
+          ]
+        },
+        "autoSelectVisualization": false,
+        "unitsOverrides": [
+          {
+            "identifier": "consumption",
+            "unitCategory": "time",
+            "baseUnit": "second",
+            "displayUnit": null,
+            "decimals": 2,
+            "suffix": "",
+            "delimiter": false,
+            "added": 1741214585744
+          }
+        ]
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 1,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      },
+      "davis": {
+        "enabled": false,
+        "davisVisualization": {
+          "isAvailable": true
+        }
+      }
+    },
+    "38": {
+      "title": "Top Consumption by Step",
+      "type": "data",
+      "query": "timeseries consumption = sum(github.actions.steps.duration), filter: { in(github.repository.name, array($Repository)) and in(github.actions.event.ref.name, array($Branch)) and in(github.actions.event.name, array($Trigger)) and in(github.actions.actor.name, array($Actor)) }, by: { github.actions.step.name }\n| fieldsAdd consumption = arraySum(consumption)\n| sort consumption desc\n| limit 5",
+      "visualization": "categoricalBarChart",
+      "visualizationSettings": {
+        "chartSettings": {
+          "legend": {
+            "hidden": true
+          },
+          "categoryOverrides": {
+          },
+          "categoricalBarChartSettings": {
+            "categoryAxisLabel": "github.actions.step.name",
+            "isCategoryLabelVisible": false,
+            "categoryAxis": [
+              "github.actions.step.name"
+            ],
+            "valueAxis": [
+              "consumption"
+            ],
+            "valueAxisLabel": "consumption",
+            "isValueLabelVisible": false
+          }
+        },
+        "coloring": {
+          "colorRules": [
+            {
+              "field": "DT.name",
+              "comparator": "= *value*",
+              "value": "",
+              "type": "string",
+              "colorMode": "color-palette",
+              "colorPalette": "log-level"
+            }
+          ]
+        },
+        "autoSelectVisualization": false,
+        "unitsOverrides": [
+          {
+            "identifier": "consumption",
+            "unitCategory": "time",
+            "baseUnit": "second",
+            "displayUnit": null,
+            "decimals": 2,
+            "suffix": "",
+            "delimiter": false,
+            "added": 1741214619049
+          }
+        ]
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 1,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      },
+      "davis": {
+        "enabled": false,
+        "davisVisualization": {
+          "isAvailable": true
+        }
+      }
+    },
+    "39": {
+      "title": "Top Consumption by Action",
+      "type": "data",
+      "query": "timeseries consumption = sum(github.actions.actions.duration), filter: { in(github.repository.name, array($Repository)) and in(github.actions.event.ref.name, array($Branch)) and in(github.actions.event.name, array($Trigger)) and in(github.actions.actor.name, array($Actor)) }, by: { github.actions.action.name }\n| fieldsAdd consumption = arraySum(consumption)\n| sort consumption desc\n| limit 5",
+      "visualization": "categoricalBarChart",
+      "visualizationSettings": {
+        "chartSettings": {
+          "legend": {
+            "hidden": true
+          },
+          "categoryOverrides": {
+          },
+          "categoricalBarChartSettings": {
+            "categoryAxisLabel": "github.actions.action.name",
+            "isCategoryLabelVisible": false,
+            "categoryAxis": [
+              "github.actions.action.name"
+            ],
+            "valueAxis": [
+              "consumption"
+            ],
+            "valueAxisLabel": "consumption",
+            "isValueLabelVisible": false
+          }
+        },
+        "coloring": {
+          "colorRules": [
+            {
+              "field": "DT.name",
+              "comparator": "= *value*",
+              "value": "",
+              "type": "string",
+              "colorMode": "color-palette",
+              "colorPalette": "log-level"
+            }
+          ]
+        },
+        "autoSelectVisualization": false,
+        "unitsOverrides": [
+          {
+            "identifier": "consumption",
+            "unitCategory": "time",
+            "baseUnit": "second",
+            "displayUnit": null,
+            "decimals": 2,
+            "suffix": "",
+            "delimiter": false,
+            "added": 1741214632200
+          }
+        ]
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 1,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      },
+      "davis": {
+        "enabled": false,
+        "davisVisualization": {
+          "isAvailable": true
+        }
+      }
+    },
+    "40": {
+      "title": "Top Consumption by Trigger",
+      "type": "data",
+      "query": "timeseries consumption = sum(github.actions.jobs.duration), filter: { in(github.repository.name, array($Repository)) and in(github.actions.event.ref.name, array($Branch)) and in(github.actions.event.name, array($Trigger)) and in(github.actions.actor.name, array($Actor)) }, by: { github.actions.event.name }\n| fieldsAdd consumption = arraySum(consumption)\n| sort consumption desc\n| limit 5",
+      "visualization": "categoricalBarChart",
+      "visualizationSettings": {
+        "chartSettings": {
+          "legend": {
+            "hidden": true
+          },
+          "categoryOverrides": {
+          },
+          "categoricalBarChartSettings": {
+            "categoryAxisLabel": "github.actions.event.name",
+            "isCategoryLabelVisible": false,
+            "categoryAxis": [
+              "github.actions.event.name"
+            ],
+            "valueAxis": [
+              "consumption"
+            ],
+            "valueAxisLabel": "consumption",
+            "isValueLabelVisible": false
+          }
+        },
+        "legend": {
+          "ratio": 52
+        },
+        "coloring": {
+          "colorRules": [
+            {
+              "field": "DT.name",
+              "comparator": "= *value*",
+              "value": "",
+              "type": "string",
+              "colorMode": "color-palette",
+              "colorPalette": "log-level"
+            }
+          ]
+        },
+        "autoSelectVisualization": false,
+        "unitsOverrides": [
+          {
+            "identifier": "consumption",
+            "unitCategory": "time",
+            "baseUnit": "second",
+            "displayUnit": null,
+            "decimals": 2,
+            "suffix": "",
+            "delimiter": false,
+            "added": 1741214544659
+          }
+        ]
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 1,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      },
+      "davis": {
+        "enabled": false,
+        "davisVisualization": {
+          "isAvailable": true
+        }
+      }
+    },
+    "41": {
+      "title": "Top Consumption by Branch",
+      "type": "data",
+      "query": "timeseries consumption = sum(github.actions.jobs.duration), filter: { in(github.repository.name, array($Repository)) and in(github.actions.event.ref.name, array($Branch)) and in(github.actions.event.name, array($Trigger)) and in(github.actions.actor.name, array($Actor)) }, by: { github.actions.event.ref.name }\n| fieldsAdd consumption = arraySum(consumption)\n| sort consumption desc\n| limit 5",
+      "visualization": "categoricalBarChart",
+      "visualizationSettings": {
+        "chartSettings": {
+          "legend": {
+            "hidden": true
+          },
+          "categoricalBarChartSettings": {
+            "categoryAxisLabel": "github.actions.event.ref.name",
+            "isCategoryLabelVisible": false,
+            "categoryAxis": [
+              "github.actions.event.ref.name"
+            ],
+            "valueAxis": [
+              "consumption"
+            ],
+            "valueAxisLabel": "consumption",
+            "isValueLabelVisible": false
+          }
+        },
+        "legend": {
+          "ratio": 44
+        },
+        "coloring": {
+          "colorRules": [
+            {
+              "field": "DT.name",
+              "comparator": "= *value*",
+              "value": "",
+              "type": "string",
+              "colorMode": "color-palette",
+              "colorPalette": "log-level"
+            }
+          ]
+        },
+        "autoSelectVisualization": false,
+        "unitsOverrides": [
+          {
+            "identifier": "consumption",
+            "unitCategory": "time",
+            "baseUnit": "second",
+            "displayUnit": null,
+            "decimals": 2,
+            "suffix": "",
+            "delimiter": false,
+            "added": 1741214524592
+          }
+        ]
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 1,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      },
+      "davis": {
+        "enabled": false,
+        "davisVisualization": {
+          "isAvailable": true
+        }
+      }
+    },
+    "42": {
+      "title": "Top Consumption by Actor",
+      "type": "data",
+      "query": "timeseries consumption = sum(github.actions.jobs.duration), filter: { in(github.repository.name, array($Repository)) and in(github.actions.event.ref.name, array($Branch)) and in(github.actions.event.name, array($Trigger)) and in(github.actions.actor.name, array($Actor)) }, by: { github.actions.actor.name }\n| fieldsAdd consumption = arraySum(consumption)\n| sort consumption desc\n| limit 5",
+      "visualization": "categoricalBarChart",
+      "visualizationSettings": {
+        "chartSettings": {
+          "legend": {
+            "hidden": true
+          },
+          "categoryOverrides": {
+          },
+          "categoricalBarChartSettings": {
+            "categoryAxisLabel": "github.actions.actor.name",
+            "isCategoryLabelVisible": false,
+            "categoryAxis": [
+              "github.actions.actor.name"
+            ],
+            "valueAxis": [
+              "consumption"
+            ],
+            "valueAxisLabel": "consumption",
+            "isValueLabelVisible": false
+          }
+        },
+        "legend": {
+          "ratio": 52
+        },
+        "coloring": {
+          "colorRules": [
+            {
+              "field": "DT.name",
+              "comparator": "= *value*",
+              "value": "",
+              "type": "string",
+              "colorMode": "color-palette",
+              "colorPalette": "log-level"
+            }
+          ]
+        },
+        "autoSelectVisualization": false,
+        "unitsOverrides": [
+          {
+            "identifier": "consumption",
+            "unitCategory": "time",
+            "baseUnit": "second",
+            "displayUnit": null,
+            "decimals": 2,
+            "suffix": "",
+            "delimiter": false,
+            "added": 1741214554873
+          }
+        ]
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 1,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      },
+      "davis": {
+        "enabled": false,
+        "davisVisualization": {
+          "isAvailable": true
+        }
+      }
+    },
+    "46": {
+      "title": "Top Consumption by Repository",
+      "type": "data",
+      "query": "timeseries consumption = sum(github.actions.jobs.duration), filter: { in(github.repository.name, array($Repository)) and in(github.actions.event.ref.name, array($Branch)) and in(github.actions.event.name, array($Trigger)) and in(github.actions.actor.name, array($Actor)) }, by: { github.repository.name }\n| fieldsAdd consumption = arraySum(consumption)\n| sort consumption desc\n| limit 5",
+      "visualization": "categoricalBarChart",
+      "visualizationSettings": {
+        "chartSettings": {
+          "legend": {
+            "hidden": true
+          },
+          "categoryOverrides": {
+          },
+          "categoricalBarChartSettings": {
+            "categoryAxisLabel": "github.repository.name",
+            "isCategoryLabelVisible": false,
+            "categoryAxis": [
+              "github.repository.name"
+            ],
+            "valueAxis": [
+              "consumption"
+            ],
+            "valueAxisLabel": "consumption",
+            "isValueLabelVisible": false
+          }
+        },
+        "legend": {
+          "ratio": 44
+        },
+        "coloring": {
+          "colorRules": [
+            {
+              "field": "DT.name",
+              "comparator": "= *value*",
+              "value": "",
+              "type": "string",
+              "colorMode": "color-palette",
+              "colorPalette": "log-level"
+            }
+          ]
+        },
+        "autoSelectVisualization": false,
+        "unitsOverrides": [
+          {
+            "identifier": "consumption",
+            "unitCategory": "time",
+            "baseUnit": "second",
+            "displayUnit": null,
+            "decimals": 2,
+            "suffix": "",
+            "delimiter": false,
+            "added": 1741214467028
+          }
+        ]
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 1,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      },
+      "davis": {
+        "enabled": false,
+        "davisVisualization": {
+          "isAvailable": true
+        }
+      }
+    },
+    "48": {
+      "title": "Workflow Consumption",
+      "type": "data",
+      "query": "timeseries consumption = sum(github.actions.jobs.duration), filter: { in(github.repository.name, $Repository) }",
+      "visualization": "areaChart",
+      "visualizationSettings": {
+        "chartSettings": {
+          "truncationMode": "middle",
+          "legend": {
+            "hidden": true
+          },
+          "xAxisLabel": "timeframe",
+          "xAxisScaling": "analyzedTimeframe",
+          "fieldMapping": {
+            "leftAxisValues": [
+              "consumption"
+            ],
+            "timestamp": "timeframe"
+          }
+        },
+        "dataMapping": {
+          "displayedFields": [
+            "consumption"
+          ]
+        },
+        "coloring": {
+          "colorRules": [
+            {
+              "field": "DT.name",
+              "comparator": "= *value*",
+              "value": "",
+              "type": "string",
+              "colorMode": "color-palette",
+              "colorPalette": "log-level"
+            }
+          ]
+        },
+        "autoSelectVisualization": false,
+        "unitsOverrides": [
+          {
+            "identifier": "consumption",
+            "unitCategory": "time",
+            "baseUnit": "second",
+            "displayUnit": null,
+            "decimals": 2,
+            "suffix": "",
+            "delimiter": false,
+            "added": 1741214651957
+          }
+        ]
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 1,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      },
+      "davis": {
+        "davisVisualization": {
+          "isAvailable": true
+        }
+      }
+    },
+    "49": {
+      "title": "Slowest Job Runs",
+      "type": "data",
+      "query": "fetch spans\n| filter github.actions.type == \"job\"\n| filter in(github.repository.name, $Repository)\n| lookup [\n  fetch spans | filter github.actions.type == \"workflow\"\n], sourceField:span.parent_id, lookupField:span.id, prefix: \"parent.\"\n| filter trace.id == parent.trace.id\n| filter in(parent.github.actions.event.ref.name, $Branch)\n| filter in(parent.github.actions.event.name, array($Trigger))\n| filter in(parent.github.actions.actor.name, array($Actor))\n| sort duration desc\n| limit 25\n| fieldsAdd github.actions.workflow.name = parent.github.actions.workflow.name",
+      "visualization": "table",
+      "visualizationSettings": {
+        "table": {
+          "hiddenColumns": [
+            [
+              "supportability.endpoint_name_rule"
+            ],
+            [
+              "parent.supportability.endpoint_name_rule"
+            ],
+            [
+              "parent.span.links"
+            ],
+            [
+              "span.events"
+            ],
+            [
+              "github.actions.job.conclusion"
+            ],
+            [
+              "service.namespace"
+            ],
+            [
+              "service.version"
+            ],
+            [
+              "parent.span.events"
+            ],
+            [
+              "parent.service.instance.id"
+            ],
+            [
+              "parent.service.namespace"
+            ],
+            [
+              "parent.service.version"
+            ],
+            [
+              "parent.github.actions.workflow_run.conclusion"
+            ],
+            [
+              "parent.span.status_code"
+            ],
+            [
+              "parent.dt.failure_detection.results"
+            ],
+            [
+              "github.actions.job.matrix.version"
+            ],
+            [
+              "request.is_root_span"
+            ],
+            [
+              "dt.failure_detection.ruleset_id"
+            ],
+            [
+              "dt.failure_detection.verdict"
+            ],
+            [
+              "endpoint.name"
+            ],
+            [
+              "request.is_failed"
+            ],
+            [
+              "github.actions.url"
+            ],
+            [
+              "parent.github.actions.url"
+            ],
+            [
+              "cicd.pipeline.task.name"
+            ],
+            [
+              "cicd.pipeline.task.type"
+            ],
+            [
+              "github.actions.job.matrix.private"
+            ],
+            [
+              "github.actions.job.matrix.secret_redaction_strategy"
+            ],
+            [
+              "trace.id"
+            ],
+            [
+              "span.id"
+            ],
+            [
+              "start_time"
+            ],
+            [
+              "end_time"
+            ],
+            [
+              "parent.trace.id"
+            ],
+            [
+              "parent.span.id"
+            ],
+            [
+              "parent.start_time"
+            ],
+            [
+              "parent.end_time"
+            ],
+            [
+              "dt.ingest.size"
+            ],
+            [
+              "dt.retain.size"
+            ],
+            [
+              "dt.openpipeline.pipelines"
+            ],
+            [
+              "telemetry.sdk.language"
+            ],
+            [
+              "otel.scope.name"
+            ],
+            [
+              "telemetry.sdk.version"
+            ],
+            [
+              "github.actions.workflow.ref"
+            ],
+            [
+              "otel.scope.version"
+            ],
+            [
+              "github.actions.job.id"
+            ],
+            [
+              "github.actions.workflow.sha"
+            ],
+            [
+              "span.parent_id"
+            ],
+            [
+              "github.actions.type"
+            ],
+            [
+              "span.name"
+            ],
+            [
+              "github.repository.id"
+            ],
+            [
+              "service.name"
+            ],
+            [
+              "telemetry.sdk.name"
+            ],
+            [
+              "span.kind"
+            ],
+            [
+              "dt.openpipeline.source"
+            ],
+            [
+              "dt.entity.service"
+            ],
+            [
+              "github.repository.owner.id"
+            ],
+            [
+              "github.repository.owner.name"
+            ],
+            [
+              "github.repository.name"
+            ],
+            [
+              "parent.dt.ingest.size"
+            ],
+            [
+              "parent.github.actions.event.ref.name"
+            ],
+            [
+              "parent.github.actions.workflow_run.number"
+            ],
+            [
+              "parent.github.actions.workflow_run.attempt"
+            ],
+            [
+              "parent.dt.retain.size"
+            ],
+            [
+              "parent.github.actions.event.ref.sha"
+            ],
+            [
+              "parent.dt.openpipeline.pipelines"
+            ],
+            [
+              "parent.github.actions.workflow.name"
+            ],
+            [
+              "parent.github.actions.actor.id"
+            ],
+            [
+              "parent.telemetry.sdk.language"
+            ],
+            [
+              "parent.otel.scope.name"
+            ],
+            [
+              "parent.telemetry.sdk.version"
+            ],
+            [
+              "parent.github.actions.workflow.ref"
+            ],
+            [
+              "parent.otel.scope.version"
+            ],
+            [
+              "parent.github.actions.workflow_run.id"
+            ],
+            [
+              "parent.github.actions.workflow.sha"
+            ],
+            [
+              "parent.github.actions.actor.name"
+            ],
+            [
+              "parent.github.actions.type"
+            ],
+            [
+              "parent.span.name"
+            ],
+            [
+              "parent.github.repository.id"
+            ],
+            [
+              "parent.service.name"
+            ],
+            [
+              "parent.github.actions.workflow.id"
+            ],
+            [
+              "parent.telemetry.sdk.name"
+            ],
+            [
+              "parent.span.kind"
+            ],
+            [
+              "parent.dt.openpipeline.source"
+            ],
+            [
+              "parent.dt.entity.service"
+            ],
+            [
+              "parent.duration"
+            ],
+            [
+              "parent.github.repository.owner.id"
+            ],
+            [
+              "parent.github.actions.event.ref"
+            ],
+            [
+              "parent.github.repository.owner.name"
+            ],
+            [
+              "parent.github.repository.name"
+            ],
+            [
+              "parent.github.actions.event.name"
+            ],
+            [
+              "dt.smartscape.service"
+            ],
+            [
+              "parent.dt.smartscape.service"
+            ],
+            [
+              "dt.service.name"
+            ],
+            [
+              "dt.endpoint_detection.rule_id"
+            ],
+            [
+              "parent.dt.service.name"
+            ],
+            [
+              "parent.github.actions.conclusion"
+            ],
+            [
+              "parent.dt.endpoint_detection.rule_id"
+            ],
+            [
+              "cicd.pipeline.run_id"
+            ],
+            [
+              "cicd.pipeline.run.url.full"
+            ],
+            [
+              "cicd.pipeline.result"
+            ],
+            [
+              "cicd.pipeline.action.name"
+            ],
+            [
+              "cicd.pipeline.name"
+            ],
+            [
+              "parent.github.actions.url.full"
+            ],
+            [
+              "parent.dt.failure_detection.verdict"
+            ],
+            [
+              "parent.request.is_root_span"
+            ],
+            [
+              "parent.dt.failure_detection.ruleset_id"
+            ],
+            [
+              "parent.endpoint.name"
+            ],
+            [
+              "parent.request.is_failed"
+            ],
+            [
+              "github.actions.workflow.id"
+            ],
+            [
+              "parent.transaction.is_root_span"
+            ],
+            [
+              "parent.transaction.is_failed"
+            ],
+            [
+              "parent.transaction.is_endpoint_request"
+            ],
+            [
+              "github.actions.runner.name"
+            ],
+            [
+              "host.name"
+            ],
+            [
+              "azure.location"
+            ],
+            [
+              "cloud.region"
+            ],
+            [
+              "github.actions.runner.arch"
+            ],
+            [
+              "cloud.provider"
+            ],
+            [
+              "azure.vm.scaleset.name"
+            ],
+            [
+              "github.actions.runner.os"
+            ],
+            [
+              "os.type"
+            ],
+            [
+              "host.type"
+            ],
+            [
+              "github.actions.runner.environment"
+            ],
+            [
+              "os.version"
+            ],
+            [
+              "service.instance.id"
+            ],
+            [
+              "cloud.resource_id"
+            ],
+            [
+              "azure.vm.sku"
+            ],
+            [
+              "cloud.platform"
+            ],
+            [
+              "host.id"
+            ],
+            [
+              "github.actions.job.matrix.language"
+            ],
+            [
+              "github.actions.job.matrix.build-mode"
+            ],
+            [
+              "github.actions.job.matrix.architecture"
+            ]
+          ],
+          "hideColumnsForLargeResults": false,
+          "columnWidths": {
+            "[\"github.actions.url\"]": 1175,
+            "[\"github.actions.job.name\"]": 950.16,
+            "[\"github.actions.workflow.name\"]": 213
+          },
+          "columnTypeOverrides": [
+            {
+              "id": 433056.59999999986,
+              "fields": [
+                "github.actions.url"
+              ],
+              "value": "markdown"
+            }
+          ],
+          "columnOrder": [
+            "[\"trace.id\"]",
+            "[\"span.id\"]",
+            "[\"start_time\"]",
+            "[\"end_time\"]",
+            "[\"parent.trace.id\"]",
+            "[\"parent.span.id\"]",
+            "[\"parent.start_time\"]",
+            "[\"parent.end_time\"]",
+            "[\"github.actions.workflow.name\"]",
+            "[\"dt.ingest.size\"]",
+            "[\"dt.retain.size\"]",
+            "[\"dt.openpipeline.pipelines\"]",
+            "[\"telemetry.sdk.language\"]",
+            "[\"otel.scope.name\"]",
+            "[\"telemetry.sdk.version\"]",
+            "[\"github.actions.workflow.ref\"]",
+            "[\"otel.scope.version\"]",
+            "[\"github.actions.job.id\"]",
+            "[\"github.actions.job.name\"]",
+            "[\"github.actions.workflow.sha\"]",
+            "[\"span.parent_id\"]",
+            "[\"github.actions.type\"]",
+            "[\"span.name\"]",
+            "[\"github.repository.id\"]",
+            "[\"service.name\"]",
+            "[\"telemetry.sdk.name\"]",
+            "[\"span.kind\"]",
+            "[\"dt.openpipeline.source\"]",
+            "[\"dt.entity.service\"]",
+            "[\"duration\"]",
+            "[\"github.repository.owner.id\"]",
+            "[\"github.repository.owner.name\"]",
+            "[\"github.repository.name\"]",
+            "[\"parent.dt.ingest.size\"]",
+            "[\"parent.github.actions.event.ref.name\"]",
+            "[\"parent.github.actions.workflow_run.number\"]",
+            "[\"parent.github.actions.workflow_run.attempt\"]",
+            "[\"parent.dt.retain.size\"]",
+            "[\"parent.github.actions.event.ref.sha\"]",
+            "[\"parent.dt.openpipeline.pipelines\"]",
+            "[\"parent.github.actions.workflow.name\"]",
+            "[\"parent.github.actions.actor.id\"]",
+            "[\"parent.telemetry.sdk.language\"]",
+            "[\"parent.otel.scope.name\"]",
+            "[\"parent.telemetry.sdk.version\"]",
+            "[\"parent.github.actions.workflow.ref\"]",
+            "[\"parent.otel.scope.version\"]",
+            "[\"parent.github.actions.workflow_run.id\"]",
+            "[\"parent.github.actions.workflow.sha\"]",
+            "[\"parent.github.actions.actor.name\"]",
+            "[\"parent.github.actions.type\"]",
+            "[\"parent.span.name\"]",
+            "[\"parent.github.repository.id\"]",
+            "[\"parent.service.name\"]",
+            "[\"parent.github.actions.workflow.id\"]",
+            "[\"parent.telemetry.sdk.name\"]",
+            "[\"parent.span.kind\"]",
+            "[\"parent.dt.openpipeline.source\"]",
+            "[\"parent.dt.entity.service\"]",
+            "[\"parent.duration\"]",
+            "[\"parent.github.repository.owner.id\"]",
+            "[\"parent.github.actions.event.ref\"]",
+            "[\"parent.github.repository.owner.name\"]",
+            "[\"parent.github.repository.name\"]",
+            "[\"parent.github.actions.event.name\"]",
+            "[\"dt.smartscape.service\"]",
+            "[\"parent.dt.smartscape.service\"]",
+            "[\"dt.service.name\"]",
+            "[\"github.actions.conclusion\"]",
+            "[\"dt.endpoint_detection.rule_id\"]",
+            "[\"parent.dt.service.name\"]",
+            "[\"parent.github.actions.conclusion\"]",
+            "[\"parent.dt.endpoint_detection.rule_id\"]",
+            "[\"cicd.pipeline.run_id\"]",
+            "[\"cicd.pipeline.run.url.full\"]",
+            "[\"github.actions.url.full\"]",
+            "[\"cicd.pipeline.result\"]",
+            "[\"cicd.pipeline.action.name\"]",
+            "[\"cicd.pipeline.name\"]",
+            "[\"parent.github.actions.url.full\"]",
+            "[\"parent.dt.failure_detection.verdict\"]",
+            "[\"parent.request.is_root_span\"]",
+            "[\"parent.dt.failure_detection.ruleset_id\"]",
+            "[\"parent.endpoint.name\"]",
+            "[\"parent.request.is_failed\"]",
+            "[\"github.actions.workflow.id\"]",
+            "[\"parent.transaction.is_root_span\"]",
+            "[\"parent.transaction.is_failed\"]",
+            "[\"parent.transaction.is_endpoint_request\"]",
+            "[\"cicd.pipeline.task.name\"]",
+            "[\"github.actions.runner.name\"]",
+            "[\"host.name\"]",
+            "[\"azure.location\"]",
+            "[\"cloud.region\"]",
+            "[\"github.actions.runner.arch\"]",
+            "[\"cloud.provider\"]",
+            "[\"azure.vm.scaleset.name\"]",
+            "[\"cicd.pipeline.task.type\"]",
+            "[\"github.actions.job.matrix.version\"]",
+            "[\"github.actions.runner.os\"]",
+            "[\"os.type\"]",
+            "[\"host.type\"]",
+            "[\"github.actions.runner.environment\"]",
+            "[\"os.version\"]",
+            "[\"service.instance.id\"]",
+            "[\"cloud.resource_id\"]",
+            "[\"azure.vm.sku\"]",
+            "[\"cloud.platform\"]",
+            "[\"host.id\"]"
+          ]
+        },
+        "autoSelectVisualization": false
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 1,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      },
+      "davis": {
+        "davisVisualization": {
+          "isAvailable": true
+        }
+      }
+    },
+    "54": {
+      "title": "Top HTTP Durations (p95)",
+      "type": "data",
+      "query": "timeseries p95=percentile(http.client.request.duration_bucket, 95), filter: { in(github.repository.name, array($Repository)) }, by: { server.address }\n| summarize p95=sum(arrayAvg(p95)), by: server.address\n| sort p95 desc\n| limit 5",
+      "visualization": "categoricalBarChart",
+      "visualizationSettings": {
+        "autoSelectVisualization": false,
+        "coloring": {
+          "colorRules": [
+            {
+              "colorMode": "color-palette",
+              "colorPalette": "log-level",
+              "comparator": "= *value*",
+              "field": "DT.name",
+              "type": "string",
+              "value": ""
+            }
+          ]
+        },
+        "chartSettings": {
+          "legend": {
+            "hidden": true
+          }
+        },
+        "unitsOverrides": [
+          {
+            "identifier": "p95",
+            "unitCategory": "time",
+            "baseUnit": "second",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false,
+            "added": 1772723294605
+          }
+        ]
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 1,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      },
+      "davis": {
+        "enabled": false,
+        "davisVisualization": {
+          "isAvailable": true
+        }
+      }
+    },
+    "55": {
+      "title": "Top HTTP Request Body Sizes (p95)",
+      "type": "data",
+      "query": "timeseries p95=percentile(http.client.request.body.size_bucket, 95), filter: { in(github.repository.name, array($Repository)) }, by: { server.address }\n| summarize p95=sum(arrayAvg(p95)), by: server.address\n| sort p95 desc\n| limit 5",
+      "visualization": "categoricalBarChart",
+      "visualizationSettings": {
+        "autoSelectVisualization": false,
+        "coloring": {
+          "colorRules": [
+            {
+              "colorMode": "color-palette",
+              "colorPalette": "log-level",
+              "comparator": "= *value*",
+              "field": "DT.name",
+              "type": "string",
+              "value": ""
+            }
+          ]
+        },
+        "chartSettings": {
+          "legend": {
+            "hidden": true
+          }
+        },
+        "unitsOverrides": [
+          {
+            "identifier": "p95",
+            "unitCategory": "data",
+            "baseUnit": "byte",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false,
+            "added": 1772723294605
+          }
+        ]
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 1,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      },
+      "davis": {
+        "enabled": false,
+        "davisVisualization": {
+          "isAvailable": true
+        }
+      }
+    },
+    "57": {
+      "title": "Top HTTP Response Body Sizes (p95)",
+      "type": "data",
+      "query": "timeseries p95=percentile(http.client.response.body.size_bucket, 95), filter: { in(github.repository.name, array($Repository)) }, by: { server.address }\n| summarize p95=sum(arrayAvg(p95)), by: server.address\n| sort p95 desc\n| limit 5",
+      "visualization": "categoricalBarChart",
+      "visualizationSettings": {
+        "autoSelectVisualization": false,
+        "coloring": {
+          "colorRules": [
+            {
+              "colorMode": "color-palette",
+              "colorPalette": "log-level",
+              "comparator": "= *value*",
+              "field": "DT.name",
+              "type": "string",
+              "value": ""
+            }
+          ]
+        },
+        "chartSettings": {
+          "legend": {
+            "hidden": true
+          }
+        },
+        "unitsOverrides": [
+          {
+            "identifier": "p95",
+            "unitCategory": "data",
+            "baseUnit": "byte",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false,
+            "added": 1772723294605
+          }
+        ]
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 1,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      },
+      "davis": {
+        "enabled": false,
+        "davisVisualization": {
+          "isAvailable": true
+        }
+      }
+    },
+    "58": {
+      "title": "Top AI Model Usage",
+      "type": "data",
+      "query": "timeseries token.usage = sum(gen_ai.client.token.usage), filter: { in(github.repository.name, array($Repository)) }, by: gen_ai.response.model\n| fieldsAdd token.usage = arraySum(token.usage)\n| sort token.usage desc\n| limit 5",
+      "visualization": "categoricalBarChart",
+      "visualizationSettings": {
+        "chartSettings": {
+          "legend": {
+            "hidden": true
+          }
+        },
+        "coloring": {
+          "colorRules": [
+            {
+              "colorMode": "color-palette",
+              "colorPalette": "log-level",
+              "comparator": "= *value*",
+              "field": "DT.name",
+              "type": "string",
+              "value": ""
+            }
+          ]
+        },
+        "autoSelectVisualization": false,
+        "unitsOverrides": [
+          {
+            "identifier": "token.usage",
+            "unitCategory": "unspecified",
+            "baseUnit": "count",
+            "displayUnit": null,
+            "decimals": 0,
+            "suffix": "tokens",
+            "delimiter": true,
+            "added": 1772801989376
+          }
+        ]
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 1,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      },
+      "davis": {
+        "enabled": false,
+        "davisVisualization": {
+          "isAvailable": true
+        }
+      }
+    },
+    "61": {
+      "title": "Repository Activity",
+      "type": "data",
+      "query": "timeseries { push = count(vcs.ref.lines_delta), `pull request` = sum(vcs.change.count), ref = sum(vcs.ref.count), filter: { in(github.repository.name, $Repository) }, union: TRUE }",
+      "visualization": "lineChart",
+      "visualizationSettings": {
+        "chartSettings": {
+          "legend": {
+            "hidden": true
+          }
+        },
+        "coloring": {
+          "colorRules": [
+            {
+              "field": "DT.name",
+              "type": "string",
+              "comparator": "= *value*",
+              "value": "",
+              "colorMode": "color-palette",
+              "colorPalette": "categorical"
+            }
+          ]
+        },
+        "autoSelectVisualization": false,
+        "unitsOverrides": [
+          {
+            "identifier": "push",
+            "unitCategory": "unspecified",
+            "baseUnit": "count",
+            "displayUnit": null,
+            "decimals": 0,
+            "suffix": "",
+            "delimiter": true,
+            "added": 1772837239093
+          },
+          {
+            "identifier": "pull request",
+            "unitCategory": "unspecified",
+            "baseUnit": "count",
+            "displayUnit": null,
+            "decimals": 0,
+            "suffix": "",
+            "delimiter": true,
+            "added": 1772837291739
+          },
+          {
+            "identifier": "ref",
+            "unitCategory": "unspecified",
+            "baseUnit": "count",
+            "displayUnit": null,
+            "decimals": 0,
+            "suffix": "",
+            "delimiter": true,
+            "added": 1772837303571
+          }
+        ]
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 1,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      },
+      "davis": {
+        "enabled": false,
+        "davisVisualization": {
+          "isAvailable": true
+        }
+      }
+    }
+  },
+  "layouts": {
+    "35": {
+      "x": 0,
+      "y": 0,
+      "w": 3,
+      "h": 5
+    },
+    "36": {
+      "x": 0,
+      "y": 9,
+      "w": 6,
+      "h": 4
+    },
+    "37": {
+      "x": 6,
+      "y": 9,
+      "w": 6,
+      "h": 4
+    },
+    "38": {
+      "x": 12,
+      "y": 9,
+      "w": 6,
+      "h": 4
+    },
+    "39": {
+      "x": 18,
+      "y": 9,
+      "w": 6,
+      "h": 4
+    },
+    "40": {
+      "x": 12,
+      "y": 5,
+      "w": 6,
+      "h": 4
+    },
+    "41": {
+      "x": 6,
+      "y": 5,
+      "w": 6,
+      "h": 4
+    },
+    "42": {
+      "x": 18,
+      "y": 5,
+      "w": 6,
+      "h": 4
+    },
+    "46": {
+      "x": 0,
+      "y": 5,
+      "w": 6,
+      "h": 4
+    },
+    "48": {
+      "x": 14,
+      "y": 0,
+      "w": 10,
+      "h": 5
+    },
+    "49": {
+      "x": 0,
+      "y": 17,
+      "w": 24,
+      "h": 5
+    },
+    "54": {
+      "x": 0,
+      "y": 13,
+      "w": 6,
+      "h": 4
+    },
+    "55": {
+      "x": 6,
+      "y": 13,
+      "w": 6,
+      "h": 4
+    },
+    "57": {
+      "x": 12,
+      "y": 13,
+      "w": 6,
+      "h": 4
+    },
+    "58": {
+      "x": 18,
+      "y": 13,
+      "w": 6,
+      "h": 4
+    },
+    "61": {
+      "x": 4,
+      "y": 0,
+      "w": 10,
+      "h": 5
+    }
+  },
+  "importedWithCode": false,
+  "settings": {
+  },
+  "annotations": [
+  ]
+}
