@@ -84,7 +84,7 @@ jobs:
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
         with:
           secrets_to_redact: '["${{ github.token }}"]'
-      - uses: actions/download-artifact@v8.0.0
+      - uses: actions/download-artifact@v8.0.1
         with:
           pattern: http_*_${{ inputs.ref }}
       - run: |
@@ -169,7 +169,7 @@ jobs:
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
         with:
           secrets_to_redact: '["${{ github.token }}"]'
-      - uses: actions/download-artifact@v8.0.0
+      - uses: actions/download-artifact@v8.0.1
         with:
           pattern: node_modules_*_${{ inputs.ref }}
       - run: |
@@ -285,7 +285,7 @@ jobs:
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
         with:
           secrets_to_redact: '["${{ github.token }}"]'
-      - uses: actions/download-artifact@v8.0.0
+      - uses: actions/download-artifact@v8.0.1
         with:
           pattern: python_site_packages_*_${{ inputs.ref }}
       - run: |
@@ -461,19 +461,19 @@ jobs:
             find src -iname 'manifest.txt' -type f
             find src -iname 'pom.xml' -type f
           } | xargs -r rm
-      - uses: actions/download-artifact@v8.0.0
+      - uses: actions/download-artifact@v8.0.1
         with:
           name: http_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.http
-      - uses: actions/download-artifact@v8.0.0
+      - uses: actions/download-artifact@v8.0.1
         with:
           name: node_modules_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.node
-      - uses: actions/download-artifact@v8.0.0
+      - uses: actions/download-artifact@v8.0.1
         with:
           name: python_site_packages_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.python
-      - uses: actions/download-artifact@v8.0.0
+      - uses: actions/download-artifact@v8.0.1
         with:
           name: java_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.java
@@ -541,19 +541,19 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v8.0.0
+      - uses: actions/download-artifact@v8.0.1
         with:
           name: http_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.http
-      - uses: actions/download-artifact@v8.0.0
+      - uses: actions/download-artifact@v8.0.1
         with:
           name: node_modules_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.node
-      - uses: actions/download-artifact@v8.0.0
+      - uses: actions/download-artifact@v8.0.1
         with:
           name: python_site_packages_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.python
-      - uses: actions/download-artifact@v8.0.0
+      - uses: actions/download-artifact@v8.0.1
         with:
           name: java_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.java
@@ -634,15 +634,15 @@ jobs:
             find src -iname 'manifest.txt' -type f
             find src -iname 'pom.xml' -type f
           } | xargs -r rm
-      - uses: actions/download-artifact@v8.0.0
+      - uses: actions/download-artifact@v8.0.1
         with:
           name: node_modules_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.node
-      - uses: actions/download-artifact@v8.0.0
+      - uses: actions/download-artifact@v8.0.1
         with:
           name: python_site_packages_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.python
-      - uses: actions/download-artifact@v8.0.0
+      - uses: actions/download-artifact@v8.0.1
         with:
           name: java_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.java
@@ -679,7 +679,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v8.0.0
+      - uses: actions/download-artifact@v8.0.1
         with:
           name: packages.apk.${{ inputs.ref }}
       - run: |
