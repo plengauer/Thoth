@@ -26,8 +26,8 @@ jobs:
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
         with:
           secrets_to_redact: '["${{ github.token }}"]'
-      - uses: plengauer/create-package-repository@v0.2.0
+      - uses: plengauer/create-package-repository@v0.3.0
       - uses: actions/upload-pages-artifact@v4.0.0
         with:
           path: .
-      - uses: actions/deploy-pages@v4.0.5
+      - uses: actions/deploy-pages@v5.0.0
