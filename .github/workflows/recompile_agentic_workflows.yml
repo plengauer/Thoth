@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - '.github/workflows/*.md'
+      - .github/workflows/recompile_agentic_workflows.yml
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
