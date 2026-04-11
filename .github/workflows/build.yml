@@ -182,7 +182,7 @@ jobs:
       - run: |
           prev_hash=""
           for version in $(ls | grep -E '^[0-9]+$' | sort -n); do
-            hash="$(find "$version" -type f | sort | while IFS= read -r f; do printf '%s\n' "${f#*/}"; sha256sum < "$f"; done | sha256sum | cut -d ' ' -f 1)"
+            hash="$(find "$version" -type f | sort | while IFS= read -r f; do printf '%s\n' "${f#*/}"; cat "$f"; done | sha256sum | cut -d ' ' -f 1)"
             if [ "$hash" = "$prev_hash" ]; then
               rm -rf "$version"
             else
@@ -308,7 +308,7 @@ jobs:
       - run: |
           prev_hash=""
           for version in $(ls | grep -E '^3\.[0-9]+$' | sort -t. -k2 -n); do
-            hash="$(find "$version" -type f | sort | while IFS= read -r f; do printf '%s\n' "${f#*/}"; sha256sum < "$f"; done | sha256sum | cut -d ' ' -f 1)"
+            hash="$(find "$version" -type f | sort | while IFS= read -r f; do printf '%s\n' "${f#*/}"; cat "$f"; done | sha256sum | cut -d ' ' -f 1)"
             if [ "$hash" = "$prev_hash" ]; then
               rm -rf "$version"
             else
