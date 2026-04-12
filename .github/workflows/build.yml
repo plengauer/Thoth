@@ -168,9 +168,6 @@ jobs:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
           OTEL_SHELL_CONFIG_MUTE_INTERNALS: TRUE
-          OTEL_SHELL_CONFIG_OBSERVE_PIPES: FALSE
-          OTEL_SHELL_CONFIG_OBSERVE_SIGNALS: FALSE
-          OTEL_SHELL_CONFIG_OBSERVE_SUBPROCESSES: FALSE
         with:
           secrets_to_redact: '["${{ github.token }}"]'
       - uses: actions/download-artifact@v8.0.1
