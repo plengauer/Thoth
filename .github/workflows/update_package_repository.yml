@@ -27,7 +27,7 @@ jobs:
         with:
           secrets_to_redact: '["${{ github.token }}"]'
       - uses: plengauer/create-package-repository@v0.3.0
-      - uses: actions/upload-pages-artifact@v4.0.0
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: .
       - uses: actions/deploy-pages@v5.0.0
