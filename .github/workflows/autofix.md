@@ -19,7 +19,7 @@ tools:
 safe-outputs:
   noop:
   create-issue:
-    github-token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+    # github-token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
     max: 20
 ---
 
