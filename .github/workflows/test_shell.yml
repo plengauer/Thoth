@@ -346,7 +346,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: Vampire/setup-wsl@v6.0.0
+      - uses: Vampire/setup-wsl@887f39deb6c0976365e546926fe66f41b77d65ff # v6.1.0
         with:
           distribution: Ubuntu-24.04
           wsl-version: ${{ matrix.version }}
