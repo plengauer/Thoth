@@ -476,18 +476,15 @@ jobs:
       - run: |
           nohup node -e "
           const fs = require('fs');
+          const zlib = require('zlib');
           require('http').createServer(function (req, res) {
             console.log(req.method, req.url);
-            let body = '';
-            req.on('data', chunk => { body += chunk.toString(); });
+            const chunks = [];
+            req.on('data', chunk => chunks.push(chunk));
             req.on('end', () => {
-              if (req.url === '/v1/traces') {
-                fs.appendFileSync('/tmp/traces.json', body + '\n');
-              } else if (req.url === '/v1/logs') {
-                fs.appendFileSync('/tmp/logs.json', body + '\n');
-              } else if (req.url === '/v1/metrics') {
-                fs.appendFileSync('/tmp/metrics.json', body + '\n');
-              }
+              let buffer = Buffer.concat(chunks);
+              if (req.headers['content-encoding'] === 'gzip') { try { buffer = zlib.gunzipSync(buffer); } catch(e) {} }
+              fs.appendFileSync('/tmp/' + req.url.split('/').pop() + '.json', buffer.toString() + '\n');
               res.writeHead(200);
               res.end();
             });
@@ -512,9 +509,9 @@ jobs:
         if: ${{ matrix.exporter_logs == 'otlp' }}
       - run: |
           cat /tmp/logs.json
-          logs_with_span_id=$(cat /tmp/logs.json | jq '[.[] | .resourceLogs[]?.scopeLogs[]?.logRecords[]? | select(.spanId != "" and .spanId != null)] | length')
-          logs_with_trace_id=$(cat /tmp/logs.json | jq '[.[] | .resourceLogs[]?.scopeLogs[]?.logRecords[]? | select(.traceId != "" and .traceId != null)] | length')
-          all_logs=$(cat /tmp/logs.json | jq '[.[] | .resourceLogs[]?.scopeLogs[]?.logRecords[]?] | length')
+          logs_with_span_id=$(cat /tmp/logs.json | jq -s '[.[] | .resourceLogs[]?.scopeLogs[]?.logRecords[]? | select(.spanId != "" and .spanId != null)] | length')
+          logs_with_trace_id=$(cat /tmp/logs.json | jq -s '[.[] | .resourceLogs[]?.scopeLogs[]?.logRecords[]? | select(.traceId != "" and .traceId != null)] | length')
+          all_logs=$(cat /tmp/logs.json | jq -s '[.[] | .resourceLogs[]?.scopeLogs[]?.logRecords[]?] | length')
           echo "Logs with span ID: $logs_with_span_id"
           echo "Logs with trace ID: $logs_with_trace_id"
           echo "All logs: $all_logs"
@@ -525,9 +522,9 @@ jobs:
         if: ${{ matrix.exporter_metrics == 'otlp' }}
       - run: |
           cat /tmp/metrics.json
-          job_metrics=$(cat /tmp/metrics.json | jq '[.[] | .resourceMetrics[]?.scopeMetrics[]?.metrics[]? | select(.name | contains("job"))] | length')
-          step_metrics=$(cat /tmp/metrics.json | jq '[.[] | .resourceMetrics[]?.scopeMetrics[]?.metrics[]? | select(.name | contains("step"))] | length')
-          all_metrics=$(cat /tmp/metrics.json | jq '[.[] | .resourceMetrics[]?.scopeMetrics[]?.metrics[]?] | length')
+          job_metrics=$(cat /tmp/metrics.json | jq -s '[.[] | .resourceMetrics[]?.scopeMetrics[]?.metrics[]? | select(.name | contains("job"))] | length')
+          step_metrics=$(cat /tmp/metrics.json | jq -s '[.[] | .resourceMetrics[]?.scopeMetrics[]?.metrics[]? | select(.name | contains("step"))] | length')
+          all_metrics=$(cat /tmp/metrics.json | jq -s '[.[] | .resourceMetrics[]?.scopeMetrics[]?.metrics[]?] | length')
           echo "Job metrics: $job_metrics"
           echo "Step metrics: $step_metrics"
           echo "All metrics: $all_metrics"
@@ -538,10 +535,10 @@ jobs:
         if: ${{ matrix.exporter_traces == 'otlp' }}
       - run: |
           cat /tmp/traces.json
-          job_span_count=$(cat /tmp/traces.json | jq '[.[] | .resourceSpans[]?.scopeSpans[]?.spans[]? | select(.attributes[]? | select(.key == "github.actions.type" and .value.stringValue == "job"))] | length')
-          step_span_count=$(cat /tmp/traces.json | jq '[.[] | .resourceSpans[]?.scopeSpans[]?.spans[]? | select(.attributes[]? | select(.key == "github.actions.type" and .value.stringValue == "step"))] | length')
-          all_spans=$(cat /tmp/traces.json | jq '[.[] | .resourceSpans[]?.scopeSpans[]?.spans[]?] | length')
-          empty_parent_count=$(cat /tmp/traces.json | jq '[.[] | .resourceSpans[]?.scopeSpans[]?.spans[]? | select(.parentSpanId == "" or .parentSpanId == null)] | length')
+          job_span_count=$(cat /tmp/traces.json | jq -s '[.[] | .resourceSpans[]?.scopeSpans[]?.spans[]? | select(.attributes[]? | select(.key == "github.actions.type" and .value.stringValue == "job"))] | length')
+          step_span_count=$(cat /tmp/traces.json | jq -s '[.[] | .resourceSpans[]?.scopeSpans[]?.spans[]? | select(.attributes[]? | select(.key == "github.actions.type" and .value.stringValue == "step"))] | length')
+          all_spans=$(cat /tmp/traces.json | jq -s '[.[] | .resourceSpans[]?.scopeSpans[]?.spans[]?] | length')
+          empty_parent_count=$(cat /tmp/traces.json | jq -s '[.[] | .resourceSpans[]?.scopeSpans[]?.spans[]? | select(.parentSpanId == "" or .parentSpanId == null)] | length')
           echo "Job spans: $job_span_count"
           echo "Step spans: $step_span_count"
           echo "All spans: $all_spans"
