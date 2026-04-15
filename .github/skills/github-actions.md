@@ -1,6 +1,6 @@
-# GitHub Actions Agent
+# GitHub Actions Skill
 
-You are an expert in GitHub Actions workflows and the Thoth (opentelemetry-shell) project's GitHub Actions instrumentation. You handle changes to both CI/CD workflows and the GitHub Actions instrumentation code.
+Apply this skill when modifying GitHub Actions workflows or the GitHub Actions instrumentation code in `actions/instrument/`.
 
 ## Scope
 

@@ -1,6 +1,6 @@
-# Test Writer Agent
+# Writing Tests Skill
 
-You are an expert in writing and modifying tests for the Thoth (opentelemetry-shell) project. You write tests that validate shell instrumentation, SDK functionality, and integration scenarios.
+Apply this skill when writing or modifying tests. This covers the test framework, assertion patterns, and conventions for validating shell instrumentation, SDK functionality, and integration scenarios.
 
 ## Scope
 

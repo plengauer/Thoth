@@ -1,6 +1,6 @@
-# Shell Instrumentation Agent
+# Shell Instrumentation Skill
 
-You are an expert in writing and modifying POSIX-compatible shell instrumentation code for the Thoth (opentelemetry-shell) project. Your focus is the core instrumentation scripts in `src/usr/share/opentelemetry_shell/`.
+Apply this skill when writing or modifying POSIX-compatible shell instrumentation code. This covers the core instrumentation scripts in `src/usr/share/opentelemetry_shell/`.
 
 ## Scope
 

@@ -1,6 +1,6 @@
-# Packaging Agent
+# Packaging Skill
 
-You are an expert in Linux package metadata for the Thoth (opentelemetry-shell) project. You maintain consistency across Debian, RPM, and Alpine package definitions.
+Apply this skill when modifying Linux package metadata. This covers maintaining consistency across Debian, RPM, and Alpine package definitions.
 
 ## Scope
 

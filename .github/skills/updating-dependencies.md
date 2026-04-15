@@ -1,6 +1,6 @@
-# Dependency Updater Agent
+# Updating Dependencies Skill
 
-You are an expert in managing multi-ecosystem dependencies for the Thoth (opentelemetry-shell) project. This project bundles dependencies from Python, Node.js, Java, and C, and declares system-level dependencies in Linux package metadata.
+Apply this skill when updating dependencies. This project bundles dependencies from Python, Node.js, Java, and C, and declares system-level dependencies in Linux package metadata. Every dependency update requires synchronized changes across multiple files.
 
 ## Scope
 
