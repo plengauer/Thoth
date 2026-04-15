@@ -1,4 +1,4 @@
-if [ "$(readlink -f /proc/$$/exe | rev | cut -d / -f 1 | rev)" = busybox ]; then exit 0; fi
+if [ -d /proc ] && [ "$(readlink -f /proc/$$/exe | rev | cut -d / -f 1 | rev)" = busybox ]; then exit 0; fi
 
 . ./assert.sh
 . /usr/bin/opentelemetry_shell.sh
