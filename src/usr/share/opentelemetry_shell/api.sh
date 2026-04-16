@@ -397,6 +397,22 @@ otel_observe() {
     otel_span_attribute_typed "$span_handle" string subprocess.executable.path="$executable_path"
     otel_span_attribute_typed "$span_handle" string subprocess.executable.name="${executable_path##*/}" # "$(\printf '%s' "$command" | \cut -d' ' -f1 | \rev | \cut -d / -f 1 | \rev)"
   fi
+  if \[ "${GITHUB_ACTIONS:-false}" = true ] && \[ "${GITHUB_EVENT_NAME:-}" = dynamic ] && \[ -n "${COPILOT_AGENT_RUNTIME_VERSION:-}" ] && \[ -n "${GITHUB_COPILOT_ACTION_DOWNLOAD_URL:-}" ] && ( \[ "${GITHUB_JOB:-}" = copilot ] || \[ "${GITHUB_JOB:-}" = claude ] || \[ "${GITHUB_JOB:-}" = codex ] ); then
+    local shell_command_name="$(\printf '%s' "${command_name##*/}" | \tr '[:upper:]' '[:lower:]')"
+    if \[ "$shell_command_name" = curl ] || \[ "$shell_command_name" = wget ]; then
+      case "$command" in
+        *https://api.openai.com/*|*https://models.github.ai/inference/*|*https://models.github.ai/*/inference/*|*https://api.githubcopilot.com/responses*)
+          otel_span_attribute_typed "$span_handle" string gen_ai.operation.name=chat
+          otel_span_attribute_typed "$span_handle" string gen_ai.provider.name=openai
+          ;;
+      esac
+    elif \[ "$command_type" = file ]; then
+      otel_span_name "$span_handle" "execute_tool ${command_name##*/}"
+      otel_span_attribute_typed "$span_handle" string gen_ai.operation.name=execute_tool
+      otel_span_attribute_typed "$span_handle" string gen_ai.tool.name="${command_name##*/}"
+      otel_span_attribute_typed "$span_handle" string gen_ai.tool.type=function
+    fi
+  fi
   
   # run command
   otel_span_activate "$span_handle"
