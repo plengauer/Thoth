@@ -751,6 +751,7 @@ jobs:
           cat "$OTLP_JSON" | jq -r .name | grep -v '^null$' | sort -u | grep -F 'job-with(a)special[name]with.special&characters'
           cat "$OTLP_JSON" | jq -r .name | grep -v '^null$' | sort -u | grep -F 'Set up job'
           cat "$OTLP_JSON" | jq -r .name | grep -v '^null$' | sort -u | grep -F 'Complete job'
+          cat "$OTLP_JSON" | jq -r '.attributes."github.actions.action.name"' | grep -v '^null$' | sort -u | grep -F 'plengauer/opentelemetry-github/actions/instrument/job'
           # cat "$OTLP_JSON" | jq -r .body | grep -v '^null$' | sort -u | grep -F 'Cleaning up orphan processes'
           # cat "$OTLP_JSON" | jq -r .body | grep -v '^null$' | sort -u | grep -F 'hello world, im a publisher (not injected)'
           # cat "$OTLP_JSON" | jq -r .body | grep -v '^null$' | sort -u | grep -F 'hello world, im a job with some special characters (not injected)'
