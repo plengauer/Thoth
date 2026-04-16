@@ -1,7 +1,7 @@
 #!/bin/false
 
 if \[ "${GITHUB_ACTIONS:-false}" = true ]; then
-  if \[ -n "${GITHUB_ACTION:-}" = github/gh-aw-actions/setup ] && \[ -z "${INPUT_TRACE_ID:-}" ]; then
+  if \[ "${GITHUB_ACTION:-}" = github/gh-aw-actions/setup ] && \[ -z "${INPUT_TRACE_ID:-}" ]; then
     traceparent_stripped="$TRACEPARENT"
     traceparent_stripped="${traceparent_stripped#*-}"
     traceparent_stripped="${traceparent_stripped%-*}"
