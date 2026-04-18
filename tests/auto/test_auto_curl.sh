@@ -23,6 +23,7 @@ assert_equals "200" "$(\echo "$span" | jq -r '.attributes."http.response.status_
 assert_not_equals null "$(\echo "$span" | jq -r '.attributes."http.response.header.content-type"')"
 assert_not_equals null "$(\echo "$span" | jq -r '.attributes."network.peer.address"')"
 assert_not_equals null "$(\echo "$span" | jq -r '.attributes."network.peer.port"')"
+assert_equals "null" "$(\echo "$span" | jq -r '.attributes."http.request.body.size"')"
 
 $TEST_SHELL auto/curl.sh https://www.google.de/index.html https://www.google.de/index http://www.bing.com
 
