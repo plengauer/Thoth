@@ -167,6 +167,7 @@ jobs:
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+          OTEL_SHELL_CONFIG_MUTE_INTERNALS: 'TRUE'
         with:
           secrets_to_redact: '["${{ github.token }}"]'
       - uses: actions/download-artifact@v8.0.1
@@ -178,6 +179,18 @@ jobs:
             version="${version%_*}"
             mkdir "$version"
             mv "$directory" "$version"/node_modules
+          done
+      - env:
+          OTEL_SHELL_CONFIG_MUTE_INTERNALS: TRUE
+        run: |
+          prev_hash=""
+          for version in $(ls | grep -E '^[0-9]+$' | sort -n); do
+            hash="$(find "$version" -type f | sort | while IFS= read -r f; do printf '%s\n' "${f#*/}"; cat "$f"; done | sha256sum | cut -d ' ' -f 1)"
+            if [ "$hash" = "$prev_hash" ]; then
+              rm -rf "$version"
+            else
+              prev_hash="$hash"
+            fi
           done
       - run: find . -type f | xargs sha256sum | sort | cut -d ' ' -f 3- | tar -cf node_modules.tar -T - && xz -9 node_modules.tar
       - uses: actions/upload-artifact@v7.0.0
@@ -283,6 +296,7 @@ jobs:
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+          OTEL_SHELL_CONFIG_MUTE_INTERNALS: 'TRUE'
         with:
           secrets_to_redact: '["${{ github.token }}"]'
       - uses: actions/download-artifact@v8.0.1
@@ -294,6 +308,18 @@ jobs:
             version="${version%_*}"
             mkdir "$version"
             mv "$directory" "$version"/site-packages
+          done
+      - env:
+          OTEL_SHELL_CONFIG_MUTE_INTERNALS: TRUE
+        run: |
+          prev_hash=""
+          for version in $(ls | grep -E '^3\.[0-9]+$' | sort -t. -k2 -n); do
+            hash="$(find "$version" -type f | sort | while IFS= read -r f; do printf '%s\n' "${f#*/}"; \cat "$f"; done | sha256sum | cut -d ' ' -f 1)"
+            if [ "$hash" = "$prev_hash" ]; then
+              rm -rf "$version"
+            else
+              prev_hash="$hash"
+            fi
           done
       - run: find . -type f | xargs sha256sum | sort | cut -d ' ' -f 3- | tar -cf python_site_packages.tar -T - && xz -9 python_site_packages.tar
       - uses: actions/upload-artifact@v7.0.0
