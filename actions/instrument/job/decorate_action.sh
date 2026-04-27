@@ -34,6 +34,19 @@ github_properties_to_kvps() {
     fi
   done
 }
+resolve_github_action_name() {
+  action_name="$GITHUB_ACTION_REPOSITORY"
+  if [ -n "${GITHUB_ACTION_PATH:-}" ] && [ -n "${GITHUB_ACTION_REPOSITORY:-}" ] && [ -n "${GITHUB_ACTION_REF:-}" ]; then
+    action_path_prefix="/_actions/$GITHUB_ACTION_REPOSITORY/$GITHUB_ACTION_REF/"
+    case "$GITHUB_ACTION_PATH" in
+      *"$action_path_prefix"*)
+        action_path="${GITHUB_ACTION_PATH#*"$action_path_prefix"}"
+        [ -z "$action_path" ] || action_name="$action_name/$action_path"
+        ;;
+    esac
+  fi
+  printf '%s' "$action_name"
+}
 record_github_logs() {
   commands_mute_token_file="$(mktemp -u)"
   while IFS=$'\n' read -r line; do
@@ -112,8 +125,9 @@ printenv -0 | tr '\n' ' ' | tr '\0' '\n' | cut -d '=' -f 1 | grep '^INPUT_' | wh
 printenv -0 | tr '\n' ' ' | tr '\0' '\n' | cut -d '=' -f 1 | grep '^STATE_' | while read -r key; do otel_span_attribute_typed $span_handle string github.actions.step.state.before."$(variable_name_2_attribute_key "${key#STATE_}")"="$(variable_name_2_attribute_value "$key")"; done
 printenv -0 | tr '\n' ' ' | tr '\0' '\n' | cut -d '=' -f 1 | grep '^STATE_' | while read -r key; do otel_span_attribute_typed $span_handle string github.actions.step.state.after."$(variable_name_2_attribute_key "${key#STATE_}")"="$(variable_name_2_attribute_value "$key")"; done
 [ -z "${GITHUB_ACTION_PATH:-}" ] || ! [ -d "$GITHUB_ACTION_PATH" ] || _OTEL_GITHUB_STEP_ACTION_TYPE=composite/"$_OTEL_GITHUB_STEP_ACTION_TYPE"
+github_action_name="$(resolve_github_action_name)"
 otel_span_attribute_typed $span_handle string github.actions.action.type="$_OTEL_GITHUB_STEP_ACTION_TYPE"
-otel_span_attribute_typed $span_handle string github.actions.action.name="$GITHUB_ACTION_REPOSITORY"
+otel_span_attribute_typed $span_handle string github.actions.action.name="$github_action_name"
 otel_span_attribute_typed $span_handle string github.actions.action.ref="$GITHUB_ACTION_REF"
 [ -z "${_OTEL_GITHUB_STEP_ACTION_PHASE:-}" ] || otel_span_attribute_typed $span_handle string github.actions.action.phase="$_OTEL_GITHUB_STEP_ACTION_PHASE"
 otel_span_activate "$span_handle"
@@ -180,7 +194,7 @@ if [ -n "${GITHUB_ACTION_REPOSITORY:-}" ]; then
   otel_observation_attribute_typed "$observation_handle" string github.actions.event.ref.name="$GITHUB_REF_NAME"
   otel_observation_attribute_typed "$observation_handle" string github.actions.job.name="$GITHUB_JOB"
   otel_observation_attribute_typed "$observation_handle" string github.actions.step.name="${GITHUB_STEP:-$GITHUB_ACTION}"
-  otel_observation_attribute_typed "$observation_handle" string github.actions.action.name="$GITHUB_ACTION_REPOSITORY"
+  otel_observation_attribute_typed "$observation_handle" string github.actions.action.name="$github_action_name"
   otel_observation_attribute_typed "$observation_handle" string github.actions.action.ref="$GITHUB_ACTION_REF"
   otel_observation_attribute_typed "$observation_handle" string github.actions.action.conclusion="$conclusion"
   otel_counter_observe "$counter_handle" "$observation_handle"
@@ -196,7 +210,7 @@ if [ -n "${GITHUB_ACTION_REPOSITORY:-}" ]; then
   otel_observation_attribute_typed "$observation_handle" string github.actions.event.ref.name="$GITHUB_REF_NAME"
   otel_observation_attribute_typed "$observation_handle" string github.actions.job.name="$GITHUB_JOB"
   otel_observation_attribute_typed "$observation_handle" string github.actions.step.name="${GITHUB_STEP:-$GITHUB_ACTION}"
-  otel_observation_attribute_typed "$observation_handle" string github.actions.action.name="$GITHUB_ACTION_REPOSITORY"
+  otel_observation_attribute_typed "$observation_handle" string github.actions.action.name="$github_action_name"
   otel_observation_attribute_typed "$observation_handle" string github.actions.action.ref="$GITHUB_ACTION_REF"
   otel_observation_attribute_typed "$observation_handle" string github.actions.action.conclusion="$conclusion"
   otel_counter_observe "$counter_handle" "$observation_handle"
@@ -210,7 +224,7 @@ wait "$record_github_logs_pid"
 rm "$log_0_pipe" "$log_1_pipe"
 
 otel_shutdown
-echo "$_OTEL_GITHUB_STEP_ACTION_TYPE" "$GITHUB_ACTION_REPOSITORY" >> /tmp/opentelemetry_shell.github.step.log
+echo "$_OTEL_GITHUB_STEP_ACTION_TYPE" "$github_action_name" >> /tmp/opentelemetry_shell.github.step.log
 if [ "$exit_code" = 0 ] && [ "${GITHUB_ACTION_REPOSITORY:-}" = "github/gh-aw" ] && case "${GITHUB_ACTION_PATH%/}" in */actions/setup) true;; *) false;; esac && [ -n "${INPUT_DESTINATION:-}" ]; then
   find "${INPUT_DESTINATION}" -name "*.sh" 2>/dev/null | while IFS= read -r script_file; do
     sed -i 's~#!/bin/sh~#!/bin/sh\n. otel.sh~g' "$script_file" 2>/dev/null || true
