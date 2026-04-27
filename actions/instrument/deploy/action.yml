@@ -314,6 +314,7 @@ runs:
       run: |
         if [ -r "${{ inputs.workflows_directory }}"/copilot-setup-steps.yml ]; then exit 0; fi
         echo '
+        name: Copilot setup steps
         on:
           push:
             paths:
