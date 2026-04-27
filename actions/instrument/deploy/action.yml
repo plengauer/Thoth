@@ -314,6 +314,7 @@ runs:
       run: |
         if [ -r "${{ inputs.workflows_directory }}"/copilot-setup-steps.yml ]; then exit 0; fi
         echo '
+        name: Copilot setup steps
         on:
           push:
             paths:
@@ -415,7 +416,7 @@ runs:
     - name: "Open Pull Request"
       if: ${{ inputs.dry_run != 'true' && steps.push.outputs.pushed == 'false' }}
       id: open-pr
-      uses: peter-evans/create-pull-request@v8.1.0
+      uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
       with:
         token: ${{ inputs.github_token }}
         branch: "deploy-otel/${{ github.ref_name }}"
