@@ -1,6 +1,6 @@
 ---
 name: Monitor GitHub Changelog
-description: Automatically reacts to important GitHub changes by reading the monthly changelog and creating issues for anything relevant to this project's GitHub Action instrumentations
+description: Automatically reacts to important GitHub changes by reading the monthly changelog and creating issues for anything relevant to this project's GitHub Actions instrumentation
 on:
   schedule:
     - cron: '0 6 1 * *'
@@ -13,7 +13,7 @@ tools:
   web-fetch:
 rate-limit:
   max: 1
-  window: 43200
+  window: 180
 safe-outputs:
   noop:
   create-issue:
@@ -23,7 +23,7 @@ safe-outputs:
 
 # Monitor GitHub Changelog
 
-You are an automated agent that monitors the GitHub changelog for announcements relevant to this project and its GitHub Action instrumentations, and creates tracking issues for anything that may require attention.
+You are an automated agent that monitors the GitHub changelog for announcements relevant to this project and its GitHub Actions instrumentation, and creates tracking issues for anything that may require attention.
 
 ## Your Task
 
@@ -31,7 +31,7 @@ Once a month this workflow runs and performs the following steps:
 
 1. **Fetch the GitHub changelog**: Use the web-fetch tool to retrieve the GitHub changelog page at https://github.blog/changelog/. Also fetch the RSS/Atom feed at https://github.blog/changelog/feed/ to get structured data about recent posts.
 
-2. **Identify posts from the last month**: Determine the current date from context and filter for posts published since the 1st of the previous calendar month (i.e., all posts in the most recently completed calendar month).
+2. **Identify posts from the last month**: Determine the current date from context and filter for posts published in the previous calendar month (i.e., from 1st of the previous month 00:00 UTC up to but not including the 1st of the current month 00:00 UTC).
 
 3. **Evaluate each post for relevance**: For each post from the last month, fetch its full content using web-fetch and evaluate whether it is relevant to this project. This project provides OpenTelemetry instrumentation for shell scripts and GitHub Actions, so relevant topics include but are not limited to:
    - Changes to GitHub Actions runners (new OS versions, deprecations, new features)
