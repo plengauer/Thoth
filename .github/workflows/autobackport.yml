@@ -52,7 +52,7 @@ jobs:
           secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}","${{ secrets.OPENAI_TOKEN }}"]'
 
       - id: autoversion
-        uses: plengauer/autoversion@v3.0.0
+        uses: plengauer/autoversion@09172e83f9d0372b01fc3845f952135b9a208a4f # v3.1.0
         with:
           github_token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           openai_token: ${{ secrets.OPENAI_TOKEN }}
@@ -191,7 +191,7 @@ jobs:
       
       - id: open-pr
         if: steps.check_patch.outputs.should_backport == 'true'
-        uses: peter-evans/create-pull-request@v8.1.0
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           commit-message: |
