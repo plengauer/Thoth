@@ -34,8 +34,6 @@ _otel_propagate_wget() {
   local stderr_pid="$!"
   local exit_code=0
   _otel_call "$@" --header="traceparent: $TRACEPARENT" --header="tracestate: $TRACESTATE" 2> "$stderr_pipe" || exit_code="$?"
-  \wait "$stderr_pid"
-  \rm "$stderr_pipe"
   if \[ -f "$file" ]; then
     if \[ "$(\uname -s)" = "Darwin" ]; then
       if \[ -n "${OLD_DYLD_INSERT_LIBRARIES:-}" ]; then
@@ -53,6 +51,8 @@ _otel_propagate_wget() {
     unset OTEL_SHELL_INJECT_HTTP_HANDLE_FILE
     unset OTEL_SHELL_INJECT_HTTP_SDK_PIPE
   fi
+  \wait "$stderr_pid" || true
+  \rm "$stderr_pipe"
   if \[ "$job_control" = 1 ]; then \set -m; fi
   return "$exit_code"
 }

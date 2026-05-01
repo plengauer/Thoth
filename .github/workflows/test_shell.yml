@@ -93,7 +93,7 @@ jobs:
           ref: ${{ inputs.ref }}
       - id: key
         run: cat .github/images.json .github/workflows/test_shell.yml meta/*/* | md5sum | cut -d ' ' -f 1 | xargs -I '{}' echo "key={}" >> "$GITHUB_OUTPUT"
-      - uses: actions/cache@v5.0.4
+      - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: images.json
           key: images ${{ steps.key.outputs.key }}
@@ -351,7 +351,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: Vampire/setup-wsl@v6.0.0
+      - uses: Vampire/setup-wsl@d1da7f2c0322a5ee4f24975344f67fc0f5baf364 # v7.0.0
         with:
           distribution: Ubuntu-24.04
           wsl-version: ${{ matrix.version }}
@@ -423,12 +423,12 @@ jobs:
           export OTEL_SHELL_SDK_OUTPUT_REDIRECT=/dev/null
           command time -f '%U' bash -c '. /usr/bin/opentelemetry_shell.sh' 2>> performance.${{ matrix.version }}.coldstart.list
           for i in $(seq 1 100); do command time -f '%U' bash -c '. /usr/bin/opentelemetry_shell.sh' 2>> performance.${{ matrix.version }}.warmstart.list; done
-      - uses: actions/upload-artifact@v7.0.0
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: performance.${{ matrix.version }}.coldstart.list
           path: performance.${{ matrix.version }}.coldstart.list
           retention-days: 1
-      - uses: actions/upload-artifact@v7.0.0
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: performance.${{ matrix.version }}.warmstart.list
           path: performance.${{ matrix.version }}.warmstart.list
@@ -468,7 +468,7 @@ jobs:
             plot "coldstart.list" using 0:2:xticlabels(1) with linespoints title "Cold Start" lt rgb "blue", "warmstart.list" using 0:2:xticlabels(1) with linespoints title "Warm Start" lt rgb "red"
           ' > plot.gp
           gnuplot plot.gp
-      - uses: actions/upload-artifact@v7.0.0
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: performance.png
           path: performance.png
