@@ -77,7 +77,7 @@ jobs:
         with:
           name: packages.deb.${{ inputs.ref }}
       - run: cp opentelemetry-shell_*_*.deb tests
-      - uses: docker/build-push-action@v7.0.0 # some docker actions have otel built-in
+      - uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f # v7.1.0 # some docker actions have otel built-in
         with:
           context: ./tests/
           tags: test
@@ -134,7 +134,7 @@ jobs:
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
-      - uses: plengauer/autoversion@v3.0.0
+      - uses: plengauer/autoversion@09172e83f9d0372b01fc3845f952135b9a208a4f # v3.1.0
         with:
           github_token: ${{ github.token }}
           path_exclude: ./
@@ -151,7 +151,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@v8.0.0
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: packages.deb.${{ inputs.ref }}
       - uses: ./actions/instrument/job
@@ -205,7 +205,7 @@ jobs:
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
-      - uses: renovatebot/github-action@v46.1.8 # node action with call to docker, docker flags that make injection more complicated, then call a node script via exec that already is injected with otel
+      - uses: renovatebot/github-action@83ec54fee49ab67d9cd201084c1ff325b4b462e4 # v46.1.10 # node action with call to docker, docker flags that make injection more complicated, then call a node script via exec that already is injected with otel
         env:
           RENOVATE_DRY_RUN: full
           RENOVATE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -231,19 +231,19 @@ jobs:
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
-      - uses: github/codeql-action/init@v4.35.1 # node action will call java will call node
+      - uses: github/codeql-action/init@95e58e9a2cdfd71adc6e0353d5c52f41a045d225 # v4.35.2 # node action will call java will call node
         with:
           languages: javascript-typescript
           build-mode: none
-      - uses: github/codeql-action/analyze@v4.35.1 # node action will call java will call node
+      - uses: github/codeql-action/analyze@95e58e9a2cdfd71adc6e0353d5c52f41a045d225 # v4.35.2 # node action will call java will call node
         with:
           category: "/language:javascript-typescript"
           upload: never
-      - uses: github/codeql-action/init@v4.35.1
+      - uses: github/codeql-action/init@95e58e9a2cdfd71adc6e0353d5c52f41a045d225 # v4.35.2
         with:
           languages: python
           build-mode: none
-      - uses: github/codeql-action/analyze@v4.35.1 # node action will call java will call python
+      - uses: github/codeql-action/analyze@95e58e9a2cdfd71adc6e0353d5c52f41a045d225 # v4.35.2 # node action will call java will call python
         with:
           category: "/language:python"
           upload: never

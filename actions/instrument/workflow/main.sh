@@ -304,10 +304,10 @@ done | while IFS=$'\t' read -r TRACEPARENT job_id step_number step_conclusion st
     *) ;;
   esac
   if [ -n "${action_phase:-}" ]; then action_name="${action_name#* }"; fi
-  if echo "$action_name" | grep -qE '^[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+(@[a-zA-Z0-9_.-]+)?$'; then
+  if echo "$action_name" | grep -qE '^[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+(/[a-zA-Z0-9_.-]+)*(@[^[:space:]]+)?$'; then
     if _otel_string_contains "$action_name" @; then
-      action_name="${action_name%%@*}"
       action_tag="${action_name##*@}"
+      action_name="${action_name%%@*}"
     else
       action_tag=main
     fi
