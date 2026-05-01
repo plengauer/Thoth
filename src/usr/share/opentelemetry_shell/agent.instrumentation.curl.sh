@@ -8,13 +8,24 @@ _otel_propagate_curl() {
     *) local job_control=0;;
   esac
   local file=/usr/share/opentelemetry_shell/agent.instrumentation.http/libinjecthttpheader.so
+  if \[ "$(\uname -s)" = "Darwin" ]; then
+    local file=/usr/share/opentelemetry_shell/agent.instrumentation.http/libinjecthttpheader.dylib
+  fi
   if \[ -f "$file" ] && ! \ldd "$file" 2> /dev/null | \grep -q 'not found' && ! ( \[ "$_otel_shell" = 'busybox sh' ] && \help | \tail -n +3 | \grep -q curl ); then
     export OTEL_SHELL_INJECT_HTTP_SDK_PIPE="$_otel_remote_sdk_pipe"
     export OTEL_SHELL_INJECT_HTTP_HANDLE_FILE="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell_$$.curl.handle.XXXXXXXXXX)"
-    local OLD_LD_PRELOAD="${LD_PRELOAD:-}"
-    export LD_PRELOAD="$file"
-    if \[ -n "$OLD_LD_PRELOAD" ]; then
-      export LD_PRELOAD="$LD_PRELOAD:$OLD_LD_PRELOAD"
+    if \[ "$(\uname -s)" = "Darwin" ]; then
+      local OLD_DYLD_INSERT_LIBRARIES="${DYLD_INSERT_LIBRARIES:-}"
+      export DYLD_INSERT_LIBRARIES="$file"
+      if \[ -n "$OLD_DYLD_INSERT_LIBRARIES" ]; then
+        export DYLD_INSERT_LIBRARIES="$DYLD_INSERT_LIBRARIES:$OLD_DYLD_INSERT_LIBRARIES"
+      fi
+    else
+      local OLD_LD_PRELOAD="${LD_PRELOAD:-}"
+      export LD_PRELOAD="$file"
+      if \[ -n "$OLD_LD_PRELOAD" ]; then
+        export LD_PRELOAD="$LD_PRELOAD:$OLD_LD_PRELOAD"
+      fi
     fi
   fi
   if _otel_string_contains "$(_otel_dollar_star "$@")" " -v "; then local is_verbose=1; else local is_verbose=0; fi
@@ -32,10 +43,18 @@ _otel_propagate_curl() {
   local exit_code=0
   if \[ -n "$api" ]; then _otel_call_curl_api "$span_handle_forward" "$api_recording_finished" "$api" "$@"; else _otel_call "$@"; fi 2> "$stderr_pipe" || exit_code="$?"
   if \[ -f "$file" ]; then
-    if \[ -n "${OLD_LD_PRELOAD:-}" ]; then
-      export LD_PRELOAD="$OLD_LD_PRELOAD"
+    if \[ "$(\uname -s)" = "Darwin" ]; then
+      if \[ -n "${OLD_DYLD_INSERT_LIBRARIES:-}" ]; then
+        export DYLD_INSERT_LIBRARIES="$OLD_DYLD_INSERT_LIBRARIES"
+      else
+        unset DYLD_INSERT_LIBRARIES
+      fi
     else
-      unset LD_PRELOAD
+      if \[ -n "${OLD_LD_PRELOAD:-}" ]; then
+        export LD_PRELOAD="$OLD_LD_PRELOAD"
+      else
+        unset LD_PRELOAD
+      fi
     fi
     unset OTEL_SHELL_INJECT_HTTP_HANDLE_FILE
     unset OTEL_SHELL_INJECT_HTTP_SDK_PIPE
