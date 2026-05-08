@@ -481,7 +481,6 @@ jobs:
           ref: ${{ inputs.ref }}
       - run: |
           {
-            find src -iname 'Dockerfile' -type f
             find src -iname '*.c' -type f
             find src -iname '*.java' -type f
             find src -iname 'manifest.txt' -type f
@@ -590,7 +589,6 @@ jobs:
             rm -rf src/tmp.* /home/runner/rpmbuild
             git checkout .
             {
-              find src -iname 'Dockerfile' -type f
               find src -iname '*.c' -type f
               find src -iname '*.java' -type f
               find src -iname 'manifest.txt' -type f
@@ -654,7 +652,6 @@ jobs:
           ref: ${{ inputs.ref }}
       - run: |
           {
-            find src -iname 'Dockerfile' -type f
             find src -iname '*.c' -type f
             find src -iname '*.java' -type f
             find src -iname 'manifest.txt' -type f
