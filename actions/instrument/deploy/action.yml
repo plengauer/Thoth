@@ -62,11 +62,8 @@ inputs:
   commit_message:
     description: 'Commit message for the deployment commit'
     default: 'deploy opentelemetry'
-  gpg_private_key:
-    description: 'GPG private key for signing commits (armored format). See https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits'
-    default: ''
-  gpg_passphrase:
-    description: 'Passphrase for the GPG private key'
+  ssh_signing_key:
+    description: 'SSH private key for signing commits. See https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits'
     default: ''
   __repository_level_instrumentation_file_name_override:
     description: 'INTERNAL ONLY - DO NOT SET MANUALLY'
@@ -407,27 +404,18 @@ runs:
         git diff
   
     - name: "Configure commit signing"
-      if: ${{ inputs.gpg_private_key != '' }}
+      if: ${{ inputs.ssh_signing_key != '' }}
       shell: bash
       env:
-        GPG_PRIVATE_KEY: ${{ inputs.gpg_private_key }}
-        GPG_PASSPHRASE: ${{ inputs.gpg_passphrase }}
+        SSH_SIGNING_KEY: ${{ inputs.ssh_signing_key }}
       run: |
-        mkdir -p ~/.gnupg
-        chmod 700 ~/.gnupg
-        echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
-        gpgconf --kill gpg-agent 2>/dev/null || true
-        printf '%s\n' "$GPG_PRIVATE_KEY" | gpg --batch --import
-        keygrip="$(gpg --list-secret-keys --with-keygrip --with-colons | awk -F: '/^grp:/{print $10; exit}')"
-        key_id="$(gpg --list-secret-keys --keyid-format=long --with-colons | awk -F: '/^sec:/{print $5; exit}')"
-        git config user.signingkey "$key_id"
+        mkdir -p ~/.ssh
+        chmod 700 ~/.ssh
+        printf '%s\n' "$SSH_SIGNING_KEY" > ~/.ssh/signing_key
+        chmod 600 ~/.ssh/signing_key
+        git config gpg.format ssh
+        git config user.signingkey ~/.ssh/signing_key
         git config commit.gpgsign true
-        if [ -n "${GPG_PASSPHRASE:-}" ]; then
-          for preset_bin in /usr/lib/gnupg2/gpg-preset-passphrase /usr/lib/gnupg/gpg-preset-passphrase /usr/libexec/gpg-preset-passphrase; do
-            [ -x "$preset_bin" ] || continue
-            printf '%s' "$GPG_PASSPHRASE" | "$preset_bin" --preset "$keygrip" && break
-          done
-        fi
     - name: "Push"
       if: ${{ inputs.dry_run != 'true' }}
       id: push
