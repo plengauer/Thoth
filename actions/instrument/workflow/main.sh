@@ -99,6 +99,7 @@ times_dir="$(mktemp -d)"
 
 . otelapi.sh
 export OTEL_DISABLE_RESOURCE_DETECTION=TRUE
+repo_properties="$(gh_repo_properties 2>/dev/null || echo '[]')"
 _otel_resource_attributes_process() {
   _otel_resource_attribute string github.repository.id="$(jq < "$workflow_json" -r .repository.id)"
   _otel_resource_attribute string github.repository.name="$(jq < "$workflow_json" -r .repository.name)"
@@ -108,6 +109,9 @@ _otel_resource_attributes_process() {
   _otel_resource_attribute string github.actions.workflow.name="$workflow_name"
   _otel_resource_attribute string github.actions.workflow.ref="$(jq < "$workflow_json" -r .repository.owner.login)"/"$(jq < "$workflow_json" -r .repository.name)"/"$(jq < "$workflow_json" -r .path)"@/refs/heads/"$(jq < "$workflow_json" -r .head_branch)"
   _otel_resource_attribute string github.actions.workflow.sha="$(jq < "$workflow_json" -r .head_sha)"
+  printf '%s' "$repo_properties" | jq -r '.[] | select(.value != null and .value != "") | [.property_name, .value] | @tsv' | while IFS=$'\t' read -r key value; do
+    _otel_resource_attribute string "github.repository.property.$key=$value"
+  done
 }
 _otel_resource_attributes_custom() {
   _otel_resource_attribute string telemetry.sdk.language=github

@@ -123,11 +123,15 @@ _otel_list_all_commands() {
 }
 
 _otel_list_path_commands() {
-  _otel_list_path_executables | \rev | \cut -d / -f 1 | \rev
+  _otel_list_path_executables | _otel_path_2_name
 }
 
 _otel_list_path_executables() {
   \echo "$PATH" | \tr ':' '\n' | while \read dir; do \find "$dir" -maxdepth 1 -type f -executable 2> /dev/null || \true; \find "$dir" -maxdepth 1 -type l -executable 2> /dev/null || \true; done
+}
+
+_otel_path_2_name() {
+  while \read -r path; do \echo "${path##*/}"; done
 }
 
 _otel_list_alias_commands() {
@@ -232,7 +236,7 @@ _otel_dealiasify() {
   local full_alias="$(_otel_resolve_alias "$cmd")"
   while _otel_string_starts_with "$full_alias" 'OTEL_'; do local full_alias="${full_alias#* }"; done
   if ! _otel_string_starts_with "$full_alias" / && ! _otel_string_starts_with "$full_alias" .; then return 2; fi
-  local cmd_alias="$(\printf '%s' "$full_alias" | _otel_line_split | \grep -v '^OTEL_' | \grep -v '^_otel_' | \head -n1 | \rev | \cut -d / -f 1 | \rev)" # e.g., upgrade => bash
+  local cmd_alias="$(\printf '%s' "$full_alias" | _otel_line_split | \grep -v '^OTEL_' | \grep -v '^_otel_' | \head -n1 | _otel_path_2_name)" # e.g., upgrade => bash
   if \[ -z "$cmd_alias" ]; then return 3; fi
   local cmd_aliased="$(_otel_resolve_alias $cmd_alias)" # e.g., bash => _otel_inject_shell bash
   if \[ -z "$cmd_aliased" ]; then return 4; fi
@@ -383,7 +387,7 @@ _otel_inject_and_exec_directly() { # this function assumes there is no fd fucker
   if \[ "$#" = 1 ]; then
     \export OTEL_SHELL_CONSERVATIVE_EXEC=TRUE
     _otel_end_script
-    if \[ -n "$_otel_commandline_override" ]; then
+    if \[ -n "${_otel_commandline_override:-}" ]; then
       \export OTEL_SHELL_COMMANDLINE_OVERRIDE="$_otel_commandline_override"
       \export OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE="$PPID"
     fi
@@ -486,7 +490,7 @@ _otel_start_script() {
     otel_span_attribute_typed $_root_span_handle int ssh.port="$(\echo $SSH_CONNECTION | \cut -d ' ' -f 4)"
     otel_span_attribute_typed $_root_span_handle string network.peer.ip="$(\echo $SSH_CLIENT | \cut -d ' ' -f 1)"
     otel_span_attribute_typed $_root_span_handle int network.peer.port="$(\echo $SSH_CLIENT | \cut -d ' ' -f 2)"
-  elif \[ -n "${SERVER_SOFTWARE:-}"  ] && \[ -n "${SCRIPT_NAME:-}" ] && \[ -n "${SERVER_NAME:-}" ] && \[ -n "${SERVER_PROTOCOL:-}" ] && ! \[ "${OTEL_SHELL_AUTO_INJECTED:FALSE}" = "TRUE" ] && \[ "${PPID:-}" != 0 ] && \[ "$(\cat "/proc/$PPID/cmdline" | \tr '\000' ' ' | \cut -d ' ' -f 1 | \rev | \cut -d / -f 1 | \rev)" = "python3" ]; then
+  elif \[ -n "${SERVER_SOFTWARE:-}"  ] && \[ -n "${SCRIPT_NAME:-}" ] && \[ -n "${SERVER_NAME:-}" ] && \[ -n "${SERVER_PROTOCOL:-}" ] && ! \[ "${OTEL_SHELL_AUTO_INJECTED:FALSE}" = "TRUE" ] && \[ "${PPID:-}" != 0 ] && \[ "$(\cat "/proc/$PPID/cmdline" | \tr '\000' ' ' | \cut -d ' ' -f 1 | _otel_path_2_name)" = "python3" ]; then
     _root_span_handle="$(otel_span_start SERVER GET)"
     otel_span_attribute_typed $_root_span_handle string network.protocol.name=http
     otel_span_attribute_typed $_root_span_handle string network.transport=tcp
@@ -503,7 +507,7 @@ _otel_start_script() {
   elif _otel_command_self | \grep -q '/var/lib/dpkg/' > /dev/null; then
     local cmdline="$(_otel_command_self | \sed 's/^.* \(\/var\/lib\/dpkg\/.*\)$/\1/')"
     _root_span_handle="$(otel_span_start SERVER "$(\echo "$cmdline" | \cut -d . -f 2- | \cut -d ' ' -f 1)")"
-    otel_span_attribute_typed $_root_span_handle string debian.package.name="$(\echo "$cmdline" | \rev | \cut -d / -f 1 | \rev | \cut -d . -f 1)"
+    otel_span_attribute_typed $_root_span_handle string debian.package.name="$(\echo "$cmdline" | _otel_path_2_name | \cut -d . -f 1)"
     otel_span_attribute_typed $_root_span_handle string debian.package.operation="$(\echo "$cmdline" | \cut -d . -f 2-)"
   elif ! \[ "${OTEL_SHELL_AUTO_INJECTED:-FALSE}" = TRUE ] && \[ -z "${TRACEPARENT:-}" ]; then
     _root_span_handle="$(otel_span_start SERVER "$(_otel_command_self)")"
