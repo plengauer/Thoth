@@ -383,7 +383,7 @@ _otel_inject_and_exec_directly() { # this function assumes there is no fd fucker
   if \[ "$#" = 1 ]; then
     \export OTEL_SHELL_CONSERVATIVE_EXEC=TRUE
     _otel_end_script
-    if \[ -n "$_otel_commandline_override" ]; then
+    if \[ -n "${_otel_commandline_override:-}" ]; then
       \export OTEL_SHELL_COMMANDLINE_OVERRIDE="$_otel_commandline_override"
       \export OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE="$PPID"
     fi
