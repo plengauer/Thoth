@@ -15,12 +15,10 @@ assert_not_equals() {
 }
 
 assert_ends_with() {
-  reverse_string=$(\echo "$2" | \rev)
-  reverse_suffix=$(\echo "$1" | \rev)
-  if [ "${reverse_string#"$reverse_suffix"}" = "$reverse_string" ] ; then
-    \echo "ASSERT FAILED $1 !~= $2" 1>&2
-    exit 1
-  fi
+  case "$2" in
+    *"$1") ;;
+    *) \echo "ASSERT FAILED $1 !~= $2" 1>&2; exit 1;;
+  esac
 }
 
 resolve_span() {
