@@ -129,7 +129,7 @@ jobs:
       - uses: softprops/action-gh-release@v2.6.0
         with:
           token: ${{ secrets.ACTION_GITHUB_TOKEN }}
-          target_committish: ${{ matrix.ref }}
+          target_commitish: ${{ matrix.ref }}
           tag_name: v${{ steps.version.outputs.version }}
           name: Release v${{ steps.version.outputs.version }}
           generate_release_notes: true
