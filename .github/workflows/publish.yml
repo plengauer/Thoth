@@ -103,9 +103,6 @@ jobs:
       - uses: actions/attest-build-provenance@v4.1.0
         with:
           subject-path: '*.apk'
-      - uses: actions/download-artifact@v8.0.1
-        with:
-          name: images_${{ matrix.ref }}
 
       - run: |
           version="${{ steps.version.outputs.version }}"
