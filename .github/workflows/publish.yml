@@ -77,7 +77,7 @@ jobs:
         with:
           secrets_to_redact: |-
             ${{ github.token }}
-            ${{ secrets.ACTION_GITHUB_TOKEN }}
+            ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -125,7 +125,7 @@ jobs:
 
       - uses: softprops/action-gh-release@v2.6.0
         with:
-          token: ${{ secrets.ACTION_GITHUB_TOKEN }}
+          token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           target_commitish: ${{ matrix.ref }}
           tag_name: v${{ steps.version.outputs.version }}
           name: Release v${{ steps.version.outputs.version }}
