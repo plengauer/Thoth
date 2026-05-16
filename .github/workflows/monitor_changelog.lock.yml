@@ -59,8 +59,9 @@ name: "Monitor GitHub Changelog"
         description: Agent caller context (used internally by Agentic Workflows).
         required: false
         type: string
-permissions:
-  actions: read
+
+permissions: {}
+
 concurrency:
   group: "gh-aw-${{ github.workflow }}"
 
@@ -315,7 +316,6 @@ jobs:
     permissions:
       contents: read
       issues: read
-      actions: read
     concurrency:
       group: "gh-aw-copilot-${{ github.workflow }}"
     env:
@@ -906,13 +906,12 @@ jobs:
       - detection
       - safe_outputs
     if: >
-      always() && (needs.agent.result != 'skipped' || needs.activation.outputs.lockdown_check_failed == 'true' || needs.activation.outputs.stale_lock_file_failed == 'true')
-
+      always() && (needs.agent.result != 'skipped' || needs.activation.outputs.lockdown_check_failed == 'true' ||
+      needs.activation.outputs.stale_lock_file_failed == 'true')
     runs-on: ubuntu-slim
     permissions:
       contents: read
       issues: write
-      actions: read
     concurrency:
       group: "gh-aw-conclusion-monitor_changelog"
       cancel-in-progress: false
@@ -1051,7 +1050,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      actions: read
     outputs:
       detection_conclusion: ${{ steps.detection_conclusion.outputs.conclusion }}
       detection_reason: ${{ steps.detection_conclusion.outputs.reason }}
@@ -1278,7 +1276,6 @@ jobs:
     permissions:
       contents: read
       issues: write
-      actions: read
     timeout-minutes: 15
     env:
       GH_AW_CALLER_WORKFLOW_ID: "${{ github.repository }}/monitor_changelog"
