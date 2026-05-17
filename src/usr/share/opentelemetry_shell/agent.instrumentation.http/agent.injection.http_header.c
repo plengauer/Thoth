@@ -257,7 +257,7 @@ int nghttp2_submit_request(void *session, void *pri_spec, void *nva, size_t nvle
       char *traceparent = otel_traceparent(sdk, span_handle);
       if (!traceparent) break;
       if (strlen(traceparent) != valuelen) { free(traceparent); break; }
-      memcpy(key, traceparent, valuelen);
+      memcpy(value, traceparent, valuelen);
       free(traceparent);
       fclose(sdk);
     }
