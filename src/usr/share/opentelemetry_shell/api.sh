@@ -431,11 +431,11 @@ otel_observe() {
 
 if ! \type which 1> /dev/null 2> /dev/null; then
   if \[ "$_otel_shell" = bash ]; then
-function which() {
+which() {
   \type -P "$1"
 }
   else
-function which() {
+which() {
   if \[ -x "$1" ]; then \echo "$1"; return 0; fi
   local IFS=:
   for directory in $PATH; do
