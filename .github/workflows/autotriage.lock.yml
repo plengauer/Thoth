@@ -425,6 +425,7 @@ jobs:
         run: bash "${RUNNER_TEMP}/gh-aw/actions/install_copilot_cli.sh" 1.0.40
         env:
           GH_HOST: github.com
+          OTEL_SHELL_CONFIG_INJECT_DEEP: 'FALSE'
       - name: Install AWF binary
         run: bash "${RUNNER_TEMP}/gh-aw/actions/install_awf_binary.sh" v0.25.41
       - name: Determine automatic lockdown mode for GitHub MCP Server
@@ -1234,6 +1235,7 @@ jobs:
         run: bash "${RUNNER_TEMP}/gh-aw/actions/install_copilot_cli.sh" 1.0.40
         env:
           GH_HOST: github.com
+          OTEL_SHELL_CONFIG_INJECT_DEEP: 'FALSE'
       - name: Install AWF binary
         run: bash "${RUNNER_TEMP}/gh-aw/actions/install_awf_binary.sh" v0.25.41
       - name: Execute GitHub Copilot CLI
@@ -1460,4 +1462,3 @@ jobs:
             /tmp/gh-aw/safe-output-items.jsonl
             /tmp/gh-aw/temporary-id-map.json
           if-no-files-found: ignore
-
