@@ -59,8 +59,9 @@ name: "Monitor GitHub Changelog"
         description: Agent caller context (used internally by Agentic Workflows).
         required: false
         type: string
-permissions:
-  actions: read
+
+permissions: {}
+
 concurrency:
   group: "gh-aw-${{ github.workflow }}"
 
@@ -86,7 +87,7 @@ jobs:
     steps:
       - name: Setup Scripts
         id: setup
-        uses: github/gh-aw-actions/setup@d3abfe96a194bce3a523ed2093ddedd5704cdf62 # v0.74.4
+        uses: github/gh-aw-actions/setup@bc56a0cad2f450c562810785ef38649c04db812a # v0.72.1
         with:
           destination: ${{ runner.temp }}/gh-aw/actions
           job-name: ${{ github.job }}
@@ -315,7 +316,6 @@ jobs:
     permissions:
       contents: read
       issues: read
-      actions: read
     concurrency:
       group: "gh-aw-copilot-${{ github.workflow }}"
     env:
@@ -340,7 +340,7 @@ jobs:
     steps:
       - name: Setup Scripts
         id: setup
-        uses: github/gh-aw-actions/setup@d3abfe96a194bce3a523ed2093ddedd5704cdf62 # v0.74.4
+        uses: github/gh-aw-actions/setup@bc56a0cad2f450c562810785ef38649c04db812a # v0.72.1
         with:
           destination: ${{ runner.temp }}/gh-aw/actions
           job-name: ${{ github.job }}
@@ -906,13 +906,12 @@ jobs:
       - detection
       - safe_outputs
     if: >
-      always() && (needs.agent.result != 'skipped' || needs.activation.outputs.lockdown_check_failed == 'true' || needs.activation.outputs.stale_lock_file_failed == 'true')
-
+      always() && (needs.agent.result != 'skipped' || needs.activation.outputs.lockdown_check_failed == 'true' ||
+      needs.activation.outputs.stale_lock_file_failed == 'true')
     runs-on: ubuntu-slim
     permissions:
       contents: read
       issues: write
-      actions: read
     concurrency:
       group: "gh-aw-conclusion-monitor_changelog"
       cancel-in-progress: false
@@ -924,7 +923,7 @@ jobs:
     steps:
       - name: Setup Scripts
         id: setup
-        uses: github/gh-aw-actions/setup@d3abfe96a194bce3a523ed2093ddedd5704cdf62 # v0.74.4
+        uses: github/gh-aw-actions/setup@bc56a0cad2f450c562810785ef38649c04db812a # v0.72.1
         with:
           destination: ${{ runner.temp }}/gh-aw/actions
           job-name: ${{ github.job }}
@@ -1051,7 +1050,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      actions: read
     outputs:
       detection_conclusion: ${{ steps.detection_conclusion.outputs.conclusion }}
       detection_reason: ${{ steps.detection_conclusion.outputs.reason }}
@@ -1059,7 +1057,7 @@ jobs:
     steps:
       - name: Setup Scripts
         id: setup
-        uses: github/gh-aw-actions/setup@d3abfe96a194bce3a523ed2093ddedd5704cdf62 # v0.74.4
+        uses: github/gh-aw-actions/setup@bc56a0cad2f450c562810785ef38649c04db812a # v0.72.1
         with:
           destination: ${{ runner.temp }}/gh-aw/actions
           job-name: ${{ github.job }}
@@ -1244,7 +1242,7 @@ jobs:
     steps:
       - name: Setup Scripts
         id: setup
-        uses: github/gh-aw-actions/setup@d3abfe96a194bce3a523ed2093ddedd5704cdf62 # v0.74.4
+        uses: github/gh-aw-actions/setup@bc56a0cad2f450c562810785ef38649c04db812a # v0.72.1
         with:
           destination: ${{ runner.temp }}/gh-aw/actions
           job-name: ${{ github.job }}
@@ -1278,7 +1276,6 @@ jobs:
     permissions:
       contents: read
       issues: write
-      actions: read
     timeout-minutes: 15
     env:
       GH_AW_CALLER_WORKFLOW_ID: "${{ github.repository }}/monitor_changelog"
@@ -1302,7 +1299,7 @@ jobs:
     steps:
       - name: Setup Scripts
         id: setup
-        uses: github/gh-aw-actions/setup@d3abfe96a194bce3a523ed2093ddedd5704cdf62 # v0.74.4
+        uses: github/gh-aw-actions/setup@bc56a0cad2f450c562810785ef38649c04db812a # v0.72.1
         with:
           destination: ${{ runner.temp }}/gh-aw/actions
           job-name: ${{ github.job }}
