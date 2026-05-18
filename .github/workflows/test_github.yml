@@ -134,7 +134,7 @@ jobs:
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
-      - uses: plengauer/autoversion@09172e83f9d0372b01fc3845f952135b9a208a4f # v3.1.0
+      - uses: plengauer/autoversion@c52ec7d4869f199d2b1706059fb4f9d15eb672b9 # v3.1.1
         with:
           github_token: ${{ github.token }}
           path_exclude: ./
@@ -255,19 +255,19 @@ jobs:
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
-      - uses: github/codeql-action/init@68bde559dea0fdcac2102bfdf6230c5f70eb485e # v4.35.4 # node action will call java will call node
+      - uses: github/codeql-action/init@9e0d7b8d25671d64c341c19c0152d693099fb5ba # v4.35.5 # node action will call java will call node
         with:
           languages: javascript-typescript
           build-mode: none
-      - uses: github/codeql-action/analyze@68bde559dea0fdcac2102bfdf6230c5f70eb485e # v4.35.4 # node action will call java will call node
+      - uses: github/codeql-action/analyze@9e0d7b8d25671d64c341c19c0152d693099fb5ba # v4.35.5 # node action will call java will call node
         with:
           category: "/language:javascript-typescript"
           upload: never
-      - uses: github/codeql-action/init@68bde559dea0fdcac2102bfdf6230c5f70eb485e # v4.35.4
+      - uses: github/codeql-action/init@9e0d7b8d25671d64c341c19c0152d693099fb5ba # v4.35.5
         with:
           languages: python
           build-mode: none
-      - uses: github/codeql-action/analyze@68bde559dea0fdcac2102bfdf6230c5f70eb485e # v4.35.4 # node action will call java will call python
+      - uses: github/codeql-action/analyze@9e0d7b8d25671d64c341c19c0152d693099fb5ba # v4.35.5 # node action will call java will call python
         with:
           category: "/language:python"
           upload: never
