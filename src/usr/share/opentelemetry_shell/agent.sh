@@ -81,6 +81,7 @@ _otel_auto_instrument() {
     _otel_alias_prepend hash _otel_hash_and_reinstrument
   fi
   _otel_alias_prepend export _otel_export_PATH_and_reinstrument
+  _otel_alias_prepend command _otel_command
 
   # deshebangify commands, do special instrumentations, propagate special instrumentations into aliases, instrument all commands
   ## (both otel_filter_commands_by_file and _otel_filter_commands_by_instrumentation are functionally optional, but helps optimizing time because the following loop AND otel_instrument itself is expensive!)
@@ -455,7 +456,7 @@ _otel_trap() {
   done
 }
 
-command() {
+_otel_command() {
   if \[ "$#" = 2 ] && \[ "$1" = -v ] && _otel_string_contains "$(\alias "$2")" " OTEL_SHELL_COMMAND_TYPE_OVERRIDE=file "; then
     \which "$2"
   else
