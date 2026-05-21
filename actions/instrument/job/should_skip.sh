@@ -6,7 +6,7 @@ otel_github_job_should_skip() {
   if [ -f "$container_marker_file" ]; then
     return 0
   fi
-  if [ -r "$cgroup_file" ] && grep -qE '(docker|containerd|kubepods|podman)' "$cgroup_file"; then
+  if [ -r "$cgroup_file" ] && head -n 10 "$cgroup_file" | grep -qE '(docker|containerd|kubepods|podman)'; then
     return 0
   fi
   return 1
