@@ -13,6 +13,13 @@ else
   run() { "$@"; }
 fi
 
+. ./should_skip.sh
+if otel_github_job_should_skip; then
+  [ -z "${GITHUB_STATE:-}" ] || echo "disabled=ubuntu_slim" >> "$GITHUB_STATE"
+  otel_github_job_skip_notice pre
+  exit 0
+fi
+
 echo "::group::Validate Configuration"
 export OTEL_SERVICE_NAME="${OTEL_SERVICE_NAME:-"$(echo "$GITHUB_REPOSITORY" | cut -d / -f 2-) CI"}"
 export OTEL_SEMCONV_STABILITY_OPT_IN="${OTEL_SEMCONV_STABILITY_OPT_IN:-http,database,messaging}"
