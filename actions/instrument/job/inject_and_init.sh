@@ -15,7 +15,7 @@ fi
 
 . ./should_skip.sh
 if otel_github_job_should_skip; then
-  [ -z "${GITHUB_STATE:-}" ] || echo "disabled=ubuntu_slim" >> "$GITHUB_STATE"
+  [ -n "${GITHUB_STATE:-}" ] && echo "disabled=ubuntu_slim" >> "$GITHUB_STATE"
   otel_github_job_skip_notice pre
   exit 0
 fi

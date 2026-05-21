@@ -14,5 +14,5 @@ otel_github_job_should_skip() {
 
 otel_github_job_skip_notice() {
   step_name="${1:-step}"
-  echo "::notice::Skipping job-level instrumentation ${step_name} step because this runner appears to be a GitHub ubuntu-slim image. We currently assume containerized GitHub-hosted runners are ubuntu-slim, and their network-constrained startup can take anywhere from seconds to 15+ minutes and trigger timeouts."
+  echo "::notice::Skipping job-level instrumentation ${step_name} step because this runner appears to be a GitHub ubuntu-slim image with network-constrained startup that can take 2 seconds to 15+ minutes and trigger timeouts."
 }
