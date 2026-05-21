@@ -371,7 +371,7 @@ jobs:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
       - uses: github/gh-aw-actions/setup@bc56a0cad2f450c562810785ef38649c04db812a
-      - run: bash -x "${RUNNER_TEMP}/gh-aw/actions/install_copilot_cli.sh" 1.0.40
+      - run: bash "${RUNNER_TEMP}/gh-aw/actions/install_copilot_cli.sh" 1.0.40
   job-io-1:
     needs: job-smoke
     runs-on: ubuntu-latest
