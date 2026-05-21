@@ -8,10 +8,8 @@ OTEL_SHELL_GITHUB_JOB_CGROUP_FILE="$(mktemp)"
 otel_github_job_should_skip
 
 notice="$(otel_github_job_skip_notice pre)"
-case "$notice" in
-  "::notice::Skipping job-level instrumentation pre step because this runner appears to be a GitHub ubuntu-slim image"*network-constrained\ startup*15+\ minutes*trigger\ timeouts.) ;;
-  *) echo "ASSERT FAILED $notice" 1>&2; exit 1;;
-esac
+expected_notice="::notice::Skipping job-level instrumentation pre step because this runner appears to be a GitHub ubuntu-slim image with network-constrained startup that can take 2 seconds to 15+ minutes and trigger timeouts."
+assert_equals "$expected_notice" "$notice"
 
 rm -f "$helper_file" "$OTEL_SHELL_GITHUB_JOB_CGROUP_FILE"
 
