@@ -357,7 +357,7 @@ jobs:
     permissions:
       contents: read
       actions: read
-    steps: # 
+    steps:
       - uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.ref }}
