@@ -1,12 +1,6 @@
 #!/bin/sh
 set -e
-. ./should_skip.sh
-if [ "${STATE_disabled:-}" = ubuntu_slim ]; then
-  otel_github_job_skip_notice post
-  exit 0
-fi
-if otel_github_job_should_skip; then
-  otel_github_job_skip_notice post
+if [ -n "${STATE_disabled:-}" ]; then
   exit 0
 fi
 if [ "$INPUT___JOB_STATUS" = failure ]; then
