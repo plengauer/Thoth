@@ -72,7 +72,7 @@ jobs:
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
       - uses: actions/hello-world-docker-action@main # check if docker action works
       - uses: docker/setup-qemu-action@v4.0.0 # some docker actions have otel built-in
-      - uses: docker/setup-buildx-action@v4.0.0 # some docker actions have otel built-in
+      - uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5 # v4.1.0 # some docker actions have otel built-in
       - uses: actions/download-artifact@v8.0.1
         with:
           name: packages.deb.${{ inputs.ref }}
