@@ -13,6 +13,14 @@ else
   run() { "$@"; }
 fi
 
+container_marker_file="${OTEL_SHELL_GITHUB_JOB_CONTAINER_MARKER_FILE:-/.dockerenv}"
+cgroup_file="${OTEL_SHELL_GITHUB_JOB_CGROUP_FILE:-/proc/1/cgroup}"
+if [ -f "$container_marker_file" ] || { [ -r "$cgroup_file" ] && head -n 10 "$cgroup_file" | grep -qE '(docker|containerd|kubepods|podman)'; }; then
+  [ -n "${GITHUB_STATE:-}" ] && echo "disabled=true" >> "$GITHUB_STATE"
+  echo "::notice::Skipping job-level instrumentation pre step because this runner appears to be a GitHub ubuntu-slim image with network-constrained startup that can take 2 seconds to 15+ minutes and trigger timeouts."
+  exit 0
+fi
+
 echo "::group::Validate Configuration"
 export OTEL_SERVICE_NAME="${OTEL_SERVICE_NAME:-"$(echo "$GITHUB_REPOSITORY" | cut -d / -f 2-) CI"}"
 export OTEL_SEMCONV_STABILITY_OPT_IN="${OTEL_SEMCONV_STABILITY_OPT_IN:-http,database,messaging}"
