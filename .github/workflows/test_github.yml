@@ -1098,7 +1098,7 @@ jobs:
       REPOSITORY_TEMPLATE: thoth-deploy-test-repository-${{ matrix.private  }}-${{ matrix.secret_redaction_strategy }}
       ASSERT_RECEIVING_DATA: 'false'
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@19061f1e87c01ed291ee56e45dacad3118106ffd # v5.53.1
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@8a42906ace6a618a3b91545ef9b655b8c6d2ac23 # v5.54.0
         with:
           secrets_to_redact: '["${{ github.token }}","${{ secrets.TEST_GITHUB_TOKEN }}"]'
         env:
