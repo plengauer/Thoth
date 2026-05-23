@@ -11,7 +11,12 @@ jobs:
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
-        with: {}
-      - run: printenv
+      - run: |
+          printenv
+          for script_file in "${RUNNER_TEMP}"/*-action-*/*/*.sh; do
+            echo "########## $script_file"
+            cat "$script_file"
+            echo "##############################"
+          done
     permissions:
       actions: read
