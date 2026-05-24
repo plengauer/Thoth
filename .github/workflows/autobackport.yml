@@ -1,142 +1,80 @@
 name: Autobackport
+
 on:
   push:
     branches:
       - main
+
 jobs:
   setup:
     if: ${{ !github.event.repository.fork }}
     runs-on: ubuntu-slim
     outputs:
+      has_tags: ${{ steps.dynamic.outputs.has_tags }}
       refs: ${{ steps.dynamic.outputs.refs }}
     permissions:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@8a42906ace6a618a3b91545ef9b655b8c6d2ac23 # v5.54.0
-        env:
-          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
-          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
-        with:
-          secrets_to_redact: '["${{ github.token }}"]'
       - uses: actions/checkout@v6.0.2
         with:
           fetch-depth: 0
           fetch-tags: true
       - id: dynamic
         run: |
+          [ -z "$(git describe --tags --abbrev=0 ${{ github.sha }})" ] && echo "has_tags=true" >>  "$GITHUB_OUTPUT"
           cat '${{ github.event_path }}' | jq '.commits[].id' -r | while read -r ref; do
             if git diff-tree --root --no-commit-id --name-only -r "$ref" | grep -qE '^VERSION$' || git tag --points-at "$ref" | grep -qE '^v'; then continue; fi
             echo "$ref"
           done | while read -r ref; do echo \""$ref"\"; done | jq -s | tr -d '\n' | tr -d ' ' | xargs -0 -I {} echo 'refs={}' >> "$GITHUB_OUTPUT"
-    
-
   backport:
-    if: ${{ !github.event.repository.fork }}
+    if: ${{ !github.event.repository.fork && needs.setup.outputs.has_tags }}
     needs: setup
     strategy:
       matrix:
         ref: ${{ fromJSON(needs.setup.outputs.refs) }}
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
     permissions:
       contents: write
       pull-requests: read
       issues: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@8a42906ace6a618a3b91545ef9b655b8c6d2ac23 # v5.54.0
-        env:
-          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
-          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
-        with:
-          secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}","${{ secrets.OPENAI_TOKEN }}"]'
-
       - id: autoversion
         uses: plengauer/autoversion@c52ec7d4869f199d2b1706059fb4f9d15eb672b9 # v3.1.1
         with:
           github_token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
-          openai_token: ${{ secrets.OPENAI_TOKEN }}
-          path_include: ./meta:./src:./actions:./tests:./.github
           dry_run: true
           ref: ${{ matrix.ref }}
+          increments: 'patch'
           depth: 1
-      
       - id: check_patch
         run: |
-          set -e
-          
-          old_version=$(git show ${{ matrix.ref }}:VERSION)
-          new_version=$(cat VERSION)
-          
-          old_major=$(echo "$old_version" | cut -d . -f 1)
-          old_minor=$(echo "$old_version" | cut -d . -f 2)
-          new_major=$(echo "$new_version" | cut -d . -f 1)
-          new_minor=$(echo "$new_version" | cut -d . -f 2)
-          
-          if [ "$old_major" = "$new_major" ] && [ "$old_minor" = "$new_minor" ] && [ "$old_version" != "$new_version" ]; then
-            echo "should_backport=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "should_backport=false" >> "$GITHUB_OUTPUT"
-          fi
-
+          if git diff --quiet; then echo "should_backport=true"; else echo "should_backport=false"; fi >> "$GITHUB_OUTPUT"
           git checkout .
       
       - id: prepare_branch
         if: steps.check_patch.outputs.should_backport == 'true'
         run: |
           set -e
-          
-          current_version=$(cat VERSION)
-          major=$(echo "$current_version" | cut -d . -f 1)
-          minor=$(echo "$current_version" | cut -d . -f 2)
-          branch_name="release/v${major}.${minor}"
+          current_tag=$(git describe --tags --abbrev=0 ${{ matrix.ref }})
+          [ -n "$current_tag" ] || exit 1
+          branch_name="release/$current_tag"
           echo name="$branch_name" >> "$GITHUB_OUTPUT"
-          
           if git ls-remote --exit-code --heads origin "$branch_name"; then
             git fetch origin "$branch_name"
             git checkout "$branch_name"
           else
-            git checkout -b "$branch_name" "v${major}.${minor}.0"
+            git checkout -b "$branch_name" "${current_tag}.0"
             git push -u origin "$branch_name"
           fi
       
       - if: steps.check_patch.outputs.should_backport == 'true'
         run: |
           set -e
-          
           git format-patch -1 "${{ matrix.ref }}" --stdout > /tmp/commit.patch
-          
-          if grep -q "diff --git a/VERSION b/VERSION" /tmp/commit.patch; then
-            if command -v filterdiff; then
-              filterdiff -x 'VERSION' /tmp/commit.patch > /tmp/commit_filtered.patch
-              mv /tmp/commit_filtered.patch /tmp/commit.patch
-            else
-              awk '
-                /^diff --git a\/VERSION b\/VERSION$/ { skip=1; next }
-                /^diff --git / { skip=0 }
-                !skip { print }
-              ' /tmp/commit.patch > /tmp/commit_filtered.patch
-              if [ -s /tmp/commit_filtered.patch ]; then
-                mv /tmp/commit_filtered.patch /tmp/commit.patch
-              fi
-            fi
-          fi
-          
-          if [ -s /tmp/commit.patch ] && git apply --check /tmp/commit.patch; then
-            git apply /tmp/commit.patch
-          elif [ -s /tmp/commit.patch ]; then
-            original_version=$(cat VERSION)
-            if git cherry-pick -n "${{ matrix.ref }}"; then
-              echo "$original_version" > VERSION
-              git add VERSION
-            else
-              git cherry-pick --abort || true
-              echo "::error::Cherry-pick failed - conflicts need manual resolution for commit ${{ matrix.ref }}"
-              exit 1
-            fi
-          else
-            exit 0
-          fi
+          [ -s /tmp/commit.patch ] || exit 0
+          git apply /tmp/commit.patch || git cherry-pick -n "${{ matrix.ref }}"
       
       - id: prepare_pr
         if: steps.check_patch.outputs.should_backport == 'true'
@@ -144,50 +82,10 @@ jobs:
           GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         run: |
           set -e
-          
-          commit_title=$(git log -1 --pretty=%s "${{ matrix.ref }}")
-          echo "commit_title=$commit_title" >> "$GITHUB_OUTPUT"
-          
           pr_number=$(gh pr list --state merged --search "${{ matrix.ref }}" --json number --jq '.[0].number' 2>/dev/null)
-          
-          reviewers=""
-          author=""
-          
-          if [ -n "$pr_number" ] && [ "$pr_number" != "null" ]; then
-            author=$(gh pr view "$pr_number" --json author --jq '.author.login' 2>/dev/null || echo "")
-            pr_reviewers=$(gh pr view "$pr_number" --json reviews --jq '.reviews[].author.login' 2>/dev/null | sort -u | tr '\n' ',' || echo "")
-            reviewers="${pr_reviewers%,}"
-          fi
-          
-          if [ -z "$author" ]; then
-            author=$(git log -1 --pretty=%an "${{ matrix.ref }}" 2>/dev/null || echo "")
-          fi
-          
-          author_email=$(git log -1 --pretty=%ae "${{ matrix.ref }}" 2>/dev/null || echo "")
-          author_name=$(git log -1 --pretty=%an "${{ matrix.ref }}" 2>/dev/null || echo "")
-          
-          if [ -n "$author" ]; then
-            if [ -n "$reviewers" ]; then
-              reviewers="${author},${reviewers}"
-            else
-              reviewers="$author"
-            fi
-          fi
-          
-          if [ -f .github/renovate.json ]; then
-            renovate_reviewers=$(jq -r '.reviewers | join(",")' .github/renovate.json 2>/dev/null || echo "")
-            if [ -n "$renovate_reviewers" ]; then
-              if [ -n "$reviewers" ]; then
-                reviewers="${reviewers},${renovate_reviewers}"
-              else
-                reviewers="$renovate_reviewers"
-              fi
-            fi
-          fi
-          
-          echo "reviewers=$reviewers" >> "$GITHUB_OUTPUT"
-          echo "author_name=$author_name" >> "$GITHUB_OUTPUT"
-          echo "author_email=$author_email" >> "$GITHUB_OUTPUT"
+          echo commit_title="$(git log -1 --pretty=%s "${{ matrix.ref }}")" >> "$GITHUB_OUTPUT"
+          echo author_name="$(git log -1 --pretty=%an "${{ matrix.ref }}" 2>/dev/null || echo "")" >> "$GITHUB_OUTPUT"
+          echo author_email="$(git log -1 --pretty=%ae "${{ matrix.ref }}" 2>/dev/null || echo "")" >> "$GITHUB_OUTPUT"
       
       - id: open-pr
         if: steps.check_patch.outputs.should_backport == 'true'
@@ -201,7 +99,6 @@ jobs:
           branch: backport/${{ matrix.ref }}
           title: "${{ steps.prepare_pr.outputs.commit_title }}"
           body: Automated backport of commit ${{ matrix.ref }}
-          # reviewers: ${{ steps.prepare_pr.outputs.reviewers }}
           delete-branch: true
       - run: sleep 60 # let API catch up
         if: steps.open-pr.outputs.pull-request-number != null
