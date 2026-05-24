@@ -8,12 +8,14 @@ jobs:
   env:
     strategy:
       matrix:
-        runner: [ ubuntu-latest, macos-latest ]
+        runner: [ ubuntu-latest, macos-latest, windows-latest, ubuntu-slim ]
     runs-on: ${{ matrix.runner }}
     permissions:
       actions: read
     steps:
       - run: printenv
+      - run: ls -la /.dockerenv
+      - run: cat /proc/1/cgroup
   experiment:
     runs-on: ubuntu-latest
     permissions:
