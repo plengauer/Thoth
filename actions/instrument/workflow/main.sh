@@ -13,11 +13,7 @@ gh_ensure_min_rate_limit_remaining 0.2
 echo "::endgroup::"
 
 echo "::group::Install Dependencies"
-if type dpkg; then
-  bash -e -o pipefail ../shared/install.sh curl wget jq sed unzip parallel
-else
-  echo 'No debian, assuming dependencies are preinstalled.'
-fi
+bash -e -o pipefail ../shared/install.sh curl wget jq sed unzip parallel
 echo "::endgroup::"
 
 # selfmonitoring

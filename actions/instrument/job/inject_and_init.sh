@@ -13,14 +13,6 @@ else
   run() { "$@"; }
 fi
 
-container_marker_file="${OTEL_SHELL_GITHUB_JOB_CONTAINER_MARKER_FILE:-/.dockerenv}"
-cgroup_file="${OTEL_SHELL_GITHUB_JOB_CGROUP_FILE:-/proc/1/cgroup}"
-if [ -f "$container_marker_file" ] || { [ -r "$cgroup_file" ] && head -n 10 "$cgroup_file" | grep -qE '(docker|containerd|kubepods|podman)'; }; then
-  [ -n "${GITHUB_STATE:-}" ] && echo "disabled=true" >> "$GITHUB_STATE"
-  echo "::notice::Skipping job-level instrumentation pre step because this runner appears to be a GitHub ubuntu-slim image with network-constrained startup that can take 2 seconds to 15+ minutes and trigger timeouts."
-  exit 0
-fi
-
 echo "::group::Validate Configuration"
 export OTEL_SERVICE_NAME="${OTEL_SERVICE_NAME:-"$(echo "$GITHUB_REPOSITORY" | cut -d / -f 2-) CI"}"
 export OTEL_SEMCONV_STABILITY_OPT_IN="${OTEL_SEMCONV_STABILITY_OPT_IN:-http,database,messaging}"
@@ -87,11 +79,17 @@ echo "::endgroup::"
 echo "::group::Install Dependencies"
 . ../shared/github.sh
 . ../shared/id_printer.sh
+if ! type sudo 1> /dev/null 2> /dev/null; then
+  function sudo() {
+    while [ "$1" != "${1#-}" ]; do shift; done
+    "$@"
+  }
+fi
 export GITHUB_ACTION_REPOSITORY="${GITHUB_ACTION_REPOSITORY:-"$GITHUB_REPOSITORY"}"
-npm --no-audit ci
 action_tag_name="$(echo "$GITHUB_ACTION_REF" | cut -sd @ -f 2-)"
 if [ -z "$action_tag_name" ]; then action_tag_name="v$(cat ../../../VERSION)"; fi
-if [ "$INPUT_CACHE" = "true" ]; then
+if [ "$INPUT_CACHE" = "true" ] && type npm 1> /dev/null 2> /dev/null && type dpkg 1> /dev/null 2> /dev/null; then
+  npm --no-audit ci
   echo "::debug::Resolving cache ..."
   export INSTRUMENTATION_CACHE_KEY="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} instrumentation $GITHUB_WORKFLOW $GITHUB_JOB"
   run sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.restoreCache(['/tmp/*.aliases'], '$INSTRUMENTATION_CACHE_KEY');"
@@ -100,7 +98,7 @@ if [ "$INPUT_CACHE" = "true" ]; then
   sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.restoreCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip'], '$cache_key');"
   [ "$(find /var/cache/apt/archives/ -name '*.deb' | wc -l)" -gt 0 ] || write_back_cache=TRUE
 fi
-if ! type otel.sh && [ -r /var/cache/apt/archives/opentelemetry-shell_*_all.deb ]; then
+if type dpkg 1> /dev/null 2> /dev/null && ! type otel.sh && [ -r /var/cache/apt/archives/opentelemetry-shell_*_all.deb ]; then
   echo "::debug::Cached debian file found ..."
   if [ "${FAST_DEB_INSTALL:-FALSE}" = TRUE ]; then # lets assume exactly one postinst script, no triggers
     echo "::debug::Attempting fast install ..."
@@ -129,20 +127,36 @@ if ! type otel.sh && [ -r /var/cache/apt/archives/opentelemetry-shell_*_all.deb 
     sudo apt-get install -y /var/cache/apt/archives/opentelemetry-shell_*_all.deb
   fi
 fi
-bash -e -o pipefail ../shared/install.sh perl curl wget jq sed unzip parallel 'node;nodejs' npm 'gcc;build-essential'
+bash -e -o pipefail ../shared/install.sh perl curl wget jq sed unzip 'node;nodejs' npm 'gcc'
+[ -d node_modules ] || npm --no-audit ci
 if ! type otelcol-contrib; then
-  if ! [ -r /var/cache/apt/archives/otelcol-contrib.deb ]; then
-    GITHUB_REPOSITORY=open-telemetry/opentelemetry-collector-releases gh_release v"$(cat Dockerfile | grep '^FROM ' | cut -d ' ' -f 2- | cut -d : -f 2)" | jq '.assets[] | select(.name | endswith(".deb")) | [ .name, .url ] | @tsv' -r | grep contrib | grep linux | grep "$(arch | sed 's/x86_64/amd64/g' | sed 's/aarch64/arm64/g' | sed 's/le$/el/g')" | head -n 1 | cut -d $'\t' -f 2 \
-      | xargs -I '{}' wget -q --header "Authorization: Bearer $INPUT_GITHUB_TOKEN" --header "Accept: application/octet-stream" '{}' -O - | sudo tee /var/cache/apt/archives/otelcol-contrib.deb > /dev/null
-  fi
-  if [ "${FAST_DEB_INSTALL:-FALSE}" = TRUE ]; then # lets assume no install scripts or dependencies or triggers
-    extract_dir="$(mktemp -d)"
-    run eval dpkg-deb --extract /var/cache/apt/archives/otelcol-contrib.deb "$extract_dir" '&&' sudo mv "$extract_dir"/usr/bin/otelcol-contrib /usr/bin '&&' rm -rf "$extract_dir"
-  else
-    run eval sudo apt-get install -y /var/cache/apt/archives/otelcol-contrib.deb '&&' '(' sudo systemctl stop otelcol-contrib.service '&&' sudo systemctl disable otelcol-contrib.service '||' true ')'
+  if type dpkg 1> /dev/null 2> /dev/null; then
+    if ! [ -r /var/cache/apt/archives/otelcol-contrib.deb ]; then
+      GITHUB_REPOSITORY=open-telemetry/opentelemetry-collector-releases gh_release v"$(cat Dockerfile | grep '^FROM ' | cut -d ' ' -f 2- | cut -d : -f 2)" | jq '.assets[] | select(.name | endswith(".deb")) | [ .name, .url ] | @tsv' -r | grep contrib | grep linux | grep "$(arch | sed 's/x86_64/amd64/g' | sed 's/aarch64/arm64/g' | sed 's/le$/el/g')" | head -n 1 | cut -d $'\t' -f 2 \
+        | xargs -I '{}' wget -q --header "Authorization: Bearer $INPUT_GITHUB_TOKEN" --header "Accept: application/octet-stream" '{}' -O - | sudo tee /var/cache/apt/archives/otelcol-contrib.deb > /dev/null
+    fi
+    if [ "${FAST_DEB_INSTALL:-FALSE}" = TRUE ]; then # lets assume no install scripts or dependencies or triggers
+      extract_dir="$(mktemp -d)"
+      run eval dpkg-deb --extract /var/cache/apt/archives/otelcol-contrib.deb "$extract_dir" '&&' sudo mv "$extract_dir"/usr/bin/otelcol-contrib /usr/bin '&&' rm -rf "$extract_dir"
+    else
+      run eval sudo apt-get install -y /var/cache/apt/archives/otelcol-contrib.deb '&&' '(' sudo systemctl stop otelcol-contrib.service '&&' sudo systemctl disable otelcol-contrib.service '||' true ')'
+    fi
+  elif type rpm 1> /dev/null 2> /dev/null; then
+    otelcol_file="$(mktemp -u)".rpm
+    GITHUB_REPOSITORY=open-telemetry/opentelemetry-collector-releases gh_release v"$(cat Dockerfile | grep '^FROM ' | cut -d ' ' -f 2- | cut -d : -f 2)" | jq '.assets[] | select(.name | endswith(".rpm")) | [ .name, .url ] | @tsv' -r | grep contrib | grep linux | grep "$(arch | sed 's/x86_64/amd64/g' | sed 's/aarch64/arm64/g' | sed 's/le$/el/g')" | head -n 1 | cut -d $'\t' -f 2 \
+      | xargs -I '{}' wget -q --header "Authorization: Bearer $INPUT_GITHUB_TOKEN" --header "Accept: application/octet-stream" '{}' -O "$otelcol_file"
+    if type dnf 1> /dev/null 2> /dev/null; then run eval sudo dnf -y install "$otelcol_file"; elif type yum 1> /dev/null 2> /dev/null; then run eval sudo yum -y install "$otelcol_file"; elif type zypper 1> /dev/null 2> /dev/null; then run eval sudo zypper --non-interactive install --allow-unsigned-rpm "$otelcol_file"; else run eval sudo rpm --install "$otelcol_file"; fi
+    rm "$otelcol_file"
+    ( sudo systemctl stop otelcol-contrib.service && sudo systemctl disable otelcol-contrib.service || true )
+  elif type apk 1> /dev/null 2> /dev/null; then
+    otelcol_file="$(mktemp -u)".apk
+    GITHUB_REPOSITORY=open-telemetry/opentelemetry-collector-releases gh_release v"$(cat Dockerfile | grep '^FROM ' | cut -d ' ' -f 2- | cut -d : -f 2)" | jq '.assets[] | select(.name | endswith(".apk")) | [ .name, .url ] | @tsv' -r | grep contrib | grep linux | grep "$(arch | sed 's/x86_64/amd64/g' | sed 's/aarch64/arm64/g' | sed 's/le$/el/g')" | head -n 1 | cut -d $'\t' -f 2 \
+      | xargs -I '{}' wget -q --header "Authorization: Bearer $INPUT_GITHUB_TOKEN" --header "Accept: application/octet-stream" '{}' -O "$otelcol_file"
+    run eval sudo apk add --allow-untrusted "$otelcol_file"
+    rm "$otelcol_file"
   fi
 fi
-if [ "${write_back_cache:-FALSE}" = TRUE ] && [ -n "${cache_key:-}" ]; then
+if [ "${write_back_cache:-FALSE}" = TRUE ] && [ -n "${cache_key:-}" ] && type dpkg 1> /dev/null 2> /dev/null; then
   wait # only join in case we wanna write back, this will be rare and is necessary to have a good cache
   run sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.saveCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip'], '$cache_key');"
 fi
@@ -188,7 +202,6 @@ processors:
       - replace_all_patterns(log.attributes, "value", "github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}", "***")
       - replace_all_patterns(log.attributes, "value", "ghp_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(log.attributes, "value", "ghs_[a-zA-Z0-9]{36}", "***")
-      - replace_all_patterns(log.attributes, "value", "ghs_[0-9]+_[A-Za-z0-9_-]+\\\\.[A-Za-z0-9_-]+\\\\.[A-Za-z0-9_-]+", "***")
       - replace_all_patterns(log.attributes, "value", "gho_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(log.attributes, "value", "ghu_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(log.attributes, "value", "ghr_[a-zA-Z0-9]{36}", "***")
@@ -198,7 +211,6 @@ $(printf '%s' "$mask_patterns" | xargs -d '\n' -I '{}' printf '%s\n' '      - re
       - replace_pattern(log.body, "github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}", "***")
       - replace_pattern(log.body, "ghp_[a-zA-Z0-9]{36}", "***")
       - replace_pattern(log.body, "ghs_[a-zA-Z0-9]{36}", "***")
-      - replace_pattern(log.body, "ghs_[0-9]+_[A-Za-z0-9_-]+\\\\.[A-Za-z0-9_-]+\\\\.[A-Za-z0-9_-]+", "***")
       - replace_pattern(log.body, "gho_[a-zA-Z0-9]{36}", "***")
       - replace_pattern(log.body, "ghu_[a-zA-Z0-9]{36}", "***")
       - replace_pattern(log.body, "ghr_[a-zA-Z0-9]{36}", "***")
@@ -209,7 +221,6 @@ $(printf '%s' "$mask_patterns" | xargs -d '\n' -I '{}' printf '%s\n' '      - re
       - replace_all_patterns(datapoint.attributes, "value", "github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}", "***")
       - replace_all_patterns(datapoint.attributes, "value", "ghp_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(datapoint.attributes, "value", "ghs_[a-zA-Z0-9]{36}", "***")
-      - replace_all_patterns(datapoint.attributes, "value", "ghs_[0-9]+_[A-Za-z0-9_-]+\\\\.[A-Za-z0-9_-]+\\\\.[A-Za-z0-9_-]+", "***")
       - replace_all_patterns(datapoint.attributes, "value", "gho_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(datapoint.attributes, "value", "ghu_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(datapoint.attributes, "value", "ghr_[a-zA-Z0-9]{36}", "***")
@@ -220,7 +231,6 @@ $(printf '%s' "$mask_patterns" | xargs -d '\n' -I '{}' printf '%s\n' '      - re
       - replace_all_patterns(span.attributes, "value", "github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}", "***")
       - replace_all_patterns(span.attributes, "value", "ghp_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(span.attributes, "value", "ghs_[a-zA-Z0-9]{36}", "***")
-      - replace_all_patterns(span.attributes, "value", "ghs_[0-9]+_[A-Za-z0-9_-]+\\\\.[A-Za-z0-9_-]+\\\\.[A-Za-z0-9_-]+", "***")
       - replace_all_patterns(span.attributes, "value", "gho_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(span.attributes, "value", "ghu_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(span.attributes, "value", "ghr_[a-zA-Z0-9]{36}", "***")
@@ -230,7 +240,6 @@ $(printf '%s' "$mask_patterns" | xargs -d '\n' -I '{}' printf '%s\n' '      - re
       - replace_pattern(span.name, "github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}", "***")
       - replace_pattern(span.name, "ghp_[a-zA-Z0-9]{36}", "***")
       - replace_pattern(span.name, "ghs_[a-zA-Z0-9]{36}", "***")
-      - replace_pattern(span.name, "ghs_[0-9]+_[A-Za-z0-9_-]+\\\\.[A-Za-z0-9_-]+\\\\.[A-Za-z0-9_-]+", "***")
       - replace_pattern(span.name, "gho_[a-zA-Z0-9]{36}", "***")
       - replace_pattern(span.name, "ghu_[a-zA-Z0-9]{36}", "***")
       - replace_pattern(span.name, "ghr_[a-zA-Z0-9]{36}", "***")
@@ -348,11 +357,7 @@ rm -rf "$opentelemetry_root_dir"
 echo "::endgroup::"
 
 echo "::group::Calculate Resource Attributes"
-export OTEL_RESOURCE_ATTRIBUTES=github.repository.id="$GITHUB_REPOSITORY_ID",github.repository.name="${GITHUB_REPOSITORY#*/}",github.repository.owner.id="$GITHUB_REPOSITORY_OWNER_ID",github.repository.owner.name="$GITHUB_REPOSITORY_OWNER",github.actions.workflow.ref="$GITHUB_WORKFLOW_REF",github.actions.workflow.sha="$GITHUB_WORKFLOW_SHA",github.actions.workflow.name="$GITHUB_WORKFLOW"${OTEL_RESOURCE_ATTRIBUTES:+,$OTEL_RESOURCE_ATTRIBUTES}
-repo_property_attributes="$(gh_repo_properties 2>/dev/null | jq -r '.[] | select(.value != null and .value != "") | "github.repository.property." + .property_name + "=\"" + .value + "\""' 2>/dev/null | tr '\n' ',' | sed 's/,$//' || true)"
-if [ -n "$repo_property_attributes" ]; then
-  export OTEL_RESOURCE_ATTRIBUTES="${OTEL_RESOURCE_ATTRIBUTES},${repo_property_attributes}"
-fi
+export OTEL_RESOURCE_ATTRIBUTES=github.repository.id="$GITHUB_REPOSITORY_ID",github.repository.name="${GITHUB_REPOSITORY#*/}",github.repository.owner.id="$GITHUB_REPOSITORY_OWNER_ID",github.repository.owner.name="$GITHUB_REPOSITORY_OWNER",github.actions.workflow.ref="$GITHUB_WORKFLOW_REF",github.actions.workflow.sha="$GITHUB_WORKFLOW_SHA",github.actions.workflow.name="$GITHUB_WORKFLOW","${OTEL_RESOURCE_ATTRIBUTES:-}"
 echo "::endgroup::"
 
 echo "::group::Resolve Job ID and Job name"
@@ -537,7 +542,15 @@ root4job_end() {
   
   if [ -n "${INTERNAL_OTEL_DEFERRED_EXPORT_DIR:-}" ]; then
     export -f gh_artifact_upload
-    find "$INTERNAL_OTEL_DEFERRED_EXPORT_DIR" | grep -E '.logs$|.metrics$|.traces$' | parallel -X gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_job_"$GITHUB_JOB_ID"_signals_'{#}' '{}' &
+    find "$INTERNAL_OTEL_DEFERRED_EXPORT_DIR" | grep -E '.logs$|.metrics$|.traces$' | if type parallel &> /dev/null; then
+      parallel -X gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_job_"$GITHUB_JOB_ID"_signals_'{#}' '{}'
+    else
+      number=1
+      while read -r file; do
+        gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_job_"$GITHUB_JOB_ID"_signals_"$number" "$file"
+        number=$((number + 1))
+      done
+    fi &
   fi
   
   wait
