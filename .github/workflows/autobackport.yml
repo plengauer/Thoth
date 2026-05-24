@@ -44,6 +44,8 @@ jobs:
         uses: plengauer/autoversion@c52ec7d4869f199d2b1706059fb4f9d15eb672b9 # v3.1.1
         with:
           github_token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          openai_token: ${{ secrets.OPENAI_TOKEN }}
+          path_include: ./meta:./src:./actions:./tests:./.github
           dry_run: true
           ref: ${{ matrix.ref }}
           increments: 'patch'
