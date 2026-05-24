@@ -2,8 +2,11 @@ name: 'Recompile Agentic Workflows'
 
 on:
   push:
+    branches:
+      - main
     paths:
       - '.github/workflows/*.md'
+      - .github/workflows/recompile_agentic_workflows.yml
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -16,13 +19,15 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.50.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@8a42906ace6a618a3b91545ef9b655b8c6d2ac23 # v5.54.0
         with:
           secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}"]'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
       - uses: actions/checkout@v6.0.2
+        with:
+          token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
       - env:
           GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         run: |
@@ -43,12 +48,12 @@ jobs:
           GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
       - if: steps.push.outputs.pushed == 'false'
         id: open-pr
-        uses: peter-evans/create-pull-request@v8.1.0
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           commit-message: "recompile agentic workflows"
-          base: main
-          branch: "agentic-workflows/auto-recompile"
+          base: ${{ github.ref_name }}
+          branch: "recompile-aw/${{ github.ref_name }}"
           title: "Recompile Agentic Workflows"
           body: |
             (this PR is automatically generated)

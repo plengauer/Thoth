@@ -16,6 +16,12 @@ else
   export TEST_SHELL="$SHELL"
 fi
 
+if ! type perl 1> /dev/null 2> /dev/null; then
+  function perl() {
+    cat
+  }
+fi
+
 failed_flag="$(mktemp -u)"
 
 for dir in unit sdk auto integration performance; do
