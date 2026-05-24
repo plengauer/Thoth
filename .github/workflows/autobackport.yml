@@ -84,7 +84,6 @@ jobs:
           GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         run: |
           set -e
-          pr_number=$(gh pr list --state merged --search "${{ matrix.ref }}" --json number --jq '.[0].number' 2>/dev/null)
           echo commit_title="$(git log -1 --pretty=%s "${{ matrix.ref }}")" >> "$GITHUB_OUTPUT"
           echo author_name="$(git log -1 --pretty=%an "${{ matrix.ref }}" 2>/dev/null || echo "")" >> "$GITHUB_OUTPUT"
           echo author_email="$(git log -1 --pretty=%ae "${{ matrix.ref }}" 2>/dev/null || echo "")" >> "$GITHUB_OUTPUT"
