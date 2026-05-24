@@ -14,8 +14,8 @@ jobs:
       actions: read
     steps:
       - run: printenv
-      - run: ls -la /.dockerenv
-      - run: cat /proc/1/cgroup
+      - run: ls -la /.dockerenv || true
+      - run: cat /proc/1/cgroup || true
   experiment:
     runs-on: ubuntu-latest
     permissions:
