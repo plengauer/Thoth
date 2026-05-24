@@ -140,6 +140,7 @@ jobs:
           path_exclude: ./
           working_directory: ./autoversion
           dry_run: 'true'
+          ref: main
   job-dotnet:
     needs: job-smoke
     runs-on: ubuntu-latest
