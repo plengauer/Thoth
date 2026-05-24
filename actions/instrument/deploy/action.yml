@@ -59,6 +59,18 @@ inputs:
   debug:
     description: 'Enable debug logging'
     default: ${{ runner.debug }}
+  commit_message:
+    description: 'Commit message for the deployment commit'
+    default: 'deploy opentelemetry'
+  ssh_signing_key:
+    description: 'SSH private key for signing commits (mutually exclusive with gpg_private_key). See https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits'
+    default: ''
+  gpg_private_key:
+    description: 'GPG private key for signing commits in armored format (mutually exclusive with ssh_signing_key). See https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits'
+    default: ''
+  gpg_passphrase:
+    description: 'Passphrase for the GPG private key (only used when gpg_private_key is set)'
+    default: ''
   __repository_level_instrumentation_file_name_override:
     description: 'INTERNAL ONLY - DO NOT SET MANUALLY'
     default: ''
@@ -213,8 +225,9 @@ runs:
             | grep -vF "$([ -r "${{ steps.find-check-suite-level-instrumentation.outputs.path }}" ] && cat "${{ steps.find-check-suite-level-instrumentation.outputs.path }}" | yq .name || cat "${{ inputs.workflows_directory }}/${{ inputs.check_suite_level_instrumentation_file_name }}" | yq .name)" \
             | grep -vF "$([ -r "${{ steps.find-repository-level-instrumentation.outputs.path }}" ] && cat "${{ steps.find-repository-level-instrumentation.outputs.path }}" | yq .name || cat "${{ inputs.workflows_directory }}/${{ inputs.repository_level_instrumentation_file_name }}" | yq .name)"
           seq 1 10 | xargs -I '{}' curl -s --fail --retry 8 --header "Authorization: Bearer ${{ inputs.github_token }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/${{ github.repository }}/actions/workflows'?per_page=100&page={}' | jq '.workflows[] | select(.path | startswith("dynamic/")) | .name' -r
-          echo Copilot code review # this one should be prefilled because its very common and new
-          echo Copilot coding agent # this one should be prefilled because it needs deferred export
+          echo Copilot # this one should be prefilled because it's very common and new
+          echo Copilot code review # this one should be prefilled because it's very common and new
+          echo Copilot cloud agent # this one should be prefilled because it needs deferred export
           echo Claude # this one should be prefilled because it needs deferred export
           echo OpenAI Codex # this one should be prefilled because it needs deferred export
         } | sort -u > "$names_file"
@@ -314,6 +327,7 @@ runs:
       run: |
         if [ -r "${{ inputs.workflows_directory }}"/copilot-setup-steps.yml ]; then exit 0; fi
         echo '
+        name: Copilot setup steps
         on:
           push:
             paths:
@@ -396,6 +410,42 @@ runs:
       run: |
         git diff
   
+    - name: "Configure commit signing"
+      if: ${{ inputs.ssh_signing_key != '' && inputs.gpg_private_key != '' }}
+      shell: bash
+      run: |
+        echo "::error::Only one of ssh_signing_key or gpg_private_key may be set, not both."
+        exit 1
+    - name: "Configure commit signing (SSH)"
+      if: ${{ inputs.ssh_signing_key != '' && inputs.gpg_private_key == '' }}
+      shell: bash
+      env:
+        SSH_SIGNING_KEY: ${{ inputs.ssh_signing_key }}
+      run: |
+        mkdir -p ~/.ssh
+        chmod 700 ~/.ssh
+        printf '%s\n' "$SSH_SIGNING_KEY" > ~/.ssh/signing_key
+        chmod 600 ~/.ssh/signing_key
+        git config gpg.format ssh
+        git config user.signingkey ~/.ssh/signing_key
+        git config commit.gpgsign true
+    - name: "Configure commit signing (GPG)"
+      if: ${{ inputs.gpg_private_key != '' && inputs.ssh_signing_key == '' }}
+      shell: bash
+      env:
+        GPG_PRIVATE_KEY: ${{ inputs.gpg_private_key }}
+        GPG_PASSPHRASE: ${{ inputs.gpg_passphrase }}
+      run: |
+        printf '%s\n' "$GPG_PRIVATE_KEY" | gpg --batch --import
+        key_id="$(gpg --list-secret-keys --keyid-format=long --with-colons | awk -F: '/^sec:/{print $5; exit}')"
+        git config user.signingkey "$key_id"
+        git config commit.gpgsign true
+        if [ -n "${GPG_PASSPHRASE:-}" ]; then
+          keygrip="$(gpg --list-secret-keys --with-keygrip --with-colons | awk -F: '/^grp:/{print $10; exit}')"
+          echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
+          gpgconf --kill gpg-agent
+          printf '%s' "$GPG_PASSPHRASE" | /usr/lib/gnupg2/gpg-preset-passphrase --preset "$keygrip"
+        fi
     - name: "Push"
       if: ${{ inputs.dry_run != 'true' }}
       id: push
@@ -408,19 +458,19 @@ runs:
         git config user.email "${user_id}+${user_name}@users.noreply.github.com"
         git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
         git add -A
-        git commit -m "deploy opentelemetry"
+        git commit -m "${{ inputs.commit_message }}"
         git push && echo "pushed=true" >> "$GITHUB_OUTPUT" || echo "pushed=false" >> "$GITHUB_OUTPUT"
       env:
         GH_TOKEN: ${{ inputs.github_token }}
     - name: "Open Pull Request"
       if: ${{ inputs.dry_run != 'true' && steps.push.outputs.pushed == 'false' }}
       id: open-pr
-      uses: peter-evans/create-pull-request@v8.1.0
+      uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
       with:
         token: ${{ inputs.github_token }}
         branch: "deploy-otel/${{ github.ref_name }}"
         base: ${{ github.ref_name }}
-        commit-message: "deploy opentelemetry"
+        commit-message: ${{ inputs.commit_message }}
         title: "Deploy OpenTelemetry"
         body: |
           This PR deploys workflow-level, job-level, check suite-level as well as repository-level OpenTelemetry instrumentation to every workflow.

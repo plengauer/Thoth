@@ -75,11 +75,15 @@ echo "::endgroup::"
 echo "::group::Export"
 . otelapi.sh
 export OTEL_DISABLE_RESOURCE_DETECTION=TRUE
+repo_properties="$(gh_repo_properties 2>/dev/null || echo '[]')"
 _otel_resource_attributes_process() {
   _otel_resource_attribute string github.repository.id="$GITHUB_REPOSITORY_ID"
   _otel_resource_attribute string github.repository.name="$(echo "$GITHUB_REPOSITORY" | cut -d / -f 2)"
   _otel_resource_attribute string github.repository.owner.id="$GITHUB_REPOSITORY_OWNER_ID"
   _otel_resource_attribute string github.repository.owner.name="$GITHUB_REPOSITORY_OWNER"
+  printf '%s' "$repo_properties" | jq -r '.[] | select(.value != null and .value != "") | [.property_name, .value] | @tsv' | while IFS=$'\t' read -r key value; do
+    _otel_resource_attribute string "github.repository.property.$key=$value"
+  done
 }
 _otel_resource_attributes_custom() {
   _otel_resource_attribute string telemetry.sdk.language=github

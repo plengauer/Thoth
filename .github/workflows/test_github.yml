@@ -20,7 +20,7 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v8.0.1
         with:
-          name: packages_${{ inputs.ref }}
+          name: packages.deb.${{ inputs.ref }}
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
@@ -40,7 +40,7 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v8.0.1
         with:
-          name: packages_${{ inputs.ref }}
+          name: packages.deb.${{ inputs.ref }}
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
@@ -49,7 +49,7 @@ jobs:
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
       - uses: actions/download-artifact@v8.0.1 # check if node action works
         with:
-          name: packages_${{ inputs.ref }}
+          name: packages.deb.${{ inputs.ref }}
   job-docker:
     needs: job-smoke
     runs-on: ubuntu-latest
@@ -63,7 +63,7 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v8.0.1
         with:
-          name: packages_${{ inputs.ref }}
+          name: packages.deb.${{ inputs.ref }}
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
@@ -72,12 +72,12 @@ jobs:
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
       - uses: actions/hello-world-docker-action@main # check if docker action works
       - uses: docker/setup-qemu-action@v4.0.0 # some docker actions have otel built-in
-      - uses: docker/setup-buildx-action@v4.0.0 # some docker actions have otel built-in
+      - uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5 # v4.1.0 # some docker actions have otel built-in
       - uses: actions/download-artifact@v8.0.1
         with:
-          name: packages_${{ inputs.ref }}
-      - run: cp package.deb tests/package.deb
-      - uses: docker/build-push-action@v7.0.0 # some docker actions have otel built-in
+          name: packages.deb.${{ inputs.ref }}
+      - run: cp opentelemetry-shell_*_*.deb tests
+      - uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf # v7.2.0 # some docker actions have otel built-in
         with:
           context: ./tests/
           tags: test
@@ -99,7 +99,7 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v8.0.1
         with:
-          name: packages_${{ inputs.ref }}
+          name: packages.deb.${{ inputs.ref }}
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
@@ -127,19 +127,87 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v8.0.1
         with:
-          name: packages_${{ inputs.ref }}
+          name: packages.deb.${{ inputs.ref }}
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
-      - uses: plengauer/autoversion@v3.0.0
+      - uses: plengauer/autoversion@c52ec7d4869f199d2b1706059fb4f9d15eb672b9 # v3.1.1
         with:
           github_token: ${{ github.token }}
           path_exclude: ./
           working_directory: ./autoversion
           dry_run: 'true'
+  job-dotnet:
+    needs: job-smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v6.0.2
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/download-artifact@v8.0.1
+        with:
+          name: packages.deb.${{ inputs.ref }}
+      - uses: ./actions/instrument/job
+        with:
+          cache: 'false'
+        env:
+          OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
+          OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10
+      - run: dotnet --version
+  job-arm:
+    needs: job-smoke
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v6.0.2
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/download-artifact@v8.0.1
+        with:
+          name: packages.deb.${{ inputs.ref }}
+      - uses: ./actions/instrument/job
+        with:
+          cache: 'false'
+        env:
+          OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
+          OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
+      - run: echo hello world
+  job-arm-otelcol-contrib:
+    needs: job-smoke
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v6.0.2
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/download-artifact@v8.0.1
+        with:
+          name: packages.deb.${{ inputs.ref }}
+      - uses: ./actions/instrument/job
+        with:
+          cache: 'false'
+        env:
+          OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
+          OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
+      - run: |
+          type otelcol-contrib
+          otelcol-contrib --version
   job-integration-simulated-opt-acl-modification:
     needs: [job-smoke, job-cache ]
     runs-on: ubuntu-latest
@@ -153,7 +221,7 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v8.0.1
         with:
-          name: packages_${{ inputs.ref }}
+          name: packages.deb.${{ inputs.ref }}
       - uses: ./actions/instrument/job
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
@@ -177,14 +245,14 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v8.0.1
         with:
-          name: packages_${{ inputs.ref }}
+          name: packages.deb.${{ inputs.ref }}
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
-      - uses: renovatebot/github-action@v46.1.8 # node action with call to docker, docker flags that make injection more complicated, then call a node script via exec that already is injected with otel
+      - uses: renovatebot/github-action@693b9ef15eec82123529a37c782242f091365961 # v46.1.14 # node action with call to docker, docker flags that make injection more complicated, then call a node script via exec that already is injected with otel
         env:
           RENOVATE_DRY_RUN: full
           RENOVATE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -203,26 +271,26 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v8.0.1
         with:
-          name: packages_${{ inputs.ref }}
+          name: packages.deb.${{ inputs.ref }}
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
-      - uses: github/codeql-action/init@v4.35.1 # node action will call java will call node
+      - uses: github/codeql-action/init@7211b7c8077ea37d8641b6271f6a365a22a5fbfa # v4.36.0 # node action will call java will call node
         with:
           languages: javascript-typescript
           build-mode: none
-      - uses: github/codeql-action/analyze@v4.35.1 # node action will call java will call node
+      - uses: github/codeql-action/analyze@7211b7c8077ea37d8641b6271f6a365a22a5fbfa # v4.36.0 # node action will call java will call node
         with:
           category: "/language:javascript-typescript"
           upload: never
-      - uses: github/codeql-action/init@v4.35.1
+      - uses: github/codeql-action/init@7211b7c8077ea37d8641b6271f6a365a22a5fbfa # v4.36.0
         with:
           languages: python
           build-mode: none
-      - uses: github/codeql-action/analyze@v4.35.1 # node action will call java will call python
+      - uses: github/codeql-action/analyze@7211b7c8077ea37d8641b6271f6a365a22a5fbfa # v4.36.0 # node action will call java will call python
         with:
           category: "/language:python"
           upload: never
@@ -240,7 +308,7 @@ jobs:
           fetch-depth: 0
       - uses: actions/download-artifact@v8.0.1
         with:
-          name: packages_${{ inputs.ref }}
+          name: packages.deb.${{ inputs.ref }}
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
@@ -267,7 +335,7 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v8.0.1
         with:
-          name: packages_${{ inputs.ref }}
+          name: packages.deb.${{ inputs.ref }}
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
@@ -293,7 +361,7 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v8.0.1
         with:
-          name: packages_${{ inputs.ref }}
+          name: packages.deb.${{ inputs.ref }}
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
@@ -305,6 +373,28 @@ jobs:
           path: repo_with_submodules
           repository: robocorp/example-use-git-submodule-for-shared-code
           submodules: recursive
+  job-integration-copilot-install:
+    needs: job-smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v6.0.2
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/download-artifact@v8.0.1
+        with:
+          name: packages.deb.${{ inputs.ref }}
+      - uses: ./actions/instrument/job
+        with:
+          cache: 'false'
+        env:
+          OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
+          OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
+      - uses: github/gh-aw-actions/setup@bc56a0cad2f450c562810785ef38649c04db812a
+      - run: bash "${RUNNER_TEMP}/gh-aw/actions/install_copilot_cli.sh" 1.0.40
   job-io-1:
     needs: job-smoke
     runs-on: ubuntu-latest
@@ -320,7 +410,7 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v8.0.1
         with:
-          name: packages_${{ inputs.ref }}
+          name: packages.deb.${{ inputs.ref }}
       - uses: ./actions/instrument/job
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
@@ -342,7 +432,7 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v8.0.1
         with:
-          name: packages_${{ inputs.ref }}
+          name: packages.deb.${{ inputs.ref }}
       - uses: ./actions/instrument/job
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
@@ -362,7 +452,7 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v8.0.1
         with:
-          name: packages_${{ inputs.ref }}
+          name: packages.deb.${{ inputs.ref }}
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
@@ -382,7 +472,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
       - uses: actions/download-artifact@v8.0.1
         with:
-          name: packages_${{ inputs.ref }}
+          name: packages.deb.${{ inputs.ref }}
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
@@ -409,7 +499,7 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v8.0.1
         with:
-          name: packages_${{ inputs.ref }}
+          name: packages.deb.${{ inputs.ref }}
       - uses: ./actions/instrument/job
         with:
           cache: ${{ matrix.cache }}
@@ -430,7 +520,7 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v8.0.1
         with:
-          name: packages_${{ inputs.ref }}
+          name: packages.deb.${{ inputs.ref }}
       - run: |
           nohup node -e "require('http').createServer(function (req, res) { console.log(req.method, req.url); res.writeHead(200); res.end(); }).listen(8080);" 1> /tmp/http.log 2> /dev/null &
       - uses: ./actions/instrument/job
@@ -472,7 +562,7 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v8.0.1
         with:
-          name: packages_${{ inputs.ref }}
+          name: packages.deb.${{ inputs.ref }}
       - run: |
           nohup node -e "
           const fs = require('fs');
@@ -560,7 +650,7 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v8.0.1
         with:
-          name: packages_${{ inputs.ref }}
+          name: packages.deb.${{ inputs.ref }}
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
@@ -596,7 +686,7 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v8.0.1
         with:
-          name: packages_${{ inputs.ref }}
+          name: packages.deb.${{ inputs.ref }}
       - uses: ./actions/instrument/job
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
@@ -620,7 +710,7 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v8.0.1
         with:
-          name: packages_${{ inputs.ref }}
+          name: packages.deb.${{ inputs.ref }}
       - run: |
           nohup node -e "require('http').createServer(function (req, res) { console.log(req.method, req.url); res.writeHead(200); res.end(); }).listen(8080);" 1> /tmp/http.log 2> /dev/null &
       - uses: ./actions/instrument/job
@@ -646,7 +736,7 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v8.0.1
         with:
-          name: packages_${{ inputs.ref }}
+          name: packages.deb.${{ inputs.ref }}
       - uses: ./actions/instrument/job
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
@@ -664,7 +754,7 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v8.0.1
         with:
-          name: packages_${{ inputs.ref }}
+          name: packages.deb.${{ inputs.ref }}
       - uses: ./actions/instrument/job
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
@@ -682,7 +772,7 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v8.0.1
         with:
-          name: packages_${{ inputs.ref }}
+          name: packages.deb.${{ inputs.ref }}
       - uses: ./actions/instrument/job
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
@@ -699,7 +789,7 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v8.0.1
         with:
-          name: packages_${{ inputs.ref }}
+          name: packages.deb.${{ inputs.ref }}
       - id: workflow_run
         run: |
           curl -L --no-progress-meter --fail --retry 16 -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_REPOSITORY"/actions/workflows'?per_page=100&page=1' | jq --unbuffered -r '.workflows[] | select(.name == "Workflow Example") | .id' \
@@ -741,7 +831,7 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v8.0.1
         with:
-          name: packages_${{ inputs.ref }}
+          name: packages.deb.${{ inputs.ref }}
       - id: workflow_run
         run: |
           curl -L --no-progress-meter --fail --retry 16 -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_REPOSITORY"/actions/workflows'?per_page=100&page=1' | jq --unbuffered -r '.workflows[] | select(.name == "Workflow Example") | .id' \
@@ -797,7 +887,7 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v8.0.1
         with:
-          name: packages_${{ inputs.ref }}
+          name: packages.deb.${{ inputs.ref }}
       - id: check_suite
         run: |
           curl -L --no-progress-meter --fail --retry 16 -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_REPOSITORY"/branches'?per_page=100&page=1' | jq '.[].name' -r \
@@ -827,7 +917,7 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v8.0.1
         with:
-          name: packages_${{ inputs.ref }}
+          name: packages.deb.${{ inputs.ref }}
       - uses: ./actions/instrument/repository
         env:
           OTEL_METRICS_EXPORTER: console
@@ -847,7 +937,7 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v8.0.1
         with:
-          name: packages_${{ inputs.ref }}
+          name: packages.deb.${{ inputs.ref }}
       - uses: ./actions/instrument/repository
         with:
           event_name: pull_request
@@ -871,7 +961,7 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v8.0.1
         with:
-          name: packages_${{ inputs.ref }}
+          name: packages.deb.${{ inputs.ref }}
       - uses: ./actions/instrument/repository
         with:
           event_name: pull_request
@@ -895,7 +985,7 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v8.0.1
         with:
-          name: packages_${{ inputs.ref }}
+          name: packages.deb.${{ inputs.ref }}
       - uses: ./actions/instrument/repository
         with:
           event_name: pull_request
@@ -919,7 +1009,7 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v8.0.1
         with:
-          name: packages_${{ inputs.ref }}
+          name: packages.deb.${{ inputs.ref }}
       - uses: ./actions/instrument/repository
         with:
           event_name: pull_request
@@ -943,7 +1033,7 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v8.0.1
         with:
-          name: packages_${{ inputs.ref }}
+          name: packages.deb.${{ inputs.ref }}
       - uses: ./actions/instrument/repository
         with:
           event_name: pull_request_review
@@ -967,7 +1057,7 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v8.0.1
         with:
-          name: packages_${{ inputs.ref }}
+          name: packages.deb.${{ inputs.ref }}
       - uses: ./actions/instrument/repository
         with:
           event_name: create
@@ -990,7 +1080,7 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v8.0.1
         with:
-          name: packages_${{ inputs.ref }}
+          name: packages.deb.${{ inputs.ref }}
       - uses: ./actions/instrument/repository
         with:
           event_name: delete
@@ -1013,7 +1103,7 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/download-artifact@v8.0.1
         with:
-          name: packages_${{ inputs.ref }}
+          name: packages.deb.${{ inputs.ref }}
       - uses: ./actions/instrument/repository
         with:
           event_name: push
@@ -1059,7 +1149,7 @@ jobs:
       REPOSITORY_TEMPLATE: thoth-deploy-test-repository-${{ matrix.private  }}-${{ matrix.secret_redaction_strategy }}
       ASSERT_RECEIVING_DATA: 'false'
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.50.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@8a42906ace6a618a3b91545ef9b655b8c6d2ac23 # v5.54.0
         with:
           secrets_to_redact: '["${{ github.token }}","${{ secrets.TEST_GITHUB_TOKEN }}"]'
         env:

@@ -30,7 +30,7 @@ if ! \[ -w "$_otel_remote_sdk_stderr_redirect" ]; then _otel_remote_sdk_stderr_r
 _otel_shell="$(\readlink "/proc/$$/exe")"
 _otel_shell="${_otel_shell##*/}"
 if \[ "$_otel_shell" = busybox ]; then _otel_shell="busybox sh"; fi
-if \[ "${OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE:-}" = 0 ] || \[ "${OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE:-}" = "$PPID" ] || \[ "${PPID:-}" = 0 ] || \[ "$(\tr '\000-\037' ' ' < /proc/$PPID/cmdline)" = "$(\tr '\000-\037' ' ' < /proc/${OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE:-}/cmdline)" ]; then _otel_commandline_override="$OTEL_SHELL_COMMANDLINE_OVERRIDE"; fi
+if \[ "${OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE:-}" = 0 ] || \[ "${OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE:-}" = "$PPID" ] || \[ "${PPID:-}" = 0 ] || { \[ -r /proc/$PPID/cmdline ] && \[ -r "/proc/${OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE:-}/cmdline" ] && \[ "$(\tr '\000-\037' ' ' < /proc/$PPID/cmdline)" = "$(\tr '\000-\037' ' ' < /proc/${OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE:-}/cmdline)" ]; }; then _otel_commandline_override="$OTEL_SHELL_COMMANDLINE_OVERRIDE"; fi
 unset OTEL_SHELL_COMMANDLINE_OVERRIDE
 unset OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE
 unset OTEL_SHELL_COMMAND_TYPE_OVERRIDE
@@ -431,11 +431,11 @@ otel_observe() {
 
 if ! \type which 1> /dev/null 2> /dev/null; then
   if \[ "$_otel_shell" = bash ]; then
-which() {
+which () {
   \type -P "$1"
 }
   else
-which() {
+which () {
   if \[ -x "$1" ]; then \echo "$1"; return 0; fi
   local IFS=:
   for directory in $PATH; do

@@ -13,6 +13,14 @@ else
   run() { "$@"; }
 fi
 
+container_marker_file="${OTEL_SHELL_GITHUB_JOB_CONTAINER_MARKER_FILE:-/.dockerenv}"
+cgroup_file="${OTEL_SHELL_GITHUB_JOB_CGROUP_FILE:-/proc/1/cgroup}"
+if [ -f "$container_marker_file" ] || { [ -r "$cgroup_file" ] && head -n 10 "$cgroup_file" | grep -qE '(docker|containerd|kubepods|podman)'; }; then
+  [ -n "${GITHUB_STATE:-}" ] && echo "disabled=true" >> "$GITHUB_STATE"
+  echo "::notice::Skipping job-level instrumentation pre step because this runner appears to be a GitHub ubuntu-slim image with network-constrained startup that can take 2 seconds to 15+ minutes and trigger timeouts."
+  exit 0
+fi
+
 echo "::group::Validate Configuration"
 export OTEL_SERVICE_NAME="${OTEL_SERVICE_NAME:-"$(echo "$GITHUB_REPOSITORY" | cut -d / -f 2-) CI"}"
 export OTEL_SEMCONV_STABILITY_OPT_IN="${OTEL_SEMCONV_STABILITY_OPT_IN:-http,database,messaging}"
@@ -124,7 +132,7 @@ fi
 bash -e -o pipefail ../shared/install.sh perl curl wget jq sed unzip parallel 'node;nodejs' npm 'gcc;build-essential'
 if ! type otelcol-contrib; then
   if ! [ -r /var/cache/apt/archives/otelcol-contrib.deb ]; then
-    GITHUB_REPOSITORY=open-telemetry/opentelemetry-collector-releases gh_release v"$(cat Dockerfile | grep '^FROM ' | cut -d ' ' -f 2- | cut -d : -f 2)" | jq '.assets[] | select(.name | endswith(".deb")) | [ .name, .url ] | @tsv' -r | grep contrib | grep linux | grep "$(arch | sed 's/x86_64/amd64/g')" | head -n 1 | cut -d $'\t' -f 2 \
+    GITHUB_REPOSITORY=open-telemetry/opentelemetry-collector-releases gh_release v"$(cat Dockerfile | grep '^FROM ' | cut -d ' ' -f 2- | cut -d : -f 2)" | jq '.assets[] | select(.name | endswith(".deb")) | [ .name, .url ] | @tsv' -r | grep contrib | grep linux | grep "$(arch | sed 's/x86_64/amd64/g' | sed 's/aarch64/arm64/g' | sed 's/le$/el/g')" | head -n 1 | cut -d $'\t' -f 2 \
       | xargs -I '{}' wget -q --header "Authorization: Bearer $INPUT_GITHUB_TOKEN" --header "Accept: application/octet-stream" '{}' -O - | sudo tee /var/cache/apt/archives/otelcol-contrib.deb > /dev/null
   fi
   if [ "${FAST_DEB_INSTALL:-FALSE}" = TRUE ]; then # lets assume no install scripts or dependencies or triggers
@@ -180,6 +188,7 @@ processors:
       - replace_all_patterns(log.attributes, "value", "github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}", "***")
       - replace_all_patterns(log.attributes, "value", "ghp_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(log.attributes, "value", "ghs_[a-zA-Z0-9]{36}", "***")
+      - replace_all_patterns(log.attributes, "value", "ghs_[0-9]+_[A-Za-z0-9_-]+\\\\.[A-Za-z0-9_-]+\\\\.[A-Za-z0-9_-]+", "***")
       - replace_all_patterns(log.attributes, "value", "gho_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(log.attributes, "value", "ghu_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(log.attributes, "value", "ghr_[a-zA-Z0-9]{36}", "***")
@@ -189,6 +198,7 @@ $(printf '%s' "$mask_patterns" | xargs -d '\n' -I '{}' printf '%s\n' '      - re
       - replace_pattern(log.body, "github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}", "***")
       - replace_pattern(log.body, "ghp_[a-zA-Z0-9]{36}", "***")
       - replace_pattern(log.body, "ghs_[a-zA-Z0-9]{36}", "***")
+      - replace_pattern(log.body, "ghs_[0-9]+_[A-Za-z0-9_-]+\\\\.[A-Za-z0-9_-]+\\\\.[A-Za-z0-9_-]+", "***")
       - replace_pattern(log.body, "gho_[a-zA-Z0-9]{36}", "***")
       - replace_pattern(log.body, "ghu_[a-zA-Z0-9]{36}", "***")
       - replace_pattern(log.body, "ghr_[a-zA-Z0-9]{36}", "***")
@@ -199,6 +209,7 @@ $(printf '%s' "$mask_patterns" | xargs -d '\n' -I '{}' printf '%s\n' '      - re
       - replace_all_patterns(datapoint.attributes, "value", "github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}", "***")
       - replace_all_patterns(datapoint.attributes, "value", "ghp_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(datapoint.attributes, "value", "ghs_[a-zA-Z0-9]{36}", "***")
+      - replace_all_patterns(datapoint.attributes, "value", "ghs_[0-9]+_[A-Za-z0-9_-]+\\\\.[A-Za-z0-9_-]+\\\\.[A-Za-z0-9_-]+", "***")
       - replace_all_patterns(datapoint.attributes, "value", "gho_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(datapoint.attributes, "value", "ghu_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(datapoint.attributes, "value", "ghr_[a-zA-Z0-9]{36}", "***")
@@ -209,6 +220,7 @@ $(printf '%s' "$mask_patterns" | xargs -d '\n' -I '{}' printf '%s\n' '      - re
       - replace_all_patterns(span.attributes, "value", "github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}", "***")
       - replace_all_patterns(span.attributes, "value", "ghp_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(span.attributes, "value", "ghs_[a-zA-Z0-9]{36}", "***")
+      - replace_all_patterns(span.attributes, "value", "ghs_[0-9]+_[A-Za-z0-9_-]+\\\\.[A-Za-z0-9_-]+\\\\.[A-Za-z0-9_-]+", "***")
       - replace_all_patterns(span.attributes, "value", "gho_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(span.attributes, "value", "ghu_[a-zA-Z0-9]{36}", "***")
       - replace_all_patterns(span.attributes, "value", "ghr_[a-zA-Z0-9]{36}", "***")
@@ -218,6 +230,7 @@ $(printf '%s' "$mask_patterns" | xargs -d '\n' -I '{}' printf '%s\n' '      - re
       - replace_pattern(span.name, "github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}", "***")
       - replace_pattern(span.name, "ghp_[a-zA-Z0-9]{36}", "***")
       - replace_pattern(span.name, "ghs_[a-zA-Z0-9]{36}", "***")
+      - replace_pattern(span.name, "ghs_[0-9]+_[A-Za-z0-9_-]+\\\\.[A-Za-z0-9_-]+\\\\.[A-Za-z0-9_-]+", "***")
       - replace_pattern(span.name, "gho_[a-zA-Z0-9]{36}", "***")
       - replace_pattern(span.name, "ghu_[a-zA-Z0-9]{36}", "***")
       - replace_pattern(span.name, "ghr_[a-zA-Z0-9]{36}", "***")
@@ -335,7 +348,11 @@ rm -rf "$opentelemetry_root_dir"
 echo "::endgroup::"
 
 echo "::group::Calculate Resource Attributes"
-export OTEL_RESOURCE_ATTRIBUTES=github.repository.id="$GITHUB_REPOSITORY_ID",github.repository.name="${GITHUB_REPOSITORY#*/}",github.repository.owner.id="$GITHUB_REPOSITORY_OWNER_ID",github.repository.owner.name="$GITHUB_REPOSITORY_OWNER",github.actions.workflow.ref="$GITHUB_WORKFLOW_REF",github.actions.workflow.sha="$GITHUB_WORKFLOW_SHA",github.actions.workflow.name="$GITHUB_WORKFLOW","${OTEL_RESOURCE_ATTRIBUTES:-}"
+export OTEL_RESOURCE_ATTRIBUTES=github.repository.id="$GITHUB_REPOSITORY_ID",github.repository.name="${GITHUB_REPOSITORY#*/}",github.repository.owner.id="$GITHUB_REPOSITORY_OWNER_ID",github.repository.owner.name="$GITHUB_REPOSITORY_OWNER",github.actions.workflow.ref="$GITHUB_WORKFLOW_REF",github.actions.workflow.sha="$GITHUB_WORKFLOW_SHA",github.actions.workflow.name="$GITHUB_WORKFLOW"${OTEL_RESOURCE_ATTRIBUTES:+,$OTEL_RESOURCE_ATTRIBUTES}
+repo_property_attributes="$(gh_repo_properties 2>/dev/null | jq -r '.[] | select(.value != null and .value != "") | "github.repository.property." + .property_name + "=\"" + .value + "\""' 2>/dev/null | tr '\n' ',' | sed 's/,$//' || true)"
+if [ -n "$repo_property_attributes" ]; then
+  export OTEL_RESOURCE_ATTRIBUTES="${OTEL_RESOURCE_ATTRIBUTES},${repo_property_attributes}"
+fi
 echo "::endgroup::"
 
 echo "::group::Resolve Job ID and Job name"

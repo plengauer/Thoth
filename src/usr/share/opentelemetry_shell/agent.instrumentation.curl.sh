@@ -7,7 +7,7 @@ _otel_propagate_curl() {
     *m*) local job_control=1; \set +m;;
     *) local job_control=0;;
   esac
-  local file=/usr/share/opentelemetry_shell/agent.instrumentation.http/"$(\arch)"/libinjecthttpheader.so
+  local file=/usr/share/opentelemetry_shell/agent.instrumentation.http/libinjecthttpheader.so
   if \[ -f "$file" ] && ! \ldd "$file" 2> /dev/null | \grep -q 'not found' && ! ( \[ "$_otel_shell" = 'busybox sh' ] && \help | \tail -n +3 | \grep -q curl ); then
     export OTEL_SHELL_INJECT_HTTP_SDK_PIPE="$_otel_remote_sdk_pipe"
     export OTEL_SHELL_INJECT_HTTP_HANDLE_FILE="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell_$$.curl.handle.XXXXXXXXXX)"
@@ -31,9 +31,6 @@ _otel_propagate_curl() {
   \set -- "$@" -H "traceparent: $TRACEPARENT" -H "tracestate: $TRACESTATE" -v --no-progress-meter
   local exit_code=0
   if \[ -n "$api" ]; then _otel_call_curl_api "$span_handle_forward" "$api_recording_finished" "$api" "$@"; else _otel_call "$@"; fi 2> "$stderr_pipe" || exit_code="$?"
-  \wait "$stderr_pid"
-  \rm -rf "$stderr_pipe"
-  if \[ -n "$api" ]; then \rm -rf "$stderr_pipe" "$span_handle_forward" "$api_recording_finished"; fi
   if \[ -f "$file" ]; then
     if \[ -n "${OLD_LD_PRELOAD:-}" ]; then
       export LD_PRELOAD="$OLD_LD_PRELOAD"
@@ -43,6 +40,9 @@ _otel_propagate_curl() {
     unset OTEL_SHELL_INJECT_HTTP_HANDLE_FILE
     unset OTEL_SHELL_INJECT_HTTP_SDK_PIPE
   fi
+  \wait "$stderr_pid" || true
+  \rm -rf "$stderr_pipe"
+  if \[ -n "$api" ]; then \rm -rf "$stderr_pipe" "$span_handle_forward" "$api_recording_finished"; fi
   if \[ "$job_control" = 1 ]; then \set -m; fi
   return "$exit_code"
 }
