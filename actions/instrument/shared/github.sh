@@ -99,6 +99,11 @@ gh_artifact_delete() {
 }
 export -f gh_artifact_delete
 
+gh_repo_properties() {
+  gh_curl /properties/values
+}
+export -f gh_repo_properties
+
 gh_check_suite() {
   gh_curl /check-suites/"$1"
 }
