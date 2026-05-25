@@ -13,7 +13,7 @@ on:
       - '!demos/*/output.*'
 jobs:
   prepare:
-    if: ${{ github.event_name == 'push' || (github.event_name == 'release' && github.event.release.target_commitish == 'main') }}
+    if: ${{ github.event_name == 'push' || github.event_name == 'release' }}
     runs-on: ubuntu-slim
     permissions:
       contents: read
