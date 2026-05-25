@@ -319,7 +319,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
           VALIDATE_ALL_CODEBASE: 'true'
-          DISABLE_ERRORS: 'true'
+          DISABLE_ERRORS: 'false'
           RUN_LOCAL: 'true'
           DEFAULT_BRANCH: main
   job-integration-python-venv:
