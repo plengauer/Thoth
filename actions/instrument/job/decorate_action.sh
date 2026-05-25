@@ -225,10 +225,13 @@ rm "$log_0_pipe" "$log_1_pipe"
 
 otel_shutdown
 echo "$_OTEL_GITHUB_STEP_ACTION_TYPE" "$github_action_name" >> /tmp/opentelemetry_shell.github.step.log
-if [ "$exit_code" = 0 ] && [ "${GITHUB_ACTION_REPOSITORY:-}" = "github/gh-aw" ] && case "${GITHUB_ACTION_PATH%/}" in */actions/setup) true;; *) false;; esac && [ -n "${INPUT_DESTINATION:-}" ]; then
+
+if [ "$exit_code" = 0 ] && ( [ "${GITHUB_ACTION_REPOSITORY:-}" = github/gh-aw || "${GITHUB_ACTION_REPOSITORY:-}" = github/gh-aw-actions ) ] && [ "${GITHUB_STEP:-$GITHUB_ACTION}" = setup ] && [ -d "${INPUT_DESTINATION:-}" ]; then
   find "${INPUT_DESTINATION}" -name "*.sh" 2>/dev/null | while IFS= read -r script_file; do
     sed -i 's~#!/bin/sh~#!/bin/sh\n. otel.sh~g' "$script_file" 2>/dev/null || true
     sed -i 's~#!/bin/bash~#!/bin/bash\n. otel.sh~g' "$script_file" 2>/dev/null || true
   done || true
+  echo "::debug::Instrumented agentic workflows"
 fi
+
 exit "$exit_code"
