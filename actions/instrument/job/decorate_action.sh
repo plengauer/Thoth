@@ -36,11 +36,23 @@ github_properties_to_kvps() {
 }
 resolve_github_action_name() {
   action_name="$GITHUB_ACTION_REPOSITORY"
-  if [ -n "${GITHUB_ACTION_PATH:-}" ] && [ -n "${GITHUB_ACTION_REPOSITORY:-}" ] && [ -n "${GITHUB_ACTION_REF:-}" ]; then
+  if [ -n "${GITHUB_ACTION_REPOSITORY:-}" ] && [ -n "${GITHUB_ACTION_REF:-}" ]; then
     action_path_prefix="/_actions/$GITHUB_ACTION_REPOSITORY/$GITHUB_ACTION_REF/"
-    case "$GITHUB_ACTION_PATH" in
+    github_action_path="${GITHUB_ACTION_PATH:-}"
+    if [ -z "$github_action_path" ] && [ -n "${_OTEL_GITHUB_STEP_ACTION_HINT_PATH:-}" ]; then
+      hint_dir="${_OTEL_GITHUB_STEP_ACTION_HINT_PATH%/}"
+      [ -f "$hint_dir" ] && hint_dir="$(dirname "$hint_dir")"
+      while [ -n "$hint_dir" ] && [ "$hint_dir" != "/" ]; do
+        if [ -f "$hint_dir/action.yml" ] || [ -f "$hint_dir/action.yaml" ]; then
+          github_action_path="$hint_dir"
+          break
+        fi
+        hint_dir="$(dirname "$hint_dir")"
+      done
+    fi
+    case "$github_action_path" in
       *"$action_path_prefix"*)
-        action_path="${GITHUB_ACTION_PATH#*"$action_path_prefix"}"
+        action_path="${github_action_path#*"$action_path_prefix"}"
         [ -z "$action_path" ] || action_name="$action_name/$action_path"
         ;;
     esac
