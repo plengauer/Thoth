@@ -1,0 +1,41 @@
+name: Test Debian Repository Hosting
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_run:
+    workflows: ['Update Package Repository']
+    types:
+      - completed
+
+jobs:
+  test-install:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Add apt source from README
+        run: |
+          echo "deb [arch=all] https://plengauer.github.io/Thoth stable main" | sudo tee /etc/apt/sources.list.d/otel.list
+
+      - name: Install package from apt repository
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl jq opentelemetry-shell
+
+      - name: Compare installed version with latest release
+        run: |
+          set -euo pipefail
+
+          latest_tag="$(curl --fail --silent --show-error \
+            --header "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/${GITHUB_REPOSITORY}/releases/latest | jq -r '.tag_name')"
+
+          latest_version="${latest_tag#v}"
+          installed_version="$(dpkg-query -W -f='${Version}' opentelemetry-shell | cut -d- -f1)"
+
+          echo "latest_version=$latest_version"
+          echo "installed_version=$installed_version"
+
+          [ "$installed_version" = "$latest_version" ]
