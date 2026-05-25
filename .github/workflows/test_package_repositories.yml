@@ -1,4 +1,4 @@
-name: Test Debian Repository
+name: Test Package Repositories
 
 on:
   schedule:
@@ -9,18 +9,18 @@ on:
       - completed
   push:
     paths:
-      - .github/workflows/test_debian_repository.yml
+      - .github/workflows/test_package_repositories.yml
 
 jobs:
-  test-apt-install:
+  test-apt:
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
       - run: |
           echo "deb [arch=all] https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }} stable main" | sudo tee /etc/apt/sources.list.d/otel.list
-          sudo apt-get update
-          sudo apt-get install -y opentelemetry-shell
+          sudo apt-get update --allow-insecure-repositories
+          sudo apt-get install -y --allow-unauthenticated opentelemetry-shell
       - run: |
           type otel.sh
       - run: |
