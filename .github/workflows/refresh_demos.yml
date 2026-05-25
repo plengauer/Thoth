@@ -6,7 +6,8 @@ on:
     branches:
       - main
     paths:
-      - 'demos/*/*'
+      - 'demos/**'
+      - '!demos/README.md'
       - '!demos/*/README.md'
       - '!demos/*/otlp.json'
       - '!demos/*/output.*'
