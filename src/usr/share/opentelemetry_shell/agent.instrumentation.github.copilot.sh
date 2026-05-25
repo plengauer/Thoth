@@ -20,5 +20,6 @@ if \[ "${GITHUB_ACTIONS:-false}" = true ] && \[ "$GITHUB_EVENT_NAME" = dynamic ]
     fi
     return "$exit_code"
   }
-  _otel_alias_prepend tar _otel_inject_copilot
+  _otel_alias_prepend_command=_otel_alias_prepend
+  $_otel_alias_prepend_command tar _otel_inject_copilot
 fi
