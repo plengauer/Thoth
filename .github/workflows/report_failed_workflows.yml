@@ -1,0 +1,43 @@
+name: Report Failed Workflows
+
+on:
+  schedule:
+    - cron: '0 8 * * 1'
+
+env:
+  LOOKBACK_DAYS: 7
+
+jobs:
+  report:
+    runs-on: ubuntu-slim
+    permissions:
+      actions: read
+      issues: write
+    steps:
+      - env:
+          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN || github.token }}
+        run: |
+          gh api "/repos/${GITHUB_REPOSITORY}/actions/runs?per_page=100" | jq --argjson lookback_days "$LOOKBACK_DAYS" '
+            reduce (
+              .workflow_runs
+              | map(select(
+                  .head_branch == "main"
+                  and .conclusion == "failure"
+                  and ((.run_started_at // .created_at | fromdateiso8601) >= (now - ($lookback_days * 86400)))
+                ))[]
+            ) as $run (
+              [];
+              if any(.[]; .name == $run.name) then
+                .
+              else
+                . + [{name: $run.name, html_url: $run.html_url}]
+              end
+            )[] | @base64
+          ' | while read -r failed_run; do
+            [ -n "$failed_run" ] || continue
+            workflow_name="$(echo "$failed_run" | base64 --decode | jq -r '.name')"
+            workflow_url="$(echo "$failed_run" | base64 --decode | jq -r '.html_url')"
+            issue_title="Fix workflow ${workflow_name}"
+            issue_count="$(gh issue list  --state open  --search "\"${issue_title}\" in:title"  --json title | jq --arg issue_title "$issue_title" '[.[] | select(.title == $issue_title)] | length')"
+            [ "$issue_count" -gt 0 ] || gh issue create --title "$issue_title" --body "$workflow_url"
+          done
