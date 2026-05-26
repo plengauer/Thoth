@@ -1,17 +1,20 @@
-name: Autoversion Main
+name: Autoversion
+
 on:
-  workflow_dispatch:
   schedule:
-    - cron: '0 0 1 * *'
-  pull_request:
-    types: [ closed ]
+    - cron: '0 0 * * 1'
+  push:
+    branches:
+      - 'release/v*.*'
+
+concurrency:
+  group: bump-version-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   bump:
     if: ${{ !github.event.repository.fork }}
     runs-on: ubuntu-slim
-    permissions:
-      contents: none
-      actions: read
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@8a42906ace6a618a3b91545ef9b655b8c6d2ac23 # v5.54.0
         with:
@@ -31,4 +34,4 @@ jobs:
           github_token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           openai_token: ${{ secrets.OPENAI_TOKEN }}
           path_include: ./meta:./src:./actions
-          increment_threshold: minor
+          increments: ${{ github.ref_name == 'main' && 'major;minor' || 'patch' }}
