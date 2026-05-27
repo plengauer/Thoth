@@ -5,7 +5,8 @@ if \[ "${GITHUB_ACTIONS:-false}" = true ] && \[ "$GITHUB_EVENT_NAME" = dynamic ]
     local exit_code=0
     _otel_call "$@" || local exit_code=$?
     if \[ "$exit_code" = 0 ] && ( \[ "$*" = 'tar -zxvf ./action.tar.gz' ] || \[ "$*" = 'tar -xzf ./action.tar.gz' ] || \[ "$*" = 'tar -zxf ./action.tar.gz' ] || \[ "$*" = 'tar -zxv' ] || \[ "$*" = 'tar -xzv' ] ); then
-      for script_file in "${RUNNER_TEMP}"/*-action-*/*/*.sh; do
+      for script_file in ./*-action-*/*/*.sh "${RUNNER_TEMP}"/*-action-*/*/*.sh; do
+        [ -f "$script_file" ] || continue
         \sed -i 's~#!/bin/sh~#!/bin/sh\n. otel.sh~g' "$script_file"
         \sed -i 's~#!/bin/bash~#!/bin/bash\n. otel.sh~g' "$script_file"
         \sed -i 's~#!/usr/bin/env sh~#!/usr/bin/env sh\n. otel.sh~g' "$script_file"
@@ -20,6 +21,5 @@ if \[ "${GITHUB_ACTIONS:-false}" = true ] && \[ "$GITHUB_EVENT_NAME" = dynamic ]
     fi
     return "$exit_code"
   }
-  _otel_alias_prepend_command=_otel_alias_prepend
-  $_otel_alias_prepend_command tar _otel_inject_copilot
+  _otel_alias_prepend tar _otel_inject_copilot
 fi
