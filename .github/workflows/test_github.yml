@@ -134,12 +134,13 @@ jobs:
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
-      - uses: plengauer/autoversion@c52ec7d4869f199d2b1706059fb4f9d15eb672b9 # v3.1.1
+      - uses: plengauer/autoversion@badee98ba4eb3a38f99cf8acab7f5510e7e8736f # v5.0.0
         with:
           github_token: ${{ github.token }}
           path_exclude: ./
           working_directory: ./autoversion
           dry_run: 'true'
+          ref: main
   job-dotnet:
     needs: job-smoke
     runs-on: ubuntu-latest
