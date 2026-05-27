@@ -28,3 +28,5 @@ jobs:
           openai_token: ${{ secrets.OPENAI_TOKEN }}
           path_include: ./meta:./src:./actions
           increments: ${{ github.ref_name == 'main' && 'major;minor' || 'patch' }}
+    permissions:
+      actions: read
