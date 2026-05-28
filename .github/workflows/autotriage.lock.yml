@@ -94,7 +94,7 @@ jobs:
             ${{ secrets.COPILOT_GITHUB_TOKEN }}
       - name: Setup Scripts
         id: setup
-        uses: github/gh-aw-actions/setup@029b1de3e913e0604df1ada9da1cec03e282c4db # v0.76.0
+        uses: github/gh-aw-actions/setup@46d564922b082d0db93244972e8005ea6904ee5f # v0.76.1
         with:
           destination: ${{ runner.temp }}/gh-aw/actions
           job-name: ${{ github.job }}
@@ -374,7 +374,7 @@ jobs:
             ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Scripts
         id: setup
-        uses: github/gh-aw-actions/setup@029b1de3e913e0604df1ada9da1cec03e282c4db # v0.76.0
+        uses: github/gh-aw-actions/setup@46d564922b082d0db93244972e8005ea6904ee5f # v0.76.1
         with:
           destination: ${{ runner.temp }}/gh-aw/actions
           job-name: ${{ github.job }}
@@ -1015,7 +1015,7 @@ jobs:
           secrets_to_redact: ${{ github.token }}
       - name: Setup Scripts
         id: setup
-        uses: github/gh-aw-actions/setup@029b1de3e913e0604df1ada9da1cec03e282c4db # v0.76.0
+        uses: github/gh-aw-actions/setup@46d564922b082d0db93244972e8005ea6904ee5f # v0.76.1
         with:
           destination: ${{ runner.temp }}/gh-aw/actions
           job-name: ${{ github.job }}
@@ -1165,7 +1165,7 @@ jobs:
             ${{ secrets.COPILOT_GITHUB_TOKEN }}
       - name: Setup Scripts
         id: setup
-        uses: github/gh-aw-actions/setup@029b1de3e913e0604df1ada9da1cec03e282c4db # v0.76.0
+        uses: github/gh-aw-actions/setup@46d564922b082d0db93244972e8005ea6904ee5f # v0.76.1
         with:
           destination: ${{ runner.temp }}/gh-aw/actions
           job-name: ${{ github.job }}
@@ -1371,7 +1371,7 @@ jobs:
             ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Scripts
         id: setup
-        uses: github/gh-aw-actions/setup@029b1de3e913e0604df1ada9da1cec03e282c4db # v0.76.0
+        uses: github/gh-aw-actions/setup@46d564922b082d0db93244972e8005ea6904ee5f # v0.76.1
         with:
           destination: ${{ runner.temp }}/gh-aw/actions
           job-name: ${{ github.job }}
@@ -1443,7 +1443,7 @@ jobs:
             ${{ secrets.ACTIONS_GITHUB_TOKEN }}
       - name: Setup Scripts
         id: setup
-        uses: github/gh-aw-actions/setup@029b1de3e913e0604df1ada9da1cec03e282c4db # v0.76.0
+        uses: github/gh-aw-actions/setup@46d564922b082d0db93244972e8005ea6904ee5f # v0.76.1
         with:
           destination: ${{ runner.temp }}/gh-aw/actions
           job-name: ${{ github.job }}
