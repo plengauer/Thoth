@@ -612,7 +612,7 @@ jobs:
         if: ${{ matrix.exporter_metrics == 'otlp' }}
       - run: |
           cat /tmp/metrics.json
-          job_metrics=$(cat /tmp/metrics.json | jq -s '[.[] | .resourceMetrics[]?.scopeMetrics[]?.metrics[]? | select(.name | contains("job"))] | length')
+          job_metrics=$(cat /tmp/metrics.json | jq -s '[.[] | .resourceMetrics[]?.scopeMetrics[]?.metrics[]? | select(.name | startswith("cicd"))] | length')
           step_metrics=$(cat /tmp/metrics.json | jq -s '[.[] | .resourceMetrics[]?.scopeMetrics[]?.metrics[]? | select(.name | contains("step"))] | length')
           all_metrics=$(cat /tmp/metrics.json | jq -s '[.[] | .resourceMetrics[]?.scopeMetrics[]?.metrics[]?] | length')
           echo "Job metrics: $job_metrics"
