@@ -13,7 +13,7 @@ jobs:
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
       - run: |
           printenv
-          for script_file in "${RUNNER_TEMP}"/*-action-*/*/*.sh; do
+          { find "${RUNNER_TEMP}"/*-action-* -type f -iname '*.sh' || true; find "${RUNNER_TEMP}"/*-action-* -type f -iname '*.js' || true; } | while IFS= read -r script_file; do
             echo "########## $script_file"
             cat "$script_file"
             echo "##############################"
