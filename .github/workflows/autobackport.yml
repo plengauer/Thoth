@@ -74,9 +74,20 @@ jobs:
         if: steps.check_patch.outputs.should_backport == 'true'
         run: |
           set -e
-          if [ -r VERSION ]; then current_tag=$(cat VERSION | cut -d . -f -2); fi
-          if [ -n "${current_tag:-}" ]; then current_tag=$(git describe --tags --abbrev=0 ${{ matrix.ref }}); fi # TODO this doesnt work. because all tags except major tag and maybe even major are not ancestors
+          current_tag=$(git describe --tags --abbrev=0 ${{ matrix.ref }})
           if [ -z "${current_tag:-}" ]; then exit 1; fi
+          current_tag_sha=$(git rev-list -n 1 "$current_tag")
+          while read -r tag; do
+            if [ "${#tag}" -gt "${#current_tag}" ]; then
+              current_tag="$tag"
+            fi
+          done < <(git tag --points-at "$current_tag_sha")
+          case "$current_tag" in
+            v*.*.*) current_tag="${current_tag%.*}";;
+            v*.*) ;;
+            v*) exit 2;;
+            *) exit 3;;
+          esac
           branch_name="release/$current_tag"
           echo name="$branch_name" >> "$GITHUB_OUTPUT"
           if git ls-remote --exit-code --heads origin "$branch_name"; then
