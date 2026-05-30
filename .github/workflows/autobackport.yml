@@ -82,7 +82,7 @@ jobs:
             git fetch origin "$branch_name"
             git checkout "$branch_name"
           else
-            git checkout -b "$branch_name" "${current_tag}.0"
+            git checkout -b "$branch_name" "$current_tag"
             git push -u origin "$branch_name"
           fi
       
