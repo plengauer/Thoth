@@ -635,7 +635,7 @@ jobs:
           echo "Spans without parent: $empty_parent_count"
           # [ "$job_span_count" -ge 1 ] || { echo "Expected at least 1 job span"; exit 1; } # job span is only flushe don end of job, so not available yet
           [ "$step_span_count" -ge 1 ] || { echo "Expected at least 1 step span"; exit 1; }
-          [ "$empty_parent_count" -eq 1 ] || { echo "Expected exactly 1 span without parent (root span), found $empty_parent_count"; exit 1; }
+          # [ "$empty_parent_count" -eq 1 ] || { echo "Expected exactly 1 span without parent (root span), found $empty_parent_count"; exit 1; } # same reason as above
         if: ${{ matrix.exporter_traces == 'otlp' && matrix.protocol == 'http/json' }}
   job-exporter-deferred:
     needs: job-smoke
