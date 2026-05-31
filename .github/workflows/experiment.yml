@@ -14,8 +14,10 @@ jobs:
       actions: read
     steps:
       - run: printenv
-      - run: ls -la /.dockerenv || true
-      - run: cat /proc/1/cgroup || true
+      - if: ${{ matrix.runner == 'ubuntu-slim' }}
+        run: ls -la /.dockerenv || true
+      - if: ${{ matrix.runner == 'ubuntu-slim' }}
+        run: cat /proc/1/cgroup || true
   experiment:
     runs-on: ubuntu-latest
     permissions:
