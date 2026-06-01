@@ -726,7 +726,7 @@ jobs:
       - run: echo hello world
   job-windows:
     needs: job-smoke
-    runs-on: windows-latest
+    runs-on: windows-2022
     timeout-minutes: 60
     permissions:
       contents: read
@@ -744,7 +744,7 @@ jobs:
       - run: echo hello world
   job-macos:
     needs: job-smoke
-    runs-on: macos-latest
+    runs-on: macos-15
     timeout-minutes: 60
     permissions:
       contents: read
