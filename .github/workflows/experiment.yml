@@ -8,7 +8,7 @@ jobs:
   env:
     strategy:
       matrix:
-        runner: [ ubuntu-latest, macos-15, windows-2022, ubuntu-slim ]
+        runner: [ ubuntu-latest, macos-latest, windows-latest, ubuntu-slim ]
     runs-on: ${{ matrix.runner }}
     permissions:
       actions: read

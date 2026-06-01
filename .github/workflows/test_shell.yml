@@ -335,10 +335,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   windows-shell:
     needs: [list-shells, smoke]
-    runs-on: windows-2022
+    runs-on: ${{ matrix.runner }}
     timeout-minutes: 180
     strategy:
       matrix:
+        runner: [windows-2022, windows-latest]
         version: [1, 2]
         shell: ${{ fromJSON(needs.list-shells.outputs.shells) }}
       fail-fast: false
