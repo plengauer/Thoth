@@ -9,8 +9,8 @@ permissions:
   issues: read
 network:
   allowed:
-    defaults
-    github
+    - defaults
+    - github
 tools:
   github:
     toolsets: [context, issues]
