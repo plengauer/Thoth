@@ -23,6 +23,7 @@ jobs:
       - env:
           GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN || github.token }}
         run: |
+          set -o pipefail
           gh api "/repos/${GITHUB_REPOSITORY}/actions/runs?per_page=100" | jq --argjson lookback_days "$LOOKBACK_DAYS" '
             reduce (
               .workflow_runs
