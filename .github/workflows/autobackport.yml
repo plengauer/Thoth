@@ -67,7 +67,7 @@ jobs:
           depth: 1
       - id: check_patch
         run: |
-          if git diff --quiet; then echo "should_backport=true"; else echo "should_backport=false"; fi >> "$GITHUB_OUTPUT"
+          if git diff --quiet; then echo "should_backport=false"; else echo "should_backport=true"; fi >> "$GITHUB_OUTPUT"
           git checkout .
       
       - id: prepare_branch
