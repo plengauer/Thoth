@@ -301,7 +301,6 @@ export OTEL_TRACES_EXPORTER=otlp
 export OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://localhost:4318/v1/traces
 export OTEL_EXPORTER_OTLP_TRACES_PROTOCOL=http/protobuf
 unset OTEL_EXPORTER_OTLP_HEADERS OTEL_EXPORTER_OTLP_ENDPOINT OTEL_EXPORTER_OTLP_LOGS_HEADERS OTEL_EXPORTER_OTLP_METRICS_HEADERS OTEL_EXPORTER_OTLP_TRACES_HEADERS
-export GH_AW_OTLP_ENDPOINTS=http://localhost:4318
 echo "::endgroup::"
 
 echo "::group::Instrument shell/javascript/docker actions"
@@ -635,7 +634,7 @@ echo "::endgroup::"
 echo "::group::Propagate W3C Tracecontext to Steps"
 export TRACEPARENT="$(cat "$traceparent_file")"
 rm "$traceparent_file"
-printenv | grep -E '^OTEL_|^TRACEPARENT=|^TRACESTATE=|^GH_AW_OTLP_ENDPOINTS=' >> "$GITHUB_ENV"
+printenv | grep -E '^OTEL_|^TRACEPARENT=|^TRACESTATE=' >> "$GITHUB_ENV"
 echo "::endgroup::"
 
 echo ::notice title=Observability Information for ${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}::"Trace ID: $(echo "$TRACEPARENT" | cut -d - -f 2), Span ID: $(echo "$TRACEPARENT" | cut -d - -f 3), Trace Deep Link: $(OTEL_EXPORTER_OTLP_TRACES_ENDPOINT="$backup_otel_exporter_otlp_traces_endpoint" print_trace_link "$(date +%Y-%M-%dT%H:%M:%S.%N%:z | jq -sRr @uri)" || echo unavailable)"
