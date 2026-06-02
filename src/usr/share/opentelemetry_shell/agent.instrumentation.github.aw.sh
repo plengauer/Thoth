@@ -1,7 +1,7 @@
 #!/bin/false
 
 if \[ "${GITHUB_ACTIONS:-false}" = true ]; then
-  if \[ -z "${GH_AW_OTLP_ENDPOINTS:-}" ]; then
+  if \[ "${GITHUB_ACTION:-}" = github/gh-aw-actions/setup ] && \[ -z "${GH_AW_OTLP_ENDPOINTS:-}" ]; then
     if \[ -n "${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-}" ]; then
       export GH_AW_OTLP_ENDPOINTS="${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT%/v1/traces}"
     elif \[ -n "${OTEL_EXPORTER_OTLP_ENDPOINT:-}" ]; then
