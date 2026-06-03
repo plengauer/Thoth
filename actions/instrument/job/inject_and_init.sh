@@ -337,7 +337,7 @@ while [ "$count" -lt 60 ] && ! gh_artifact_download "$GITHUB_RUN_ID" "$GITHUB_RU
   . otelapi.sh
   otel_init
   otel_span_traceparent "$(otel_span_start INTERNAL dummy)" > "$opentelemetry_root_dir"/traceparent
-  gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_workflow_run_"$GITHUB_RUN_ATTEMPT" "$opentelemetry_root_dir"/traceparent || true
+  OTEL_GH_ARTIFACT_COMPRESSION_LEVEL=0 gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_workflow_run_"$GITHUB_RUN_ATTEMPT" "$opentelemetry_root_dir"/traceparent || true
   rm "$opentelemetry_root_dir"/traceparent
   otel_shutdown
   count=$((count + 1))
@@ -599,7 +599,7 @@ root4job() {
   if [ -n "${GITHUB_JOB_ID:-}" ]; then
     opentelemetry_job_dir="$(mktemp -d)"
     echo "$TRACEPARENT" > "$opentelemetry_job_dir"/traceparent
-    ( gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_job_"$GITHUB_JOB_ID" "$opentelemetry_job_dir"/traceparent && rm -rf "$opentelemetry_job_dir" ) &> /dev/null &
+    ( OTEL_GH_ARTIFACT_COMPRESSION_LEVEL=0 gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_job_"$GITHUB_JOB_ID" "$opentelemetry_job_dir"/traceparent && rm -rf "$opentelemetry_job_dir" ) &> /dev/null &
   fi
   otel_span_deactivate "$span_handle"
   trap root4job_end SIGUSR1

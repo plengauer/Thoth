@@ -83,10 +83,15 @@ gh_artifact_download() {
 export -f gh_artifact_download
 
 gh_artifact_upload() {
+  local compression_level="${OTEL_GH_ARTIFACT_COMPRESSION_LEVEL:-6}"
+  case "$compression_level" in
+    [0-9]) ;;
+    *) compression_level=6;;
+  esac
   GITHUB_TOKEN="$INPUT_GITHUB_TOKEN" node --input-type=module -e '
     import path from "node:path";
     import { DefaultArtifactClient } from "@actions/artifact";
-    new DefaultArtifactClient().uploadArtifact("'"$3"'", [ '"$(echo "${@:4}" | tr ' ' '\n' | sed -E 's/^(.*)$/"\1"/g' | tr '\n' ',')"' ], path.dirname("'"$4"'"));
+    new DefaultArtifactClient().uploadArtifact("'"$3"'", [ '"$(echo "${@:4}" | tr ' ' '\n' | sed -E 's/^(.*)$/"\1"/g' | tr '\n' ',')"' ], path.dirname("'"$4"'"), { compressionLevel: '"$compression_level"' });
   '
 }
 export -f gh_artifact_upload
