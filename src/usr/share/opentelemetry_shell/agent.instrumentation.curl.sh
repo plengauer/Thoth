@@ -282,83 +282,90 @@ _otel_curl_genai_capture_prompt_on_spans() {
   esac
 }
 
-_otel_curl_genai_extract_prompt_messages() {
-  \jq < "$1" -c -r '
-    def text_part($text): { "type": "text", "content": ($text | tostring) };
-    def normalize_part:
-      if type == "object" then
-        if (.type? == "text" or .type? == "input_text") and ((.text? != null) or (.content? != null)) then
-          { "type": "text", "content": (.text // .content | tostring) }
-        elif .type? != null then
-          .
-        else
-          text_part(tojson)
-        end
-      elif type == "string" then
-        text_part(.)
-      else
-        text_part(tojson)
-      end;
-    def normalize_tool_calls:
-      if (.tool_calls? | type) == "array" then
-        [
-          .tool_calls[] |
+_otel_curl_genai_normalize_messages() {
+  \jq -c '.messages // null' 2> /dev/null \
+  | \jq -c 'if type == "array" then . else null end' 2> /dev/null \
+  | \jq -c '
+      map(
+        if .tool_call_id? != null then
           {
-            "type": "tool_call",
-            "id": (.id // .tool_call_id // null),
-            "name": (.function.name // .name // null),
-            "arguments": (
-              if .function.arguments? == null then
-                (.arguments // null)
-              else
-                (.function.arguments | (try fromjson catch .))
-              end
-            )
-          } | with_entries(select(.value != null))
-        ]
-      else
-        []
-      end;
-    def normalize_message:
-      . as $message |
-      {
-        "role": ($message.role // "user"),
-        "parts": (
-          if $message.tool_call_id? != null then
-            [ { "type": "tool_call_response", "id": $message.tool_call_id, "result": ($message.content // $message.result // "") } ]
-          elif ($message.tool_calls? | type) == "array" and $message.content? == null then
-            normalize_tool_calls
-          elif ($message.content? | type) == "array" then
-            [ $message.content[] | normalize_part ]
-          elif ($message.content? | type) == "string" then
-            [ text_part($message.content) ]
-          elif $message.content? == null then
-            []
-          else
-            [ text_part($message.content) ]
-          end
-        )
-      };
-    if .messages != null then
-      [ .messages[] | normalize_message ]
-    elif .input != null then
-      if (.input | type) == "array" then
-        if [ .input[] | (type == "object" and .role != null) ] | all then
-          [ .input[] | normalize_message ]
+            "role": (.role // "user"),
+            "parts": [ { "type": "tool_call_response", "id": .tool_call_id, "result": (.content // .result // "") } ]
+          }
         else
-          [ { "role": "user", "parts": [ text_part(.input | tojson) ] } ]
+          {
+            "role": (.role // "user"),
+            "parts":
+              (
+                if (.content? | type) == "array" then
+                  [ .content[] |
+                    if type == "string" then
+                      { "type": "text", "content": . }
+                    elif type == "object" and ((.type? == "text") or (.type? == "input_text")) and ((.text? != null) or (.content? != null)) then
+                      { "type": "text", "content": (.text // .content | tostring) }
+                    elif type == "object" and .type? != null then
+                      .
+                    elif type == "object" then
+                      { "type": "text", "content": tojson }
+                    else
+                      { "type": "text", "content": tostring }
+                    end
+                  ]
+                elif (.tool_calls? | type) == "array" and .content? == null then
+                  [ .tool_calls[] |
+                    {
+                      "type": "tool_call",
+                      "id": (.id // .tool_call_id // null),
+                      "name": (.function.name // .name // null),
+                      "arguments": (if .function.arguments? == null then (.arguments // null) else (.function.arguments | (try fromjson catch .)) end)
+                    } | with_entries(select(.value != null))
+                  ]
+                elif (.content? | type) == "string" then
+                  [ { "type": "text", "content": .content } ]
+                elif .content? == null then
+                  []
+                else
+                  [ { "type": "text", "content": (.content | tostring) } ]
+                end
+              )
+          }
         end
-      elif (.input | type) == "string" then
-        [ { "role": "user", "parts": [ text_part(.input) ] } ]
-      else
-        [ { "role": "user", "parts": [ text_part(.input | tojson) ] } ]
+      )
+    ' 2> /dev/null || \echo null
+}
+
+_otel_curl_genai_extract_prompt_messages() {
+  local request_file="$1"
+  local prompt_source
+  prompt_source="$(
+    \jq < "$request_file" -r '
+      if .messages != null then "messages"
+      elif .input != null then "input"
+      elif .prompt != null then "prompt"
+      else "null"
       end
-    elif .prompt != null then
-      [ { "role": "user", "parts": [ text_part(.prompt) ] } ]
-    else
-      null
-    end
-  ' 2> /dev/null || \echo null
+    ' 2> /dev/null
+  )" || prompt_source=null
+  case "$prompt_source" in
+    messages)
+      \cat "$request_file" | _otel_curl_genai_normalize_messages
+      ;;
+    input)
+      if \jq < "$request_file" -e '.input | type == "array" and ([ .[] | (type == "object" and .role != null) ] | all)' > /dev/null 2>&1; then
+        \jq < "$request_file" -c '{ "messages": .input }' 2> /dev/null | _otel_curl_genai_normalize_messages
+      elif \jq < "$request_file" -e '.input | type == "string"' > /dev/null 2>&1; then
+        \jq < "$request_file" -c '[ { "role": "user", "parts": [ { "type": "text", "content": .input } ] } ]' 2> /dev/null || \echo null
+      else
+        \jq < "$request_file" -c '[ { "role": "user", "parts": [ { "type": "text", "content": (.input | tojson) } ] } ]' 2> /dev/null || \echo null
+      fi
+      ;;
+    prompt)
+      \jq < "$request_file" -c '[ { "role": "user", "parts": [ { "type": "text", "content": (.prompt | tostring) } ] } ]' 2> /dev/null || \echo null
+      ;;
+    *)
+      \echo null
+      ;;
+  esac
 }
 
 _otel_curl_record_api_response_llm_openai() {
