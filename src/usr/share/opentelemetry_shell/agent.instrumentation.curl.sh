@@ -271,12 +271,47 @@ _otel_curl_get_input_type() {
   done
 }
 
+_otel_curl_genai_capture_message_content_mode() {
+  \printf '%s' "${OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT:-NO_CONTENT}" | \tr '[:upper:]' '[:lower:]'
+}
+
+_otel_curl_genai_capture_prompt_on_spans() {
+  case "$(_otel_curl_genai_capture_message_content_mode)" in
+    true|span_only|span_and_event) return 0;;
+    *) return 1;;
+  esac
+}
+
+_otel_curl_genai_extract_prompt_messages() {
+  \jq < "$1" -c -r '
+    if .messages != null then
+      .messages
+    elif .input != null then
+      if (.input | type) == "array" then
+        if [ .input[] | (type == "object" and .role != null) ] | all then .input else [ { "role": "user", "content": (.input | tojson) } ] end
+      elif (.input | type) == "string" then
+        [ { "role": "user", "content": .input } ]
+      else
+        [ { "role": "user", "content": (.input | tojson) } ]
+      end
+    elif .prompt != null then
+      [ { "role": "user", "content": (.prompt | tostring) } ]
+    else
+      null
+    end
+  ' 2> /dev/null || \echo null
+}
+
 _otel_curl_record_api_response_llm_openai() {
   local request_file="$1"
   local span_handle_file="$2"
   local time_start="$(\date +%s.%N)"
   local gen_ai_client_operation_duration_handle="$(otel_counter_create histogram gen_ai.client.operation.duration s '0.01,0.02,0.04,0.08,0.16,0.32,0.64,1.28,2.56,5.12,10.24,20.48,40.96,81.92' 'GenAI operation duration')"
   local gen_ai_client_token_usage_handle="$(otel_counter_create counter gen_ai.client.token.usage '{token}' 'Number of input and output tokens used')"
+  local prompt_messages=null
+  if _otel_curl_genai_capture_prompt_on_spans; then
+    prompt_messages="$(_otel_curl_genai_extract_prompt_messages "$request_file")"
+  fi
   local stdout="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell_$$.api.request.curl.pipe.XXXXXXXXXX)"
   \mkfifo "$stdout"
   local process_stdout=0
@@ -300,6 +335,7 @@ _otel_curl_record_api_response_llm_openai() {
       \[ "$top_p" = null ] || otel_span_attribute_typed "$span_handle" float gen_ai.request.top_p="$top_p"
       \[ "$frequency_penalty" = null ] || otel_span_attribute_typed "$span_handle" float gen_ai.request.frequency_penalty="$frequency_penalty"
       \[ "$presence_penalty" = null ] || otel_span_attribute_typed "$span_handle" float gen_ai.request.presence_penalty="$presence_penalty"
+      \[ "$prompt_messages" = null ] || otel_span_attribute_typed "$span_handle" string gen_ai.input.messages="$prompt_messages"
     done
     local status_code
     IFS= \read -r status_code < "$span_handle_file"
