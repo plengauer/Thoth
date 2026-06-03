@@ -17,15 +17,11 @@
 ## Build Process
 **CRITICAL**: Build is **multi-stage via GitHub Actions only** (`.github/workflows/build.yml`). No local build scripts exist. Duration: 15-30 minutes.
 
-### Build Stages
-1. **C library**: `gcc -shared -fPIC -o libinjecthttpheader.so agent.injection.http_header.c -ldl` for 6 architectures (amd64, arm64, mips64le, ppc64le, riscv64, s390x) using Docker+QEMU
-2. **Node.js modules**: `npm install && npm prune` for Node 16-23 → `node_modules.tar.xz`
-3. **Python packages**: `python3 -m venv venv && pip3 install -r requirements.txt` for Python 3.9-3.13 → `python_site_packages.tar.xz`
-4. **Java agents**: `mvn dependency:resolve && javac && jar` → `*.jar` files
-5. **Packages**: `dpkg-deb` (.deb), `rpmbuild` (.rpm), `abuild` (.apk) combining all artifacts
-
-**Dependencies**: Docker, Node 16-23, Python 3.9-3.13, Java 8+, Maven, dpkg-deb, rpmbuild, abuild
-**Validation**: `verify-deb-dependencies` checks all shell commands exist in declared package dependencies
+Use the dedicated build skill at `.github/skills/build-packages.md` to:
+- derive required build steps from the `build.yml` job `needs` graph,
+- avoid duplicating workflow commands in instructions,
+- choose a minimal scope build for task iteration (for example, skip Node/Python/Java/HTTP rebuilds when those areas are out of scope),
+- and run full workflow-equivalent builds for release-quality packaging validation.
 
 ## Testing
 **CRITICAL**: Tests **require package installation first**: `sudo apt-get -y install ./package.deb`
