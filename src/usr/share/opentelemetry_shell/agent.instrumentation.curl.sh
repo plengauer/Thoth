@@ -284,18 +284,77 @@ _otel_curl_genai_capture_prompt_on_spans() {
 
 _otel_curl_genai_extract_prompt_messages() {
   \jq < "$1" -c -r '
+    def text_part($text): { "type": "text", "content": ($text | tostring) };
+    def normalize_part:
+      if type == "object" then
+        if (.type? == "text" or .type? == "input_text") and ((.text? != null) or (.content? != null)) then
+          { "type": "text", "content": (.text // .content | tostring) }
+        elif .type? != null then
+          .
+        else
+          text_part(tojson)
+        end
+      elif type == "string" then
+        text_part(.)
+      else
+        text_part(tojson)
+      end;
+    def normalize_tool_calls:
+      if (.tool_calls? | type) == "array" then
+        [
+          .tool_calls[] |
+          {
+            "type": "tool_call",
+            "id": (.id // .tool_call_id // null),
+            "name": (.function.name // .name // null),
+            "arguments": (
+              if .function.arguments? == null then
+                (.arguments // null)
+              else
+                (.function.arguments | (try fromjson catch .))
+              end
+            )
+          } | with_entries(select(.value != null))
+        ]
+      else
+        []
+      end;
+    def normalize_message:
+      . as $message |
+      {
+        "role": ($message.role // "user"),
+        "parts": (
+          if $message.tool_call_id? != null then
+            [ { "type": "tool_call_response", "id": $message.tool_call_id, "result": ($message.content // $message.result // "") } ]
+          elif ($message.tool_calls? | type) == "array" and $message.content? == null then
+            normalize_tool_calls
+          elif ($message.content? | type) == "array" then
+            [ $message.content[] | normalize_part ]
+          elif ($message.content? | type) == "string" then
+            [ text_part($message.content) ]
+          elif $message.content? == null then
+            []
+          else
+            [ text_part($message.content) ]
+          end
+        )
+      };
     if .messages != null then
-      .messages
+      [ .messages[] | normalize_message ]
     elif .input != null then
       if (.input | type) == "array" then
-        if [ .input[] | (type == "object" and .role != null) ] | all then .input else [ { "role": "user", "content": (.input | tojson) } ] end
+        if [ .input[] | (type == "object" and .role != null) ] | all then
+          [ .input[] | normalize_message ]
+        else
+          [ { "role": "user", "parts": [ text_part(.input | tojson) ] } ]
+        end
       elif (.input | type) == "string" then
-        [ { "role": "user", "content": .input } ]
+        [ { "role": "user", "parts": [ text_part(.input) ] } ]
       else
-        [ { "role": "user", "content": (.input | tojson) } ]
+        [ { "role": "user", "parts": [ text_part(.input | tojson) ] } ]
       end
     elif .prompt != null then
-      [ { "role": "user", "content": (.prompt | tostring) } ]
+      [ { "role": "user", "parts": [ text_part(.prompt) ] } ]
     else
       null
     end
