@@ -309,7 +309,7 @@ _otel_curl_genai_normalize_messages() {
                       { "type": "text", "content": tojson }
                     else
                       { "type": "text", "content": tostring }
-                    end
+                    end # SKIP_DEPENDENCY_CHECK
                   ]
                 elif (.tool_calls? | type) == "array" and .content? == null then
                   [ .tool_calls[] |
@@ -326,10 +326,10 @@ _otel_curl_genai_normalize_messages() {
                   []
                 else
                   [ { "type": "text", "content": (.content | tostring) } ]
-                end
+                end # SKIP_DEPENDENCY_CHECK
               )
           }
-        end
+        end # SKIP_DEPENDENCY_CHECK
       )
     ' 2> /dev/null || \echo null
 }
@@ -343,7 +343,7 @@ _otel_curl_genai_extract_prompt_messages() {
       elif .input != null then "input"
       elif .prompt != null then "prompt"
       else "null"
-      end
+      end # SKIP_DEPENDENCY_CHECK
     ' 2> /dev/null
   )" || prompt_source=null
   case "$prompt_source" in
