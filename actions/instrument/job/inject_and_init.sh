@@ -100,35 +100,33 @@ if [ "$INPUT_CACHE" = "true" ]; then
   sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.restoreCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip'], '$cache_key');"
   [ "$(find /var/cache/apt/archives/ -name '*.deb' | wc -l)" -gt 0 ] || write_back_cache=TRUE
 fi
-otelshell_deb="$(ls /var/cache/apt/archives/opentelemetry-shell_*_"$(arch | sed 's/x86_64/amd64/g' | sed 's/aarch64/arm64/g' | sed 's/le$/el/g')".deb 2>/dev/null | head -1 || true)"
-[ -r "$otelshell_deb" ] || otelshell_deb="$(ls /var/cache/apt/archives/opentelemetry-shell_*_all.deb 2>/dev/null | head -1 || true)"
-if ! type otel.sh && [ -r "$otelshell_deb" ]; then
+if ! type otel.sh && [ -r /var/cache/apt/archives/opentelemetry-shell_*_*.deb ]; then
   echo "::debug::Cached debian file found ..."
   if [ "${FAST_DEB_INSTALL:-FALSE}" = TRUE ]; then # lets assume exactly one postinst script, no triggers
     echo "::debug::Attempting fast install ..."
     control_dir="$(mktemp -d)"
-    dpkg-deb --control "$otelshell_deb" "$control_dir"
+    dpkg-deb --control /var/cache/apt/archives/opentelemetry-shell_*_*.deb "$control_dir"
     if cat "$control_dir"/control | grep -E '^Pre-Depends:|^Depends:' | cut -d ':' -f 2- | tr ',' '\n' | grep -v '|' | tr -d ' ' | cut -d '(' -f 1 | xargs -I '{}' bash -c 'type {} 1> /dev/null 2> /dev/null || dpkg -l {} 2> /dev/null | grep -q "^ii"'; then
       if [ "${FAST_DEB_INSTALL_PRESERVE_ACL:-TRUE}" = TRUE ]; then
         echo "::debug::Fast install tediously to preserve ACL ..."
         extract_dir="$(mktemp -d)"
-        sudo dpkg-deb --extract "$otelshell_deb" "$extract_dir"
+        sudo dpkg-deb --extract /var/cache/apt/archives/opentelemetry-shell_*_*.deb "$extract_dir"
         tar -C "$extract_dir" -cf - . | sudo tar -C / -xf - --no-overwrite-dir
         sudo rm -rf "$extract_dir"
         run eval sudo "$control_dir"/postinst configure '&&' rm -rf "$control_dir"
       else
         echo "::debug::Fast install ..."
-        sudo dpkg-deb --extract "$otelshell_deb" / && run eval sudo "$control_dir"/postinst configure '&&' rm -rf "$control_dir"
+        sudo dpkg-deb --extract /var/cache/apt/archives/opentelemetry-shell_*_*.deb / && run eval sudo "$control_dir"/postinst configure '&&' rm -rf "$control_dir"
       fi
       export OTEL_SHELL_PACKAGE_VERSION_CACHE_opentelemetry_shell="$(cat ../../../VERSION)"
     else
       echo "::debug::Slow install ..."
       rm -rf "$control_dir"
-      sudo apt-get install -y "$otelshell_deb"
+      sudo apt-get install -y /var/cache/apt/archives/opentelemetry-shell_*_*.deb
     fi
   else
     echo "::debug::Slow install ..."
-    sudo apt-get install -y "$otelshell_deb"
+    sudo apt-get install -y /var/cache/apt/archives/opentelemetry-shell_*_*.deb
   fi
 fi
 bash -e -o pipefail ../shared/install.sh perl curl wget jq sed unzip parallel 'node;nodejs' npm 'gcc;build-essential'
