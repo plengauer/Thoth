@@ -90,8 +90,13 @@ echo "::endgroup::"
 
 echo "::group::Determine Trace ID"
 workflow_run_dir="$(mktemp -d)"
-gh_artifact_download "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" opentelemetry_workflow_run_"$INPUT_WORKFLOW_RUN_ATTEMPT" "$workflow_run_dir" || true
-if [ -r "$workflow_run_dir"/traceparent ]; then export OTEL_ID_GENERATOR_OVERRIDE_TRACEPARENT="$(cat "$workflow_run_dir"/traceparent)"; fi
+workflow_run_traceparent_artifact_name=opentelemetry_workflow_run_"$INPUT_WORKFLOW_RUN_ATTEMPT"
+gh_artifact_download "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" "$workflow_run_traceparent_artifact_name" "$workflow_run_dir" || true
+if [ -r "$workflow_run_dir"/traceparent ]; then
+  export OTEL_ID_GENERATOR_OVERRIDE_TRACEPARENT="$(cat "$workflow_run_dir"/traceparent)"
+elif [ -r "$workflow_run_dir"/"$workflow_run_traceparent_artifact_name" ]; then
+  export OTEL_ID_GENERATOR_OVERRIDE_TRACEPARENT="$(cat "$workflow_run_dir"/"$workflow_run_traceparent_artifact_name")"
+fi
 echo "::endgroup::"
 
 echo "::group::Export"
@@ -174,8 +179,15 @@ otel_span_attribute_typed "$workflow_span_handle" string github.actions.event.na
 otel_span_attribute_typed "$workflow_span_handle" string github.actions.event.ref="refs/heads/$(jq < "$workflow_json" -r .head_branch)"
 otel_span_attribute_typed "$workflow_span_handle" string github.actions.event.ref.sha="$(jq < "$workflow_json" -r .head_sha)"
 otel_span_attribute_typed "$workflow_span_handle" string github.actions.event.ref.name="$(jq < "$workflow_json" -r .head_branch)"
-if [ "$INPUT_WORKFLOW_RUN_ATTEMPT" -gt 1 ] && gh_artifact_download "$INPUT_WORKFLOW_RUN_ID" "$((INPUT_WORKFLOW_RUN_ATTEMPT - 1))" opentelemetry_workflow_run_"$((INPUT_WORKFLOW_RUN_ATTEMPT - 1))" opentelemetry_workflow_run_prev; then
-  otel_link_add "$(otel_link_create "$(cat opentelemetry_workflow_run_prev/traceparent)" "")" "$workflow_span_handle"
+if [ "$INPUT_WORKFLOW_RUN_ATTEMPT" -gt 1 ]; then
+  workflow_run_prev_traceparent_artifact_name=opentelemetry_workflow_run_"$((INPUT_WORKFLOW_RUN_ATTEMPT - 1))"
+  if gh_artifact_download "$INPUT_WORKFLOW_RUN_ID" "$((INPUT_WORKFLOW_RUN_ATTEMPT - 1))" "$workflow_run_prev_traceparent_artifact_name" opentelemetry_workflow_run_prev; then
+    workflow_run_prev_traceparent_file=opentelemetry_workflow_run_prev/traceparent
+    [ -r "$workflow_run_prev_traceparent_file" ] || workflow_run_prev_traceparent_file=opentelemetry_workflow_run_prev/"$workflow_run_prev_traceparent_artifact_name"
+    if [ -r "$workflow_run_prev_traceparent_file" ]; then
+      otel_link_add "$(otel_link_create "$(cat "$workflow_run_prev_traceparent_file")" "")" "$workflow_span_handle"
+    fi
+  fi
 fi
 otel_span_activate "$workflow_span_handle"
 [ -z "${INPUT_DEBUG}" ] || echo "span workflow $TRACEPARENT $(jq < "$workflow_json" -r .name)" >&2
