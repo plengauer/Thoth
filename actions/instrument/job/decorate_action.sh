@@ -231,6 +231,7 @@ if [ "$exit_code" = 0 ] && ( [ "${GITHUB_ACTION_REPOSITORY:-}" = github/gh-aw ] 
     sed -i 's~#!/bin/sh~#!/bin/sh\n. otel.sh~g' "$script_file" 2>/dev/null || true
     sed -i 's~#!/bin/bash~#!/bin/bash\n. otel.sh~g' "$script_file" 2>/dev/null || true
   done || true
+  [ -n "${OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT:-}" ] || echo OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT=span_and_event >> "$GITHUB_ENV"
   echo "::debug::Instrumented agentic workflows"
 fi
 
