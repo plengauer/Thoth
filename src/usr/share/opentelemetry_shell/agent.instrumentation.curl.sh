@@ -271,12 +271,113 @@ _otel_curl_get_input_type() {
   done
 }
 
+_otel_curl_genai_capture_message_content_mode() {
+  \printf '%s' "${OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT:-NO_CONTENT}" | \tr '[:upper:]' '[:lower:]'
+}
+
+_otel_curl_genai_capture_prompt_on_spans() {
+  case "$(_otel_curl_genai_capture_message_content_mode)" in
+    true|span_only|span_and_event) return 0;;
+    *) return 1;;
+  esac
+}
+
+_otel_curl_genai_normalize_messages() {
+  \jq -c '.messages // null' 2> /dev/null \
+  | \jq -c 'if type == "array" then . else null end' 2> /dev/null \
+  | \jq -c '
+      map(
+        if .tool_call_id? != null then
+          {
+            "role": (.role // "user"),
+            "parts": [ { "type": "tool_call_response", "id": .tool_call_id, "result": (.content // .result // "") } ]
+          }
+        else
+          {
+            "role": (.role // "user"),
+            "parts":
+              (
+                if (.content? | type) == "array" then
+                  [ .content[] |
+                    if type == "string" then
+                      { "type": "text", "content": . }
+                    elif type == "object" and ((.type? == "text") or (.type? == "input_text")) and ((.text? != null) or (.content? != null)) then
+                      { "type": "text", "content": (.text // .content | tostring) }
+                    elif type == "object" and .type? != null then
+                      .
+                    elif type == "object" then
+                      { "type": "text", "content": tojson }
+                    else
+                      { "type": "text", "content": tostring }
+                    end # SKIP_DEPENDENCY_CHECK
+                  ]
+                elif (.tool_calls? | type) == "array" and .content? == null then
+                  [ .tool_calls[] |
+                    {
+                      "type": "tool_call",
+                      "id": (.id // .tool_call_id // null),
+                      "name": (.function.name // .name // null),
+                      "arguments": (if .function.arguments? == null then (.arguments // null) else (.function.arguments | (try fromjson catch .)) end)
+                    } | with_entries(select(.value != null))
+                  ]
+                elif (.content? | type) == "string" then
+                  [ { "type": "text", "content": .content } ]
+                elif .content? == null then
+                  []
+                else
+                  [ { "type": "text", "content": (.content | tostring) } ]
+                end # SKIP_DEPENDENCY_CHECK
+              )
+          }
+        end # SKIP_DEPENDENCY_CHECK
+      )
+    ' 2> /dev/null || \echo null
+}
+
+_otel_curl_genai_extract_prompt_messages() {
+  local request_file="$1"
+  local prompt_source
+  prompt_source="$(
+    \jq < "$request_file" -r '
+      if .messages != null then "messages"
+      elif .input != null then "input"
+      elif .prompt != null then "prompt"
+      else "null"
+      end # SKIP_DEPENDENCY_CHECK
+    ' 2> /dev/null
+  )" || prompt_source=null
+  case "$prompt_source" in
+    messages)
+      \cat "$request_file" | _otel_curl_genai_normalize_messages
+      ;;
+    input)
+      if \jq < "$request_file" -e '.input | type == "array" and ([ .[] | (type == "object" and .role != null) ] | all)' > /dev/null 2>&1; then
+        \jq < "$request_file" -c '{ "messages": .input }' 2> /dev/null | _otel_curl_genai_normalize_messages
+      elif \jq < "$request_file" -e '.input | type == "string"' > /dev/null 2>&1; then
+        \jq < "$request_file" -c '[ { "role": "user", "parts": [ { "type": "text", "content": .input } ] } ]' 2> /dev/null || \echo null
+      else
+        \jq < "$request_file" -c '[ { "role": "user", "parts": [ { "type": "text", "content": (.input | tojson) } ] } ]' 2> /dev/null || \echo null
+      fi
+      ;;
+    prompt)
+      \jq < "$request_file" -c '[ { "role": "user", "parts": [ { "type": "text", "content": (.prompt | tostring) } ] } ]' 2> /dev/null || \echo null
+      ;;
+    *)
+      \echo null
+      ;;
+  esac
+}
+
 _otel_curl_record_api_response_llm_openai() {
   local request_file="$1"
   local span_handle_file="$2"
   local time_start="$(\date +%s.%N)"
   local gen_ai_client_operation_duration_handle="$(otel_counter_create histogram gen_ai.client.operation.duration s '0.01,0.02,0.04,0.08,0.16,0.32,0.64,1.28,2.56,5.12,10.24,20.48,40.96,81.92' 'GenAI operation duration')"
   local gen_ai_client_token_usage_handle="$(otel_counter_create counter gen_ai.client.token.usage '{token}' 'Number of input and output tokens used')"
+  local prompt_messages=null
+  if _otel_curl_genai_capture_prompt_on_spans; then
+    prompt_messages="$(_otel_curl_genai_extract_prompt_messages "$request_file")"
+  fi
   local stdout="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell_$$.api.request.curl.pipe.XXXXXXXXXX)"
   \mkfifo "$stdout"
   local process_stdout=0
@@ -300,6 +401,7 @@ _otel_curl_record_api_response_llm_openai() {
       \[ "$top_p" = null ] || otel_span_attribute_typed "$span_handle" float gen_ai.request.top_p="$top_p"
       \[ "$frequency_penalty" = null ] || otel_span_attribute_typed "$span_handle" float gen_ai.request.frequency_penalty="$frequency_penalty"
       \[ "$presence_penalty" = null ] || otel_span_attribute_typed "$span_handle" float gen_ai.request.presence_penalty="$presence_penalty"
+      \[ "$prompt_messages" = null ] || otel_span_attribute_typed "$span_handle" string gen_ai.input.messages="$prompt_messages"
     done
     local status_code
     IFS= \read -r status_code < "$span_handle_file"
