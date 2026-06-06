@@ -1,4 +1,4 @@
-# Shell Instrumentation Skill
+# Build Instrumentation Skill
 
 Apply this skill when writing or modifying POSIX-compatible shell instrumentation code. This covers the core instrumentation scripts in `src/usr/share/opentelemetry_shell/`.
 
