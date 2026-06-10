@@ -5,7 +5,8 @@ if \[ "${GITHUB_ACTIONS:-false}" = true ] && \[ "$GITHUB_EVENT_NAME" = dynamic ]
   _otel_inject_copilot() {
     local exit_code=0
     _otel_call "$@" || local exit_code=$?
-    if \[ "$exit_code" = 0 ] && ( \[ "$*" = 'tar -zxvf ./action.tar.gz' ] || \[ "$*" = 'tar -xzf ./action.tar.gz' ] || \[ "$*" = 'tar -zxf ./action.tar.gz' ] || \[ "$*" = 'tar -zxv' ] || \[ "$*" = 'tar -xzv' ] ); then
+    local cmdline="$*"; cmdline="${cmdline#\\}"
+    if \[ "$exit_code" = 0 ] && ( \[ "$cmdline" = 'tar -zxvf ./action.tar.gz' ] || \[ "$cmdline" = 'tar -xzf ./action.tar.gz' ] || \[ "$cmdline" = 'tar -zxf ./action.tar.gz' ] || \[ "$cmdline" = 'tar -zxv' ] || \[ "$cmdline" = 'tar -xzv' ] ); then
       for script_file in ./*-action-*/*/*.sh "${RUNNER_TEMP}"/*-action-*/*/*.sh; do
         [ -f "$script_file" ] || continue
         \sed -i 's~#!/bin/sh~#!/bin/sh\n. otel.sh~g' "$script_file"
