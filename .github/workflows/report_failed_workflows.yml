@@ -39,7 +39,7 @@ jobs:
               else
                 . + [{name: $run.name, html_url: $run.html_url}]
               end
-            )[] | [.name, .html_url] | @tsv
+            ) | .[] | [.name, .html_url] | @tsv
           ' | while IFS=$'\t' read -r workflow_name workflow_url; do
             [ -n "$workflow_name" ] || continue
             issue_title="Fix workflow ${workflow_name}"
