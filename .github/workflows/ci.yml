@@ -51,7 +51,6 @@ jobs:
       success: ${{ steps.tests.outputs.success }}
     permissions:
       contents: none
-      actions: read
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@af83be0ddf1ec3035230c030f3ab6d10a7040515 # v5.56.0
         env:
@@ -67,7 +66,6 @@ jobs:
     runs-on: ubuntu-slim
     permissions:
       contents: none
-      actions: read
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@af83be0ddf1ec3035230c030f3ab6d10a7040515 # v5.56.0
         env:
