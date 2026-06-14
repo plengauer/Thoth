@@ -456,8 +456,8 @@ runs:
           user_id="$(gh api user --jq .id)"
           user_name="$(gh api user --jq .login)"
         else
-          user_id="$(gh api "/users/${user_name}" --jq .id)"
           user_name="github-actions[bot]"
+          user_id="$(gh api /users/"$user_name" --jq .id)"
         fi
         git config user.name "$user_name"
         git config user.email "${user_id}+${user_name}@users.noreply.github.com"
