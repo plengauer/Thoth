@@ -863,15 +863,12 @@ jobs:
           OTEL_LOGS_EXPORTER: console
           OTEL_TRACES_EXPORTER: console
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: '${{ steps.filename.outputs.otlp }}'
-      - run: |
-          . ./actions/instrument/shared/github.sh
-          INPUT_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} gh_artifact_download '${{ steps.workflow_run.outputs.id }}' '${{ steps.workflow_run.outputs.run_attempt }}' 'opentelemetry_workflow_run_${{ steps.workflow_run.outputs.run_attempt }}' .
       - env:
           OTLP_JSON: '${{ steps.filename.outputs.otlp }}'
         run: |
-          traceparent_file=traceparent
-          [ -r "$traceparent_file" ] || traceparent_file='opentelemetry_workflow_run_${{ steps.workflow_run.outputs.run_attempt }}'
-          [ "$(cat "$OTLP_JSON" | jq -r .context.trace_id | grep -v '^null$' | sort -u | cut -d x -f 2 | tee /dev/stderr)" = "$(cat "$traceparent_file" | cut -d - -f 2 | tee /dev/stderr)" ]
+          . ./actions/instrument/shared/github.sh
+          traceparent="$(gh_workflow_run_traceparent '${{ steps.workflow_run.outputs.id }}' '${{ steps.workflow_run.outputs.run_attempt }}')"
+          [ "$(cat "$OTLP_JSON" | jq -r .context.trace_id | grep -v '^null$' | sort -u | cut -d x -f 2 | tee /dev/stderr)" = "$(printf '%s' "$traceparent" | cut -d - -f 2 | tee /dev/stderr)" ]
           cat "$OTLP_JSON" | jq -r .name | grep -v '^null$' | sort -u | grep -F 'test (foo)'
           cat "$OTLP_JSON" | jq -r .name | grep -v '^null$' | sort -u | grep -F 'test (bar)'
           cat "$OTLP_JSON" | jq -r .name | grep -v '^null$' | sort -u | grep -F 'test (baz)'
