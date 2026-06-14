@@ -451,11 +451,7 @@ runs:
       id: push
       shell: bash
       run: |
-        if git diff --quiet HEAD; then exit 0; fi
-        user_name="$(gh api user --jq .login)"
-        user_id="$(gh api user --jq .id)"
-        git config user.name "$user_name"
-        git config user.email "${user_id}+${user_name}@users.noreply.github.com"
+        if [ -z "$(git status --porcelain)" ]; then exit 0; fi
         git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
         git add -A
         git commit -m "${{ inputs.commit_message }}"
