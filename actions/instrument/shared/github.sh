@@ -76,51 +76,17 @@ gh_artifacts() {
 }
 export -f gh_artifacts
 
-gh_workflow_run_traceparent() {
-  local seed="${GITHUB_SERVER_URL:-https://github.com}"/"$GITHUB_REPOSITORY"/actions/runs/"$1"/attempts/"$2"
-  local hash
-  if type sha256sum 1> /dev/null 2> /dev/null; then
-    hash="$(printf '%s' "$seed" | sha256sum | cut -d ' ' -f 1)"
-  else
-    hash="$(printf '%s' "$seed" | shasum -a 256 | cut -d ' ' -f 1)"
-  fi
-  local trace_id="$(printf '%s' "$hash" | cut -c 1-32)"
-  local span_id="$(printf '%s' "$hash" | cut -c 33-48)"
-  [ "$trace_id" != 00000000000000000000000000000000 ] || trace_id=00000000000000000000000000000001
-  [ "$span_id" != 0000000000000000 ] || span_id=0000000000000001
-  printf '00-%s-%s-01\n' "$trace_id" "$span_id"
-}
-export -f gh_workflow_run_traceparent
-
 gh_artifact_download() {
   local artifact_filename="$(mktemp)"
-  gh_curl /actions/runs/"$1"/artifacts'?per_page=1&'name="$3" | jq '.artifacts[0].id' | grep -v '^null$' | xargs -r -I '{}' bash -c 'gh_curl "$@"' bash /actions/artifacts/'{}'/zip --head | tr -d '\r' | grep '^location:' | cut -d ' ' -f 2- | xargs -r wget -q -O "$artifact_filename" || return 1
-  [ -r "$artifact_filename" ] || return 1
-  mkdir -p "$4"
-  if unzip -t "$artifact_filename" 1> /dev/null 2> /dev/null; then
-    unzip "$artifact_filename" -d "$4" >&2
-    rm "$artifact_filename"
-  else
-    mv "$artifact_filename" "$4"/"$3"
-  fi
+  gh_curl /actions/runs/"$1"/artifacts'?per_page=1&'name="$3" | jq '.artifacts[0].id' | grep -v '^null$' | xargs -r -I '{}' bash -c 'gh_curl "$@"' bash /actions/artifacts/'{}'/zip --head | tr -d '\r' | grep '^location:' | cut -d ' ' -f 2- | xargs -r wget -q -O "$artifact_filename" && [ -r "$artifact_filename" ] && unzip "$artifact_filename" -d "$4" >&2 && rm "$artifact_filename"
 }
 export -f gh_artifact_download
 
 gh_artifact_upload() {
-  local compression_level="${OTEL_GH_ARTIFACT_COMPRESSION_LEVEL:-6}"
-  local skip_archive="${OTEL_GH_ARTIFACT_SKIP_ARCHIVE:-false}"
-  case "$compression_level" in
-    [0-9]) ;;
-    *) compression_level=6;;
-  esac
-  case "$skip_archive" in
-    1|true|TRUE|yes|YES) skip_archive=true;;
-    *) skip_archive=false;;
-  esac
   GITHUB_TOKEN="$INPUT_GITHUB_TOKEN" node --input-type=module -e '
     import path from "node:path";
     import { DefaultArtifactClient } from "@actions/artifact";
-    new DefaultArtifactClient().uploadArtifact("'"$3"'", [ '"$(echo "${@:4}" | tr ' ' '\n' | sed -E 's/^(.*)$/"\1"/g' | tr '\n' ',')"' ], path.dirname("'"$4"'"), { compressionLevel: '"$compression_level"', skipArchive: '"$skip_archive"' });
+    new DefaultArtifactClient().uploadArtifact("'"$3"'", [ '"$(echo "${@:4}" | tr ' ' '\n' | sed -E 's/^(.*)$/"\1"/g' | tr '\n' ',')"' ], path.dirname("'"$4"'"));
   '
 }
 export -f gh_artifact_upload
