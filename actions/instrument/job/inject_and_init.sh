@@ -331,25 +331,8 @@ fi
 echo "::endgroup::"
 
 echo "::group::Resolve W3C Tracecontext"
-opentelemetry_root_dir="$(mktemp -d)"
-workflow_run_traceparent_artifact_name=opentelemetry_workflow_run_"$GITHUB_RUN_ATTEMPT"
-count=0
-while [ "$count" -lt 60 ] && { ! gh_artifact_download "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" "$workflow_run_traceparent_artifact_name" "$opentelemetry_root_dir" || { [ ! -r "$opentelemetry_root_dir"/traceparent ] && [ ! -r "$opentelemetry_root_dir"/"$workflow_run_traceparent_artifact_name" ]; }; }; do
-  if [ "$count" -gt 0 ]; then sleep $count; fi
-  wait # only join within this loop, because we need to make sure everything is installed properly at this point, in most cases, it is unnecessary though and we can join later
-  . otelapi.sh
-  otel_init
-  otel_span_traceparent "$(otel_span_start INTERNAL dummy)" > "$opentelemetry_root_dir"/traceparent
-  cp "$opentelemetry_root_dir"/traceparent "$opentelemetry_root_dir"/"$workflow_run_traceparent_artifact_name"
-  OTEL_GH_ARTIFACT_SKIP_ARCHIVE=true gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" "$workflow_run_traceparent_artifact_name" "$opentelemetry_root_dir"/"$workflow_run_traceparent_artifact_name" || true
-  rm "$opentelemetry_root_dir"/traceparent "$opentelemetry_root_dir"/"$workflow_run_traceparent_artifact_name"
-  otel_shutdown
-  count=$((count + 1))
-done
-[ -r "$opentelemetry_root_dir"/traceparent ] || mv "$opentelemetry_root_dir"/"$workflow_run_traceparent_artifact_name" "$opentelemetry_root_dir"/traceparent
-[ -r "$opentelemetry_root_dir"/traceparent ] || (echo "::error ::Cannot sync trace id via artifacts. This is most likely a token permission issue, please consult the README." && false)
-export TRACEPARENT="$(cat "$opentelemetry_root_dir"/traceparent)"
-rm -rf "$opentelemetry_root_dir"
+wait # only join here, because we need to make sure everything is installed properly at this point, in most cases, it is unnecessary though and we can join later
+export TRACEPARENT="$(gh_workflow_run_traceparent "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT")"
 echo "::endgroup::"
 
 echo "::group::Calculate Resource Attributes"
