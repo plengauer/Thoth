@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
-if [ -n "${STATE_disabled:-}" ]; then
+if [ -n "${STATE_disabled:-}" ] || [ -n "${STATE_pid:-}" ]; then
   exit 0
 fi
 if [ "$INPUT___JOB_STATUS" = failure ]; then
