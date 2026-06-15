@@ -322,6 +322,7 @@ jobs:
           DISABLE_ERRORS: 'false'
           RUN_LOCAL: 'true'
           DEFAULT_BRANCH: main
+          LOG_LEVEL: DEBUG
   job-integration-python-venv:
     needs: job-smoke
     runs-on: ubuntu-latest
