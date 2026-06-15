@@ -84,19 +84,17 @@ _otel_inject "
 }
 
 _otel_inject_parallel_normalize_argument() {
-  case "$1" in
-    \"*\")
-      local normalized_arg="${1#\"}"
-      \printf '%s' "${normalized_arg%\"}"
-      ;;
-    \'*\')
-      local normalized_arg="${1#\'}"
-      \printf '%s' "${normalized_arg%\'}"
-      ;;
-    *)
-      \printf '%s' "$1"
-      ;;
-  esac
+  local first_char="${1%"${1#?}"}"
+  local last_char="${1#${1%?}}"
+  if \[ "$first_char" = '"' ] && \[ "$last_char" = '"' ] && \[ "${#1}" -ge 2 ]; then
+    local normalized_arg="${1#\"}"
+    \printf '%s' "${normalized_arg%\"}"
+  elif \[ "$first_char" = "'" ] && \[ "$last_char" = "'" ] && \[ "${#1}" -ge 2 ]; then
+    local normalized_arg="${1#\'}"
+    \printf '%s' "${normalized_arg%\'}"
+  else
+    \printf '%s' "$1"
+  fi
 }
 
 _otel_inject_parallel_arguments() {
