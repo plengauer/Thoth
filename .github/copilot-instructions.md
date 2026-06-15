@@ -4,6 +4,15 @@
 **Thoth** (aliases: `opentelemetry-bash`, `opentelemetry-shell`, `opentelemetry-github`) provides OpenTelemetry traces/metrics/logs for shell scripts and GitHub workflows. This is a **packaging project** integrating Shell, Python, Node.js, Java, and C to auto-instrument shell scripts and GitHub actions.
 **Key Facts**: 41 source files (31 .sh, 3 .py, 4 .java, 1 .c) | Package: `opentelemetry-shell` | Version: `VERSION` file | Platforms: Debian/Ubuntu (apt), RHEL/Fedora/OpenSuse (rpm), Alpine (apk), GitHub Actions
 
+## Constant Instructions
+- the project is hard to build. look at the build.yml and recreate the steps to build a deb. if the goal of a task does not involve deep injection into other techs like node/python/java then one needs only to build the deb package without the additional dependencies.
+- instrumentation is done via aliases of shell commands, so all internal code must be prefixed with a backslash to avoid aliasing.
+- all shell code must be compliant to ash, dash, bash and busybox.
+- all shell code should use lower case variable names with underscores.
+- do not generate simulated tests where code is copied and tested. if one cannot re-use the real code, prefer no tests at all.
+- when generating shell code, use as much piping as possible but keep dependencies to a minimum.
+- when reviewing code and looking at instrumentation of workflows, do not comment when missing secrets are OTEL secrets. they do need to be redacted.
+
 ## Structure
 - **`src/`**: Package source (mirrors `/usr` and `/opt` filesystem)
   - `src/usr/bin/`: Symlinks to `otel.sh`, `otelapi.sh`
@@ -17,15 +26,11 @@
 ## Build Process
 **CRITICAL**: Build is **multi-stage via GitHub Actions only** (`.github/workflows/build.yml`). No local build scripts exist. Duration: 15-30 minutes.
 
-### Build Stages
-1. **C library**: `gcc -shared -fPIC -o libinjecthttpheader.so agent.injection.http_header.c -ldl` for 6 architectures (amd64, arm64, mips64le, ppc64le, riscv64, s390x) using Docker+QEMU
-2. **Node.js modules**: `npm install && npm prune` for Node 16-23 → `node_modules.tar.xz`
-3. **Python packages**: `python3 -m venv venv && pip3 install -r requirements.txt` for Python 3.9-3.13 → `python_site_packages.tar.xz`
-4. **Java agents**: `mvn dependency:resolve && javac && jar` → `*.jar` files
-5. **Packages**: `dpkg-deb` (.deb), `rpmbuild` (.rpm), `abuild` (.apk) combining all artifacts
-
-**Dependencies**: Docker, Node 16-23, Python 3.9-3.13, Java 8+, Maven, dpkg-deb, rpmbuild, abuild
-**Validation**: `verify-deb-dependencies` checks all shell commands exist in declared package dependencies
+Use the dedicated build skill at `.github/skills/build-packages.md` to:
+- derive required build steps from the `build.yml` job `needs` graph,
+- avoid duplicating workflow commands in instructions,
+- choose a minimal scope build for task iteration (for example, skip Node/Python/Java/HTTP rebuilds when those areas are out of scope),
+- and run full workflow-equivalent builds for release-quality packaging validation.
 
 ## Testing
 **CRITICAL**: Tests **require package installation first**: `sudo apt-get -y install ./package.deb`

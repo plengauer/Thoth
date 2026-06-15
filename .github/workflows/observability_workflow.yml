@@ -1,7 +1,7 @@
 name: OpenTelemetry
 on:
   workflow_run:
-    workflows: [.github/workflows/copilot-setup-steps.yml, Analyze, Autoapprove, Autobackport, Autofix, Autorerun, Autotriage, Autoversion Main, Autoversion Release, Build, CI, Claude, Copilot, Copilot cloud agent, Copilot code review, Dependency Graph, Experiment, GitHub, Greetings, Initialize Fork, Monitor GitHub Changelog, OpenAI Codex, Performance GitHub Job, Publish, Recompile Agentic Workflows, Refresh Demos, Renovate, Rerequest Reviews, Shell, Test, Update Package Repository, Workflow Example]
+    workflows: [.github/workflows/copilot-setup-steps.yml, Analyze, Autoapprove, Autobackport, Autofix, Autorerun, Autotriage, Autoversion, Build, CI, Claude, Copilot, Copilot cloud agent, Copilot code review, Dependency Graph, Experiment, GitHub, Greetings, Initialize Fork, Monitor GitHub Changelog, OpenAI Codex, Performance GitHub Job, Publish, Recompile Agentic Workflows, Refresh Demos, Renovate, Report Failed Workflows, Rerequest Reviews, Shell, Test, Test Package Repositories, Update Package Repository, Workflow Example]
     types:
       - completed
 jobs:
@@ -10,9 +10,9 @@ jobs:
     permissions:
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/workflow@8a42906ace6a618a3b91545ef9b655b8c6d2ac23 # v5.54.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/workflow@af83be0ddf1ec3035230c030f3ab6d10a7040515 # v5.56.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: '/dev/stderr'
-    container: ghcr.io/plengauer/opentelemetry-github-workflow-instrumentation-runner:v5.54.0
+    container: ghcr.io/plengauer/opentelemetry-github-workflow-instrumentation-runner:v5.56.0

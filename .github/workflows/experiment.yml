@@ -8,19 +8,23 @@ jobs:
   env:
     strategy:
       matrix:
-        runner: [ ubuntu-latest, macos-latest ]
+        runner: [ ubuntu-latest, macos-latest, windows-latest, ubuntu-slim ]
     runs-on: ${{ matrix.runner }}
     permissions:
       actions: read
     steps:
       - run: printenv
+      - if: ${{ matrix.runner == 'ubuntu-slim' }}
+        run: ls -la /.dockerenv || true
+      - if: ${{ matrix.runner == 'ubuntu-slim' }}
+        run: cat /proc/1/cgroup || true
   experiment:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - uses: ./actions/instrument/job
         with:
           # secrets_to_redact: '{"foo":"*"}'        
@@ -31,7 +35,7 @@ jobs:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/stderr
-      - uses: renovatebot/github-action@693b9ef15eec82123529a37c782242f091365961 # v46.1.14
+      - uses: renovatebot/github-action@8217b3fc286df088d7c27f3255fe8414463bc0fd # v46.1.15
         env:
           RENOVATE_REPOSITORIES: ${{ github.repository }}
           RENOVATE_DRY_RUN: full

@@ -1,4 +1,4 @@
-# Shell Instrumentation Skill
+# Build Instrumentation Skill
 
 Apply this skill when writing or modifying POSIX-compatible shell instrumentation code. This covers the core instrumentation scripts in `src/usr/share/opentelemetry_shell/`.
 
@@ -47,7 +47,7 @@ Use the API functions: `_otel_span_attribute`, `_otel_span_event`, `_otel_span_e
 
 ## Testing
 
-After making changes, tests in `tests/` validate behavior. Tests require the package to be installed first (`sudo apt-get -y install ./package.deb`), so you cannot run them locally in the coding agent. Instead, ensure your code is syntactically valid:
+After making changes, build and tests in `tests/` validate behavior. Tests require the package to be installed first (`sudo apt-get -y install ./package.deb`), so you cannot run them locally in the coding agent. Instead, ensure your code is syntactically valid:
 ```bash
 bash -n src/usr/share/opentelemetry_shell/your_file.sh
 dash -n src/usr/share/opentelemetry_shell/your_file.sh  # if dash is available

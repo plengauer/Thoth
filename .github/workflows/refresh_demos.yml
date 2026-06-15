@@ -6,13 +6,14 @@ on:
     branches:
       - main
     paths:
-      - 'demos/*/*'
+      - 'demos/**'
+      - '!demos/README.md'
       - '!demos/*/README.md'
       - '!demos/*/otlp.json'
       - '!demos/*/output.*'
 jobs:
   prepare:
-    if: ${{ github.event_name == 'push' || (github.event_name == 'release' && github.event.release.target_commitish == 'main') }}
+    if: ${{ github.event_name == 'push' || github.event_name == 'release' }}
     runs-on: ubuntu-slim
     permissions:
       contents: read
@@ -20,13 +21,13 @@ jobs:
     outputs:
       dirs: ${{ steps.demos.outputs.dirs }}
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@8a42906ace6a618a3b91545ef9b655b8c6d2ac23 # v5.54.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@af83be0ddf1ec3035230c030f3ab6d10a7040515 # v5.56.0
         with:
           secrets_to_redact: '["${{ github.token }}"]'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - run: |
           cd demos && echo */ | tr ' ' '\n' | tr -d / | while read -r dir; do echo \""$dir"\"; done | jq -s | tr -d ' ' | tr -d '\n' | xargs -0 -I {} echo 'dirs={}' >> "$GITHUB_OUTPUT"
         id: demos
@@ -43,9 +44,9 @@ jobs:
         demo_directory: ${{ fromJSON(needs.prepare.outputs.dirs) }}
     steps:
       - run: |
-          ([ "$GITHUB_EVENT" = release ] && cat "$GITHUB_EVENT_PATH" || curl --header "Authorization: Bearer ${{ github.token }}" https://api.github.com/repos/"$GITHUB_REPOSITORY"/releases/latest) | jq -r '.assets[] | select(.name | endswith(".deb")) | .url' | xargs wget --header "Authorization: Bearer ${{ github.token }}" --header "Accept: application/octet-stream" -O package.deb
+          ([ "$GITHUB_EVENT" = release ] && cat "$GITHUB_EVENT_PATH" || curl --header "Authorization: Bearer ${{ github.token }}" https://api.github.com/repos/"$GITHUB_REPOSITORY"/releases/latest) | jq -r '.assets[] | select(.name | endswith("_amd64.deb")) | .url' | xargs wget --header "Authorization: Bearer ${{ github.token }}" --header "Accept: application/octet-stream" -O package.deb
       - run: sudo apt-get -y install ./package.deb
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - id: demo
         env:
           GITHUB_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
@@ -251,7 +252,7 @@ jobs:
           delete-branch: true
       - run: sleep 60 # make sure PR state is updated and API can catch up
         if: steps.open-pr.outputs.pull-request-number != null
-      - uses: peter-evans/enable-pull-request-automerge@v3.0.0
+      - uses: peter-evans/enable-pull-request-automerge@a660677d5469627102a1c1e11409dd063606628d # v3.0.0
         if: steps.open-pr.outputs.pull-request-number != null
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
