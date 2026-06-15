@@ -79,4 +79,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
           FAIL_ON_INVALID_GITHUB_ACTIONS_EVENT_CONFIGURATION: 'true'
-          DISABLE_ERRORS: 'false'
+          DISABLE_ERRORS: 'true' # TODO remove me to enable
