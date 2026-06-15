@@ -474,9 +474,11 @@ _otel_curl_record_api_response_llm_openai() {
         fi
       done
     fi
+    local drain_pid=
+    if \[ "$process_stdout" = 0 ]; then \cat & drain_pid=$!; fi
     local end_msg
     IFS= \read -r end_msg < "$span_handle_file"
-    if \[ "$process_stdout" = 0 ]; then \cat; fi
+    \[ -z "$drain_pid" ] || wait "$drain_pid"
     break
   done
   \rm -rf "$stdout"
