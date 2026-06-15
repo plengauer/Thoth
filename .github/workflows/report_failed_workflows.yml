@@ -1,0 +1,48 @@
+name: Report Failed Workflows
+
+on:
+  schedule:
+    - cron: '0 8 * * 1'
+
+env:
+  LOOKBACK_DAYS: 7
+
+jobs:
+  report:
+    runs-on: ubuntu-slim
+    permissions:
+      actions: read
+      issues: write
+    steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@8a42906ace6a618a3b91545ef9b655b8c6d2ac23
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: ${{ github.token }}
+      - env:
+          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN || github.token }}
+        run: |
+          set -euo pipefail
+          gh api "/repos/${GITHUB_REPOSITORY}/actions/runs?per_page=100" | jq -r --argjson lookback_days "$LOOKBACK_DAYS" '
+            reduce (
+              .workflow_runs
+              | map(select(
+                  .head_branch == "main"
+                  and .conclusion == "failure"
+                  and ((.run_started_at // .created_at | fromdateiso8601) >= (now - ($lookback_days * 86400)))
+                ))[]
+            ) as $run (
+              [];
+              if any(.[]; .name == $run.name) then
+                .
+              else
+                . + [{name: $run.name, html_url: $run.html_url}]
+              end
+            ) | .[] | [.name, .html_url] | @tsv
+          ' | while IFS=$'\t' read -r workflow_name workflow_url; do
+            [ -n "$workflow_name" ] || continue
+            issue_title="Fix workflow ${workflow_name}"
+            issue_count="$(gh issue list  --state open  --search "\"${issue_title}\" in:title"  --json title | jq --arg issue_title "$issue_title" '[.[] | select(.title == $issue_title)] | length')"
+            [ "$issue_count" -gt 0 ] || gh issue create --title "$issue_title" --body "$workflow_url"
+          done

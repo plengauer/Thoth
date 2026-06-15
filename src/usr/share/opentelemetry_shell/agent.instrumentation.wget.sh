@@ -7,7 +7,7 @@ _otel_propagate_wget() {
     *m*) local job_control=1; \set +m;;
     *) local job_control=0;;
   esac
-  local file=/usr/share/opentelemetry_shell/agent.instrumentation.http/"$(\arch)"/libinjecthttpheader.so
+  local file=/usr/share/opentelemetry_shell/agent.instrumentation.http/libinjecthttpheader.so
   if \[ -f "$file" ] && ! \ldd "$file" 2> /dev/null | \grep -q 'not found' && ! ( \[ "$_otel_shell" = 'busybox sh' ] && \help | \tail -n +3 | \grep -q wget ); then
     export OTEL_SHELL_INJECT_HTTP_SDK_PIPE="$_otel_remote_sdk_pipe"
     export OTEL_SHELL_INJECT_HTTP_HANDLE_FILE="$(\mktemp -u)_opentelemetry_shell_$$.wget.handle"
@@ -23,8 +23,6 @@ _otel_propagate_wget() {
   local stderr_pid="$!"
   local exit_code=0
   _otel_call "$@" --header="traceparent: $TRACEPARENT" --header="tracestate: $TRACESTATE" 2> "$stderr_pipe" || exit_code="$?"
-  \wait "$stderr_pid"
-  \rm "$stderr_pipe"
   if \[ -f "$file" ]; then
     if \[ -n "${OLD_LD_PRELOAD:-}" ]; then
       export LD_PRELOAD="$OLD_LD_PRELOAD"
@@ -34,6 +32,8 @@ _otel_propagate_wget() {
     unset OTEL_SHELL_INJECT_HTTP_HANDLE_FILE
     unset OTEL_SHELL_INJECT_HTTP_SDK_PIPE
   fi
+  \wait "$stderr_pid" || true
+  \rm "$stderr_pipe"
   if \[ "$job_control" = 1 ]; then \set -m; fi
   return "$exit_code"
 }

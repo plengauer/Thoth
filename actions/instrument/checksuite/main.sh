@@ -75,11 +75,15 @@ echo "::endgroup::"
 echo "::group::Export"
 . otelapi.sh
 export OTEL_DISABLE_RESOURCE_DETECTION=TRUE
+repo_properties="$(gh_repo_properties 2>/dev/null || echo '[]')"
 _otel_resource_attributes_process() {
   _otel_resource_attribute string github.repository.id="$GITHUB_REPOSITORY_ID"
   _otel_resource_attribute string github.repository.name="$(echo "$GITHUB_REPOSITORY" | cut -d / -f 2)"
   _otel_resource_attribute string github.repository.owner.id="$GITHUB_REPOSITORY_OWNER_ID"
   _otel_resource_attribute string github.repository.owner.name="$GITHUB_REPOSITORY_OWNER"
+  printf '%s' "$repo_properties" | jq -r '.[] | select(.value != null and .value != "") | [.property_name, .value] | @tsv' | while IFS=$'\t' read -r key value; do
+    _otel_resource_attribute string "github.repository.property.$key=$value"
+  done
 }
 _otel_resource_attributes_custom() {
   _otel_resource_attribute string telemetry.sdk.language=github
@@ -100,7 +104,7 @@ check_suite_ended_at="$(jq < "$check_runs_json" -r .completed_at | sort -r | hea
 observation_handle="$(otel_observation_create 1)"
 otel_observation_attribute_typed "$observation_handle" string github.actions.checks.suite.id="$(jq < "$check_suite_json" .id)"
 otel_observation_attribute_typed "$observation_handle" string github.actions.checks.suite.conclusion="$(jq < "$check_suite_json" -r .conclusion)"
-otel_observation_attribute_typed "$observation_handle" string github.actions.checks.suite.ref="/refs/heads/$(jq < "$check_suite_json" -r .head_branch)"
+otel_observation_attribute_typed "$observation_handle" string github.actions.checks.suite.ref="refs/heads/$(jq < "$check_suite_json" -r .head_branch)"
 otel_observation_attribute_typed "$observation_handle" string github.actions.checks.suite.ref.sha="$(jq < "$check_suite_json" -r .head_sha)"
 otel_observation_attribute_typed "$observation_handle" string github.actions.checks.suite.ref.name="$(jq < "$check_suite_json" -r .head_branch)"
 otel_observation_attribute_typed "$observation_handle" string github.actions.checks.app.name="$(jq < "$check_suite_json" -r .app.name)"
@@ -110,7 +114,7 @@ otel_counter_observe "$check_suite_counter_handle" "$observation_handle"
 observation_handle="$(otel_observation_create "$(python3 -c "print(str(max(0, $(date -d "$check_suite_ended_at" '+%s.%N') - $(date -d "$check_suite_started_at" '+%s.%N'))))")")"
 otel_observation_attribute_typed "$observation_handle" string github.actions.checks.suite.id="$(jq < "$check_suite_json" .id)"
 otel_observation_attribute_typed "$observation_handle" string github.actions.checks.suite.conclusion="$(jq < "$check_suite_json" -r .conclusion)"
-otel_observation_attribute_typed "$observation_handle" string github.actions.checks.suite.ref="/refs/heads/$(jq < "$check_suite_json" -r .head_branch)"
+otel_observation_attribute_typed "$observation_handle" string github.actions.checks.suite.ref="refs/heads/$(jq < "$check_suite_json" -r .head_branch)"
 otel_observation_attribute_typed "$observation_handle" string github.actions.checks.suite.ref.sha="$(jq < "$check_suite_json" -r .head_sha)"
 otel_observation_attribute_typed "$observation_handle" string github.actions.checks.suite.ref.name="$(jq < "$check_suite_json" -r .head_branch)"
 otel_observation_attribute_typed "$observation_handle" string github.actions.checks.app.name="$(jq < "$check_suite_json" -r .app.name)"
@@ -121,7 +125,7 @@ check_suite_span_handle="$(otel_span_start @"$check_suite_started_at" CONSUMER "
 otel_span_attribute_typed "$check_suite_span_handle" string github.actions.type=checksuite
 otel_span_attribute_typed "$check_suite_span_handle" int github.actions.checks.suite.id="$(jq < "$check_suite_json" .id)"
 otel_span_attribute_typed "$check_suite_span_handle" string github.actions.conclusion="$(jq < "$check_suite_json" -r .conclusion)"
-otel_span_attribute_typed "$check_suite_span_handle" string github.actions.checks.suite.ref="/refs/heads/$(jq < "$check_suite_json" -r .head_branch)"
+otel_span_attribute_typed "$check_suite_span_handle" string github.actions.checks.suite.ref="refs/heads/$(jq < "$check_suite_json" -r .head_branch)"
 otel_span_attribute_typed "$check_suite_span_handle" string github.actions.checks.suite.ref.sha="$(jq < "$check_suite_json" -r .head_sha)"
 otel_span_attribute_typed "$check_suite_span_handle" string github.actions.checks.suite.ref.name="$(jq < "$check_suite_json" -r .head_branch)"
 otel_span_attribute_typed "$check_suite_span_handle" string github.actions.checks.app.name="$(jq < "$check_suite_json" -r .app.name)"

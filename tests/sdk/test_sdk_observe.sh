@@ -72,5 +72,5 @@ assert_equals "file" "$(echo "$span" | jq -r '.attributes."shell.command.type"')
 assert_equals "cat file" "$(echo "$span" | jq -r '.attributes."shell.command_line"')"
 assert_equals "cat" "$(echo "$span" | jq -r '.attributes."shell.command"')"
 assert_equals "cat" "$(echo "$span" | jq -r '.attributes."subprocess.executable.name"')"
-assert_equals "$(which cat | rev | cut -d ' ' -f 1 | rev)" "$(echo "$span" | jq -r '.attributes."subprocess.executable.path"')"
+assert_equals "$(which cat)" "$(echo "$span" | jq -r '.attributes."subprocess.executable.path"')"
 assert_not_equals "0" $(echo "$span" | jq -r '.attributes."shell.command.exit_code"')
