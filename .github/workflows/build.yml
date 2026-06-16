@@ -583,10 +583,10 @@ jobs:
           name: java_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.java
       - run: |
-          source_snapshot="$(mktemp -d)"
-          cp -a src "$source_snapshot"
           replaced_binaries="$(mktemp -d)"
           mv src/usr/share/opentelemetry_shell/agent.instrumentation.http/*/ "$replaced_binaries"
+          source_snapshot="$(mktemp -d)"
+          cp -a src "$source_snapshot"
           { echo noarch; ls "$replaced_binaries"; } | while read -r arch; do
             rm -rf src /home/runner/rpmbuild
             cp -a "$source_snapshot"/src .
