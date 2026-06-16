@@ -7,6 +7,10 @@ on:
 permissions:
   contents: read
   issues: read
+network:
+  allowed:
+    - defaults
+    - github
 tools:
   github:
     toolsets: [context, issues]

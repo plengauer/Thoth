@@ -13,12 +13,14 @@ else
   run() { "$@"; }
 fi
 
-container_marker_file="${OTEL_SHELL_GITHUB_JOB_CONTAINER_MARKER_FILE:-/.dockerenv}"
-cgroup_file="${OTEL_SHELL_GITHUB_JOB_CGROUP_FILE:-/proc/1/cgroup}"
-if [ -f "$container_marker_file" ] || { [ -r "$cgroup_file" ] && head -n 10 "$cgroup_file" | grep -qE '(docker|containerd|kubepods|podman)'; }; then
-  [ -n "${GITHUB_STATE:-}" ] && echo "disabled=true" >> "$GITHUB_STATE"
-  echo "::notice::Skipping job-level instrumentation pre step because this runner appears to be a GitHub ubuntu-slim image with network-constrained startup that can take 2 seconds to 15+ minutes and trigger timeouts."
-  exit 0
+if false; then
+  container_marker_file="${OTEL_SHELL_GITHUB_JOB_CONTAINER_MARKER_FILE:-/.dockerenv}"
+  cgroup_file="${OTEL_SHELL_GITHUB_JOB_CGROUP_FILE:-/proc/1/cgroup}"
+  if [ -f "$container_marker_file" ] || { [ -r "$cgroup_file" ] && head -n 10 "$cgroup_file" | grep -qE '(docker|containerd|kubepods|podman|containers)'; }; then
+    [ -n "${GITHUB_STATE:-}" ] && echo "disabled=true" >> "$GITHUB_STATE"
+    echo "::notice::Skipping job-level instrumentation because this runner appears to be a GitHub ubuntu-slim image with network-constrained startup that can take 2 seconds to 15+ minutes and trigger timeouts."
+    exit 0
+  fi
 fi
 
 echo "::group::Validate Configuration"
@@ -96,39 +98,39 @@ if [ "$INPUT_CACHE" = "true" ]; then
   export INSTRUMENTATION_CACHE_KEY="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} instrumentation $GITHUB_WORKFLOW $GITHUB_JOB"
   run sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.restoreCache(['/tmp/*.aliases'], '$INSTRUMENTATION_CACHE_KEY');"
   if [ "$(uname -s)" != "Darwin" ]; then
-    cache_key="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} dependencies $({ cat /etc/os-release; python3 --version || true; printenv | grep -E '^OTEL_SHELL_CONFIG_INSTALL_' || true; } | md5sum | cut -d ' ' -f 1)"
+    cache_key="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} dependencies $({ cat /etc/os-release; arch; python3 --version || true; printenv | grep -E '^OTEL_SHELL_CONFIG_INSTALL_' || true; } | md5sum | cut -d ' ' -f 1)"
     if [ "$GITHUB_ACTION_REPOSITORY" = "$GITHUB_REPOSITORY" ] && [ -f "$GITHUB_WORKSPACE"/package.deb ]; then cache_key="$cache_key local"; fi
     sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.restoreCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip'], '$cache_key');"
     [ "$(find /var/cache/apt/archives/ -name '*.deb' | wc -l)" -gt 0 ] || write_back_cache=TRUE
   fi
 fi
-if [ "$(uname -s)" != "Darwin" ] && ! type otel.sh && [ -r /var/cache/apt/archives/opentelemetry-shell_*_all.deb ]; then
+if [ "$(uname -s)" != "Darwin" ] && ! type otel.sh && [ -r /var/cache/apt/archives/opentelemetry-shell_*_*.deb ]; then
   echo "::debug::Cached debian file found ..."
   if [ "${FAST_DEB_INSTALL:-FALSE}" = TRUE ]; then # lets assume exactly one postinst script, no triggers
     echo "::debug::Attempting fast install ..."
     control_dir="$(mktemp -d)"
-    dpkg-deb --control /var/cache/apt/archives/opentelemetry-shell_*_all.deb "$control_dir"
-    if cat "$control_dir"/control | grep -E '^Pre-Depends:|^Depends:' | cut -d ':' -f 2- | tr ',' '\n' | grep -v '|' | tr -d ' ' | cut -d '(' -f 1 | sed 's/awk/gawk/g' | xargs -I '{}' bash -c 'type {} 1> /dev/null 2> /dev/null || [ -r /var/lib/dpkg/info/{}.list ]'; then
+    dpkg-deb --control /var/cache/apt/archives/opentelemetry-shell_*_*.deb "$control_dir"
+    if cat "$control_dir"/control | grep -E '^Pre-Depends:|^Depends:' | cut -d ':' -f 2- | tr ',' '\n' | grep -v '|' | tr -d ' ' | cut -d '(' -f 1 | xargs -I '{}' bash -c 'type {} 1> /dev/null 2> /dev/null || dpkg -l {} 2> /dev/null | grep -q "^ii"'; then
       if [ "${FAST_DEB_INSTALL_PRESERVE_ACL:-TRUE}" = TRUE ]; then
         echo "::debug::Fast install tediously to preserve ACL ..."
         extract_dir="$(mktemp -d)"
-        sudo dpkg-deb --extract /var/cache/apt/archives/opentelemetry-shell_*_all.deb "$extract_dir"
+        sudo dpkg-deb --extract /var/cache/apt/archives/opentelemetry-shell_*_*.deb "$extract_dir"
         tar -C "$extract_dir" -cf - . | sudo tar -C / -xf - --no-overwrite-dir
         sudo rm -rf "$extract_dir"
         run eval sudo "$control_dir"/postinst configure '&&' rm -rf "$control_dir"
       else
         echo "::debug::Fast install ..."
-        sudo dpkg-deb --extract /var/cache/apt/archives/opentelemetry-shell_*_all.deb / && run eval sudo "$control_dir"/postinst configure '&&' rm -rf "$control_dir"
+        sudo dpkg-deb --extract /var/cache/apt/archives/opentelemetry-shell_*_*.deb / && run eval sudo "$control_dir"/postinst configure '&&' rm -rf "$control_dir"
       fi
       export OTEL_SHELL_PACKAGE_VERSION_CACHE_opentelemetry_shell="$(cat ../../../VERSION)"
     else
       echo "::debug::Slow install ..."
       rm -rf "$control_dir"
-      sudo apt-get install -y /var/cache/apt/archives/opentelemetry-shell_*_all.deb
+      sudo apt-get install -y /var/cache/apt/archives/opentelemetry-shell_*_*.deb
     fi
   else
     echo "::debug::Slow install ..."
-    sudo apt-get install -y /var/cache/apt/archives/opentelemetry-shell_*_all.deb
+    sudo apt-get install -y /var/cache/apt/archives/opentelemetry-shell_*_*.deb
   fi
 fi
 bash -e -o pipefail ../shared/install.sh perl curl wget jq sed unzip parallel 'node;nodejs' npm 'gcc;build-essential'
@@ -332,18 +334,21 @@ echo "::endgroup::"
 
 echo "::group::Resolve W3C Tracecontext"
 opentelemetry_root_dir="$(mktemp -d)"
+workflow_run_traceparent_artifact_name=opentelemetry_workflow_run_"$GITHUB_RUN_ATTEMPT"
 count=0
-while [ "$count" -lt 60 ] && ! gh_artifact_download "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_workflow_run_"$GITHUB_RUN_ATTEMPT" "$opentelemetry_root_dir" || ! [ -r "$opentelemetry_root_dir"/traceparent ]; do
+while [ "$count" -lt 60 ] && { ! gh_artifact_download "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" "$workflow_run_traceparent_artifact_name" "$opentelemetry_root_dir" || { [ ! -r "$opentelemetry_root_dir"/traceparent ] && [ ! -r "$opentelemetry_root_dir"/"$workflow_run_traceparent_artifact_name" ]; }; }; do
   if [ "$count" -gt 0 ]; then sleep $count; fi
   wait # only join within this loop, because we need to make sure everything is installed properly at this point, in most cases, it is unnecessary though and we can join later
   . otelapi.sh
   otel_init
   otel_span_traceparent "$(otel_span_start INTERNAL dummy)" > "$opentelemetry_root_dir"/traceparent
-  gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_workflow_run_"$GITHUB_RUN_ATTEMPT" "$opentelemetry_root_dir"/traceparent || true
-  rm "$opentelemetry_root_dir"/traceparent
+  cp "$opentelemetry_root_dir"/traceparent "$opentelemetry_root_dir"/"$workflow_run_traceparent_artifact_name"
+  OTEL_GH_ARTIFACT_SKIP_ARCHIVE=true gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" "$workflow_run_traceparent_artifact_name" "$opentelemetry_root_dir"/"$workflow_run_traceparent_artifact_name" || true
+  rm "$opentelemetry_root_dir"/traceparent "$opentelemetry_root_dir"/"$workflow_run_traceparent_artifact_name"
   otel_shutdown
   count=$((count + 1))
 done
+[ -r "$opentelemetry_root_dir"/traceparent ] || mv "$opentelemetry_root_dir"/"$workflow_run_traceparent_artifact_name" "$opentelemetry_root_dir"/traceparent
 [ -r "$opentelemetry_root_dir"/traceparent ] || (echo "::error ::Cannot sync trace id via artifacts. This is most likely a token permission issue, please consult the README." && false)
 export TRACEPARENT="$(cat "$opentelemetry_root_dir"/traceparent)"
 rm -rf "$opentelemetry_root_dir"
@@ -600,8 +605,9 @@ root4job() {
   echo "$TRACEPARENT" > "$traceparent_file"
   if [ -n "${GITHUB_JOB_ID:-}" ]; then
     opentelemetry_job_dir="$(mktemp -d)"
-    echo "$TRACEPARENT" > "$opentelemetry_job_dir"/traceparent
-    ( gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_job_"$GITHUB_JOB_ID" "$opentelemetry_job_dir"/traceparent && rm -rf "$opentelemetry_job_dir" ) &> /dev/null &
+    job_traceparent_artifact_name=opentelemetry_job_"$GITHUB_JOB_ID"
+    echo "$TRACEPARENT" > "$opentelemetry_job_dir"/"$job_traceparent_artifact_name"
+    ( OTEL_GH_ARTIFACT_SKIP_ARCHIVE=true gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" "$job_traceparent_artifact_name" "$opentelemetry_job_dir"/"$job_traceparent_artifact_name" && rm -rf "$opentelemetry_job_dir" ) &> /dev/null &
   fi
   otel_span_deactivate "$span_handle"
   trap root4job_end SIGUSR1

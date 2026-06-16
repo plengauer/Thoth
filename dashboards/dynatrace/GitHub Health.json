@@ -25,7 +25,7 @@
     "16": {
       "title": "Health State",
       "type": "data",
-      "query": "fetch spans\n| filter github.repository.name == $Repository and (endsWith(github.actions.workflow.ref, $Branch) or endsWith(github.actions.checks.suite.ref.name, $Branch))\n| filter (github.actions.type == \"workflow\" or github.actions.type == \"checksuite\") and (not isNull(github.actions.workflow.name) or not isNull(github.actions.checks.app.name)) and not isNull(github.actions.conclusion)\n| filter github.actions.conclusion == \"success\" or github.actions.conclusion == \"failure\"\n| fieldsAdd github.actions.workflow.name = coalesce(github.actions.workflow.name, github.actions.checks.app.name)\n| sort start_time\n| summarize github.actions.conclusion=takeLast(github.actions.conclusion), by: { github.actions.workflow.name, github.actions.event.ref.name }",
+      "query": "fetch spans\n| filter github.repository.name == $Repository and (endsWith(github.actions.workflow.ref, concat(\"@refs/heads/\", $Branch)) or github.actions.checks.suite.ref == concat(\"/refs/heads/\", $Branch))\n| filter (github.actions.type == \"workflow\" or github.actions.type == \"checksuite\") and (not isNull(github.actions.workflow.name) or not isNull(github.actions.checks.app.name)) and not isNull(github.actions.conclusion)\n| filter github.actions.conclusion == \"success\" or github.actions.conclusion == \"failure\"\n| fieldsAdd github.actions.workflow.name = coalesce(github.actions.workflow.name, github.actions.checks.app.name), github.actions.workflow.ref = coalesce(github.actions.workflow.ref, github.actions.checks.suite.ref)\n| sort start_time\n| summarize github.actions.conclusion=takeLast(github.actions.conclusion), by: { github.actions.workflow.name, github.actions.workflow.ref }",
       "visualization": "honeycomb",
       "visualizationSettings": {
         "honeycomb": {
@@ -87,7 +87,7 @@
     "17": {
       "title": "Workflow Runs",
       "type": "data",
-      "query": "timeseries sum(github.actions.workflows), filter: { matchesValue(github.repository.name, $Repository) and matchesValue(github.actions.event.ref.name, $Branch) }\n| fieldsAdd github.actions.workflows = \"sum(github.actions.workflows)\"\n| fieldsAdd value.A = toLong(arraySum(`sum(github.actions.workflows)`))",
+      "query": "timeseries sum(github.actions.workflows), filter: { matchesValue(github.repository.name, $Repository) and endsWith(github.actions.workflow.ref, concat(\"@refs/heads/\", $Branch)) }\n| fieldsAdd github.actions.workflows = \"sum(github.actions.workflows)\"\n| fieldsAdd value.A = toLong(arraySum(`sum(github.actions.workflows)`))",
       "visualization": "singleValue",
       "visualizationSettings": {
         "singleValue": {
@@ -124,7 +124,7 @@
     "20": {
       "title": "Workflow Conclusions",
       "type": "data",
-      "query": "timeseries sum(github.actions.workflows), by: { github.actions.workflow_run.conclusion }, filter: { matchesValue(github.repository.name, $Repository) and matchesValue(github.actions.event.ref.name, $Branch) }\n| fieldsAdd value.A = toLong(arraySum(`sum(github.actions.workflows)`))",
+      "query": "timeseries sum(github.actions.workflows), by: { github.actions.workflow_run.conclusion }, filter: { matchesValue(github.repository.name, $Repository) and endsWith(github.actions.workflow.ref, concat(\"@refs/heads/\", $Branch)) }\n| fieldsAdd value.A = toLong(arraySum(`sum(github.actions.workflows)`))",
       "visualization": "pieChart",
       "visualizationSettings": {
         "chartSettings": {
@@ -235,7 +235,7 @@
     "23": {
       "title": "Job Conclusions",
       "type": "data",
-      "query": "timeseries sum(github.actions.jobs), by: { github.actions.job.conclusion }, filter: { matchesValue(github.repository.name, $Repository) and matchesValue(github.actions.event.ref.name, $Branch) }\n| fieldsAdd value.A = toLong(arraySum(`sum(github.actions.jobs)`))",
+      "query": "timeseries sum(github.actions.jobs), by: { github.actions.job.conclusion }, filter: { matchesValue(github.repository.name, $Repository) and endsWith(github.actions.workflow.ref, concat(\"@refs/heads/\", $Branch)) }\n| fieldsAdd value.A = toLong(arraySum(`sum(github.actions.jobs)`))",
       "visualization": "pieChart",
       "visualizationSettings": {
         "chartSettings": {
@@ -358,7 +358,7 @@
     "26": {
       "title": "Step Conclusions",
       "type": "data",
-      "query": "timeseries sum(github.actions.steps), by: { github.actions.step.conclusion }, filter: { matchesValue(github.repository.name, $Repository) and matchesValue(github.actions.event.ref.name, $Branch) }\n| fieldsAdd value.A = toLong(arraySum(`sum(github.actions.steps)`))",
+      "query": "timeseries sum(github.actions.steps), by: { github.actions.step.conclusion }, filter: { matchesValue(github.repository.name, $Repository) and endsWith(github.actions.workflow.ref, concat(\"@refs/heads/\", $Branch)) }\n| fieldsAdd value.A = toLong(arraySum(`sum(github.actions.steps)`))",
       "visualization": "pieChart",
       "visualizationSettings": {
         "chartSettings": {
@@ -444,7 +444,7 @@
     "27": {
       "title": "Workflow Health",
       "type": "data",
-      "query": "fetch spans\n| filter github.repository.name == $Repository and endsWith(github.actions.workflow.ref, $Branch)\n| filter github.actions.type == \"workflow\" and not isNull(github.actions.workflow.name) and not isNull(github.actions.conclusion)\n| filter github.actions.conclusion == \"success\" or github.actions.conclusion == \"failure\"\n| summarize github.actions.conclusion.success=countIf(github.actions.conclusion == \"success\"), github.actions.conclusion.failure=countIf(github.actions.conclusion == \"failure\"), by: { github.actions.workflow.name }\n| fieldsAdd github.actions.workflow.name, github.actions.conclusion.success.ratio = 100 * toDouble(github.actions.conclusion.success) / toDouble(github.actions.conclusion.success + github.actions.conclusion.failure)",
+      "query": "fetch spans\n| filter github.repository.name == $Repository and endsWith(github.actions.workflow.ref, concat(\"@refs/heads/\", $Branch))\n| filter github.actions.type == \"workflow\" and not isNull(github.actions.workflow.name) and not isNull(github.actions.conclusion)\n| filter github.actions.conclusion == \"success\" or github.actions.conclusion == \"failure\"\n| summarize github.actions.conclusion.success=countIf(github.actions.conclusion == \"success\"), github.actions.conclusion.failure=countIf(github.actions.conclusion == \"failure\"), by: { github.actions.workflow.name }\n| fieldsAdd github.actions.workflow.name, github.actions.conclusion.success.ratio = 100 * toDouble(github.actions.conclusion.success) / toDouble(github.actions.conclusion.success + github.actions.conclusion.failure)",
       "visualization": "honeycomb",
       "visualizationSettings": {
         "honeycomb": {
@@ -524,6 +524,7 @@
             "decimals": 2,
             "suffix": "",
             "delimiter": false,
+            "cascade": null,
             "added": 1741107236230
           }
         ]
@@ -552,7 +553,7 @@
     "28": {
       "title": "Job Health",
       "type": "data",
-      "query": "fetch spans\n| filter github.repository.name == $Repository and endsWith(github.actions.workflow.ref, $Branch)\n| filter github.actions.type == \"job\" and not isNull(github.actions.job.name) and not isNull(github.actions.conclusion)\n| filter github.actions.conclusion == \"success\" or github.actions.conclusion == \"failure\"\n| summarize github.actions.conclusion.success=countIf(github.actions.conclusion == \"success\"), github.actions.conclusion.failure=countIf(github.actions.conclusion == \"failure\"), by: { github.actions.job.name }\n| fieldsAdd github.actions.job.name, github.actions.conclusion.success.ratio = 100 * toDouble(github.actions.conclusion.success) / toDouble(github.actions.conclusion.success + github.actions.conclusion.failure)",
+      "query": "fetch spans\n| filter github.repository.name == $Repository and endsWith(github.actions.workflow.ref, concat(\"@refs/heads/\", $Branch))\n| filter github.actions.type == \"job\" and not isNull(github.actions.job.name) and not isNull(github.actions.conclusion)\n| filter github.actions.conclusion == \"success\" or github.actions.conclusion == \"failure\"\n| summarize github.actions.conclusion.success=countIf(github.actions.conclusion == \"success\"), github.actions.conclusion.failure=countIf(github.actions.conclusion == \"failure\"), by: { github.actions.job.name }\n| fieldsAdd github.actions.job.name, github.actions.conclusion.success.ratio = 100 * toDouble(github.actions.conclusion.success) / toDouble(github.actions.conclusion.success + github.actions.conclusion.failure)",
       "visualization": "honeycomb",
       "visualizationSettings": {
         "honeycomb": {
@@ -632,6 +633,7 @@
             "decimals": 2,
             "suffix": "",
             "delimiter": false,
+            "cascade": null,
             "added": 1741107542805
           }
         ]
@@ -660,7 +662,7 @@
     "29": {
       "title": "Step Health",
       "type": "data",
-      "query": "fetch spans\n| filter github.repository.name == $Repository and endsWith(github.actions.workflow.ref, $Branch)\n| filter github.actions.type == \"step\" and not isNull(github.actions.step.name) and not isNull(github.actions.conclusion)\n| filter github.actions.conclusion == \"success\" or github.actions.conclusion == \"failure\"\n| summarize github.actions.conclusion.success=countIf(github.actions.conclusion == \"success\"), github.actions.conclusion.failure=countIf(github.actions.conclusion == \"failure\"), by: { github.actions.step.name }\n| fieldsAdd github.actions.step.name, github.actions.conclusion.success.ratio = 100 * toDouble(github.actions.conclusion.success) / toDouble(github.actions.conclusion.success + github.actions.conclusion.failure)",
+      "query": "fetch spans\n| filter github.repository.name == $Repository and endsWith(github.actions.workflow.ref, concat(\"@refs/heads/\", $Branch))\n| filter github.actions.type == \"step\" and not isNull(github.actions.step.name) and not isNull(github.actions.conclusion)\n| filter github.actions.conclusion == \"success\" or github.actions.conclusion == \"failure\"\n| summarize github.actions.conclusion.success=countIf(github.actions.conclusion == \"success\"), github.actions.conclusion.failure=countIf(github.actions.conclusion == \"failure\"), by: { github.actions.step.name }\n| fieldsAdd github.actions.step.name, github.actions.conclusion.success.ratio = 100 * toDouble(github.actions.conclusion.success) / toDouble(github.actions.conclusion.success + github.actions.conclusion.failure)",
       "visualization": "honeycomb",
       "visualizationSettings": {
         "honeycomb": {
@@ -740,6 +742,7 @@
             "decimals": 2,
             "suffix": "",
             "delimiter": false,
+            "cascade": null,
             "added": 1741107611168
           }
         ]
@@ -805,7 +808,7 @@
     "31": {
       "title": "Action Conclusions",
       "type": "data",
-      "query": "timeseries sum(github.actions.actions), by: { github.actions.action.conclusion }, filter: { matchesValue(github.repository.name, $Repository) and matchesValue(github.actions.event.ref.name, $Branch) }\n| fieldsAdd value.A = toLong(arraySum(`sum(github.actions.actions)`))",
+      "query": "timeseries sum(github.actions.actions), by: { github.actions.action.conclusion }, filter: { matchesValue(github.repository.name, $Repository) and endsWith(github.actions.workflow.ref, concat(\"@refs/heads/\", $Branch)) }\n| fieldsAdd value.A = toLong(arraySum(`sum(github.actions.actions)`))",
       "visualization": "pieChart",
       "visualizationSettings": {
         "chartSettings": {
@@ -889,33 +892,20 @@
     "32": {
       "title": "Action Health",
       "type": "data",
-      "query": "fetch spans\n| filter github.repository.name == $Repository and endsWith(github.actions.workflow.ref, $Branch)\n| filter github.actions.type == \"step\" and not isNull(github.actions.action.name) and not isNull(github.actions.conclusion)\n| filter github.actions.conclusion == \"success\" or github.actions.conclusion == \"failure\"\n| summarize github.actions.conclusion.success=countIf(github.actions.conclusion == \"success\"), github.actions.conclusion.failure=countIf(github.actions.conclusion == \"failure\"), by: { github.actions.action.name }\n| fieldsAdd github.actions.action.name, github.actions.conclusion.success.ratio = 100 * toDouble(github.actions.conclusion.success) / toDouble(github.actions.conclusion.success + github.actions.conclusion.failure)",
+      "query": "fetch spans\n| filter github.repository.name == $Repository and endsWith(github.actions.workflow.ref, concat(\"@refs/heads/\", $Branch))\n| filter github.actions.type == \"step\" and not isNull(github.actions.action.name) and not isNull(github.actions.conclusion)\n| filter github.actions.conclusion == \"success\" or github.actions.conclusion == \"failure\"\n| summarize github.actions.conclusion.success=countIf(github.actions.conclusion == \"success\"), github.actions.conclusion.failure=countIf(github.actions.conclusion == \"failure\"), by: { github.actions.action.name }\n| fieldsAdd github.actions.action.name, github.actions.conclusion.success.ratio = 100 * toDouble(github.actions.conclusion.success) / toDouble(github.actions.conclusion.success + github.actions.conclusion.failure)",
       "visualization": "honeycomb",
       "visualizationSettings": {
         "honeycomb": {
+          "legend": {
+            "hidden": true
+          },
           "dataMappings": {
             "value": "github.actions.conclusion.success.ratio"
           },
           "displayedFields": [
             "github.actions.action.name"
-          ],
-          "legend": {
-            "hidden": true
-          }
+          ]
         },
-        "autoSelectVisualization": false,
-        "unitsOverrides": [
-          {
-            "identifier": "github.actions.conclusion.success.ratio",
-            "unitCategory": "percentage",
-            "baseUnit": "percent",
-            "displayUnit": null,
-            "decimals": 2,
-            "suffix": "",
-            "delimiter": false,
-            "added": 1741107668473
-          }
-        ],
         "coloring": {
           "colorRules": [
             {
@@ -977,7 +967,21 @@
               "type": "double"
             }
           ]
-        }
+        },
+        "autoSelectVisualization": false,
+        "unitsOverrides": [
+          {
+            "identifier": "github.actions.conclusion.success.ratio",
+            "unitCategory": "percentage",
+            "baseUnit": "percent",
+            "displayUnit": null,
+            "decimals": 2,
+            "suffix": "",
+            "delimiter": false,
+            "cascade": null,
+            "added": 1741107668473
+          }
+        ]
       },
       "querySettings": {
         "maxResultRecords": 10000,
@@ -1003,7 +1007,7 @@
     "33": {
       "title": "Last Failed Traces",
       "type": "data",
-      "query": "fetch spans\n| filter github.actions.type == \"workflow\"\n| filter github.repository.name == $Repository and github.actions.event.ref.name == $Branch\n| filter span.status_code == \"error\"\n| sort start_time desc\n| limit 10",
+      "query": "fetch spans\n| filter github.actions.type == \"workflow\"\n| filter github.repository.name == $Repository and github.actions.event.ref.name == $Branch\n| filter span.status_code == \"error\"\n| sort start_time desc\n| limit 10\n| fieldsKeep trace.id, span.id, github.actions.workflow.name, github.actions.url.full",
       "visualization": "table",
       "visualizationSettings": {
         "table": {
@@ -1190,55 +1194,8 @@
           "columnOrder": [
             "[\"trace.id\"]",
             "[\"span.id\"]",
-            "[\"start_time\"]",
-            "[\"end_time\"]",
-            "[\"dt.ingest.size\"]",
-            "[\"span.status_code\"]",
-            "[\"github.actions.event.ref.name\"]",
-            "[\"github.actions.workflow_run.number\"]",
-            "[\"github.actions.workflow_run.attempt\"]",
-            "[\"dt.retain.size\"]",
-            "[\"github.actions.event.ref.sha\"]",
-            "[\"dt.openpipeline.pipelines\"]",
             "[\"github.actions.workflow.name\"]",
-            "[\"github.actions.actor.id\"]",
-            "[\"telemetry.sdk.language\"]",
-            "[\"otel.scope.name\"]",
-            "[\"telemetry.sdk.version\"]",
-            "[\"github.actions.workflow.ref\"]",
-            "[\"otel.scope.version\"]",
-            "[\"github.actions.workflow_run.id\"]",
-            "[\"github.actions.actor.name\"]",
-            "[\"github.actions.workflow.sha\"]",
-            "[\"github.actions.type\"]",
-            "[\"span.name\"]",
-            "[\"service.name\"]",
-            "[\"github.actions.workflow.id\"]",
-            "[\"telemetry.sdk.name\"]",
-            "[\"github.repository.id\"]",
-            "[\"span.kind\"]",
-            "[\"dt.openpipeline.source\"]",
-            "[\"dt.entity.service\"]",
-            "[\"duration\"]",
-            "[\"github.repository.owner.id\"]",
-            "[\"github.actions.event.ref\"]",
-            "[\"github.repository.owner.name\"]",
-            "[\"github.repository.name\"]",
-            "[\"github.actions.event.name\"]",
-            "[\"dt.smartscape.service\"]",
-            "[\"github.actions.conclusion\"]",
-            "[\"dt.endpoint_detection.rule_id\"]",
-            "[\"dt.service.name\"]",
-            "[\"github.actions.url.full\"]",
-            "[\"request.is_root_span\"]",
-            "[\"dt.failure_detection.ruleset_id\"]",
-            "[\"request.is_failed\"]",
-            "[\"dt.failure_detection.verdict\"]",
-            "[\"endpoint.name\"]",
-            "[\"dt.failure_detection.results\"]",
-            "[\"transaction.is_root_span\"]",
-            "[\"transaction.is_failed\"]",
-            "[\"transaction.is_endpoint_request\"]"
+            "[\"github.actions.url.full\"]"
           ]
         },
         "autoSelectVisualization": false
@@ -1259,7 +1216,7 @@
     "34": {
       "title": "Last Abnormal Logs",
       "type": "data",
-      "query": "fetch logs\n| filter github.repository.name == $Repository and endsWith(github.actions.workflow.ref, $Branch)\n| filter loglevel != \"NONE\" and loglevel != \"INFO\" and loglevel != \"DEBUG\" and loglevel != \"TRACE\"\n| sort timestamp desc\n| limit 10",
+      "query": "fetch logs\n| filter github.repository.name == $Repository and endsWith(github.actions.workflow.ref, $Branch)\n| filter loglevel != \"NONE\" and loglevel != \"INFO\" and loglevel != \"DEBUG\" and loglevel != \"TRACE\"\n| sort timestamp desc\n| limit 10\n| fieldsKeep github.actions.workflow.name, loglevel, content, trace_id, span_id",
       "visualization": "table",
       "visualizationSettings": {
         "table": {
@@ -1426,50 +1383,8 @@
             "[\"github.actions.workflow.name\"]",
             "[\"loglevel\"]",
             "[\"content\"]",
-            "[\"timestamp\"]",
-            "[\"dt.source_entity\"]",
-            "[\"service.name\"]",
-            "[\"status\"]",
-            "[\"dt.auth.origin\"]",
-            "[\"dt.entity.service\"]",
-            "[\"dt.openpipeline.pipelines\"]",
-            "[\"github.actions.workflow.ref\"]",
-            "[\"github.actions.workflow.sha\"]",
-            "[\"github.repository.id\"]",
-            "[\"github.repository.name\"]",
-            "[\"github.repository.owner.id\"]",
-            "[\"github.repository.owner.name\"]",
-            "[\"otel.scope.name\"]",
-            "[\"otel.scope.version\"]",
-            "[\"span_id\"]",
-            "[\"telemetry.sdk.language\"]",
-            "[\"telemetry.sdk.name\"]",
-            "[\"telemetry.sdk.version\"]",
             "[\"trace_id\"]",
-            "[\"dt.openpipeline.source\"]",
-            "[\"dt.smartscape.service\"]",
-            "[\"os.type\"]",
-            "[\"os.version\"]",
-            "[\"cloud.provider\"]",
-            "[\"host.type\"]",
-            "[\"azure.vm.scaleset.name\"]",
-            "[\"azure.vm.sku\"]",
-            "[\"cloud.platform\"]",
-            "[\"cloud.region\"]",
-            "[\"host.id\"]",
-            "[\"host.name\"]",
-            "[\"service.instance.id\"]",
-            "[\"cloud.resource_id\"]",
-            "[\"host.arch\"]",
-            "[\"os.description\"]",
-            "[\"process.command_args\"]",
-            "[\"process.executable.path\"]",
-            "[\"process.pid\"]",
-            "[\"process.runtime.description\"]",
-            "[\"process.runtime.name\"]",
-            "[\"process.runtime.version\"]",
-            "[\"telemetry.distro.name\"]",
-            "[\"telemetry.distro.version\"]"
+            "[\"span_id\"]"
           ]
         },
         "autoSelectVisualization": false
@@ -1573,7 +1488,7 @@
     "40": {
       "title": "HTTP Health",
       "type": "data",
-      "query": "fetch spans\n| filter github.repository.name == $Repository AND endsWith(github.actions.workflow.ref, concat(\"/\", $Branch))\n| filter not isNull(http.request.method)\n| fieldsAdd http.response.status_code.string = toString(http.response.status_code)\n| summarize http.conclusion.success=countIf(startsWith(http.response.status_code.string, \"1\") or startsWith(http.response.status_code.string, \"2\") or startsWith(http.response.status_code.string, \"3\")), http.conclusion.failure=countIf(startsWith(http.response.status_code.string, \"4\") or startsWith(http.response.status_code.string, \"5\")), by: { server.address }\n| fieldsAdd server.address, http.conclusion.success.ratio = 100 * toDouble(http.conclusion.success) / toDouble(http.conclusion.success + http.conclusion.failure)",
+      "query": "fetch spans\n| filter github.repository.name == $Repository and endsWith(github.actions.workflow.ref, concat(\"@refs/heads/\", $Branch))\n| filter not isNull(http.request.method)\n| fieldsAdd http.response.status_code.string = toString(http.response.status_code)\n| summarize http.conclusion.success=countIf(startsWith(http.response.status_code.string, \"1\") or startsWith(http.response.status_code.string, \"2\") or startsWith(http.response.status_code.string, \"3\")), http.conclusion.failure=countIf(startsWith(http.response.status_code.string, \"4\") or startsWith(http.response.status_code.string, \"5\")), by: { server.address }\n| fieldsAdd server.address, http.conclusion.success.ratio = 100 * toDouble(http.conclusion.success) / toDouble(http.conclusion.success + http.conclusion.failure)",
       "visualization": "honeycomb",
       "visualizationSettings": {
         "honeycomb": {
@@ -1659,6 +1574,7 @@
             "decimals": 2,
             "suffix": "",
             "delimiter": false,
+            "cascade": null,
             "added": 1741107668473
           }
         ]
@@ -1709,6 +1625,7 @@
             "decimals": 0,
             "suffix": "",
             "delimiter": false,
+            "cascade": null,
             "added": 1772664349792
           },
           {
@@ -1719,6 +1636,7 @@
             "decimals": 0,
             "suffix": "",
             "delimiter": false,
+            "cascade": null,
             "added": 1772664682985
           }
         ]
@@ -1740,7 +1658,7 @@
     "44": {
       "title": "HTTP Responses",
       "type": "data",
-      "query": "timeseries { count(http.client.request.duration), value.A = count(http.client.request.duration, scalar: true) }, by: { http.response.status_code }, filter: { matchesValue(github.repository.name, $Repository) and endsWith(github.actions.workflow.ref, concat(\"/\", $Branch)) }",
+      "query": "timeseries { count(http.client.request.duration), value.A = count(http.client.request.duration, scalar: true) }, by: { http.response.status_code }, filter: { matchesValue(github.repository.name, $Repository) and endsWith(github.actions.workflow.ref, concat(\"@refs/heads/\", $Branch)) }",
       "visualization": "pieChart",
       "visualizationSettings": {
         "chartSettings": {
@@ -1782,6 +1700,14 @@
               "comparator": "=",
               "field": "http.response.status_code",
               "value": "201",
+              "type": "string",
+              "customColor": "#62903C"
+            },
+            {
+              "colorMode": "custom-color",
+              "comparator": "=",
+              "field": "http.response.status_code",
+              "value": "202",
               "type": "string",
               "customColor": "#62903C"
             },
@@ -1970,12 +1896,12 @@
               "customColor": "#DC671E"
             },
             {
-              "colorMode": "custom-color",
+              "colorMode": "single-color",
               "comparator": "=",
               "field": "http.response.status_code",
               "value": "418",
               "type": "string",
-              "customColor": "#DC671E"
+              "color": "var(--dt-colors-charts-loglevel-debug-default, #8b6ecf)"
             },
             {
               "colorMode": "single-color",
@@ -2045,6 +1971,7 @@
             "decimals": 0,
             "suffix": "",
             "delimiter": false,
+            "cascade": null,
             "added": 1772664349792
           },
           {
@@ -2055,6 +1982,7 @@
             "decimals": 0,
             "suffix": "",
             "delimiter": false,
+            "cascade": null,
             "added": 1772664682985
           }
         ]

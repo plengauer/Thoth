@@ -78,15 +78,33 @@ export -f gh_artifacts
 
 gh_artifact_download() {
   local artifact_filename="$(mktemp)"
-  gh_curl /actions/runs/"$1"/artifacts'?per_page=1&'name="$3" | jq '.artifacts[0].id' | grep -v '^null$' | xargs -r -I '{}' bash -c 'gh_curl "$@"' bash /actions/artifacts/'{}'/zip --head | tr -d '\r' | grep '^location:' | cut -d ' ' -f 2- | xargs -r wget -q -O "$artifact_filename" && [ -r "$artifact_filename" ] && unzip "$artifact_filename" -d "$4" >&2 && rm "$artifact_filename"
+  gh_curl /actions/runs/"$1"/artifacts'?per_page=1&'name="$3" | jq '.artifacts[0].id' | grep -v '^null$' | xargs -r -I '{}' bash -c 'gh_curl "$@"' bash /actions/artifacts/'{}'/zip --head | tr -d '\r' | grep '^location:' | cut -d ' ' -f 2- | xargs -r wget -q -O "$artifact_filename" || return 1
+  [ -r "$artifact_filename" ] || return 1
+  mkdir -p "$4"
+  if unzip -t "$artifact_filename" 1> /dev/null 2> /dev/null; then
+    unzip "$artifact_filename" -d "$4" >&2
+    rm "$artifact_filename"
+  else
+    mv "$artifact_filename" "$4"/"$3"
+  fi
 }
 export -f gh_artifact_download
 
 gh_artifact_upload() {
+  local compression_level="${OTEL_GH_ARTIFACT_COMPRESSION_LEVEL:-6}"
+  local skip_archive="${OTEL_GH_ARTIFACT_SKIP_ARCHIVE:-false}"
+  case "$compression_level" in
+    [0-9]) ;;
+    *) compression_level=6;;
+  esac
+  case "$skip_archive" in
+    1|true|TRUE|yes|YES) skip_archive=true;;
+    *) skip_archive=false;;
+  esac
   GITHUB_TOKEN="$INPUT_GITHUB_TOKEN" node --input-type=module -e '
     import path from "node:path";
     import { DefaultArtifactClient } from "@actions/artifact";
-    new DefaultArtifactClient().uploadArtifact("'"$3"'", [ '"$(echo "${@:4}" | tr ' ' '\n' | sed -E 's/^(.*)$/"\1"/g' | tr '\n' ',')"' ], path.dirname("'"$4"'"));
+    new DefaultArtifactClient().uploadArtifact("'"$3"'", [ '"$(echo "${@:4}" | tr ' ' '\n' | sed -E 's/^(.*)$/"\1"/g' | tr '\n' ',')"' ], path.dirname("'"$4"'"), { compressionLevel: '"$compression_level"', skipArchive: '"$skip_archive"' });
   '
 }
 export -f gh_artifact_upload

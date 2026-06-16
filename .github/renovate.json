@@ -32,6 +32,15 @@
     },
     {
       "matchManagers": [
+        "github-actions"
+      ],
+      "matchPackageNames": [
+        "/^\\$\\{\\{\\s*steps\\.determine-repository\\.outputs\\.repository\\s*\\}\\}\\/actions$/"
+      ],
+      "enabled": false
+    },
+    {
+      "matchManagers": [
         "dockerfile"
       ],
       "matchPackageNames": [

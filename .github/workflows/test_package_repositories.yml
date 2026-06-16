@@ -1,0 +1,34 @@
+name: Test Package Repositories
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_run:
+    workflows: ['Update Package Repository']
+    types:
+      - completed
+  push:
+    paths:
+      - .github/workflows/test_package_repositories.yml
+
+jobs:
+  test-apt:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - run: |
+          echo "deb [arch=all] https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }} stable main" | sudo tee /etc/apt/sources.list.d/otel.list
+          sudo apt-get update --allow-insecure-repositories
+          sudo apt-get install -y --allow-unauthenticated opentelemetry-shell
+      - run: |
+          type otel.sh
+      - run: |
+          set -euo pipefail
+          latest_tag="$(curl --fail --silent --show-error  --header "Accept: application/vnd.github+json"  --header "Authorization: Bearer ${{ github.token }}" https://api.github.com/repos/${GITHUB_REPOSITORY}/releases/latest | jq -r '.tag_name')"
+          latest_version="${latest_tag#v}"
+          installed_version="$(dpkg-query -W -f='${Version}' opentelemetry-shell | cut -d - -f 1)"
+          echo "latest_version=$latest_version"
+          echo "installed_version=$installed_version"
+          [ "$installed_version" = "$latest_version" ]

@@ -19,7 +19,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@8a42906ace6a618a3b91545ef9b655b8c6d2ac23 # v5.54.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@af83be0ddf1ec3035230c030f3ab6d10a7040515 # v5.56.0
         with:
           secrets_to_redact: '["${{ github.token }}"]'
       - run: echo hello world
@@ -31,7 +31,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - run: echo hello world | cat
 
   default:
@@ -41,10 +41,10 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@8a42906ace6a618a3b91545ef9b655b8c6d2ac23 # v5.54.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@af83be0ddf1ec3035230c030f3ab6d10a7040515 # v5.56.0
         with:
           secrets_to_redact: '["${{ github.token }}"]'
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - run: echo hello world | cat
 
   performance:
@@ -63,7 +63,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@8a42906ace6a618a3b91545ef9b655b8c6d2ac23 # v5.54.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@af83be0ddf1ec3035230c030f3ab6d10a7040515 # v5.56.0
         with:
           secrets_to_redact: '["${{ github.token }}"]'
           cache: '${{ matrix.cache }}'
@@ -74,5 +74,5 @@ jobs:
           OTEL_SHELL_CONFIG_INJECT_DEEP: '${{ matrix.inject-deep }}'
           OTEL_SHELL_CONFIG_OBSERVE_SIGNALS: '${{ matrix.observe-signals }}'
           OTEL_SHELL_CONFIG_OBSERVE_SUBPROCESSES: '${{ matrix.observe-subprocesses }}'
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - run: echo hello world | cat
