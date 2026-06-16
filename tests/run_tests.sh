@@ -5,21 +5,22 @@ if [ "$SHELL" = "" ]; then
   echo "need to specify shell to test"
   exit 1
 fi
-. /etc/os-release
+if [ -r /etc/os-release ]; then . /etc/os-release; fi
 if [ "$SHELL" = dash ] && ! ( [ "$ID" = debian ] || [ "$ID_LIKE" = debian ] ); then
   exit 0
+fi
+
+if ! type timeout; then
+  function timeout() {
+    shift
+    "$@"
+  }
 fi
 
 if [ "$SHELL" = busybox ]; then
   export TEST_SHELL="busybox sh";
 else
   export TEST_SHELL="$SHELL"
-fi
-
-if ! type perl 1> /dev/null 2> /dev/null; then
-  function perl() {
-    cat
-  }
 fi
 
 failed_flag="$(mktemp -u)"

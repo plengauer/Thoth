@@ -9,7 +9,7 @@ jobs:
   smoke:
     strategy:
       matrix:
-        runner: ['ubuntu-latest', 'ubuntu-24.04-arm']
+        runner: ['ubuntu-latest', 'ubuntu-24.04-arm', 'macos-latest', 'macos-13']
       fail-fast: false
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 30
@@ -20,12 +20,30 @@ jobs:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+      - if: runner.os == 'Linux'
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: packages.deb.${{ inputs.ref }}
-      - run: sudo apt-get -y install ./opentelemetry-shell_*_"$(arch | sed s/x86_64/amd64/g | sed s/aarch64/arm64/g | sed 's/le$/el/g')".deb apt-file
+      - if: runner.os == 'Linux'
+        run: sudo apt-get -y install ./opentelemetry-shell_*_"$(arch | sed s/x86_64/amd64/g | sed s/aarch64/arm64/g | sed 's/le$/el/g')".deb apt-file
+      - if: runner.os == 'macOS'
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: packages.brew.${{ inputs.ref }}
+      - if: runner.os == 'macOS'
+        run: |
+          brew install jq wget curl bash coreutils findutils grep gnu-sed gawk
+          sudo tar -xzf opentelemetry-shell_*.tar.gz -C /
+          arch="$(uname -m)"
+          if [ -f /usr/share/opentelemetry_shell/agent.instrumentation.http/"$arch"/libinjecthttpheader.dylib ]; then
+            sudo mv /usr/share/opentelemetry_shell/agent.instrumentation.http/"$arch"/libinjecthttpheader.dylib /usr/share/opentelemetry_shell/agent.instrumentation.http/
+          fi
+          sudo find /usr/share/opentelemetry_shell/agent.instrumentation.http -mindepth 1 -type d -exec rm -rf {} + 2>/dev/null || true
+          sudo python3 -m venv /opt/opentelemetry_shell/venv
+          sudo /opt/opentelemetry_shell/venv/bin/pip3 install -r /opt/opentelemetry_shell/requirements.txt
       - run: bash -c "cd tests && bash run_tests.sh bash"
-      - run: sudo apt-get -y remove opentelemetry-shell
+      - if: runner.os == 'Linux'
+        run: sudo apt-get -y remove opentelemetry-shell
   list-released-versions:
     needs: smoke
     runs-on: ubuntu-slim

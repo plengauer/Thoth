@@ -8,13 +8,24 @@ _otel_propagate_wget() {
     *) local job_control=0;;
   esac
   local file=/usr/share/opentelemetry_shell/agent.instrumentation.http/libinjecthttpheader.so
+  if \[ "$(\uname -s)" = "Darwin" ]; then
+    local file=/usr/share/opentelemetry_shell/agent.instrumentation.http/libinjecthttpheader.dylib
+  fi
   if \[ -f "$file" ] && ! \ldd "$file" 2> /dev/null | \grep -q 'not found' && ! ( \[ "$_otel_shell" = 'busybox sh' ] && \help | \tail -n +3 | \grep -q wget ); then
     export OTEL_SHELL_INJECT_HTTP_SDK_PIPE="$_otel_remote_sdk_pipe"
     export OTEL_SHELL_INJECT_HTTP_HANDLE_FILE="$(\mktemp -u)_opentelemetry_shell_$$.wget.handle"
-    local OLD_LD_PRELOAD="${LD_PRELOAD:-}"
-    export LD_PRELOAD="$file"
-    if \[ -n "$OLD_LD_PRELOAD" ]; then
-      export LD_PRELOAD="$LD_PRELOAD:$OLD_LD_PRELOAD"
+    if \[ "$(\uname -s)" = "Darwin" ]; then
+      local OLD_DYLD_INSERT_LIBRARIES="${DYLD_INSERT_LIBRARIES:-}"
+      export DYLD_INSERT_LIBRARIES="$file"
+      if \[ -n "$OLD_DYLD_INSERT_LIBRARIES" ]; then
+        export DYLD_INSERT_LIBRARIES="$DYLD_INSERT_LIBRARIES:$OLD_DYLD_INSERT_LIBRARIES"
+      fi
+    else
+      local OLD_LD_PRELOAD="${LD_PRELOAD:-}"
+      export LD_PRELOAD="$file"
+      if \[ -n "$OLD_LD_PRELOAD" ]; then
+        export LD_PRELOAD="$LD_PRELOAD:$OLD_LD_PRELOAD"
+      fi
     fi
   fi
   local stderr_pipe="$(\mktemp -u)_opentelemetry_shell_$$.stderr.wget.pipe"
@@ -24,10 +35,18 @@ _otel_propagate_wget() {
   local exit_code=0
   _otel_call "$@" --header="traceparent: $TRACEPARENT" --header="tracestate: $TRACESTATE" 2> "$stderr_pipe" || exit_code="$?"
   if \[ -f "$file" ]; then
-    if \[ -n "${OLD_LD_PRELOAD:-}" ]; then
-      export LD_PRELOAD="$OLD_LD_PRELOAD"
+    if \[ "$(\uname -s)" = "Darwin" ]; then
+      if \[ -n "${OLD_DYLD_INSERT_LIBRARIES:-}" ]; then
+        export DYLD_INSERT_LIBRARIES="$OLD_DYLD_INSERT_LIBRARIES"
+      else
+        unset DYLD_INSERT_LIBRARIES
+      fi
     else
-      unset LD_PRELOAD
+      if \[ -n "${OLD_LD_PRELOAD:-}" ]; then
+        export LD_PRELOAD="$OLD_LD_PRELOAD"
+      else
+        unset LD_PRELOAD
+      fi
     fi
     unset OTEL_SHELL_INJECT_HTTP_HANDLE_FILE
     unset OTEL_SHELL_INJECT_HTTP_SDK_PIPE
