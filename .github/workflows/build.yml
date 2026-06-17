@@ -195,7 +195,8 @@ jobs:
                 echo "node $version is not redundant (differs from node $prev_version):"
                 diff \
                   <(find "$prev_version" -type f | sort | while IFS= read -r f; do printf '%s %s\n' "$(\sha256sum "$f" | \cut -d ' ' -f 1)" "${f#*/}"; done) \
-                  <(find "$version" -type f | sort | while IFS= read -r f; do printf '%s %s\n' "$(\sha256sum "$f" | \cut -d ' ' -f 1)" "${f#*/}"; done) || true
+                  <(find "$version" -type f | sort | while IFS= read -r f; do printf '%s %s\n' "$(\sha256sum "$f" | \cut -d ' ' -f 1)" "${f#*/}"; done) \
+                  | \grep '^[<>]' | \cut -d ' ' -f 2- | \sort -u || true
               fi
               prev_hash="$hash"
               prev_version="$version"
