@@ -184,12 +184,21 @@ jobs:
           OTEL_SHELL_CONFIG_MUTE_INTERNALS: TRUE
         run: |
           prev_hash=""
+          prev_version=""
           for version in $(ls | grep -E '^[0-9]+$' | sort -n); do
             hash="$(find "$version" -type f | sort | while IFS= read -r f; do printf '%s\n' "${f#*/}"; \cat "$f"; done | sha256sum | cut -d ' ' -f 1)"
             if [ "$hash" = "$prev_hash" ]; then
+              echo "node $version is redundant (identical to node $prev_version), deduplicating"
               rm -rf "$version"
             else
+              if [ -n "$prev_version" ]; then
+                echo "node $version is not redundant (differs from node $prev_version):"
+                diff \
+                  <(find "$prev_version" -type f | sort | while IFS= read -r f; do printf '%s %s\n' "$(\sha256sum "$f" | \cut -d ' ' -f 1)" "${f#*/}"; done) \
+                  <(find "$version" -type f | sort | while IFS= read -r f; do printf '%s %s\n' "$(\sha256sum "$f" | \cut -d ' ' -f 1)" "${f#*/}"; done) || true
+              fi
               prev_hash="$hash"
+              prev_version="$version"
             fi
           done
       - run: find . -type f | xargs sha256sum | sort | cut -d ' ' -f 3- | tar -cf node_modules.tar -T - && xz -9 node_modules.tar
