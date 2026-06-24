@@ -2,7 +2,6 @@ const opentelemetry_api = require('@opentelemetry/api');
 const opentelemetry_sdk = require('@opentelemetry/sdk-node');
 const opentelemetry_auto_instrumentations = require('@opentelemetry/auto-instrumentations-node');
 const opentelemetry_resources = require('@opentelemetry/resources');
-const opentelemetry_resources_git = require('opentelemetry-resource-detector-git');
 const opentelemetry_resources_github = require('@opentelemetry/resource-detector-github');
 const opentelemetry_resources_container = require('@opentelemetry/resource-detector-container');
 const opentelemetry_resources_aws = require('@opentelemetry/resource-detector-aws');
@@ -66,7 +65,6 @@ const sdk = new opentelemetry_sdk.NodeSDK({
     opentelemetry_resources_aws.awsEcsDetector,
     opentelemetry_resources_aws.awsEksDetector,
     opentelemetry_resources_container.containerDetector,
-    opentelemetry_resources_git.gitSyncDetector,
     opentelemetry_resources_github.gitHubDetector,
     opentelemetry_resources.processDetector,
     opentelemetry_resources.envDetector
