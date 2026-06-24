@@ -253,7 +253,7 @@ jobs:
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
-      - uses: renovatebot/github-action@8217b3fc286df088d7c27f3255fe8414463bc0fd # v46.1.15 # node action with call to docker, docker flags that make injection more complicated, then call a node script via exec that already is injected with otel
+      - uses: renovatebot/github-action@6d859fc95779be83a0335ca704879b47e5d79641 # v46.1.16 # node action with call to docker, docker flags that make injection more complicated, then call a node script via exec that already is injected with otel
         env:
           RENOVATE_DRY_RUN: full
           RENOVATE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -315,7 +315,7 @@ jobs:
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
-      - uses: super-linter/super-linter@9e863354e3ff62e0727d37183162c4a88873df41 # v8.6.0
+      - uses: super-linter/super-linter@4ce20838b8ab83717e78138c5b3a1407148e0918 # v8.7.0
         env:
           GITHUB_TOKEN: ${{ github.token }}
           VALIDATE_ALL_CODEBASE: 'true'
@@ -869,9 +869,7 @@ jobs:
       - env:
           OTLP_JSON: '${{ steps.filename.outputs.otlp }}'
         run: |
-          traceparent_file=traceparent
-          [ -r "$traceparent_file" ] || traceparent_file='opentelemetry_workflow_run_${{ steps.workflow_run.outputs.run_attempt }}'
-          [ "$(cat "$OTLP_JSON" | jq -r .context.trace_id | grep -v '^null$' | sort -u | cut -d x -f 2 | tee /dev/stderr)" = "$(cat "$traceparent_file" | cut -d - -f 2 | tee /dev/stderr)" ]
+          [ "$(cat "$OTLP_JSON" | jq -r .context.trace_id | grep -v '^null$' | sort -u | cut -d x -f 2 | tee /dev/stderr)" = "$(cat traceparent | cut -d - -f 2 | tee /dev/stderr)" ]
           cat "$OTLP_JSON" | jq -r .name | grep -v '^null$' | sort -u | grep -F 'test (foo)'
           cat "$OTLP_JSON" | jq -r .name | grep -v '^null$' | sort -u | grep -F 'test (bar)'
           cat "$OTLP_JSON" | jq -r .name | grep -v '^null$' | sort -u | grep -F 'test (baz)'

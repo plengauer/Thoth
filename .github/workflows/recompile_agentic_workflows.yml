@@ -16,8 +16,8 @@ jobs:
     if: ${{ !github.event.repository.fork }}
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      actions: read
+      contents: write
+      pull-requests: write
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@af83be0ddf1ec3035230c030f3ab6d10a7040515 # v5.56.0
         with:
@@ -32,7 +32,7 @@ jobs:
           GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         run: |
           gh extension install github/gh-aw
-          gh aw compile
+          gh aw compile --approve
       - id: push
         run: |
           if [ -z "$(git status --porcelain)" ]; then exit 0; fi
