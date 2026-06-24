@@ -332,21 +332,18 @@ echo "::endgroup::"
 
 echo "::group::Resolve W3C Tracecontext"
 opentelemetry_root_dir="$(mktemp -d)"
-workflow_run_traceparent_artifact_name=opentelemetry_workflow_run_"$GITHUB_RUN_ATTEMPT"
 count=0
-while [ "$count" -lt 60 ] && { ! gh_artifact_download "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" "$workflow_run_traceparent_artifact_name" "$opentelemetry_root_dir" || { [ ! -r "$opentelemetry_root_dir"/traceparent ] && [ ! -r "$opentelemetry_root_dir"/"$workflow_run_traceparent_artifact_name" ]; }; }; do
+while [ "$count" -lt 60 ] && ! gh_artifact_download "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_workflow_run_"$GITHUB_RUN_ATTEMPT" "$opentelemetry_root_dir" || ! [ -r "$opentelemetry_root_dir"/traceparent ]; do
   if [ "$count" -gt 0 ]; then sleep $count; fi
   wait # only join within this loop, because we need to make sure everything is installed properly at this point, in most cases, it is unnecessary though and we can join later
   . otelapi.sh
   otel_init
   otel_span_traceparent "$(otel_span_start INTERNAL dummy)" > "$opentelemetry_root_dir"/traceparent
-  cp "$opentelemetry_root_dir"/traceparent "$opentelemetry_root_dir"/"$workflow_run_traceparent_artifact_name"
-  OTEL_GH_ARTIFACT_SKIP_ARCHIVE=true gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" "$workflow_run_traceparent_artifact_name" "$opentelemetry_root_dir"/"$workflow_run_traceparent_artifact_name" || true
-  rm "$opentelemetry_root_dir"/traceparent "$opentelemetry_root_dir"/"$workflow_run_traceparent_artifact_name"
+  gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_workflow_run_"$GITHUB_RUN_ATTEMPT" "$opentelemetry_root_dir"/traceparent || true
+  rm "$opentelemetry_root_dir"/traceparent
   otel_shutdown
   count=$((count + 1))
 done
-[ -r "$opentelemetry_root_dir"/traceparent ] || mv "$opentelemetry_root_dir"/"$workflow_run_traceparent_artifact_name" "$opentelemetry_root_dir"/traceparent
 [ -r "$opentelemetry_root_dir"/traceparent ] || (echo "::error ::Cannot sync trace id via artifacts. This is most likely a token permission issue, please consult the README." && false)
 export TRACEPARENT="$(cat "$opentelemetry_root_dir"/traceparent)"
 rm -rf "$opentelemetry_root_dir"
@@ -603,9 +600,8 @@ root4job() {
   echo "$TRACEPARENT" > "$traceparent_file"
   if [ -n "${GITHUB_JOB_ID:-}" ]; then
     opentelemetry_job_dir="$(mktemp -d)"
-    job_traceparent_artifact_name=opentelemetry_job_"$GITHUB_JOB_ID"
-    echo "$TRACEPARENT" > "$opentelemetry_job_dir"/"$job_traceparent_artifact_name"
-    ( OTEL_GH_ARTIFACT_SKIP_ARCHIVE=true gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" "$job_traceparent_artifact_name" "$opentelemetry_job_dir"/"$job_traceparent_artifact_name" && rm -rf "$opentelemetry_job_dir" ) &> /dev/null &
+    echo "$TRACEPARENT" > "$opentelemetry_job_dir"/traceparent
+    ( gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_job_"$GITHUB_JOB_ID" "$opentelemetry_job_dir"/traceparent && rm -rf "$opentelemetry_job_dir" ) &> /dev/null &
   fi
   otel_span_deactivate "$span_handle"
   trap root4job_end SIGUSR1

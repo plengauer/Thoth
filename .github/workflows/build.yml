@@ -184,12 +184,22 @@ jobs:
           OTEL_SHELL_CONFIG_MUTE_INTERNALS: TRUE
         run: |
           prev_hash=""
+          prev_version=""
           for version in $(ls | grep -E '^[0-9]+$' | sort -n); do
             hash="$(find "$version" -type f | sort | while IFS= read -r f; do printf '%s\n' "${f#*/}"; \cat "$f"; done | sha256sum | cut -d ' ' -f 1)"
             if [ "$hash" = "$prev_hash" ]; then
+              echo "node $version is redundant (identical to node $prev_version), deduplicating"
               rm -rf "$version"
             else
+              if [ -n "$prev_version" ]; then
+                echo "node $version is not redundant (differs from node $prev_version):"
+                diff \
+                  <(find "$prev_version" -type f | sort | while IFS= read -r f; do printf '%s %s\n' "$(\sha256sum "$f" | \cut -d ' ' -f 1)" "${f#*/}"; done) \
+                  <(find "$version" -type f | sort | while IFS= read -r f; do printf '%s %s\n' "$(\sha256sum "$f" | \cut -d ' ' -f 1)" "${f#*/}"; done) \
+                  | \grep '^[<>]' | \cut -d ' ' -f 2- | \sort -u || true
+              fi
               prev_hash="$hash"
+              prev_version="$version"
             fi
           done
       - run: find . -type f | xargs sha256sum | sort | cut -d ' ' -f 3- | tar -cf node_modules.tar -T - && xz -9 node_modules.tar
@@ -339,7 +349,7 @@ jobs:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
+      - uses: actions/setup-java@ad2b38190b15e4d6bdf0c97fb4fca8412226d287 # v5.3.0
         with:
           java-version: 8
           distribution: temurin
@@ -361,7 +371,7 @@ jobs:
           class_file_version_base=44
           java_version=$((class_file_version - class_file_version_base))
           echo version="$java_version" >> "$GITHUB_OUTPUT"
-      - uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
+      - uses: actions/setup-java@ad2b38190b15e4d6bdf0c97fb4fca8412226d287 # v5.3.0
         with:
           java-version: ${{ steps.determine-minimum-version.outputs.version }}
           distribution: temurin
@@ -585,9 +595,11 @@ jobs:
       - run: |
           replaced_binaries="$(mktemp -d)"
           mv src/usr/share/opentelemetry_shell/agent.instrumentation.http/*/ "$replaced_binaries"
+          source_snapshot="$(mktemp -d)"
+          cp -a src "$source_snapshot"
           { echo noarch; ls "$replaced_binaries"; } | while read -r arch; do
-            rm -rf src/tmp.* /home/runner/rpmbuild
-            git checkout .
+            rm -rf src /home/runner/rpmbuild
+            cp -a "$source_snapshot"/src .
             {
               find src -iname '*.c' -type f
               find src -iname '*.java' -type f
