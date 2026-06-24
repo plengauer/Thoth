@@ -585,9 +585,11 @@ jobs:
       - run: |
           replaced_binaries="$(mktemp -d)"
           mv src/usr/share/opentelemetry_shell/agent.instrumentation.http/*/ "$replaced_binaries"
+          source_snapshot="$(mktemp -d)"
+          cp -a src "$source_snapshot"
           { echo noarch; ls "$replaced_binaries"; } | while read -r arch; do
-            rm -rf src/tmp.* /home/runner/rpmbuild
-            git checkout .
+            rm -rf src /home/runner/rpmbuild
+            cp -a "$source_snapshot"/src .
             {
               find src -iname '*.c' -type f
               find src -iname '*.java' -type f
