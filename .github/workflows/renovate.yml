@@ -11,7 +11,10 @@ jobs:
     if: ${{ !github.event.repository.fork }}
     runs-on: ubuntu-latest
     permissions:
-      contents: none
+      contents: write
+      pull-requests: write
+      issues: write
+      security-events: write
       actions: read
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@af83be0ddf1ec3035230c030f3ab6d10a7040515 # v5.56.0
