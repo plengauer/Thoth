@@ -25,7 +25,8 @@ _otel_inject $arg"
       \echo -n "--"
     else
       if \[ "$in_exec" = 1 ]; then
-        no_quote=1 _otel_escape_arg "$(_otel_escape_arg "$arg")"
+        local normalized_arg="$(_otel_inject_parallel_normalize_argument "$arg")"
+        no_quote=1 _otel_escape_arg "$(_otel_escape_arg "$normalized_arg")"
       else
         if \[ "$inject_all_args" = 1 ]; then 
           \echo -n "'sh -c '\''. otel.sh
@@ -70,7 +71,8 @@ _otel_inject "
       \echo -n '"$@"'"' 'parallel' '$arg'"
     else
       if \[ "$in_exec" = 1 ]; then
-        no_quote=1 _otel_escape_arg "$(_otel_escape_arg "$arg")"
+        local normalized_arg="$(_otel_inject_parallel_normalize_argument "$arg")"
+        no_quote=1 _otel_escape_arg "$(_otel_escape_arg "$normalized_arg")"
       else
         _otel_escape_arg "$arg"
       fi
@@ -78,6 +80,20 @@ _otel_inject "
   done
   if \[ "$in_exec" -eq 1 ]; then
     \echo -n ' "$@"'"' 'parallel'"
+  fi
+}
+
+_otel_inject_parallel_normalize_argument() {
+  local first_char="${1%"${1#?}"}"
+  local last_char="${1#${1%?}}"
+  if \[ "$first_char" = '"' ] && \[ "$last_char" = '"' ] && \[ "${#1}" -ge 2 ]; then
+    local normalized_arg="${1#\"}"
+    \printf '%s' "${normalized_arg%\"}"
+  elif \[ "$first_char" = "'" ] && \[ "$last_char" = "'" ] && \[ "${#1}" -ge 2 ]; then
+    local normalized_arg="${1#\'}"
+    \printf '%s' "${normalized_arg%\'}"
+  else
+    \printf '%s' "$1"
   fi
 }
 

@@ -258,7 +258,6 @@ jobs:
           RENOVATE_DRY_RUN: full
           RENOVATE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RENOVATE_REPOSITORIES: ${{ github.repository }}
-          LOG_LEVEL: debug
   job-integration-codeql:
     needs: job-smoke
     runs-on: ubuntu-latest
@@ -320,9 +319,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
           VALIDATE_ALL_CODEBASE: 'true'
-          DISABLE_ERRORS: 'true'
+          DISABLE_ERRORS: 'false'
           RUN_LOCAL: 'true'
           DEFAULT_BRANCH: main
+          # LOG_LEVEL: DEBUG
   job-integration-python-venv:
     needs: job-smoke
     runs-on: ubuntu-latest
