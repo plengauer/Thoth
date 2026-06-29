@@ -11,16 +11,19 @@ jobs:
     if: ${{ !github.event.repository.fork }}
     runs-on: ubuntu-latest
     permissions:
-      contents: none
+      contents: write
+      pull-requests: write
+      issues: write
+      security-events: write
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@af83be0ddf1ec3035230c030f3ab6d10a7040515 # v5.56.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@5d8cb00c1ec6a0a9772f30e7c3045d87b9f6609e # v5.58.0
         with:
           secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}"]'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - uses: renovatebot/github-action@8217b3fc286df088d7c27f3255fe8414463bc0fd # v46.1.15
+      - uses: renovatebot/github-action@6d859fc95779be83a0335ca704879b47e5d79641 # v46.1.16
         env:
           RENOVATE_REPOSITORIES: ${{ github.repository }}
         with:
@@ -34,7 +37,7 @@ jobs:
     env:
       COPILOT_INSTRUMENTATION_ALERT_TITLE: "⚠️ Copilot Coding Agent instrumentation appears broken"
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@af83be0ddf1ec3035230c030f3ab6d10a7040515 # v5.56.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@5d8cb00c1ec6a0a9772f30e7c3045d87b9f6609e # v5.58.0
         with:
           secrets_to_redact: '${{ github.token }}'
         env:
@@ -44,9 +47,9 @@ jobs:
           GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN || github.token }}
         run: |
           set -euo pipefail
-          gh api /repos/"${GITHUB_REPOSITORY}"/actions/workflows?per_page=100 --jq '.workflows[] | select((.path // "") == "dynamic/copilot-swe-agent/copilot") | .id' \
-            | xargs -I '{}' gh api /repos/"${GITHUB_REPOSITORY}"/actions/workflows/'{}'/runs?status=completed&per_page=1 --jq '.workflow_runs | first' \
-            | jq '[ .id, .html_url ] | @tsv' | tr '\t' ' ' | while read -r run_id run_url && gh run view "$run_id" --log | ! grep -Fq -- '. otel.sh'; do
+          gh api /repos/"${GITHUB_REPOSITORY}"/actions/workflows?per_page=100 | jq '.workflows[] | select((.path // "") == "dynamic/copilot-swe-agent/copilot") | .id' \
+            | xargs -I '{}' gh api /repos/"${GITHUB_REPOSITORY}"/actions/workflows/'{}'/runs?status=completed&per_page=1 | jq '.workflow_runs | first' \
+            | jq '[ .id, .html_url ] | @tsv' | tr '\t' ' ' | while read -r run_id run_url && ! gh run view "$run_id" --log | grep -Fq -- '. otel.sh'; do
               if [ "$(gh issue list --state open --search "\"${COPILOT_INSTRUMENTATION_ALERT_TITLE}\" in:title" --json title | jq --arg issue_title "$COPILOT_INSTRUMENTATION_ALERT_TITLE" '[.[] | select(.title == $issue_title)] | length')" -gt 0 ]; then continue; fi
               gh issue create --title "$COPILOT_INSTRUMENTATION_ALERT_TITLE" --body "$(printf 'Copilot instrumentation marker `. otel.sh` was not found in the latest completed Copilot cloud-agent run log.\n\n- Run: %s' "$run_url")"
             done
@@ -57,13 +60,13 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@af83be0ddf1ec3035230c030f3ab6d10a7040515 # v5.56.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@5d8cb00c1ec6a0a9772f30e7c3045d87b9f6609e # v5.58.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
         with:
           secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}"]'
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - run: |
           python3 -m venv venv
           . venv/bin/activate
@@ -101,13 +104,13 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@af83be0ddf1ec3035230c030f3ab6d10a7040515 # v5.56.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@5d8cb00c1ec6a0a9772f30e7c3045d87b9f6609e # v5.58.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
         with:
           secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}"]'
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - run: |
           curl -s --fail https://api.launchpad.net/devel/debian/series > /tmp/launchpad.debian.json
           oldest="debian:$(jq < /tmp/launchpad.debian.json '.entries[] | select(.active == true) | select(.status == "Supported") | .name' -r | head -n 2 | tail -n 1)"
@@ -178,13 +181,13 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@af83be0ddf1ec3035230c030f3ab6d10a7040515 # v5.56.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@5d8cb00c1ec6a0a9772f30e7c3045d87b9f6609e # v5.58.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
         with:
           secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}"]'
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - run: |
           sed -i "s/$(($(date +%Y) - 1))/$(date +%Y)/g" LICENSE
       - id: open-pr

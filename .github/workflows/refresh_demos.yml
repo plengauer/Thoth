@@ -21,13 +21,13 @@ jobs:
     outputs:
       dirs: ${{ steps.demos.outputs.dirs }}
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@af83be0ddf1ec3035230c030f3ab6d10a7040515 # v5.56.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@5d8cb00c1ec6a0a9772f30e7c3045d87b9f6609e # v5.58.0
         with:
           secrets_to_redact: '["${{ github.token }}"]'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - run: |
           cd demos && echo */ | tr ' ' '\n' | tr -d / | while read -r dir; do echo \""$dir"\"; done | jq -s | tr -d ' ' | tr -d '\n' | xargs -0 -I {} echo 'dirs={}' >> "$GITHUB_OUTPUT"
         id: demos
@@ -46,7 +46,7 @@ jobs:
       - run: |
           ([ "$GITHUB_EVENT" = release ] && cat "$GITHUB_EVENT_PATH" || curl --header "Authorization: Bearer ${{ github.token }}" https://api.github.com/repos/"$GITHUB_REPOSITORY"/releases/latest) | jq -r '.assets[] | select(.name | endswith("_amd64.deb")) | .url' | xargs wget --header "Authorization: Bearer ${{ github.token }}" --header "Accept: application/octet-stream" -O package.deb
       - run: sudo apt-get -y install ./package.deb
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - id: demo
         env:
           GITHUB_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}

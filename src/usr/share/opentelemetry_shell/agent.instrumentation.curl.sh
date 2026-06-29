@@ -100,7 +100,7 @@ _otel_pipe_curl_stderr() {
     fi
     if \[ -n "$span_handle" ] && ( _otel_string_starts_with "$line" "* shutting down connection " || _otel_string_starts_with "$line" "* closing connection " || ( _otel_string_starts_with "$line" "* Connection " && _otel_string_ends_with "$line" " left intact" ) || _otel_string_starts_with "$line" "* Connected to "  || _otel_string_starts_with "$line" "* processing: " || ( \[ "$is_receiving" = 1 ] && _otel_string_starts_with "$line" "> " ) ); then
       local time_end="$(\date +%s.%N)"
-      if \[ -n "$response_code" ]; then \echo "END" > "$span_handle_file_forward"; else \echo "TERMINATE" > "$span_handle_file_forward"; local terminated=1; fi
+      if \[ -n "$response_code" ]; then \echo "END" > "$span_handle_file_forward"; local terminated=1; else \echo "TERMINATE" > "$span_handle_file_forward"; local terminated=1; fi
       otel_span_end "$span_handle"
       local span_handle=""
       local observation_handle="$(otel_observation_create "$(\python3 -c "print(str($time_end - $time_start))")")"
@@ -474,12 +474,12 @@ _otel_curl_record_api_response_llm_openai() {
         fi
       done
     fi
+    local drain_pid=
+    if \[ "$process_stdout" = 0 ]; then \cat & drain_pid=$!; fi
     local end_msg
     IFS= \read -r end_msg < "$span_handle_file"
-    if \[ "$end_msg" = "TERMINATE" ]; then
-      if \[ "$process_stdout" = 0 ]; then \cat; fi
-      break
-    fi
+    \[ -z "$drain_pid" ] || wait "$drain_pid"
+    break
   done
   \rm -rf "$stdout"
 }
