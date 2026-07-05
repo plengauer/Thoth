@@ -34,4 +34,3 @@ if [ "${OTEL_LOGS_EXPORTER:-}" = console ] || [ "${OTEL_METRICS_EXPORTER:-}" = c
 fi
 export OTEL_EXPORTER_OTLP_PROTOCOL="${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}" # default is not uniform, so lets pin it here
 export OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE="${OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE:-delta}" # default to delta for volatile environments
-[ -n "${OTEL_SHELL_PACKAGE_VERSION_CACHE_opentelemetry_shell:-}" ] || [ ! -r ../../../VERSION ] || export OTEL_SHELL_PACKAGE_VERSION_CACHE_opentelemetry_shell="$(cat ../../../VERSION)"

@@ -163,7 +163,20 @@ else
 fi
 
 _otel_resolve_package_version() {
-  (\dpkg -s "$1" || \rpm -qi "$1" || \apk version "$1" | \tail -n 1 | \cut -d ' ' -f 3 | \cut -d - -f 1 | { \echo -n 'Version: '; \cat; }) 2> /dev/null | \grep Version | \cut -d : -f 2 | tr -d ' ' || \true
+  (\dpkg -s "$1" || \rpm -qi "$1" || {
+    _apk_package="$1"
+    _apk_version="$(
+      \apk info -e -v "$_apk_package" |
+        \head -n 1
+    )"
+    case "$_apk_version" in
+      "$_apk_package"-*) _apk_version="${_apk_version#"$_apk_package"-}" ;;
+    esac
+    case "$_apk_version" in
+      *-r[0-9]*) _apk_version="${_apk_version%-r*}" ;;
+    esac
+    [ -z "$_apk_version" ] || \echo "Version: $_apk_version"
+  }) 2> /dev/null | \grep Version | \cut -d : -f 2 | \tr -d ' ' || \true
 }
 
 otel_span_current() {
