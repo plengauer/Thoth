@@ -165,7 +165,7 @@ fi
 _otel_resolve_package_version() {
   ( \dpkg -s "$1" || \rpm -qi "$1" || {
     _apk_package="$1"
-    _apk_version="$(\apk info -e -v "$_apk_package" | \head -n 1)"
+    _apk_version="$(\apk info -e -v "$_apk_package" | \head -n 1)" # SKIP_DEPENDENCY_CHECK
     case "$_apk_version" in
       "$_apk_package"-*) _apk_version="${_apk_version#"$_apk_package"-}" ;;
     esac
