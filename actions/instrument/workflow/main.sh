@@ -18,7 +18,6 @@ if type dpkg; then
 else
   echo 'No debian, assuming dependencies are preinstalled.'
 fi
-[ -n "${OTEL_SHELL_PACKAGE_VERSION_CACHE_opentelemetry_shell:-}" ] || [ ! -r ../../../VERSION ] || export OTEL_SHELL_PACKAGE_VERSION_CACHE_opentelemetry_shell="$(cat ../../../VERSION)"
 echo "::endgroup::"
 
 # selfmonitoring
