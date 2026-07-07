@@ -7,6 +7,10 @@ jobs:
   copilot-setup-steps:
     runs-on: ubuntu-latest
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@v5.58.0
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
       - run: |
           printenv
           { find "${RUNNER_TEMP}"/*-action-* -type f -iname '*.sh' || true; find "${RUNNER_TEMP}"/*-action-* -type f -iname '*.js' || true; } | while IFS= read -r script_file; do
