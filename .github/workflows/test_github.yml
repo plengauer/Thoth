@@ -320,8 +320,10 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           VALIDATE_ALL_CODEBASE: 'true'
           DISABLE_ERRORS: 'false'
-          RUN_LOCAL: 'true'
-          DEFAULT_BRANCH: main
+          MULTI_STATUS: 'false'
+          ENABLE_GITHUB_PULL_REQUEST_SUMMARY_COMMENT: 'false'
+          # RUN_LOCAL: 'true'
+          # DEFAULT_BRANCH: main
           # LOG_LEVEL: DEBUG
   job-integration-python-venv:
     needs: job-smoke
