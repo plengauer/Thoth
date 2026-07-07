@@ -6,7 +6,7 @@
           {
             "key": "process.pid",
             "value": {
-              "intValue": "7737"
+              "intValue": "8217"
             }
           },
           {
@@ -33,13 +33,13 @@
                     "stringValue": "--require"
                   },
                   {
-                    "stringValue": "/usr/share/opentelemetry_shell/agent.instrumentation.node/20/deep.inject.js"
+                    "stringValue": "/usr/share/opentelemetry_shell/agent.instrumentation.node/22/deep.inject.js"
                   },
                   {
                     "stringValue": "--require"
                   },
                   {
-                    "stringValue": "/usr/share/opentelemetry_shell/agent.instrumentation.node/20/deep.instrument.js"
+                    "stringValue": "/usr/share/opentelemetry_shell/agent.instrumentation.node/22/deep.instrument.js"
                   },
                   {
                     "stringValue": "/home/runner/work/Thoth/Thoth/demos/injection_deep_node/index.js"
@@ -51,7 +51,7 @@
           {
             "key": "process.runtime.version",
             "value": {
-              "stringValue": "20.20.0"
+              "stringValue": "22.23.0"
             }
           },
           {
@@ -76,24 +76,6 @@
             "key": "process.owner",
             "value": {
               "stringValue": "runner"
-            }
-          },
-          {
-            "key": "vcs.system",
-            "value": {
-              "stringValue": "git"
-            }
-          },
-          {
-            "key": "vcs.commit.id",
-            "value": {
-              "stringValue": "3863925db919310045f636380cc799b60ed41c92"
-            }
-          },
-          {
-            "key": "vcs.branch.name",
-            "value": {
-              "stringValue": "release"
             }
           },
           {
@@ -123,37 +105,37 @@
           {
             "key": "cloud.region",
             "value": {
-              "stringValue": "eastus2"
+              "stringValue": "westcentralus"
             }
           },
           {
             "key": "cloud.resource_id",
             "value": {
-              "stringValue": "/subscriptions/a31b1e14-00c8-41ad-bb0d-00cdf1be01c7/resourceGroups/azure-eastus2-general-a31b1e14-00c8-41ad-bb0d-00cdf1be01c7/providers/Microsoft.Compute/virtualMachines/gA7kjWm36uCpAC"
+              "stringValue": "/subscriptions/920a69fd-e4dc-4112-bdd4-c3465b314e64/resourceGroups/azure-westcentralus-general-920a69fd-e4dc-4112-bdd4-c3465b314e64/providers/Microsoft.Compute/virtualMachines/48CgiilTfIkagx"
             }
           },
           {
             "key": "host.id",
             "value": {
-              "stringValue": "0d0e69a4-59dd-4072-b8d7-ba312783c7c7"
+              "stringValue": "ea6827b1-2d46-4736-90cf-3b9520642917"
             }
           },
           {
             "key": "host.name",
             "value": {
-              "stringValue": "gA7kjWm36uCpAC"
+              "stringValue": "48CgiilTfIkagx"
             }
           },
           {
             "key": "host.type",
             "value": {
-              "stringValue": "Standard_D4ads_v5"
+              "stringValue": "Standard_D4ads_v6"
             }
           },
           {
             "key": "os.version",
             "value": {
-              "stringValue": "20260302.42.1"
+              "stringValue": "20260622.220.1"
             }
           },
           {
@@ -177,7 +159,7 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "2.5.1"
+              "stringValue": "2.8.0"
             }
           }
         ]
@@ -186,41 +168,41 @@
         {
           "scope": {
             "name": "@opentelemetry/instrumentation-dns",
-            "version": "0.55.0"
+            "version": "0.61.0"
           },
           "spans": [
             {
-              "traceId": "1b98cd75edb0700c7698bd6a01b9581f",
-              "spanId": "450d93f820309362",
-              "parentSpanId": "143c15a9f8067f75",
+              "traceId": "192a9ca52078446c7814fa82360e1fcd",
+              "spanId": "82a2397892305069",
+              "parentSpanId": "bbcbee28d2a9bc79",
               "flags": 257,
               "name": "dns.lookup",
               "kind": 3,
-              "startTimeUnixNano": "1773124747069000000",
-              "endTimeUnixNano": "1773124747073653055",
+              "startTimeUnixNano": "1782678275487000000",
+              "endTimeUnixNano": "1782678275568032719",
               "attributes": [
                 {
                   "key": "peer.ipv4",
                   "value": {
-                    "stringValue": "104.18.27.120"
+                    "stringValue": "172.66.147.243"
                   }
                 },
                 {
                   "key": "peer[1].ipv4",
                   "value": {
-                    "stringValue": "104.18.26.120"
+                    "stringValue": "104.20.23.154"
                   }
                 },
                 {
                   "key": "peer[2].ipv6",
                   "value": {
-                    "stringValue": "2606:4700::6812:1b78"
+                    "stringValue": "2606:4700:10::ac42:93f3"
                   }
                 },
                 {
                   "key": "peer[3].ipv6",
                   "value": {
-                    "stringValue": "2606:4700::6812:1a78"
+                    "stringValue": "2606:4700:10::6814:179a"
                   }
                 }
               ],
@@ -236,7 +218,7 @@
           {
             "key": "process.pid",
             "value": {
-              "intValue": "7737"
+              "intValue": "8217"
             }
           },
           {
@@ -263,13 +245,13 @@
                     "stringValue": "--require"
                   },
                   {
-                    "stringValue": "/usr/share/opentelemetry_shell/agent.instrumentation.node/20/deep.inject.js"
+                    "stringValue": "/usr/share/opentelemetry_shell/agent.instrumentation.node/22/deep.inject.js"
                   },
                   {
                     "stringValue": "--require"
                   },
                   {
-                    "stringValue": "/usr/share/opentelemetry_shell/agent.instrumentation.node/20/deep.instrument.js"
+                    "stringValue": "/usr/share/opentelemetry_shell/agent.instrumentation.node/22/deep.instrument.js"
                   },
                   {
                     "stringValue": "/home/runner/work/Thoth/Thoth/demos/injection_deep_node/index.js"
@@ -281,7 +263,7 @@
           {
             "key": "process.runtime.version",
             "value": {
-              "stringValue": "20.20.0"
+              "stringValue": "22.23.0"
             }
           },
           {
@@ -306,24 +288,6 @@
             "key": "process.owner",
             "value": {
               "stringValue": "runner"
-            }
-          },
-          {
-            "key": "vcs.system",
-            "value": {
-              "stringValue": "git"
-            }
-          },
-          {
-            "key": "vcs.commit.id",
-            "value": {
-              "stringValue": "3863925db919310045f636380cc799b60ed41c92"
-            }
-          },
-          {
-            "key": "vcs.branch.name",
-            "value": {
-              "stringValue": "release"
             }
           },
           {
@@ -353,37 +317,37 @@
           {
             "key": "cloud.region",
             "value": {
-              "stringValue": "eastus2"
+              "stringValue": "westcentralus"
             }
           },
           {
             "key": "cloud.resource_id",
             "value": {
-              "stringValue": "/subscriptions/a31b1e14-00c8-41ad-bb0d-00cdf1be01c7/resourceGroups/azure-eastus2-general-a31b1e14-00c8-41ad-bb0d-00cdf1be01c7/providers/Microsoft.Compute/virtualMachines/gA7kjWm36uCpAC"
+              "stringValue": "/subscriptions/920a69fd-e4dc-4112-bdd4-c3465b314e64/resourceGroups/azure-westcentralus-general-920a69fd-e4dc-4112-bdd4-c3465b314e64/providers/Microsoft.Compute/virtualMachines/48CgiilTfIkagx"
             }
           },
           {
             "key": "host.id",
             "value": {
-              "stringValue": "0d0e69a4-59dd-4072-b8d7-ba312783c7c7"
+              "stringValue": "ea6827b1-2d46-4736-90cf-3b9520642917"
             }
           },
           {
             "key": "host.name",
             "value": {
-              "stringValue": "gA7kjWm36uCpAC"
+              "stringValue": "48CgiilTfIkagx"
             }
           },
           {
             "key": "host.type",
             "value": {
-              "stringValue": "Standard_D4ads_v5"
+              "stringValue": "Standard_D4ads_v6"
             }
           },
           {
             "key": "os.version",
             "value": {
-              "stringValue": "20260302.42.1"
+              "stringValue": "20260622.220.1"
             }
           },
           {
@@ -407,7 +371,7 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "2.5.1"
+              "stringValue": "2.8.0"
             }
           }
         ]
@@ -416,18 +380,18 @@
         {
           "scope": {
             "name": "@opentelemetry/instrumentation-net",
-            "version": "0.56.0"
+            "version": "0.62.0"
           },
           "spans": [
             {
-              "traceId": "1b98cd75edb0700c7698bd6a01b9581f",
-              "spanId": "6d091f02d459f082",
-              "parentSpanId": "143c15a9f8067f75",
+              "traceId": "192a9ca52078446c7814fa82360e1fcd",
+              "spanId": "1a92e6e7247579d8",
+              "parentSpanId": "bbcbee28d2a9bc79",
               "flags": 257,
               "name": "tcp.connect",
               "kind": 1,
-              "startTimeUnixNano": "1773124747068000000",
-              "endTimeUnixNano": "1773124747084247217",
+              "startTimeUnixNano": "1782678275486000000",
+              "endTimeUnixNano": "1782678275596071159",
               "attributes": [
                 {
                   "key": "net.transport",
@@ -450,19 +414,19 @@
                 {
                   "key": "net.peer.ip",
                   "value": {
-                    "stringValue": "104.18.27.120"
+                    "stringValue": "172.66.147.243"
                   }
                 },
                 {
                   "key": "net.host.ip",
                   "value": {
-                    "stringValue": "10.1.0.58"
+                    "stringValue": "10.1.0.162"
                   }
                 },
                 {
                   "key": "net.host.port",
                   "value": {
-                    "intValue": "36282"
+                    "intValue": "36430"
                   }
                 }
               ],
@@ -478,7 +442,7 @@
           {
             "key": "process.pid",
             "value": {
-              "intValue": "7737"
+              "intValue": "8217"
             }
           },
           {
@@ -505,13 +469,13 @@
                     "stringValue": "--require"
                   },
                   {
-                    "stringValue": "/usr/share/opentelemetry_shell/agent.instrumentation.node/20/deep.inject.js"
+                    "stringValue": "/usr/share/opentelemetry_shell/agent.instrumentation.node/22/deep.inject.js"
                   },
                   {
                     "stringValue": "--require"
                   },
                   {
-                    "stringValue": "/usr/share/opentelemetry_shell/agent.instrumentation.node/20/deep.instrument.js"
+                    "stringValue": "/usr/share/opentelemetry_shell/agent.instrumentation.node/22/deep.instrument.js"
                   },
                   {
                     "stringValue": "/home/runner/work/Thoth/Thoth/demos/injection_deep_node/index.js"
@@ -523,7 +487,7 @@
           {
             "key": "process.runtime.version",
             "value": {
-              "stringValue": "20.20.0"
+              "stringValue": "22.23.0"
             }
           },
           {
@@ -548,24 +512,6 @@
             "key": "process.owner",
             "value": {
               "stringValue": "runner"
-            }
-          },
-          {
-            "key": "vcs.system",
-            "value": {
-              "stringValue": "git"
-            }
-          },
-          {
-            "key": "vcs.commit.id",
-            "value": {
-              "stringValue": "3863925db919310045f636380cc799b60ed41c92"
-            }
-          },
-          {
-            "key": "vcs.branch.name",
-            "value": {
-              "stringValue": "release"
             }
           },
           {
@@ -595,37 +541,37 @@
           {
             "key": "cloud.region",
             "value": {
-              "stringValue": "eastus2"
+              "stringValue": "westcentralus"
             }
           },
           {
             "key": "cloud.resource_id",
             "value": {
-              "stringValue": "/subscriptions/a31b1e14-00c8-41ad-bb0d-00cdf1be01c7/resourceGroups/azure-eastus2-general-a31b1e14-00c8-41ad-bb0d-00cdf1be01c7/providers/Microsoft.Compute/virtualMachines/gA7kjWm36uCpAC"
+              "stringValue": "/subscriptions/920a69fd-e4dc-4112-bdd4-c3465b314e64/resourceGroups/azure-westcentralus-general-920a69fd-e4dc-4112-bdd4-c3465b314e64/providers/Microsoft.Compute/virtualMachines/48CgiilTfIkagx"
             }
           },
           {
             "key": "host.id",
             "value": {
-              "stringValue": "0d0e69a4-59dd-4072-b8d7-ba312783c7c7"
+              "stringValue": "ea6827b1-2d46-4736-90cf-3b9520642917"
             }
           },
           {
             "key": "host.name",
             "value": {
-              "stringValue": "gA7kjWm36uCpAC"
+              "stringValue": "48CgiilTfIkagx"
             }
           },
           {
             "key": "host.type",
             "value": {
-              "stringValue": "Standard_D4ads_v5"
+              "stringValue": "Standard_D4ads_v6"
             }
           },
           {
             "key": "os.version",
             "value": {
-              "stringValue": "20260302.42.1"
+              "stringValue": "20260622.220.1"
             }
           },
           {
@@ -649,7 +595,7 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "2.5.1"
+              "stringValue": "2.8.0"
             }
           }
         ]
@@ -658,18 +604,18 @@
         {
           "scope": {
             "name": "@opentelemetry/instrumentation-http",
-            "version": "0.212.0"
+            "version": "0.218.0"
           },
           "spans": [
             {
-              "traceId": "1b98cd75edb0700c7698bd6a01b9581f",
-              "spanId": "143c15a9f8067f75",
-              "parentSpanId": "f84c39371bdab4cc",
+              "traceId": "192a9ca52078446c7814fa82360e1fcd",
+              "spanId": "bbcbee28d2a9bc79",
+              "parentSpanId": "f3a88325536d70a2",
               "flags": 769,
               "name": "GET",
               "kind": 3,
-              "startTimeUnixNano": "1773124747064000000",
-              "endTimeUnixNano": "1773124747102249612",
+              "startTimeUnixNano": "1782678275484000000",
+              "endTimeUnixNano": "1782678275621227812",
               "attributes": [
                 {
                   "key": "http.url",
@@ -704,7 +650,7 @@
                 {
                   "key": "net.peer.ip",
                   "value": {
-                    "stringValue": "104.18.27.120"
+                    "stringValue": "172.66.147.243"
                   }
                 },
                 {
@@ -743,11 +689,7 @@
           ]
         }
       ]
-    }
-  ]
-}
-{
-  "resourceSpans": [
+    },
     {
       "resource": {
         "attributes": [
@@ -766,7 +708,13 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "5.47.3"
+              "stringValue": "5.58.0"
+            }
+          },
+          {
+            "key": "service.instance.id",
+            "value": {
+              "stringValue": "1faefa30-a59c-4757-95ed-199a386bf634"
             }
           },
           {
@@ -802,31 +750,31 @@
           {
             "key": "cloud.region",
             "value": {
-              "stringValue": "eastus2"
+              "stringValue": "westcentralus"
             }
           },
           {
             "key": "cloud.resource_id",
             "value": {
-              "stringValue": "/subscriptions/a31b1e14-00c8-41ad-bb0d-00cdf1be01c7/resourceGroups/azure-eastus2-general-a31b1e14-00c8-41ad-bb0d-00cdf1be01c7/providers/Microsoft.Compute/virtualMachines/gA7kjWm36uCpAC"
+              "stringValue": "/subscriptions/920a69fd-e4dc-4112-bdd4-c3465b314e64/resourceGroups/azure-westcentralus-general-920a69fd-e4dc-4112-bdd4-c3465b314e64/providers/Microsoft.Compute/virtualMachines/48CgiilTfIkagx"
             }
           },
           {
             "key": "host.id",
             "value": {
-              "stringValue": "0d0e69a4-59dd-4072-b8d7-ba312783c7c7"
+              "stringValue": "ea6827b1-2d46-4736-90cf-3b9520642917"
             }
           },
           {
             "key": "host.name",
             "value": {
-              "stringValue": "gA7kjWm36uCpAC"
+              "stringValue": "48CgiilTfIkagx"
             }
           },
           {
             "key": "host.type",
             "value": {
-              "stringValue": "Standard_D4ads_v5"
+              "stringValue": "Standard_D4ads_v6"
             }
           },
           {
@@ -838,25 +786,19 @@
           {
             "key": "os.version",
             "value": {
-              "stringValue": "6.14.0-1017-azure"
-            }
-          },
-          {
-            "key": "service.instance.id",
-            "value": {
-              "stringValue": "0d0e69a4-59dd-4072-b8d7-ba312783c7c7"
+              "stringValue": "6.17.0-1018-azure"
             }
           },
           {
             "key": "process.pid",
             "value": {
-              "intValue": "7003"
+              "intValue": "7489"
             }
           },
           {
             "key": "process.parent_pid",
             "value": {
-              "intValue": "2552"
+              "intValue": "2700"
             }
           },
           {
@@ -919,18 +861,18 @@
         {
           "scope": {
             "name": "shell",
-            "version": "5.47.3"
+            "version": "5.58.0"
           },
           "spans": [
             {
-              "traceId": "1b98cd75edb0700c7698bd6a01b9581f",
-              "spanId": "f84c39371bdab4cc",
-              "parentSpanId": "bc3793788a5600c9",
+              "traceId": "192a9ca52078446c7814fa82360e1fcd",
+              "spanId": "f3a88325536d70a2",
+              "parentSpanId": "9225b2043045d012",
               "flags": 768,
               "name": "node index.js",
               "kind": 1,
-              "startTimeUnixNano": "1773124745406986240",
-              "endTimeUnixNano": "1773124747132846848",
+              "startTimeUnixNano": "1782678273483014912",
+              "endTimeUnixNano": "1782678275646738432",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -990,13 +932,13 @@
               "status": {}
             },
             {
-              "traceId": "1b98cd75edb0700c7698bd6a01b9581f",
-              "spanId": "bc3793788a5600c9",
+              "traceId": "192a9ca52078446c7814fa82360e1fcd",
+              "spanId": "9225b2043045d012",
               "flags": 256,
               "name": "bash -e demo.sh",
               "kind": 2,
-              "startTimeUnixNano": "1773124745394706688",
-              "endTimeUnixNano": "1773124747133016832",
+              "startTimeUnixNano": "1782678273472820224",
+              "endTimeUnixNano": "1782678275646892800",
               "status": {}
             }
           ]

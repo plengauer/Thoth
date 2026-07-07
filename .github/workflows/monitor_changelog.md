@@ -15,9 +15,6 @@ tools:
   github:
     toolsets: [context, issues]
   web-fetch:
-rate-limit:
-  max: 1
-  window: 180
 safe-outputs:
   noop:
   create-issue:
