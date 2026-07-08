@@ -14,7 +14,7 @@ sudo -- echo hello world
 assert_equals 0 $?
 span="$(resolve_span '.name == "sudo -- echo hello world"')"
 assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
-span="$(resolve_span '.name == "echo hello world" | .resource.attributes."process.command_line" == "sudo -- echo hello world"')"
+span="$(resolve_span '.name == "echo hello world") | select(.resource.attributes."process.command_line" == "sudo -- echo hello world"')"
 assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
 
 # security policy doesnt allow this
