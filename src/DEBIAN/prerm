@@ -1,0 +1,8 @@
+#!/bin/sh -e
+if [ "$1" = 'remove' ] || [ "$1" = 'deconfigure' ] || [ "$1" = 'upgrade' ]; then
+  rm -rf /opt/opentelemetry_shell/venv /usr/share/opentelemetry_shell/*/ /usr/share/opentelemetry_shell/agent.instrumentation.node/*/ /usr/share/opentelemetry_shell/agent.instrumentation.python/*/
+elif [ "$1" = 'failed-upgrade' ]; then
+  true
+else
+  exit 1
+fi
