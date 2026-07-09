@@ -10,8 +10,6 @@ on:
       - "release/v*"
   schedule:
     - cron: '0 0 * * *'
-env:
-  CODEQL_EXTRACTOR_CPP_BUILD_MODE_NONE: 'true' # scanning c/c++ without building it is an experimental feature and needs to be enabled like this until released
 jobs:
   security:
     runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
@@ -33,6 +31,8 @@ jobs:
             build-mode: none
           - language: actions
             build-mode: none
+    env:
+      CODEQL_EXTRACTOR_CPP_BUILD_MODE_NONE: 'true' # scanning c/c++ without building it is an experimental feature and needs to be enabled like this until released
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@2169fb0fa9a8260fde99a2a185bbf99a5d63546e # v5.59.0
         with:
