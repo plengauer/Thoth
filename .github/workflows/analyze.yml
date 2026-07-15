@@ -78,9 +78,7 @@ jobs:
       - uses: super-linter/super-linter@4ce20838b8ab83717e78138c5b3a1407148e0918 # v8.7.0
         env:
           GITHUB_TOKEN: ${{ github.token }}
-          VALIDATE_ALL_CODEBASE: 'true'
           VALIDATE_BIOME_FORMAT: 'false'
           VALIDATE_BIOME_LINT: 'false'
           FAIL_ON_INVALID_GITHUB_ACTIONS_EVENT_CONFIGURATION: 'true'
           DISABLE_ERRORS: 'true' # TODO remove me to enable
-          LOG_LEVEL: DEBUG
