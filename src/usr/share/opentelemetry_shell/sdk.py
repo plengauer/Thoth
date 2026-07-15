@@ -425,7 +425,6 @@ def handle(scope, version, command, arguments):
             explicit_bucket_boundaries = tokens[0]
             description = tokens[1]
         meter = get_meter(scope, version)
-        counter_id = str(next_counter_id) if response_path else tokens[0]
         if type == 'counter':
             counters[counter_id] = meter.create_counter(name, unit=unit, description=description)
         elif type == 'up_down_counter':
