@@ -1,6 +1,5 @@
 import sys
 import os
-import stat
 import time
 from datetime import datetime, timezone
 
@@ -11,24 +10,13 @@ initialized_logs = False
 resource = {}
 final_resources = None
 spans = {}
-next_span_id = 0
 events = {}
-next_event_id = 0
 links = {}
-next_link_id = 0
 counters = {}
-next_counter_id = 0
 observations = {}
-next_observation_id = 0
 delayed_observations = {}
 
 auto_end = False
-
-def is_fifo(path):
-    try:
-        return stat.S_ISFIFO(os.stat(path).st_mode)
-    except:
-        return False
 
 def main():
     run(sys.argv[1], sys.argv[2], sys.stdin)
@@ -292,21 +280,15 @@ def handle(scope, version, command, arguments):
     elif command == 'SPAN_START':
         from opentelemetry.trace import get_tracer, SpanKind
         from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
-        global next_span_id
         tokens = arguments.split(' ', 5)
-        response_path = tokens[0] if is_fifo(tokens[0]) else None
+        span_id = tokens[0]
         traceparent = tokens[1]
         tracestate = tokens[2]
         start_time = tokens[3]
         kind = tokens[4]
         name = tokens[5]
-        span_id = str(next_span_id) if response_path else tokens[0]
-        next_span_id = next_span_id + 1 if response_path else next_span_id
         span = get_tracer(scope, version).start_span(name, kind=SpanKind[kind.upper()], context=TraceContextTextMapPropagator().extract({'traceparent': traceparent, 'tracestate': tracestate}), start_time=parse_time(start_time))
         spans[span_id] = span
-        if response_path:
-            with open(response_path, 'w') as response:
-                response.write(span_id)
         auto_end = False
     elif command == 'SPAN_END':
         from opentelemetry.sdk.trace import Span
@@ -376,16 +358,10 @@ def handle(scope, version, command, arguments):
         with open(response_path, 'w') as response:
             response.write(carrier.get('traceparent', ''))
     elif command == 'EVENT_CREATE':
-        global next_event_id
         tokens = arguments.split(' ', 1)
-        response_path = tokens[0] if is_fifo(tokens[0]) else None
+        event_id = tokens[0]
         event_name = tokens[1]
-        event_id = str(next_event_id) if response_path else tokens[0]
-        next_event_id = next_event_id + 1 if response_path else next_event_id
         events[event_id] = { 'name': event_name, 'attributes': {} }
-        if response_path:
-            with open(response_path, 'w') as response:
-                response.write(event_id)
     elif command == 'EVENT_ATTRIBUTE':
         tokens = arguments.split(' ', 2)
         event_id = tokens[0]
@@ -409,19 +385,13 @@ def handle(scope, version, command, arguments):
         from opentelemetry.sdk.trace import Span
         from opentelemetry.trace import get_current_span
         from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
-        global next_link_id
         tokens = arguments.split(' ', 3)
-        response_path = tokens[0] if is_fifo(tokens[0]) else None
+        link_id = tokens[0]
         traceparent = tokens[1]
         tracestate = tokens[2]
         # third is dummy to not be stripped away
         link_context = get_current_span(TraceContextTextMapPropagator().extract({'traceparent': traceparent, 'tracestate': tracestate})).get_span_context()
-        link_id = str(next_link_id) if response_path else tokens[0]
-        next_link_id = next_link_id + 1 if response_path else next_link_id
         links[link_id] = { 'context': link_context, 'attributes': {} }
-        if response_path:
-            with open(response_path, 'w') as response:
-                response.write(link_id)
     elif command == 'LINK_ATTRIBUTE':
         tokens = arguments.split(' ', 2)
         link_id = tokens[0]
@@ -444,9 +414,8 @@ def handle(scope, version, command, arguments):
     elif command == 'COUNTER_CREATE':
         from opentelemetry.metrics import get_meter
         from opentelemetry.sdk.metrics import MeterProvider
-        global next_counter_id
         tokens = arguments.split(' ', 4)
-        response_path = tokens[0] if is_fifo(tokens[0]) else None
+        counter_id = tokens[0]
         type = tokens[1]
         name = tokens[2]
         unit = tokens[3]
@@ -479,10 +448,6 @@ def handle(scope, version, command, arguments):
             counters[counter_id] = meter.create_observable_gauge(name, [ functools.partial(observable_counter_callback, counter_id) ], unit=unit, description=description)
         else:
             raise Exception('Unknown counter type: ' + type)
-        next_counter_id = next_counter_id + 1 if response_path else next_counter_id
-        if response_path:
-            with open(response_path, 'w') as response:
-                response.write(counter_id)
     elif command == 'COUNTER_OBSERVE':
         tokens = arguments.split(' ', 1)
         counter_id = tokens[0]
@@ -501,16 +466,10 @@ def handle(scope, version, command, arguments):
             delayed_observations[counter_id][hashlib.sha256(json.dumps(observation['attributes'], sort_keys=True).encode('utf-8')).hexdigest()] = observation
         del observations[str(observation_id)]
     elif command == 'OBSERVATION_CREATE':
-        global next_observation_id
         tokens = arguments.split(' ', 1)
-        response_path = tokens[0] if is_fifo(tokens[0]) else None
+        observation_id = tokens[0]
         amount = tokens[1]
-        observation_id = str(next_observation_id) if response_path else tokens[0]
-        next_observation_id = next_observation_id + 1 if response_path else next_observation_id
         observations[observation_id] = { 'amount': convert_type('auto', amount), 'attributes': {} }
-        if response_path:
-            with open(response_path, 'w') as response:
-                response.write(observation_id)
     elif command == 'OBSERVATION_ATTRIBUTE':
         tokens = arguments.split(' ', 2)
         observation_id = tokens[0]
