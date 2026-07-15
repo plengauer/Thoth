@@ -324,7 +324,7 @@ jobs:
           ENABLE_GITHUB_PULL_REQUEST_SUMMARY_COMMENT: 'false'
           # RUN_LOCAL: 'true'
           # DEFAULT_BRANCH: main
-          LOG_LEVEL: DEBUG
+          # LOG_LEVEL: DEBUG
   job-integration-python-venv:
     needs: job-smoke
     runs-on: ubuntu-latest
