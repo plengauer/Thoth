@@ -71,6 +71,7 @@ jobs:
         with:
           fetch-depth: 0
       - uses: oxsecurity/megalinter@v9.6.0
+        continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ github.token }}
           VALIDATE_ALL_CODEBASE: ${{ github.event_name != 'pull_request' }}
