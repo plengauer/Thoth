@@ -46,13 +46,19 @@ const sdk = new opentelemetry_sdk.NodeSDK({
   contextManager: context_manager.enable(),
   instrumentations: [
     opentelemetry_auto_instrumentations.getNodeAutoInstrumentations(),
-    require("@traceloop/node-server-sdk").traceloopInstrumentationLibraries.filter(library => library.startsWith("@traceloop/instrumentation-")).map(function(library) {
+    [
+      '@arizeai/openinference-instrumentation-openai',
+      '@arizeai/openinference-instrumentation-anthropic',
+      '@arizeai/openinference-instrumentation-langchain',
+      '@arizeai/openinference-instrumentation-bedrock',
+      '@arizeai/openinference-instrumentation-mcp',
+    ].flatMap(function(library) {
       try {
-        return require(library);
+        return Object.entries(require(library)).filter(function(entry) { return entry[0].endsWith('Instrumentation'); }).map(function(entry) { return new entry[1](); });
       } catch {
-        return null;
+        return [];
       }
-    }).filter(library => library != null).flatMap(library => Object.entries(library)).filter(entry => entry[0].endsWith("Instrumentation")).map(entry => entry[1]).map(clazz => new clazz)
+    })
   ],
   resourceDetectors: [
     // opentelemetry_resources_alibaba_cloud.alibabaCloudEcsDetector, // TODO this one takes a full second to just time out when its not alibaba
