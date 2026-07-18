@@ -66,6 +66,7 @@ jobs:
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
         with:
           secrets_to_redact: ${{ github.token }}
+          __kill_switch: 1 # TODO remove me when otel injection works with superlinter
       - run: |
           if [ "$GITHUB_REF_NAME" = main ]; then
             echo VALIDATE_ALL_CODEBASE=true
