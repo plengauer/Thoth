@@ -78,6 +78,16 @@ _otel_sdk_communicate() {
   fi
 }
 
+_otel_next_handle_counter=0
+_otel_next_handle_result=""
+
+_otel_next_handle() {
+  local process_pid="$$"
+  \read -r process_pid _ < /proc/self/stat || \true
+  _otel_next_handle_counter=$((_otel_next_handle_counter + 1))
+  _otel_next_handle_result="${process_pid}.${_otel_next_handle_counter}"
+}
+
 _otel_resource_attributes() {
   _otel_resource_attributes_process
   _otel_resource_attributes_service
@@ -180,13 +190,9 @@ otel_span_start() {
   if _otel_string_starts_with "${1:-}" @; then local time="${1#@}"; shift; else local time=auto; fi
   local kind="$1"
   local name="$2"
-  local response_pipe="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.span_handle.pipe.XXXXXXXXXX)"
-  \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
-  _otel_sdk_communicate "SPAN_START" "$response_pipe" "${TRACEPARENT:-}" "${TRACESTATE:-}" "$time" "$kind" "$name"
-  local handle
-  \read handle < "$response_pipe" || \true
-  \echo "$handle"
-  \rm "$response_pipe" 1> /dev/null 2> /dev/null
+  _otel_next_handle
+  _otel_sdk_communicate "SPAN_START" "$_otel_next_handle_result" "${TRACEPARENT:-}" "${TRACESTATE:-}" "$time" "$kind" "$name"
+  \echo "$_otel_next_handle_result"
 }
 
 otel_span_end() {
@@ -254,13 +260,9 @@ otel_span_deactivate() {
 
 otel_event_create() {
   local event_name="$1"
-  local response_pipe="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.event_handle.pipe.XXXXXXXXXX)"
-  \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
-  _otel_sdk_communicate "EVENT_CREATE" "$response_pipe" "$event_name"
-  local handle
-  \read handle < "$response_pipe" || \true
-  \echo "$handle"
-  \rm "$response_pipe" 1> /dev/null 2> /dev/null
+  _otel_next_handle
+  _otel_sdk_communicate "EVENT_CREATE" "$_otel_next_handle_result" "$event_name"
+  \echo "$_otel_next_handle_result"
 }
 
 otel_event_attribute() {
@@ -285,13 +287,9 @@ otel_event_add() {
 otel_link_create() {
   local traceparent="$1"
   local tracestate="$2"
-  local response_pipe="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.link_handle.pipe.XXXXXXXXXX)"
-  \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
-  _otel_sdk_communicate "LINK_CREATE" "$response_pipe" "$traceparent" "$tracestate" END
-  local handle
-  \read handle < "$response_pipe" || \true
-  \echo "$handle"
-  \rm "$response_pipe" 1> /dev/null 2> /dev/null
+  _otel_next_handle
+  _otel_sdk_communicate "LINK_CREATE" "$_otel_next_handle_result" "$traceparent" "$tracestate" END
+  \echo "$_otel_next_handle_result"
 }
 
 otel_link_attribute() {
@@ -317,20 +315,16 @@ otel_counter_create() {
   local type="$1"
   local name="$2"
   local unit="${3:-1}"
-  local response_pipe="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.counter_handle.pipe.XXXXXXXXXX)"
-  \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
+  _otel_next_handle
   if \[ "$type" = histogram ]; then
     local buckets="${4:-}"
     local description="${5:-}"
-    _otel_sdk_communicate "COUNTER_CREATE" "$response_pipe" "$type" "$name" "$unit" "$buckets" "$description"
+    _otel_sdk_communicate "COUNTER_CREATE" "$_otel_next_handle_result" "$type" "$name" "$unit" "$buckets" "$description"
   else
     local description="${4:-}"
-    _otel_sdk_communicate "COUNTER_CREATE" "$response_pipe" "$type" "$name" "$unit" "$description"
+    _otel_sdk_communicate "COUNTER_CREATE" "$_otel_next_handle_result" "$type" "$name" "$unit" "$description"
   fi
-  local handle
-  \read handle < "$response_pipe" || \true
-  \echo "$handle"
-  \rm "$response_pipe" 1> /dev/null 2> /dev/null
+  \echo "$_otel_next_handle_result"
 }
 
 otel_counter_observe() {
@@ -341,13 +335,9 @@ otel_counter_observe() {
 
 otel_observation_create() {
   local value="$1"
-  local response_pipe="$(\mktemp -u -p "$_otel_shell_pipe_dir")_opentelemetry_shell_$$.observation_handle.pipe"
-  \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
-  _otel_sdk_communicate "OBSERVATION_CREATE" "$response_pipe" "$value"
-  local handle
-  \read handle < "$response_pipe" || \true
-  \echo "$handle"
-  \rm "$response_pipe" 1> /dev/null 2> /dev/null
+  _otel_next_handle
+  _otel_sdk_communicate "OBSERVATION_CREATE" "$_otel_next_handle_result" "$value"
+  \echo "$_otel_next_handle_result"
 }
 
 otel_observation_attribute_typed() {
