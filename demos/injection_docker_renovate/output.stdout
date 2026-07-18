@@ -1,15 +1,15 @@
  INFO: Renovate started
-       "renovateVersion": "43.246.1"
+       "renovateVersion": "43.252.1"
  WARN: cli config dryRun property has been changed to full
  INFO: Repository started (repository=plengauer/Thoth)
-       "renovateVersion": "43.246.1"
+       "renovateVersion": "43.252.1"
  WARN: Cannot access vulnerability alerts. Please ensure permissions have been granted. (repository=plengauer/Thoth)
        "url": "https://docs.renovatebot.com/configuration-options/#vulnerabilityalerts"
  INFO: Dependency extraction complete (repository=plengauer/Thoth, baseBranch=main)
        "stats": {
          "managers": {
            "dockerfile": {"fileCount": 4, "depCount": 4},
-           "github-actions": {"fileCount": 31, "depCount": 545},
+           "github-actions": {"fileCount": 32, "depCount": 622},
            "gradle": {"fileCount": 4, "depCount": 3},
            "gradle-wrapper": {"fileCount": 1, "depCount": 1},
            "maven": {"fileCount": 1, "depCount": 2},
@@ -17,32 +17,14 @@
            "pip_requirements": {"fileCount": 3, "depCount": 18},
            "regex": {"fileCount": 3, "depCount": 4}
          },
-         "total": {"fileCount": 49, "depCount": 591}
+         "total": {"fileCount": 50, "depCount": 668}
        }
- INFO: DRY-RUN: Would commit files to branch renovate/junit-framework-monorepo. See debug logs for raw commit information (repository=plengauer/Thoth, branch=renovate/junit-framework-monorepo)
- INFO: DRY-RUN: Would commit files to branch renovate/traceloop-sdk-0.x. See debug logs for raw commit information (repository=plengauer/Thoth, branch=renovate/traceloop-sdk-0.x)
- WARN: Package lookup failures (repository=plengauer/Thoth)
-       "warnings": [
-         "Failed to look up github-tags package renovatebot/github-action: no-result",
-         "Failed to look up github-tags package actions/cache: no-result",
-         "Failed to look up github-tags package Vampire/setup-wsl: no-result",
-         "Failed to look up github-tags package plengauer/create-package-repository: no-result",
-         "Failed to look up github-tags package actions/upload-pages-artifact: no-result",
-         "Failed to look up github-tags package actions/deploy-pages: no-result"
-       ],
-       "files": [
-         ".github/workflows/experiment.yml",
-         ".github/workflows/renovate.yml",
-         ".github/workflows/test_github.yml",
-         ".github/workflows/test_shell.yml",
-         ".github/workflows/update_package_repository.yml"
-       ]
  INFO: DRY-RUN: Would ensure Dependency Dashboard (repository=plengauer/Thoth)
        "title": "Dependency Dashboard"
  INFO: DRY-RUN: Would save repository cache. (repository=plengauer/Thoth)
  INFO: Repository finished (repository=plengauer/Thoth)
        "cloned": true,
-       "durationMs": 22814,
+       "durationMs": 43592,
        "result": "done",
        "status": "onboarded",
        "enabled": true,
