@@ -367,7 +367,7 @@ jobs:
             sudo -E apt-get -y install "$package" || true
           done
           [ ${{ matrix.shell }} = sh ] || sudo -E apt-get -y install ${{ matrix.shell }} || exit 0
-          dos2unix tests/*.sh tests/*/*
+          find . -name '*.sh' | xargs dos2unix
           bash -c "cd tests && bash run_tests.sh ${{ matrix.shell }}"
           sudo apt-get -y remove opentelemetry-shell
         env:
