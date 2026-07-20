@@ -346,7 +346,7 @@ jobs:
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
-      - uses: oxsecurity/megalinter@v9.6.0
+      - uses: oxsecurity/megalinter@ef3e84b8b836d76db562d0f3ed7da61e8fd538bc # v9.6.0
         continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ github.token }}
