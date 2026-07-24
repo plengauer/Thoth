@@ -217,15 +217,15 @@ jobs:
             echo '# Demo "'"$(cat ./meta.json | jq -r .title)"'"'
             cat meta.json | jq -r .description
             echo '## Script'
-            echo '```sh'
+            echo '```bash'
             cat demo.sh
             echo '```'
             echo '## Trace Structure Overview'
-            echo '```'
+            echo '```bash'
             get_root_span_id | while read -r root_span_id; do print_span_name_tree "$root_span_id" ""; done
             echo '```'
             echo '## Full Trace'
-            echo '```'
+            echo '```json'
             pretty_print_trace
             echo '```'
           } > README.md

@@ -9,7 +9,7 @@ java Main
 rm Main.class
 ```
 ## Trace Structure Overview
-```bash
+```
 bash -e demo.sh
   javac Main.java
   java Main
@@ -17,7 +17,7 @@ bash -e demo.sh
   rm Main.class
 ```
 ## Full Trace
-```json
+```
 {
   "trace_id": "b0a0ea7c07bb3156df7d2d1ea32cf26d",
   "span_id": "53c3b2fdbe12f95b",

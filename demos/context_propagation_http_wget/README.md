@@ -8,7 +8,7 @@ sleep 5
 wget http://127.0.0.1:12345 || true
 ```
 ## Trace Structure Overview
-```text
+```
 send/receive
 bash -e demo.sh
   wget http://127.0.0.1:12345
@@ -18,7 +18,7 @@ bash -e demo.sh
   true
 ```
 ## Full Trace
-```json
+```
 {
   "trace_id": "4d50c79fda87f56f77082f4773d67a70",
   "span_id": "3675fb7f0b800248",

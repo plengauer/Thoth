@@ -6,12 +6,12 @@ This is a script as easy as it gets, i.e., a simple hello world. It shows some v
 echo hello world
 ```
 ## Trace Structure Overview
-```bash
+```
 bash -e demo.sh
   echo hello world
 ```
 ## Full Trace
-```json
+```
 {
   "trace_id": "6e77b899094288fead22468759031660",
   "span_id": "61ec12dd270bf3ff",

@@ -8,7 +8,7 @@ printf 'echo hello world from stdin' | sh
 sh -c 'echo "$@"' sh hello world from -c
 ```
 ## Trace Structure Overview
-```bash
+```
 bash -e demo.sh
   sh ./child.sh hello world from child
     echo hello world from child
@@ -19,7 +19,7 @@ bash -e demo.sh
     echo hello world from -c
 ```
 ## Full Trace
-```json
+```
 {
   "trace_id": "d1cf8fb6c5db608d8a4b214101d4e06b",
   "span_id": "9c8ba5171e2cf762",

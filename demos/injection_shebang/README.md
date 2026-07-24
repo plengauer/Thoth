@@ -6,7 +6,7 @@ Executables can have shebangs, which means that they are actually scripts and ex
 which bash
 ```
 ## Trace Structure Overview
-```bash
+```
 bash -e demo.sh
   /bin/sh /usr/bin/which bash
     test -n
@@ -40,7 +40,7 @@ bash -e demo.sh
     [ 0 -ne 0 ]
 ```
 ## Full Trace
-```json
+```
 {
   "trace_id": "87c96cf1b47d63a99b455288174c229e",
   "span_id": "a7dc75e859dc40f9",

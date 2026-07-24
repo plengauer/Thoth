@@ -7,7 +7,7 @@ export RENOVATE_TOKEN="$GITHUB_TOKEN"
 sudo -E docker run --rm --network host --env RENOVATE_TOKEN renovate/renovate --dry-run plengauer/Thoth
 ```
 ## Trace Structure Overview
-```bash
+```
 bash -e demo.sh
   sudo -E docker run --rm --network host --env RENOVATE_TOKEN renovate/renovate --dry-run plengauer/Thoth
     docker run --rm --network host --env RENOVATE_TOKEN renovate/renovate --dry-run plengauer/Thoth
@@ -680,7 +680,7 @@ bash -e demo.sh
                         destroy PackageCache
 ```
 ## Full Trace
-```json
+```
 {
   "trace_id": "31e8b8fde0c065abdcca5416f002d975",
   "span_id": "05808036eb6fd658",

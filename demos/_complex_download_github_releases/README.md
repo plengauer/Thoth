@@ -17,7 +17,7 @@ printf "HEAD $path HTTP/1.1\r\nConnection: close\r\nUser-Agent: ncat\r\nHost: $h
   | xargs wget
 ```
 ## Trace Structure Overview
-```bash
+```
 bash -e demo.sh
   printf HEAD /repos/plengauer/Thoth/releases?per_page=100 HTTP/1.1\r\nConnection: close\r\nUser-Agent: ncat\r\nHost: api.github.com\r\n\r\n
   ncat --ssl -i 3 --no-shutdown api.github.com 443
@@ -59,7 +59,7 @@ bash -e demo.sh
       GET
 ```
 ## Full Trace
-```json
+```
 {
   "trace_id": "f4870480d763bf443ad2495f245c706a",
   "span_id": "d2bb771ec498e379",

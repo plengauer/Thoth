@@ -1,4 +1,3 @@
-<!-- markdownlint-disable MD013 -->
 # Demo "Deep injection into a Gradle build"
 This script uses gradle to build a simple project.
 ## Script
@@ -10,7 +9,7 @@ export OTEL_SHELL_CONFIG_INJECT_DEEP=TRUE
 gradlew build
 ```
 ## Trace Structure Overview
-```text
+```
 GET
 HEAD
 GET
@@ -87,7 +86,7 @@ bash -e demo.sh
         chmod 755 /home/runner/.gradle/wrapper/dists/gradle-9.4.0-bin/lcvyxq3t37f6mx9miaydrrgs/gradle-9.4.0/bin/gradle
 ```
 ## Full Trace
-```json
+```
 {
   "trace_id": "ac51f9735ccef1d5e4867140a5d6c83f",
   "span_id": "66f26aacdcc7385e",

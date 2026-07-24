@@ -12,7 +12,7 @@ deactivate
 rm -rf venv
 ```
 ## Trace Structure Overview
-```bash
+```
 bash -e demo.sh
   python3 -m venv venv
     /home/runner/work/Thoth/Thoth/demos/injection_deep_python/venv/bin/python3 -m ensurepip --upgrade --default-pip
@@ -37,10 +37,10 @@ bash -e demo.sh
           tr [:upper:] [:lower:]
           [ ubuntu = ubuntu ]
           [ -t 1 ]
-          printf %s:  %s
-          printf %s:  %s
-          printf %s:  %s
-          printf %s:  %s
+          printf %s:	%s
+          printf %s:	%s
+          printf %s:	%s
+          printf %s:	%s
         /usr/bin/uname -rs
   [ -n  ]
   [ -n  ]
@@ -71,10 +71,10 @@ bash -e demo.sh
       tr [:upper:] [:lower:]
       [ ubuntu = ubuntu ]
       [ -t 1 ]
-      printf %s:  %s
-      printf %s:  %s
-      printf %s:  %s
-      printf %s:  %s
+      printf %s:	%s
+      printf %s:	%s
+      printf %s:	%s
+      printf %s:	%s
     /usr/bin/uname -rs
   python script.py
     GET
@@ -85,7 +85,7 @@ bash -e demo.sh
   rm -rf venv
 ```
 ## Full Trace
-```json
+```
 {
   "trace_id": "eb73e241b69641b10c70ea087dce6785",
   "span_id": "e73bc61a4dfad826",

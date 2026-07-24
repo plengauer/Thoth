@@ -7,7 +7,7 @@ export OTEL_SHELL_CONFIG_OBSERVE_SUBPROCESSES=TRUE
 sudo apt-get update
 ```
 ## Trace Structure Overview
-```bash
+```
 bash -e demo.sh
   sudo apt-get update
     apt-get update
@@ -315,7 +315,7 @@ bash -e demo.sh
       /usr/bin/dpkg --force-confdef --force-confold --force-confdef --force-confold --print-foreign-architectures
 ```
 ## Full Trace
-```json
+```
 {
   "trace_id": "79e6c4669871173001b3746a5692a6f7",
   "span_id": "1cd80c13ebecb882",

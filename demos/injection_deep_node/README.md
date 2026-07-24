@@ -7,7 +7,7 @@ export OTEL_SHELL_CONFIG_INJECT_DEEP=TRUE
  node index.js
 ```
 ## Trace Structure Overview
-```bash
+```
 bash -e demo.sh
   node index.js
     GET
@@ -15,7 +15,7 @@ bash -e demo.sh
       tcp.connect
 ```
 ## Full Trace
-```json
+```
 {
   "trace_id": "da4429a1a3b1c59d7bfe7701bcf04bd2",
   "span_id": "55ab591a1810f839",
