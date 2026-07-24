@@ -82,7 +82,7 @@ runs:
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         token: ${{ inputs.github_token }}
-    - uses: plengauer/Thoth/actions/instrument/deploy-local@${{ github.action_ref }}
+    - uses: ./actions/instrument/deploy-local
       with:
         github_token: ${{ inputs.github_token }}
         workflows_directory: ${{ inputs.workflows_directory }}
