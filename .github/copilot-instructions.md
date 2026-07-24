@@ -2,7 +2,7 @@
 
 ## Overview
 **Thoth** (aliases: `opentelemetry-bash`, `opentelemetry-shell`, `opentelemetry-github`) provides OpenTelemetry traces/metrics/logs for shell scripts and GitHub workflows. This is a **packaging project** integrating Shell, Python, Node.js, Java, and C to auto-instrument shell scripts and GitHub actions.
-**Key Facts**: 31 core .sh + 3 .py + 4 .java + 1 .c source files | Package: `opentelemetry-shell` | Version: `VERSION` file | Platforms: Debian/Ubuntu (apt), RHEL/Fedora/OpenSuse (rpm), Alpine (apk), GitHub Actions
+**Key Facts**: 29 core .sh + 2 .py + 4 .java + 1 .c source files | Package: `opentelemetry-shell` | Version: `VERSION` file | Platforms: Debian/Ubuntu (apt), RHEL/Fedora/OpenSuse (rpm), Alpine (apk), GitHub Actions
 
 ## Constant Instructions
 - the project is hard to build. look at the build.yml and recreate the steps to build a deb. if the goal of a task does not involve deep injection into other techs like node/python/java then one needs only to build the deb package without the additional dependencies.
