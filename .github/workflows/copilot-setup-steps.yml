@@ -11,8 +11,6 @@ jobs:
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
-        with:
-          __kill_switch: 1
       - run: |
           printenv
           { find "${RUNNER_TEMP}"/*-action-* -type f -iname '*.sh' || true; find "${RUNNER_TEMP}"/*-action-* -type f -iname '*.js' || true; } | while IFS= read -r script_file; do
