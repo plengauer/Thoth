@@ -8,7 +8,7 @@ sleep 5
 printf 'GET / HTTP/1.1\r\n\r\n' | ncat --no-shutdown 127.0.0.1 12345
 ```
 ## Trace Structure Overview
-```
+```text
 send/receive
 bash -e demo.sh
   printf GET / HTTP/1.1\r\n\r\n
@@ -19,7 +19,7 @@ bash -e demo.sh
           printf HTTP/1.1 418 I'm a teapot
 ```
 ## Full Trace
-```
+```json
 {
   "trace_id": "cae72fd558bf1198ffb3e697b2be516d",
   "span_id": "c1d8e33ed2e25102",

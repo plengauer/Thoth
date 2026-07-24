@@ -8,7 +8,7 @@ sleep 5
 curl http://127.0.0.1:12345
 ```
 ## Trace Structure Overview
-```
+```text
 send/receive
 bash -e demo.sh
   curl http://127.0.0.1:12345
@@ -17,7 +17,7 @@ bash -e demo.sh
         printf HTTP/1.1 418 I'm a teapot
 ```
 ## Full Trace
-```
+```json
 {
   "trace_id": "909dcbc3e0e7e1a45df33990e2264368",
   "span_id": "e3faebc1ea37b6cf",

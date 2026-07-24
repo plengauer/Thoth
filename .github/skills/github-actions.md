@@ -33,7 +33,7 @@ Apply this skill when modifying GitHub Actions workflows or the GitHub Actions i
 
 ## Key Workflow Architecture
 
-```
+```text
 test.yml (push/PR trigger)
   └── ci.yml (workflow_call)
         ├── build.yml (15-30m, produces .deb/.rpm/.apk)

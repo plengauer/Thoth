@@ -6,7 +6,7 @@ This script shows injection into inner commands with xargs and parallel to conti
 seq 1 5 | xargs parallel sleep :::
 ```
 ## Trace Structure Overview
-```
+```bash
 bash -e demo.sh
   seq 1 5
   xargs parallel sleep :::
@@ -18,7 +18,7 @@ bash -e demo.sh
       sleep 5
 ```
 ## Full Trace
-```
+```json
 {
   "trace_id": "dce6b36f4e7e039ee819671aa2205601",
   "span_id": "1a22c32964be48cc",
