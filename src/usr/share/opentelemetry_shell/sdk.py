@@ -62,7 +62,8 @@ def guess_cloud_resource_detectors():
         from opentelemetry.resourcedetector.gcp_resource_detector import GoogleCloudResourceDetector
         return [ GoogleCloudResourceDetector() ]
     elif file_contains('/sys/class/dmi/id/product_name', 'OracleCloud.com'):
-        class OracleResourceDetector(ResourceDetector):
+        from opentelemetry.sdk.resources import Resource, ResourceDetector
+        class OracleCloudResourceDetector(ResourceDetector):
             def detect(self) -> Resource:
                 try:
                     metadata = self.fetch_metadata()
@@ -84,7 +85,7 @@ def guess_cloud_resource_detectors():
                 response = requests.get('http://169.254.169.254/opc/v1/instance/', headers={'Authorization': 'Bearer Oracle'}, timeout=0.1)
                 response.raise_for_status()  # Raise an exception for 4xx or 5xx status codes
                 return response.json()
-        return [ OracleResourceDetector() ]
+        return [ OracleCloudResourceDetector() ]
     else:
         from opentelemetry.sdk.resources import Resource, ResourceDetector
         from opentelemetry.sdk.extension.aws.resource.ec2 import AwsEc2ResourceDetector
@@ -94,13 +95,13 @@ def guess_cloud_resource_detectors():
         from opentelemetry.resource.detector.azure.app_service import AzureAppServiceResourceDetector
         from opentelemetry.resource.detector.azure.vm import AzureVMResourceDetector
         from opentelemetry.resourcedetector.gcp_resource_detector import GoogleCloudResourceDetector
+        import socket
         class SafeGoogleCloudResourceDetector(GoogleCloudResourceDetector):
           def detect(self) -> Resource:
             try:
-              import socket
               socket.gethostbyname('metadata.google.internal')
-              return super.detect()
-            except socket.error:
+              return super().detect()
+            except OSError:
               return Resource.create({})
         class OracleResourceDetector(ResourceDetector):
             def detect(self) -> Resource:
@@ -441,6 +442,7 @@ def handle(scope, version, command, arguments):
         name = tokens[2]
         unit = tokens[3]
         description = tokens[4]
+        explicit_bucket_boundaries = None
         if type == 'histogram':
             tokens = description.split(' ', 1)
             explicit_bucket_boundaries = tokens[0]
@@ -603,4 +605,3 @@ def file_contains(haystack, needle):
 
 if __name__ == "__main__":
     main()
-
