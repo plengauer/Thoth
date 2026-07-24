@@ -1,0 +1,43 @@
+# MegaLinter configuration for Thoth
+# Added following a full triage of the 2026-07-24 Analyze workflow run.
+# See https://megalinter.io/latest/configuration/ for all options.
+
+# --- Rules that don't fit this repo's architecture (disabled outright) ---
+DISABLE_LINTERS:
+  - BASH_EXEC
+  # Checks that every discovered shell script has the executable bit set.
+  # Every script in this repo is invoked via an explicit interpreter -
+  # `wget ... | sh` per INSTALL.sh's own documented usage, `. otel.sh` /
+  # `. otelapi.sh` sourcing, `bash path/to/script.sh` from composite actions
+  # and test harnesses, or spawned from main.js via a Node child process -
+  # never `./script.sh` directly, so this check doesn't apply here.
+  - JAVASCRIPT_STANDARD
+  # "standard" (JavaScript Standard Style) is a zero-config, semicolon-free
+  # style guide. This codebase consistently uses semicolons, so the large
+  # majority of findings were just "Extra semicolon" from that philosophy
+  # clash rather than real issues, and standard doesn't support disabling
+  # individual sub-rules. See tracking issue for the small number of
+  # genuinely useful catches (unused vars, camelCase, etc.) that this
+  # trades away.
+
+# --- Generated / captured files: not source of truth, exclude everywhere ---
+# - *.lock.yml under .github/workflows/ are compiled by the gh-aw CLI from
+#   the sibling *.md files (see recompile_agentic_workflows.yml) - not
+#   hand-written.
+# - **/otlp.json under demos/ are captured OpenTelemetry export output
+#   (multiple concatenated JSON documents, not one JSON document per file),
+#   refreshed by refresh_demos.yml - not hand-written, and not valid
+#   single-document JSON by design.
+# - **/gradlew is the standard Gradle wrapper script, vendored boilerplate.
+# - **/package-lock.json is an npm-generated lockfile.
+FILTER_REGEX_EXCLUDE: "(\\.lock\\.yml|/otlp\\.json|/gradlew|/package-lock\\.json)$"
+
+# --- Lychee-specific: template/placeholder URLs in workflow YAML ---
+# Every lychee failure outside the generated-file patterns above was a
+# GitHub Actions expression or credential placeholder that isn't a real
+# link (e.g. https://github.com/owner/repo/actions/runs/12345,
+# https://x-access-token/, an un-interpolated ${{ github.repository }}).
+# Workflow YAML isn't documentation with links for a reader to click, so
+# it's excluded from the dead-link checker specifically (JSON/YAML/other
+# linters still cover these files normally).
+SPELL_LYCHEE_FILTER_REGEX_EXCLUDE: "\\.github/workflows/"

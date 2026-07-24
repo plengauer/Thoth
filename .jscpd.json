@@ -1,0 +1,12 @@
+{
+  "threshold": 5,
+  "reporters": ["console", "html"],
+  "ignore": [
+    "**/node_modules/**",
+    "**/.git/**",
+    "**/*.lock.yml",
+    "**/otlp.json",
+    "**/gradlew",
+    "**/package-lock.json"
+  ]
+}
