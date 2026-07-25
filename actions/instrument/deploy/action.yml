@@ -24,7 +24,7 @@ inputs:
     default: true
   check_suite_level_instrumentation:
     default: true
-  check_suite_instrumentation_file_name:
+  check_suite_level_instrumentation_file_name:
     description: 'File name for check suite instrumentation workflow'
     default: 'observability_checksuite.yml'
   check_suite_level_instrumentation_use_container:
@@ -92,7 +92,7 @@ runs:
         workflow_level_instrumentation_exclude: ${{ inputs.workflow_level_instrumentation_exclude }}
         workflow_level_instrumentation_use_container: ${{ inputs.workflow_level_instrumentation_use_container }}
         check_suite_level_instrumentation: ${{ inputs.check_suite_level_instrumentation }}
-        check_suite_instrumentation_file_name: ${{ inputs.check_suite_instrumentation_file_name }}
+        check_suite_level_instrumentation_file_name: ${{ inputs.check_suite_level_instrumentation_file_name }}
         check_suite_level_instrumentation_use_container: ${{ inputs.check_suite_level_instrumentation_use_container }}
         repository_level_instrumentation: ${{ inputs.repository_level_instrumentation }}
         repository_level_instrumentation_file_name: ${{ inputs.repository_level_instrumentation_file_name }}
