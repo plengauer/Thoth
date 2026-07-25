@@ -89,7 +89,7 @@ jobs:
           pattern: http_*_${{ inputs.ref }}
       - run: |
           mkdir bin
-          ls | grep '^http_' | while read -r directory; do
+          find . -maxdepth 1 -name 'http_*' -type d -printf '%f\n' | while read -r directory; do
             architecture="${directory#http_}"
             architecture="${architecture%_*}"
             mv "$directory" bin/"$architecture"
@@ -174,7 +174,7 @@ jobs:
         with:
           pattern: node_modules_*_${{ inputs.ref }}
       - run: |
-          ls | grep '^node_modules_' | while read -r directory; do
+          find . -maxdepth 1 -name 'node_modules_*' -type d -printf '%f\n' | while read -r directory; do
             version="${directory#node_modules_}"
             version="${version%_*}"
             mkdir "$version"
@@ -185,7 +185,7 @@ jobs:
         run: |
           prev_hash=""
           prev_version=""
-          for version in $(ls | grep -E '^[0-9]+$' | sort -n); do
+          for version in $(find . -maxdepth 1 -regextype posix-extended -regex './[0-9]+' -printf '%f\n' | sort -n); do
             hash="$(find "$version" -type f | sort | while IFS= read -r f; do printf '%s\n' "${f#*/}"; \cat "$f"; done | sha256sum | cut -d ' ' -f 1)"
             if [ "$hash" = "$prev_hash" ]; then
               echo "node $version is redundant (identical to node $prev_version), deduplicating"
@@ -202,7 +202,7 @@ jobs:
               prev_version="$version"
             fi
           done
-      - run: find . -type f | xargs sha256sum | sort | cut -d ' ' -f 3- | tar -cf node_modules.tar -T - && xz -9 node_modules.tar
+      - run: find . -type f -print0 | xargs -0 sha256sum | sort | cut -d ' ' -f 3- | tar -cf node_modules.tar -T - && xz -9 node_modules.tar
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: node_modules_${{ inputs.ref }}
@@ -283,7 +283,7 @@ jobs:
           set +f
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.python
           . venv/bin/activate
-          ls venv/lib/python*/site-packages/ | grep '.dist-info$' | cut -d - -f 1 | while read -r package; do cat venv/lib/python*/site-packages/"$package"-*.dist-info/RECORD | grep -q '.so,' && echo "$package" || true; done | grep -v pip | xargs -r pip3 uninstall --yes
+          find venv/lib/python*/site-packages/ -maxdepth 1 -name '*.dist-info' -printf '%f\n' | cut -d - -f 1 | while read -r package; do if grep -q '.so,' venv/lib/python*/site-packages/"$package"-*.dist-info/RECORD; then echo "$package"; fi; done | grep -v pip | xargs -r pip3 uninstall --yes
           pip3 uninstall --yes setuptools pip
           deactivate
       - run: |
@@ -313,7 +313,7 @@ jobs:
         with:
           pattern: python_site_packages_*_${{ inputs.ref }}
       - run: |
-          ls | grep '^python_site_packages' | while read -r directory; do
+          find . -maxdepth 1 -name 'python_site_packages_*' -type d -printf '%f\n' | while read -r directory; do
             version="${directory#python_site_packages_}"
             version="${version%_*}"
             mkdir "$version"
@@ -323,7 +323,7 @@ jobs:
           OTEL_SHELL_CONFIG_MUTE_INTERNALS: TRUE
         run: |
           prev_hash=""
-          for version in $(ls | grep -E '^3\.[0-9]+$' | sort -t. -k2 -n); do
+          for version in $(find . -maxdepth 1 -regextype posix-extended -regex './3\.[0-9]+' -printf '%f\n' | sort -t. -k2 -n); do
             hash="$(find "$version" -type f | sort | while IFS= read -r f; do printf '%s\n' "${f#*/}"; \cat "$f"; done | sha256sum | cut -d ' ' -f 1)"
             if [ "$hash" = "$prev_hash" ]; then
               rm -rf "$version"
@@ -331,7 +331,7 @@ jobs:
               prev_hash="$hash"
             fi
           done
-      - run: find . -type f | xargs sha256sum | sort | cut -d ' ' -f 3- | tar -cf python_site_packages.tar -T - && xz -9 python_site_packages.tar
+      - run: find . -type f -print0 | xargs -0 sha256sum | sort | cut -d ' ' -f 3- | tar -cf python_site_packages.tar -T - && xz -9 python_site_packages.tar
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: python_site_packages_${{ inputs.ref }}
@@ -359,8 +359,8 @@ jobs:
       - run: |
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.java
           mvn dependency:resolve
-          find ~/.m2 -iname 'opentelemetry-javaagent-*.jar' | xargs -I '{}' cp '{}' opentelemetry-javaagent.jar
-          find ~/.m2 -iname 'byte-buddy-*.jar' | xargs -I '{}' cp '{}' byte-buddy.jar
+          find ~/.m2 -iname 'opentelemetry-javaagent-*.jar' -exec cp '{}' opentelemetry-javaagent.jar \;
+          find ~/.m2 -iname 'byte-buddy-*.jar' -exec cp '{}' byte-buddy.jar \;
       - id: determine-minimum-version
         run: |
           directory="$(mktemp -d)"
@@ -464,7 +464,8 @@ jobs:
           }
           export -f check_command
           verify() {
-            local dependencies="$(cat meta/debian/control | grep -E "$1" | cut -d : -f 2- | tr '|' ',' | tr ',' '\n' | cut -d '(' -f 1 | tr -d ' ' | process_packages | patternify)"
+            local dependencies
+            dependencies="$(cat meta/debian/control | grep -E "$1" | cut -d : -f 2- | tr '|' ',' | tr ',' '\n' | cut -d '(' -f 1 | tr -d ' ' | process_packages | patternify)"
             cat | while read -r file; do echo "Verifying $file" >&2; echo "$file"; done | xargs cat \
               | grep -v 'SKIP_DEPENDENCY_CHECK' | while read -r line; do line="${line%%#*}"; printf '%s\n' "$line"; done \
               | grep -oP '(^[[:space:]]*|\$\()\\?[a-zA-Z/][a-zA-Z0-9/_.-]*($|[[:space:]])' \
@@ -516,14 +517,14 @@ jobs:
       - run: sed -i "s/__VERSION__/$(cat VERSION)/g" src/DEBIAN/control
       - run: |
           printf '%s' "${{ needs.list-python-versions.outputs.versions }}" | jq -r '.[]' | while read -r version; do
-            cat src/DEBIAN/triggers | grep 'python3$' | sed "s~/python3~/python$version~g" >> src/DEBIAN/triggers
+            grep 'python3$' src/DEBIAN/triggers | sed "s~/python3~/python$version~g" | tee -a src/DEBIAN/triggers > /dev/null
           done
       - run: |
           cd src
           replaced_binaries="$(mktemp -d)"
           mv usr/share/opentelemetry_shell/agent.instrumentation.http/* "$replaced_binaries"
           dpkg-deb --root-owner-group -Zgzip --build . ../opentelemetry-shell_"$(cat ../VERSION)"_all.deb
-          ls "$replaced_binaries" | while read -r arch; do
+          find "$replaced_binaries" -maxdepth 1 -mindepth 1 -type d -printf '%f\n' | while read -r arch; do
             debian_arch="$(echo "$arch" | sed s/x86_64/amd64/g | sed s/aarch64/arm64/g | sed 's/le$/el/g')"
             cp "$replaced_binaries"/"$arch"/*.so usr/share/opentelemetry_shell/agent.instrumentation.http
             sed -i "s/Architecture: .*/Architecture: $debian_arch/g" DEBIAN/control
@@ -610,30 +611,26 @@ jobs:
             sed -i "s/__VERSION__/$(cat VERSION)/g" opentelemetry-shell.spec
             # sed -i "s/BuildArch: .*/BuildArch: $arch/g" opentelemetry-shell.spec
             [ "$arch" = noarch ] || cp "$replaced_binaries"/"$arch"/*.so src/usr/share/opentelemetry_shell/agent.instrumentation.http
-            cat meta/debian/triggers | grep -v '^$' | cut -d ' ' -f 2 | rev | cut -d / -f 1 | rev | sort -u | grep -v python3 | while read -r package; do
-              echo "%triggerin -- $package"
-              echo '#/bin/sh -e'
-              echo 'if [ "$1" = 0 ] || [ "$1" = 1 ] || [ "$1" = 2 ]; then set -- configure; fi'
-              cat meta/debian/postinst
-              echo "%triggerun -- $package"
-              echo '#/bin/sh -e'
-              echo 'if [ "$1" = 0 ] || [ "$1" = 1 ] || [ "$1" = 2 ]; then set -- configure; fi'
-              cat meta/debian/postinst
-            done >> opentelemetry-shell.spec
             {
+              cat meta/debian/triggers | grep -v '^$' | cut -d ' ' -f 2 | rev | cut -d / -f 1 | rev | sort -u | grep -v python3 | while read -r package; do
+                echo "%triggerin -- $package"
+                echo '#/bin/sh -e'
+                echo "if [ \"\$1\" = 0 ] || [ \"\$1\" = 1 ] || [ \"\$1\" = 2 ]; then set -- configure; fi"
+                cat meta/debian/postinst
+                echo "%triggerun -- $package"
+                echo '#/bin/sh -e'
+                echo "if [ \"\$1\" = 0 ] || [ \"\$1\" = 1 ] || [ \"\$1\" = 2 ]; then set -- configure; fi"
+                cat meta/debian/postinst
+              done
               echo "%post"
               echo '#/bin/sh -e'
-              echo 'if [ "$1" = 0 ] || [ "$1" = 1 ] || [ "$1" = 2 ]; then set -- configure; fi'
+              echo "if [ \"\$1\" = 0 ] || [ \"\$1\" = 1 ] || [ \"\$1\" = 2 ]; then set -- configure; fi"
               cat meta/debian/postinst
-            } >> opentelemetry-shell.spec
-            {
               echo "%preun"
               echo '#!/bin/sh -e'
-              echo 'if [ "$1" = 0 ]; then set -- remove; fi'
-              echo 'if [ "$1" = 1 ]; then set -- upgrade; fi'
+              echo "if [ \"\$1\" = 0 ]; then set -- remove; fi"
+              echo "if [ \"\$1\" = 1 ]; then set -- upgrade; fi"
               cat meta/debian/prerm
-            } >> opentelemetry-shell.spec
-            {
               echo '%files'
               ( cd src && find . | grep -v '.spec$' | while read -r file; do echo "${file#.}"; done | grep -v '^$' | while read -r file; do if [ -d "$file" ]; then if ! echo "$file" | grep opentelemetry-shell; then continue; fi; echo -n '%dir '; fi; echo \""$file"\"; done )
             } >> opentelemetry-shell.spec
@@ -718,11 +715,11 @@ jobs:
         with:
           name: packages.apk.${{ inputs.ref }}
       - run: |
-          cp *.apk actions/instrument/workflow
+          cp ./*.apk actions/instrument/workflow
           pushd actions/instrument/workflow
           sudo docker build --build-arg=repository="$GITHUB_REPOSITORY" --network host --tag opentelemetry-github-workflow-instrumentation-runner .
           popd
-          sudo docker save opentelemetry-github-workflow-instrumentation-runner > opentelemetry-github-workflow-instrumentation-runner.image
+          sudo docker save -o opentelemetry-github-workflow-instrumentation-runner.image opentelemetry-github-workflow-instrumentation-runner
           rm actions/instrument/workflow/*.apk
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:

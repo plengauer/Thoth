@@ -111,7 +111,7 @@ jobs:
       - run: | # check if install succeeded
           type otel.sh && type strace
       - run: | # check if instrumentation happened
-          [ "$(alias | grep '_otel_observe' | wc -l)" -gt 0 ]
+          [ "$(alias | grep -c '_otel_observe')" -gt 0 ]
       - run: | # check if traceparent is injected
           [ -n "$TRACEPARENT" ]
   job-composite:
@@ -509,7 +509,7 @@ jobs:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
       - run: |
-          echo '( { echo foo; sleep $((60 * 60 * 60)); echo bar; } ) &' > start_background.sh
+          echo "( { echo foo; sleep \$((60 * 60 * 60)); echo bar; } ) &" > start_background.sh
           sh ./start_background.sh
   job-cache:
     needs: job-smoke
@@ -1193,7 +1193,7 @@ jobs:
       - id: config
         run: |
           curl -L -H "Authorization: Bearer ${{ secrets.TEST_GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/user | jq -r .login | xargs -I '{}' echo "user={}" >> "$GITHUB_OUTPUT"
-          echo repository="$(echo "${{ env.REPOSITORY_TEMPLATE }}"-"${{ github.workflow }}"-"${{ github.ref_name }}" | tr / - | cut -c -100)" >> "$GITHUB_OUTPUT"
+          echo "repository=$(echo "${{ env.REPOSITORY_TEMPLATE }}-${{ github.workflow }}-${{ github.ref_name }}" | tr / - | cut -c -100)" >> "$GITHUB_OUTPUT"
       - run: |
           curl -L -H "Authorization: Bearer ${{ secrets.TEST_GITHUB_TOKEN }}" -X DELETE "${GITHUB_API_URL:-https://api.github.com}"/repos/${{ steps.config.outputs.user }}/${{ steps.config.outputs.repository }} || true
       - run: |
@@ -1226,7 +1226,7 @@ jobs:
           nohup node -e "require('http').createServer(function (req, res) { console.log(req.method, req.url); res.writeHead(200); res.end(); }).listen(8080);" 1> /tmp/http.log 2> /dev/null &
       - run: |
           printf '%s' '${{ secrets.TEST_GITHUB_TOKEN }}' | GH_TOKEN='${{ secrets.TEST_GITHUB_TOKEN }}' gh secret set DEPLOY_OBSERVABILITY_TOKEN --repo ${{ steps.config.outputs.user }}/${{ steps.config.outputs.repository }}
-          wget --header "Authorization: Bearer ${{ github.token }}" https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/README.md -O - | sed -n '/```yaml/,/```/p' | grep -v '```yaml' | sed '/```/,$d' > .github/workflows/deploy_otel.yml
+          wget --header "Authorization: Bearer ${{ github.token }}" https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/README.md -O - | sed -n '/```yaml/,/```/p' | grep -v '^```' > .github/workflows/deploy_otel.yml
           cat .github/workflows/deploy_otel.yml | yq .jobs.deploy.steps[0].uses | grep -q '/actions/instrument/deploy@'
           cat .github/workflows/deploy_otel.yml | yq .jobs.deploy.steps[0].with.github_token | grep -q secrets.DEPLOY_OBSERVABILITY_TOKEN
           yq -i 'del(.jobs.deploy.steps[0].env)' .github/workflows/deploy_otel.yml
@@ -1251,4 +1251,4 @@ jobs:
       - if: ${{ env.ASSERT_RECEIVING_DATA == 'true' }}
         run: cat /tmp/http.log | grep -q '^POST /v1/traces$'
       - run: |
-          curl -L -H "Authorization: Bearer ${{ secrets.TEST_GITHUB_TOKEN }}" -X DELETE "${GITHUB_API_URL:-https://api.github.com}"/repos/${{ steps.config.outputs.user }}/"${{ steps.config.outputs.repository }}" || true
+          curl -L -H "Authorization: Bearer ${{ secrets.TEST_GITHUB_TOKEN }}" -X DELETE "${GITHUB_API_URL:-https://api.github.com}/repos/${{ steps.config.outputs.user }}/${{ steps.config.outputs.repository }}" || true
