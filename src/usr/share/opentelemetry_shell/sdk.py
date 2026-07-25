@@ -134,7 +134,7 @@ def guess_cloud_resource_detectors():
                     import socket
 
                     socket.gethostbyname("metadata.google.internal")
-                    return super.detect()
+                    return super().detect()
                 except socket.error:
                     return Resource.create({})
 
