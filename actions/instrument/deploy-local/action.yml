@@ -24,7 +24,7 @@ inputs:
     default: true
   check_suite_level_instrumentation:
     default: true
-  check_suite_instrumentation_file_name:
+  check_suite_level_instrumentation_file_name:
     description: 'File name for check suite instrumentation workflow'
     default: 'observability_checksuite.yml'
   check_suite_level_instrumentation_use_container:
@@ -237,7 +237,7 @@ runs:
       if: ${{ inputs.check_suite_level_instrumentation == 'true' && steps.find-check-suite-level-instrumentation.outputs.path == null }}
       shell: bash
       run: |
-        path="${{ inputs.workflows_directory }}/${{ inputs.check_suite_instrumentation_file_name }}"
+        path="${{ inputs.workflows_directory }}/${{ inputs.check_suite_level_instrumentation_file_name }}"
         echo 'name: OpenTelemetry
         on:
           check_suite:
