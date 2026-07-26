@@ -719,7 +719,8 @@ jobs:
           pushd actions/instrument/workflow
           sudo docker build --build-arg=repository="$GITHUB_REPOSITORY" --network host --tag opentelemetry-github-workflow-instrumentation-runner .
           popd
-          sudo docker save -o "$(pwd)"/opentelemetry-github-workflow-instrumentation-runner.image opentelemetry-github-workflow-instrumentation-runner
+          sudo docker save -o opentelemetry-github-workflow-instrumentation-runner.image opentelemetry-github-workflow-instrumentation-runner
+          sudo chmod +r opentelemetry-github-workflow-instrumentation-runner.image
           rm actions/instrument/workflow/*.apk
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
