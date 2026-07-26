@@ -88,23 +88,7 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
     done
   fi 2>&1 | perl -0777 -pe '' >&2 &
   python3 -m venv /opt/opentelemetry_shell/venv && . /opt/opentelemetry_shell/venv/bin/activate && pip3 install -r /opt/opentelemetry_shell/requirements.txt && pip3 check && deactivate # SKIP_DEPENDENCY_CHECK
-  PYTHONDONTWRITEBYTECODE=1 /opt/opentelemetry_shell/venv/bin/python3 - <<'EOF'
-import ast
-import glob
-
-for path in glob.glob("/usr/share/opentelemetry_shell/*.py"):
-    with open(path) as file:
-        module = ast.parse(file.read(), path)
-    module.body = sorted(
-        (
-            node
-            for node in ast.walk(module)
-            if isinstance(node, (ast.Import, ast.ImportFrom))
-        ),
-        key=lambda node: (node.lineno, node.col_offset),
-    )
-    exec(compile(module, path, "exec"), {})
-EOF
+  PYTHONDONTWRITEBYTECODE=1 /opt/opentelemetry_shell/venv/bin/python3 /usr/share/opentelemetry_shell/validate_imports.py
   wait
 else
   exit 1
