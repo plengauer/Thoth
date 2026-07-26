@@ -82,7 +82,10 @@ runs:
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         token: ${{ inputs.github_token }}
-    - uses: ${{ github.action_path }}/../deploy-local
+    - name: "Setup deploy-local"
+      shell: bash
+      run: ln -s "$GITHUB_ACTION_PATH/../deploy-local" "$GITHUB_WORKSPACE/.deploy-local"
+    - uses: ./.deploy-local
       with:
         github_token: ${{ inputs.github_token }}
         workflows_directory: ${{ inputs.workflows_directory }}
