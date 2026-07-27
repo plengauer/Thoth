@@ -6,17 +6,17 @@ if [ "$SHELL" = "" ]; then
   exit 1
 fi
 . /etc/os-release
-if [ "$SHELL" = dash ] && ! ( [ "$ID" = debian ] || [ "$ID_LIKE" = debian ] ); then
+if [ "$SHELL" = dash ] && ! ([ "$ID" = debian ] || [ "$ID_LIKE" = debian ]); then
   exit 0
 fi
 
 if [ "$SHELL" = busybox ]; then
-  export TEST_SHELL="busybox sh";
+  export TEST_SHELL="busybox sh"
 else
   export TEST_SHELL="$SHELL"
 fi
 
-if ! type perl 1> /dev/null 2> /dev/null; then
+if ! type perl 1>/dev/null 2>/dev/null; then
   function perl() {
     cat
   }
@@ -32,7 +32,7 @@ for dir in unit sdk auto integration performance; do
     export OTEL_METRICS_EXPORTER=console
     export OTEL_LOGS_EXPORTER=console
     mkfifo -m 666 "$OTEL_SHELL_SDK_STDOUT_REDIRECT"
-    ( while true; do cat "$OTEL_SHELL_SDK_STDOUT_REDIRECT" >> "$OTEL_EXPORT_LOCATION"; done & )
+    (while true; do cat "$OTEL_SHELL_SDK_STDOUT_REDIRECT" >>"$OTEL_EXPORT_LOCATION"; done &)
     echo "running $file"
     options='-f -u'
     if [ "$TEST_SHELL" = bash ]; then
@@ -43,10 +43,13 @@ for dir in unit sdk auto integration performance; do
     touch "$stdout" "$stderr"
     chmod 0666 "$stdout" "$stderr"
     export OTEL_SHELL_SDK_STDERR_REDIRECT="$stderr"
-    ( timeout $((60 * 60 * 3)) $TEST_SHELL $options "$file" 1> "$stdout" 2> "$stderr" && echo "$file SUCCEEDED" || (echo "$file FAILED" && echo "stdout:" && cat "$stdout" && echo "stderr:" && cat "$stderr" && echo "otlp:" && cat "$OTEL_EXPORT_LOCATION" && touch "$failed_flag" && exit 1) ) 2>&1 | perl -e '$| = 1; print while <>;' &
+    (timeout $((60 * 60 * 3)) $TEST_SHELL $options "$file" 1>"$stdout" 2>"$stderr" && echo "$file SUCCEEDED" || (echo "$file FAILED" && echo "stdout:" && cat "$stdout" && echo "stderr:" && cat "$stderr" && echo "otlp:" && cat "$OTEL_EXPORT_LOCATION" && touch "$failed_flag" && exit 1)) 2>&1 | perl -e '$| = 1; print while <>;' &
     wait # TODO force sequential for now
     [ "$dir" != performance ] || wait
-  done < <({ find $dir -iname 'test_*.sh'; find $dir -iname 'test_*.'"$SHELL"; } | sort -u)
+  done < <({
+    find $dir -iname 'test_*.sh'
+    find $dir -iname 'test_*.'"$SHELL"
+  } | sort -u)
   wait
   if [ -r "$failed_flag" ]; then exit 1; fi
 done

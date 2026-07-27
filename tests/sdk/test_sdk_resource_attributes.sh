@@ -13,9 +13,9 @@ assert_equals "shell" $(echo "$span" | jq -r '.resource.attributes."telemetry.sd
 assert_equals "opentelemetry" $(echo "$span" | jq -r '.resource.attributes."telemetry.sdk.name"')
 assert_not_equals "null" $(echo "$span" | jq -r '.resource.attributes."telemetry.sdk.version"')
 assert_not_equals "null" $(echo "$span" | jq -r '.resource.attributes."process.pid"')
-if  [ "$TEST_SHELL" = "sh" ] || [ "$TEST_SHELL" = "ash" ]; then
+if [ "$TEST_SHELL" = "sh" ] || [ "$TEST_SHELL" = "ash" ]; then
   : # we dont know what sh defaults to, and ash sometimes is dash (on debian systems) but also sometimes just ash
-elif  [ "$TEST_SHELL" = "busybox sh" ]; then
+elif [ "$TEST_SHELL" = "busybox sh" ]; then
   assert_equals "busybox" $(echo "$span" | jq -r '.resource.attributes."process.executable.name"')
 else
   assert_equals "$SHELL" $(echo "$span" | jq -r '.resource.attributes."process.executable.name"')
@@ -41,4 +41,3 @@ fi
 # assert_not_equals "null" $(echo "$span" | jq -r '.resource.attributes."process.runtime.version"')
 # assert_not_equals "null" $(echo "$span" | jq -r '.resource.attributes."host.name"')
 assert_equals "$OTEL_SERVICE_NAME" $(echo "$span" | jq -r '.resource.attributes."service.name"')
-

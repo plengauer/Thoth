@@ -4,11 +4,14 @@
 
 _otel_propagate_curl() {
   case "$-" in
-    *m*) local job_control=1; \set +m;;
-    *) local job_control=0;;
+    *m*)
+      local job_control=1
+      \set +m
+      ;;
+    *) local job_control=0 ;;
   esac
   local file=/usr/share/opentelemetry_shell/agent.instrumentation.http/libinjecthttpheader.so
-  if \[ -f "$file" ] && ! \ldd "$file" 2> /dev/null | \grep -q 'not found' && ! ( \[ "$_otel_shell" = 'busybox sh' ] && \help | \tail -n +3 | \grep -q curl ); then
+  if \[ -f "$file" ] && ! \ldd "$file" 2>/dev/null | \grep -q 'not found' && ! (\[ "$_otel_shell" = 'busybox sh' ] && \help | \tail -n +3 | \grep -q curl); then
     export OTEL_SHELL_INJECT_HTTP_SDK_PIPE="$_otel_remote_sdk_pipe"
     export OTEL_SHELL_INJECT_HTTP_HANDLE_FILE="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell_$$.curl.handle.XXXXXXXXXX)"
     local OLD_LD_PRELOAD="${LD_PRELOAD:-}"
@@ -25,11 +28,11 @@ _otel_propagate_curl() {
   fi
   local stderr_pipe="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell_$$.stderr.curl.pipe.XXXXXXXXXX)"
   \mkfifo "$stderr_pipe"
-  _otel_pipe_curl_stderr "$is_verbose" "${OTEL_SHELL_INJECT_HTTP_HANDLE_FILE:-}" "${span_handle_forward:-/dev/null}" < "$stderr_pipe" >&2 &
+  _otel_pipe_curl_stderr "$is_verbose" "${OTEL_SHELL_INJECT_HTTP_HANDLE_FILE:-}" "${span_handle_forward:-/dev/null}" <"$stderr_pipe" >&2 &
   local stderr_pid="$!"
   \set -- "$@" -H "traceparent: $TRACEPARENT" -H "tracestate: $TRACESTATE" -v --no-progress-meter
   local exit_code=0
-  if \[ -n "$api" ]; then _otel_call_curl_api "$span_handle_forward" "$api" "$@"; else _otel_call "$@"; fi 2> "$stderr_pipe" || exit_code="$?"
+  if \[ -n "$api" ]; then _otel_call_curl_api "$span_handle_forward" "$api" "$@"; else _otel_call "$@"; fi 2>"$stderr_pipe" || exit_code="$?"
   if \[ -f "$file" ]; then
     if \[ -n "${OLD_LD_PRELOAD:-}" ]; then
       export LD_PRELOAD="$OLD_LD_PRELOAD"
@@ -53,7 +56,7 @@ _otel_propagate_curl() {
 # > Host: www.google.at
 # > User-Agent: curl/8.2.1
 # > Accept: */*
-# > 
+# >
 # < HTTP/1.1 200 OK
 # < Date: Mon, 01 Apr 2024 12:07:04 GMT
 # < Expires: -1
@@ -67,7 +70,7 @@ _otel_propagate_curl() {
 # < Accept-Ranges: none
 # < Vary: Accept-Encoding
 # < Transfer-Encoding: chunked
-# < 
+# <
 # { [11811 bytes data]
 # * Connection #0 to host www.google.at left intact
 
@@ -98,9 +101,15 @@ _otel_pipe_curl_stderr() {
       local ip="$(\printf '%s' "$line" | \cut -d ' ' -f 6 | \tr -d '()')"
       local port="$(\printf '%s' "$line" | \cut -d ' ' -f 8 | \tr -d '()')"
     fi
-    if \[ -n "$span_handle" ] && ( _otel_string_starts_with "$line" "* shutting down connection " || _otel_string_starts_with "$line" "* closing connection " || ( _otel_string_starts_with "$line" "* Connection " && _otel_string_ends_with "$line" " left intact" ) || _otel_string_starts_with "$line" "* Connected to "  || _otel_string_starts_with "$line" "* processing: " || ( \[ "$is_receiving" = 1 ] && _otel_string_starts_with "$line" "> " ) ); then
+    if \[ -n "$span_handle" ] && (_otel_string_starts_with "$line" "* shutting down connection " || _otel_string_starts_with "$line" "* closing connection " || (_otel_string_starts_with "$line" "* Connection " && _otel_string_ends_with "$line" " left intact") || _otel_string_starts_with "$line" "* Connected to " || _otel_string_starts_with "$line" "* processing: " || (\[ "$is_receiving" = 1 ] && _otel_string_starts_with "$line" "> ")); then
       local time_end="$(\date +%s.%N)"
-      if \[ -n "$response_code" ]; then \echo "END" > "$span_handle_file_forward"; local terminated=1; else \echo "TERMINATE" > "$span_handle_file_forward"; local terminated=1; fi
+      if \[ -n "$response_code" ]; then
+        \echo "END" >"$span_handle_file_forward"
+        local terminated=1
+      else
+        \echo "TERMINATE" >"$span_handle_file_forward"
+        local terminated=1
+      fi
       otel_span_end "$span_handle"
       local span_handle=""
       local observation_handle="$(otel_observation_create "$(\python3 -c "print(str($time_end - $time_start))")")"
@@ -159,13 +168,16 @@ _otel_pipe_curl_stderr() {
       otel_observation_attribute_typed "$observation_handle" string url.scheme="$protocol"
       otel_observation_attribute_typed "$observation_handle" string http.request.method="$method"
       otel_counter_observe "$http_client_active_requests" "$observation_handle"
-      if \[ -n "$span_handle_file" ] && \[ -f "$span_handle_file" ]; then local span_handle="$(\cat "$span_handle_file")"; \rm "$span_handle_file"; fi
+      if \[ -n "$span_handle_file" ] && \[ -f "$span_handle_file" ]; then
+        local span_handle="$(\cat "$span_handle_file")"
+        \rm "$span_handle_file"
+      fi
       if \[ -z "$span_handle" ]; then
         local span_handle="$(otel_span_start CLIENT "$(\printf '%s' "$line" | \cut -d ' ' -f 2)")"
       else
         otel_span_name "$span_handle" "$(\printf '%s' "$line" | \cut -d ' ' -f 2)"
       fi
-      \echo "$span_handle" > "$span_handle_file_forward"
+      \echo "$span_handle" >"$span_handle_file_forward"
       otel_span_attribute_typed "$span_handle" string network.transport=tcp
       otel_span_attribute_typed "$span_handle" string network.protocol.name="$protocol"
       otel_span_attribute_typed "$span_handle" string network.protocol.version="$version"
@@ -185,11 +197,11 @@ _otel_pipe_curl_stderr() {
         local response_code="$(\printf '%s' "$line" | \cut -d ' ' -f 3)"
         otel_span_attribute_typed "$span_handle" int http.response.status_code="$response_code"
         if \[ "$response_code" -ge 400 ]; then otel_span_error "$span_handle"; fi
-        \echo "$response_code" > "$span_handle_file_forward"
-#     elif _otel_string_starts_with "$line" "} [" && _otel_string_contains "bytes data]"; then
-#       otel_span_attribute_typed "$span_handle" +int http.request.body.size="$(\printf '%s' "$line" | \cut -d ' ' -f 2 | \tr -d '[')"
-#     elif _otel_string_starts_with "$line" "{ [" && _otel_string_contains "bytes data]"; then
-#       otel_span_attribute_typed "$span_handle" +int http.response.body.size="$(\printf '%s' "$line" | \cut -d ' ' -f 2 | \tr -d '[')"
+        \echo "$response_code" >"$span_handle_file_forward"
+        #     elif _otel_string_starts_with "$line" "} [" && _otel_string_contains "bytes data]"; then
+        #       otel_span_attribute_typed "$span_handle" +int http.request.body.size="$(\printf '%s' "$line" | \cut -d ' ' -f 2 | \tr -d '[')"
+        #     elif _otel_string_starts_with "$line" "{ [" && _otel_string_contains "bytes data]"; then
+        #       otel_span_attribute_typed "$span_handle" +int http.response.body.size="$(\printf '%s' "$line" | \cut -d ' ' -f 2 | \tr -d '[')"
       elif _otel_string_starts_with "$(\printf '%s' "$line" | \tr '[:upper:]' '[:lower:]')" "> user-agent: "; then
         otel_span_attribute_typed "$span_handle" string user_agent.original="$(\printf '%s' "$line" | \cut -d ' ' -f 3-)"
       elif _otel_string_starts_with "$(\printf '%s' "$line" | \tr '[:upper:]' '[:lower:]')" "> content-length: "; then
@@ -222,41 +234,64 @@ _otel_pipe_curl_stderr() {
       fi
     fi
     if _otel_string_starts_with "$line" "< "; then local is_receiving=1; fi
-    if \[ "$is_verbose" = 1 ] || ! ( _otel_string_starts_with "$line" "* " || _otel_string_starts_with "$line" "> " || _otel_string_starts_with "$line" "< " || _otel_string_starts_with "$line" "{ " || _otel_string_starts_with "$line" "} " ); then
+    if \[ "$is_verbose" = 1 ] || ! (_otel_string_starts_with "$line" "* " || _otel_string_starts_with "$line" "> " || _otel_string_starts_with "$line" "< " || _otel_string_starts_with "$line" "{ " || _otel_string_starts_with "$line" "} "); then
       \echo "$line"
     fi
   done
-  if \[ "$terminated" = 0 ]; then \echo "TERMINATE" > "$span_handle_file_forward"; fi
+  if \[ "$terminated" = 0 ]; then \echo "TERMINATE" >"$span_handle_file_forward"; fi
   if \[ -n "$span_handle" ]; then otel_span_end "$span_handle"; fi
 }
 
 _otel_curl_guess_api() {
   while \[ "$#" -gt 0 ]; do
     case "$1" in
-      'https://api.openai.com/'*) \echo llm_openai; break;;
-      'https://models.github.ai/inference/*') \echo llm_openai; break;;
-      'https://models.github.ai/*/inference/*') \echo llm_openai; break;;
-      'https://api.githubcopilot.com/responses') \echo llm_openai; break;;
+      'https://api.openai.com/'*)
+        \echo llm_openai
+        break
+        ;;
+      'https://models.github.ai/inference/*')
+        \echo llm_openai
+        break
+        ;;
+      'https://models.github.ai/*/inference/*')
+        \echo llm_openai
+        break
+        ;;
+      'https://api.githubcopilot.com/responses')
+        \echo llm_openai
+        break
+        ;;
     esac
     shift
   done
 }
 
 _otel_call_curl_api() {
-  local span_handle_file="$1"; shift
-  local api="$1"; shift
+  local span_handle_file="$1"
+  shift
+  local api="$1"
+  shift
   local request_file="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell_$$.api.request.curl.pipe.XXXXXXXXXX)"
   case "$api" in
-    llm_openai) local response_processor=_otel_curl_record_api_response_llm_openai;;
+    llm_openai) local response_processor=_otel_curl_record_api_response_llm_openai ;;
   esac
   local request="$(_otel_curl_get_input_type "$@")"
   local exit_code_file="$(\mktemp)"
-  \echo 0 > "$exit_code_file"
+  \echo 0 >"$exit_code_file"
   case "$request" in
-    @-) \tee "$request_file" | { _otel_call "$@" || \echo "$?" > "$exit_code_file"; };;
-    @*) \cat < "${request#@}" > "$request_file"; { _otel_call "$@" || \echo "$?" > "$exit_code_file"; };;
-    *) \printf '%s' "$request" > "$request_file"; { _otel_call "$@" || \echo "$?" > "$exit_code_file"; };;
-  esac | if \[ -n "${response_processor:-}" ]; then $response_processor "$request_file" "$span_handle_file"; else while IFS= \read -r _otel_msg < "$span_handle_file"; do \[ "$_otel_msg" = "TERMINATE" ] && break; done; \cat; fi
+    @-) \tee "$request_file" | { _otel_call "$@" || \echo "$?" >"$exit_code_file"; } ;;
+    @*)
+      \cat <"${request#@}" >"$request_file"
+      { _otel_call "$@" || \echo "$?" >"$exit_code_file"; }
+      ;;
+    *)
+      \printf '%s' "$request" >"$request_file"
+      { _otel_call "$@" || \echo "$?" >"$exit_code_file"; }
+      ;;
+  esac | if \[ -n "${response_processor:-}" ]; then $response_processor "$request_file" "$span_handle_file"; else
+    while IFS= \read -r _otel_msg <"$span_handle_file"; do \[ "$_otel_msg" = "TERMINATE" ] && break; done
+    \cat
+  fi
   local exit_code="$(\cat "$exit_code_file")"
   \rm -rf "$exit_code_file" "$request_file"
   return "$exit_code"
@@ -265,7 +300,10 @@ _otel_call_curl_api() {
 _otel_curl_get_input_type() {
   while \[ "$#" -ge 2 ]; do
     case "$1" in
-      -d|--data|--data-*) \echo "$2"; break;;
+      -d | --data | --data-*)
+        \echo "$2"
+        break
+        ;;
     esac
     shift
   done
@@ -277,15 +315,15 @@ _otel_curl_genai_capture_message_content_mode() {
 
 _otel_curl_genai_capture_prompt_on_spans() {
   case "$(_otel_curl_genai_capture_message_content_mode)" in
-    true|span_only|span_and_event) return 0;;
-    *) return 1;;
+    true | span_only | span_and_event) return 0 ;;
+    *) return 1 ;;
   esac
 }
 
 _otel_curl_genai_normalize_messages() {
-  \jq -c '.messages // null' 2> /dev/null \
-  | \jq -c 'if type == "array" then . else null end' 2> /dev/null \
-  | \jq -c '
+  \jq -c '.messages // null' 2>/dev/null |
+    \jq -c 'if type == "array" then . else null end' 2>/dev/null |
+    \jq -c '
       map(
         if .tool_call_id? != null then
           {
@@ -331,36 +369,36 @@ _otel_curl_genai_normalize_messages() {
           }
         end # SKIP_DEPENDENCY_CHECK
       )
-    ' 2> /dev/null || \echo null
+    ' 2>/dev/null || \echo null
 }
 
 _otel_curl_genai_extract_prompt_messages() {
   local request_file="$1"
   local prompt_source
   prompt_source="$(
-    \jq < "$request_file" -r '
+    \jq <"$request_file" -r '
       if .messages != null then "messages"
       elif .input != null then "input"
       elif .prompt != null then "prompt"
       else "null"
       end # SKIP_DEPENDENCY_CHECK
-    ' 2> /dev/null
+    ' 2>/dev/null
   )" || prompt_source=null
   case "$prompt_source" in
     messages)
       \cat "$request_file" | _otel_curl_genai_normalize_messages
       ;;
     input)
-      if \jq < "$request_file" -e '.input | type == "array" and ([ .[] | (type == "object" and .role != null) ] | all)' > /dev/null 2>&1; then
-        \jq < "$request_file" -c '{ "messages": .input }' 2> /dev/null | _otel_curl_genai_normalize_messages
-      elif \jq < "$request_file" -e '.input | type == "string"' > /dev/null 2>&1; then
-        \jq < "$request_file" -c '[ { "role": "user", "parts": [ { "type": "text", "content": .input } ] } ]' 2> /dev/null || \echo null
+      if \jq <"$request_file" -e '.input | type == "array" and ([ .[] | (type == "object" and .role != null) ] | all)' >/dev/null 2>&1; then
+        \jq <"$request_file" -c '{ "messages": .input }' 2>/dev/null | _otel_curl_genai_normalize_messages
+      elif \jq <"$request_file" -e '.input | type == "string"' >/dev/null 2>&1; then
+        \jq <"$request_file" -c '[ { "role": "user", "parts": [ { "type": "text", "content": .input } ] } ]' 2>/dev/null || \echo null
       else
-        \jq < "$request_file" -c '[ { "role": "user", "parts": [ { "type": "text", "content": (.input | tojson) } ] } ]' 2> /dev/null || \echo null
+        \jq <"$request_file" -c '[ { "role": "user", "parts": [ { "type": "text", "content": (.input | tojson) } ] } ]' 2>/dev/null || \echo null
       fi
       ;;
     prompt)
-      \jq < "$request_file" -c '[ { "role": "user", "parts": [ { "type": "text", "content": (.prompt | tostring) } ] } ]' 2> /dev/null || \echo null
+      \jq <"$request_file" -c '[ { "role": "user", "parts": [ { "type": "text", "content": (.prompt | tostring) } ] } ]' 2>/dev/null || \echo null
       ;;
     *)
       \echo null
@@ -383,13 +421,13 @@ _otel_curl_record_api_response_llm_openai() {
   local process_stdout=0
   while true; do
     local span_handle
-    IFS= \read -r span_handle < "$span_handle_file"
+    IFS= \read -r span_handle <"$span_handle_file"
     if \[ "$span_handle" = "TERMINATE" ]; then
       if \[ "$process_stdout" = 0 ]; then \cat; fi
       break
     fi
     otel_span_attribute_typed "$span_handle" string gen_ai.provider.name=openai
-    \jq < "$request_file" '[ .model // "null", .service_tier // "null", .seed // "null", .n // "null", .max_completion_tokens // .max_tokens // "null", .temperature // "null", .top_k // "null", .top_p // "null", .frequency_penalty // "null", .presence_penalty // "null", ( . | tostring ) ] | @tsv' -c -r --unbuffered | while IFS="$(\printf '\t')" read -r model service_tier seed n max_tokens temperature top_k top_p frequency_penalty presence_penalty json; do
+    \jq <"$request_file" '[ .model // "null", .service_tier // "null", .seed // "null", .n // "null", .max_completion_tokens // .max_tokens // "null", .temperature // "null", .top_k // "null", .top_p // "null", .frequency_penalty // "null", .presence_penalty // "null", ( . | tostring ) ] | @tsv' -c -r --unbuffered | while IFS="$(\printf '\t')" read -r model service_tier seed n max_tokens temperature top_k top_p frequency_penalty presence_penalty json; do
       \[ "$model" = null ] || otel_span_name "$span_handle" "generate_content $model"
       \[ "$model" = null ] || otel_span_attribute_typed "$span_handle" string gen_ai.request.model="$model"
       \[ "$service_tier" = null ] || otel_span_attribute_typed "$span_handle" string openai.request.service_tier="$service_tier"
@@ -404,7 +442,7 @@ _otel_curl_record_api_response_llm_openai() {
       \[ "$prompt_messages" = null ] || otel_span_attribute_typed "$span_handle" string gen_ai.input.messages="$prompt_messages"
     done
     local status_code
-    IFS= \read -r status_code < "$span_handle_file"
+    IFS= \read -r status_code <"$span_handle_file"
     if \[ "$status_code" = "TERMINATE" ]; then
       if \[ "$process_stdout" = 0 ]; then \cat; fi
       break
@@ -414,21 +452,21 @@ _otel_curl_record_api_response_llm_openai() {
       \cat "$stdout" &
       \tee "$stdout" | \jq '[ .object // "null", .id // "null", .model // "null", .system_fingerprint // "null", .service_tier // "null", .temperature // "null", .top_k // "null", .top_p // "null", .frequency_penalty // "null", .presence_penalty // "null", .usage.prompt_tokens // .usage.input_tokens // "null", .usage.completion_tokens // .usage.output_tokens // "null" ] | @tsv' -c -r --unbuffered | while IFS="$(\printf '\t')" read -r object id model system_fingerprint service_tier temperature top_k top_p frequency_penalty presence_penalty prompt_tokens completion_tokens; do
         case "$object" in
-          'response'|'response.chunk')
+          'response' | 'response.chunk')
             local operation_name=chat
             local output_type=text
             ;;
-          'chat.completion'|'chat.completion.chunk')
+          'chat.completion' | 'chat.completion.chunk')
             local operation_name=chat
             local output_type=text
-            \printf '%s' "$json" |  \jq '.choices[] | select(.finish_reason != null) | .finish_reason' -r | while \read -r finish_reason; do otel_span_attribute_typed "$span_handle" +string[1] gen_ai.response.finish_reasons="$finish_reason"; done
+            \printf '%s' "$json" | \jq '.choices[] | select(.finish_reason != null) | .finish_reason' -r | while \read -r finish_reason; do otel_span_attribute_typed "$span_handle" +string[1] gen_ai.response.finish_reasons="$finish_reason"; done
             ;;
           *)
             local operation_name=null
             local output_type=null
             ;;
         esac
-        \[ "$operation_name" = null ] || otel_span_name "$span_handle" "$operation_name $(\jq < "$request_file" .model -r)"
+        \[ "$operation_name" = null ] || otel_span_name "$span_handle" "$operation_name $(\jq <"$request_file" .model -r)"
         \[ "$operation_name" = null ] || otel_span_attribute_typed "$span_handle" string gen_ai.operation.name="$operation_name"
         \[ "$id" = null ] || otel_span_attribute_typed "$span_handle" string gen_ai.response.id="$id"
         \[ "$model" = null ] || otel_span_attribute_typed "$span_handle" string gen_ai.response.model="$model"
@@ -475,9 +513,12 @@ _otel_curl_record_api_response_llm_openai() {
       done
     fi
     local drain_pid=
-    if \[ "$process_stdout" = 0 ]; then \cat & drain_pid=$!; fi
+    if \[ "$process_stdout" = 0 ]; then
+      \cat &
+      drain_pid=$!
+    fi
     local end_msg
-    IFS= \read -r end_msg < "$span_handle_file"
+    IFS= \read -r end_msg <"$span_handle_file"
     \[ -z "$drain_pid" ] || wait "$drain_pid"
     break
   done

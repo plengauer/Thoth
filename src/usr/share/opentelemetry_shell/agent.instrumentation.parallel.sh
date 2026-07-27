@@ -28,7 +28,7 @@ _otel_inject $arg"
         local normalized_arg="$(_otel_inject_parallel_normalize_argument "$arg")"
         no_quote=1 _otel_escape_arg "$(_otel_escape_arg "$normalized_arg")"
       else
-        if \[ "$inject_all_args" = 1 ]; then 
+        if \[ "$inject_all_args" = 1 ]; then
           \echo -n "'sh -c '\''. otel.sh
 _otel_inject $arg'\'' parallel'"
         else
@@ -49,16 +49,25 @@ _otel_inject $arg'\'' parallel'"
 # evidence this doesnt work: parallel -v sh -c 'echo $0 A$1O' parallel ':::' c1 c2 c3
 
 _otel_inject_parallel_gnu_arguments() {
-  if _otel_string_ends_with "$1" "/env"; then _otel_escape_arg "$1"; shift; \echo -n ' '; fi
-  if _otel_string_ends_with "$1" "/perl" || \[ "$1" = perl ]; then _otel_escape_arg "$1"; shift; \echo -n ' '; fi
-  _otel_escape_args "$1" -q; shift
+  if _otel_string_ends_with "$1" "/env"; then
+    _otel_escape_arg "$1"
+    shift
+    \echo -n ' '
+  fi
+  if _otel_string_ends_with "$1" "/perl" || \[ "$1" = perl ]; then
+    _otel_escape_arg "$1"
+    shift
+    \echo -n ' '
+  fi
+  _otel_escape_args "$1" -q
+  shift
   local in_exec=0
   for arg in "$@"; do
     \echo -n ' '
     if \[ "$in_exec" -eq 0 ] && _otel_string_contains "$arg" =; then
       local additional_code="export '$arg'
 ${additional_code:-}"
-    elif \[ "$in_exec" -eq 0 ] && ! _otel_string_starts_with "$arg" - && ! _otel_string_contains "$arg" = && ( \[ -x "$(\which "$arg" 2> /dev/null)" ] || ( \[ "$_otel_shell" = bash ] && \type "$arg" 2> /dev/null | \head -n1 | \grep -q ' function$' ) ); then
+    elif \[ "$in_exec" -eq 0 ] && ! _otel_string_starts_with "$arg" - && ! _otel_string_contains "$arg" = && (\[ -x "$(\which "$arg" 2>/dev/null)" ] || (\[ "$_otel_shell" = bash ] && \type "$arg" 2>/dev/null | \head -n1 | \grep -q ' function$')); then
       local in_exec=1
       \echo -n "$_otel_shell -c '${additional_code:-}
 . otel.sh

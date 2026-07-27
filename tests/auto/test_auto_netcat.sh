@@ -8,10 +8,10 @@ expected="$(\mktemp)"
 actual="$(\mktemp)"
 
 for i in $(\seq 1 10); do
-  \cat /dev/urandom | \head -c $((1024 * 1)) > "$expected" || \true
-  _otel_netcat_parse_request '' '/dev/null' < "$expected" > "$actual"
+  \cat /dev/urandom | \head -c $((1024 * 1)) >"$expected" || \true
+  _otel_netcat_parse_request '' '/dev/null' <"$expected" >"$actual"
   assert_equals "$(\cat "$expected" | \xxd -p)" "$(\cat "$actual" | \xxd -p)"
-  _otel_netcat_parse_response '' '/dev/null' < "$expected" > "$actual"
+  _otel_netcat_parse_response '' '/dev/null' <"$expected" >"$actual"
   assert_equals "$(\cat "$expected" | \xxd -p)" "$(\cat "$actual" | \xxd -p)"
 done
 
@@ -19,10 +19,10 @@ done
 \echo "TEST 0" >&2
 port=12345
 response_file="$(\mktemp)"
-netcat -l "$port" < /dev/null > "$response_file" &
+netcat -l "$port" </dev/null >"$response_file" &
 pid="$!"
 \sleep 1
-\echo -n hello world | netcat -w 1 127.0.0.1 "$port" > /dev/null
+\echo -n hello world | netcat -w 1 127.0.0.1 "$port" >/dev/null
 \wait "$pid"
 assert_equals "hello world" "$(\cat "$response_file")"
 span="$(resolve_span '.kind == "SpanKind.PRODUCER"')"
@@ -62,7 +62,7 @@ assert_equals "netcat -w 5 www.google.com 80" "$(\echo "$span" | \jq -r '.name')
 http_body() {
   while read -r line; do
     case "$(\printf '%s' "$line" | \tr '[:upper:]' '[:lower:]')" in
-      'transfer-encoding: chunked'*) local chunked=1;;
+      'transfer-encoding: chunked'*) local chunked=1 ;;
       *) ;;
     esac
     if \[ "${#line}" = 1 ]; then break; fi
@@ -72,19 +72,19 @@ http_body() {
       length_length="${#length}"
       length="$(\printf '%s' "$length" | \head -c "$(($length_length - 1))")"
       \head -c "$(\printf '%d' '0x'"$length")"
-      \head -c 2 > /dev/null
+      \head -c 2 >/dev/null
     done
   }
 }
-\printf 'GET /index.html HTTP/1.1\r\nUser-agent: netcat/1.0\r\nAccept: */*\r\nHost: www.example.com\r\n\r\n' | \netcat -w 5 www.example.com 80 | http_body > "$expected"
-\printf 'GET /index.html HTTP/1.1\r\nUser-agent: netcat/1.0\r\nAccept: */*\r\nHost: www.example.com\r\n\r\n' |  netcat -w 5 www.example.com 80 | http_body >   "$actual"
+\printf 'GET /index.html HTTP/1.1\r\nUser-agent: netcat/1.0\r\nAccept: */*\r\nHost: www.example.com\r\n\r\n' | \netcat -w 5 www.example.com 80 | http_body >"$expected"
+\printf 'GET /index.html HTTP/1.1\r\nUser-agent: netcat/1.0\r\nAccept: */*\r\nHost: www.example.com\r\n\r\n' | netcat -w 5 www.example.com 80 | http_body >"$actual"
 assert_equals "$(\cat "$expected")" "$(\cat "$actual")"
 assert_equals "$(curl http://www.example.com)" "$(\cat "$actual")"
 
 # check real HTTP client with HTTP server with binary data
 \echo "TEST 3" >&2
 port=$((port + 1))
-\cat /dev/urandom | \head -c $((1024 * 1)) > "$expected" || \true
+\cat /dev/urandom | \head -c $((1024 * 1)) >"$expected" || \true
 { \printf 'HTTP/1.1 200 OK\r\nFoo: Bar\r\n\r\n' && \cat "$expected"; } | netcat -l -w 1 "$port" &
 \sleep 3
 pid="$!"
@@ -95,8 +95,8 @@ assert_equals "$(\cat "$expected" | \xxd -p)" "$(\cat "$actual" | \xxd -p)"
 # check large binary data integrity
 \echo "TEST 4" >&2
 port=$((port + 1))
-\cat /dev/urandom | \head -c $((1024 * 1)) > "$expected" || \true
-netcat -l "$port" > "$actual" &
+\cat /dev/urandom | \head -c $((1024 * 1)) >"$expected" || \true
+netcat -l "$port" >"$actual" &
 pid="$!"
 \sleep 3
 \cat "$expected" | netcat -w 10 127.0.0.1 "$port"
@@ -106,8 +106,8 @@ pid="$!"
 # check binary data without linefeed (linefeed has an internal meaning)
 \echo "TEST 5" >&2
 port=$((port + 1))
-\cat /dev/urandom | \tr -d '\n' | \head -c $((1024 * 1)) > "$expected" || \true
-netcat -l "$port" > "$actual" &
+\cat /dev/urandom | \tr -d '\n' | \head -c $((1024 * 1)) >"$expected" || \true
+netcat -l "$port" >"$actual" &
 pid="$!"
 \sleep 3
 \cat "$expected" | netcat -w 10 127.0.0.1 "$port"
@@ -117,10 +117,10 @@ pid="$!"
 # check simple binary response only
 \echo "TEST 6" >&2
 port=$((port + 1))
-\cat /dev/urandom | \head -c $((1024 * 1)) > "$expected" || \true
+\cat /dev/urandom | \head -c $((1024 * 1)) >"$expected" || \true
 \cat "$expected" | netcat -l "$port" &
 pid="$!"
 \sleep 3
-netcat -w 10 127.0.0.1 "$port" > "$actual"
+netcat -w 10 127.0.0.1 "$port" >"$actual"
 \wait "$pid" || \true
 [ -z "$(\cat "$actual" | \xxd -p)" ] || assert_equals "$(\cat "$expected" | \xxd -p)" "$(\cat "$actual" | \xxd -p)" # get some flaky fails on this one when random internet is scanning the port

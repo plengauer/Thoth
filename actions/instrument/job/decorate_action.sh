@@ -1,13 +1,16 @@
-#!/bin/sh
-if [ -z "$GITHUB_RUN_ID" ] || [ "$(cat /proc/$PPID/cmdline | tr '\000-\037' ' ' | cut -d ' ' -f 1 | rev | cut -d / -f 1 | rev)" != "Runner.Worker" ]; then unset OTEL_SHELL_COMMAND_OVERRIDE; exec "$@"; fi
+#!/bin/bash
+if [ -z "$GITHUB_RUN_ID" ] || [ "$(cat /proc/$PPID/cmdline | tr '\000-\037' ' ' | cut -d ' ' -f 1 | rev | cut -d / -f 1 | rev)" != "Runner.Worker" ]; then
+  unset OTEL_SHELL_COMMAND_OVERRIDE
+  exec "$@"
+fi
 
 variable_name_2_attribute_key() {
   printf '%s' "$1" | tr '[:upper:]' '[:lower:]'
 }
 variable_name_2_attribute_value() {
   case "$1" in
-    *-*) node -e "console.log(require('process').env['$1']);";;
-    *) printf '%s' "${!1}";;
+    *-*) node -e "console.log(require('process').env['$1']);" ;;
+    *) printf '%s' "${!1}" ;;
   esac
 }
 github_properties_to_kvps() {
@@ -17,19 +20,19 @@ github_properties_to_kvps() {
     if [ -r "$current_delimiter_file" ]; then
       if [ "$line" = "$(cat "$current_delimiter_file")" ]; then
         printf '\n'
-        rm "$current_delimiter_file" "$first" 2> /dev/null
+        rm "$current_delimiter_file" "$first" 2>/dev/null
       else
         if [ -f "$first" ]; then printf ' '; else touch "$first"; fi
         printf '%s' "$line"
       fi
     else
       case "$line" in
-        *=*) printf '%s\n' "$line";;
+        *=*) printf '%s\n' "$line" ;;
         *'<<'*)
-          printf '%s' "${line##*<<}" > "$current_delimiter_file"
+          printf '%s' "${line##*<<}" >"$current_delimiter_file"
           printf '%s' "${line%<<*}="
           ;;
-        *) printf '%s\n' "$line";;
+        *) printf '%s\n' "$line" ;;
       esac
     fi
   done
@@ -59,11 +62,11 @@ record_github_logs() {
     fi
     case "$line" in
       ::stop-commands::*)
-        echo "${line#::stop-commands::}" > "$commands_mute_token_file"
+        echo "${line#::stop-commands::}" >"$commands_mute_token_file"
         continue
         ;;
-      ::endgroup::) continue;;
-      ::group*) continue;;
+      ::endgroup::) continue ;;
+      ::group*) continue ;;
       ::save-state' 'name=*::*)
         line="${line#::save-state name=}"
         otel_span_attribute_typed $span_handle string github.actions.step.state.after."$(variable_name_2_attribute_key "${line%%::*}")"="${line#*::}"
@@ -77,7 +80,8 @@ record_github_logs() {
       ::add-mask::)
         # in theory we should adjust the collector config and restart
         # in reality, the first commands using the unsmasked value (including the echo writing it) are already out ...
-        continue;;
+        continue
+        ;;
       ::*::*)
         line="${line#::}"
         severity="${line%%::*}"
@@ -88,15 +92,15 @@ record_github_logs() {
         severity=trace
         line="${line#[command]}"
         ;;
-      *) continue;;
+      *) continue ;;
     esac
     case "$severity" in
-      trace) severity=1;;
-      debug) severity=5;;
-      notice) severity=9;;
-      warning) severity=13;;
-      error) severity=17;;
-      *) continue;;
+      trace) severity=1 ;;
+      debug) severity=5 ;;
+      notice) severity=9 ;;
+      warning) severity=13 ;;
+      error) severity=17 ;;
+      *) continue ;;
     esac
     _otel_log_record "$TRACEPARENT" auto "$severity" "$line"
   done
@@ -132,12 +136,12 @@ otel_span_attribute_typed $span_handle string github.actions.action.ref="$GITHUB
 [ -z "${_OTEL_GITHUB_STEP_ACTION_PHASE:-}" ] || otel_span_attribute_typed $span_handle string github.actions.action.phase="$_OTEL_GITHUB_STEP_ACTION_PHASE"
 otel_span_activate "$span_handle"
 
-record_github_logs < "$log_1_pipe" &
+record_github_logs <"$log_1_pipe" &
 record_github_logs_pid="$!"
-cat < "$log_0_pipe" > "$log_1_pipe" &
+cat <"$log_0_pipe" >"$log_1_pipe" &
 redirect_github_logs_pid="$!"
 exit_code=0
-otel_observe "$_OTEL_GITHUB_STEP_AGENT_INJECTION_FUNCTION" "$@" 1>> "$log_0_pipe" 2>> "$log_0_pipe" || exit_code="$?"
+otel_observe "$_OTEL_GITHUB_STEP_AGENT_INJECTION_FUNCTION" "$@" 1>>"$log_0_pipe" 2>>"$log_0_pipe" || exit_code="$?"
 
 otel_span_deactivate "$span_handle"
 ! [ -r "$GITHUB_STATE" ] || cat "$GITHUB_STATE" | github_properties_to_kvps | while read -r kvp; do otel_span_attribute_typed $span_handle string github.actions.step.state.after."$(variable_name_2_attribute_key "${kvp%%=*}")"="${kvp#*=}"; done
@@ -150,7 +154,10 @@ else
 fi
 otel_span_attribute_typed $span_handle string cicd.pipeline.task.run.result="$conclusion"
 otel_span_attribute_typed $span_handle string github.actions.conclusion="$conclusion"
-if [ "$conclusion" = failure ]; then otel_span_error "$span_handle"; touch /tmp/opentelemetry_shell.github.error; fi
+if [ "$conclusion" = failure ]; then
+  otel_span_error "$span_handle"
+  touch /tmp/opentelemetry_shell.github.error
+fi
 otel_span_end "$span_handle"
 time_end="$(date +%s.%N)"
 
@@ -198,7 +205,7 @@ if [ -n "${GITHUB_ACTION_REPOSITORY:-}" ]; then
   otel_observation_attribute_typed "$observation_handle" string github.actions.action.ref="$GITHUB_ACTION_REF"
   otel_observation_attribute_typed "$observation_handle" string github.actions.action.conclusion="$conclusion"
   otel_counter_observe "$counter_handle" "$observation_handle"
-  
+
   counter_handle="$(otel_counter_create counter github.actions.actions.duration s 'Duration of action runs')"
   observation_handle="$(otel_observation_create "$(python3 -c "print(str($time_end - $time_start))")")"
   otel_observation_attribute_typed "$observation_handle" string github.actions.workflow.name="$GITHUB_WORKFLOW"
@@ -218,20 +225,20 @@ fi
 
 if _otel_is_stream_open "$redirect_github_logs_pid" 0; then
   sleep 3
-  kill -9 "$redirect_github_logs_pid" &> /dev/null || true
+  kill -9 "$redirect_github_logs_pid" &>/dev/null || true
 fi
 wait "$record_github_logs_pid"
 rm "$log_0_pipe" "$log_1_pipe"
 
 otel_shutdown
-echo "$_OTEL_GITHUB_STEP_ACTION_TYPE" "$github_action_name" >> /tmp/opentelemetry_shell.github.step.log
+echo "$_OTEL_GITHUB_STEP_ACTION_TYPE" "$github_action_name" >>/tmp/opentelemetry_shell.github.step.log
 
-if [ "$exit_code" = 0 ] && ( [ "${GITHUB_ACTION_REPOSITORY:-}" = github/gh-aw ] || [ "${GITHUB_ACTION_REPOSITORY:-}" = github/gh-aw-actions ] ) && [ "${GITHUB_STEP:-$GITHUB_ACTION}" = setup ] && [ -d "${INPUT_DESTINATION:-}" ]; then
+if [ "$exit_code" = 0 ] && ([ "${GITHUB_ACTION_REPOSITORY:-}" = github/gh-aw ] || [ "${GITHUB_ACTION_REPOSITORY:-}" = github/gh-aw-actions ]) && [ "${GITHUB_STEP:-$GITHUB_ACTION}" = setup ] && [ -d "${INPUT_DESTINATION:-}" ]; then
   find "${INPUT_DESTINATION}" -name "*.sh" 2>/dev/null | while IFS= read -r script_file; do
     sed -i 's~#!/bin/sh~#!/bin/sh\n. otel.sh~g' "$script_file" 2>/dev/null || true
     sed -i 's~#!/bin/bash~#!/bin/bash\n. otel.sh~g' "$script_file" 2>/dev/null || true
   done || true
-  [ -n "${OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT:-}" ] || echo OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT=span_and_event >> "$GITHUB_ENV"
+  [ -n "${OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT:-}" ] || echo OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT=span_and_event >>"$GITHUB_ENV"
   echo "::debug::Instrumented agentic workflows"
 fi
 
