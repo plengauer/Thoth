@@ -9,7 +9,7 @@ initialized_logs = False
 
 resource = {}
 final_resources = None
-spans = {}
+spans: dict = {}
 next_span_id = 0
 events = {}
 next_event_id = 0
@@ -17,7 +17,7 @@ links = {}
 next_link_id = 0
 counters = {}
 next_counter_id = 0
-observations = {}
+observations: dict = {}
 next_observation_id = 0
 delayed_observations = {}
 
@@ -37,7 +37,7 @@ def run(scope, version, commands):
             handle(scope, version, tokens[0], tokens[1] if len(tokens) > 1 else None)
         except EOFError:
             sys.exit(0)
-        except:
+        except Exception:
             print('SDK Error: ' + line, file=sys.stderr)
             import traceback
             traceback.print_exc()
@@ -45,7 +45,7 @@ def run(scope, version, commands):
         handle(scope, version, 'SHUTDOWN', None)
     except EOFError:
         sys.exit(0)
-    except:
+    except Exception:
         pass
 
 def guess_cloud_resource_detectors():
@@ -138,10 +138,10 @@ def guess_cloud_resource_detectors():
 
 def handle(scope, version, command, arguments):
     global initialized_traces, initialized_metrics, initialized_logs, final_resources
-    
+    from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
+
     if command.startswith("SPAN_") and not initialized_traces:
         from opentelemetry.trace import set_tracer_provider, get_current_span
-        from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
         from opentelemetry.sdk.trace import TracerProvider
         from opentelemetry.sdk.trace.sampling import DEFAULT_ON, DEFAULT_OFF, TraceIdRatioBased, ParentBased
         from opentelemetry.sdk.trace.id_generator import RandomIdGenerator
@@ -284,7 +284,6 @@ def handle(scope, version, command, arguments):
         raise EOFError
     elif command == 'SPAN_START':
         from opentelemetry.trace import get_tracer, SpanKind
-        from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
         global next_span_id
         tokens = arguments.split(' ', 5)
         response_path = tokens[0]
@@ -311,7 +310,6 @@ def handle(scope, version, command, arguments):
     elif command == 'SPAN_HANDLE':
         from opentelemetry.trace import get_current_span
         from opentelemetry.sdk.trace import Span
-        from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
         tokens = arguments.split(' ', 1)
         response_path = tokens[0]
         traceparent = tokens[1]
@@ -350,7 +348,6 @@ def handle(scope, version, command, arguments):
     elif command == 'SPAN_TRACEPARENT':
         from opentelemetry.sdk.trace import Span
         from opentelemetry.trace import set_span_in_context
-        from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
         tokens = arguments.split(' ', 1)
         response_path = tokens[0]
         if len(tokens) == 1:
@@ -399,7 +396,6 @@ def handle(scope, version, command, arguments):
     elif command == 'LINK_CREATE':
         from opentelemetry.sdk.trace import Span
         from opentelemetry.trace import get_current_span
-        from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
         global next_link_id
         tokens = arguments.split(' ', 3)
         response_path = tokens[0]
@@ -513,7 +509,6 @@ def handle(scope, version, command, arguments):
     elif command == 'LOG_RECORD':
         from opentelemetry._logs import get_logger
         from opentelemetry.sdk._logs._internal import SeverityNumber
-        from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
         tokens = arguments.split(' ', 3)
         traceparent = tokens[0]
         log_time = tokens[1]
@@ -582,11 +577,11 @@ def convert_type(type, value, base=None):
     elif type == 'auto':
         try:
             return int(value)
-        except:
+        except Exception:
             pass
         try:
             return float(value)
-        except:
+        except Exception:
             pass
         return value
     else:
@@ -597,7 +592,7 @@ def file_contains(haystack, needle):
         with open(haystack, 'r') as file:
             if needle in file.read():
                 return True
-    except:
+    except Exception:
         pass
     return False
 
