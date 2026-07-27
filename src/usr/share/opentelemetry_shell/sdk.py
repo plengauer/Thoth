@@ -184,26 +184,13 @@ def handle(scope, version, command, arguments):
     global initialized_traces, initialized_metrics, initialized_logs, final_resources
 
     if command.startswith("SPAN_") and not initialized_traces:
-        from opentelemetry.exporter.otlp.proto.http.trace_exporter import (
-            OTLPSpanExporter,
-        )
+        from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
         from opentelemetry.sdk.trace import TracerProvider
-        from opentelemetry.sdk.trace.export import (
-            BatchSpanProcessor,
-            ConsoleSpanExporter,
-            SimpleSpanProcessor,
-        )
+        from opentelemetry.sdk.trace.export import BatchSpanProcessor, ConsoleSpanExporter, SimpleSpanProcessor
         from opentelemetry.sdk.trace.id_generator import RandomIdGenerator
-        from opentelemetry.sdk.trace.sampling import (
-            DEFAULT_OFF,
-            DEFAULT_ON,
-            ParentBased,
-            TraceIdRatioBased,
-        )
+        from opentelemetry.sdk.trace.sampling import DEFAULT_OFF, DEFAULT_ON, ParentBased, TraceIdRatioBased
         from opentelemetry.trace import get_current_span, set_tracer_provider
-        from opentelemetry.trace.propagation.tracecontext import (
-            TraceContextTextMapPropagator,
-        )
+        from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
 
         traces_exporters = os.environ.get("OTEL_TRACES_EXPORTER", "otlp")
         propagator = os.environ.get("OTEL_PROPAGATORS", "tracecontext")
@@ -285,15 +272,10 @@ def handle(scope, version, command, arguments):
         initialized_traces = True
 
     if command.startswith("COUNTER_") and not initialized_metrics:
-        from opentelemetry.exporter.otlp.proto.http.metric_exporter import (
-            OTLPMetricExporter,
-        )
+        from opentelemetry.exporter.otlp.proto.http.metric_exporter import OTLPMetricExporter
         from opentelemetry.metrics import set_meter_provider
         from opentelemetry.sdk.metrics import MeterProvider
-        from opentelemetry.sdk.metrics.export import (
-            ConsoleMetricExporter,
-            PeriodicExportingMetricReader,
-        )
+        from opentelemetry.sdk.metrics.export import ConsoleMetricExporter PeriodicExportingMetricReader
 
         metrics_exporters = os.environ.get("OTEL_METRICS_EXPORTER", "otlp")
         if metrics_exporters:
@@ -322,10 +304,7 @@ def handle(scope, version, command, arguments):
         from opentelemetry._logs import set_logger_provider
         from opentelemetry.exporter.otlp.proto.http._log_exporter import OTLPLogExporter
         from opentelemetry.sdk._logs import LoggerProvider
-        from opentelemetry.sdk._logs.export import (
-            BatchLogRecordProcessor,
-            ConsoleLogRecordExporter,
-        )
+        from opentelemetry.sdk._logs.export import BatchLogRecordProcessor, ConsoleLogRecordExporter
 
         logs_exporters = os.environ.get("OTEL_LOGS_EXPORTER", "otlp")
         if logs_exporters:
@@ -358,13 +337,7 @@ def handle(scope, version, command, arguments):
         value = tokens[1]
         resource[key] = convert_type(type, value)
     elif command == "INIT":
-        from opentelemetry.sdk.resources import (
-            OsResourceDetector,
-            OTELResourceDetector,
-            Resource,
-            ResourceDetector,
-            get_aggregated_resources,
-        )
+        from opentelemetry.sdk.resources import OsResourceDetector, OTELResourceDetector, Resource, ResourceDetector, get_aggregated_resources
         from opentelemetry_resourcedetector_docker import DockerResourceDetector
         from opentelemetry_resourcedetector_kubernetes import KubernetesResourceDetector
 
@@ -396,9 +369,7 @@ def handle(scope, version, command, arguments):
         raise EOFError
     elif command == "SPAN_START":
         from opentelemetry.trace import SpanKind, get_tracer
-        from opentelemetry.trace.propagation.tracecontext import (
-            TraceContextTextMapPropagator,
-        )
+        from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
 
         global next_span_id
         tokens = arguments.split(" ", 5)
@@ -434,9 +405,7 @@ def handle(scope, version, command, arguments):
     elif command == "SPAN_HANDLE":
         from opentelemetry.sdk.trace import Span
         from opentelemetry.trace import get_current_span
-        from opentelemetry.trace.propagation.tracecontext import (
-            TraceContextTextMapPropagator,
-        )
+        from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
 
         tokens = arguments.split(" ", 1)
         response_path = tokens[0]
@@ -481,9 +450,7 @@ def handle(scope, version, command, arguments):
     elif command == "SPAN_TRACEPARENT":
         from opentelemetry.sdk.trace import Span
         from opentelemetry.trace import set_span_in_context
-        from opentelemetry.trace.propagation.tracecontext import (
-            TraceContextTextMapPropagator,
-        )
+        from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
 
         tokens = arguments.split(" ", 1)
         response_path = tokens[0]
@@ -534,9 +501,7 @@ def handle(scope, version, command, arguments):
     elif command == "LINK_CREATE":
         from opentelemetry.sdk.trace import Span
         from opentelemetry.trace import get_current_span
-        from opentelemetry.trace.propagation.tracecontext import (
-            TraceContextTextMapPropagator,
-        )
+        from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
 
         global next_link_id
         tokens = arguments.split(" ", 3)
@@ -700,9 +665,7 @@ def handle(scope, version, command, arguments):
     elif command == "LOG_RECORD":
         from opentelemetry._logs import get_logger
         from opentelemetry.sdk._logs._internal import SeverityNumber
-        from opentelemetry.trace.propagation.tracecontext import (
-            TraceContextTextMapPropagator,
-        )
+        from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
 
         tokens = arguments.split(" ", 3)
         traceparent = tokens[0]
