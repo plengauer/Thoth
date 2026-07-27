@@ -275,7 +275,7 @@ def handle(scope, version, command, arguments):
         from opentelemetry.exporter.otlp.proto.http.metric_exporter import OTLPMetricExporter
         from opentelemetry.metrics import set_meter_provider
         from opentelemetry.sdk.metrics import MeterProvider
-        from opentelemetry.sdk.metrics.export import ConsoleMetricExporter PeriodicExportingMetricReader
+        from opentelemetry.sdk.metrics.export import ConsoleMetricExporter, PeriodicExportingMetricReader
 
         metrics_exporters = os.environ.get("OTEL_METRICS_EXPORTER", "otlp")
         if metrics_exporters:
