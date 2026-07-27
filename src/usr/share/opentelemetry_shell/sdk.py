@@ -73,9 +73,7 @@ def guess_cloud_resource_detectors():
     elif os.path.exists("/etc/google_instance_config.json") or file_contains(
         "/sys/class/dmi/id/product_name", "Google Compute Engine"
     ):
-        from opentelemetry.resourcedetector.gcp_resource_detector import (
-            GoogleCloudResourceDetector,
-        )
+        from opentelemetry.resourcedetector.gcp_resource_detector import GoogleCloudResourceDetector
 
         return [GoogleCloudResourceDetector()]
     elif file_contains("/sys/class/dmi/id/product_name", "OracleCloud.com"):
