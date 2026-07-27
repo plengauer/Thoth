@@ -111,16 +111,10 @@ def guess_cloud_resource_detectors():
 
         return [OracleResourceDetector()]
     else:
-        from opentelemetry.resource.detector.azure.app_service import (
-            AzureAppServiceResourceDetector,
-        )
+        from opentelemetry.resource.detector.azure.app_service import AzureAppServiceResourceDetector
         from opentelemetry.resource.detector.azure.vm import AzureVMResourceDetector
-        from opentelemetry.resourcedetector.gcp_resource_detector import (
-            GoogleCloudResourceDetector,
-        )
-        from opentelemetry.sdk.extension.aws.resource.beanstalk import (
-            AwsBeanstalkResourceDetector,
-        )
+        from opentelemetry.resourcedetector.gcp_resource_detector import GoogleCloudResourceDetector
+        from opentelemetry.sdk.extension.aws.resource.beanstalk import AwsBeanstalkResourceDetector
         from opentelemetry.sdk.extension.aws.resource.ec2 import AwsEc2ResourceDetector
         from opentelemetry.sdk.extension.aws.resource.ecs import AwsEcsResourceDetector
         from opentelemetry.sdk.extension.aws.resource.eks import AwsEksResourceDetector
