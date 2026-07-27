@@ -138,10 +138,10 @@ def guess_cloud_resource_detectors():
 
 def handle(scope, version, command, arguments):
     global initialized_traces, initialized_metrics, initialized_logs, final_resources
-    from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
 
     if command.startswith("SPAN_") and not initialized_traces:
         from opentelemetry.trace import set_tracer_provider, get_current_span
+        from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
         from opentelemetry.sdk.trace import TracerProvider
         from opentelemetry.sdk.trace.sampling import DEFAULT_ON, DEFAULT_OFF, TraceIdRatioBased, ParentBased
         from opentelemetry.sdk.trace.id_generator import RandomIdGenerator
@@ -284,6 +284,7 @@ def handle(scope, version, command, arguments):
         raise EOFError
     elif command == 'SPAN_START':
         from opentelemetry.trace import get_tracer, SpanKind
+        from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
         global next_span_id
         tokens = arguments.split(' ', 5)
         response_path = tokens[0]
@@ -310,6 +311,7 @@ def handle(scope, version, command, arguments):
     elif command == 'SPAN_HANDLE':
         from opentelemetry.trace import get_current_span
         from opentelemetry.sdk.trace import Span
+        from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
         tokens = arguments.split(' ', 1)
         response_path = tokens[0]
         traceparent = tokens[1]
@@ -348,6 +350,7 @@ def handle(scope, version, command, arguments):
     elif command == 'SPAN_TRACEPARENT':
         from opentelemetry.sdk.trace import Span
         from opentelemetry.trace import set_span_in_context
+        from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
         tokens = arguments.split(' ', 1)
         response_path = tokens[0]
         if len(tokens) == 1:
@@ -396,6 +399,7 @@ def handle(scope, version, command, arguments):
     elif command == 'LINK_CREATE':
         from opentelemetry.sdk.trace import Span
         from opentelemetry.trace import get_current_span
+        from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
         global next_link_id
         tokens = arguments.split(' ', 3)
         response_path = tokens[0]
@@ -509,6 +513,7 @@ def handle(scope, version, command, arguments):
     elif command == 'LOG_RECORD':
         from opentelemetry._logs import get_logger
         from opentelemetry.sdk._logs._internal import SeverityNumber
+        from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
         tokens = arguments.split(' ', 3)
         traceparent = tokens[0]
         log_time = tokens[1]
