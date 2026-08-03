@@ -10,7 +10,7 @@ jobs:
     permissions:
       actions: read
       contents: read
-    uses: ./.github/workflows/build.yml
+    uses: $/.github/workflows/build.yml
     with:
       ref: ${{ inputs.ref }}
     secrets: inherit
@@ -19,7 +19,7 @@ jobs:
     permissions:
       actions: read
       contents: read
-    uses: ./.github/workflows/test_shell.yml
+    uses: $/.github/workflows/test_shell.yml
     with:
       ref: ${{ inputs.ref }}
     secrets: inherit
@@ -40,7 +40,7 @@ jobs:
       pull-requests: none
       security-events: none
       statuses: none
-    uses: ./.github/workflows/test_github.yml
+    uses: $/.github/workflows/test_github.yml
     with:
       ref: ${{ inputs.ref }}
     secrets: inherit

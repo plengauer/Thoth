@@ -21,7 +21,7 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: packages.deb.${{ inputs.ref }}
-      - uses: ./actions/instrument/job
+      - uses: $/actions/instrument/job
         with:
           cache: 'false'
         env:
@@ -41,7 +41,7 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: packages.deb.${{ inputs.ref }}
-      - uses: ./actions/instrument/job
+      - uses: $/actions/instrument/job
         with:
           cache: 'false'
         env:
@@ -64,7 +64,7 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: packages.deb.${{ inputs.ref }}
-      - uses: ./actions/instrument/job
+      - uses: $/actions/instrument/job
         with:
           cache: 'false'
         env:
@@ -100,7 +100,7 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: packages.deb.${{ inputs.ref }}
-      - uses: ./actions/instrument/job
+      - uses: $/actions/instrument/job
         with:
           cache: 'false'
         env:
@@ -128,7 +128,7 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: packages.deb.${{ inputs.ref }}
-      - uses: ./actions/instrument/job
+      - uses: $/actions/instrument/job
         with:
           cache: 'false'
         env:
@@ -155,7 +155,7 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: packages.deb.${{ inputs.ref }}
-      - uses: ./actions/instrument/job
+      - uses: $/actions/instrument/job
         with:
           cache: 'false'
         env:
@@ -179,7 +179,7 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: packages.deb.${{ inputs.ref }}
-      - uses: ./actions/instrument/job
+      - uses: $/actions/instrument/job
         with:
           cache: 'false'
         env:
@@ -200,7 +200,7 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: packages.deb.${{ inputs.ref }}
-      - uses: ./actions/instrument/job
+      - uses: $/actions/instrument/job
         with:
           cache: 'false'
         env:
@@ -223,7 +223,7 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: packages.deb.${{ inputs.ref }}
-      - uses: ./actions/instrument/job
+      - uses: $/actions/instrument/job
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
@@ -247,7 +247,7 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: packages.deb.${{ inputs.ref }}
-      - uses: ./actions/instrument/job
+      - uses: $/actions/instrument/job
         with:
           cache: 'false'
         env:
@@ -272,7 +272,7 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: packages.deb.${{ inputs.ref }}
-      - uses: ./actions/instrument/job
+      - uses: $/actions/instrument/job
         with:
           cache: 'false'
         env:
@@ -309,7 +309,7 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: packages.deb.${{ inputs.ref }}
-      - uses: ./actions/instrument/job
+      - uses: $/actions/instrument/job
         with:
           cache: 'false'
         env:
@@ -340,7 +340,7 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: packages.deb.${{ inputs.ref }}
-      - uses: ./actions/instrument/job
+      - uses: $/actions/instrument/job
         with:
           cache: 'false'
         env:
@@ -365,7 +365,7 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: packages.deb.${{ inputs.ref }}
-      - uses: ./actions/instrument/job
+      - uses: $/actions/instrument/job
         with:
           cache: 'false'
         env:
@@ -391,7 +391,7 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: packages.deb.${{ inputs.ref }}
-      - uses: ./actions/instrument/job
+      - uses: $/actions/instrument/job
         with:
           cache: 'false'
         env:
@@ -416,7 +416,7 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: packages.deb.${{ inputs.ref }}
-      - uses: ./actions/instrument/job
+      - uses: $/actions/instrument/job
         with:
           cache: 'false'
         env:
@@ -440,7 +440,7 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: packages.deb.${{ inputs.ref }}
-      - uses: ./actions/instrument/job
+      - uses: $/actions/instrument/job
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
@@ -462,7 +462,7 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: packages.deb.${{ inputs.ref }}
-      - uses: ./actions/instrument/job
+      - uses: $/actions/instrument/job
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
@@ -482,7 +482,7 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: packages.deb.${{ inputs.ref }}
-      - uses: ./actions/instrument/job
+      - uses: $/actions/instrument/job
         with:
           cache: 'false'
         env:
@@ -502,7 +502,7 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: packages.deb.${{ inputs.ref }}
-      - uses: ./actions/instrument/job
+      - uses: $/actions/instrument/job
         with:
           cache: 'false'
         env:
@@ -529,7 +529,7 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: packages.deb.${{ inputs.ref }}
-      - uses: ./actions/instrument/job
+      - uses: $/actions/instrument/job
         with:
           cache: ${{ matrix.cache }}
         env:
@@ -552,7 +552,7 @@ jobs:
           name: packages.deb.${{ inputs.ref }}
       - run: |
           nohup node -e "require('http').createServer(function (req, res) { console.log(req.method, req.url); res.writeHead(200); res.end(); }).listen(8080);" 1> /tmp/http.log 2> /dev/null &
-      - uses: ./actions/instrument/job
+      - uses: $/actions/instrument/job
         with:
           cache: 'false'
           secrets_to_redact: '{"github.token": "${{ github.token }}", "url": "https://example.com/foo/bar", "regex": "[a-zA-Z]*", "quote": "foo\"bar"}'
@@ -609,7 +609,7 @@ jobs:
             });
           }).listen(8080);
           " 1> /tmp/http.log 2> /dev/null &
-      - uses: ./actions/instrument/job
+      - uses: $/actions/instrument/job
         with:
           cache: 'false'
           secrets_to_redact: '{"github.token": "${{ github.token }}", "url": "https://example.com/foo/bar", "regex": "[a-zA-Z]*"}'
@@ -680,7 +680,7 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: packages.deb.${{ inputs.ref }}
-      - uses: ./actions/instrument/job
+      - uses: $/actions/instrument/job
         with:
           cache: 'false'
         env:
@@ -716,7 +716,7 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: packages.deb.${{ inputs.ref }}
-      - uses: ./actions/instrument/job
+      - uses: $/actions/instrument/job
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
@@ -742,7 +742,7 @@ jobs:
           name: packages.deb.${{ inputs.ref }}
       - run: |
           nohup node -e "require('http').createServer(function (req, res) { console.log(req.method, req.url); res.writeHead(200); res.end(); }).listen(8080);" 1> /tmp/http.log 2> /dev/null &
-      - uses: ./actions/instrument/job
+      - uses: $/actions/instrument/job
         with:
           cache: 'false'
           self_monitoring: ${{ matrix.self_monitoring }}
@@ -769,7 +769,7 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: packages.deb.${{ inputs.ref }}
-      - uses: ./actions/instrument/job
+      - uses: $/actions/instrument/job
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
       - run: echo hello world
@@ -790,7 +790,7 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: packages.deb.${{ inputs.ref }}
-      - uses: ./actions/instrument/job
+      - uses: $/actions/instrument/job
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
       - run: echo hello world
@@ -808,7 +808,7 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: packages.deb.${{ inputs.ref }}
-      - uses: ./actions/instrument/job
+      - uses: $/actions/instrument/job
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
       - run: echo hello world
@@ -837,7 +837,7 @@ jobs:
       - run: |
           [ -n "${{ steps.workflow_run.outputs.id }}" ]
           [ -n "${{ steps.workflow_run.outputs.run_attempt }}" ]
-      - uses: ./actions/instrument/workflow
+      - uses: $/actions/instrument/workflow
         with:
           workflow_run_id: ${{ steps.workflow_run.outputs.id }}
           workflow_run_attempt: ${{ steps.workflow_run.outputs.run_attempt }}
@@ -879,7 +879,7 @@ jobs:
       - run: |
           [ -n "${{ steps.workflow_run.outputs.id }}" ]
           [ -n "${{ steps.workflow_run.outputs.run_attempt }}" ]
-      - uses: ./actions/instrument/workflow
+      - uses: $/actions/instrument/workflow
         with:
           debug: 1
           workflow_run_id: ${{ steps.workflow_run.outputs.id }}
@@ -932,7 +932,7 @@ jobs:
           }
       - run: |
           [ -n "${{ steps.check_suite.outputs.id }}" ]
-      - uses: ./actions/instrument/checksuite
+      - uses: $/actions/instrument/checksuite
         with:
           check_suite_id: ${{ steps.check_suite.outputs.id }}
         env:
@@ -953,7 +953,7 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: packages.deb.${{ inputs.ref }}
-      - uses: ./actions/instrument/repository
+      - uses: $/actions/instrument/repository
         env:
           OTEL_METRICS_EXPORTER: console
           OTEL_LOGS_EXPORTER: console
@@ -973,7 +973,7 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: packages.deb.${{ inputs.ref }}
-      - uses: ./actions/instrument/repository
+      - uses: $/actions/instrument/repository
         with:
           event_name: pull_request
           event_action: opened
@@ -997,7 +997,7 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: packages.deb.${{ inputs.ref }}
-      - uses: ./actions/instrument/repository
+      - uses: $/actions/instrument/repository
         with:
           event_name: pull_request
           event_action: closed
@@ -1021,7 +1021,7 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: packages.deb.${{ inputs.ref }}
-      - uses: ./actions/instrument/repository
+      - uses: $/actions/instrument/repository
         with:
           event_name: pull_request
           event_action: closed
@@ -1045,7 +1045,7 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: packages.deb.${{ inputs.ref }}
-      - uses: ./actions/instrument/repository
+      - uses: $/actions/instrument/repository
         with:
           event_name: pull_request
           event_action: reopened
@@ -1069,7 +1069,7 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: packages.deb.${{ inputs.ref }}
-      - uses: ./actions/instrument/repository
+      - uses: $/actions/instrument/repository
         with:
           event_name: pull_request_review
           event_action: submitted
@@ -1093,7 +1093,7 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: packages.deb.${{ inputs.ref }}
-      - uses: ./actions/instrument/repository
+      - uses: $/actions/instrument/repository
         with:
           event_name: create
           event_body: '{"ref_type":"branch"}'
@@ -1116,7 +1116,7 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: packages.deb.${{ inputs.ref }}
-      - uses: ./actions/instrument/repository
+      - uses: $/actions/instrument/repository
         with:
           event_name: delete
           event_body: '{"ref_type":"branch"}'
@@ -1139,7 +1139,7 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: packages.deb.${{ inputs.ref }}
-      - uses: ./actions/instrument/repository
+      - uses: $/actions/instrument/repository
         with:
           event_name: push
           event_body: '{"ref":"refs/heads/main"}'
@@ -1157,7 +1157,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.ref }}
-      - uses: ./actions/instrument/deploy
+      - uses: $/actions/instrument/deploy
         with:
           debug: 1
           dry_run: true
