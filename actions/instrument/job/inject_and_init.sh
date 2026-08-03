@@ -92,7 +92,7 @@ echo "::group::Install Dependencies"
 export GITHUB_ACTION_REPOSITORY="${GITHUB_ACTION_REPOSITORY:-"$GITHUB_REPOSITORY"}"
 action_tag_name="$(echo "$GITHUB_ACTION_REF" | cut -sd @ -f 2-)"
 if [ -z "$action_tag_name" ]; then action_tag_name="v$(cat ../../../VERSION)"; fi
-cache_restore_shell() {
+cache_restore_fast() {
   local key="$1"
   [ -n "${ACTIONS_RESULTS_URL:-}" ] && [ -n "${ACTIONS_RUNTIME_TOKEN:-}" ] || return 1
   local encoded_key version response ok url tmpfile
@@ -111,7 +111,7 @@ cache_restore_shell() {
   url="$(printf '%s' "$response" | jq -r '.signed_download_url // .signedDownloadUrl // empty' 2>/dev/null)"
   [ -n "$url" ] || return 1
   tmpfile="$(mktemp)" || return 1
-  curl -sf -L -o "$tmpfile" "$url" || { rm -f "$tmpfile"; return 1; }
+  wget -qO "$tmpfile" "$url" || { rm -f "$tmpfile"; return 1; }
   if type zstd > /dev/null 2>&1; then
     sudo tar -P --use-compress-program="zstd -d --long=30" -xf "$tmpfile" || { rm -f "$tmpfile"; return 1; }
   else
@@ -123,14 +123,10 @@ run npm --no-audit ci
 if [ "$INPUT_CACHE" = "true" ]; then
   echo "::debug::Resolving cache ..."
   export INSTRUMENTATION_CACHE_KEY="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} instrumentation $GITHUB_WORKFLOW $GITHUB_JOB"
-  cache_restore_shell "$INSTRUMENTATION_CACHE_KEY" || true
+  cache_restore_fast "$INSTRUMENTATION_CACHE_KEY" || true
   cache_key="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} dependencies $({ cat /etc/os-release; arch; python3 --version || true; printenv | grep -E '^OTEL_SHELL_CONFIG_INSTALL_' || true; } | md5sum | cut -d ' ' -f 1)"
   if [ "$GITHUB_ACTION_REPOSITORY" = "$GITHUB_REPOSITORY" ] && [ -f "$GITHUB_WORKSPACE"/package.deb ]; then cache_key="$cache_key local"; fi
-  if ! cache_restore_shell "$cache_key"; then
-    wait
-    run sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.restoreCache(['/tmp/*.aliases'], '$INSTRUMENTATION_CACHE_KEY');"
-    sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.restoreCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip'], '$cache_key');"
-  fi
+  cache_restore_fast "$cache_key" || true
   [ "$(find /var/cache/apt/archives/ -name '*.deb' | wc -l)" -gt 0 ] || write_back_cache=TRUE
 fi
 if ! type otel.sh && [ -r /var/cache/apt/archives/opentelemetry-shell_*_*.deb ]; then
