@@ -90,16 +90,47 @@ echo "::group::Install Dependencies"
 . ../shared/github.sh
 . ../shared/id_printer.sh
 export GITHUB_ACTION_REPOSITORY="${GITHUB_ACTION_REPOSITORY:-"$GITHUB_REPOSITORY"}"
-npm --no-audit ci
 action_tag_name="$(echo "$GITHUB_ACTION_REF" | cut -sd @ -f 2-)"
 if [ -z "$action_tag_name" ]; then action_tag_name="v$(cat ../../../VERSION)"; fi
+cache_restore_shell() {
+  local key="$1"
+  [ -n "${ACTIONS_RESULTS_URL:-}" ] && [ -n "${ACTIONS_RUNTIME_TOKEN:-}" ] || return 1
+  local encoded_key version response ok url tmpfile
+  encoded_key="$(printf '%s' "$key" | jq -Rr @uri)" || return 1
+  version="$(curl -sf -H "Authorization: token $INPUT_GITHUB_TOKEN" \
+    "${GITHUB_API_URL:-https://api.github.com}/repos/$GITHUB_REPOSITORY/actions/caches?key=$encoded_key" \
+    | jq -r '.actions_caches[0].version // empty' 2>/dev/null)" || return 1
+  [ -n "$version" ] || return 1
+  response="$(curl -sf \
+    -H "Authorization: Bearer $ACTIONS_RUNTIME_TOKEN" \
+    -H "Content-Type: application/json" \
+    -d "$(jq -cn --arg k "$key" --arg v "$version" '{"key":$k,"restore_keys":[],"version":$v}')" \
+    "${ACTIONS_RESULTS_URL%/}/twirp/github.actions.results.api.v1.CacheService/GetCacheEntryDownloadURL" 2>/dev/null)" || return 1
+  ok="$(printf '%s' "$response" | jq -r '.ok // false' 2>/dev/null)"
+  [ "$ok" = "true" ] || return 1
+  url="$(printf '%s' "$response" | jq -r '.signed_download_url // .signedDownloadUrl // empty' 2>/dev/null)"
+  [ -n "$url" ] || return 1
+  tmpfile="$(mktemp)" || return 1
+  curl -sf -L -o "$tmpfile" "$url" || { rm -f "$tmpfile"; return 1; }
+  if type zstd > /dev/null 2>&1; then
+    sudo tar -P --use-compress-program="zstd -d --long=30" -xf "$tmpfile" || { rm -f "$tmpfile"; return 1; }
+  else
+    sudo tar -Pzxf "$tmpfile" || { rm -f "$tmpfile"; return 1; }
+  fi
+  rm -f "$tmpfile"
+}
+run npm --no-audit ci
 if [ "$INPUT_CACHE" = "true" ]; then
   echo "::debug::Resolving cache ..."
   export INSTRUMENTATION_CACHE_KEY="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} instrumentation $GITHUB_WORKFLOW $GITHUB_JOB"
-  run sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.restoreCache(['/tmp/*.aliases'], '$INSTRUMENTATION_CACHE_KEY');"
+  cache_restore_shell "$INSTRUMENTATION_CACHE_KEY" || true
   cache_key="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} dependencies $({ cat /etc/os-release; arch; python3 --version || true; printenv | grep -E '^OTEL_SHELL_CONFIG_INSTALL_' || true; } | md5sum | cut -d ' ' -f 1)"
   if [ "$GITHUB_ACTION_REPOSITORY" = "$GITHUB_REPOSITORY" ] && [ -f "$GITHUB_WORKSPACE"/package.deb ]; then cache_key="$cache_key local"; fi
-  sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.restoreCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip'], '$cache_key');"
+  if ! cache_restore_shell "$cache_key"; then
+    wait
+    run sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.restoreCache(['/tmp/*.aliases'], '$INSTRUMENTATION_CACHE_KEY');"
+    sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.restoreCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip'], '$cache_key');"
+  fi
   [ "$(find /var/cache/apt/archives/ -name '*.deb' | wc -l)" -gt 0 ] || write_back_cache=TRUE
 fi
 if ! type otel.sh && [ -r /var/cache/apt/archives/opentelemetry-shell_*_*.deb ]; then
