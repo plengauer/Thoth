@@ -3,8 +3,8 @@ if [ -n "${INPUT___KILL_SWITCH:-}" ]; then
   echo "::warning ::OpenTelemetry for GitHub actions disabled by kill switch!" && exit 0
 fi
 if [ -z "${INPUT___KILL_SWITCH:-}" ] && [ -n "${INPUT_GITHUB_TOKEN:-}" ]; then
-  kill_switch_value="$(curl -sf -H "Authorization: Bearer $INPUT_GITHUB_TOKEN" "${GITHUB_API_URL:-https://api.github.com}/repos/$GITHUB_REPOSITORY/actions/variables/OTEL_KILL_SWITCH" 2>/dev/null | grep -o '"value":"[^"]*"' | cut -d'"' -f4 || true)"
-  [ -n "${kill_switch_value:-}" ] || kill_switch_value="$(curl -sf -H "Authorization: Bearer $INPUT_GITHUB_TOKEN" "${GITHUB_API_URL:-https://api.github.com}/orgs/$GITHUB_REPOSITORY_OWNER/actions/variables/OTEL_KILL_SWITCH" 2>/dev/null | grep -o '"value":"[^"]*"' | cut -d'"' -f4 || true)"
+  kill_switch_value="$(curl -sf -H "Authorization: Bearer $INPUT_GITHUB_TOKEN" "${GITHUB_API_URL:-https://api.github.com}/repos/$GITHUB_REPOSITORY/actions/variables/OTEL_KILL_SWITCH" 2>/dev/null | jq -r '.value // empty' || true)"
+  [ -n "${kill_switch_value:-}" ] || kill_switch_value="$(curl -sf -H "Authorization: Bearer $INPUT_GITHUB_TOKEN" "${GITHUB_API_URL:-https://api.github.com}/orgs/$GITHUB_REPOSITORY_OWNER/actions/variables/OTEL_KILL_SWITCH" 2>/dev/null | jq -r '.value // empty' || true)"
   if [ -n "${kill_switch_value:-}" ]; then
     echo "::warning ::OpenTelemetry for GitHub actions disabled by kill switch!" && exit 0
   fi
