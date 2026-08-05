@@ -350,7 +350,7 @@ _otel_hash_and_reinstrument() {
     \unalias -a
     \. "$aliases_pre"
     \. "$aliases_new"
-    _otel_rm "$aliases_pre" "$aliases_new"
+    \rm "$aliases_pre" "$aliases_new"
   fi
   return "$exit_code"
 }
@@ -369,7 +369,7 @@ _otel_export_PATH_and_reinstrument() {
     \unalias -a
     \. "$aliases_pre"
     \. "$aliases_new"
-    _otel_rm "$aliases_pre" "$aliases_new"
+    \rm "$aliases_pre" "$aliases_new"
   fi
   return "$exit_code"
 }

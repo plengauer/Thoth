@@ -70,7 +70,7 @@ _otel_inject_shell_with_copy() {
   else
     \eval OTEL_SHELL_COMMANDLINE_OVERRIDE="$(_otel_escape_arg "$cmdline")" OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE=$$ OTEL_SHELL_AUTO_INJECTED=TRUE _otel_call "$injected_command_string" || local exit_code=$?
   fi
-  _otel_rm "$temporary_script" 2> /dev/null || true
+  \rm "$temporary_script" 2> /dev/null || true
   return $exit_code
 }
 

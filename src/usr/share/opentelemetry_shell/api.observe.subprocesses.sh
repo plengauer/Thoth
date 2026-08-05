@@ -6,12 +6,12 @@ _otel_call_and_record_subprocesses() {
   local command="$1"; shift
   local strace_data="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.strace.pipe.XXXXXXXXXX)"
   local strace_signal="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.strace.signal.XXXXXXXXXX)"
-  _otel_mkfifo "$strace_data" "$strace_signal"
+  \mkfifo "$strace_data" "$strace_signal"
   _otel_record_subprocesses "$span_handle" "$strace_signal" < "$strace_data" 1> /dev/null 2> /dev/null &
   local exit_code=0
   $call_command '\strace' -D -ttt -f -e trace=process -q -o "$strace_data" -s 8192 "${command#\\}" "$@" || local exit_code="$?"
   : < "$strace_signal"
-  _otel_rm "$strace_data" "$strace_signal" 2> /dev/null
+  \rm "$strace_data" "$strace_signal" 2> /dev/null
   return "$exit_code"
 }
 

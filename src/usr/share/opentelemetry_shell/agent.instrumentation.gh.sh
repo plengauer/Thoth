@@ -6,13 +6,13 @@ _otel_propagate_gh() {
     *) local job_control=0;;
   esac
   local stderr_pipe="$(\mktemp -u)_opentelemetry_shell_$$.stderr.gh.pipe"
-  _otel_mkfifo "$stderr_pipe"
+  \mkfifo "$stderr_pipe"
   _otel_pipe_gh_stderr < "$stderr_pipe" >&2 &
   local stderr_pid="$!"
   local exit_code=0
   GH_DEBUG=api _otel_call "$@" 2> "$stderr_pipe" || exit_code="$?"
   \wait "$stderr_pid"
-  _otel_rm "$stderr_pipe"
+  \rm "$stderr_pipe"
   if \[ "$job_control" = 1 ]; then \set -m; fi
   return "$exit_code"
 }
