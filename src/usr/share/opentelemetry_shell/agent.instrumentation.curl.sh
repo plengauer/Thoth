@@ -21,10 +21,10 @@ _otel_propagate_curl() {
   local api="$(_otel_curl_guess_api "$@")"
   if \[ -n "$api" ]; then
     local span_handle_forward="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell_$$.span_handle_forward.curl.pipe.XXXXXXXXXX)"
-    \mkfifo "$span_handle_forward"
+    _otel_mkfifo "$span_handle_forward"
   fi
   local stderr_pipe="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell_$$.stderr.curl.pipe.XXXXXXXXXX)"
-  \mkfifo "$stderr_pipe"
+  _otel_mkfifo "$stderr_pipe"
   _otel_pipe_curl_stderr "$is_verbose" "${OTEL_SHELL_INJECT_HTTP_HANDLE_FILE:-}" "${span_handle_forward:-/dev/null}" < "$stderr_pipe" >&2 &
   local stderr_pid="$!"
   \set -- "$@" -H "traceparent: $TRACEPARENT" -H "tracestate: $TRACESTATE" -v --no-progress-meter
@@ -40,8 +40,8 @@ _otel_propagate_curl() {
     unset OTEL_SHELL_INJECT_HTTP_SDK_PIPE
   fi
   \wait "$stderr_pid" || true
-  \rm -rf "$stderr_pipe"
-  if \[ -n "$api" ]; then \rm -rf "$span_handle_forward"; fi
+  _otel_rm -rf "$stderr_pipe"
+  if \[ -n "$api" ]; then _otel_rm -rf "$span_handle_forward"; fi
   if \[ "$job_control" = 1 ]; then \set -m; fi
   return "$exit_code"
 }
@@ -159,7 +159,7 @@ _otel_pipe_curl_stderr() {
       otel_observation_attribute_typed "$observation_handle" string url.scheme="$protocol"
       otel_observation_attribute_typed "$observation_handle" string http.request.method="$method"
       otel_counter_observe "$http_client_active_requests" "$observation_handle"
-      if \[ -n "$span_handle_file" ] && \[ -f "$span_handle_file" ]; then local span_handle="$(\cat "$span_handle_file")"; \rm "$span_handle_file"; fi
+      if \[ -n "$span_handle_file" ] && \[ -f "$span_handle_file" ]; then local span_handle="$(\cat "$span_handle_file")"; _otel_rm "$span_handle_file"; fi
       if \[ -z "$span_handle" ]; then
         local span_handle="$(otel_span_start CLIENT "$(\printf '%s' "$line" | \cut -d ' ' -f 2)")"
       else
@@ -258,7 +258,7 @@ _otel_call_curl_api() {
     *) \printf '%s' "$request" > "$request_file"; { _otel_call "$@" || \echo "$?" > "$exit_code_file"; };;
   esac | if \[ -n "${response_processor:-}" ]; then $response_processor "$request_file" "$span_handle_file"; else while IFS= \read -r _otel_msg < "$span_handle_file"; do \[ "$_otel_msg" = "TERMINATE" ] && break; done; \cat; fi
   local exit_code="$(\cat "$exit_code_file")"
-  \rm -rf "$exit_code_file" "$request_file"
+  _otel_rm -rf "$exit_code_file" "$request_file"
   return "$exit_code"
 }
 
@@ -379,7 +379,7 @@ _otel_curl_record_api_response_llm_openai() {
     prompt_messages="$(_otel_curl_genai_extract_prompt_messages "$request_file")"
   fi
   local stdout="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell_$$.api.request.curl.pipe.XXXXXXXXXX)"
-  \mkfifo "$stdout"
+  _otel_mkfifo "$stdout"
   local process_stdout=0
   while true; do
     local span_handle
@@ -481,7 +481,7 @@ _otel_curl_record_api_response_llm_openai() {
     \[ -z "$drain_pid" ] || wait "$drain_pid"
     break
   done
-  \rm -rf "$stdout"
+  _otel_rm -rf "$stdout"
 }
 
 _otel_alias_prepend curl _otel_propagate_curl

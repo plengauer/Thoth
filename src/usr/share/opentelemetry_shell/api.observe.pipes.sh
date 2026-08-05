@@ -29,7 +29,7 @@ _otel_call_and_record_pipes() {
   local stderr_bytes="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.stderr.bytes.pipe.XXXXXXXXXX)"
   local stderr_lines="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.stderr.lines.pipe.XXXXXXXXXX)"
   local exit_code=0
-  \mkfifo "$stdout" "$stderr" "$stdin_bytes" "$stdin_lines" "$stdout_bytes" "$stdout_lines" "$stderr_bytes" "$stderr_lines"
+  _otel_mkfifo "$stdout" "$stderr" "$stdin_bytes" "$stdin_lines" "$stdout_bytes" "$stdout_lines" "$stderr_bytes" "$stderr_lines"
   \wc -c < "$stdin_bytes" > "$stdin_bytes_result" &
   local stdin_bytes_pid="$!"
   \wc -l < "$stdin_lines" > "$stdin_lines_result" &
@@ -64,7 +64,7 @@ _otel_call_and_record_pipes() {
       \echo -n "$inner_exit_code" > "$exit_code_file"
     } 1> "$stdout" 2> "$stderr" || \true
     local exit_code="$(\cat "$exit_code_file")"
-    \rm "$exit_code_file" 2> /dev/null
+    _otel_rm "$exit_code_file" 2> /dev/null
   fi
   if \[ "$observe_stdin" = TRUE ]; then
     \wait "$stdin_bytes_pid" "$stdin_lines_pid"
@@ -78,7 +78,7 @@ _otel_call_and_record_pipes() {
     \wait "$stderr_bytes_pid" "$stderr_lines_pid"
     _otel_record_pipes "$span_handle" stderr 2 "$stderr_bytes_result" "$stderr_lines_result"
   fi
-  \rm "$stdout" "$stderr" "$stdin_bytes" "$stdin_lines" "$stdout_bytes" "$stdout_lines" "$stderr_bytes" "$stderr_lines" "$stdin_bytes_result" "$stdin_lines_result" "$stdout_bytes_result" "$stdout_lines_result" "$stderr_bytes_result" "$stderr_lines_result" 2> /dev/null
+  _otel_rm "$stdout" "$stderr" "$stdin_bytes" "$stdin_lines" "$stdout_bytes" "$stdout_lines" "$stderr_bytes" "$stderr_lines" "$stdin_bytes_result" "$stdin_lines_result" "$stdout_bytes_result" "$stdout_lines_result" "$stderr_bytes_result" "$stderr_lines_result" 2> /dev/null
   return "$exit_code"
 }
 

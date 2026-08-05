@@ -18,7 +18,7 @@ _otel_propagate_wget() {
     fi
   fi
   local stderr_pipe="$(\mktemp -u)_opentelemetry_shell_$$.stderr.wget.pipe"
-  \mkfifo "$stderr_pipe"
+  _otel_mkfifo "$stderr_pipe"
   _otel_pipe_wget_stderr "${OTEL_SHELL_INJECT_HTTP_HANDLE_FILE:-}" < "$stderr_pipe" >&2 &
   local stderr_pid="$!"
   local exit_code=0
@@ -33,7 +33,7 @@ _otel_propagate_wget() {
     unset OTEL_SHELL_INJECT_HTTP_SDK_PIPE
   fi
   \wait "$stderr_pid" || true
-  \rm "$stderr_pipe"
+  _otel_rm "$stderr_pipe"
   if \[ "$job_control" = 1 ]; then \set -m; fi
   return "$exit_code"
 }
@@ -139,7 +139,7 @@ _otel_pipe_wget_stderr() {
       otel_observation_attribute_typed "$observation_handle" string url.scheme="$protocol"
       otel_observation_attribute_typed "$observation_handle" string http.request.method=GET
       otel_counter_observe "$http_client_active_requests_handle" "$observation_handle"
-      if \[ -n "$span_handle_file" ]; then while ! \[ -f "$span_handle_file" ]; do \sleep 1; done; local span_handle="$(\cat "$span_handle_file")"; \rm "$span_handle_file"; fi
+      if \[ -n "$span_handle_file" ]; then while ! \[ -f "$span_handle_file" ]; do \sleep 1; done; local span_handle="$(\cat "$span_handle_file")"; _otel_rm "$span_handle_file"; fi
       if \[ -z "$span_handle" ]; then
         local span_handle="$(otel_span_start CLIENT GET)"
       else

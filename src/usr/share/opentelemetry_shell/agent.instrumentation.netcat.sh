@@ -25,7 +25,7 @@ _otel_inject_netcat() {
       otel_span_deactivate "$span_handle"
       otel_span_end "$span_handle"
       local exit_code="$(\cat "$exit_code_file")"
-      \rm "$span_handle_file" "$exit_code_file" 2> /dev/null
+      _otel_rm "$span_handle_file" "$exit_code_file" 2> /dev/null
       return "$exit_code"
     fi
   else
@@ -39,7 +39,7 @@ _otel_inject_netcat() {
     otel_span_deactivate "$span_handle"
     otel_span_end "$span_handle"
     local exit_code="$(\cat "$exit_code_file")"
-    \rm "$span_handle_file" "$exit_code_file" 2> /dev/null
+    _otel_rm "$span_handle_file" "$exit_code_file" 2> /dev/null
     return "$exit_code"
   fi
 }
@@ -128,7 +128,7 @@ _otel_netcat_parse_request() {
   if \[ -n "${length:-}" ]; then # TODO this should transparently pipe the entire request through, even if it is not in line with content-length (or content-length hasn't been set at all)
     \head -c "$length"
   fi
-  \rm "$headers" 2> /dev/null
+  _otel_rm "$headers" 2> /dev/null
 }
 
 _otel_netcat_parse_response() {
@@ -170,13 +170,13 @@ _otel_netcat_parse_response() {
   done
   local body_size_pipe="$(\mktemp -u)"
   local body_size_file="$(\mktemp)"
-  \mkfifo "$body_size_pipe"
+  _otel_mkfifo "$body_size_pipe"
   \wc -c < "$body_size_pipe" > "$body_size_file" &
   local pid="$!"
   \tee "$body_size_pipe"
   \wait "$pid"
   otel_span_attribute_typed "$span_handle" int http.response.body.size="$(\cat "$body_size_file")"
-  \rm "$body_size_file" "$body_size_pipe" 2> /dev/null
+  _otel_rm "$body_size_file" "$body_size_pipe" 2> /dev/null
   otel_span_end "$span_handle"
 }
 
