@@ -7,33 +7,36 @@
 #include <dlfcn.h>
 #include <sys/stat.h>
 
-int otel_span_start(FILE *sdk, const char *type, const char *name) {
+static unsigned long otel_handle_counter = 0;
+
+char *otel_span_handle() {
+  size_t buffer_size = 64;
+  char *buffer = (char*) calloc(buffer_size, sizeof(char));
+  if (!buffer) return NULL;
+  snprintf(buffer, buffer_size, "%d.%lu", getpid(), __sync_add_and_fetch(&otel_handle_counter, 1));
+  return buffer;
+}
+
+char *otel_span_start(FILE *sdk, const char *type, const char *name) {
   size_t buffer_size = 1024 * 4;
   char *buffer = (char*) calloc(buffer_size, sizeof(char));
-  if (!buffer) return -1;
+  if (!buffer) return NULL;
 
   char *traceparent = getenv("TRACEPARENT");
   char *tracestate = getenv("TRACESTATE");
-  char *sdk_response = tmpnam(NULL); // this is unsafe, i know
-  if (mkfifo(sdk_response, 0666) != 0) { free(buffer); return -1; }
+  char *span_handle = otel_span_handle();
+  if (!span_handle) { free(buffer); return NULL; }
 
   memset(buffer, 0, buffer_size);
-  sprintf(buffer, "SPAN_START %s %s %s %s %s %s\n", sdk_response, traceparent ? traceparent : "", tracestate ? tracestate : "", "auto", type, name);
+  snprintf(buffer, buffer_size, "SPAN_START %s %s %s %s %s %s\n", span_handle, traceparent ? traceparent : "", tracestate ? tracestate : "", "auto", type, name);
   fwrite(buffer, sizeof(char), strlen(buffer), sdk);
   fflush(sdk);
 
-  memset(buffer, 0, buffer_size);
-  int response_file = open(sdk_response, O_RDONLY);
-  read(response_file, buffer, buffer_size);
-  close(response_file);
-  int span_handle = atoi(buffer);
-
-  remove(sdk_response);
   free(buffer);
   return span_handle;
 }
 
-char * otel_traceparent(FILE *sdk, int span_handle) {
+char * otel_traceparent(FILE *sdk, const char *span_handle) {
   size_t buffer_size = 1024 * 4;
   char *buffer = (char*) calloc(buffer_size, sizeof(char));
   if (!buffer) return NULL;
@@ -42,7 +45,7 @@ char * otel_traceparent(FILE *sdk, int span_handle) {
   if (mkfifo(sdk_response, 0666) != 0) { free(buffer); return NULL; }
 
   memset(buffer, 0, buffer_size);
-  sprintf(buffer, "SPAN_TRACEPARENT %s %d\n", sdk_response, span_handle);
+  snprintf(buffer, buffer_size, "SPAN_TRACEPARENT %s %s\n", sdk_response, span_handle);
   fwrite(buffer, sizeof(char), strlen(buffer), sdk);
   fflush(sdk);
 
@@ -82,23 +85,21 @@ int inject(char *buffer, size_t length) {
       if (!sdk_pipe || !handle_file) return 4;
       FILE *sdk = fopen(sdk_pipe, "a+");
       if (!sdk) return 4;
-      int span_handle = otel_span_start(sdk, "CLIENT", "HTTP");
-      if (span_handle < 0) return 5;
+      char *span_handle = otel_span_start(sdk, "CLIENT", "HTTP");
+      if (!span_handle) return 5;
       for (int i = 0; i < 1000 && access(handle_file, F_OK) == 0; i++) usleep(10 * 1000);
       {
-        char span_handle_string[16];
-        memset(span_handle_string, 0, 16);
-        sprintf(span_handle_string, "%d", span_handle);
         FILE *storage = fopen(handle_file, "w");
-        if (!storage) return 6;
-        fwrite(span_handle_string, sizeof(char), strlen(span_handle_string), storage); // TODO this could fail, what then?
+        if (!storage) { free(span_handle); return 6; }
+        fwrite(span_handle, sizeof(char), strlen(span_handle), storage); // TODO this could fail, what then?
         fclose(storage);
       }
       char *traceparent = otel_traceparent(sdk, span_handle);
-      if (!traceparent) return 7;
-      if (strlen("traceparent: ") + strlen(traceparent) + 1 != strlen(buffer)) { free(traceparent); return 8; }
+      if (!traceparent) { free(span_handle); return 7; }
+      if (strlen("traceparent: ") + strlen(traceparent) + 1 != strlen(buffer)) { free(traceparent); free(span_handle); return 8; }
       sprintf(buffer, "traceparent: %s\r", traceparent);
       free(traceparent);
+      free(span_handle);
       fclose(sdk); // this will leak on some early aborts, process terminate will clean it up
       *line_end = '\n';
       return 0;
@@ -242,23 +243,21 @@ int nghttp2_submit_request(void *session, void *pri_spec, void *nva, size_t nvle
     if (strcmp(my_key, "traceparent") == 0) {
       FILE *sdk = fopen(sdk_pipe, "a+");
       if (!sdk) break;
-      int span_handle = otel_span_start(sdk, "CLIENT", "HTTP");
-      if (span_handle < 0) break;
+      char *span_handle = otel_span_start(sdk, "CLIENT", "HTTP");
+      if (!span_handle) break;
       for (int i = 0; i < 1000 && access(handle_file, F_OK) == 0; i++) usleep(10 * 1000);
       {
-        char span_handle_string[16];
-        memset(span_handle_string, 0, 16);
-        sprintf(span_handle_string, "%d", span_handle);
         FILE *storage = fopen(handle_file, "w");
-        if (!storage) break;
-        fwrite(span_handle_string, sizeof(char), strlen(span_handle_string), storage);
+        if (!storage) { free(span_handle); break; }
+        fwrite(span_handle, sizeof(char), strlen(span_handle), storage);
         fclose(storage);
       }
       char *traceparent = otel_traceparent(sdk, span_handle);
-      if (!traceparent) break;
-      if (strlen(traceparent) != valuelen) { free(traceparent); break; }
+      if (!traceparent) { free(span_handle); break; }
+      if (strlen(traceparent) != valuelen) { free(traceparent); free(span_handle); break; }
       memcpy(value, traceparent, valuelen);
       free(traceparent);
+      free(span_handle);
       fclose(sdk);
     }
     free(my_key);
