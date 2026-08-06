@@ -4,7 +4,7 @@ Apply this skill when investigating CI failures, flaky tests, or build issues in
 
 ## CI Pipeline Architecture
 
-```
+```text
 test.yml (triggers on push/PR to main, release/v*)
   └── ci.yml (workflow_call)
         ├── build.yml (15-30m)
@@ -27,24 +27,24 @@ test.yml (triggers on push/PR to main, release/v*)
 
 ### Build Failures
 
-| Symptom | Likely Cause | Fix |
-|---------|-------------|-----|
-| `verify-scripts` fails | Syntax error in a `.sh` file | Run `bash -n <file>` locally to find the error |
-| `verify-deb-dependencies` fails | New shell command used without declaring the package | Add package to `meta/debian/control` Depends |
+| Symptom                              | Likely Cause                                                | Fix                                                |
+|--------------------------------------|-------------------------------------------------------------|----------------------------------------------------|
+| `verify-scripts` fails               | Syntax error in a `.sh` file                                | Run `bash -n <file>` locally to find the error     |
+| `verify-deb-dependencies` fails      | New shell command used without declaring the package        | Add package to `meta/debian/control` Depends       |
 | `verify-deb-python-dependency` fails | Python version constraint too low for the OpenTelemetry SDK | Update `python3 (>= X.Y)` in `meta/debian/control` |
-| `build-http` fails on non-amd64 | QEMU/Docker cross-compilation issue | Usually transient; re-run the job |
-| `build-node` fails | npm dependency conflict | Check `package.json` version constraints |
-| `package-deb` fails | Invalid `meta/debian/control` syntax | Check for trailing spaces, missing fields |
+| `build-http` fails on non-amd64      | QEMU/Docker cross-compilation issue                         | Usually transient; re-run the job                  |
+| `build-node` fails                   | npm dependency conflict                                     | Check `package.json` version constraints           |
+| `package-deb` fails                  | Invalid `meta/debian/control` syntax                        | Check for trailing spaces, missing fields          |
 
 ### Test Failures
 
-| Symptom | Likely Cause | Fix |
-|---------|-------------|-----|
-| Test passes on bash but fails on dash/ash | Bash-specific syntax used in a `.sh` file | Use POSIX-only constructs or rename to `.bash` |
-| `SPAN RESOLUTION ERROR` | Span was never emitted or has wrong name/attributes | Check instrumentation code for the span name |
-| `ASSERT FAILED X != Y` | Span attribute has unexpected value | Check the assertion's expected value against actual output |
-| Timeout (3-hour limit) | Infinite loop or deadlock in instrumentation | Check for alias recursion (missing backslash prefix) |
-| Flaky test on specific OS versions | OS-specific tool behavior differences | Check if the tested command behaves differently on that OS |
+| Symptom                                   | Likely Cause                                        | Fix                                                        |
+|-------------------------------------------|-----------------------------------------------------|------------------------------------------------------------|
+| Test passes on bash but fails on dash/ash | Bash-specific syntax used in a `.sh` file           | Use POSIX-only constructs or rename to `.bash`             |
+| `SPAN RESOLUTION ERROR`                   | Span was never emitted or has wrong name/attributes | Check instrumentation code for the span name               |
+| `ASSERT FAILED X != Y`                    | Span attribute has unexpected value                 | Check the assertion's expected value against actual output |
+| Timeout (3-hour limit)                    | Infinite loop or deadlock in instrumentation        | Check for alias recursion (missing backslash prefix)       |
+| Flaky test on specific OS versions        | OS-specific tool behavior differences               | Check if the tested command behaves differently on that OS |
 
 ### Investigating Failures
 

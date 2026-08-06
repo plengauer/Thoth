@@ -1,3 +1,5 @@
+<!-- markdownlint-disable MD013 -->
+<!-- markdownlint-disable-next-line MD041 -->
 _(This repository is also available under the aliases `opentelemetry-bash`, `opentelemetry-shell`, and `opentelemetry-github`.)_
 
 This project delivers [OpenTelemetry](https://opentelemetry.io/) traces, metrics and logs from shell scripts (sh, ash, dash, bash, busybox, and many other POSIX compliant shells) as well as from GitHub workflows (including shell, node, docker and composite actions). Compared to similar projects, it delivers not just a command-line SDK to create spans manually, but also provides automatic context propagation via HTTP (wget, wget2, curl, and netcat), auto-instrumentation of all available commands, auto-injection into child scripts, into executables using shebangs, and into GitHub actions, as well as automatic log collection from stderr and from GitHub action log commands. Its installable via a debian or rpm package from the releases in this repository, from the apt-repository below, and via distributable GitHub actions for workflow-level and job-level instrumentation. This project is not officially affiliated with the CNCF project [OpenTelemetry](https://opentelemetry.io/).
@@ -250,8 +252,9 @@ otel_shutdown
 
 ## Configuration
 You can configure the underlying SDK with the same variables as any other OpenTelemetry SDK as described <a href="https://opentelemetry.io/docs/languages/sdk-configuration/">here</a>. Currently only the `otlp`, `console`, and `none` exporters are supported. In addition to that, use the following environment variables to further configure behavior of this project:
+
 | Variable                                    | Values          | Default                                      | Description                                                                                 | State        |
-| ------------------------------------------- | --------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------ |
+|---------------------------------------------|-----------------|----------------------------------------------|---------------------------------------------------------------------------------------------|--------------|
 | OTEL_SHELL_CONFIG_OBSERVE_PIPES             | `TRUE`, `FALSE` | `TRUE` for GitHub Actions, `FALSE` otherwise | Count bytes and lines on stdout, and stderr and add counts as attributes on spans.          | stable       |
 | OTEL_SHELL_CONFIG_OBSERVE_PIPES_STDIN       | `TRUE`, `FALSE` | `FALSE`                                      | Count bytes and lines on stdin and add counts as attributes on spans.                       | unsafe       |
 | OTEL_SHELL_CONFIG_MUTE_INTERNALS            | `TRUE`, `FALSE` | `FALSE`                                      | Only create `SERVER`, `CONSUMER`, `CLIENT` and `PRODUCER` spans, mute all `INTERNAL` spans. | stable       |
@@ -348,7 +351,7 @@ otel_span_activate "$span_handle"
 otel_span_deactivate
 ```
 
-### Semi-automatic Spans 
+### Semi-automatic Spans
 The easiest way to create a span manually and fill it with some simple default attributes is to use the command `otel_observe`. This command acts as a wrapper for the given command. It first starts an `INTERNAL` span with the command as name, records some default attributes, activates the span (in case the command in turn creates spans), and then runs the command. After the command terminates, it deactivates the span and ends it. The automatically recorded attributes are of the `shell.*`, `pipe.*`, and `subprocess.executable.*` families. All lines, written to stderr will be recorded as logs. The command is fully transparent in its behavior, i.e., stdin, stdout, and stderr of the wrapped command are piped to the caller accordingly, and the command exits with the same exit code as the wrapped command does.
 ```bash
 otel_observe cat file.txt
@@ -396,8 +399,9 @@ When a script is instrumented for the first time, instrumenting will cause some 
 This projects adheres to the <a href="https://opentelemetry.io/docs/specs/semconv">OpenTelemetry Semantic Conventions</a>, but it also defines a number of shell-specifc extensions.
 
 ## Shell Commands
+
 | Attribute               | Type   | Description                                                                                     | Examples                                          |
-| ----------------------- | ------ | ----------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+|-------------------------|--------|-------------------------------------------------------------------------------------------------|---------------------------------------------------|
 | shell.command_line      | string | The full command line as it appears in the script, with all variables resolved to their values. | `echo hello world`, `/bin/cat file.txt`           |
 | shell.command           | string | The 0-th string of the command line.                                                            | `echo`, `/bin/cat`                                |
 | shell.command.name      | string | The 0-th string of the command line resolved to its name only.                                  | `echo`, `cat`                                     |
@@ -405,8 +409,9 @@ This projects adheres to the <a href="https://opentelemetry.io/docs/specs/semcon
 | shell.command.exit_code | int    | The exit code of the command.                                                                   | `0`, `1`, `127`                                   |
 
 ## Pipes
+
 | Attribute         | Type | Description                                   | Examples |
-| ----------------- | ---- | --------------------------------------------- | -------- |
+|-------------------|------|-----------------------------------------------|----------|
 | pipe.stdin.bytes  | int  | The number of bytes read from stdin (fd 0).   | `0`      |
 | pipe.stdin.lines  | int  | The number of lines read from stdin (fd 0).   | `0`      |
 | pipe.stdout.bytes | int  | The number of bytes written to stdout (fd 1). | `0`      |
@@ -416,14 +421,16 @@ This projects adheres to the <a href="https://opentelemetry.io/docs/specs/semcon
 
 ## SSH
 These attributes are set when the script is called via an SSH connection.
+
 | Attribute | Type   | Description                                           | Examples  |
-| --------- | ------ | ----------------------------------------------------- | --------- |
+|-----------|--------|-------------------------------------------------------|-----------|
 | ssh.ip    | string | The IP address of the ssh deamon used for connecting. | `1.1.1.1` |
 | ssh.port  | int    | The port of the ssh deamon used for connecting.       | `1.1.1.1` |
 
 ## Debian
 These attributes are set when the script is a debian package maintainer script (`preinst`, `postinst`, `prerm`, `postrm`)
+
 | Attribute              | Type   | Description                 | Examples              |
-| ---------------------- | ------ | --------------------------- | --------------------- |
+|------------------------|--------|-----------------------------|-----------------------|
 | debian.package.name    | string | The name of the package.    | `opentelemetry-shell` |
 | debian.package.version | string | The version of the package. | `1.2.3`               |
