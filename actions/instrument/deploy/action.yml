@@ -139,6 +139,17 @@ runs:
         else
           echo '${{ inputs.action_version }}'
         fi | xargs -I '{}' echo version='{}' >> "$GITHUB_OUTPUT"
+    - name: "Determine version comment"
+      id: determine-instrumentation-version-comment
+      shell: bash
+      run: |
+        comment=
+        if [ "${{ inputs.action_version }}" = same ]; then
+          comment="$(grep -E '/actions/instrument/deploy@' "${{ steps.find-self.outputs.path }}" | sed -n 's/.*# *//p' | head -n 1)"
+        elif echo '${{ inputs.action_version }}' | grep -qE '^v[0-9]'; then
+          comment='${{ inputs.action_version }}'
+        fi
+        [ -z "$comment" ] || echo "comment=# $comment" >> "$GITHUB_OUTPUT"
     - name: Canonicalize
       shell: bash
       run: |
@@ -407,6 +418,18 @@ runs:
             patch "$workflow_file" < "$workflow_file".patch
           fi
           rm -rf "$workflow_file".patch
+        done
+    - name: "Annotate instrumentation action versions"
+      if: ${{ steps.determine-instrumentation-version-comment.outputs.comment != '' }}
+      shell: bash
+      run: |
+        version='${{ steps.determine-instrumentation-version.outputs.version }}'
+        echo "$version" | grep -qE '^[0-9a-f]{40}$' || exit 0
+        comment='${{ steps.determine-instrumentation-version-comment.outputs.comment }}'
+        (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
+          for target in workflow checksuite repository job; do
+            sed -i "s~^\([[:space:]]*- uses: ${{ steps.determine-repository.outputs.repository }}/actions/instrument/$target@$version\)\$~\1 $comment~" "$workflow_file"
+          done
         done
     - name: Log
       if: ${{ inputs.dry_run == 'true' }}

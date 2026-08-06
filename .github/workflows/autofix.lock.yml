@@ -98,6 +98,15 @@ jobs:
       setup-trace-id: ${{ steps.setup.outputs.trace-id }}
       stale_lock_file_failed: ${{ steps.check-lock-file.outputs.stale_lock_file_failed == 'true' }}
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@2169fb0fa9a8260fde99a2a185bbf99a5d63546e # v5.59.0
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: |-
+            ${{ github.token }}
+            ${{ secrets.COPILOT_GITHUB_TOKEN }}
+            ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Scripts
         id: setup
         uses: github/gh-aw-actions/setup@34802437a0cba2fd1352d1f1bb02c18a78b56b31 # v0.83.0
@@ -414,6 +423,18 @@ jobs:
       setup-trace-id: ${{ steps.setup.outputs.trace-id }}
       unknown_model_ai_credits: ${{ steps.parse-mcp-gateway.outputs.unknown_model_ai_credits || 'false' }}
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@2169fb0fa9a8260fde99a2a185bbf99a5d63546e # v5.59.0
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: |-
+            ${{ github.token }}
+            ${{ secrets.COPILOT_GITHUB_TOKEN }}
+            ${{ secrets.GH_AW_GITHUB_MCP_SERVER_TOKEN || secrets.GH_AW_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
+            ${{ secrets.GH_AW_GITHUB_MCP_SERVER_TOKEN }}
+            ${{ secrets.GH_AW_GITHUB_TOKEN }}
+            ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Scripts
         id: setup
         uses: github/gh-aw-actions/setup@34802437a0cba2fd1352d1f1bb02c18a78b56b31 # v0.83.0
@@ -1008,6 +1029,14 @@ jobs:
       tools_reported: ${{ steps.missing_tool.outputs.tools_reported }}
       total_count: ${{ steps.missing_tool.outputs.total_count }}
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@2169fb0fa9a8260fde99a2a185bbf99a5d63546e # v5.59.0
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: |-
+            ${{ github.token }}
+            ${{ secrets.GH_AW_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
       - name: Setup Scripts
         id: setup
         uses: github/gh-aw-actions/setup@34802437a0cba2fd1352d1f1bb02c18a78b56b31 # v0.83.0
@@ -1247,6 +1276,14 @@ jobs:
       detection_reason: ${{ steps.detection_conclusion.outputs.reason }}
       detection_success: ${{ steps.detection_conclusion.outputs.success }}
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@2169fb0fa9a8260fde99a2a185bbf99a5d63546e # v5.59.0
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: |-
+            ${{ github.token }}
+            ${{ secrets.COPILOT_GITHUB_TOKEN }}
       - name: Setup Scripts
         id: setup
         uses: github/gh-aw-actions/setup@34802437a0cba2fd1352d1f1bb02c18a78b56b31 # v0.83.0
@@ -1489,6 +1526,14 @@ jobs:
       setup-span-id: ${{ steps.setup.outputs.span-id }}
       setup-trace-id: ${{ steps.setup.outputs.trace-id }}
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@2169fb0fa9a8260fde99a2a185bbf99a5d63546e # v5.59.0
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: |-
+            ${{ github.token }}
+            ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Scripts
         id: setup
         uses: github/gh-aw-actions/setup@34802437a0cba2fd1352d1f1bb02c18a78b56b31 # v0.83.0
@@ -1551,6 +1596,14 @@ jobs:
       process_safe_outputs_processed_count: ${{ steps.process_safe_outputs.outputs.processed_count }}
       process_safe_outputs_temporary_id_map: ${{ steps.process_safe_outputs.outputs.temporary_id_map }}
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@2169fb0fa9a8260fde99a2a185bbf99a5d63546e # v5.59.0
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: |-
+            ${{ github.token }}
+            ${{ secrets.GH_AW_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
       - name: Setup Scripts
         id: setup
         uses: github/gh-aw-actions/setup@34802437a0cba2fd1352d1f1bb02c18a78b56b31 # v0.83.0

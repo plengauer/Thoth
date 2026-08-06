@@ -1,3 +1,4 @@
+# Constant Instructions
 *) use the build skill in .github/skills/build-packages.md. derive build instructions from .github/workflows/build.yml and its needs graph. keep builds minimal to task scope (for example skip node/python/java/http rebuilds when unaffected).
 *) instrumentation is done via aliases of shell commands, so all internal code must be prefixed with a backslash to avoid aliasing.
 *) all shell code must be compliant to ash, dash, bash and busybox.
