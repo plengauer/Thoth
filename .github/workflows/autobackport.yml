@@ -29,15 +29,16 @@ jobs:
           fetch-tags: true
       - id: dynamic
         run: |
-          [ -z "$(git describe --tags --abbrev=0 ${{ github.sha }})" ] || echo "has_tags=true" >>  "$GITHUB_OUTPUT"
+          [ -z "$(git describe --tags --abbrev=0 ${{ github.sha }})" ] || echo "has_tags=true" >> "$GITHUB_OUTPUT"
+          echo "has_refs=false" >> "$GITHUB_OUTPUT"
           cat '${{ github.event_path }}' | jq '.commits[].id' -r | while read -r ref; do
             if git diff-tree --root --no-commit-id --name-only -r "$ref" | grep -qE '^VERSION$' || git tag --points-at "$ref" | grep -qE '^v'; then continue; fi
             echo "$ref"
-            echo "has_refs=true" >>  "$GITHUB_OUTPUT"
+            echo "has_refs=true" >> "$GITHUB_OUTPUT"
           done | while read -r ref; do echo \""$ref"\"; done | jq -s | tr -d '\n' | tr -d ' ' | xargs -0 -I {} echo 'refs={}' >> "$GITHUB_OUTPUT"
 
   backport:
-    if: ${{ !github.event.repository.fork && needs.setup.outputs.has_tags && needs.setup.outputs.has_refs }}
+    if: ${{ !github.event.repository.fork && needs.setup.outputs.has_tags == 'true' && needs.setup.outputs.has_refs == 'true' }}
     needs: setup
     strategy:
       matrix:
