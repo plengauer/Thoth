@@ -83,9 +83,8 @@ on:
       applied_run_url:
         description: 'The run URL that safe outputs were applied from'
         value: ${{ jobs.apply_safe_outputs.outputs.run_url }}
-
-permissions: {}
-
+permissions:
+  actions: read
 jobs:
   close-expired-entities:
     if: ${{ (!(github.event.repository.fork)) && github.event_name != 'push' && (github.event_name != 'workflow_dispatch' && github.event_name != 'workflow_call' || inputs.operation == '') }}
@@ -94,6 +93,7 @@ jobs:
       discussions: write
       issues: write
       pull-requests: write
+      actions: read
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@2169fb0fa9a8260fde99a2a185bbf99a5d63546e # v5.59.0
         env:
@@ -163,7 +163,7 @@ jobs:
     if: ${{ (github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call') && inputs.operation != '' && inputs.operation != 'safe_outputs' && inputs.operation != 'create_labels' && inputs.operation != 'activity_report' && inputs.operation != 'close_agentic_workflows_issues' && inputs.operation != 'clean_cache_memories' && inputs.operation != 'update_pull_request_branches' && inputs.operation != 'validate' && inputs.operation != 'forecast' && (!(github.event.repository.fork)) }}
     runs-on: ubuntu-slim
     permissions:
-      actions: write
+      actions: read
       contents: write
       pull-requests: write
     outputs:
@@ -228,6 +228,7 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      actions: read
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@2169fb0fa9a8260fde99a2a185bbf99a5d63546e # v5.59.0
         env:
@@ -331,6 +332,7 @@ jobs:
     permissions:
       contents: read
       issues: write
+      actions: read
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@2169fb0fa9a8260fde99a2a185bbf99a5d63546e # v5.59.0
         env:
@@ -603,6 +605,7 @@ jobs:
     runs-on: ubuntu-slim
     permissions:
       issues: write
+      actions: read
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@2169fb0fa9a8260fde99a2a185bbf99a5d63546e # v5.59.0
         env:
@@ -643,6 +646,7 @@ jobs:
     permissions:
       contents: read
       issues: write
+      actions: read
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@2169fb0fa9a8260fde99a2a185bbf99a5d63546e # v5.59.0
         env:
