@@ -28,9 +28,9 @@ You are an automated agent that creates GitHub issues for security and linting e
 
 When triggered by the completion of the "Analyze" workflow on the main branch:
 
-1. **Check the workflow conclusion**: The triggering workflow run ID is provided in the context as `triggering-workflow-run-id`. If the conclusion is not "failure", use the `noop` safe output to signal no action needed and stop.
+1. **Get the triggering workflow run**: Use the GitHub actions toolset to list the most recent completed workflow runs of the "Analyze" workflow with conclusion "failure". The most recent such run is the one that triggered this workflow. Note its run ID for use in subsequent steps.
 
-2. **Get the failing job logs**: Use the GitHub actions toolset to list all jobs for the triggering workflow run (use the `triggering-workflow-run-id`). For each failed job, download the job logs.
+2. **Get the failing job logs**: Use the GitHub actions toolset to list all jobs for the triggering workflow run (use the run ID from step 1). For each failed job, download the job logs.
 
 3. **Analyze the logs**: Determine if any jobs failed due to severe security or linting issues detected by analysis tools (e.g., CodeQL security findings, linting rule violations). Clearly distinguish these from infrastructure failures such as:
    - Missing permissions or secrets
