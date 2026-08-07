@@ -11,7 +11,7 @@ inputs:
     description: 'Whether to use GitHub Actions Cache to cache dependencies'
     default: true
   secrets_to_redact:
-    description: 'A JSON object containing all secrets to redact from any attribute.'
+    description: 'A JSON object containing all secrets to redact from any attribute (secrets in parameters and env vars of usages of this action dont need to be listed).'
     default: '{ "github_token": "${{ github.token }}" }'
   self_monitoring:
     description: 'Whether to send usage statistics (invocation counts, feature usages) to the maintainer to inform roadmap and maintenance efforts. No data of the workflow itself will be collected. Possible values are true, false, and auto (true for repositories on GitHub SaaS, false for private GitHub servers).'

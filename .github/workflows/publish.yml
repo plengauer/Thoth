@@ -56,7 +56,7 @@ jobs:
       security-events: none
       statuses: none
     secrets: inherit
-    uses: ./.github/workflows/ci.yml
+    uses: $/.github/workflows/ci.yml
     with:
       ref: ${{ matrix.ref }}
 
@@ -98,13 +98,13 @@ jobs:
           pattern: packages.*.${{ matrix.ref }}
           merge-multiple: true
 
-      - uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4.1.1
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with:
           subject-path: '*.deb'
-      - uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4.1.1
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with:
           subject-path: '*.rpm'
-      - uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4.1.1
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with:
           subject-path: '*.apk'
 
@@ -115,7 +115,7 @@ jobs:
           patch=$(echo "$version" | cut -d . -f 3)
           echo ${{ github.token }} | sudo docker login ghcr.io -u ${{ github.actor }} --password-stdin
           find . -iname '*.image' | while read -r image_file; do
-            sudo docker load < "$image_file"
+            sudo docker load --input "$image_file"
             image_name="$image_file"
             image_name="${image_name#./}"
             image_name="${image_name%.image}"

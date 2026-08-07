@@ -97,4 +97,4 @@ def observed_subprocess_Popen___init__(self, *args, **kwargs):
 
 os.execv = observed_os_execv
 os.execve = observed_os_execve
-subprocess.Popen.__init__ = observed_subprocess_Popen___init__
+setattr(subprocess.Popen, '__init__', observed_subprocess_Popen___init__)
