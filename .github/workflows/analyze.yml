@@ -78,6 +78,12 @@ jobs:
           GITHUB_STATUS_REPORTER: true
           GITHUB_COMMENT_REPORTER: true
           SARIF_REPORTER: true
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: megalinter-reports
+          path: megalinter-reports/
+          if-no-files-found: ignore
       - if: github.ref_name == 'main'
         run: |
           if [ -f megalinter-reports/megalinter-report.sarif ]; then
