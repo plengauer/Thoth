@@ -13,6 +13,9 @@ tools:
     toolsets: [context, repos, issues, labels]
   web-search:
   web-fetch:
+user-rate-limit:
+  max-runs-per-window: 3
+  window: 60
 safe-outputs:
   add-labels:
   add-comment:
