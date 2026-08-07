@@ -9,7 +9,7 @@ initialized_logs = False
 
 resource = {}
 final_resources = None
-spans = {}
+spans: dict = {}
 next_span_id = 0
 events = {}
 next_event_id = 0
@@ -17,7 +17,7 @@ links = {}
 next_link_id = 0
 counters = {}
 next_counter_id = 0
-observations = {}
+observations: dict = {}
 next_observation_id = 0
 delayed_observations = {}
 
@@ -37,7 +37,7 @@ def run(scope, version, commands):
             handle(scope, version, tokens[0], tokens[1] if len(tokens) > 1 else None)
         except EOFError:
             sys.exit(0)
-        except:
+        except Exception:
             print('SDK Error: ' + line, file=sys.stderr)
             import traceback
             traceback.print_exc()
@@ -45,7 +45,7 @@ def run(scope, version, commands):
         handle(scope, version, 'SHUTDOWN', None)
     except EOFError:
         sys.exit(0)
-    except:
+    except Exception:
         pass
 
 def guess_cloud_resource_detectors():
@@ -138,7 +138,7 @@ def guess_cloud_resource_detectors():
 
 def handle(scope, version, command, arguments):
     global initialized_traces, initialized_metrics, initialized_logs, final_resources
-    
+
     if command.startswith("SPAN_") and not initialized_traces:
         from opentelemetry.trace import set_tracer_provider, get_current_span
         from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
@@ -582,11 +582,11 @@ def convert_type(type, value, base=None):
     elif type == 'auto':
         try:
             return int(value)
-        except:
+        except Exception:
             pass
         try:
             return float(value)
-        except:
+        except Exception:
             pass
         return value
     else:
@@ -597,7 +597,7 @@ def file_contains(haystack, needle):
         with open(haystack, 'r') as file:
             if needle in file.read():
                 return True
-    except:
+    except Exception:
         pass
     return False
 
