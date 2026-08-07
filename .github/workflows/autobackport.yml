@@ -112,9 +112,11 @@ jobs:
           GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         run: |
           set -e
-          echo commit_title="$(git log -1 --pretty=%s "${{ matrix.ref }}")" >> "$GITHUB_OUTPUT"
-          echo author_name="$(git log -1 --pretty=%an "${{ matrix.ref }}" 2>/dev/null || echo "")" >> "$GITHUB_OUTPUT"
-          echo author_email="$(git log -1 --pretty=%ae "${{ matrix.ref }}" 2>/dev/null || echo "")" >> "$GITHUB_OUTPUT"
+          {
+            echo commit_title="$(git log -1 --pretty=%s "${{ matrix.ref }}")"
+            echo author_name="$(git log -1 --pretty=%an "${{ matrix.ref }}" 2>/dev/null || echo "")"
+            echo author_email="$(git log -1 --pretty=%ae "${{ matrix.ref }}" 2>/dev/null || echo "")"
+          } >> "$GITHUB_OUTPUT"
       - id: open-pr
         if: steps.check_patch.outputs.should_backport == 'true'
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1

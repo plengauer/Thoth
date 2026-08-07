@@ -30,7 +30,7 @@ Before contributing, please:
 
 ## Project Structure
 
-```
+```text
 .
 ├── src/                           # Package source code
 │   ├── usr/bin/                   # Symlinks to main scripts (otel.sh, otelapi.sh)

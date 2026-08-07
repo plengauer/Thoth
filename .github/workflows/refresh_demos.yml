@@ -44,7 +44,7 @@ jobs:
         demo_directory: ${{ fromJSON(needs.prepare.outputs.dirs) }}
     steps:
       - run: |
-          ([ "$GITHUB_EVENT" = release ] && cat "$GITHUB_EVENT_PATH" || curl --header "Authorization: Bearer ${{ github.token }}" https://api.github.com/repos/"$GITHUB_REPOSITORY"/releases/latest) | jq -r '.assets[] | select(.name | endswith("_amd64.deb")) | .url' | xargs wget --header "Authorization: Bearer ${{ github.token }}" --header "Accept: application/octet-stream" -O package.deb
+          { if [ "$GITHUB_EVENT" = release ]; then cat "$GITHUB_EVENT_PATH"; else curl --header "Authorization: Bearer ${{ github.token }}" https://api.github.com/repos/"$GITHUB_REPOSITORY"/releases/latest; fi; } | jq -r '.assets[] | select(.name | endswith("_amd64.deb")) | .url' | xargs wget --header "Authorization: Bearer ${{ github.token }}" --header "Accept: application/octet-stream" -O package.deb
       - run: sudo apt-get -y install ./package.deb
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - id: demo
@@ -85,7 +85,7 @@ jobs:
           " > config.yaml
           rm otlp.json || true
           touch otlp.json && chmod 0666 otlp.json
-          sudo docker create --rm --mount type=bind,source=$(pwd)/config.yaml,target=/etc/otelcol/config.yaml --mount type=bind,source=$(pwd)/otlp.json,target=/etc/otelcol/otlp.json --network=host --name=collector otel/opentelemetry-collector:latest
+          sudo docker create --rm --mount "type=bind,source=$(pwd)/config.yaml,target=/etc/otelcol/config.yaml" --mount "type=bind,source=$(pwd)/otlp.json,target=/etc/otelcol/otlp.json" --network=host --name=collector otel/opentelemetry-collector:latest
           sudo docker start collector
           cat meta.json | jq -r .setup | (grep -v '^null$' || true) | sh
           bash -e demo.sh 1> output.stdout 2> output.stderr || (cat output.stdout output.stderr && false)
@@ -177,8 +177,8 @@ jobs:
 
           pretty_print_trace() {
             cat otlp.json | jq -r '. | select(.resourceSpans != null) | .resourceSpans[].scopeSpans[].spans[]' | jq -r -s '. | sort_by(.startTimeUnixNano) | .[].spanId' | while read -r span_id; do
-              span="$(spans | jq 'select(.spanId == "'$span_id'")')"
-              resource_attributes="$(cat otlp.json | jq --sort-keys '. | select(.resourceSpans != null) | .resourceSpans[] | select(.scopeSpans[].spans[].spanId == "'$span_id'") | .resource.attributes')"
+              span="$(spans | jq --arg span_id "$span_id" 'select(.spanId == $span_id)')"
+              resource_attributes="$(jq --sort-keys --arg span_id "$span_id" '. | select(.resourceSpans != null) | .resourceSpans[] | select(.scopeSpans[].spans[].spanId == $span_id) | .resource.attributes' otlp.json)"
               jq -n \
                 --argjson trace_id "$(printf '%s' "$span" | jq .traceId)" \
                 --argjson span_id "$(printf '%s' "$span" | jq .spanId)" \
@@ -217,15 +217,15 @@ jobs:
             echo '# Demo "'"$(cat ./meta.json | jq -r .title)"'"'
             cat meta.json | jq -r .description
             echo '## Script'
-            echo '```sh'
+            echo '```bash'
             cat demo.sh
             echo '```'
             echo '## Trace Structure Overview'
-            echo '```'
+            echo '```bash'
             get_root_span_id | while read -r root_span_id; do print_span_name_tree "$root_span_id" ""; done
             echo '```'
             echo '## Full Trace'
-            echo '```'
+            echo '```json'
             pretty_print_trace
             echo '```'
           } > README.md
@@ -235,7 +235,7 @@ jobs:
       - run: |
           cd demos/${{ matrix.demo_directory }}
           git add --intent-to-add README.md output.stdout output.stderr otlp.json
-          git diff README.md | grep -v '^+++' | grep -v '^---' | grep -v '/tmp' | grep -v Id | grep -v _id | grep -v .id | grep -v Time | grep -v time | grep -v timestamp | grep -v github. | grep -v vcs. | grep -v .version | grep -v .ip | grep -v .port | grep -v peer. | grep -v process.pid | grep -v process.parent_pid | grep -v http.user_agent | grep -v host.name | grep -v host.type | grep -v cloud.region | grep -v '"00-' | grep -q '^+' && echo dirty=true >> "$GITHUB_OUTPUT" || true
+          if git diff README.md | grep -v '^+++' | grep -v '^---' | grep -v '/tmp' | grep -v Id | grep -v _id | grep -v .id | grep -v Time | grep -v time | grep -v timestamp | grep -v github. | grep -v vcs. | grep -v .version | grep -v .ip | grep -v .port | grep -v peer. | grep -v process.pid | grep -v process.parent_pid | grep -v http.user_agent | grep -v host.name | grep -v host.type | grep -v cloud.region | grep -v '"00-' | grep -q '^+'; then echo dirty=true >> "$GITHUB_OUTPUT"; fi
         id: diff
       - name: "Open Pull Request"
         if: steps.diff.outputs.dirty
