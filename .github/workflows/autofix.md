@@ -10,6 +10,7 @@ if: ${{ github.event.workflow_run.conclusion == 'failure' }}
 permissions:
   contents: read
   actions: read
+  issues: read
 tools:
   github:
     toolsets: [context, actions, issues]
@@ -28,7 +29,11 @@ You are an automated agent that creates GitHub issues for security and linting e
 
 When triggered by the completion of the "Analyze" workflow on the main branch:
 
-1. **Get the triggering workflow run**: Use the GitHub actions toolset to list the most recent completed workflow runs of the "Analyze" workflow with conclusion "failure". The most recent such run is the one that triggered this workflow. Note its run ID for use in subsequent steps.
+1. **Get the triggering workflow run**:
+   - Use the triggering workflow run ID from event context (`github.event.workflow_run.id`) as the primary source of truth.
+   - Do NOT use the current Autofix run ID (`github.run_id`) for log analysis.
+   - Verify the triggering run is from workflow "Analyze" and has conclusion "failure". If it does not, use the `noop` safe output.
+   - If the triggering run from context is unavailable in your tools, list recent completed workflow runs of "Analyze" with conclusion "failure" and select the most recent run with matching `head_sha` from context.
 
 2. **Get the failing job logs**: Use the GitHub actions toolset to list all jobs for the triggering workflow run (use the run ID from step 1). For each failed job, download the job logs.
 
@@ -46,10 +51,15 @@ When triggered by the completion of the "Analyze" workflow on the main branch:
 
 5. **If no security/linting issues are found** (workflow failed for other reasons): Use the `noop` safe output to signal no action needed.
 
+6. **If log access is restricted by policy**:
+   - If GitHub actions tools return access-denied / forbidden / secrecy-policy filtered responses for the triggering run or its job logs, treat this as an operational constraint, not a task incompletion.
+   - Use the `noop` safe output (do not emit an incomplete/failure outcome).
+
 ## Guidelines
 
 - **Copy tool output exactly**: Include the complete, verbatim output from the analysis tool. Do not summarize or interpret.
 - **One issue per finding**: Each distinct security or linting error should be a separate `create_issue` call.
 - **Check for duplicates**: Before creating an issue, search open issues to avoid duplicates.
 - **Only real findings**: Do not create issues for infrastructure failures, missing permissions, or workflow operational problems.
+- **Access restrictions are operational**: If run/job log access is denied by policy, return `noop`.
 - **Be precise**: Issue titles should clearly identify the tool, finding type, file, and location.
