@@ -1,6 +1,6 @@
 if type rpm; then exit 0; fi
 . ./assert.sh
-. /usr/bin/opentelemetry_shell.sh
+. ${OTEL_TEST_ENTRYPOINT:-/usr/bin/opentelemetry_shell.sh}
 
 timeout 60s echo hello world 1
 assert_equals 0 $?

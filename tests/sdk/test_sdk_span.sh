@@ -1,5 +1,5 @@
 . ./assert.sh
-. /usr/bin/opentelemetry_shell_api.sh
+. ${OTEL_TEST_API_ENTRYPOINT:-/usr/bin/opentelemetry_shell_api.sh}
 
 otel_init
 span_id=$(otel_span_start CONSUMER myspan)

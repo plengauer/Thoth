@@ -1,6 +1,6 @@
 if ! type sudo; then exit 0; fi
 . ./assert.sh
-. /usr/bin/opentelemetry_shell.sh
+. ${OTEL_TEST_ENTRYPOINT:-/usr/bin/opentelemetry_shell.sh}
 
 sudo echo hello world
 assert_equals 0 $?
