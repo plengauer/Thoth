@@ -7,11 +7,11 @@ _otel_propagate_wget() {
     *m*) local job_control=1; \set +m;;
     *) local job_control=0;;
   esac
-  local file=/usr/share/opentelemetry_shell/agent.instrumentation.http/libinjecthttpheader.so
+  local file="$_otel_shell_home"/agent.instrumentation.http/libinjecthttpheader.so
   if \[ "$(\uname -s)" = "Darwin" ]; then
-    local file=/usr/share/opentelemetry_shell/agent.instrumentation.http/libinjecthttpheader.dylib
+    local file="$_otel_shell_home"/agent.instrumentation.http/libinjecthttpheader.dylib
   fi
-  if \[ -f "$file" ] && ! \ldd "$file" 2> /dev/null | \grep -q 'not found' && ! ( \[ "$_otel_shell" = 'busybox sh' ] && \help | \tail -n +3 | \grep -q wget ); then
+  if \[ -f "$file" ] && ! ( \[ "$(\uname -s)" = "Darwin" ] && \otool -L "$file" 2> /dev/null | \grep -q 'not found' ) && ! \ldd "$file" 2> /dev/null | \grep -q 'not found' && ! ( \[ "$_otel_shell" = 'busybox sh' ] && \help | \tail -n +3 | \grep -q wget ); then
     export OTEL_SHELL_INJECT_HTTP_SDK_PIPE="$_otel_remote_sdk_pipe"
     export OTEL_SHELL_INJECT_HTTP_HANDLE_FILE="$(\mktemp -u)_opentelemetry_shell_$$.wget.handle"
     if \[ "$(\uname -s)" = "Darwin" ]; then

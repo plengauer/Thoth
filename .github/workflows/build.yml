@@ -125,10 +125,12 @@ jobs:
             platform="${platform%%_*}"
             architecture="${directory#http_${platform}_}"
             architecture="${architecture%_*}"
-            if [ "$platform" = "linux" ]; then
-              mv "$directory" bin/"$architecture"
-            elif [ "$platform" = "macos" ]; then
-              mv "$directory" bin/"$architecture"
+            # linux and macos architecture names can collide (e.g. both report x86_64), so
+            # copy contents in per platform instead of moving whole directories, which would
+            # nest the second platform's files under the first's instead of merging them
+            if [ "$platform" = "linux" ] || [ "$platform" = "macos" ]; then
+              mkdir -p bin/"$architecture"
+              cp -r "$directory"/. bin/"$architecture"/
             fi
           done
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -763,6 +765,18 @@ jobs:
         with:
           name: packages.brew.${{ inputs.ref }}
           path: opentelemetry-shell_*.tar.gz
+          if-no-files-found: error
+      # fill in the formula's version/sha256 placeholders so it's ready to drop into a homebrew
+      # tap; publishing it to an actual `plengauer/homebrew-opentelemetry-shell` tap repository on
+      # release is a separate, not-yet-automated step
+      - run: |
+          version="$(cat VERSION)"
+          sha256="$(sha256sum opentelemetry-shell_"$version".tar.gz | cut -d ' ' -f 1)"
+          sed "s/__VERSION__/$version/g; s/__SHA256__/$sha256/g" meta/homebrew/opentelemetry-shell.rb > opentelemetry-shell.rb
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: homebrew-formula.${{ inputs.ref }}
+          path: opentelemetry-shell.rb
           if-no-files-found: error
 
   build-workflow-image:

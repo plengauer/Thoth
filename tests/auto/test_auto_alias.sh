@@ -1,4 +1,4 @@
-. /usr/bin/opentelemetry_shell.sh
+. ${OTEL_TEST_ENTRYPOINT:-/usr/bin/opentelemetry_shell.sh}
 
 count_0=$(alias | wc -l)
 alias la='ls -a'

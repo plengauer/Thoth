@@ -1,5 +1,5 @@
 set -e
-. /usr/bin/opentelemetry_shell.sh
+. ${OTEL_TEST_ENTRYPOINT:-/usr/bin/opentelemetry_shell.sh}
 if [ "$OPEN_FD" = TRUE ]; then exec 3>&2; fi
 if [ "$SOURCE" = TRUE ]; then
   file="$(\mktemp)"

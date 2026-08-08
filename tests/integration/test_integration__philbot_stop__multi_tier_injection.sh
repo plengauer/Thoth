@@ -4,7 +4,7 @@ if ! dpkg -s moreutils; then exit 0; fi
 # from a real world example
 
 # lets simulate the caller
-. /usr/bin/opentelemetry_shell.sh
+. ${OTEL_TEST_ENTRYPOINT:-/usr/bin/opentelemetry_shell.sh}
 seq -s " philbot-discordgateway2http_" 0 3 | xargs -I '{}' echo philbot-discordgateway2http_'{}' | xargs parallel.moreutils -j 3 sh -c 'echo docker rm --force $1' echo --
 # in reality the parallel command stops a docker container, but echo should be enough for this
 

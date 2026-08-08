@@ -1,6 +1,6 @@
 . ./assert.sh
 if ! [ -f /usr/share/debconf/confmodule ]; then exit 0; fi
-. /usr/bin/opentelemetry_shell.sh
+. ${OTEL_TEST_ENTRYPOINT:-/usr/bin/opentelemetry_shell.sh}
 set +u
 export DEBIAN_FRONTEND=noninteractive
 . /usr/share/debconf/confmodule
