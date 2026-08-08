@@ -12,7 +12,7 @@ if type dpkg && dpkg -s moreutils; then
   assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
   span="$(resolve_span '.name == "echo a3"')"
   assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
-  
+
   parallel.moreutils -i echo {} i4 -- i1 i2 i3
   span="$(resolve_span '.name == "parallel.moreutils -i echo {} i4 -- i1 i2 i3"')"
   assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
@@ -22,7 +22,7 @@ if type dpkg && dpkg -s moreutils; then
   assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
   span="$(resolve_span '.name == "echo i3 i4"')"
   assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
-  
+
   parallel.moreutils -- 'echo b1' 'echo b2' 'echo b3'
   span="$(resolve_span '.name == "parallel.moreutils -- echo b1 echo b2 echo b3"')"
   assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
@@ -46,7 +46,11 @@ assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
 span="$(resolve_span '.name == "echo c3"')"
 assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
 
-{ printf '%s\n' d1; printf '%s\n' d2; printf '%s\n' d3; } | parallel echo
+{
+  printf '%s\n' d1
+  printf '%s\n' d2
+  printf '%s\n' d3
+} | parallel echo
 span="$(resolve_span '.name | endswith("/parallel echo")')"
 assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
 span="$(resolve_span '.name == "echo d1"')"

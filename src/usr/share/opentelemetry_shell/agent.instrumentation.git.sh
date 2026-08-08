@@ -6,24 +6,46 @@ _otel_inject_git_arguments() {
   local IFS=' 
 '
   local executable="$1"
-  _otel_escape_arg "$1"; shift
+  _otel_escape_arg "$1"
+  shift
   local inject=1
   if \[ "$inject" = 1 ]; then
-    if \[ "$1" = submodule ]; then \echo -n ' '; _otel_escape_arg "$1"; shift; else local inject=0; fi
+    if \[ "$1" = submodule ]; then
+      \echo -n ' '
+      _otel_escape_arg "$1"
+      shift
+    else local inject=0; fi
   fi
   if \[ "$inject" = 1 ]; then
-    if \[ "$1" = --quiet ]; then \echo -n ' '; _otel_escape_arg "$1"; shift; fi
-    if \[ "$1" = foreach ]; then \echo -n ' '; _otel_escape_arg "$1"; shift; else local inject=0; fi
+    if \[ "$1" = --quiet ]; then
+      \echo -n ' '
+      _otel_escape_arg "$1"
+      shift
+    fi
+    if \[ "$1" = foreach ]; then
+      \echo -n ' '
+      _otel_escape_arg "$1"
+      shift
+    else local inject=0; fi
   fi
   if \[ "$inject" = 1 ]; then
-    if \[ "$1" = --recursive ]; then \echo -n ' '; _otel_escape_arg "$1"; shift; fi
+    if \[ "$1" = --recursive ]; then
+      \echo -n ' '
+      _otel_escape_arg "$1"
+      shift
+    fi
   fi
   if \[ "$inject" = 1 ]; then
-    \echo -n ' '; _otel_escape_args $_otel_shell -c '. otel.sh
+    \echo -n ' '
+    _otel_escape_args $_otel_shell -c '. otel.sh
 '"$1" "$executable"
     shift
   fi
-  while \[ "$#" -gt 0 ]; do \echo -n ' '; _otel_escape_arg "$1"; shift; done
+  while \[ "$#" -gt 0 ]; do
+    \echo -n ' '
+    _otel_escape_arg "$1"
+    shift
+  done
 }
 
 _otel_inject_git() {

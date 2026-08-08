@@ -40,6 +40,7 @@ FILTER_REGEX_EXCLUDE: "(\\.lock\\.yml|/otlp\\.json|/gradlew|/package-lock\\.json
 # Workflow YAML isn't documentation with links for a reader to click, so
 # it's excluded from the dead-link checker specifically (JSON/YAML/other
 # linters still cover these files normally).
+SHELL_SHFMT_ARGUMENTS: "-i 2 -ci"
 SPELL_LYCHEE_FILTER_REGEX_EXCLUDE: "\\.github/workflows/"
 
 # --- Zizmor: allow GITHUB_TOKEN via env for workflow security scanning ---

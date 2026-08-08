@@ -40,7 +40,7 @@ if find --help | grep -- execdir; then
     assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | \jq -r '.kind')"
     assert_equals "find $directory -execdir echo {} ;" "$(\echo "$span" | jq -r '.resource.attributes."process.command_line"')"
   done
-  
+
   directory="$(mktemp -d)"
   mv "$directory" "$directory"". .dir"
   directory="$directory"". .dir"

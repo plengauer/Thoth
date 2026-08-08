@@ -15,13 +15,16 @@ config() {
     value "$*" | xargs -I {} /bin/echo "$*={}"
 }
 config DISCORD_API_TOKEN
-' > populate.sh
+' >populate.sh
   chmod +x populate.sh
 fi
 
 sh -e ./populate.sh
 . otel.sh
 . /usr/share/debconf/confmodule
-config() { db_get philbot-containerized/"$*"; echo "$*=$RET"; }
-config SHARD_COUNT_MIN  
+config() {
+  db_get philbot-containerized/"$*"
+  echo "$*=$RET"
+}
+config SHARD_COUNT_MIN
 db_stop

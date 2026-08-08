@@ -24,7 +24,7 @@ public class Main {
         connection.disconnect();
     }
 }
-' > "$dir"/Main.java
+' >"$dir"/Main.java
 javac "$dir"/Main.java
 (cd "$dir" && java Main)
 
@@ -38,7 +38,7 @@ public class Main {
         Runtime.getRuntime().exec(new String[]{"echo", "hello", "world", "3"}, null, null).waitFor();
     }
 }
-' > "$dir"/Main.java
+' >"$dir"/Main.java
 javac "$dir"/Main.java
 (cd "$dir" && java Main)
 span="$(resolve_span '.name == "echo hello world 0"')"
