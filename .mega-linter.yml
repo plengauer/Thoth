@@ -42,3 +42,6 @@ FILTER_REGEX_EXCLUDE: "(\\.lock\\.yml|/otlp\\.json|/gradlew|/package-lock\\.json
 # linters still cover these files normally).
 SHELL_SHFMT_ARGUMENTS: "-i 2 -ci"
 SPELL_LYCHEE_FILTER_REGEX_EXCLUDE: "\\.github/workflows/"
+
+# --- Zizmor: allow GITHUB_TOKEN via env for workflow security scanning ---
+ACTION_ZIZMOR_UNSECURED_ENV_VARIABLES: GITHUB_TOKEN

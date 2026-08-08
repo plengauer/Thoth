@@ -21,6 +21,12 @@ case "$-" in
     ;;
 esac
 
+# loadable builtins
+if \[ -n "${BASH_VERSION:-}" ]; then
+  \enable -f /usr/lib/bash/rm rm 2> /dev/null || \true
+  \enable -f /usr/lib/bash/mkfifo mkfifo 2> /dev/null || \true
+fi
+
 # basic setup
 if \[ -z "${TMPDIR:-}" ]; then TMPDIR=/tmp; fi
 _otel_shell_pipe_dir="${OTEL_SHELL_PIPE_DIR:-$TMPDIR}"
