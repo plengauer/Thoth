@@ -16,7 +16,8 @@ import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.SpanContext;
 
 public class SubprocessInjectionAgent {
     public static void premain(String args, Instrumentation instrumentation) throws Exception {
-        instrumentation.appendToBootstrapClassLoaderSearch(new java.util.jar.JarFile("/usr/share/opentelemetry_shell/agent.instrumentation.java/subprocessinjectionagent.jar"));
+        // resolve our own jar rather than hardcoding an install path, which differs per platform
+        instrumentation.appendToBootstrapClassLoaderSearch(new java.util.jar.JarFile(new java.io.File(SubprocessInjectionAgent.class.getProtectionDomain().getCodeSource().getLocation().toURI())));
         new AgentBuilder.Default()
             .with(AgentBuilder.RedefinitionStrategy.RETRANSFORMATION)
             .with(AgentBuilder.InitializationStrategy.NoOp.INSTANCE)

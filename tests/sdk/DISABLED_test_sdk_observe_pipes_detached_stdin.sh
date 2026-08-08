@@ -1,7 +1,7 @@
 # DISABLED because such a situation is super hard to reproduce manually
 # in this case the stdin tee will try to read (maybe), process will either hang or terminate, and that will in turn then kill the tee
 . ./assert.sh
-. /usr/bin/opentelemetry_shell_api.sh
+. ${OTEL_TEST_API_ENTRYPOINT:-/usr/bin/opentelemetry_shell_api.sh}
 
 exec 0<&-
 export OTEL_SHELL_EXPERIMENTAL_OBSERVE_PIPES=TRUE

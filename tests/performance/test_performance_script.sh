@@ -4,7 +4,7 @@ set -e
 
 script="$(mktemp).$SHELL"
 echo "#!/bin/$SHELL" >> "$script"
-echo ". /usr/bin/opentelemetry_shell.sh" >> "$script"
+echo ". ${OTEL_TEST_ENTRYPOINT:-/usr/bin/opentelemetry_shell.sh}" >> "$script"
 # echo "\alias" >> "$script"
 echo "exit 0" >> "$script"
 echo "curl http://www.google.at" >> "$script"

@@ -11,7 +11,7 @@ server_pid="$!"
 trap 'kill "$server_pid" 1> /dev/null 2> /dev/null || true' EXIT
 \sleep 1
 
-. /usr/bin/opentelemetry_shell.sh
+. ${OTEL_TEST_ENTRYPOINT:-/usr/bin/opentelemetry_shell.sh}
 old_ld_preload="${LD_PRELOAD:-}"
 url=http://127.0.0.1:"$port"/file
 
