@@ -126,13 +126,10 @@ _otel_list_path_commands() {
   _otel_list_path_executables | _otel_path_2_name
 }
 
-# -executable is a GNU extension; BSD find (macOS) errors out on it, which the redirect below
-# would silently swallow and leave nothing to instrument, so use the portable -perm +111 there
-if \[ "$(\uname -s)" = Darwin ]; then
-  _otel_find_type_executable() { \find "$1" -maxdepth 1 -type "$2" -perm +111 2> /dev/null || \true; }
-else
-  _otel_find_type_executable() { \find "$1" -maxdepth 1 -type "$2" -executable 2> /dev/null || \true; }
-fi
+# $_otel_find_executable_test (set by api.sh) is -executable on Linux and the portable -perm +111
+# on Darwin, where BSD find errors out on -executable; that error would otherwise be silently
+# swallowed by the redirect below and leave nothing to instrument
+_otel_find_type_executable() { \find "$1" -maxdepth 1 -type "$2" $_otel_find_executable_test 2> /dev/null || \true; }
 
 _otel_list_path_executables() {
   \echo "$PATH" | \tr ':' '\n' | while \read dir; do _otel_find_type_executable "$dir" f; _otel_find_type_executable "$dir" l; done
