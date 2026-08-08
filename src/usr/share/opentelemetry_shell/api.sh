@@ -21,6 +21,9 @@ esac
 # basic setup
 if \[ "$(\uname -s)" = Darwin ]; then _otel_shell_home=/usr/local/share/opentelemetry_shell; else _otel_shell_home=/usr/share/opentelemetry_shell; fi
 if \[ "$(\uname -s)" = Darwin ]; then _otel_shell_bin_home=/usr/local/bin; else _otel_shell_bin_home=/usr/bin; fi
+# -executable is a GNU extension, BSD find (macOS) only knows -perm +111; shared by every portable
+# find-executable helper below (and in agent.sh) instead of each repeating its own Darwin branch
+if \[ "$(\uname -s)" = Darwin ]; then _otel_find_executable_test="-perm +111"; else _otel_find_executable_test="-executable"; fi
 if \[ -z "${TMPDIR:-}" ]; then TMPDIR=/tmp; fi
 _otel_shell_pipe_dir="${OTEL_SHELL_PIPE_DIR:-$TMPDIR}"
 _otel_remote_sdk_pipe="${OTEL_REMOTE_SDK_PIPE:-$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.sdk.pipe.XXXXXXXXXX)}"
@@ -538,16 +541,9 @@ else
   }
 fi
 
-# -executable is a GNU extension, BSD find (macOS) only knows -perm +111
-if \[ "$(\uname -s)" = Darwin ]; then
-  _otel_find_executables() {
-    \find "$1" -perm +111 -iname "$2"
-  }
-else
-  _otel_find_executables() {
-    \find "$1" -executable -iname "$2"
-  }
-fi
+_otel_find_executables() {
+  \find "$1" $_otel_find_executable_test -iname "$2"
+}
 
 _otel_line_join() {
   \sed '/^$/d' | \tr '\n' ' ' | \sed 's/ $//'
