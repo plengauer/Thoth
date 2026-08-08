@@ -1,7 +1,7 @@
 . ./assert.sh
 export OTEL_SHELL_CONFIG_OBSERVE_PIPES=TRUE
 export OTEL_SHELL_CONFIG_OBSERVE_PIPES_STDIN=TRUE
-. /usr/bin/opentelemetry_shell_api.sh
+. ${OTEL_TEST_API_ENTRYPOINT:-/usr/bin/opentelemetry_shell_api.sh}
 
 otel_init
 assert_equals "hello

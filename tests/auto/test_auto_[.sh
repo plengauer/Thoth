@@ -1,5 +1,5 @@
 . ./assert.sh
-. /usr/bin/opentelemetry_shell.sh
+. ${OTEL_TEST_ENTRYPOINT:-/usr/bin/opentelemetry_shell.sh}
 
 if [ -n "hello world if" ]; then
   echo hello world

@@ -10,11 +10,22 @@ if [ "$SHELL" = dash ] && ! ( [ "$ID" = debian ] || [ "$ID_LIKE" = debian ] ); t
   exit 0
 fi
 
-if ! type timeout; then
+if ! type perl 1> /dev/null 2> /dev/null; then
+  function perl() {
+    cat
+  }
+fi
+
+if ! type timeout 1> /dev/null 2> /dev/null; then
   function timeout() {
     shift
     "$@"
   }
+fi
+
+if [ "$(uname -s)" = "Darwin" ]; then
+  export OTEL_TEST_ENTRYPOINT=/usr/local/bin/opentelemetry_shell.sh
+  export OTEL_TEST_API_ENTRYPOINT=/usr/local/bin/opentelemetry_shell_api.sh
 fi
 
 if [ "$SHELL" = busybox ]; then

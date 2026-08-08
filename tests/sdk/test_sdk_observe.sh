@@ -1,5 +1,5 @@
 . ./assert.sh
-. /usr/bin/opentelemetry_shell_api.sh
+. ${OTEL_TEST_API_ENTRYPOINT:-/usr/bin/opentelemetry_shell_api.sh}
 
 if [ "$SHELL" = "bash" ]; then
   shopt -s expand_aliases

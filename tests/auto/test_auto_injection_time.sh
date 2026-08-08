@@ -1,7 +1,7 @@
 if [ "$SHELL" = sh ] && type rpm; then exit 0; fi
 
 . ./assert.sh
-. /usr/bin/opentelemetry_shell.sh
+. ${OTEL_TEST_ENTRYPOINT:-/usr/bin/opentelemetry_shell.sh}
 
 time echo hello world
 assert_equals 0 $?

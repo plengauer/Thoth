@@ -18,7 +18,7 @@ esac
 _otel_shell_conservative_exec="${OTEL_SHELL_CONSERVATIVE_EXEC:-FALSE}"
 unset OTEL_SHELL_CONSERVATIVE_EXEC
 
-\. /usr/share/opentelemetry_shell/api.sh
+if \[ "$(\uname -s)" = Darwin ]; then \. /usr/local/share/opentelemetry_shell/api.sh; else \. /usr/share/opentelemetry_shell/api.sh; fi
 _otel_package_version opentelemetry-shell > /dev/null # to build the cache outside a subshell
 
 if \[ "$_otel_shell" = "bash" ] && \[ -n "${BASHPID:-}" ] && \[ "$$" != "$BASHPID" ]; then
@@ -111,8 +111,8 @@ _otel_auto_instrument() {
 
 _otel_list_special_auto_instrument_files() {
   case "$-" in
-    *f*) \ls /usr/share/opentelemetry_shell | \grep -E '^agent.instrumentation.*.sh$' | while \read -r _otel_file_name; do \echo /usr/share/opentelemetry_shell/"$_otel_file_name"; done;;
-    *) \echo /usr/share/opentelemetry_shell/agent.instrumentation.*.sh;;
+    *f*) \ls "$_otel_shell_home" | \grep -E '^agent.instrumentation.*.sh$' | while \read -r _otel_file_name; do \echo "$_otel_shell_home"/"$_otel_file_name"; done;;
+    *) \echo "$_otel_shell_home"/agent.instrumentation.*.sh;;
   esac
 }
 
@@ -126,8 +126,16 @@ _otel_list_path_commands() {
   _otel_list_path_executables | _otel_path_2_name
 }
 
+# -executable is a GNU extension; BSD find (macOS) errors out on it, which the redirect below
+# would silently swallow and leave nothing to instrument, so use the portable -perm +111 there
+if \[ "$(\uname -s)" = Darwin ]; then
+  _otel_find_type_executable() { \find "$1" -maxdepth 1 -type "$2" -perm +111 2> /dev/null || \true; }
+else
+  _otel_find_type_executable() { \find "$1" -maxdepth 1 -type "$2" -executable 2> /dev/null || \true; }
+fi
+
 _otel_list_path_executables() {
-  \echo "$PATH" | \tr ':' '\n' | while \read dir; do \find "$dir" -maxdepth 1 -type f -executable 2> /dev/null || \true; \find "$dir" -maxdepth 1 -type l -executable 2> /dev/null || \true; done
+  \echo "$PATH" | \tr ':' '\n' | while \read dir; do _otel_find_type_executable "$dir" f; _otel_find_type_executable "$dir" l; done
 }
 
 _otel_path_2_name() {
@@ -170,7 +178,8 @@ _otel_filter_commands_by_hint() {
 
 _otel_resolve_instrumentation_hint() {
   local hint="$1"
-  { \[ -f "$hint" ] && \[ "$(\readlink -f "$hint")" != "$(\readlink -f "/proc/$$/exe")" ] && \[ "$(\readlink -f "$hint")" != /usr/share/opentelemetry_shell/agent.sh ] && \cat "$hint" || \echo "$hint"; } | \tr -s ' $=";(){}/\\!#~^'\' '\n' | _otel_filter_by_validity | \sort -u
+  if \[ -d /proc ] && \[ "$(\readlink -f "$hint")" = "$(\readlink -f "/proc/$$/exe")" ]; then local _otel_hint_is_self=TRUE; else local _otel_hint_is_self=FALSE; fi
+  { \[ -f "$hint" ] && \[ "$_otel_hint_is_self" = FALSE ] && \[ "$(\readlink -f "$hint")" != "$_otel_shell_home"/agent.sh ] && \cat "$hint" || \echo "$hint"; } | \tr -s ' $=";(){}/\\!#~^'\' '\n' | _otel_filter_by_validity | \sort -u
 }
 
 _otel_filter_commands_by_instrumentation() {

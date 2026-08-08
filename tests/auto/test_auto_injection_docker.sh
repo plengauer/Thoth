@@ -1,7 +1,7 @@
 if ! type docker; then exit 0; fi
 
 . ./assert.sh
-. /usr/bin/opentelemetry_shell.sh
+. ${OTEL_TEST_ENTRYPOINT:-/usr/bin/opentelemetry_shell.sh}
 
 assert_equals "hello world 0" "$(sudo docker run debian:latest echo hello world 0)"
 span="$(resolve_span '.name == "echo hello world 0"')"
