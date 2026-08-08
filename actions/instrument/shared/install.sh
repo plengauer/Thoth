@@ -21,9 +21,9 @@ if ! type otel.sh 2> /dev/null; then
       tarball_file=/tmp/opentelemetry-shell.tar.gz
       GITHUB_REPOSITORY="$GITHUB_ACTION_REPOSITORY" gh_release "$action_tag_name" | jq '.assets[] | select(.name | endswith(".tar.gz")) | .url' -r | xargs -0 -I '{}' wget --header "Authorization: Bearer $INPUT_GITHUB_TOKEN" --header 'Accept: application/octet-stream' -O "$tarball_file" '{}'
       sudo mkdir -p /usr/local/share /usr/local/bin /usr/local/opt
-      sudo tar xzf "$tarball_file" -C /usr/local
-      sudo ln -sf /usr/local/usr/bin/otel.sh /usr/local/bin/otel.sh
-      sudo ln -sf /usr/local/usr/bin/otelapi.sh /usr/local/bin/otelapi.sh
+      # /usr is on the SIP-sealed system volume on macOS, so install under /usr/local instead;
+      # --strip-components=2 turns the tarball's usr/bin, usr/share/... into bin/..., share/...
+      sudo tar --strip-components=2 -xzf "$tarball_file" -C /usr/local
       rm "$tarball_file"
     )
   elif [ "$GITHUB_REPOSITORY" = "$GITHUB_ACTION_REPOSITORY" ] && [ -f "$GITHUB_WORKSPACE"/package.deb ]; then
@@ -39,9 +39,8 @@ if ! type otel.sh 2> /dev/null; then
       echo ::warning::'Cannot find release for specified tag, falling back to latest. This may be due to tags that haven'\''t finished building yet (like in a fresh fork), in which case this will resolve automatically.' >&2
       if [ "$(uname -s)" = "Darwin" ]; then
         curl --fail -L -s -H "Authorization: Bearer $INPUT_GITHUB_TOKEN" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_ACTION_REPOSITORY"/releases/latest | jq '.assets[] | select(.name | endswith(".tar.gz")) | .url' -r | xargs -0 -I '{}' wget --header "Authorization: Bearer $INPUT_GITHUB_TOKEN" --header 'Accept: application/octet-stream' -O /tmp/package.tar.gz '{}'
-        sudo tar xzf /tmp/package.tar.gz -C /usr/local
-        sudo ln -sf /usr/local/usr/bin/otel.sh /usr/local/bin/otel.sh
-        sudo ln -sf /usr/local/usr/bin/otelapi.sh /usr/local/bin/otelapi.sh
+        sudo mkdir -p /usr/local/share /usr/local/bin
+        sudo tar --strip-components=2 -xzf /tmp/package.tar.gz -C /usr/local
         rm /tmp/package.tar.gz
       else
         curl --fail -L -s -H "Authorization: Bearer $INPUT_GITHUB_TOKEN" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_ACTION_REPOSITORY"/releases/latest | jq '.assets[] | select(.name | endswith(".deb")) | .url' -r | xargs -0 -I '{}' wget --header "Authorization: Bearer $INPUT_GITHUB_TOKEN" --header 'Accept: application/octet-stream' -O /tmp/package.deb '{}'

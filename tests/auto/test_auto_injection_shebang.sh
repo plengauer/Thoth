@@ -8,7 +8,7 @@ else
   cat auto/fail_no_auto.sh | sudo tee -a /usr/bin/fail_no_auto.sh
   sudo chmod +x /usr/bin/fail_no_auto.sh
 fi
-. /usr/bin/opentelemetry_shell.sh
+. ${OTEL_TEST_ENTRYPOINT:-/usr/bin/opentelemetry_shell.sh}
 fail_no_auto.sh
 assert_equals 0 $?
 span="$(resolve_span '.resource.attributes."process.command_line" | contains("/fail_no_auto.sh")')"
