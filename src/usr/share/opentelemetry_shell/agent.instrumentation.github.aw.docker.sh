@@ -10,10 +10,11 @@ if \[ "${GITHUB_ACTIONS:-false}" = true ] && \[ "${GITHUB_AW:-false}" = true ] &
       fi
     done
     \[ -n "$compose_file" ] || return 0
-    \yq -i '.services[].volumes += [{"type": "bind", "source": "/usr/share/opentelemetry_shell", "target": "/usr/share/opentelemetry_shell", "read_only": true}]' "$compose_file" # SKIP_DEPENDENCY_CHECK
+    # the container is always linux, so sources follow the host layout while targets stay on the linux paths the container expects
+    OTEL_BIND_SOURCE="$_otel_shell_home" \yq -i '.services[].volumes += [{"type": "bind", "source": strenv(OTEL_BIND_SOURCE), "target": "/usr/share/opentelemetry_shell", "read_only": true}]' "$compose_file" # SKIP_DEPENDENCY_CHECK
     \yq -i '.services[].volumes += [{"type": "bind", "source": "/opt/opentelemetry_shell", "target": "/opt/opentelemetry_shell", "read_only": true}]' "$compose_file" # SKIP_DEPENDENCY_CHECK
-    { \find /usr/bin -executable -iname 'otel*.sh'; \find /usr/bin -executable -iname 'opentelemetry_shell*.sh'; } | while \read -r otel_file; do
-      OTEL_BIND_FILE="$otel_file" \yq -i '.services[].volumes += [{"type": "bind", "source": strenv(OTEL_BIND_FILE), "target": strenv(OTEL_BIND_FILE), "read_only": true}]' "$compose_file" # SKIP_DEPENDENCY_CHECK
+    { _otel_find_executables "$_otel_shell_bin_home" 'otel*.sh'; _otel_find_executables "$_otel_shell_bin_home" 'opentelemetry_shell*.sh'; } | while \read -r otel_file; do
+      OTEL_BIND_SOURCE="$otel_file" OTEL_BIND_TARGET=/usr/bin/"${otel_file##*/}" \yq -i '.services[].volumes += [{"type": "bind", "source": strenv(OTEL_BIND_SOURCE), "target": strenv(OTEL_BIND_TARGET), "read_only": true}]' "$compose_file" # SKIP_DEPENDENCY_CHECK
     done
     TRACEPARENT="$TRACEPARENT" \yq -i '.services[].environment.TRACEPARENT = strenv(TRACEPARENT)' "$compose_file" # SKIP_DEPENDENCY_CHECK
     TRACESTATE="$TRACESTATE" \yq -i '.services[].environment.TRACESTATE = strenv(TRACESTATE)' "$compose_file" # SKIP_DEPENDENCY_CHECK

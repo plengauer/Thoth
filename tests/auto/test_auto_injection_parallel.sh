@@ -1,6 +1,6 @@
 if ! type parallel; then exit 0; fi
 . ./assert.sh
-. /usr/bin/opentelemetry_shell.sh
+. ${OTEL_TEST_ENTRYPOINT:-/usr/bin/opentelemetry_shell.sh}
 
 if type dpkg && dpkg -s moreutils; then
   parallel.moreutils echo -- a1 a2 a3

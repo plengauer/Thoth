@@ -8,7 +8,7 @@ sudo sh -c 'echo "echo hello world" >> /usr/bin/bash-ai' # lets abstract away th
 sudo chmod +x /usr/bin/bash-ai
 alias ai=bash-ai
 # lets simulate the caller
-. /usr/bin/opentelemetry_shell.sh
+. ${OTEL_TEST_ENTRYPOINT:-/usr/bin/opentelemetry_shell.sh}
 if [ "$TEST_SHELL" = 'busybox sh' ] && ! [ -x /bin/busybox ]; then sudo ln --symbolic $(which busybox) /bin/busybox; fi
 alias
 ai some arguments

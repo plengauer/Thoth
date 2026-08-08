@@ -19,6 +19,8 @@ case "$-" in
 esac
 
 # basic setup
+if \[ "$(\uname -s)" = Darwin ]; then _otel_shell_home=/usr/local/share/opentelemetry_shell; else _otel_shell_home=/usr/share/opentelemetry_shell; fi
+if \[ "$(\uname -s)" = Darwin ]; then _otel_shell_bin_home=/usr/local/bin; else _otel_shell_bin_home=/usr/bin; fi
 if \[ -z "${TMPDIR:-}" ]; then TMPDIR=/tmp; fi
 _otel_shell_pipe_dir="${OTEL_SHELL_PIPE_DIR:-$TMPDIR}"
 _otel_remote_sdk_pipe="${OTEL_REMOTE_SDK_PIPE:-$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.sdk.pipe.XXXXXXXXXX)}"
@@ -33,7 +35,11 @@ if \[ -d /proc ]; then
   if \[ "$_otel_shell" = busybox ]; then _otel_shell="busybox sh"; fi
   if \[ "${OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE:-}" = 0 ] || \[ "${OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE:-}" = "$PPID" ] || \[ "${PPID:-}" = 0 ] || { \[ -r /proc/$PPID/cmdline ] && \[ -r "/proc/${OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE:-}/cmdline" ] && \[ "$(\tr '\000-\037' ' ' < /proc/$PPID/cmdline)" = "$(\tr '\000-\037' ' ' < /proc/${OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE:-}/cmdline)" ]; }; then _otel_commandline_override="$OTEL_SHELL_COMMANDLINE_OVERRIDE"; fi
 else
-  _otel_shell="${SHELL##*/}"
+  # no /proc (e.g. macOS): ask ps for the actual running interpreter of this process rather than
+  # trusting $SHELL, which is only the user's login shell and may not match how this file was invoked
+  _otel_shell="$(\ps -p $$ -o comm= 2> /dev/null)"
+  _otel_shell="${_otel_shell##*/}"
+  if \[ -z "$_otel_shell" ]; then _otel_shell="${SHELL##*/}"; fi
   if \[ -z "$_otel_shell" ]; then _otel_shell=sh; fi
   if \[ "$_otel_shell" = busybox ]; then _otel_shell="busybox sh"; fi
   if \[ "${OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE:-}" = 0 ] || \[ "${OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE:-}" = "$PPID" ]; then _otel_commandline_override="$OTEL_SHELL_COMMANDLINE_OVERRIDE"; fi
@@ -62,7 +68,7 @@ else
     else
       # several weird things going on in the next line, (1) using '((' fucks up the syntax highlighting in github while '( (' does not, and (2) &> causes weird buffering / late flushing behavior
       if \env --help 2>&1 | \grep -q 'ignore-signal'; then local extra_env_flags='--ignore-signal=INT --ignore-signal=HUP'; fi
-      ( \exec \env ${extra_env_flags:-} /opt/opentelemetry_shell/venv/bin/python /usr/share/opentelemetry_shell/sdk.py shell "$(_otel_package_version opentelemetry-shell)" < "$_otel_remote_sdk_pipe" 1> "$_otel_remote_sdk_stdout_redirect" 2> "$_otel_remote_sdk_stderr_redirect" &)
+      ( \exec \env ${extra_env_flags:-} /opt/opentelemetry_shell/venv/bin/python "$_otel_shell_home"/sdk.py shell "$(_otel_package_version opentelemetry-shell)" < "$_otel_remote_sdk_pipe" 1> "$_otel_remote_sdk_stdout_redirect" 2> "$_otel_remote_sdk_stderr_redirect" &)
     fi
     \eval "\\exec ${_otel_remote_sdk_fd}> \"$_otel_remote_sdk_pipe\""
     _otel_resource_attributes
@@ -463,9 +469,9 @@ _otel_call() {
   \alias "$command" 1> /dev/null 2> /dev/null && \eval "$(_otel_escape_args "${command#\\}" "$@")" || "${command#\\}" "$@"
 }
 
-\. /usr/share/opentelemetry_shell/api.observe.logs.sh
-\. /usr/share/opentelemetry_shell/api.observe.pipes.sh
-\. /usr/share/opentelemetry_shell/api.observe.subprocesses.sh
+\. "$_otel_shell_home"/api.observe.logs.sh
+\. "$_otel_shell_home"/api.observe.pipes.sh
+\. "$_otel_shell_home"/api.observe.subprocesses.sh
 
 if \[ "$_otel_shell" = bash ]; then
   _otel_command_type() {
@@ -529,6 +535,17 @@ else
   _otel_escape_arg_format() {
     local escaped="$(\printf '%s' "$2X" | \sed "s/'/'\\\\''/g")" # need the extra X to preserve trailing linefeeds (yay)
     \printf "$1" "${escaped%X}"
+  }
+fi
+
+# -executable is a GNU extension, BSD find (macOS) only knows -perm +111
+if \[ "$(\uname -s)" = Darwin ]; then
+  _otel_find_executables() {
+    \find "$1" -perm +111 -iname "$2"
+  }
+else
+  _otel_find_executables() {
+    \find "$1" -executable -iname "$2"
   }
 fi
 
