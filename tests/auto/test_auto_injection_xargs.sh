@@ -1,5 +1,5 @@
 . ./assert.sh
-. /usr/bin/opentelemetry_shell.sh
+. ${OTEL_TEST_ENTRYPOINT:-/usr/bin/opentelemetry_shell.sh}
 
 file=$(mktemp)
 echo "hello world 0" >> $file

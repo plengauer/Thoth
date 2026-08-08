@@ -3,7 +3,7 @@ if [ -x .lock ]; then exit 0; fi
 # chmod +x .lock
 
 . ./assert.sh
-. /usr/bin/opentelemetry_shell.sh
+. ${OTEL_TEST_ENTRYPOINT:-/usr/bin/opentelemetry_shell.sh}
 
 output="$(flock .lock echo hello world)"
 assert_equals "hello world" "$output"

@@ -8,7 +8,7 @@ class OpentelemetryShell < Formula
 
   depends_on "coreutils"
   depends_on "findutils"
-  depends_on "python@3.9" => :recommended
+  depends_on "python@3" => :recommended
   depends_on "grep"
   depends_on "gnu-sed"
   depends_on "gawk"
@@ -22,7 +22,9 @@ class OpentelemetryShell < Formula
   end
 
   def post_install
-    system "#{prefix}/opt/opentelemetry_shell/venv/bin/python3", "-m", "venv", "#{prefix}/opt/opentelemetry_shell/venv"
+    # the venv doesn't exist yet, so it has to be created with the dependency's python3 (on PATH
+    # during the build), not the venv's own not-yet-created python3
+    system "python3", "-m", "venv", "#{prefix}/opt/opentelemetry_shell/venv"
     system "#{prefix}/opt/opentelemetry_shell/venv/bin/pip3", "install", "-r", "#{prefix}/opt/opentelemetry_shell/requirements.txt"
   end
 
@@ -30,6 +32,12 @@ class OpentelemetryShell < Formula
     <<~EOS
       To use OpenTelemetry in your shell scripts, source the file:
         . #{bin}/otel.sh
+
+      Note: this formula's scripts look for their own files under the fixed path
+      /usr/local/share/opentelemetry_shell rather than #{prefix}, so on Apple Silicon
+      (where Homebrew's prefix is #{HOMEBREW_PREFIX}, not /usr/local) that lookup will
+      fail unless /usr/local/share/opentelemetry_shell also exists, e.g. as a symlink to
+      #{prefix}/usr/share/opentelemetry_shell.
 
       For more information, see:
         https://github.com/plengauer/opentelemetry-bash

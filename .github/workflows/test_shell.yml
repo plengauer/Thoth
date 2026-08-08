@@ -9,7 +9,7 @@ jobs:
   smoke:
     strategy:
       matrix:
-        runner: ['ubuntu-latest', 'ubuntu-24.04-arm', 'macos-latest', 'macos-13']
+        runner: ['ubuntu-latest', 'ubuntu-24.04-arm', 'macos-latest']
       fail-fast: false
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 30
@@ -33,12 +33,19 @@ jobs:
       - if: runner.os == 'macOS'
         run: |
           brew install jq wget curl bash coreutils findutils grep gnu-sed gawk
-          sudo tar -xzf opentelemetry-shell_*.tar.gz -C /
+          # /usr is on the SIP-sealed system volume on modern macOS, so the usr subtree has to live
+          # under /usr/local instead; --strip-components=2 turns the tarball's usr/bin, usr/share/...
+          # into bin/..., share/... so they land at /usr/local/bin, /usr/local/share/opentelemetry_shell.
+          # /opt is not sealed, so the opt subtree keeps its normal location (api.sh and the pip
+          # install below both expect the SDK venv and requirements at /opt/opentelemetry_shell).
+          sudo mkdir -p /usr/local/bin /usr/local/share
+          sudo tar --strip-components=2 -xzf opentelemetry-shell_*.tar.gz -C /usr/local usr
+          sudo tar --strip-components=1 -xzf opentelemetry-shell_*.tar.gz -C / opt
           arch="$(uname -m)"
-          if [ -f /usr/share/opentelemetry_shell/agent.instrumentation.http/"$arch"/libinjecthttpheader.dylib ]; then
-            sudo mv /usr/share/opentelemetry_shell/agent.instrumentation.http/"$arch"/libinjecthttpheader.dylib /usr/share/opentelemetry_shell/agent.instrumentation.http/
+          if [ -f /usr/local/share/opentelemetry_shell/agent.instrumentation.http/"$arch"/libinjecthttpheader.dylib ]; then
+            sudo mv /usr/local/share/opentelemetry_shell/agent.instrumentation.http/"$arch"/libinjecthttpheader.dylib /usr/local/share/opentelemetry_shell/agent.instrumentation.http/
           fi
-          sudo find /usr/share/opentelemetry_shell/agent.instrumentation.http -mindepth 1 -type d -exec rm -rf {} + 2>/dev/null || true
+          sudo find /usr/local/share/opentelemetry_shell/agent.instrumentation.http -mindepth 1 -type d -exec rm -rf {} + 2>/dev/null || true
           sudo python3 -m venv /opt/opentelemetry_shell/venv
           sudo /opt/opentelemetry_shell/venv/bin/pip3 install -r /opt/opentelemetry_shell/requirements.txt
       - run: bash -c "cd tests && bash run_tests.sh bash"

@@ -1,7 +1,7 @@
 # renovate is really a docker running an npm package, that is pre-isntrumented with otel running in a docker container that during startup runs through an exec and a shebang first!
 if ! type docker; then exit 0; fi
 . ./assert.sh
-. /usr/bin/opentelemetry_shell.sh
+. ${OTEL_TEST_ENTRYPOINT:-/usr/bin/opentelemetry_shell.sh}
 
 log_file="$(\mktemp)"
 docker run --rm --env RENOVATE_DRY_RUN=full --env RENOVATE_TOKEN=abc --env RENOVATE_REPOSITORIES="plengauer/opentelemetry-bash" ghcr.io/renovatebot/renovate:latest > "$log_file"

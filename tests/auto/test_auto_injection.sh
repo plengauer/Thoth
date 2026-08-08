@@ -1,7 +1,7 @@
 if [ -d /proc ] && [ "$(readlink -f /proc/$$/exe | sed 's#.*/##')" = busybox ]; then exit 0; fi
 
 . ./assert.sh
-. /usr/bin/opentelemetry_shell.sh
+. ${OTEL_TEST_ENTRYPOINT:-/usr/bin/opentelemetry_shell.sh}
 
 eval "$TEST_SHELL auto/fail_no_auto.sh"
 assert_equals 0 $?
