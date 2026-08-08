@@ -10,9 +10,10 @@ if: ${{ github.event.workflow_run.conclusion == 'failure' }}
 permissions:
   contents: read
   actions: read
+  issues: read
 tools:
   github:
-    toolsets: [context, actions, issues]
+    toolsets: [context, actions, repos, issues]
 safe-outputs:
   noop:
   create-issue:
