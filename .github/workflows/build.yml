@@ -757,6 +757,11 @@ jobs:
           find . -name '*.so' -delete
           find . -mindepth 1 -type d -empty -delete
       - run: |
+          # ship the same postinst that deb/rpm/apk run, as a top-level file in the tarball, so
+          # tarball-based installs (macOS has no package manager postinst hook of its own) can
+          # invoke it themselves instead of duplicating its venv/deep-injection setup logic
+          cp meta/debian/postinst src/postinst
+      - run: |
           version="$(cat VERSION)"
           tar -czf opentelemetry-shell_"$version".tar.gz -C src .
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1

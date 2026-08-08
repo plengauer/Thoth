@@ -107,8 +107,12 @@ case "$extension" in
     $wrapper mkdir -p /usr/local/bin /usr/local/share
     $wrapper tar --strip-components=2 -xzf "$package" -C /usr/local usr
     $wrapper tar --strip-components=1 -xzf "$package" -C / opt
-    $wrapper python3 -m venv /opt/opentelemetry_shell/venv
-    $wrapper /opt/opentelemetry_shell/venv/bin/pip3 install -r /opt/opentelemetry_shell/requirements.txt
+    # the tarball ships the same postinst that deb/rpm/apk run below; invoke it instead of
+    # duplicating its venv setup (and deep node/python instrumentation) here
+    postinst_script="$(mktemp)"
+    tar -xzf "$package" -O postinst > "$postinst_script"
+    $wrapper sh "$postinst_script" configure
+    rm -f "$postinst_script"
     ;;
   *)
     echo Here be dragons >&2
