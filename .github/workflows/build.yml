@@ -125,10 +125,12 @@ jobs:
             platform="${platform%%_*}"
             architecture="${directory#http_${platform}_}"
             architecture="${architecture%_*}"
-            if [ "$platform" = "linux" ]; then
-              mv "$directory" bin/"$architecture"
-            elif [ "$platform" = "macos" ]; then
-              mv "$directory" bin/"$architecture"
+            # linux and macos architecture names can collide (e.g. both report x86_64), so
+            # copy contents in per platform instead of moving whole directories, which would
+            # nest the second platform's files under the first's instead of merging them
+            if [ "$platform" = "linux" ] || [ "$platform" = "macos" ]; then
+              mkdir -p bin/"$architecture"
+              cp -r "$directory"/. bin/"$architecture"/
             fi
           done
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
