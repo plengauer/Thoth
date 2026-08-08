@@ -46,8 +46,12 @@ jobs:
             sudo mv /usr/local/share/opentelemetry_shell/agent.instrumentation.http/"$arch"/libinjecthttpheader.dylib /usr/local/share/opentelemetry_shell/agent.instrumentation.http/
           fi
           sudo find /usr/local/share/opentelemetry_shell/agent.instrumentation.http -mindepth 1 -type d -exec rm -rf {} + 2>/dev/null || true
-          sudo python3 -m venv /opt/opentelemetry_shell/venv
-          sudo /opt/opentelemetry_shell/venv/bin/pip3 install -r /opt/opentelemetry_shell/requirements.txt
+          # the tarball ships the same postinst that deb/rpm/apk run on install; invoke it instead
+          # of duplicating its venv setup (and deep node/python instrumentation) here
+          postinst_script="$(mktemp)"
+          tar -xzf opentelemetry-shell_*.tar.gz -O postinst > "$postinst_script"
+          sudo sh "$postinst_script" configure
+          rm -f "$postinst_script"
       - run: bash -c "cd tests && bash run_tests.sh bash"
       - if: runner.os == 'Linux'
         run: sudo apt-get -y remove opentelemetry-shell

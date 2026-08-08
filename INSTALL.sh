@@ -7,11 +7,12 @@ elif type rpm 1> /dev/null 2> /dev/null; then
   extension=rpm
 elif type apk 1> /dev/null 2> /dev/null; then
   extension=apk
-elif [ "$(uname -s)" = "Darwin" ] && type brew 1> /dev/null 2> /dev/null; then
-  echo "Installing opentelemetry-shell via Homebrew..."
-  brew tap plengauer/opentelemetry-shell https://github.com/plengauer/Thoth || true
-  brew install opentelemetry-shell
-  exit 0
+elif [ "$(uname -s)" = "Darwin" ]; then
+  if type brew 1> /dev/null 2> /dev/null && { echo "Installing opentelemetry-shell via Homebrew..."; brew tap plengauer/opentelemetry-shell https://github.com/plengauer/Thoth; brew install opentelemetry-shell; }; then
+    exit 0
+  fi
+  echo "Homebrew unavailable or the tap install failed, falling back to a direct tarball installation..." >&2
+  extension=tar.gz
 else
   echo "Unsupported operating system (no apt-get, no rpm, no apk, and no brew available)" >&2
   exit 1
@@ -36,6 +37,7 @@ curl -L --no-progress-meter https://api.github.com/repos/plengauer/opentelemetry
     deb) jq 'if . | any(.name | endswith("_all.deb")) then .[] | select(.name | endswith("_'"$(arch | sed s/x86_64/amd64/g | sed s/aarch64/arm64/g | sed 's/le$/el/g')"'.deb")) else .[0] end';;
     rpm) jq 'if . | any(.name | endswith(".noarch.rpm")) then .[] | select(.name | endswith("_'"$(arch)"'.rpm")) else .[0] end';;
     apk) jq '.[0]';;
+    tar.gz) jq '.[0]';;
     *) echo "Here be dragons" >&2;;
   esac | jq .browser_download_url -r | xargs -r wget -O "$package"
 if ! [ -r "$package" ]; then
@@ -44,6 +46,7 @@ if ! [ -r "$package" ]; then
       deb) xargs -I '{}' echo -n opentelemetry-shell_'{}'_"$(arch | sed s/x86_64/amd64/g | sed s/aarch64/arm64/g | sed 's/le$/el/g')".deb;;
       rpm) xargs -I '{}' echo -n opentelemetry-shell-'{}'-1."$(arch)".rpm;;
       apk) xargs -I '{}' echo -n opentelemetry-shell-'{}'-r0.apk;;
+      tar.gz) xargs -I '{}' echo -n opentelemetry-shell_'{}'.tar.gz;;
       *) echo "Here be dragons" >&2;;
     esac | xargs -r -I '{}' wget -O "$package" https://github.com/plengauer/Thoth/releases/latest/download/'{}'
 fi
@@ -53,6 +56,7 @@ if ! [ -r "$package" ]; then
       deb) xargs -I '{}' echo -n opentelemetry-shell_'{}'_all.deb;;
       rpm) xargs -I '{}' echo -n opentelemetry-shell-'{}'-1.noarch.rpm;;
       apk) xargs -I '{}' echo -n opentelemetry-shell-'{}'-r0.apk;;
+      tar.gz) xargs -I '{}' echo -n opentelemetry-shell_'{}'.tar.gz;;
       *) echo "Here be dragons" >&2;;
     esac | xargs -r -I '{}' wget -O "$package" https://github.com/plengauer/Thoth/releases/latest/download/'{}'
 fi
@@ -94,6 +98,21 @@ case "$extension" in
     ;;
   apk)
     $wrapper apk add --allow-untrusted "$package"
+    ;;
+  tar.gz)
+    # /usr is on the SIP-sealed system volume on modern macOS, so the usr subtree has to go
+    # under /usr/local instead (--strip-components=2 turns usr/bin, usr/share/... into
+    # bin/..., share/...). /opt is not sealed, so the opt subtree keeps its normal location
+    # and only needs the leading ./ stripped.
+    $wrapper mkdir -p /usr/local/bin /usr/local/share
+    $wrapper tar --strip-components=2 -xzf "$package" -C /usr/local usr
+    $wrapper tar --strip-components=1 -xzf "$package" -C / opt
+    # the tarball ships the same postinst that deb/rpm/apk run below; invoke it instead of
+    # duplicating its venv setup (and deep node/python instrumentation) here
+    postinst_script="$(mktemp)"
+    tar -xzf "$package" -O postinst > "$postinst_script"
+    $wrapper sh "$postinst_script" configure
+    rm -f "$postinst_script"
     ;;
   *)
     echo Here be dragons >&2

@@ -27,9 +27,12 @@ if ! type otel.sh 2> /dev/null; then
       # the SDK venv at /opt/opentelemetry_shell/venv
       sudo tar --strip-components=2 -xzf "$tarball_file" -C /usr/local usr
       sudo tar --strip-components=1 -xzf "$tarball_file" -C / opt
-      sudo python3 -m venv /opt/opentelemetry_shell/venv
-      sudo /opt/opentelemetry_shell/venv/bin/pip3 install -r /opt/opentelemetry_shell/requirements.txt
-      rm "$tarball_file"
+      # the tarball ships the same postinst that deb/rpm/apk run on install; invoke it instead of
+      # duplicating its venv setup (and deep node/python instrumentation) here
+      postinst_script="$(mktemp)"
+      tar -xzf "$tarball_file" -O postinst > "$postinst_script"
+      sudo sh "$postinst_script" configure
+      rm -f "$postinst_script" "$tarball_file"
     )
   elif [ "$GITHUB_REPOSITORY" = "$GITHUB_ACTION_REPOSITORY" ] && [ -f "$GITHUB_WORKSPACE"/package.deb ]; then
     echo "::debug::Installing local debian ..."
@@ -47,9 +50,10 @@ if ! type otel.sh 2> /dev/null; then
         sudo mkdir -p /usr/local/share /usr/local/bin
         sudo tar --strip-components=2 -xzf /tmp/package.tar.gz -C /usr/local usr
         sudo tar --strip-components=1 -xzf /tmp/package.tar.gz -C / opt
-        sudo python3 -m venv /opt/opentelemetry_shell/venv
-        sudo /opt/opentelemetry_shell/venv/bin/pip3 install -r /opt/opentelemetry_shell/requirements.txt
-        rm /tmp/package.tar.gz
+        postinst_script="$(mktemp)"
+        tar -xzf /tmp/package.tar.gz -O postinst > "$postinst_script"
+        sudo sh "$postinst_script" configure
+        rm -f "$postinst_script" /tmp/package.tar.gz
       else
         curl --fail -L -s -H "Authorization: Bearer $INPUT_GITHUB_TOKEN" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_ACTION_REPOSITORY"/releases/latest | jq '.assets[] | select(.name | endswith(".deb")) | .url' -r | xargs -0 -I '{}' wget --header "Authorization: Bearer $INPUT_GITHUB_TOKEN" --header 'Accept: application/octet-stream' -O /tmp/package.deb '{}'
         sudo -E -H apt-get install -y /tmp/package.deb
