@@ -33,11 +33,14 @@ jobs:
       - if: runner.os == 'macOS'
         run: |
           brew install jq wget curl bash coreutils findutils grep gnu-sed gawk
-          # /usr is on the SIP-sealed system volume on modern macOS, so the package has to live under
-          # /usr/local instead; --strip-components=2 turns the tarball's usr/bin, usr/share/... into
-          # bin/..., share/... so they land directly at /usr/local/bin, /usr/local/share/opentelemetry_shell
+          # /usr is on the SIP-sealed system volume on modern macOS, so the usr subtree has to live
+          # under /usr/local instead; --strip-components=2 turns the tarball's usr/bin, usr/share/...
+          # into bin/..., share/... so they land at /usr/local/bin, /usr/local/share/opentelemetry_shell.
+          # /opt is not sealed, so the opt subtree keeps its normal location (api.sh and the pip
+          # install below both expect the SDK venv and requirements at /opt/opentelemetry_shell).
           sudo mkdir -p /usr/local/bin /usr/local/share
-          sudo tar --strip-components=2 -xzf opentelemetry-shell_*.tar.gz -C /usr/local
+          sudo tar --strip-components=2 -xzf opentelemetry-shell_*.tar.gz -C /usr/local usr
+          sudo tar --strip-components=1 -xzf opentelemetry-shell_*.tar.gz -C / opt
           arch="$(uname -m)"
           if [ -f /usr/local/share/opentelemetry_shell/agent.instrumentation.http/"$arch"/libinjecthttpheader.dylib ]; then
             sudo mv /usr/local/share/opentelemetry_shell/agent.instrumentation.http/"$arch"/libinjecthttpheader.dylib /usr/local/share/opentelemetry_shell/agent.instrumentation.http/

@@ -20,10 +20,15 @@ if ! type otel.sh 2> /dev/null; then
       [ "$action_tag_name" = main ] || action_tag_name=v"$(cat ../../../VERSION)"
       tarball_file=/tmp/opentelemetry-shell.tar.gz
       GITHUB_REPOSITORY="$GITHUB_ACTION_REPOSITORY" gh_release "$action_tag_name" | jq '.assets[] | select(.name | endswith(".tar.gz")) | .url' -r | xargs -0 -I '{}' wget --header "Authorization: Bearer $INPUT_GITHUB_TOKEN" --header 'Accept: application/octet-stream' -O "$tarball_file" '{}'
-      sudo mkdir -p /usr/local/share /usr/local/bin /usr/local/opt
-      # /usr is on the SIP-sealed system volume on macOS, so install under /usr/local instead;
-      # --strip-components=2 turns the tarball's usr/bin, usr/share/... into bin/..., share/...
-      sudo tar --strip-components=2 -xzf "$tarball_file" -C /usr/local
+      sudo mkdir -p /usr/local/share /usr/local/bin
+      # /usr is on the SIP-sealed system volume on macOS, so the usr subtree goes under /usr/local
+      # instead (--strip-components=2 turns usr/bin, usr/share/... into bin/..., share/...), while
+      # the opt subtree keeps its normal location because /opt is not sealed and api.sh expects
+      # the SDK venv at /opt/opentelemetry_shell/venv
+      sudo tar --strip-components=2 -xzf "$tarball_file" -C /usr/local usr
+      sudo tar --strip-components=1 -xzf "$tarball_file" -C / opt
+      sudo python3 -m venv /opt/opentelemetry_shell/venv
+      sudo /opt/opentelemetry_shell/venv/bin/pip3 install -r /opt/opentelemetry_shell/requirements.txt
       rm "$tarball_file"
     )
   elif [ "$GITHUB_REPOSITORY" = "$GITHUB_ACTION_REPOSITORY" ] && [ -f "$GITHUB_WORKSPACE"/package.deb ]; then
@@ -40,7 +45,10 @@ if ! type otel.sh 2> /dev/null; then
       if [ "$(uname -s)" = "Darwin" ]; then
         curl --fail -L -s -H "Authorization: Bearer $INPUT_GITHUB_TOKEN" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_ACTION_REPOSITORY"/releases/latest | jq '.assets[] | select(.name | endswith(".tar.gz")) | .url' -r | xargs -0 -I '{}' wget --header "Authorization: Bearer $INPUT_GITHUB_TOKEN" --header 'Accept: application/octet-stream' -O /tmp/package.tar.gz '{}'
         sudo mkdir -p /usr/local/share /usr/local/bin
-        sudo tar --strip-components=2 -xzf /tmp/package.tar.gz -C /usr/local
+        sudo tar --strip-components=2 -xzf /tmp/package.tar.gz -C /usr/local usr
+        sudo tar --strip-components=1 -xzf /tmp/package.tar.gz -C / opt
+        sudo python3 -m venv /opt/opentelemetry_shell/venv
+        sudo /opt/opentelemetry_shell/venv/bin/pip3 install -r /opt/opentelemetry_shell/requirements.txt
         rm /tmp/package.tar.gz
       else
         curl --fail -L -s -H "Authorization: Bearer $INPUT_GITHUB_TOKEN" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_ACTION_REPOSITORY"/releases/latest | jq '.assets[] | select(.name | endswith(".deb")) | .url' -r | xargs -0 -I '{}' wget --header "Authorization: Bearer $INPUT_GITHUB_TOKEN" --header 'Accept: application/octet-stream' -O /tmp/package.deb '{}'
