@@ -85,8 +85,9 @@ _otel_inject_docker_args() {
   local image="$1"
   if _otel_is_docker_image_injectable "$executable" "$image" && ! _otel_is_docker_image_injected "$executable" "$image" && _otel_is_docker_image_github_input_injectable "$executable" "$image"; then
     \echo -n ' '; _otel_escape_args --env TRACEPARENT="$TRACEPARENT" --env TRACESTATE="$TRACESTATE"
-    { find /usr/bin -executable -iname 'otel*.sh'; find /usr/bin -executable -iname 'opentelemetry_shell*.sh'; } | while read -r file; do \echo -n ' '; _otel_escape_args --mount type=bind,source="$file",target="$file",readonly; done
-    \echo -n ' '; _otel_escape_args --mount type=bind,source=/usr/share/opentelemetry_shell,target=/usr/share/opentelemetry_shell
+    # the container is always linux, so sources follow the host layout while targets stay on the linux paths the container expects
+    { _otel_find_executables "$_otel_shell_bin_home" 'otel*.sh'; _otel_find_executables "$_otel_shell_bin_home" 'opentelemetry_shell*.sh'; } | while read -r file; do \echo -n ' '; _otel_escape_args --mount type=bind,source="$file",target=/usr/bin/"${file##*/}",readonly; done
+    \echo -n ' '; _otel_escape_args --mount type=bind,source="$_otel_shell_home",target=/usr/share/opentelemetry_shell
     \echo -n ' '; _otel_escape_args --mount type=bind,source=/opt/opentelemetry_shell,target=/opt/opentelemetry_shell
     for kvp in $(\printenv | \grep '^OTEL_' | \cut -d = -f 1); do \echo -n ' '; _otel_escape_args --env "$kvp"; done
     \chmod 666 "$_otel_remote_sdk_pipe"

@@ -20,6 +20,7 @@ esac
 
 # basic setup
 if \[ "$(\uname -s)" = Darwin ]; then _otel_shell_home=/usr/local/share/opentelemetry_shell; else _otel_shell_home=/usr/share/opentelemetry_shell; fi
+if \[ "$(\uname -s)" = Darwin ]; then _otel_shell_bin_home=/usr/local/bin; else _otel_shell_bin_home=/usr/bin; fi
 if \[ -z "${TMPDIR:-}" ]; then TMPDIR=/tmp; fi
 _otel_shell_pipe_dir="${OTEL_SHELL_PIPE_DIR:-$TMPDIR}"
 _otel_remote_sdk_pipe="${OTEL_REMOTE_SDK_PIPE:-$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.sdk.pipe.XXXXXXXXXX)}"
@@ -534,6 +535,17 @@ else
   _otel_escape_arg_format() {
     local escaped="$(\printf '%s' "$2X" | \sed "s/'/'\\\\''/g")" # need the extra X to preserve trailing linefeeds (yay)
     \printf "$1" "${escaped%X}"
+  }
+fi
+
+# -executable is a GNU extension, BSD find (macOS) only knows -perm +111
+if \[ "$(\uname -s)" = Darwin ]; then
+  _otel_find_executables() {
+    \find "$1" -perm +111 -iname "$2"
+  }
+else
+  _otel_find_executables() {
+    \find "$1" -executable -iname "$2"
   }
 fi
 
