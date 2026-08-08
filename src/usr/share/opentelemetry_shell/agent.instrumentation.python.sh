@@ -8,10 +8,10 @@ _otel_inject_python() {
     _otel_python_inject_args "$@" > /dev/null
     local my_code_source="$_otel_python_code_source"
     local python_path="${PYTHONPATH:-}"
-    if _otel_can_inject_python_otel && \[ -d /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"/site-packages ]; then
+    if _otel_can_inject_python_otel && \[ -d "$_otel_shell_home"/agent.instrumentation.python/"$version"/site-packages ]; then
       unset _otel_python_code_source _otel_python_file _otel_python_module _otel_python_command
       \eval "set -- $(_otel_python_inject_args "$@")"
-      local python_path=/usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"/site-packages/:"$python_path"
+      local python_path="$_otel_shell_home"/agent.instrumentation.python/"$version"/site-packages/:"$python_path"
       if \[ "${OTEL_SHELL_CONFIG_INJECT_DEEP:-FALSE}" = TRUE ]; then
         local command="$1"; shift
         set -- "$command" -c "
@@ -26,10 +26,10 @@ if __name__ == '__main__':
     else
       unset _otel_python_code_source _otel_python_file _otel_python_module _otel_python_command
       \eval "set -- $(_otel_python_inject_args "$@")"
-      local python_path="$(\printf '%s' "$python_path" | \tr ':' '\n' | \grep -vE '^/usr/share/opentelemetry_shell/agent.instrumentation.python/' | \tr '\n' ':')"
+      local python_path="$(\printf '%s' "$python_path" | \tr ':' '\n' | \grep -vE '^'"$_otel_shell_home"'/agent.instrumentation.python/' | \tr '\n' ':')"
     fi
     if \[ "${my_code_source:-}" = stdin ]; then
-      { \cat /usr/share/opentelemetry_shell/agent.instrumentation.python/deep.py; \cat; } | OTEL_SHELL_COMMANDLINE_OVERRIDE="$cmdline" OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE="0" OTEL_SHELL_AUTO_INJECTED=TRUE PYTHONPATH="$python_path" OTEL_BSP_MAX_EXPORT_BATCH_SIZE=1 _otel_call "$@" || local exit_code="$?"
+      { \cat "$_otel_shell_home"/agent.instrumentation.python/deep.py; \cat; } | OTEL_SHELL_COMMANDLINE_OVERRIDE="$cmdline" OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE="0" OTEL_SHELL_AUTO_INJECTED=TRUE PYTHONPATH="$python_path" OTEL_BSP_MAX_EXPORT_BATCH_SIZE=1 _otel_call "$@" || local exit_code="$?"
     else
       OTEL_SHELL_COMMANDLINE_OVERRIDE="$cmdline" OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE="0" OTEL_SHELL_AUTO_INJECTED=TRUE PYTHONPATH="$python_path" OTEL_BSP_MAX_EXPORT_BATCH_SIZE=1 _otel_call "$@" || local exit_code="$?"
     fi
@@ -58,7 +58,7 @@ _otel_inject_opentelemetry_instrument() {
     \eval "set -- $(_otel_python_inject_args "$@")"
     if \[ "${_otel_python_code_source:-}" = stdin ]; then
       unset _otel_python_code_source
-      { \cat /usr/share/opentelemetry_shell/agent.instrumentation.python/deep.py; \cat; } | OTEL_SHELL_COMMANDLINE_OVERRIDE="$cmdline" OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE="0" OTEL_SHELL_AUTO_INJECTED=TRUE OTEL_BSP_MAX_EXPORT_BATCH_SIZE=1 _otel_call "$@"
+      { \cat "$_otel_shell_home"/agent.instrumentation.python/deep.py; \cat; } | OTEL_SHELL_COMMANDLINE_OVERRIDE="$cmdline" OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE="0" OTEL_SHELL_AUTO_INJECTED=TRUE OTEL_BSP_MAX_EXPORT_BATCH_SIZE=1 _otel_call "$@"
     else
       OTEL_SHELL_COMMANDLINE_OVERRIDE="$cmdline" OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE="0" OTEL_SHELL_AUTO_INJECTED=TRUE OTEL_BSP_MAX_EXPORT_BATCH_SIZE=1 _otel_call "$@"
     fi
@@ -86,7 +86,7 @@ _otel_python_inject_args() {
       _otel_escape_arg "$arg"
       \echo -n ' '
       local arg="$1"; shift
-      _otel_escape_arg "$(\cat /usr/share/opentelemetry_shell/agent.instrumentation.python/deep.py)
+      _otel_escape_arg "$(\cat "$_otel_shell_home"/agent.instrumentation.python/deep.py)
 $arg"
       _otel_python_command="$arg"
       _otel_python_code_source=cmdline
@@ -94,13 +94,13 @@ $arg"
       _otel_escape_args -c
       \echo -n ' '
       local arg="$1"; shift
-      _otel_escape_arg "$(\cat /usr/share/opentelemetry_shell/agent.instrumentation.python/deep.py)
+      _otel_escape_arg "$(\cat "$_otel_shell_home"/agent.instrumentation.python/deep.py)
 import runpy # SKIP_DEPENDENCY_CHECK
 runpy.run_module('$arg', run_name='__main__')"
       _otel_python_module="$arg"
       _otel_python_code_source=module
     elif \[ -f "$arg" ]; then
-      _otel_escape_args -c "$(\cat /usr/share/opentelemetry_shell/agent.instrumentation.python/deep.py)
+      _otel_escape_args -c "$(\cat "$_otel_shell_home"/agent.instrumentation.python/deep.py)
 import sys, os # SKIP_DEPENDENCY_CHECK
 sys.path.insert(0, os.path.abspath(os.path.dirname('$arg'))) # SKIP_DEPENDENCY_CHECK
 with open('$arg', 'r') as file: # SKIP_DEPENDENCY_CHECK

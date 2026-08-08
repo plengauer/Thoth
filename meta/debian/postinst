@@ -58,26 +58,19 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
   fi 2>&1 | perl -0777 -pe '' >&2 &
   if type python3; then
     rm -rf "$_otel_shell_home"/agent.instrumentation.python/*/
-    if [ "$(uname -s)" = Darwin ]; then
-      # The prebuilt site-packages are compiled on linux, and the deep-injection requirements
-      # pull grpcio (opentelemetry-exporter-otlp -> -proto-grpc), which ships no pure-python
-      # wheel. Seeding those linux binaries here would leave pip believing grpcio is already
-      # installed while the .so cannot load. So take nothing from the archive (an empty
-      # _python_archived makes the extraction below a no-op) and let the pip install further
-      # down resolve platform-correct wheels from scratch for whichever pythons are present.
-      _python_archived=""
-      _python_versions="$(echo "$PATH" | tr : '\n' | while read -r directory; do find "$directory" -name 'python3.*'; done | grep -v -- - | while read -r executable; do eval "$executable -V"; done | cut -d ' ' -f 2 | cut -d . -f -2 | sort -t. -k2 -n -u)"
+    # build-python-site-packages (the job that produces python_site_packages.tar.xz) uninstalls
+    # every package that ships a compiled .so, including grpcio, before uploading. That's the same
+    # archive deb/rpm/apk already install unmodified on Linux, so reusing it here on macOS is no
+    # new risk: whatever already works without a native grpc extension there works the same way here
+    _python_archived="$(tar -tJf "$_otel_shell_home"/agent.instrumentation.python/python_site_packages.tar.xz 2>/dev/null | cut -d / -f 2 | grep '^3\.' | sort -t. -k2 -n -u)"
+    _python_versions=""
+    if type docker 1>/dev/null 2>/dev/null || [ "$GITHUB_ACTIONS" = true ]; then
+      _python_min_minor="$(printf '%s\n' "$_python_archived" | sort -t. -k2 -n | head -n 1 | cut -d . -f 2)"
+      _python_max_minor="$(grep '^FROM ' "$_otel_shell_home"/agent.instrumentation.python/Dockerfile 2>/dev/null | cut -d ' ' -f 2 | cut -d : -f 2 | cut -d - -f 1 | cut -d . -f 2)"
+      [ -n "$_python_min_minor" ] && [ -n "$_python_max_minor" ] && _python_versions="$(seq "$_python_min_minor" "$_python_max_minor" | while read -r v; do printf '3.%s\n' "$v"; done)" || true
+      [ -n "$_python_versions" ] || _python_versions="$_python_archived"
     else
-      _python_archived="$(tar -tJf "$_otel_shell_home"/agent.instrumentation.python/python_site_packages.tar.xz 2>/dev/null | cut -d / -f 2 | grep '^3\.' | sort -t. -k2 -n -u)"
-      _python_versions=""
-      if type docker 1>/dev/null 2>/dev/null || [ "$GITHUB_ACTIONS" = true ]; then
-        _python_min_minor="$(printf '%s\n' "$_python_archived" | sort -t. -k2 -n | head -n 1 | cut -d . -f 2)"
-        _python_max_minor="$(grep '^FROM ' "$_otel_shell_home"/agent.instrumentation.python/Dockerfile 2>/dev/null | cut -d ' ' -f 2 | cut -d : -f 2 | cut -d - -f 1 | cut -d . -f 2)"
-        [ -n "$_python_min_minor" ] && [ -n "$_python_max_minor" ] && _python_versions="$(seq "$_python_min_minor" "$_python_max_minor" | while read -r v; do printf '3.%s\n' "$v"; done)" || true
-        [ -n "$_python_versions" ] || _python_versions="$_python_archived"
-      else
-        _python_versions="$(echo "$PATH" | tr : '\n' | while read -r directory; do find "$directory" -name 'python3.*'; done | grep -v -- - | while read -r executable; do eval "$executable -V"; done | cut -d ' ' -f 2 | cut -d . -f -2 | sort -t. -k2 -n -u)"
-      fi
+      _python_versions="$(echo "$PATH" | tr : '\n' | while read -r directory; do find "$directory" -name 'python3.*'; done | grep -v -- - | while read -r executable; do eval "$executable -V"; done | cut -d ' ' -f 2 | cut -d . -f -2 | sort -t. -k2 -n -u)"
     fi
     printf '%s\n' "$_python_versions" | while read -r version; do
       [ -n "$version" ] || continue
@@ -99,14 +92,6 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
       done
       [ "$v" -ge 0 ] && [ "3.$v" != "$version" ] && [ ! -d "$_otel_shell_home"/agent.instrumentation.python/"$version" ] && cp -r "$_otel_shell_home"/agent.instrumentation.python/3."$v" "$_otel_shell_home"/agent.instrumentation.python/"$version" || true
     done
-    # nothing was extracted above on macOS, so materialise the version directories the loop
-    # below iterates over; they stay empty and pip populates them from scratch
-    if [ "$(uname -s)" = Darwin ]; then
-      printf '%s\n' "$_python_versions" | while read -r version; do
-        [ -n "$version" ] || continue
-        mkdir -p "$_otel_shell_home"/agent.instrumentation.python/"$version"/site-packages
-      done
-    fi
     ls "$_otel_shell_home"/agent.instrumentation.python | grep -v '.txt$' | grep -v '.py$' | grep -v '.xz$' | grep -v 'Dockerfile$' | while read -r version; do
       venv="$(mktemp -u)"
       if ! type python"$version" || ! eval "python$version" -m venv "$venv"; then
