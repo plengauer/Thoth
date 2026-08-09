@@ -124,9 +124,17 @@ if [ "$INPUT_CACHE" = "true" ]; then
   echo "::debug::Resolving cache ..."
   export INSTRUMENTATION_CACHE_KEY="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} instrumentation $GITHUB_WORKFLOW $GITHUB_JOB"
   cache_restore_fast "$INSTRUMENTATION_CACHE_KEY" || true
+  dependency_cache_paths_json="$({
+    printf '%s\n' '/var/cache/apt/archives/*.deb' '/root/.cache/pip'
+    if type uv > /dev/null 2>&1; then
+      HOME=/root uv cache dir 2> /dev/null || printf '%s\n' /root/.cache/uv
+    else
+      printf '%s\n' /root/.cache/uv
+    fi
+  } | jq -Rsc 'split("\n")[:-1]')"
   cache_key="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} dependencies $({ cat /etc/os-release; arch; python3 --version || true; printenv | grep -E '^OTEL_SHELL_CONFIG_INSTALL_' || true; } | md5sum | cut -d ' ' -f 1)"
   if [ "$GITHUB_ACTION_REPOSITORY" = "$GITHUB_REPOSITORY" ] && [ -f "$GITHUB_WORKSPACE"/package.deb ]; then cache_key="$cache_key local"; fi
-  cache_restore_fast "$cache_key" || (wait && sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.restoreCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip'], '$cache_key');")
+  cache_restore_fast "$cache_key" || (wait && sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.restoreCache($dependency_cache_paths_json, '$cache_key');")
   [ "$(find /var/cache/apt/archives/ -name '*.deb' | wc -l)" -gt 0 ] || write_back_cache=TRUE
 fi
 if ! type otel.sh && [ -r /var/cache/apt/archives/opentelemetry-shell_*_*.deb ]; then
@@ -173,7 +181,7 @@ if ! type otelcol-contrib; then
 fi
 if [ "${write_back_cache:-FALSE}" = TRUE ] && [ -n "${cache_key:-}" ]; then
   wait # only join in case we wanna write back, this will be rare and is necessary to have a good cache
-  run sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.saveCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip'], '$cache_key');"
+  run sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.saveCache($dependency_cache_paths_json, '$cache_key');"
 fi
 echo "::endgroup::"
 
