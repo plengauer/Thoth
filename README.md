@@ -263,6 +263,7 @@ You can configure the underlying SDK with the same variables as any other OpenTe
 | OTEL_SHELL_CONFIG_INSTRUMENT_ABSOLUTE_PATHS | `TRUE`, `FALSE` | `FALSE`                                      | Create spans for commands with an absolute path to the executable.                          | experimental |
 | OTEL_SHELL_CONFIG_OBSERVE_SIGNALS           | `TRUE`, `FALSE` | `TRUE` for GitHub Actions, `FALSE` otherwise | Create events for received signals.                                                         | stable       |
 | OTEL_SHELL_CONFIG_OBSERVE_SUBPROCESSES      | `TRUE`, `FALSE` | `TRUE` for GitHub Actions, `FALSE` otherwise | Create additional minimal spans for all indirect subprocesses.                              | stable       |
+| OTEL_SHELL_GITHUB_JOB_SKIP_CONTAINERS       | `TRUE`, `FALSE` | `FALSE`                                      | Skip job-level instrumentation when the runner is detected as a container, which can trigger startup timeouts on network-constrained images such as ubuntu-slim. | stable       |
 
 Flags that are marked as `stable` are tested and verified in tests and real-world scenarios. Flags marked as `experimental` are new features that are tested but still lack long-term verification in real-world applications. They will eventually reach `stable` or `unsafe`. Flags marked as `unsafe` have implicit assumptions about the nature of the instrumented scripts and will therefore never reach `stable`.
 
