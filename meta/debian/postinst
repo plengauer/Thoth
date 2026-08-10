@@ -77,7 +77,7 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
     ls /usr/share/opentelemetry_shell/agent.instrumentation.python | grep -v '.txt$' | grep -v '.py$' | grep -v '.xz$' | grep -v 'Dockerfile$' | while read -r version; do
       venv="$(mktemp -u)"
       if ! type python"$version" || ! eval "python$version" -m venv "$venv"; then
-        [ "$_python_keep_archived" = true ] && rm -rf "$venv" && continue
+        [ "$_python_keep_archived" = true ] && { rm -rf "$venv"; continue; }
         rm -rf /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"
         continue
       fi
