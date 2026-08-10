@@ -45,6 +45,6 @@ jobs:
           ' | while IFS=$'\t' read -r workflow_name workflow_url; do
             [ -n "$workflow_name" ] || continue
             issue_title="Fix workflow ${workflow_name}"
-            issue_count="$(gh issue list  --state open  --search "\"${issue_title}\" in:title"  --json title | jq --arg issue_title "$issue_title" '[.[] | select(.title == $issue_title)] | length')"
-            [ "$issue_count" -gt 0 ] || gh issue create --title "$issue_title" --body "$workflow_url"
+            issue_count="$(gh issue list -R "${GITHUB_REPOSITORY}" --state open --search "\"${issue_title}\" in:title" --json title | jq --arg issue_title "$issue_title" '[.[] | select(.title == $issue_title)] | length')"
+            [ "$issue_count" -gt 0 ] || gh issue create -R "${GITHUB_REPOSITORY}" --title "$issue_title" --body "$workflow_url"
           done
