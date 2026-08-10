@@ -1,3 +1,3 @@
-#!/usr/bin/sh
-. otel.sh
+#!/bin/sh
+. /usr/bin/otel.sh
 env "$@"
