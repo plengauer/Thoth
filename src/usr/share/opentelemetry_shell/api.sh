@@ -22,7 +22,7 @@ case "$-" in
 esac
 
 # loadable builtins
-if \[ -n "${BASH_VERSION:-}" ]; then
+if \[ -n "${BASH_VERSION:-}" ] && \[ "${OTEL_SHELL_CONFIG_LOADABLE_BUILTINS:-TRUE}" = TRUE ]; then
   \enable -f /usr/lib/bash/rm rm 2> /dev/null || \true
   \enable -f /usr/lib/bash/mkfifo mkfifo 2> /dev/null || \true
 fi
