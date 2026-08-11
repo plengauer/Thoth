@@ -41,3 +41,6 @@ FILTER_REGEX_EXCLUDE: "(\\.lock\\.yml|/otlp\\.json|/gradlew|/package-lock\\.json
 # it's excluded from the dead-link checker specifically (JSON/YAML/other
 # linters still cover these files normally).
 SPELL_LYCHEE_FILTER_REGEX_EXCLUDE: "\\.github/workflows/"
+
+# --- Zizmor: allow GITHUB_TOKEN via env for workflow security scanning ---
+ACTION_ZIZMOR_UNSECURED_ENV_VARIABLES: GITHUB_TOKEN
