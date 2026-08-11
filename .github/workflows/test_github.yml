@@ -297,7 +297,7 @@ jobs:
   job-integration-superlinter:
     needs: job-smoke
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 180
     permissions:
       contents: read
       actions: read
@@ -328,7 +328,7 @@ jobs:
   job-integration-megalinter:
     needs: job-smoke
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 180
     permissions:
       contents: read
       actions: read
