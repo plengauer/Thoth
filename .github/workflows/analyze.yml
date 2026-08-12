@@ -34,7 +34,7 @@ jobs:
     env:
       CODEQL_EXTRACTOR_CPP_BUILD_MODE_NONE: 'true' # scanning c/c++ without building it is an experimental feature and needs to be enabled like this until released
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@2169fb0fa9a8260fde99a2a185bbf99a5d63546e # v5.59.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@571cbe85f925e8ba395a5fca68f47ef9c536106c # v5.60.0
         with:
           secrets_to_redact: '["${{ github.token }}"]'
         env:
@@ -43,12 +43,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@54f647b7e1bb85c95cddabcd46b0c578ec92bc1a # v4.36.3
+        uses: github/codeql-action/init@5595ccaf912efad79be6eef63a5619ff05969be3 # v4.37.6
         with:
           languages: ${{ matrix.language }}
           build-mode: ${{ matrix.build-mode }}
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@54f647b7e1bb85c95cddabcd46b0c578ec92bc1a # v4.36.3
+        uses: github/codeql-action/analyze@5595ccaf912efad79be6eef63a5619ff05969be3 # v4.37.6
         with:
           category: "/language:${{matrix.language}}"
   quality:
@@ -61,7 +61,7 @@ jobs:
       actions: read
       security-events: write
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@2169fb0fa9a8260fde99a2a185bbf99a5d63546e # v5.59.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@571cbe85f925e8ba395a5fca68f47ef9c536106c # v5.60.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
@@ -70,7 +70,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
-      - uses: oxsecurity/megalinter@ef3e84b8b836d76db562d0f3ed7da61e8fd538bc # v9.6.0
+      - uses: oxsecurity/megalinter@15e5b45552097e318c93de385779ce3b1084052c # v10.0.0
         continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -79,7 +79,7 @@ jobs:
           GITHUB_COMMENT_REPORTER: true
           SARIF_REPORTER: true
       - if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: megalinter-reports
           path: megalinter-reports/
@@ -91,6 +91,6 @@ jobs:
             mv megalinter-reports/megalinter-report.sarif.tmp megalinter-reports/megalinter-report.sarif
           fi
       - if: github.ref_name == 'main' && false
-        uses: github/codeql-action/upload-sarif@c4dd10e44af883a891fe31ced449bcb4a6728b9b # v3.37.6
+        uses: github/codeql-action/upload-sarif@5595ccaf912efad79be6eef63a5619ff05969be3 # v4.37.6
         with:
           sarif_file: megalinter-reports/megalinter-report.sarif
