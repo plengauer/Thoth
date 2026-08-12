@@ -84,7 +84,9 @@ runs:
         token: ${{ inputs.github_token }}
     - name: "Setup deploy-local"
       shell: bash
-      run: ln -s "$GITHUB_ACTION_PATH/../deploy-local" "$GITHUB_WORKSPACE/.deploy-otel-local"
+      run: |
+        rm "$GITHUB_WORKSPACE/.deploy-otel-local"
+        ln -s "$GITHUB_ACTION_PATH/../deploy-local" "$GITHUB_WORKSPACE/.deploy-otel-local"
     - uses: ./.deploy-otel-local
       with:
         github_token: ${{ inputs.github_token }}
