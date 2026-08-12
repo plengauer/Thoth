@@ -86,7 +86,7 @@ runs:
       shell: bash
       run: |
         rm "$GITHUB_WORKSPACE/.deploy-otel-local"
-        ln -s "$GITHUB_ACTION_PATH/../deploy-otel-local" "$GITHUB_WORKSPACE/.deploy-otel-local"
+        ln -s "$GITHUB_ACTION_PATH/../deploy-local" "$GITHUB_WORKSPACE/.deploy-otel-local"
     - uses: ./.deploy-otel-local
       with:
         github_token: ${{ inputs.github_token }}
