@@ -34,7 +34,9 @@ assert_equals "grep world" "$(\echo "$span" | jq -r '.attributes."shell.command_
 assert_equals "grep" "$(\echo "$span" | jq -r '.attributes."shell.command"')"
 assert_equals "0" $(\echo "$span" | jq -r '.attributes."shell.command.exit_code"')
 
-echo first; echo hello world in a command list; echo second
+echo first
+echo hello world in a command list
+echo second
 
 span="$(resolve_span '.name == "echo hello world in a command list"')"
 assert_equals "echo hello world in a command list" "$(\echo "$span" | jq -r '.name')"

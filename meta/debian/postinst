@@ -1,5 +1,5 @@
 #!/bin/sh -e
-rm -rf /opt/opentelemetry_bash 1> /dev/null 2> /dev/null || true # clean the old install directory
+rm -rf /opt/opentelemetry_bash 1>/dev/null 2>/dev/null || true # clean the old install directory
 if [ "$1" = 'abort-configure' ] || [ "$1" = 'abort-upgrade' ] || [ "$1" = 'abort-remove' ] || [ "$1" = 'abort-deconfigure' ]; then
   true
 elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' ]; then
@@ -24,7 +24,7 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
         v=$((v - 1))
       done
       [ "$v" -gt 0 ] && printf './%s\n' "$v" || true
-    done | sort -u | ( xargs -r -P 0 tar -xJf /usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules.tar.xz -C /usr/share/opentelemetry_shell/agent.instrumentation.node/ || true )
+    done | sort -u | (xargs -r -P 0 tar -xJf /usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules.tar.xz -C /usr/share/opentelemetry_shell/agent.instrumentation.node/ || true)
     printf '%s\n' "$_node_versions" | while read -r version; do
       [ -n "$version" ] || continue
       v="$version"
@@ -61,7 +61,7 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
         v=$((v - 1))
       done
       [ "$v" -ge 0 ] && printf './3.%s\n' "$v" || true
-    done | sort -u | ( xargs -r -P 0 tar -xJf /usr/share/opentelemetry_shell/agent.instrumentation.python/python_site_packages.tar.xz -C /usr/share/opentelemetry_shell/agent.instrumentation.python/ || true )
+    done | sort -u | (xargs -r -P 0 tar -xJf /usr/share/opentelemetry_shell/agent.instrumentation.python/python_site_packages.tar.xz -C /usr/share/opentelemetry_shell/agent.instrumentation.python/ || true)
     printf '%s\n' "$_python_versions" | while read -r version; do
       [ -n "$version" ] || continue
       minor="$(echo "$version" | cut -d . -f 2)"
@@ -88,7 +88,7 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
     done
   fi 2>&1 | perl -0777 -pe '' >&2 &
   python3 -m venv /opt/opentelemetry_shell/venv && . /opt/opentelemetry_shell/venv/bin/activate && pip3 install -r /opt/opentelemetry_shell/requirements.txt && pip3 check && deactivate # SKIP_DEPENDENCY_CHECK
-  cat /usr/share/opentelemetry_shell/*.py | grep -E '^import |^from ' | /opt/opentelemetry_shell/venv/bin/python3 # venv may be used by different users that may not be allowed to create pyc files
+  cat /usr/share/opentelemetry_shell/*.py | while read -r line; do printf '%s\n' "$line"; done | grep -E '^import |^from ' | /opt/opentelemetry_shell/venv/bin/python3                   # venv may be used by different users that may not be allowed to create pyc files
   wait
 else
   exit 1

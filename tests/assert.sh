@@ -17,7 +17,10 @@ assert_not_equals() {
 assert_ends_with() {
   case "$2" in
     *"$1") ;;
-    *) \echo "ASSERT FAILED $1 !~= $2" 1>&2; exit 1;;
+    *)
+      \echo "ASSERT FAILED $1 !~= $2" 1>&2
+      exit 1
+      ;;
   esac
 }
 
