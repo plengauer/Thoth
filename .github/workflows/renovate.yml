@@ -47,6 +47,7 @@ jobs:
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
       - env:
           GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN || github.token }}
+          GH_REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
           gh api /repos/"${GITHUB_REPOSITORY}"/actions/workflows?per_page=100 | jq '.workflows[] | select((.path // "") == "dynamic/copilot-swe-agent/copilot") | .id' \
