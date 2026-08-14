@@ -25,7 +25,7 @@ jobs:
           github_token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           custom_patterns: |
             fatal: 'v.*' is not a commit and a branch 'release/.*' cannot be created from it
-            jq: parse error: Invalid string: control characters from .* through .* must be escaped
+            jq: parse error: invalid string: control characters from .* through .* must be escaped
             debug: error authenticating with github
             dial tcp .* i/o timeout
             jq: error.*Cannot iterate over null
