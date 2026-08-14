@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-slim
     outputs:
       has_tags: ${{ steps.dynamic.outputs.has_tags }}
+      has_refs: ${{ steps.dynamic.outputs.has_refs }}
       refs: ${{ steps.dynamic.outputs.refs }}
     permissions:
       contents: read
@@ -28,13 +29,16 @@ jobs:
           fetch-tags: true
       - id: dynamic
         run: |
-          [ -z "$(git describe --tags --abbrev=0 ${{ github.sha }})" ] || echo "has_tags=true" >>  "$GITHUB_OUTPUT"
+          [ -z "$(git describe --tags --abbrev=0 ${{ github.sha }})" ] || echo "has_tags=true" >> "$GITHUB_OUTPUT"
+          echo "has_refs=false" >> "$GITHUB_OUTPUT"
           cat '${{ github.event_path }}' | jq '.commits[].id' -r | while read -r ref; do
             if git diff-tree --root --no-commit-id --name-only -r "$ref" | grep -qE '^VERSION$' || git tag --points-at "$ref" | grep -qE '^v'; then continue; fi
             echo "$ref"
+            echo "has_refs=true" >> "$GITHUB_OUTPUT"
           done | while read -r ref; do echo \""$ref"\"; done | jq -s | tr -d '\n' | tr -d ' ' | xargs -0 -I {} echo 'refs={}' >> "$GITHUB_OUTPUT"
+
   backport:
-    if: ${{ !github.event.repository.fork && needs.setup.outputs.has_tags }}
+    if: ${{ !github.event.repository.fork && needs.setup.outputs.has_tags == 'true' && needs.setup.outputs.has_refs == 'true' }}
     needs: setup
     strategy:
       matrix:
@@ -69,7 +73,6 @@ jobs:
         run: |
           if git diff --quiet; then echo "should_backport=false"; else echo "should_backport=true"; fi >> "$GITHUB_OUTPUT"
           git checkout .
-      
       - id: prepare_branch
         if: steps.check_patch.outputs.should_backport == 'true'
         run: |
@@ -97,14 +100,12 @@ jobs:
             git checkout -b "$branch_name" "$current_tag".0
             git push -u origin "$branch_name"
           fi
-      
       - if: steps.check_patch.outputs.should_backport == 'true'
         run: |
           set -e
           git format-patch -1 "${{ matrix.ref }}" --stdout > /tmp/commit.patch
           [ -s /tmp/commit.patch ] || exit 0
           git apply /tmp/commit.patch || git cherry-pick -n "${{ matrix.ref }}"
-      
       - id: prepare_pr
         if: steps.check_patch.outputs.should_backport == 'true'
         env:
@@ -116,7 +117,6 @@ jobs:
             echo author_name="$(git log -1 --pretty=%an "${{ matrix.ref }}" 2>/dev/null || echo "")"
             echo author_email="$(git log -1 --pretty=%ae "${{ matrix.ref }}" 2>/dev/null || echo "")"
           } >> "$GITHUB_OUTPUT"
-      
       - id: open-pr
         if: steps.check_patch.outputs.should_backport == 'true'
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
