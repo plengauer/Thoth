@@ -16,7 +16,7 @@ otel_observe echo hello world builtin
 assert_equals 0 $?
 otel_observe /bin/echo hello world path
 assert_equals 0 $?
-otel_observe cat file > /dev/null
+otel_observe cat file >/dev/null
 assert_not_equals 0 $?
 otel_shutdown
 

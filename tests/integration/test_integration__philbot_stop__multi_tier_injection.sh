@@ -56,4 +56,3 @@ assert_equals 'parallel.moreutils -j 3 sh -c echo docker rm --force $1 echo -- p
 span="$(resolve_span '.name == "echo docker rm --force philbot-discordgateway2http_3"')"
 assert_equals "SpanKind.INTERNAL" $(\echo "$span" | jq -r '.kind')
 assert_equals 'sh -c echo docker rm --force $1 echo philbot-discordgateway2http_3' "$(\echo "$span" | jq -r '.resource.attributes."process.command_line"')"
-

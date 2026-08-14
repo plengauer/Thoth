@@ -84,8 +84,10 @@ runs:
         token: ${{ inputs.github_token }}
     - name: "Setup deploy-local"
       shell: bash
-      run: ln -s "$GITHUB_ACTION_PATH/../deploy-local" "$GITHUB_WORKSPACE/.deploy-local"
-    - uses: ./.deploy-local
+      run: |
+        rm -f "$GITHUB_WORKSPACE/.deploy-otel-local"
+        ln -s "$GITHUB_ACTION_PATH/../deploy-local" "$GITHUB_WORKSPACE/.deploy-otel-local"
+    - uses: ./.deploy-otel-local
       with:
         github_token: ${{ inputs.github_token }}
         workflows_directory: ${{ inputs.workflows_directory }}
@@ -109,6 +111,10 @@ runs:
         dry_run: ${{ inputs.dry_run }}
         debug: ${{ inputs.debug }}
         __repository_level_instrumentation_file_name_override: ${{ inputs.__repository_level_instrumentation_file_name_override }}
+    - name: "Teardown deploy-local"
+      if: always()
+      shell: bash
+      run: rm -f "$GITHUB_WORKSPACE/.deploy-otel-local"
     - name: "Configure commit signing"
       if: ${{ inputs.ssh_signing_key != '' && inputs.gpg_private_key != '' }}
       shell: bash
