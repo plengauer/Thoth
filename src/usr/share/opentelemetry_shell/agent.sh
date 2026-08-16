@@ -396,7 +396,7 @@ _otel_instrument_and_source() {
 _otel_inject_and_exec_directly() { # this function assumes there is no fd fuckery
   if \[ "$#" = 1 ]; then
     \export OTEL_SHELL_CONSERVATIVE_EXEC=TRUE
-    _otel_end_script
+    _otel_shutdown_telemetry "$?"
     if \[ -n "${_otel_commandline_override:-}" ]; then
       \export OTEL_SHELL_COMMANDLINE_OVERRIDE="$_otel_commandline_override"
       \export OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE="$PPID"
@@ -409,7 +409,7 @@ _otel_inject_and_exec_directly() { # this function assumes there is no fd fucker
   local my_traceparent="$TRACEPARENT"
   otel_span_deactivate "$span_id"
   otel_span_end "$span_id"
-  _otel_end_script
+  _otel_shutdown_telemetry "$?"
 
   \export TRACEPARENT="$my_traceparent"
   \export OTEL_SHELL_AUTO_INJECTED=TRUE
@@ -433,7 +433,7 @@ _otel_inject_and_exec_by_location() {
   local my_traceparent="$TRACEPARENT"
   otel_span_deactivate "$span_id"
   otel_span_end "$span_id"
-  _otel_end_script
+  _otel_shutdown_telemetry "$?"
 
   \printf '%s\n' "$(_otel_escape_args export TRACEPARENT="$my_traceparent")"
   \printf '%s\n' "$(_otel_escape_args export OTEL_SHELL_AUTO_INJECTED=TRUE)"
@@ -463,6 +463,7 @@ _otel_trap() {
     shift
     if \[ "$signal" = EXIT ] || \[ "$signal" = 0 ]; then
       _otel_deferred_exit_command="$command"
+      _otel_deferred_exit_command_owner="${BASHPID:-$$}"
     else
       \trap "$command" "$signal"
     fi
@@ -532,11 +533,11 @@ _otel_start_script() {
   unset OTEL_SHELL_AUTO_INJECTED
 }
 
-_otel_end_script() {
-  local exit_code="$?"
-  if \[ -n "${_otel_deferred_exit_command:-}" ]; then
-    \eval "$_otel_deferred_exit_command" || local exit_code="$?"
-  fi
+# Tears down telemetry only. Must be used everywhere the current process is about to be
+# replaced via exec, because a successful exec does not run EXIT traps, so the script's
+# deferred exit command must NOT be evaluated there.
+_otel_shutdown_telemetry() {
+  local exit_code="${1:-0}"
   if \[ -n "${_root_span_handle:-}" ]; then
     if \[ "$exit_code" -ne 0 ]; then
       otel_span_error "$_root_span_handle"
@@ -545,6 +546,16 @@ _otel_end_script() {
     otel_span_end "$_root_span_handle"
   fi
   otel_shutdown
+}
+
+# Real end of script. Only ever reached from the EXIT trap installed below, which is the
+# only place the script's deferred exit command (captured by _otel_trap) may be evaluated.
+_otel_end_script() {
+  local exit_code="$?"
+  if \[ -n "${_otel_deferred_exit_command:-}" ] && \[ "${_otel_deferred_exit_command_owner:-}" = "${BASHPID:-$$}" ]; then
+    \eval "$_otel_deferred_exit_command" || local exit_code="$?"
+  fi
+  _otel_shutdown_telemetry "$exit_code"
 }
 
 _otel_auto_instrument "$_otel_shell_auto_instrumentation_hint"
