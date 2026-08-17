@@ -395,7 +395,7 @@ _otel_instrument_and_source() {
 
 _otel_inject_and_exec_directly() { # this function assumes there is no fd fuckery
   if \[ "$#" = 1 ]; then
-    if \[ -n "$_root_span_handle" ]; then
+    if \[ -n "${_root_span_handle:-}" ]; then
       otel_span_end "$_root_span_handle"
     fi
     otel_shutdown
@@ -412,7 +412,7 @@ _otel_inject_and_exec_directly() { # this function assumes there is no fd fucker
   local my_traceparent="$TRACEPARENT"
   otel_span_deactivate "$span_id"
   otel_span_end "$span_id"
-  if \[ -n "$_root_span_handle" ]; then
+  if \[ -n "${_root_span_handle:-}" ]; then
     otel_span_end "$_root_span_handle"
   fi
   otel_shutdown
@@ -439,7 +439,7 @@ _otel_inject_and_exec_by_location() {
   local my_traceparent="$TRACEPARENT"
   otel_span_deactivate "$span_id"
   otel_span_end "$span_id"
-  if \[ -n "$_root_span_handle" ]; then
+  if \[ -n "${_root_span_handle:-}" ]; then
     otel_span_end "$_root_span_handle"
   fi
   otel_shutdown
