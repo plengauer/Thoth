@@ -395,8 +395,11 @@ _otel_instrument_and_source() {
 
 _otel_inject_and_exec_directly() { # this function assumes there is no fd fuckery
   if \[ "$#" = 1 ]; then
+    if \[ -n "${_root_span_handle:-}" ]; then
+      otel_span_end "$_root_span_handle"
+    fi
+    otel_shutdown
     \export OTEL_SHELL_CONSERVATIVE_EXEC=TRUE
-    _otel_end_script
     if \[ -n "${_otel_commandline_override:-}" ]; then
       \export OTEL_SHELL_COMMANDLINE_OVERRIDE="$_otel_commandline_override"
       \export OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE="$PPID"
@@ -409,7 +412,10 @@ _otel_inject_and_exec_directly() { # this function assumes there is no fd fucker
   local my_traceparent="$TRACEPARENT"
   otel_span_deactivate "$span_id"
   otel_span_end "$span_id"
-  _otel_end_script
+  if \[ -n "${_root_span_handle:-}" ]; then
+    otel_span_end "$_root_span_handle"
+  fi
+  otel_shutdown
 
   \export TRACEPARENT="$my_traceparent"
   \export OTEL_SHELL_AUTO_INJECTED=TRUE
@@ -433,7 +439,10 @@ _otel_inject_and_exec_by_location() {
   local my_traceparent="$TRACEPARENT"
   otel_span_deactivate "$span_id"
   otel_span_end "$span_id"
-  _otel_end_script
+  if \[ -n "${_root_span_handle:-}" ]; then
+    otel_span_end "$_root_span_handle"
+  fi
+  otel_shutdown
 
   \printf '%s\n' "$(_otel_escape_args export TRACEPARENT="$my_traceparent")"
   \printf '%s\n' "$(_otel_escape_args export OTEL_SHELL_AUTO_INJECTED=TRUE)"
@@ -463,6 +472,7 @@ _otel_trap() {
     shift
     if \[ "$signal" = EXIT ] || \[ "$signal" = 0 ]; then
       _otel_deferred_exit_command="$command"
+      _otel_deferred_exit_command_owner="${BASHPID:-$$}"
     else
       \trap "$command" "$signal"
     fi
@@ -532,9 +542,11 @@ _otel_start_script() {
   unset OTEL_SHELL_AUTO_INJECTED
 }
 
+# Real end of script. Only ever reached from the EXIT trap installed below, which is the
+# only place the script's deferred exit command (captured by _otel_trap) may be evaluated.
 _otel_end_script() {
   local exit_code="$?"
-  if \[ -n "${_otel_deferred_exit_command:-}" ]; then
+  if \[ -n "${_otel_deferred_exit_command:-}" ] && \[ "${_otel_deferred_exit_command_owner:-}" = "${BASHPID:-$$}" ]; then
     \eval "$_otel_deferred_exit_command" || local exit_code="$?"
   fi
   if \[ -n "${_root_span_handle:-}" ]; then
