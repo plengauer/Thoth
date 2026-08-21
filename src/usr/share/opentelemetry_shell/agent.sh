@@ -431,7 +431,7 @@ _otel_inject_and_exec_by_location() {
   local line="$2"
   if \[ -n "$file" ] && \[ -n "$line" ] && \[ -f "$file" ]; then local command="$(\cat "$file" | \sed -n "$line"p | \grep -F 'exec' | \sed 's/^.*exec /exec /')"; fi
   if _otel_string_contains "$command" ';'; then local command="$(\printf '%s' "$command" | \cut -d ';' -f 1)"; fi
-  if \[ -z "$command" ] || \[ "$(\printf '%s' "$command" | \sed 's/ [0-9]*>.*$//')" = "exec" ]; then return 0; fi
+  if \[ -z "$command" ] || \[ "$(\printf '%s' "$command" | \sed -e 's/ *{[a-zA-Z_][a-zA-Z0-9_]*}[<>][<>&]*[^ ]*//g' -e 's/ *[0-9]*[<>][<>&]*[^ ]*//g')" = "exec" ]; then return 0; fi
   local command="$(\printf '%s' "$command" | \cut -d ' ' -f 2-)"
 
   local span_id="$(otel_span_start INTERNAL exec)"
