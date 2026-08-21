@@ -99,7 +99,6 @@ jobs:
         with:
           pattern: packages.*.${{ inputs.ref }}
           merge-multiple: true
-      - run: ls
       - if: ${{ hashFiles('images.json') == '' }}
         run: |
           sudo docker login -u '${{ secrets.DOCKERHUB_USERNAME }}' -p '${{ secrets.DOCKERHUB_TOKEN }}'
