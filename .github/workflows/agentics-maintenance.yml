@@ -92,7 +92,14 @@ jobs:
     runs-on: ubuntu-slim
     permissions:
       discussions: write
+      actions: read
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@571cbe85f925e8ba395a5fca68f47ef9c536106c # v5.60.0
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: ${{ github.token }}
       - name: Setup Scripts
         uses: github/gh-aw-actions/setup@6aab9e5b5c91c615506061f09bedd81a23babe3c # v0.86.2
         with:
@@ -111,7 +118,14 @@ jobs:
     runs-on: ubuntu-slim
     permissions:
       issues: write
+      actions: read
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@571cbe85f925e8ba395a5fca68f47ef9c536106c # v5.60.0
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: ${{ github.token }}
       - name: Setup Scripts
         uses: github/gh-aw-actions/setup@6aab9e5b5c91c615506061f09bedd81a23babe3c # v0.86.2
         with:
@@ -130,7 +144,14 @@ jobs:
     runs-on: ubuntu-slim
     permissions:
       pull-requests: write
+      actions: read
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@571cbe85f925e8ba395a5fca68f47ef9c536106c # v5.60.0
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: ${{ github.token }}
       - name: Setup Scripts
         uses: github/gh-aw-actions/setup@6aab9e5b5c91c615506061f09bedd81a23babe3c # v0.86.2
         with:
@@ -151,6 +172,12 @@ jobs:
     permissions:
       actions: write
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@571cbe85f925e8ba395a5fca68f47ef9c536106c # v5.60.0
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: ${{ github.token }}
       - name: Setup Scripts
         uses: github/gh-aw-actions/setup@6aab9e5b5c91c615506061f09bedd81a23babe3c # v0.86.2
         with:
@@ -175,6 +202,14 @@ jobs:
     outputs:
       operation: ${{ steps.record.outputs.operation }}
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@571cbe85f925e8ba395a5fca68f47ef9c536106c # v5.60.0
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: |-
+            ${{ github.token }}
+            ${{ secrets.GITHUB_TOKEN }}
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -226,7 +261,16 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      actions: read
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@571cbe85f925e8ba395a5fca68f47ef9c536106c # v5.60.0
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: |-
+            ${{ github.token }}
+            ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Scripts
         uses: github/gh-aw-actions/setup@6aab9e5b5c91c615506061f09bedd81a23babe3c # v0.86.2
         with:
@@ -266,6 +310,14 @@ jobs:
     outputs:
       run_url: ${{ steps.record.outputs.run_url }}
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@571cbe85f925e8ba395a5fca68f47ef9c536106c # v5.60.0
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: |-
+            ${{ github.token }}
+            ${{ secrets.GITHUB_TOKEN }}
       - name: Checkout actions folder
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -314,7 +366,16 @@ jobs:
     permissions:
       contents: read
       issues: write
+      actions: read
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@571cbe85f925e8ba395a5fca68f47ef9c536106c # v5.60.0
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: |-
+            ${{ github.token }}
+            ${{ secrets.GITHUB_TOKEN }}
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -361,6 +422,14 @@ jobs:
       contents: read
       issues: write
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@571cbe85f925e8ba395a5fca68f47ef9c536106c # v5.60.0
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: |-
+            ${{ github.token }}
+            ${{ secrets.GITHUB_TOKEN }}
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -466,6 +535,14 @@ jobs:
       contents: read
       issues: write
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@571cbe85f925e8ba395a5fca68f47ef9c536106c # v5.60.0
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: |-
+            ${{ github.token }}
+            ${{ secrets.GITHUB_TOKEN }}
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -562,7 +639,16 @@ jobs:
     runs-on: ubuntu-slim
     permissions:
       issues: write
+      actions: read
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@571cbe85f925e8ba395a5fca68f47ef9c536106c # v5.60.0
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: |-
+            ${{ github.token }}
+            ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Scripts
         uses: github/gh-aw-actions/setup@6aab9e5b5c91c615506061f09bedd81a23babe3c # v0.86.2
         with:
@@ -594,7 +680,16 @@ jobs:
     permissions:
       contents: read
       issues: write
+      actions: read
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@571cbe85f925e8ba395a5fca68f47ef9c536106c # v5.60.0
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: |-
+            ${{ github.token }}
+            ${{ secrets.GITHUB_TOKEN }}
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
