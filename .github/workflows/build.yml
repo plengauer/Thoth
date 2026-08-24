@@ -260,25 +260,10 @@ jobs:
       - run: |
           \unalias -a # disable all instrumentations, cant build the instrumentations while instrumentations are active, pip resolution then pretends to it already being installed
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.python
-          (
-            python3 -m venv venv_instrumentations
-            . venv_instrumentations/bin/activate
-            pip3 install -r instrumentation_roots_requirements.txt >&2
-            python3 -c '
-          from opentelemetry.instrumentation.bootstrap_gen import (default_instrumentations, libraries)
-          print(*default_instrumentations, sep="\n")
-          print(*map(lambda element: element["instrumentation"], libraries), sep="\n")
-          '
-            find venv_instrumentations -name METADATA -exec cat '{}' ';' | grep '^Requires-Dist:' | cut -d ':' -f 2- | tr -d ' ' | grep '^opentelemetry-instrumentation-' | cat
-            deactivate
-            rm -rf venv_instrumentations
-          ) | grep -v opentelemetry-instrumentation-system-metrics | (
-            python3 -m venv venv
-            . venv/bin/activate
-            pip3 install -r requirements.txt
-            xargs pip3 install
-            deactivate
-          )
+          python3 -m venv venv
+          . venv/bin/activate
+          pip3 install -r requirements.lock.txt
+          deactivate
       - run: |
           set +f
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.python
@@ -513,6 +498,15 @@ jobs:
         with:
           name: java_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.java
+      - run: |
+          mkdir -p src/usr/share/opentelemetry_shell/agent.instrumentation.python/wheels
+          mkdir -p src/opt/opentelemetry_shell/wheels
+          python3 -m venv venv
+          . venv/bin/activate
+          pip3 download -r src/usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.lock.txt -d src/usr/share/opentelemetry_shell/agent.instrumentation.python/wheels
+          cp src/usr/share/opentelemetry_shell/agent.instrumentation.python/wheels/* src/opt/opentelemetry_shell/wheels/
+          deactivate
+          rm -rf venv
       - run: cp -r meta/debian src/DEBIAN
       - run: sed -i "s/__VERSION__/$(cat VERSION)/g" src/DEBIAN/control
       - run: |
