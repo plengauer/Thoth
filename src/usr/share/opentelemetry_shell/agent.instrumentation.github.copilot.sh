@@ -1,46 +1,5 @@
 #!/bin/false
 
-_otel_enable_coding_agent_otlp_endpoint() {
-  if \[ -z "${OTEL_EXPORTER_OTLP_ENDPOINT+x}" ] && \[ -n "${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-}" ]; then
-    export OTEL_EXPORTER_OTLP_ENDPOINT="${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT%/v1/traces}"
-    \[ -n "${GITHUB_ENV:-}" ] && \printf 'OTEL_EXPORTER_OTLP_ENDPOINT=%s\n' "$OTEL_EXPORTER_OTLP_ENDPOINT" >>"$GITHUB_ENV"
-  fi
-}
-
-_otel_enable_coding_agent_otel_copilot() {
-  if \[ -z "${COPILOT_OTEL_ENABLED+x}" ]; then
-    export COPILOT_OTEL_ENABLED=true
-    \[ -n "${GITHUB_ENV:-}" ] && \printf 'COPILOT_OTEL_ENABLED=%s\n' "$COPILOT_OTEL_ENABLED" >>"$GITHUB_ENV"
-  fi
-}
-
-_otel_is_dynamic_coding_agent_workflow() {
-  \[ "${GITHUB_EVENT_NAME:-}" = dynamic ] || return 1
-  \[ -n "${COPILOT_AGENT_RUNTIME_VERSION:-}" ] && return 0
-  \[ -n "${GITHUB_COPILOT_ACTION_DOWNLOAD_URL:-}" ] && return 0
-  case "${GITHUB_JOB:-}" in
-    copilot | claude | codex) return 0 ;;
-  esac
-  \[ -n "${GH_AW_WORKFLOW_ID:-}" ] && return 0
-  \[ -n "${GH_AW_WORKFLOW_FILE:-}" ] && return 0
-  \[ "${GITHUB_ACTION:-}" = github/gh-aw-actions/setup ] && return 0
-  case "${GITHUB_WORKFLOW_REF:-}" in
-    */.github/workflows/*.lock.yml@*) return 0 ;;
-  esac
-  return 1
-}
-
-_otel_enable_coding_agent_otel() {
-  \[ "${GITHUB_ACTIONS:-false}" = true ] || return 0
-  _otel_enable_coding_agent_otlp_endpoint
-  \[ -n "${OTEL_EXPORTER_OTLP_ENDPOINT:-}" ] || return 0
-  _otel_enable_coding_agent_otel_copilot
-}
-
-if \[ "${GITHUB_ACTIONS:-false}" = true ] && _otel_is_dynamic_coding_agent_workflow; then
-  _otel_enable_coding_agent_otel
-fi
-
 if \[ "${GITHUB_ACTIONS:-false}" = true ] && \[ "$GITHUB_EVENT_NAME" = dynamic ] && \[ -n "${COPILOT_AGENT_RUNTIME_VERSION:-}" ] && \[ -n "${GITHUB_COPILOT_ACTION_DOWNLOAD_URL:-}" ] && (\[ "$GITHUB_JOB" = copilot ] || \[ "$GITHUB_JOB" = claude ] || \[ "$GITHUB_JOB" = codex ]); then
   _otel_inject_copilot() {
     local exit_code=0
