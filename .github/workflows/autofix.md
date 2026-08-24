@@ -17,7 +17,7 @@ tools:
 safe-outputs:
   noop:
   create-issue:
-    # github-token: ${{ secrets.ACTIONS_GITHUB_TOKEN }} # this is stated as possible in the docs, but cannot be compiled because github-token is an unsupported field
+    github-token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
     max: 20
 ---
 
