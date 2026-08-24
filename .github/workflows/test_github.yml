@@ -253,7 +253,7 @@ jobs:
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
-      - uses: renovatebot/github-action@e09d604f8f803bb527bd8321ed5be06c460b8682 # v46.2.2 # node action with call to docker, docker flags that make injection more complicated, then call a node script via exec that already is injected with otel
+      - uses: renovatebot/github-action@0a7b68676027570f113b1d6e7b69b231b56167ab # v46.2.3 # node action with call to docker, docker flags that make injection more complicated, then call a node script via exec that already is injected with otel
         env:
           RENOVATE_DRY_RUN: full
           RENOVATE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
