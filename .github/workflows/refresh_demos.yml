@@ -44,7 +44,7 @@ jobs:
         demo_directory: ${{ fromJSON(needs.prepare.outputs.dirs) }}
     steps:
       - run: |
-          { if [ "$GITHUB_EVENT" = release ]; then cat "$GITHUB_EVENT_PATH"; else curl --header "Authorization: Bearer ${{ github.token }}" https://api.github.com/repos/"$GITHUB_REPOSITORY"/releases/latest; fi; } | jq -r '.assets[] | select(.name | endswith("_amd64.deb")) | .url' | xargs wget --header "Authorization: Bearer ${{ github.token }}" --header "Accept: application/octet-stream" -O package.deb
+          { if [ "$GITHUB_EVENT_NAME" = release ]; then cat "$GITHUB_EVENT_PATH"; else curl --header "Authorization: Bearer ${{ github.token }}" https://api.github.com/repos/"$GITHUB_REPOSITORY"/releases/latest; fi; } | jq -r '.assets[] | select(.name | endswith("_amd64.deb")) | .url' | xargs wget --header "Authorization: Bearer ${{ github.token }}" --header "Accept: application/octet-stream" -O package.deb
       - run: sudo apt-get -y install ./package.deb
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - id: demo
