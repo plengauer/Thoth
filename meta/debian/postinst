@@ -6,7 +6,7 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
   export PATH=/usr/local/bin:"$PATH"
   if type node; then
     rm -rf /usr/share/opentelemetry_shell/agent.instrumentation.node/*/
-    _node_archived="$(tar -tJf /usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules.tar.xz 2>/dev/null | cut -d / -f 2 | grep '^[0-9]' | sort -n -u)"
+    _node_archived="$(tar --use-compress-program="zstd -d --long=27" -tf /usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules.tar.zst 2>/dev/null | cut -d / -f 2 | grep '^[0-9]' | sort -n -u)"
     _node_versions=""
     if type docker 1>/dev/null 2>/dev/null || [ "$GITHUB_ACTIONS" = true ]; then
       _node_min="$(printf '%s\n' "$_node_archived" | sort -n | head -n 1)"
@@ -24,7 +24,7 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
         v=$((v - 1))
       done
       [ "$v" -gt 0 ] && printf './%s\n' "$v" || true
-    done | sort -u | (xargs -r -P 0 tar -xJf /usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules.tar.xz -C /usr/share/opentelemetry_shell/agent.instrumentation.node/ || true)
+    done | sort -u | (xargs -r -n 1 -P 0 tar --use-compress-program="zstd -d --long=27" -xf /usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules.tar.zst -C /usr/share/opentelemetry_shell/agent.instrumentation.node/ || true)
     printf '%s\n' "$_node_versions" | while read -r version; do
       [ -n "$version" ] || continue
       v="$version"
@@ -34,7 +34,7 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
       done
       [ "$v" -gt 0 ] && [ "$v" != "$version" ] && [ ! -d /usr/share/opentelemetry_shell/agent.instrumentation.node/"$version" ] && cp -r /usr/share/opentelemetry_shell/agent.instrumentation.node/"$v" /usr/share/opentelemetry_shell/agent.instrumentation.node/"$version" || true
     done
-    ls /usr/share/opentelemetry_shell/agent.instrumentation.node | grep -v '.json$' | grep -v '.js$' | grep -v '.xz$' | grep -v 'Dockerfile$' | while read -r directory; do
+    ls /usr/share/opentelemetry_shell/agent.instrumentation.node | grep -v '.json$' | grep -v '.js$' | grep -v -E '.(xz|zst)$' | grep -v 'Dockerfile$' | while read -r directory; do
       ls /usr/share/opentelemetry_shell/agent.instrumentation.node | grep '.js$' | while read -r file; do
         cp /usr/share/opentelemetry_shell/agent.instrumentation.node/"$file" /usr/share/opentelemetry_shell/agent.instrumentation.node/"$directory"/"$file"
       done
@@ -42,7 +42,7 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
   fi 2>&1 | perl -0777 -pe '' >&2 &
   if type python3; then
     rm -rf /usr/share/opentelemetry_shell/agent.instrumentation.python/*/
-    _python_archived="$(tar -tJf /usr/share/opentelemetry_shell/agent.instrumentation.python/python_site_packages.tar.xz 2>/dev/null | cut -d / -f 2 | grep '^3\.' | sort -t. -k2 -n -u)"
+    _python_archived="$(tar --use-compress-program="zstd -d --long=27" -tf /usr/share/opentelemetry_shell/agent.instrumentation.python/python_site_packages.tar.zst 2>/dev/null | cut -d / -f 2 | grep '^3\.' | sort -t. -k2 -n -u)"
     _python_versions=""
     _python_keep_archived=false
     if type docker 1>/dev/null 2>/dev/null || [ "$GITHUB_ACTIONS" = true ]; then
@@ -63,7 +63,7 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
         v=$((v - 1))
       done
       [ "$v" -ge 0 ] && printf './3.%s\n' "$v" || true
-    done | sort -u | (xargs -r -P 0 tar -xJf /usr/share/opentelemetry_shell/agent.instrumentation.python/python_site_packages.tar.xz -C /usr/share/opentelemetry_shell/agent.instrumentation.python/ || true)
+    done | sort -u | (xargs -r -n 1 -P 0 tar --use-compress-program="zstd -d --long=27" -xf /usr/share/opentelemetry_shell/agent.instrumentation.python/python_site_packages.tar.zst -C /usr/share/opentelemetry_shell/agent.instrumentation.python/ || true)
     printf '%s\n' "$_python_versions" | while read -r version; do
       [ -n "$version" ] || continue
       minor="$(echo "$version" | cut -d . -f 2)"
@@ -74,7 +74,7 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
       done
       [ "$v" -ge 0 ] && [ "3.$v" != "$version" ] && [ ! -d /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version" ] && cp -r /usr/share/opentelemetry_shell/agent.instrumentation.python/3."$v" /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version" || true
     done
-    ls /usr/share/opentelemetry_shell/agent.instrumentation.python | grep -v '.txt$' | grep -v '.py$' | grep -v '.xz$' | grep -v 'Dockerfile$' | while read -r version; do
+    ls /usr/share/opentelemetry_shell/agent.instrumentation.python | grep -v '.txt$' | grep -v '.py$' | grep -v -E '.(xz|zst)$' | grep -v 'Dockerfile$' | while read -r version; do
       venv="$(mktemp -u)"
       if ! type python"$version" || ! eval "python$version" -m venv "$venv"; then
         [ "$_python_keep_archived" = true ] && { rm -rf "$venv"; continue; }

@@ -1,10 +1,10 @@
 if ! type docker 1> /dev/null 2> /dev/null; then exit 0; fi
-if ! [ -f /usr/share/opentelemetry_shell/agent.instrumentation.python/python_site_packages.tar.xz ]; then exit 0; fi
+if ! [ -f /usr/share/opentelemetry_shell/agent.instrumentation.python/python_site_packages.tar.zst ]; then exit 0; fi
 
 . ./assert.sh
 
 archived_versions="$(
-  tar -tJf /usr/share/opentelemetry_shell/agent.instrumentation.python/python_site_packages.tar.xz \
+  tar --use-compress-program="zstd -d --long=27" -tf /usr/share/opentelemetry_shell/agent.instrumentation.python/python_site_packages.tar.zst \
     | cut -d / -f 2 \
     | grep '^3\.' \
     | sort -t. -k2 -n -u
