@@ -1,9 +1,10 @@
 name: 'Workflow Example'
-on:
+'on':
   schedule:
     - cron: '0 0 * * *'
   push:
-    paths: .github/workflows/workflow_example.yml
+    paths:
+      - .github/workflows/workflow_example.yml
 jobs:
   build:
     runs-on: ubuntu-latest
