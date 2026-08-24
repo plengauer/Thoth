@@ -113,9 +113,9 @@ cache_restore_fast() {
   tmpfile="$(mktemp)" || return 1
   wget -qO "$tmpfile" "$url" || { rm -f "$tmpfile"; return 1; }
   if type zstd > /dev/null 2>&1; then
-    sudo tar -C "${GITHUB_WORKSPACE:-/}" -P --use-compress-program="zstd -d --long=30" -xf "$tmpfile" || { rm -f "$tmpfile"; return 1; }
+    sudo tar -C / -P --use-compress-program="zstd -d --long=30" -xf "$tmpfile" || { rm -f "$tmpfile"; return 1; }
   else
-    sudo tar -C "${GITHUB_WORKSPACE:-/}" -Pzxf "$tmpfile" || { rm -f "$tmpfile"; return 1; }
+    sudo tar -C / -Pzxf "$tmpfile" || { rm -f "$tmpfile"; return 1; }
   fi
   rm -f "$tmpfile"
 }
