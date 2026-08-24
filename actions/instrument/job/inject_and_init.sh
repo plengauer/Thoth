@@ -9,9 +9,35 @@ if [ "${ASYNC_INIT:-FALSE}" = TRUE ]; then
   run() {
     "$@" 2>&1 | { type perl &>/dev/null && perl -0777 -pe '' || cat >/dev/null; } &
   }
+  run_with_pid() {
+    local pid_var="$1"
+    shift
+    "$@" 2>&1 | { type perl &>/dev/null && perl -0777 -pe '' || cat >/dev/null; } &
+    eval "$pid_var=\$!"
+  }
 else
   run() { "$@"; }
+  run_with_pid() {
+    local pid_var="$1"
+    shift
+    "$@"
+    eval "$pid_var=''"
+  }
 fi
+
+join_pid() {
+  local pid_var="$1"
+  local pid="${!pid_var:-}"
+  [ -z "$pid" ] || wait "$pid"
+  eval "$pid_var=''"
+}
+
+join_pids() {
+  local pid_var
+  for pid_var in "$@"; do
+    join_pid "$pid_var"
+  done
+}
 
 if [ "${OTEL_GITHUB_JOB_SKIP_CONTAINERS:-FALSE}" = TRUE ]; then
   container_marker_file="${OTEL_GITHUB_JOB_CONTAINER_MARKER_FILE:-/.dockerenv}"
@@ -40,9 +66,23 @@ echo "::endgroup::"
 
 . ../shared/github.sh
 
-echo "::group::Ensuring rate limit"
-gh_ensure_min_rate_limit_remaining 0.05
-echo "::endgroup::"
+repo_properties_file="$(mktemp)"
+opentelemetry_root_dir="$(mktemp -d)"
+if [ "${ASYNC_INIT:-FALSE}" = TRUE ]; then
+  gh_ensure_min_rate_limit_remaining 0.05 &
+  rate_limit_pid=$!
+  (gh_repo_properties 2>/dev/null || echo '[]') >"$repo_properties_file" &
+  repo_properties_pid=$!
+  (gh_artifact_download "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_workflow_run_"$GITHUB_RUN_ATTEMPT" "$opentelemetry_root_dir" || true) &>/dev/null &
+  traceparent_prefetch_pid=$!
+else
+  gh_ensure_min_rate_limit_remaining 0.05
+  rate_limit_pid=
+  (gh_repo_properties 2>/dev/null || echo '[]') >"$repo_properties_file"
+  repo_properties_pid=
+  gh_artifact_download "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_workflow_run_"$GITHUB_RUN_ATTEMPT" "$opentelemetry_root_dir" || true
+  traceparent_prefetch_pid=
+fi
 
 if [ "${OTEL_LOGS_EXPORTER:-otlp}" = deferred ]; then
   export OTEL_LOGS_EXPORTER=otlp
@@ -119,14 +159,17 @@ cache_restore_fast() {
   fi
   rm -f "$tmpfile"
 }
-run npm --no-audit ci
+npm_ci_pid=
+postinst_pid=
+otelcol_pid=
+run_with_pid npm_ci_pid npm --no-audit ci
 if [ "$INPUT_CACHE" = "true" ]; then
   echo "::debug::Resolving cache ..."
   export INSTRUMENTATION_CACHE_KEY="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} instrumentation $GITHUB_WORKFLOW $GITHUB_JOB"
   cache_restore_fast "$INSTRUMENTATION_CACHE_KEY" || true
   cache_key="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} dependencies $({ cat /etc/os-release; arch; python3 --version || true; printenv | grep -E '^OTEL_SHELL_CONFIG_INSTALL_' || true; } | md5sum | cut -d ' ' -f 1)"
   if [ "$GITHUB_ACTION_REPOSITORY" = "$GITHUB_REPOSITORY" ] && [ -f "$GITHUB_WORKSPACE"/package.deb ]; then cache_key="$cache_key local"; fi
-  cache_restore_fast "$cache_key" || { wait; sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.restoreCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip', '/root/.cache/uv'], '$cache_key');"; }
+  cache_restore_fast "$cache_key" || { join_pid npm_ci_pid; sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.restoreCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip', '/root/.cache/uv'], '$cache_key');"; }
   [ "$(find /var/cache/apt/archives/ -name '*.deb' | wc -l)" -gt 0 ] || write_back_cache=TRUE
 fi
 if ! type otel.sh && [ -r /var/cache/apt/archives/opentelemetry-shell_*_*.deb ]; then
@@ -142,10 +185,10 @@ if ! type otel.sh && [ -r /var/cache/apt/archives/opentelemetry-shell_*_*.deb ];
         sudo dpkg-deb --extract /var/cache/apt/archives/opentelemetry-shell_*_*.deb "$extract_dir"
         tar -C "$extract_dir" -cf - . | sudo tar -C / -xf - --no-overwrite-dir
         sudo rm -rf "$extract_dir"
-        run eval sudo "$control_dir"/postinst configure '&&' rm -rf "$control_dir"
+        run_with_pid postinst_pid eval sudo "$control_dir"/postinst configure '&&' rm -rf "$control_dir"
       else
         echo "::debug::Fast install ..."
-        sudo dpkg-deb --extract /var/cache/apt/archives/opentelemetry-shell_*_*.deb / && run eval sudo "$control_dir"/postinst configure '&&' rm -rf "$control_dir"
+        sudo dpkg-deb --extract /var/cache/apt/archives/opentelemetry-shell_*_*.deb / && run_with_pid postinst_pid eval sudo "$control_dir"/postinst configure '&&' rm -rf "$control_dir"
       fi
       export OTEL_SHELL_PACKAGE_VERSION_CACHE_opentelemetry_shell="$(cat ../../../VERSION)"
     else
@@ -166,13 +209,13 @@ if ! type otelcol-contrib; then
   fi
   if [ "${FAST_DEB_INSTALL:-FALSE}" = TRUE ]; then # lets assume no install scripts or dependencies or triggers
     extract_dir="$(mktemp -d)"
-    run eval dpkg-deb --extract /var/cache/apt/archives/otelcol-contrib.deb "$extract_dir" '&&' sudo mv "$extract_dir"/usr/bin/otelcol-contrib /usr/bin '&&' rm -rf "$extract_dir"
+    run_with_pid otelcol_pid eval dpkg-deb --extract /var/cache/apt/archives/otelcol-contrib.deb "$extract_dir" '&&' sudo mv "$extract_dir"/usr/bin/otelcol-contrib /usr/bin '&&' rm -rf "$extract_dir"
   else
-    run eval sudo apt-get install -y /var/cache/apt/archives/otelcol-contrib.deb '&&' '(' sudo systemctl stop otelcol-contrib.service '&&' sudo systemctl disable otelcol-contrib.service '||' true ')'
+    run_with_pid otelcol_pid eval sudo apt-get install -y /var/cache/apt/archives/otelcol-contrib.deb '&&' '(' sudo systemctl stop otelcol-contrib.service '&&' sudo systemctl disable otelcol-contrib.service '||' true ')'
   fi
 fi
 if [ "${write_back_cache:-FALSE}" = TRUE ] && [ -n "${cache_key:-}" ]; then
-  wait # only join in case we wanna write back, this will be rare and is necessary to have a good cache
+  join_pids postinst_pid otelcol_pid # only join in case we wanna write back, this will be rare and is necessary to have a good cache
   run sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.saveCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip', '/root/.cache/uv'], '$cache_key');"
 fi
 echo "::endgroup::"
@@ -357,12 +400,18 @@ if type docker; then
 fi
 echo "::endgroup::"
 
+echo "::group::Ensuring rate limit"
+join_pid rate_limit_pid
+echo "::endgroup::"
+
 echo "::group::Resolve W3C Tracecontext"
-opentelemetry_root_dir="$(mktemp -d)"
+join_pid traceparent_prefetch_pid
 count=0
-while [ "$count" -lt 60 ] && ! gh_artifact_download "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_workflow_run_"$GITHUB_RUN_ATTEMPT" "$opentelemetry_root_dir" || ! [ -r "$opentelemetry_root_dir"/traceparent ]; do
+while [ "$count" -lt 60 ] && ! [ -r "$opentelemetry_root_dir"/traceparent ]; do
+  gh_artifact_download "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_workflow_run_"$GITHUB_RUN_ATTEMPT" "$opentelemetry_root_dir" || true
+  if [ -r "$opentelemetry_root_dir"/traceparent ]; then break; fi
   if [ "$count" -gt 0 ]; then sleep $count; fi
-  wait # only join within this loop, because we need to make sure everything is installed properly at this point, in most cases, it is unnecessary though and we can join later
+  join_pid postinst_pid # only join within this loop, because we need to make sure everything is installed properly at this point, in most cases, it is unnecessary though and we can join later
   . otelapi.sh
   otel_init
   otel_span_traceparent "$(otel_span_start INTERNAL dummy)" >"$opentelemetry_root_dir"/traceparent
@@ -378,7 +427,9 @@ echo "::endgroup::"
 
 echo "::group::Calculate Resource Attributes"
 export OTEL_RESOURCE_ATTRIBUTES=github.repository.id="$GITHUB_REPOSITORY_ID",github.repository.name="${GITHUB_REPOSITORY#*/}",github.repository.owner.id="$GITHUB_REPOSITORY_OWNER_ID",github.repository.owner.name="$GITHUB_REPOSITORY_OWNER",github.actions.workflow.ref="$GITHUB_WORKFLOW_REF",github.actions.workflow.sha="$GITHUB_WORKFLOW_SHA",github.actions.workflow.name="$GITHUB_WORKFLOW"${OTEL_RESOURCE_ATTRIBUTES:+,$OTEL_RESOURCE_ATTRIBUTES}
-repo_property_attributes="$(gh_repo_properties 2>/dev/null | jq -r '.[] | select(.value != null and .value != "") | "github.repository.property." + .property_name + "=\"" + .value + "\""' 2>/dev/null | tr '\n' ',' | sed 's/,$//' || true)"
+join_pid repo_properties_pid
+repo_property_attributes="$(cat "$repo_properties_file" | jq -r '.[] | select(.value != null and .value != "") | "github.repository.property." + .property_name + "=\"" + .value + "\""' 2>/dev/null | tr '\n' ',' | sed 's/,$//' || true)"
+rm -f "$repo_properties_file"
 if [ -n "$repo_property_attributes" ]; then
   export OTEL_RESOURCE_ATTRIBUTES="${OTEL_RESOURCE_ATTRIBUTES},${repo_property_attributes}"
 fi
