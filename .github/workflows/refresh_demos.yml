@@ -235,7 +235,26 @@ jobs:
       - run: |
           cd demos/${{ matrix.demo_directory }}
           git add --intent-to-add README.md output.stdout output.stderr otlp.json
-          if git diff README.md | grep -v '^+++' | grep -v '^---' | grep -v '/tmp' | grep -v Id | grep -v _id | grep -v .id | grep -v Time | grep -v time | grep -v timestamp | grep -v github. | grep -v vcs. | grep -v .version | grep -v .ip | grep -v .port | grep -v peer. | grep -v process.pid | grep -v process.parent_pid | grep -v http.user_agent | grep -v host.name | grep -v host.type | grep -v cloud.region | grep -v '"00-' | grep -q '^+'; then echo dirty=true >> "$GITHUB_OUTPUT"; fi
+          volatile_keys='"[^"]*[Ii]d"|[Tt]ime|timestamp|"vcs[.][^"]*"|"github[.][^"]*"|"[^"]*[.]version"|"[^"]*[.]ip"|"[^"]*[.]port"|"peer[.][^"]*"|"process[.]pid"|"process[.]parent_pid"|"process[.]owner"|"process[.]runtime[.]version"|"process[.]start_time"|"http[.]user_agent"|"user_agent[.]original"|"host[.]name"|"host[.]type"|"host[.]arch"|"cloud[.]region"|"cloud[.]account[.]id"|"cloud[.]availability_zone"|"azure[.][^"]*"|"os[.]build_id"|"os[.]description"|"network[.]local[.]address"|"network[.]local[.]port"|"network[.]peer[.]address"|"network[.]peer[.]port"|"client[.]address"|"client[.]port"|"server[.]port"|"code[.]lineno"|"code[.]filepath"|"code[.]column"|"code[.]stacktrace"|"http[.]request[.]header[.][^"]*"|"http[.]response[.]header[.][^"]*"|/tmp|"00-'
+          if git diff README.md | grep -v '^+++' | grep -v '^---' \
+            | awk -v pat="$volatile_keys" '
+                /^[+-]/ {
+                  line = substr($0, 2)
+                  if (depth > 0) {
+                    if (index(line, "[") > 0) depth++
+                    if (index(line, "]") > 0) depth--
+                    next
+                  }
+                  if (line ~ pat) {
+                    if (index(line, "[") > 0) depth=1
+                    next
+                  }
+                  print
+                  next
+                }
+                { print }
+              ' \
+            | grep -q '^+'; then echo dirty=true >> "$GITHUB_OUTPUT"; fi
         id: diff
       - name: "Open Pull Request"
         if: steps.diff.outputs.dirty
