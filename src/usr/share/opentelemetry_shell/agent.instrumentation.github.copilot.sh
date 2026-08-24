@@ -14,8 +14,13 @@ _otel_enable_coding_agent_otel_copilot() {
   fi
 }
 
-_otel_is_agentic_workflow() {
-  \[ "${GITHUB_EVENT_NAME:-}" = dynamic ] && return 0
+_otel_is_dynamic_coding_agent_workflow() {
+  \[ "${GITHUB_EVENT_NAME:-}" = dynamic ] || return 1
+  \[ -n "${COPILOT_AGENT_RUNTIME_VERSION:-}" ] && return 0
+  \[ -n "${GITHUB_COPILOT_ACTION_DOWNLOAD_URL:-}" ] && return 0
+  case "${GITHUB_JOB:-}" in
+    copilot | claude | codex) return 0 ;;
+  esac
   \[ -n "${GH_AW_WORKFLOW_ID:-}" ] && return 0
   \[ -n "${GH_AW_WORKFLOW_FILE:-}" ] && return 0
   \[ "${GITHUB_ACTION:-}" = github/gh-aw-actions/setup ] && return 0
@@ -32,19 +37,9 @@ _otel_enable_coding_agent_otel() {
   _otel_enable_coding_agent_otel_copilot
 }
 
-_otel_inject_coding_agent_otel() {
-  _otel_enable_coding_agent_otel
-  _otel_call "$@"
-}
-
-if \[ "${GITHUB_ACTIONS:-false}" = true ] && _otel_is_agentic_workflow; then
+if \[ "${GITHUB_ACTIONS:-false}" = true ] && _otel_is_dynamic_coding_agent_workflow; then
   _otel_enable_coding_agent_otel
 fi
-
-_otel_alias_prepend_function=_otel_alias_prepend
-$_otel_alias_prepend_function copilot _otel_inject_coding_agent_otel
-$_otel_alias_prepend_function claude _otel_inject_coding_agent_otel
-$_otel_alias_prepend_function codex _otel_inject_coding_agent_otel
 
 if \[ "${GITHUB_ACTIONS:-false}" = true ] && \[ "$GITHUB_EVENT_NAME" = dynamic ] && \[ -n "${COPILOT_AGENT_RUNTIME_VERSION:-}" ] && \[ -n "${GITHUB_COPILOT_ACTION_DOWNLOAD_URL:-}" ] && (\[ "$GITHUB_JOB" = copilot ] || \[ "$GITHUB_JOB" = claude ] || \[ "$GITHUB_JOB" = codex ]); then
   _otel_inject_copilot() {
@@ -69,5 +64,6 @@ if \[ "${GITHUB_ACTIONS:-false}" = true ] && \[ "$GITHUB_EVENT_NAME" = dynamic ]
     fi
     return "$exit_code"
   }
+  _otel_alias_prepend_function=_otel_alias_prepend
   $_otel_alias_prepend_function tar _otel_inject_copilot
 fi
