@@ -87,8 +87,7 @@ jobs:
       - if: github.ref_name == 'main'
         run: |
           if [ -f megalinter-reports/megalinter-report.sarif ]; then
-            jq '(.runs[]?.results[]? |= del(.fixes))' megalinter-reports/megalinter-report.sarif > megalinter-reports/megalinter-report.sarif.tmp
-            mv megalinter-reports/megalinter-report.sarif.tmp megalinter-reports/megalinter-report.sarif
+            jq '(.runs[]?.results[]? |= del(.fixes))' megalinter-reports/megalinter-report.sarif > megalinter-reports/megalinter-report.sarif.tmp && mv megalinter-reports/megalinter-report.sarif.tmp megalinter-reports/megalinter-report.sarif || true
           fi
       - if: github.ref_name == 'main' && false
         uses: github/codeql-action/upload-sarif@db488ddef3bf6cb639b32c2e9a7c0a7ea8271d28 # v4.37.8
