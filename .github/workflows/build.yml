@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        architecture: [ 'amd64', 'arm64/v8', 'mips64le', 'ppc64le', 'riscv64', 's390x' ] # 'i386', 'arm32/v7'
+        architecture: ['amd64', 'arm64/v8', 'mips64le', 'ppc64le', 'riscv64', 's390x'] # 'i386', 'arm32/v7'
       fail-fast: false
     permissions:
       contents: read
@@ -65,7 +65,7 @@ jobs:
           echo 'cd src/usr/share/opentelemetry_shell/agent.instrumentation.http/ && apt-get update 1>&2 && yes | apt-get install build-essential 1>&2 && gcc -shared -fPIC -o libinjecthttpheader.so agent.injection.http_header.c -ldl 1>&2 && arch' \
            | sudo docker run -i --rm --network host -v "$(pwd)"/src:/home/root/src -w /home/root --platform linux/${{ matrix.architecture }} docker.io/"$(echo ${{ matrix.architecture }} | tr -d /)"/"$image" | xargs -0 -I {} echo 'architecture={}' >> "$GITHUB_OUTPUT"
       - run: |
-          [ -r src/usr/share/opentelemetry_shell/agent.instrumentation.http/libinjecthttpheader.so ]
+          [-r src/usr/share/opentelemetry_shell/agent.instrumentation.http/libinjecthttpheader.so]
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: http_${{ steps.build.outputs.architecture }}_${{ inputs.ref }}
@@ -187,11 +187,11 @@ jobs:
           prev_version=""
           for version in $(find . -maxdepth 1 -regextype posix-extended -regex './[0-9]+' -printf '%f\n' | sort -n); do
             hash="$(find "$version" -type f | sort | while IFS= read -r f; do printf '%s\n' "${f#*/}"; \cat "$f"; done | sha256sum | cut -d ' ' -f 1)"
-            if [ "$hash" = "$prev_hash" ]; then
+            if ["$hash" = "$prev_hash"]; then
               echo "node $version is redundant (identical to node $prev_version), deduplicating"
               rm -rf "$version"
             else
-              if [ -n "$prev_version" ]; then
+              if [-n "$prev_version"]; then
                 echo "node $version is not redundant (differs from node $prev_version):"
                 diff \
                   <(find "$prev_version" -type f | sort | while IFS= read -r f; do printf '%s %s\n' "$(\sha256sum "$f" | \cut -d ' ' -f 1)" "${f#*/}"; done) \
@@ -325,7 +325,7 @@ jobs:
           prev_hash=""
           for version in $(find . -maxdepth 1 -regextype posix-extended -regex './3\.[0-9]+' -printf '%f\n' | sort -t. -k2 -n); do
             hash="$(find "$version" -type f | sort | while IFS= read -r f; do printf '%s\n' "${f#*/}"; \cat "$f"; done | sha256sum | cut -d ' ' -f 1)"
-            if [ "$hash" = "$prev_hash" ]; then
+            if ["$hash" = "$prev_hash"]; then
               rm -rf "$version"
             else
               prev_hash="$hash"
@@ -411,7 +411,7 @@ jobs:
             src/usr/share/opentelemetry_shell/agent.instrumentation.java/version
     permissions:
       actions: read
-      
+
   verify-deb-python-dependency:
     runs-on: ubuntu-slim
     permissions:
@@ -435,7 +435,7 @@ jobs:
           min_version_otel="$(cat venv/lib/python*/site-packages/opentelemetry_api-*.dist-info/METADATA | grep '^Requires-Python: ' | cut -d ' ' -f 2 | cut -d . -f 2-)"
           min_version_otel="${min_version_otel:-9}"
           min_version_shell="$(cat meta/debian/control | grep '^Pre-Depends:' | tr ',' '\n' | grep -F -- 'python3 (>=' | cut -d '(' -f 2- | cut -d ')' -f 1 | cut -d ' ' -f 2 | cut -d . -f 2)"
-          [ "$min_version_shell" -ge "$min_version_otel" ] || (echo "::error::Minimum version is $min_version_shell but otel requires at least $min_version_otel!" && exit 1)
+          ["$min_version_shell" -ge "$min_version_otel"] || (echo "::error::Minimum version is $min_version_shell but otel requires at least $min_version_otel!" && exit 1)
   verify-deb-dependencies:
     runs-on: ubuntu-latest
     permissions:
@@ -469,7 +469,7 @@ jobs:
             cat | while read -r file; do echo "Verifying $file" >&2; echo "$file"; done | xargs cat \
               | grep -v 'SKIP_DEPENDENCY_CHECK' | while read -r line; do line="${line%%#*}"; printf '%s\n' "$line"; done \
               | grep -oP '(^[[:space:]]*|\$\()\\?[a-zA-Z/][a-zA-Z0-9/_.-]*($|[[:space:]])' \
-              | while read -r command; do command="${command% }"; command="${command# }"; command="${command#\$\(}"; command="${command#\\}"; [ "${#command}" -gt 1 ] && printf '%s\n' "$command" || true; done \
+              | while read -r command; do command="${command% }"; command="${command# }"; command="${command#\$\(}"; command="${command#\\}"; ["${#command}" -gt 1] && printf '%s\n' "$command" || true; done \
               | grep -vE '^_otel|^otel_|^OTEL_' | grep -vE "$(compgen -b | patternify)" | grep -vE "$(compgen -k | patternify)" | process_commands \
               | sort -u | xargs -d '\n' -r parallel -q check_command "$dependencies" ::: | tee /dev/stderr | grep -q 'UNAVAILABLE' && return 1 || return 0
           }
@@ -560,7 +560,7 @@ jobs:
           min_version_otel="$(cat venv/lib/python*/site-packages/opentelemetry_api-*.dist-info/METADATA | grep '^Requires-Python: ' | cut -d ' ' -f 2 | cut -d . -f 2-)"
           min_version_otel="${min_version_otel:-9}"
           min_version_shell="$(cat meta/rpm/*.spec | grep '^Requires:' | tr ',' '\n' | grep -F -- 'python3 >=' | cut -d '=' -f 2- | cut -d . -f 2)"
-          [ "$min_version_shell" -ge "$min_version_otel" ] || (echo "::error::Minimum version is $min_version_shell but otel requires at least $min_version_otel!" && exit 1)
+          ["$min_version_shell" -ge "$min_version_otel"] || (echo "::error::Minimum version is $min_version_shell but otel requires at least $min_version_otel!" && exit 1)
   build-rpm:
     needs: [verify-scripts, verify-rpm-python-dependency, merge-http, merge-node-modules, merge-python-site-packages, build-java-agents]
     runs-on: ubuntu-latest
@@ -610,29 +610,29 @@ jobs:
             cp meta/rpm/opentelemetry-shell.spec .
             sed -i "s/__VERSION__/$(cat VERSION)/g" opentelemetry-shell.spec
             # sed -i "s/BuildArch: .*/BuildArch: $arch/g" opentelemetry-shell.spec
-            [ "$arch" = noarch ] || cp "$replaced_binaries"/"$arch"/*.so src/usr/share/opentelemetry_shell/agent.instrumentation.http
+            ["$arch" = noarch] || cp "$replaced_binaries"/"$arch"/*.so src/usr/share/opentelemetry_shell/agent.instrumentation.http
             {
               cat meta/debian/triggers | grep -v '^$' | cut -d ' ' -f 2 | rev | cut -d / -f 1 | rev | sort -u | grep -v python3 | while read -r package; do
                 echo "%triggerin -- $package"
                 echo '#/bin/sh -e'
-                echo "if [ \"\$1\" = 0 ] || [ \"\$1\" = 1 ] || [ \"\$1\" = 2 ]; then set -- configure; fi"
+                echo "if [\"\$1\" = 0] || [\"\$1\" = 1] || [\"\$1\" = 2]; then set -- configure; fi"
                 cat meta/debian/postinst
                 echo "%triggerun -- $package"
                 echo '#/bin/sh -e'
-                echo "if [ \"\$1\" = 0 ] || [ \"\$1\" = 1 ] || [ \"\$1\" = 2 ]; then set -- configure; fi"
+                echo "if [\"\$1\" = 0] || [\"\$1\" = 1] || [\"\$1\" = 2]; then set -- configure; fi"
                 cat meta/debian/postinst
               done
               echo "%post"
               echo '#/bin/sh -e'
-              echo "if [ \"\$1\" = 0 ] || [ \"\$1\" = 1 ] || [ \"\$1\" = 2 ]; then set -- configure; fi"
+              echo "if [\"\$1\" = 0] || [\"\$1\" = 1] || [\"\$1\" = 2]; then set -- configure; fi"
               cat meta/debian/postinst
               echo "%preun"
               echo '#!/bin/sh -e'
-              echo "if [ \"\$1\" = 0 ]; then set -- remove; fi"
-              echo "if [ \"\$1\" = 1 ]; then set -- upgrade; fi"
+              echo "if [\"\$1\" = 0]; then set -- remove; fi"
+              echo "if [\"\$1\" = 1]; then set -- upgrade; fi"
               cat meta/debian/prerm
               echo '%files'
-              ( cd src && find . | grep -v '.spec$' | while read -r file; do echo "${file#.}"; done | grep -v '^$' | while read -r file; do if [ -d "$file" ]; then if ! echo "$file" | grep opentelemetry-shell; then continue; fi; echo -n '%dir '; fi; echo \""$file"\"; done )
+              ( cd src && find . | grep -v '.spec$' | while read -r file; do echo "${file#.}"; done | grep -v '^$' | while read -r file; do if [-d "$file"]; then if ! echo "$file" | grep opentelemetry-shell; then continue; fi; echo -n '%dir '; fi; echo \""$file"\"; done )
             } >> opentelemetry-shell.spec
             rpmbuild -bb --buildroot="$(pwd)/src" opentelemetry-shell.spec
             mv /home/runner/rpmbuild/RPMS/noarch/opentelemetry-shell-"$(cat VERSION)"-1.noarch.rpm opentelemetry-shell-"$(cat VERSION)"-1."$arch".rpm

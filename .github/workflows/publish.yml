@@ -34,7 +34,7 @@ jobs:
               echo "$ref"
             fi
           done | while read -r ref; do echo \""$ref"\"; done | jq -s | tr -d '\n' | tr -d ' ' | xargs -0 -I {} echo 'refs={}' >> "$GITHUB_OUTPUT"
-  
+
   ci:
     needs: setup
     strategy:
@@ -61,7 +61,7 @@ jobs:
       ref: ${{ matrix.ref }}
 
   publish:
-    needs: [ setup, ci ]
+    needs: [setup, ci]
     concurrency:
       group: publish
       cancel-in-progress: false

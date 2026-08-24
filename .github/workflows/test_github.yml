@@ -111,9 +111,9 @@ jobs:
       - run: | # check if install succeeded
           type otel.sh && type strace
       - run: | # check if instrumentation happened
-          [ "$(alias | grep -c '_otel_observe')" -gt 0 ]
+          ["$(alias | grep -c '_otel_observe')" -gt 0]
       - run: | # check if traceparent is injected
-          [ -n "$TRACEPARENT" ]
+          [-n "$TRACEPARENT"]
   job-composite:
     needs: job-smoke
     runs-on: ubuntu-latest
@@ -210,7 +210,7 @@ jobs:
           type otelcol-contrib
           otelcol-contrib --version
   job-integration-simulated-opt-acl-modification:
-    needs: [job-smoke, job-cache ]
+    needs: [job-smoke, job-cache]
     runs-on: ubuntu-latest
     timeout-minutes: 60
     permissions:
@@ -447,7 +447,7 @@ jobs:
       - run: echo foo=bar >> "$GITHUB_OUTPUT"
         id: my-step
       - run: |
-          [ ${{ steps.my-step.outputs.foo }} = bar ]
+          [${{ steps.my-step.outputs.foo }} = bar]
   job-io-2:
     needs: job-io-1
     runs-on: ubuntu-latest
@@ -467,7 +467,7 @@ jobs:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
       - run: |
-          [ ${{ needs.job-io-1.outputs.foo }} = bar ]
+          [${{ needs.job-io-1.outputs.foo }} = bar]
   job-background:
     needs: job-smoke
     runs-on: ubuntu-latest
@@ -634,8 +634,8 @@ jobs:
           echo "Logs with span ID: $logs_with_span_id"
           echo "Logs with trace ID: $logs_with_trace_id"
           echo "All logs: $all_logs"
-          [ "$logs_with_span_id" -ge 1 ] || { echo "Expected at least 1 log with span ID"; exit 1; }
-          [ "$logs_with_trace_id" -ge 1 ] || { echo "Expected at least 1 log with trace ID"; exit 1; }
+          ["$logs_with_span_id" -ge 1] || { echo "Expected at least 1 log with span ID"; exit 1; }
+          ["$logs_with_trace_id" -ge 1] || { echo "Expected at least 1 log with trace ID"; exit 1; }
         if: ${{ matrix.exporter_logs == 'otlp' && matrix.protocol == 'http/json' }}
       - run: cat /tmp/http.log | grep -q '^POST /v1/metrics$'
         if: ${{ matrix.exporter_metrics == 'otlp' }}
@@ -647,8 +647,8 @@ jobs:
           echo "Job metrics: $job_metrics"
           echo "Step metrics: $step_metrics"
           echo "All metrics: $all_metrics"
-          [ "$job_metrics" -ge 1 ] || { echo "Expected at least 1 job metric"; exit 1; }
-          [ "$step_metrics" -ge 1 ] || { echo "Expected at least 1 step metric"; exit 1; }
+          ["$job_metrics" -ge 1] || { echo "Expected at least 1 job metric"; exit 1; }
+          ["$step_metrics" -ge 1] || { echo "Expected at least 1 step metric"; exit 1; }
         if: ${{ matrix.exporter_metrics == 'otlp' && matrix.protocol == 'http/json' }}
       - run: cat /tmp/http.log | grep -q '^POST /v1/traces$'
         if: ${{ matrix.exporter_traces == 'otlp' }}
@@ -662,9 +662,9 @@ jobs:
           echo "Step spans: $step_span_count"
           echo "All spans: $all_spans"
           echo "Spans without parent: $empty_parent_count"
-          # [ "$job_span_count" -ge 1 ] || { echo "Expected at least 1 job span"; exit 1; } # job span is only flushe don end of job, so not available yet
-          [ "$step_span_count" -ge 1 ] || { echo "Expected at least 1 step span"; exit 1; }
-          # [ "$empty_parent_count" -eq 1 ] || { echo "Expected exactly 1 span without parent (root span), found $empty_parent_count"; exit 1; } # same reason as above
+          # ["$job_span_count" -ge 1] || { echo "Expected at least 1 job span"; exit 1; } # job span is only flushe don end of job, so not available yet
+          ["$step_span_count" -ge 1] || { echo "Expected at least 1 step span"; exit 1; }
+          # ["$empty_parent_count" -eq 1] || { echo "Expected exactly 1 span without parent (root span), found $empty_parent_count"; exit 1; } # same reason as above
         if: ${{ matrix.exporter_traces == 'otlp' && matrix.protocol == 'http/json' }}
   job-exporter-deferred:
     needs: job-smoke
@@ -835,14 +835,14 @@ jobs:
         run: |
           curl -L --no-progress-meter --fail --retry 16 -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_REPOSITORY"/actions/workflows'?per_page=100&page=1' | jq --unbuffered -r '.workflows[] | select(.name == "Workflow Example") | .id' \
             | xargs -I {} curl -L --no-progress-meter --fail --retry 16 -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_REPOSITORY"/actions/workflows/'{}'/runs'?status=success&branch=main&per_page=1&page=1' \
-            | jq --unbuffered -r '.workflow_runs[] | [ .id, .run_attempt ] | @tsv' | sed 's/\t/ /g' | {
+            | jq --unbuffered -r '.workflow_runs[] | [.id, .run_attempt] | @tsv' | sed 's/\t/ /g' | {
               read -r id run_attempt
               echo "id=$id" >> "$GITHUB_OUTPUT"
               echo "run_attempt=$run_attempt" >> "$GITHUB_OUTPUT"
             }
       - run: |
-          [ -n "${{ steps.workflow_run.outputs.id }}" ]
-          [ -n "${{ steps.workflow_run.outputs.run_attempt }}" ]
+          [-n "${{ steps.workflow_run.outputs.id }}"]
+          [-n "${{ steps.workflow_run.outputs.run_attempt }}"]
       - uses: ./actions/instrument/workflow
         with:
           workflow_run_id: ${{ steps.workflow_run.outputs.id }}
@@ -877,14 +877,14 @@ jobs:
         run: |
           curl -L --no-progress-meter --fail --retry 16 -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_REPOSITORY"/actions/workflows'?per_page=100&page=1' | jq --unbuffered -r '.workflows[] | select(.name == "Workflow Example") | .id' \
             | xargs -I {} curl -L --no-progress-meter --fail --retry 16 -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_REPOSITORY"/actions/workflows/'{}'/runs'?status=success&branch=main&per_page=1&page=1' \
-            | jq --unbuffered -r '.workflow_runs[] | [ .id, .run_attempt ] | @tsv' | sed 's/\t/ /g' | {
+            | jq --unbuffered -r '.workflow_runs[] | [.id, .run_attempt] | @tsv' | sed 's/\t/ /g' | {
               read -r id run_attempt
               echo "id=$id" >> "$GITHUB_OUTPUT"
               echo "run_attempt=$run_attempt" >> "$GITHUB_OUTPUT"
             }
       - run: |
-          [ -n "${{ steps.workflow_run.outputs.id }}" ]
-          [ -n "${{ steps.workflow_run.outputs.run_attempt }}" ]
+          [-n "${{ steps.workflow_run.outputs.id }}"]
+          [-n "${{ steps.workflow_run.outputs.run_attempt }}"]
       - uses: ./actions/instrument/workflow
         with:
           debug: 1
@@ -903,7 +903,7 @@ jobs:
       - env:
           OTLP_JSON: '${{ steps.filename.outputs.otlp }}'
         run: |
-          [ "$(cat "$OTLP_JSON" | jq -r .context.trace_id | grep -v '^null$' | sort -u | cut -d x -f 2 | tee /dev/stderr)" = "$(cat traceparent | cut -d - -f 2 | tee /dev/stderr)" ]
+          ["$(cat "$OTLP_JSON" | jq -r .context.trace_id | grep -v '^null$' | sort -u | cut -d x -f 2 | tee /dev/stderr)" = "$(cat traceparent | cut -d - -f 2 | tee /dev/stderr)"]
           cat "$OTLP_JSON" | jq -r .name | grep -v '^null$' | sort -u | grep -F 'test (foo)'
           cat "$OTLP_JSON" | jq -r .name | grep -v '^null$' | sort -u | grep -F 'test (bar)'
           cat "$OTLP_JSON" | jq -r .name | grep -v '^null$' | sort -u | grep -F 'test (baz)'
@@ -937,7 +937,7 @@ jobs:
             echo "id=$id" >> "$GITHUB_OUTPUT"
           }
       - run: |
-          [ -n "${{ steps.check_suite.outputs.id }}" ]
+          [-n "${{ steps.check_suite.outputs.id }}"]
       - uses: ./actions/instrument/checksuite
         with:
           check_suite_id: ${{ steps.check_suite.outputs.id }}
@@ -1184,7 +1184,7 @@ jobs:
     strategy:
       matrix:
         secret_redaction_strategy: ['none', 'list', 'all']
-        private: [ 'false' ]
+        private: ['false']
       fail-fast: false
     env:
       REPOSITORY_TEMPLATE: thoth-deploy-test-repository-${{ matrix.private  }}-${{ matrix.secret_redaction_strategy }}
@@ -1215,12 +1215,12 @@ jobs:
           mkdir -p .github/workflows
           echo '
           name: Test
-          
+
           on:
             push:
 
           jobs:
-          
+
             hello-world:
               runs-on: ubuntu-latest
               steps:
