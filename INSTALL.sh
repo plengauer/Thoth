@@ -33,7 +33,7 @@ if curl -L --no-progress-meter https://api.github.com/repos/plengauer/Thoth/rele
     deb) jq 'if . | any(.name | endswith("_all.deb")) then .[] | select(.name | endswith("_'"$(arch | sed s/x86_64/amd64/g | sed s/aarch64/arm64/g | sed 's/le$/el/g')"'.deb")) else .[0] end' ;;
     rpm) jq 'if . | any(.name | endswith(".noarch.rpm")) then .[] | select(.name | endswith("_'"$(arch)"'.rpm")) else .[0] end' ;;
     apk) jq '.[0]' ;;
-    *) echo "Here be dragons" >&2 ;;
+    *) echo "Here be dragons" >&2; exit 1 ;;
   esac | jq -r 'select((.browser_download_url? // "") | (type == "string" and length > 0)) | .browser_download_url' | xargs -r wget -O "$package"; then
     rm -f "$package"
   fi
