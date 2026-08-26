@@ -27,12 +27,20 @@ extract_release_version() {
     esac
   done
 }
-curl -L --no-progress-meter https://api.github.com/repos/plengauer/opentelemetry-shell/releases/latest | jq '.assets[] | select(.name | endswith("'"$extension"'"))' | jq -s | case "$extension" in
-  deb) jq 'if . | any(.name | endswith("_all.deb")) then .[] | select(.name | endswith("_'"$(arch | sed s/x86_64/amd64/g | sed s/aarch64/arm64/g | sed 's/le$/el/g')"'.deb")) else .[0] end' ;;
-  rpm) jq 'if . | any(.name | endswith(".noarch.rpm")) then .[] | select(.name | endswith("_'"$(arch)"'.rpm")) else .[0] end' ;;
-  apk) jq '.[0]' ;;
-  *) echo "Here be dragons" >&2 ;;
-esac | jq .browser_download_url -r | xargs -r wget -O "$package"
+api_response="$(mktemp)"
+if curl -L --no-progress-meter https://api.github.com/repos/plengauer/Thoth/releases/latest > "$api_response"; then
+  if ! jq '.assets // [] | .[] | select(.name | endswith("'"$extension"'"))' < "$api_response" | jq -s | case "$extension" in
+    deb) jq 'if . | any(.name | endswith("_all.deb")) then .[] | select(.name | endswith("_'"$(arch | sed s/x86_64/amd64/g | sed s/aarch64/arm64/g | sed 's/le$/el/g')"'.deb")) else .[0] end' ;;
+    rpm) jq 'if . | any(.name | endswith(".noarch.rpm")) then .[] | select(.name | endswith("_'"$(arch)"'.rpm")) else .[0] end' ;;
+    apk) jq '.[0]' ;;
+    *) echo "Here be dragons" >&2 ;;
+  esac | jq -r 'select((.browser_download_url? // "") | (type == "string" and length > 0)) | .browser_download_url' | xargs -r wget -O "$package"; then
+    rm -f "$package"
+  fi
+else
+  rm -f "$package"
+fi
+rm -f "$api_response"
 if ! [ -r "$package" ]; then
   echo "Warning: failed to use API, falling back to downloading directly." >&2
   curl -v --no-progress-meter https://github.com/plengauer/Thoth/releases/latest 2>&1 | grep location | tr -d '\r' | extract_release_version | case "$extension" in
