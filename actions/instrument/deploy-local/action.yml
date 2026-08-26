@@ -411,7 +411,11 @@ runs:
       run: |
         (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
           if git diff -U0 -w -b --ignore-blank-lines "$workflow_file" > "$workflow_file".patch && git checkout "$workflow_file"; then
-            patch "$workflow_file" < "$workflow_file".patch
+            if ! patch "$workflow_file" < "$workflow_file".patch; then
+              echo "::error::Failed to restore blank lines in $workflow_file, patch did not apply cleanly"
+              rm -f "$workflow_file".patch "$workflow_file".rej "$workflow_file".orig
+              exit 1
+            fi
           fi
           rm -rf "$workflow_file".patch
         done
