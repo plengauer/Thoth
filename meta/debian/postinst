@@ -24,7 +24,7 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
         v=$((v - 1))
       done
       [ "$v" -gt 0 ] && printf './%s\n' "$v" || true
-    done | sort -u | (xargs -r -n 4 -P 2 tar --use-compress-program="zstd -d --long=27" -xf /usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules.tar.zst -C /usr/share/opentelemetry_shell/agent.instrumentation.node/ || true)
+    done | sort -u | (xargs -r tar --use-compress-program="zstd -d --long=27" -xf /usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules.tar.zst -C /usr/share/opentelemetry_shell/agent.instrumentation.node/ || true)
     printf '%s\n' "$_node_versions" | while read -r version; do
       [ -n "$version" ] || continue
       v="$version"
@@ -63,7 +63,7 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
         v=$((v - 1))
       done
       [ "$v" -ge 0 ] && printf './3.%s\n' "$v" || true
-    done | sort -u | (xargs -r -n 4 -P 2 tar --use-compress-program="zstd -d --long=27" -xf /usr/share/opentelemetry_shell/agent.instrumentation.python/python_site_packages.tar.zst -C /usr/share/opentelemetry_shell/agent.instrumentation.python/ || true)
+    done | sort -u | (xargs -r tar --use-compress-program="zstd -d --long=27" -xf /usr/share/opentelemetry_shell/agent.instrumentation.python/python_site_packages.tar.zst -C /usr/share/opentelemetry_shell/agent.instrumentation.python/ || true)
     printf '%s\n' "$_python_versions" | while read -r version; do
       [ -n "$version" ] || continue
       minor="$(echo "$version" | cut -d . -f 2)"
