@@ -27,12 +27,14 @@ extract_release_version() {
     esac
   done
 }
-curl -L --no-progress-meter https://api.github.com/repos/plengauer/opentelemetry-shell/releases/latest | jq '.assets[] | select(.name | endswith("'"$extension"'"))' | jq -s | case "$extension" in
+if curl -L --no-progress-meter https://api.github.com/repos/plengauer/opentelemetry-shell/releases/latest | jq '.assets[]? | select(.name | endswith("'"$extension"'"))' | jq -s | case "$extension" in
   deb) jq 'if . | any(.name | endswith("_all.deb")) then .[] | select(.name | endswith("_'"$(arch | sed s/x86_64/amd64/g | sed s/aarch64/arm64/g | sed 's/le$/el/g')"'.deb")) else .[0] end' ;;
   rpm) jq 'if . | any(.name | endswith(".noarch.rpm")) then .[] | select(.name | endswith("_'"$(arch)"'.rpm")) else .[0] end' ;;
   apk) jq '.[0]' ;;
   *) echo "Here be dragons" >&2 ;;
-esac | jq .browser_download_url -r | xargs -r wget -O "$package"
+esac | jq -r '.browser_download_url // empty' | xargs -r wget -O "$package"; then
+  :
+fi
 if ! [ -r "$package" ]; then
   echo "Warning: failed to use API, falling back to downloading directly." >&2
   curl -v --no-progress-meter https://github.com/plengauer/Thoth/releases/latest 2>&1 | grep location | tr -d '\r' | extract_release_version | case "$extension" in
