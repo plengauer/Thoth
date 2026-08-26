@@ -34,7 +34,7 @@ if curl -L --no-progress-meter https://api.github.com/repos/plengauer/Thoth/rele
     rpm) jq 'if . | any(.name | endswith(".noarch.rpm")) then .[] | select(.name | endswith("_'"$(arch)"'.rpm")) else .[0] end' ;;
     apk) jq '.[0]' ;;
     *) echo "Here be dragons" >&2; exit 1 ;;
-  esac | jq -r 'select((.browser_download_url? // "") | (type == "string" and length > 0)) | .browser_download_url' | xargs -r wget -O "$package"; then
+  esac | jq -r 'select((.browser_download_url? // "") | (type == "string" and length > 0)) | .browser_download_url' | xargs -r wget -O "$package" || ! [ -r "$package" ]; then
     rm -f "$package"
   fi
 else
