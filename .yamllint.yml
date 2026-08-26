@@ -1,5 +1,6 @@
 extends: default
 rules:
-  line-length: disable
-  document-start: disable
-  truthy: disable
+    line-length:
+      max: 10000
+    document-start: enable
+    truthy: enable
