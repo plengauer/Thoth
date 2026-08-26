@@ -8,7 +8,7 @@ _otel_alias_prepend() {
   :
 }
 
-copilot_instrumentation_file=../src/usr/share/opentelemetry_shell/agent.instrumentation.github.copilot.sh
+copilot_instrumentation_file=/usr/share/opentelemetry_shell/agent.instrumentation.github.copilot.sh
 
 unset COPILOT_OTEL_ENABLED OTEL_EXPORTER_OTLP_ENDPOINT OTEL_EXPORTER_OTLP_TRACES_ENDPOINT GH_AW_WORKFLOW_ID GH_AW_WORKFLOW_FILE GITHUB_ACTION GITHUB_WORKFLOW_REF
 export GITHUB_ACTIONS=true
