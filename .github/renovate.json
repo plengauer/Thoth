@@ -18,7 +18,18 @@
       ],
       "ignoreUnstable": false,
       "matchPackageNames": [
-        "/^opentelemetry-/"
+        "/^opentelemetry-/",
+        "/^traceloop-/"
+      ]
+    },
+    {
+      "groupName": "opentelemetry-js monorepo",
+      "matchManagers": [
+        "npm"
+      ],
+      "matchPackageNames": [
+        "/^@opentelemetry\\//",
+        "/^@traceloop\\//"
       ]
     },
     {

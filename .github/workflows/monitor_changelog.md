@@ -30,7 +30,7 @@ You are an automated agent that monitors the GitHub changelog for announcements 
 
 Once a month this workflow runs and performs the following steps:
 
-1. **Fetch the GitHub changelog**: Use the web-fetch tool to retrieve the GitHub changelog page at https://github.blog/changelog/. Also fetch the RSS/Atom feed at https://github.blog/changelog/feed/ to get structured data about recent posts.
+1. **Fetch the GitHub changelog**: Use the web-fetch tool to retrieve the GitHub changelog page at <https://github.blog/changelog/>. Also fetch the RSS/Atom feed at <https://github.blog/changelog/feed/> to get structured data about recent posts.
 
 2. **Identify posts from the last month**: Determine the current date from context and filter for posts published in the previous calendar month (i.e., from 1st of the previous month 00:00 UTC up to but not including the 1st of the current month 00:00 UTC).
 

@@ -17,13 +17,13 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@2169fb0fa9a8260fde99a2a185bbf99a5d63546e # v5.59.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@be259b5ae1e13e2398a8b96dce8baeaddac0663d # v5.61.2
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
         with:
           secrets_to_redact: '["${{ github.token }}"]'
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
           fetch-tags: true
@@ -56,12 +56,15 @@ jobs:
       security-events: none
       statuses: none
     secrets: inherit
-    uses: ./.github/workflows/ci.yml
+    uses: $/.github/workflows/ci.yml
     with:
       ref: ${{ matrix.ref }}
 
   publish:
     needs: [ setup, ci ]
+    concurrency:
+      group: publish
+      cancel-in-progress: false
     strategy:
       matrix:
         ref: ${{ fromJSON(needs.setup.outputs.refs) }}
@@ -73,7 +76,7 @@ jobs:
       attestations: write
       packages: write
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@2169fb0fa9a8260fde99a2a185bbf99a5d63546e # v5.59.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@be259b5ae1e13e2398a8b96dce8baeaddac0663d # v5.61.2
         with:
           secrets_to_redact: |-
             ${{ github.token }}
@@ -81,7 +84,7 @@ jobs:
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ matrix.ref }}
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
@@ -95,13 +98,13 @@ jobs:
           pattern: packages.*.${{ matrix.ref }}
           merge-multiple: true
 
-      - uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4.1.1
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with:
           subject-path: '*.deb'
-      - uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4.1.1
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with:
           subject-path: '*.rpm'
-      - uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4.1.1
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with:
           subject-path: '*.apk'
 
@@ -112,7 +115,7 @@ jobs:
           patch=$(echo "$version" | cut -d . -f 3)
           echo ${{ github.token }} | sudo docker login ghcr.io -u ${{ github.actor }} --password-stdin
           find . -iname '*.image' | while read -r image_file; do
-            sudo docker load < "$image_file"
+            sudo docker load --input "$image_file"
             image_name="$image_file"
             image_name="${image_name#./}"
             image_name="${image_name%.image}"
@@ -124,12 +127,24 @@ jobs:
             sudo docker push "ghcr.io/${GITHUB_REPOSITORY%/*}/$image_name" --all-tags
           done
 
-      - uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3.0.1
+      - id: is_latest
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version="${{ steps.version.outputs.version }}"
+          major=$(echo "$version" | cut -d . -f 1)
+          minor=$(echo "$version" | cut -d . -f 2)
+          patch=$(echo "$version" | cut -d . -f 3)
+          is_latest=$(gh release list --json tagName --jq '.[].tagName | select(test("^v[0-9]+\\.[0-9]+\\.[0-9]+$")) | ltrimstr("v")' --limit 1000 | awk -F. -v maj="$major" -v min="$minor" -v pat="$patch" 'BEGIN{r="true"} ($1+0>maj+0) || ($1+0==maj+0 && $2+0>min+0) || ($1+0==maj+0 && $2+0==min+0 && $3+0>pat+0) {r="false"; exit} END{print r}')
+          echo "is_latest=$is_latest" >> "$GITHUB_OUTPUT"
+
+      - uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228 # v3.0.2
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           target_commitish: ${{ matrix.ref }}
           tag_name: v${{ steps.version.outputs.version }}
           name: Release v${{ steps.version.outputs.version }}
+          make_latest: ${{ steps.is_latest.outputs.is_latest }}
           generate_release_notes: true
           files: |-
             *.deb

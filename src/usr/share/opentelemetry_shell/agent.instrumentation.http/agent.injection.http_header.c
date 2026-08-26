@@ -1,11 +1,11 @@
 #define _GNU_SOURCE
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <fcntl.h>
-#include <unistd.h>
 #include <dlfcn.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <sys/stat.h>
+#include <unistd.h>
 
 static unsigned long otel_handle_counter = 0;
 
@@ -38,11 +38,15 @@ char *otel_span_start(FILE *sdk, const char *type, const char *name) {
 
 char * otel_traceparent(FILE *sdk, const char *span_handle) {
   size_t buffer_size = 1024 * 4;
-  char *buffer = (char*) calloc(buffer_size, sizeof(char));
-  if (!buffer) return NULL;
+  char *buffer = (char *)calloc(buffer_size, sizeof(char));
+  if (!buffer)
+    return NULL;
 
   char *sdk_response = tmpnam(NULL); // this is unsafe, i know
-  if (mkfifo(sdk_response, 0666) != 0) { free(buffer); return NULL; }
+  if (mkfifo(sdk_response, 0666) != 0) {
+    free(buffer);
+    return NULL;
+  }
 
   memset(buffer, 0, buffer_size);
   snprintf(buffer, buffer_size, "SPAN_TRACEPARENT %s %s\n", sdk_response, span_handle);
@@ -60,7 +64,8 @@ char * otel_traceparent(FILE *sdk, const char *span_handle) {
 
 int inject(char *buffer, size_t length) {
   char *traceparent = getenv("TRACEPARENT");
-  if (!traceparent) return 10;
+  if (!traceparent)
+    return 10;
   if (length == 24 && strcmp(buffer, "PRI * HTTP/2.0\r\n\r\nSM\r\n") == 0) {
     return 1;
   }
@@ -79,10 +84,12 @@ int inject(char *buffer, size_t length) {
   line_end = strchr(buffer, '\n');
   while (!!line_end && line_end - buffer > 1) {
     *line_end = '\0';
-    if (strstr(buffer, "traceparent: ") == buffer && !!strstr(buffer, traceparent)) {
+    if (strstr(buffer, "traceparent: ") == buffer &&
+        !!strstr(buffer, traceparent)) {
       char *sdk_pipe = getenv("OTEL_SHELL_INJECT_HTTP_SDK_PIPE");
       char *handle_file = getenv("OTEL_SHELL_INJECT_HTTP_HANDLE_FILE");
-      if (!sdk_pipe || !handle_file) return 4;
+      if (!sdk_pipe || !handle_file)
+        return 4;
       FILE *sdk = fopen(sdk_pipe, "a+");
       if (!sdk) return 4;
       char *span_handle = otel_span_start(sdk, "CLIENT", "HTTP");
@@ -97,7 +104,7 @@ int inject(char *buffer, size_t length) {
       char *traceparent = otel_traceparent(sdk, span_handle);
       if (!traceparent) { free(span_handle); return 7; }
       if (strlen("traceparent: ") + strlen(traceparent) + 1 != strlen(buffer)) { free(traceparent); free(span_handle); return 8; }
-      sprintf(buffer, "traceparent: %s\r", traceparent);
+      snprintf(buffer, strlen(buffer) + 1, "traceparent: %s\r", traceparent);
       free(traceparent);
       free(span_handle);
       fclose(sdk); // this will leak on some early aborts, process terminate will clean it up
@@ -113,7 +120,8 @@ int inject(char *buffer, size_t length) {
 }
 
 int inject_safely(char *buffer, size_t length) {
-  if (length < 2) return 11;
+  if (length < 2)
+    return 11;
   char last = buffer[length - 1];
   buffer[length - 1] = '\0';
   int result = inject(buffer, length);
@@ -124,7 +132,7 @@ int inject_safely(char *buffer, size_t length) {
 ssize_t (*original_write)(int fd, const void *buf, size_t count);
 ssize_t write(int fd, const void *buf, size_t count) {
   if (fd > 2 && count > 1) {
-    char *copy = (char*) malloc(count);
+    char *copy = (char *)malloc(count);
     if (copy) {
       memcpy(copy, buf, count);
       if (inject_safely(copy, count) == 0) {
@@ -140,42 +148,43 @@ ssize_t write(int fd, const void *buf, size_t count) {
 
 ssize_t (*original_send)(int sockfd, const void *buf, size_t len, int flags);
 ssize_t send(int sockfd, const void *buf, size_t len, int flags) {
-    if (len > 1) {
-      char *copy = (char*) malloc(len);
-      if (copy) {
-        memcpy(copy, buf, len);
-        if (inject_safely(copy, len) == 0) {
-          ssize_t result = original_send(sockfd, copy, len, flags);
-          free(copy);
-          return result;
-        }
+  if (len > 1) {
+    char *copy = (char *)malloc(len);
+    if (copy) {
+      memcpy(copy, buf, len);
+      if (inject_safely(copy, len) == 0) {
+        ssize_t result = original_send(sockfd, copy, len, flags);
         free(copy);
+        return result;
       }
+      free(copy);
     }
-    return original_send(sockfd, buf, len, flags);
+  }
+  return original_send(sockfd, buf, len, flags);
 }
 
 int (*original_SSL_write)(void *ssl, const void *buf, int num);
 int SSL_write(void *ssl, const void *buf, int num) {
-    if (num > 1) {
-      char *copy = (char*) malloc((size_t) num);
-      if (copy) {
-        memcpy(copy, buf, (size_t) num);
-        if (inject_safely(copy, (size_t) num) == 0) {
-          int result = original_SSL_write(ssl, copy, num);
-          free(copy);
-          return result;
-        }
+  if (num > 1) {
+    char *copy = (char *)malloc((size_t)num);
+    if (copy) {
+      memcpy(copy, buf, (size_t)num);
+      if (inject_safely(copy, (size_t)num) == 0) {
+        int result = original_SSL_write(ssl, copy, num);
         free(copy);
+        return result;
       }
+      free(copy);
     }
-    return original_SSL_write(ssl, buf, num);
+  }
+  return original_SSL_write(ssl, buf, num);
 }
 
-ssize_t (*original_gnutls_record_send)(void *session, const void *data, size_t data_size);
-ssize_t gnutls_record_send(void* session, const void* data, size_t data_size) {
+ssize_t (*original_gnutls_record_send)(void *session, const void *data,
+                                       size_t data_size);
+ssize_t gnutls_record_send(void *session, const void *data, size_t data_size) {
   if (data_size > 1) {
-    char *copy = (char*) malloc(data_size);
+    char *copy = (char *)malloc(data_size);
     if (copy) {
       memcpy(copy, data, data_size);
       if (inject_safely(copy, data_size) == 0) {
@@ -189,14 +198,18 @@ ssize_t gnutls_record_send(void* session, const void* data, size_t data_size) {
   return original_gnutls_record_send(session, data, data_size);
 }
 
-ssize_t (*original_gnutls_record_send2)(void *session, const void *data, size_t data_size, size_t pad, unsigned flags);
-ssize_t gnutls_record_send2(void* session, const void* data, size_t data_size, size_t pad, unsigned flags) {
+ssize_t (*original_gnutls_record_send2)(void *session, const void *data,
+                                        size_t data_size, size_t pad,
+                                        unsigned flags);
+ssize_t gnutls_record_send2(void *session, const void *data, size_t data_size,
+                            size_t pad, unsigned flags) {
   if (data_size > 1) {
-    char *copy = (char*) malloc(data_size);
+    char *copy = (char *)malloc(data_size);
     if (copy) {
       memcpy(copy, data, data_size);
       if (inject_safely(copy, data_size) == 0) {
-        ssize_t result = original_gnutls_record_send2(session, copy, data_size, pad, flags);
+        ssize_t result =
+            original_gnutls_record_send2(session, copy, data_size, pad, flags);
         free(copy);
         return result;
       }
@@ -206,14 +219,18 @@ ssize_t gnutls_record_send2(void* session, const void* data, size_t data_size, s
   return original_gnutls_record_send2(session, data, data_size, pad, flags);
 }
 
-ssize_t (*original_gnutls_record_send_range)(void *session, const void *data, size_t data_size, const void *range);
-ssize_t gnutls_record_send_range(void* session, const void* data, size_t data_size, const void *range) {
+ssize_t (*original_gnutls_record_send_range)(void *session, const void *data,
+                                             size_t data_size,
+                                             const void *range);
+ssize_t gnutls_record_send_range(void *session, const void *data,
+                                 size_t data_size, const void *range) {
   if (data_size > 1) {
-    char *copy = (char*) malloc(data_size);
+    char *copy = (char *)malloc(data_size);
     if (copy) {
       memcpy(copy, data, data_size);
       if (inject_safely(copy, data_size) == 0) {
-        ssize_t result = original_gnutls_record_send_range(session, copy, data_size, range);
+        ssize_t result =
+            original_gnutls_record_send_range(session, copy, data_size, range);
         free(copy);
         return result;
       }
@@ -223,19 +240,36 @@ ssize_t gnutls_record_send_range(void* session, const void* data, size_t data_si
   return original_gnutls_record_send_range(session, data, data_size, range);
 }
 
-int (*original_nghttp2_submit_request)(void *session, void *pri_spec, void *nva, size_t nvlen, void *data_prd, void *stream_user_data);
-int nghttp2_submit_request(void *session, void *pri_spec, void *nva, size_t nvlen, void *data_prd, void *stream_user_data) {
+int (*original_nghttp2_submit_request)(void *session, void *pri_spec, void *nva,
+                                       size_t nvlen, void *data_prd,
+                                       void *stream_user_data);
+int nghttp2_submit_request(void *session, void *pri_spec, void *nva,
+                           size_t nvlen, void *data_prd,
+                           void *stream_user_data) {
   char *sdk_pipe = getenv("OTEL_SHELL_INJECT_HTTP_SDK_PIPE");
   char *handle_file = getenv("OTEL_SHELL_INJECT_HTTP_HANDLE_FILE");
-  if (!sdk_pipe || !handle_file) return original_nghttp2_submit_request(session, pri_spec, nva, nvlen, data_prd, stream_user_data);
+  if (!sdk_pipe || !handle_file)
+    return original_nghttp2_submit_request(session, pri_spec, nva, nvlen,
+                                           data_prd, stream_user_data);
   for (size_t index = 0; index < nvlen; index++) {
-    void* nv = nva + (sizeof(void*) * 2 + sizeof(size_t) * 2 + 8) * index; // we are guessing struct layouts here, hella scary!
-    char* key = * (char**) nv; nv += sizeof(char*);
-    char* value = * (char**) nv; nv += sizeof(char*);
-    size_t keylen = * (size_t*) nv; nv += sizeof(size_t);
-    size_t valuelen = * (size_t*) nv; nv += sizeof(size_t);
-    char* my_key = (char*) calloc(keylen + 1, sizeof(char));
-    char* my_value = (char*) calloc(valuelen + 1, sizeof(char));
+    void *nv =
+        nva + (sizeof(void *) * 2 + sizeof(size_t) * 2 + 8) *
+                  index; // we are guessing struct layouts here, hella scary!
+    char *key = *(char **)nv;
+    nv += sizeof(char *);
+    char *value = *(char **)nv;
+    nv += sizeof(char *);
+    size_t keylen = *(size_t *)nv;
+    nv += sizeof(size_t);
+    size_t valuelen = *(size_t *)nv;
+    nv += sizeof(size_t);
+    char *my_key = (char *)calloc(keylen + 1, sizeof(char));
+    char *my_value = (char *)calloc(valuelen + 1, sizeof(char));
+    if (!my_key || !my_value) {
+      free(my_key);
+      free(my_value);
+      break;
+    }
     memcpy(my_key, key, keylen);
     memcpy(my_value, value, valuelen);
     my_key[keylen] = '\0';
@@ -263,16 +297,17 @@ int nghttp2_submit_request(void *session, void *pri_spec, void *nva, size_t nvle
     free(my_key);
     free(my_value);
   }
-  return original_nghttp2_submit_request(session, pri_spec, nva, nvlen, data_prd, stream_user_data);
+  return original_nghttp2_submit_request(session, pri_spec, nva, nvlen,
+                                         data_prd, stream_user_data);
 }
 
-__attribute__ ((constructor))
-void init() {
-    original_write = dlsym(RTLD_NEXT, "write");
-    original_send = dlsym(RTLD_NEXT, "send");
-    original_SSL_write = dlsym(RTLD_NEXT, "SSL_write");
-    original_gnutls_record_send = dlsym(RTLD_NEXT, "gnutls_record_send");
-    original_gnutls_record_send2 = dlsym(RTLD_NEXT, "gnutls_record_send2");
-    original_gnutls_record_send_range = dlsym(RTLD_NEXT, "gnutls_record_send_range");
-    original_nghttp2_submit_request = dlsym(RTLD_NEXT, "nghttp2_submit_request");
+__attribute__((constructor)) void init() {
+  original_write = dlsym(RTLD_NEXT, "write");
+  original_send = dlsym(RTLD_NEXT, "send");
+  original_SSL_write = dlsym(RTLD_NEXT, "SSL_write");
+  original_gnutls_record_send = dlsym(RTLD_NEXT, "gnutls_record_send");
+  original_gnutls_record_send2 = dlsym(RTLD_NEXT, "gnutls_record_send2");
+  original_gnutls_record_send_range =
+      dlsym(RTLD_NEXT, "gnutls_record_send_range");
+  original_nghttp2_submit_request = dlsym(RTLD_NEXT, "nghttp2_submit_request");
 }

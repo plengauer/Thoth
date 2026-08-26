@@ -2,6 +2,13 @@
 if [ -n "${INPUT___KILL_SWITCH:-}" ]; then
   echo "::warning ::OpenTelemetry for GitHub actions disabled by kill switch!" && exit 0
 fi
+if [ -z "${INPUT___KILL_SWITCH:-}" ] && [ -n "${INPUT_GITHUB_TOKEN:-}" ]; then
+  kill_switch_value="$(curl -sf -H "Authorization: Bearer $INPUT_GITHUB_TOKEN" "${GITHUB_API_URL:-https://api.github.com}/repos/$GITHUB_REPOSITORY/actions/variables/OTEL_KILL_SWITCH" 2>/dev/null | jq -r '.value // empty' || true)"
+  [ -n "${kill_switch_value:-}" ] || kill_switch_value="$(curl -sf -H "Authorization: Bearer $INPUT_GITHUB_TOKEN" "${GITHUB_API_URL:-https://api.github.com}/orgs/$GITHUB_REPOSITORY_OWNER/actions/variables/OTEL_KILL_SWITCH" 2>/dev/null | jq -r '.value // empty' || true)"
+  if [ -n "${kill_switch_value:-}" ]; then
+    echo "::warning ::OpenTelemetry for GitHub actions disabled by kill switch!" && exit 0
+  fi
+fi
 if [ "${OTEL_LOGS_EXPORTER:-otlp}" != otlp ] && [ "${OTEL_LOGS_EXPORTER:-otlp}" != console ] && [ "${OTEL_LOGS_EXPORTER:-otlp}" != none ] && [ "${OTEL_LOGS_EXPORTER:-otlp}" != deferred ]; then
   echo "::error ::OpenTelemetry for GitHub actions only supports otlp exporters ($OTEL_LOGS_EXPORTER). For other exporters, pipe the data through a collector outside of GitHub to translate the data to a different protocol." && false
 fi
@@ -32,5 +39,5 @@ fi
 if [ "${OTEL_LOGS_EXPORTER:-}" = console ] || [ "${OTEL_METRICS_EXPORTER:-}" = console ] || [ "${OTEL_TRACES_EXPORTER:-}" = console ]; then
   export OTEL_SHELL_SDK_OUTPUT_REDIRECT="${OTEL_SHELL_SDK_OUTPUT_REDIRECT:-/dev/stderr}"
 fi
-export OTEL_EXPORTER_OTLP_PROTOCOL="${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}" # default is not uniform, so lets pin it here
+export OTEL_EXPORTER_OTLP_PROTOCOL="${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}"                                     # default is not uniform, so lets pin it here
 export OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE="${OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE:-delta}" # default to delta for volatile environments

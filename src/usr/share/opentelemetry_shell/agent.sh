@@ -12,22 +12,25 @@ fi
 _otel_shell_injected=TRUE
 
 case "$-" in
-  *r*) \echo "WARNING OpenTelemetry for shell does not support restricted mode (set -r)!" >&2; return 0;;
+  *r*)
+    \echo "WARNING OpenTelemetry for shell does not support restricted mode (set -r)!" >&2
+    return 0
+    ;;
 esac
 
 _otel_shell_conservative_exec="${OTEL_SHELL_CONSERVATIVE_EXEC:-FALSE}"
 unset OTEL_SHELL_CONSERVATIVE_EXEC
 
 \. /usr/share/opentelemetry_shell/api.sh
-_otel_package_version opentelemetry-shell > /dev/null # to build the cache outside a subshell
+_otel_package_version opentelemetry-shell >/dev/null # to build the cache outside a subshell
 
 if \[ "$_otel_shell" = "bash" ] && \[ -n "${BASHPID:-}" ] && \[ "$$" != "$BASHPID" ]; then
   \echo "WARNING The OpenTelemetry shell file for auto-instrumentation is sourced in a subshell, automatic instrumentation will only be active within that subshell!" >&2
 fi
 
 case "$-" in
-  *i*) _otel_is_interactive=TRUE;;
-  *)   _otel_is_interactive=FALSE;;
+  *i*) _otel_is_interactive=TRUE ;;
+  *) _otel_is_interactive=FALSE ;;
 esac
 
 if \[ -n "${OTEL_SHELL_AUTO_INSTRUMENTATION_HINT:-}" ]; then
@@ -54,7 +57,7 @@ _otel_source_line_resolver='${LINENO:-}'
 _otel_source_func_resolver='${FUNCNAME:-}'
 
 if \[ "$_otel_shell" = "bash" ]; then
-  shopt -s expand_aliases 1> /dev/null 2> /dev/null
+  shopt -s expand_aliases 1>/dev/null 2>/dev/null
 fi
 
 _otel_auto_instrument() {
@@ -67,7 +70,11 @@ _otel_auto_instrument() {
   ## (1) using the hint - will not work when scripts are changing or called the same but very fast!
   ## (2) using the resolved hint - will not work when new executables are added onto the system or their shebang changes or new bash.rc aliases are added
   ## (3) using the filtered list of commands - will work in every case but slowest
-  local cache_key="$({ \echo "$_otel_shell_conservative_exec" "${OTEL_SHELL_CONFIG_MUTE_INTERNALS:-}" "${OTEL_SHELL_CONFIG_MUTE_BUILTINS:-}" "$PATH" "$hint"; if \type dpkg 1> /dev/null 2> /dev/null; then \ls -la /var/lib/dpkg/lock; else _otel_list_path_commands | _otel_filter_commands_by_special | _otel_filter_commands_by_hint "$hint"; fi; \alias; } | \md5sum | \cut -d ' ' -f 1)"
+  local cache_key="$({
+    \echo "$_otel_shell_conservative_exec" "${OTEL_SHELL_CONFIG_MUTE_INTERNALS:-}" "${OTEL_SHELL_CONFIG_MUTE_BUILTINS:-}" "$PATH" "$hint"
+    if \type dpkg 1>/dev/null 2>/dev/null; then \ls -la /var/lib/dpkg/lock; else _otel_list_path_commands | _otel_filter_commands_by_special | _otel_filter_commands_by_hint "$hint"; fi
+    \alias
+  } | \md5sum | \cut -d ' ' -f 1)"
   local cache_file="$TMPDIR/opentelemetry_shell_$(_otel_package_version opentelemetry-shell)"_"$_otel_shell"_instrumentation_cache_"$cache_key".aliases
   if \[ -r "$cache_file" ]; then
     \eval "$(\grep -vh '_otel_alias_prepend ' $(_otel_list_special_auto_instrument_files))"
@@ -77,7 +84,7 @@ _otel_auto_instrument() {
   # special instrumentations
   _otel_alias_prepend alias _otel_alias_and_instrument
   _otel_alias_prepend unalias _otel_unalias_and_reinstrument
-  if \type hash 1> /dev/null 2> /dev/null; then
+  if \type hash 1>/dev/null 2>/dev/null; then
     _otel_alias_prepend hash _otel_hash_and_reinstrument
   fi
   _otel_alias_prepend export _otel_export_PATH_and_reinstrument
@@ -106,13 +113,13 @@ _otel_auto_instrument() {
   \alias trap=_otel_trap
 
   # cache
-  \[ "$(\alias | \wc -l)" -gt 25 ] && \alias | \sed 's/^alias //' | { \[ -n "$hint" ] && \grep "$(_otel_resolve_instrumentation_hint "$hint" | \sed 's/[]\.^*[]/\\&/g' | \awk '$0=$0"="')" || \cat; } | \awk '{print "\\alias " $0 }' > "$cache_file" || \true
+  \[ "$(\alias | \wc -l)" -gt 25 ] && \alias | \sed 's/^alias //' | { \[ -n "$hint" ] && \grep "$(_otel_resolve_instrumentation_hint "$hint" | \sed 's/[]\.^*[]/\\&/g' | \awk '$0=$0"="')" || \cat; } | \awk '{print "\\alias " $0 }' >"$cache_file" || \true
 }
 
 _otel_list_special_auto_instrument_files() {
   case "$-" in
-    *f*) \ls /usr/share/opentelemetry_shell | \grep -E '^agent.instrumentation.*.sh$' | while \read -r _otel_file_name; do \echo /usr/share/opentelemetry_shell/"$_otel_file_name"; done;;
-    *) \echo /usr/share/opentelemetry_shell/agent.instrumentation.*.sh;;
+    *f*) \ls /usr/share/opentelemetry_shell | \grep -E '^agent.instrumentation.*.sh$' | while \read -r _otel_file_name; do \echo /usr/share/opentelemetry_shell/"$_otel_file_name"; done ;;
+    *) \echo /usr/share/opentelemetry_shell/agent.instrumentation.*.sh ;;
   esac
 }
 
@@ -127,7 +134,10 @@ _otel_list_path_commands() {
 }
 
 _otel_list_path_executables() {
-  \echo "$PATH" | \tr ':' '\n' | while \read dir; do \find "$dir" -maxdepth 1 -type f -executable 2> /dev/null || \true; \find "$dir" -maxdepth 1 -type l -executable 2> /dev/null || \true; done
+  \echo "$PATH" | \tr ':' '\n' | while \read dir; do
+    \find "$dir" -maxdepth 1 -type f -executable 2>/dev/null || \true
+    \find "$dir" -maxdepth 1 -type l -executable 2>/dev/null || \true
+  done
 }
 
 _otel_path_2_name() {
@@ -143,7 +153,7 @@ _otel_list_alias_commands() {
 }
 
 _otel_list_builtin_commands() {
-  if \type compgen 1> /dev/null 2> /dev/null; then
+  if \type compgen 1>/dev/null 2>/dev/null; then
     \compgen -b
   else
     for _otel_builtin in break cd chdir command . echo eval exec exit export false getopts hash jobs local printf pwd read return set shift times trap true : type umask unalias unset wait alias ulimit test [ kill; do \echo "$_otel_builtin"; done
@@ -176,7 +186,7 @@ _otel_resolve_instrumentation_hint() {
 _otel_filter_commands_by_instrumentation() {
   local pre_instrumented_executables="$(\alias | \grep -F '_otel_observe' | \sed 's/^alias //' | \cut -d = -f 1)"
   if \[ -n "$pre_instrumented_executables" ]; then
-    \grep -xFv "$pre_instrumented_executables" 
+    \grep -xFv "$pre_instrumented_executables"
   else
     \cat
   fi
@@ -184,7 +194,7 @@ _otel_filter_commands_by_instrumentation() {
 
 _otel_filter_commands_by_mode() {
   if \[ "${OTEL_SHELL_CONFIG_MUTE_INTERNALS:-FALSE}" = TRUE ]; then
-    \cat > /dev/null # all of them are internal
+    \cat >/dev/null # all of them are internal
   else
     \cat
   fi | if \[ "${OTEL_SHELL_CONFIG_MUTE_BUILTINS:-FALSE}" = TRUE ]; then
@@ -211,13 +221,13 @@ _otel_deshebangify() {
   if \[ "$(_otel_command_type "$cmd")" != file ]; then return 1; fi
   local shebang="$(_otel_resolve_shebang "$1")" # e.g., "/bin/bash -x"
   if \[ -z "$shebang" ]; then return 2; fi
-  \alias "$1=OTEL_SHELL_COMMAND_TYPE_OVERRIDE=file $shebang $(\which "$1" 2> /dev/null)" # e.g., alias upgrade='/bin/bash -x /usr/bin/upgrade'
+  \alias "$1=OTEL_SHELL_COMMAND_TYPE_OVERRIDE=file $shebang $(\which "$1" 2>/dev/null)" # e.g., alias upgrade='/bin/bash -x /usr/bin/upgrade'
 }
 
 _otel_resolve_shebang() {
-  local path="$(\which "$1" 2> /dev/null)"
+  local path="$(\which "$1" 2>/dev/null)"
   if \[ -z "$path" ] || ! \[ -x "$path" ]; then return 1; fi
-  \read -r first_line < "$path"
+  \read -r first_line <"$path"
   if ! _otel_string_starts_with "$first_line" "#!"; then return 2; fi
   local shebang="${first_line#\#\!}"
   local shebang="${shebang#"${shebang%%[![:space:]]*}"}"
@@ -246,11 +256,11 @@ _otel_dealiasify() {
 }
 
 _otel_has_alias() {
-  \alias "$1" 1> /dev/null 2> /dev/null # for some reason &> does not work in built-in alias
+  \alias "$1" 1>/dev/null 2>/dev/null # for some reason &> does not work in built-in alias
 }
 
 _otel_resolve_alias() {
-  local my_alias="$(\alias "$1" 2> /dev/null)"
+  local my_alias="$(\alias "$1" 2>/dev/null)"
   local my_alias="${my_alias#alias }"
   local my_alias="$(\eval "\\printf '%s\n' $my_alias")"
   \printf '%s\n' "${my_alias#*=}"
@@ -261,19 +271,19 @@ otel_instrument() {
 }
 
 otel_outstrument() {
-  \unalias "$1" 1> /dev/null 2> /dev/null || true
+  \unalias "$1" 1>/dev/null 2>/dev/null || true
 }
 
 _otel_alias_prepend() {
   local original_command="$1"
   local prepend_command="$2"
 
-  if ! _otel_has_alias "$original_command"; then # fastpath
+  if ! _otel_has_alias "$original_command"; then                                                                                                            # fastpath
     local new_command="$(\printf '%s' "OTEL_SHELL_COMMAND_TYPE_OVERRIDE=$(_otel_command_type "$original_command") $prepend_command '\\$original_command'")" # need to use printf to handle backslashes consistently across shells
   else
     local previous_command="$(_otel_resolve_alias "$original_command")"
     for prepend_command_part in $prepend_command; do
-      if _otel_string_contains "$previous_command" "$prepend_command_part"; then return 0; fi      
+      if _otel_string_contains "$previous_command" "$prepend_command_part"; then return 0; fi
     done
     if _otel_string_contains "$previous_command" "OTEL_SHELL_COMMAND_TYPE_OVERRIDE="; then
       local command_type="$previous_command"
@@ -293,10 +303,10 @@ _otel_alias_prepend() {
     local previous_otel_command="$(\printf '%s' "$previous_command" | _otel_line_split | \grep '^_otel_' | _otel_line_join)"
     local previous_alias_command="$(\printf '%s' "$previous_command" | _otel_line_split | \grep -v '^_otel_' | _otel_line_join)"
     case "$previous_alias_command" in
-      "$original_command") local previous_alias_command="$(\printf '%s' "'\\$original_command'")";;
-      "$original_command "*) local previous_alias_command="$(\printf '%s' "'\\$original_command' $(_otel_string_contains "$previous_alias_command" " " && \printf '%s' "${previous_alias_command#* }" || \printf '%s' "$previous_alias_command")")";; 
-      "\\$original_command") local previous_alias_command="$(\printf '%s' "'\\$original_command'")";;
-      "\\$original_command "*) local previous_alias_command="$(\printf '%s' "'\\$original_command' $(_otel_string_contains "$previous_alias_command" " " && \printf '%s' "${previous_alias_command#* }" || \printf '%s' "$previous_alias_command")")";;
+      "$original_command") local previous_alias_command="$(\printf '%s' "'\\$original_command'")" ;;
+      "$original_command "*) local previous_alias_command="$(\printf '%s' "'\\$original_command' $(_otel_string_contains "$previous_alias_command" " " && \printf '%s' "${previous_alias_command#* }" || \printf '%s' "$previous_alias_command")")" ;;
+      "\\$original_command") local previous_alias_command="$(\printf '%s' "'\\$original_command'")" ;;
+      "\\$original_command "*) local previous_alias_command="$(\printf '%s' "'\\$original_command' $(_otel_string_contains "$previous_alias_command" " " && \printf '%s' "${previous_alias_command#* }" || \printf '%s' "$previous_alias_command")")" ;;
       *) ;;
     esac
     local new_command="$overrides $prepend_command $previous_otel_command $previous_alias_command"
@@ -319,7 +329,7 @@ _otel_alias_and_instrument() {
   local exit_code=0
   \eval "'alias'" "$(_otel_escape_args "$@")" || local exit_code="$?"
   if \[ -n "$*" ] && \[ "${*#*=*}" != "$*" ]; then
-    _otel_auto_instrument "$(_otel_dollar_star "$@" | _otel_line_split | \grep -m1 '=' 2> /dev/null | \tr '=' ' ')"
+    _otel_auto_instrument "$(_otel_dollar_star "$@" | _otel_line_split | \grep -m1 '=' 2>/dev/null | \tr '=' ' ')"
   fi
   return "$exit_code"
 }
@@ -343,10 +353,10 @@ _otel_hash_and_reinstrument() {
   if \[ "$1" = -r ]; then
     local aliases_pre="$(\mktemp)"
     local aliases_new="$(\mktemp)"
-    \alias | \sed 's/^alias //' | \awk '{print "\\alias " $0 }' > "$aliases_pre"
+    \alias | \sed 's/^alias //' | \awk '{print "\\alias " $0 }' >"$aliases_pre"
     \unalias -a
     _otel_auto_instrument "$_otel_shell_auto_instrumentation_hint"
-    \alias | \sed 's/^alias //' | \awk '{print "\\alias " $0 }' > "$aliases_new"
+    \alias | \sed 's/^alias //' | \awk '{print "\\alias " $0 }' >"$aliases_new"
     \unalias -a
     \. "$aliases_pre"
     \. "$aliases_new"
@@ -362,10 +372,10 @@ _otel_export_PATH_and_reinstrument() {
   if \[ "${1%%=*}" = PATH ]; then
     local aliases_pre="$(\mktemp)"
     local aliases_new="$(\mktemp)"
-    \alias | \sed 's/^alias //' | \awk '{print "\\alias " $0 }' > "$aliases_pre"
+    \alias | \sed 's/^alias //' | \awk '{print "\\alias " $0 }' >"$aliases_pre"
     \unalias -a
     _otel_auto_instrument "$_otel_shell_auto_instrumentation_hint"
-    \alias | \sed 's/^alias //' | \awk '{print "\\alias " $0 }' > "$aliases_new"
+    \alias | \sed 's/^alias //' | \awk '{print "\\alias " $0 }' >"$aliases_new"
     \unalias -a
     \. "$aliases_pre"
     \. "$aliases_new"
@@ -377,21 +387,24 @@ _otel_export_PATH_and_reinstrument() {
 _otel_instrument_and_source() {
   local n="$1"
   shift
-  local command="$(eval '\echo ${'"$(($n+1))"'}')"
-  local file="$(eval '\echo ${'"$(($n+2))"'}')"
+  local command="$(eval '\echo ${'"$(($n + 1))"'}')"
+  local file="$(eval '\echo ${'"$(($n + 2))"'}')"
   if \[ -f "$file" ]; then _otel_auto_instrument "$file"; fi
   \eval "'$command' '$file' $(if \[ $# -gt $(($n + 2)) ]; then \seq $(($n + 2 + 1)) $#; else \seq 1 $n; fi | while \read i; do \echo '"${'"$i"'}"'; done | _otel_line_join)"
 }
 
 _otel_inject_and_exec_directly() { # this function assumes there is no fd fuckery
   if \[ "$#" = 1 ]; then
+    if \[ -n "${_root_span_handle:-}" ]; then
+      otel_span_end "$_root_span_handle"
+    fi
+    otel_shutdown
     \export OTEL_SHELL_CONSERVATIVE_EXEC=TRUE
-    _otel_end_script
     if \[ -n "${_otel_commandline_override:-}" ]; then
       \export OTEL_SHELL_COMMANDLINE_OVERRIDE="$_otel_commandline_override"
       \export OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE="$PPID"
     fi
-    \eval '"exec"' "$(\xargs -0 $_otel_shell -c '. otelapi.sh; _otel_escape_args "$@"' sh < /proc/$$/cmdline)"
+    \eval '"exec"' "$(\xargs -0 $_otel_shell -c '. otelapi.sh; _otel_escape_args "$@"' sh </proc/$$/cmdline)"
   fi
 
   local span_id="$(otel_span_start INTERNAL "$@")"
@@ -399,7 +412,10 @@ _otel_inject_and_exec_directly() { # this function assumes there is no fd fucker
   local my_traceparent="$TRACEPARENT"
   otel_span_deactivate "$span_id"
   otel_span_end "$span_id"
-  _otel_end_script
+  if \[ -n "${_root_span_handle:-}" ]; then
+    otel_span_end "$_root_span_handle"
+  fi
+  otel_shutdown
 
   \export TRACEPARENT="$my_traceparent"
   \export OTEL_SHELL_AUTO_INJECTED=TRUE
@@ -415,7 +431,7 @@ _otel_inject_and_exec_by_location() {
   local line="$2"
   if \[ -n "$file" ] && \[ -n "$line" ] && \[ -f "$file" ]; then local command="$(\cat "$file" | \sed -n "$line"p | \grep -F 'exec' | \sed 's/^.*exec /exec /')"; fi
   if _otel_string_contains "$command" ';'; then local command="$(\printf '%s' "$command" | \cut -d ';' -f 1)"; fi
-  if \[ -z "$command" ] || \[ "$(\printf '%s' "$command" | \sed 's/ [0-9]*>.*$//')" = "exec" ]; then return 0; fi
+  if \[ -z "$command" ] || \[ "$(\printf '%s' "$command" | \sed -e 's/ *{[a-zA-Z_][a-zA-Z0-9_]*}[<>][<>&]*\([[:space:]]*[^[:space:]]\+\)\?//g' -e 's/ *[0-9]*[<>][<>&]*\([[:space:]]*[^[:space:]]\+\)\?//g')" = "exec" ]; then return 0; fi
   local command="$(\printf '%s' "$command" | \cut -d ' ' -f 2-)"
 
   local span_id="$(otel_span_start INTERNAL exec)"
@@ -423,14 +439,19 @@ _otel_inject_and_exec_by_location() {
   local my_traceparent="$TRACEPARENT"
   otel_span_deactivate "$span_id"
   otel_span_end "$span_id"
-  _otel_end_script
+  if \[ -n "${_root_span_handle:-}" ]; then
+    otel_span_end "$_root_span_handle"
+  fi
+  otel_shutdown
 
   \printf '%s\n' "$(_otel_escape_args export TRACEPARENT="$my_traceparent")"
   \printf '%s\n' "$(_otel_escape_args export OTEL_SHELL_AUTO_INJECTED=TRUE)"
   \printf '%s\n' "$(_otel_escape_args export OTEL_SHELL_COMMANDLINE_OVERRIDE="$(_otel_command_self)")"
   \printf '%s\n' "$(_otel_escape_args export OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE="$PPID")"
-  \echo -n '"exec" '; _otel_escape_args $_otel_shell -c '. otel.sh
-_otel_inject '"$command"; \echo -n ' "$0" "$@"'
+  \echo -n '"exec" '
+  _otel_escape_args $_otel_shell -c '. otel.sh
+_otel_inject '"$command"
+  \echo -n ' "$0" "$@"'
 }
 
 _otel_record_exec() {
@@ -444,11 +465,14 @@ _otel_record_exec() {
 }
 
 _otel_trap() {
-  local command="$1"; shift
+  local command="$1"
+  shift
   while \[ "$#" -gt 0 ]; do
-    local signal="$1"; shift
+    local signal="$1"
+    shift
     if \[ "$signal" = EXIT ] || \[ "$signal" = 0 ]; then
       _otel_deferred_exit_command="$command"
+      _otel_deferred_exit_command_owner="${BASHPID:-$$}"
     else
       \trap "$command" "$signal"
     fi
@@ -466,7 +490,7 @@ command() {
 _otel_inject() {
   if _otel_string_contains "$1" / && \[ -x "$1" ]; then
     local path="$1"
-    if ! \alias "${path##*/}" 1> /dev/null 2> /dev/null; then # in case its an absolute command that is not on the path at all, we need to make sure it is to have proper shebang resolution and the resulting instrumentation on hand
+    if ! \alias "${path##*/}" 1>/dev/null 2>/dev/null; then # in case its an absolute command that is not on the path at all, we need to make sure it is to have proper shebang resolution and the resulting instrumentation on hand
       local PATH="${path%/*}:$PATH"
       _otel_auto_instrument "$path " # this is a load-bearing whitespace so its not interpreted as a file hint
     fi
@@ -484,13 +508,13 @@ _otel_inject() {
 
 _otel_start_script() {
   otel_init || return $?
-  if \[ -n "${SSH_CLIENT:-}"  ] && \[ -n "${SSH_CONNECTION:-}" ] && \[ "${PPID:-}" != 0 ] && \[ "$(\cat /proc/$PPID/cmdline | \tr -d '\000' | \cut -d ' ' -f 1)" = "sshd:" ]; then
+  if \[ -n "${SSH_CLIENT:-}" ] && \[ -n "${SSH_CONNECTION:-}" ] && \[ "${PPID:-}" != 0 ] && \[ "$(\cat /proc/$PPID/cmdline | \tr -d '\000' | \cut -d ' ' -f 1)" = "sshd:" ]; then
     _root_span_handle="$(otel_span_start SERVER ssh)"
     otel_span_attribute_typed $_root_span_handle string ssh.ip="$(\echo $SSH_CONNECTION | \cut -d ' ' -f 3)"
     otel_span_attribute_typed $_root_span_handle int ssh.port="$(\echo $SSH_CONNECTION | \cut -d ' ' -f 4)"
     otel_span_attribute_typed $_root_span_handle string network.peer.ip="$(\echo $SSH_CLIENT | \cut -d ' ' -f 1)"
     otel_span_attribute_typed $_root_span_handle int network.peer.port="$(\echo $SSH_CLIENT | \cut -d ' ' -f 2)"
-  elif \[ -n "${SERVER_SOFTWARE:-}"  ] && \[ -n "${SCRIPT_NAME:-}" ] && \[ -n "${SERVER_NAME:-}" ] && \[ -n "${SERVER_PROTOCOL:-}" ] && ! \[ "${OTEL_SHELL_AUTO_INJECTED:FALSE}" = "TRUE" ] && \[ "${PPID:-}" != 0 ] && \[ "$(\cat "/proc/$PPID/cmdline" | \tr '\000' ' ' | \cut -d ' ' -f 1 | _otel_path_2_name)" = "python3" ]; then
+  elif \[ -n "${SERVER_SOFTWARE:-}" ] && \[ -n "${SCRIPT_NAME:-}" ] && \[ -n "${SERVER_NAME:-}" ] && \[ -n "${SERVER_PROTOCOL:-}" ] && ! \[ "${OTEL_SHELL_AUTO_INJECTED:FALSE}" = "TRUE" ] && \[ "${PPID:-}" != 0 ] && \[ "$(\cat "/proc/$PPID/cmdline" | \tr '\000' ' ' | \cut -d ' ' -f 1 | _otel_path_2_name)" = "python3" ]; then
     _root_span_handle="$(otel_span_start SERVER GET)"
     otel_span_attribute_typed $_root_span_handle string network.protocol.name=http
     otel_span_attribute_typed $_root_span_handle string network.transport=tcp
@@ -504,7 +528,7 @@ _otel_start_script() {
     otel_span_attribute_typed $_root_span_handle string url.query=""
     otel_span_attribute_typed $_root_span_handle string url.scheme="$(\echo "$SERVER_PROTOCOL" | \cut -d / -f 1 | \tr '[:upper:]' '[:lower:]')"
     otel_span_attribute_typed $_root_span_handle string http.response.status_code=200
-  elif _otel_command_self | \grep -q '/var/lib/dpkg/' > /dev/null; then
+  elif _otel_command_self | \grep -q '/var/lib/dpkg/' >/dev/null; then
     local cmdline="$(_otel_command_self | \sed 's/^.* \(\/var\/lib\/dpkg\/.*\)$/\1/')"
     _root_span_handle="$(otel_span_start SERVER "$(\echo "$cmdline" | \cut -d . -f 2- | \cut -d ' ' -f 1)")"
     otel_span_attribute_typed $_root_span_handle string debian.package.name="$(\echo "$cmdline" | _otel_path_2_name | \cut -d . -f 1)"
@@ -518,9 +542,11 @@ _otel_start_script() {
   unset OTEL_SHELL_AUTO_INJECTED
 }
 
+# Real end of script. Only ever reached from the EXIT trap installed below, which is the
+# only place the script's deferred exit command (captured by _otel_trap) may be evaluated.
 _otel_end_script() {
   local exit_code="$?"
-  if \[ -n "${_otel_deferred_exit_command:-}" ]; then
+  if \[ -n "${_otel_deferred_exit_command:-}" ] && \[ "${_otel_deferred_exit_command_owner:-}" = "${BASHPID:-$$}" ]; then
     \eval "$_otel_deferred_exit_command" || local exit_code="$?"
   fi
   if \[ -n "${_root_span_handle:-}" ]; then

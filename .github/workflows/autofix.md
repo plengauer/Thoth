@@ -10,6 +10,7 @@ if: ${{ github.event.workflow_run.conclusion == 'failure' }}
 permissions:
   contents: read
   actions: read
+  issues: read
 tools:
   github:
     toolsets: [context, actions, issues]
@@ -28,9 +29,9 @@ You are an automated agent that creates GitHub issues for security and linting e
 
 When triggered by the completion of the "Analyze" workflow on the main branch:
 
-1. **Check the workflow conclusion**: The triggering workflow run ID is provided in the context as `triggering-workflow-run-id`. If the conclusion is not "failure", use the `noop` safe output to signal no action needed and stop.
+1. **Get the triggering workflow run from event context**: Read the current workflow event context and use `github.event.workflow_run.id` as the triggering Analyze run ID. Do not list workflow runs to discover it.
 
-2. **Get the failing job logs**: Use the GitHub actions toolset to list all jobs for the triggering workflow run (use the `triggering-workflow-run-id`). For each failed job, download the job logs.
+2. **Get the failing job logs directly from the run ID**: Use the GitHub `get_job_logs` tool with `run_id=<workflow_run.id>` and `failed_only=true` to retrieve logs for failed jobs in that run. Do not call `actions_list` or `actions_get`.
 
 3. **Analyze the logs**: Determine if any jobs failed due to severe security or linting issues detected by analysis tools (e.g., CodeQL security findings, linting rule violations). Clearly distinguish these from infrastructure failures such as:
    - Missing permissions or secrets
@@ -53,3 +54,4 @@ When triggered by the completion of the "Analyze" workflow on the main branch:
 - **Check for duplicates**: Before creating an issue, search open issues to avoid duplicates.
 - **Only real findings**: Do not create issues for infrastructure failures, missing permissions, or workflow operational problems.
 - **Be precise**: Issue titles should clearly identify the tool, finding type, file, and location.
+- **Infrastructure/tooling failures are `noop`**: If logs cannot be retrieved or are missing because of permissions/tooling limitations, treat that as infrastructure failure and use `noop`.

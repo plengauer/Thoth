@@ -41,8 +41,8 @@ assert_equals 0 "$?"
 
 # from https://github.com/actions/first-interaction/blob/main/Dockerfile (added because it was hanging forever)
 dockerfile="$(mktemp)"
-echo 'FROM node:20.10-buster-slim' >> "$dockerfile"
-echo 'ENTRYPOINT ["node", "-e", "console.log(\"hello world 6\")"]' >> "$dockerfile"
+echo 'FROM node:20.10-buster-slim' >>"$dockerfile"
+echo 'ENTRYPOINT ["node", "-e", "console.log(\"hello world 6\")"]' >>"$dockerfile"
 sudo docker build -t docker_test_0 -f "$dockerfile" .
 assert_equals 0 "$?"
 assert_equals "hello world 6" "$(sudo docker run --rm=true docker_test_0)"

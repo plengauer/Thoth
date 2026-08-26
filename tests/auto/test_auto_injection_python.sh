@@ -138,7 +138,7 @@ requests.get("http://example.com/bar")
 echo '
 import requests
 requests.get("http://example.com/baz")
-' > script.py
+' >script.py
 python3 script.py | grep -- '/baz' || exit 1
 
 dir=$(mktemp -d)
@@ -161,7 +161,7 @@ script=$(mktemp -u).py
 echo '
 import requests
 requests.get("http://example.com/instrumented")
-' > "$script"
+' >"$script"
 opentelemetry-instrument python3 "$script" | grep -- '/instrumented' || exit 1
 deactivate
 
@@ -192,12 +192,12 @@ pip install requests
 echo '
 import requests
 requests.get("http://example.com/venv_deep_file")
-' > "$dir"/script.py
+' >"$dir"/script.py
 python "$dir"/script.py | grep -- '/venv_deep_file' || exit 1
 deactivate
 # Test Python file with __future__ imports (issue with google-github-actions/setup-gcloud)
 dir=$(mktemp -d)
-cat > "$dir"/test_future.py << 'PYEOF'
+cat >"$dir"/test_future.py <<'PYEOF'
 from __future__ import absolute_import
 from __future__ import print_function
 

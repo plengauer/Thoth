@@ -10,7 +10,7 @@ jobs:
     permissions:
       actions: read
       contents: read
-    uses: ./.github/workflows/build.yml
+    uses: $/.github/workflows/build.yml
     with:
       ref: ${{ inputs.ref }}
     secrets: inherit
@@ -19,7 +19,7 @@ jobs:
     permissions:
       actions: read
       contents: read
-    uses: ./.github/workflows/test_shell.yml
+    uses: $/.github/workflows/test_shell.yml
     with:
       ref: ${{ inputs.ref }}
     secrets: inherit
@@ -40,7 +40,7 @@ jobs:
       pull-requests: none
       security-events: none
       statuses: none
-    uses: ./.github/workflows/test_github.yml
+    uses: $/.github/workflows/test_github.yml
     with:
       ref: ${{ inputs.ref }}
     secrets: inherit
@@ -53,7 +53,7 @@ jobs:
       contents: none
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@2169fb0fa9a8260fde99a2a185bbf99a5d63546e # v5.59.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@be259b5ae1e13e2398a8b96dce8baeaddac0663d # v5.61.2
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
@@ -69,7 +69,7 @@ jobs:
       contents: none
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@2169fb0fa9a8260fde99a2a185bbf99a5d63546e # v5.59.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@be259b5ae1e13e2398a8b96dce8baeaddac0663d # v5.61.2
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}

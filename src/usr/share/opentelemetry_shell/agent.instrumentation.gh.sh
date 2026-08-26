@@ -2,15 +2,18 @@
 
 _otel_propagate_gh() {
   case "$-" in
-    *m*) local job_control=1; \set +m;;
-    *) local job_control=0;;
+    *m*)
+      local job_control=1
+      \set +m
+      ;;
+    *) local job_control=0 ;;
   esac
   local stderr_pipe="$(\mktemp -u)_opentelemetry_shell_$$.stderr.gh.pipe"
   \mkfifo "$stderr_pipe"
-  _otel_pipe_gh_stderr < "$stderr_pipe" >&2 &
+  _otel_pipe_gh_stderr <"$stderr_pipe" >&2 &
   local stderr_pid="$!"
   local exit_code=0
-  GH_DEBUG=api _otel_call "$@" 2> "$stderr_pipe" || exit_code="$?"
+  GH_DEBUG=api _otel_call "$@" 2>"$stderr_pipe" || exit_code="$?"
   \wait "$stderr_pid"
   \rm "$stderr_pipe"
   if \[ "$job_control" = 1 ]; then \set -m; fi
@@ -28,7 +31,7 @@ _otel_propagate_gh() {
 # > Graphql-Features: merge_queue
 # > Time-Zone: Etc/UTC
 # > User-Agent: GitHub CLI v2.74.0-19-gea8fc856e
-# 
+#
 # < HTTP/2.0 200 OK
 # < Access-Control-Allow-Origin: *
 # < Access-Control-Expose-Headers: ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset
@@ -54,11 +57,11 @@ _otel_propagate_gh() {
 
 _otel_pipe_gh_stderr() {
   case "${GH_DEBUG:-false}" in
-    true) is_verbose=1;;
-    yes) is_verbose=1;;
-    on) is_verbose=1;;
-    api) is_verbose=1;;
-    *) is_verbose=0;;
+    true) is_verbose=1 ;;
+    yes) is_verbose=1 ;;
+    on) is_verbose=1 ;;
+    api) is_verbose=1 ;;
+    *) is_verbose=0 ;;
   esac
   local span_handle=""
   local host="api.github.com"

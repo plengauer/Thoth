@@ -32,7 +32,7 @@ def run(scope, version, commands):
             handle(scope, version, tokens[0], tokens[1] if len(tokens) > 1 else None)
         except EOFError:
             sys.exit(0)
-        except:
+        except Exception:
             print('SDK Error: ' + line, file=sys.stderr)
             import traceback
             traceback.print_exc()
@@ -40,7 +40,7 @@ def run(scope, version, commands):
         handle(scope, version, 'SHUTDOWN', None)
     except EOFError:
         sys.exit(0)
-    except:
+    except Exception:
         pass
 
 def guess_cloud_resource_detectors():
@@ -57,7 +57,8 @@ def guess_cloud_resource_detectors():
         from opentelemetry.resourcedetector.gcp_resource_detector import GoogleCloudResourceDetector
         return [ GoogleCloudResourceDetector() ]
     elif file_contains('/sys/class/dmi/id/product_name', 'OracleCloud.com'):
-        class OracleResourceDetector(ResourceDetector):
+        from opentelemetry.sdk.resources import Resource, ResourceDetector
+        class OracleCloudResourceDetector(ResourceDetector):
             def detect(self) -> Resource:
                 try:
                     metadata = self.fetch_metadata()
@@ -79,7 +80,7 @@ def guess_cloud_resource_detectors():
                 response = requests.get('http://169.254.169.254/opc/v1/instance/', headers={'Authorization': 'Bearer Oracle'}, timeout=0.1)
                 response.raise_for_status()  # Raise an exception for 4xx or 5xx status codes
                 return response.json()
-        return [ OracleResourceDetector() ]
+        return [ OracleCloudResourceDetector() ]
     else:
         from opentelemetry.sdk.resources import Resource, ResourceDetector
         from opentelemetry.sdk.extension.aws.resource.ec2 import AwsEc2ResourceDetector
@@ -89,13 +90,13 @@ def guess_cloud_resource_detectors():
         from opentelemetry.resource.detector.azure.app_service import AzureAppServiceResourceDetector
         from opentelemetry.resource.detector.azure.vm import AzureVMResourceDetector
         from opentelemetry.resourcedetector.gcp_resource_detector import GoogleCloudResourceDetector
+        import socket
         class SafeGoogleCloudResourceDetector(GoogleCloudResourceDetector):
           def detect(self) -> Resource:
             try:
-              import socket
               socket.gethostbyname('metadata.google.internal')
-              return super.detect()
-            except socket.error:
+              return super().detect()
+            except OSError:
               return Resource.create({})
         class OracleResourceDetector(ResourceDetector):
             def detect(self) -> Resource:
@@ -133,7 +134,7 @@ def guess_cloud_resource_detectors():
 
 def handle(scope, version, command, arguments):
     global initialized_traces, initialized_metrics, initialized_logs, final_resources
-    
+
     if command.startswith("SPAN_") and not initialized_traces:
         from opentelemetry.trace import set_tracer_provider, get_current_span
         from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
@@ -420,6 +421,7 @@ def handle(scope, version, command, arguments):
         name = tokens[2]
         unit = tokens[3]
         description = tokens[4]
+        explicit_bucket_boundaries = None
         if type == 'histogram':
             tokens = description.split(' ', 1)
             explicit_bucket_boundaries = tokens[0]
@@ -552,11 +554,11 @@ def convert_type(type, value, base=None):
     elif type == 'auto':
         try:
             return int(value)
-        except:
+        except Exception:
             pass
         try:
             return float(value)
-        except:
+        except Exception:
             pass
         return value
     else:
@@ -567,7 +569,7 @@ def file_contains(haystack, needle):
         with open(haystack, 'r') as file:
             if needle in file.read():
                 return True
-    except:
+    except Exception:
         pass
     return False
 
