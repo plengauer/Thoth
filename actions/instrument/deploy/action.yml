@@ -90,7 +90,7 @@ runs:
           target="$(readlink "$path")"
           case "$target" in
             /*) ;;
-            *) target="$GITHUB_WORKSPACE/$target" ;;
+            *) target="$(dirname "$path")/$target" ;;
           esac
           target="$(realpath -m "$target")"
           case "$target" in
