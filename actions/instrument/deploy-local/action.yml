@@ -417,7 +417,7 @@ runs:
               exit 1
             fi
           fi
-          rm -rf "$workflow_file".patch
+          rm -f "$workflow_file".patch "$workflow_file".rej "$workflow_file".orig
         done
     - name: Log
       if: ${{ inputs.dry_run == 'true' }}
