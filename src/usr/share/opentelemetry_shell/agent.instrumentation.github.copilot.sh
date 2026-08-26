@@ -3,7 +3,7 @@
 if \[ "${GITHUB_ACTIONS:-false}" = true ] && \[ "${GITHUB_EVENT_NAME:-}" = dynamic ] && { \[ -n "${GH_AW_WORKFLOW_ID:-}" ] || \[ -n "${GH_AW_WORKFLOW_FILE:-}" ] || \[ "${GITHUB_ACTION:-}" = github/gh-aw-actions/setup ] || case "${GITHUB_WORKFLOW_REF:-}" in *.lock.yml*) true ;; *) false ;; esac; }; then
   if \[ -z "${COPILOT_OTEL_ENABLED+x}" ]; then
     export COPILOT_OTEL_ENABLED=true
-    \[ -n "${GITHUB_ENV:-}" ] && printf '%s\n' COPILOT_OTEL_ENABLED=true >>"$GITHUB_ENV"
+    \[ -n "${GITHUB_ENV:-}" ] && printf '%s\n' "COPILOT_OTEL_ENABLED=$COPILOT_OTEL_ENABLED" >>"$GITHUB_ENV"
   fi
   if \[ -z "${OTEL_EXPORTER_OTLP_ENDPOINT+x}" ] && \[ -n "${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-}" ]; then
     export OTEL_EXPORTER_OTLP_ENDPOINT="${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT%/v1/traces}"
