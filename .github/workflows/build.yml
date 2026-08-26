@@ -202,7 +202,7 @@ jobs:
               prev_version="$version"
             fi
           done
-      - run: find . -type f -print0 | xargs -0 sha256sum | sort | cut -d ' ' -f 3- | tar -cf node_modules.tar -T - && zstd -19 --long=27 -T0 node_modules.tar
+      - run: find . -type f -print0 | xargs -0 sha256sum | sort | cut -d ' ' -f 3- | tar -cf node_modules.tar -T - && zstd --rm -19 --long=27 -T0 node_modules.tar
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: node_modules_${{ inputs.ref }}
@@ -331,7 +331,7 @@ jobs:
               prev_hash="$hash"
             fi
           done
-      - run: find . -type f -print0 | xargs -0 sha256sum | sort | cut -d ' ' -f 3- | tar -cf python_site_packages.tar -T - && zstd -19 --long=27 -T0 python_site_packages.tar
+      - run: find . -type f -print0 | xargs -0 sha256sum | sort | cut -d ' ' -f 3- | tar -cf python_site_packages.tar -T - && zstd --rm -19 --long=27 -T0 python_site_packages.tar
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: python_site_packages_${{ inputs.ref }}
