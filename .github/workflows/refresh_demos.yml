@@ -20,6 +20,7 @@ jobs:
       actions: read
     outputs:
       dirs: ${{ steps.demos.outputs.dirs }}
+      should_run: ${{ steps.release.outputs.should_run }}
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@be259b5ae1e13e2398a8b96dce8baeaddac0663d # v5.61.2
         with:
@@ -28,19 +29,35 @@ jobs:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
       - name: Check release is on default branch
+        id: release
         if: ${{ github.event_name == 'release' }}
         run: |
-          status=$(curl --silent --header "Authorization: ****** github.token }}" "https://api.github.com/repos/${{ github.repository }}/compare/${{ github.event.repository.default_branch }}...${{ github.sha }}" | jq -r .status)
-          if [ "$status" != "identical" ] && [ "$status" != "behind" ]; then
-            echo "Release commit is not an ancestor of the default branch (status: $status). Skipping."
+          set -euo pipefail
+          if ! response="$(curl --silent --show-error --fail-with-body --header "Authorization: Bearer ${{ github.token }}" "https://api.github.com/repos/${{ github.repository }}/compare/${{ github.event.repository.default_branch }}...${{ github.sha }}")"; then
+            echo "Compare API call failed." >&2
+            printf '%s\n' "$response" >&2
             exit 1
           fi
+          status="$(printf '%s' "$response" | jq -r .status)"
+          case "$status" in
+            identical|behind) echo "should_run=true" >> "$GITHUB_OUTPUT" ;;
+            ahead|diverged)
+              echo "Release commit is not an ancestor of the default branch (status: $status). Skipping demo refresh."
+              echo "should_run=false" >> "$GITHUB_OUTPUT"
+              ;;
+            *)
+              echo "Compare API returned unexpected status: $status" >&2
+              exit 1
+              ;;
+          esac
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        if: ${{ github.event_name == 'push' || steps.release.outputs.should_run == 'true' }}
       - run: |
           cd demos && echo */ | tr ' ' '\n' | tr -d / | while read -r dir; do echo \""$dir"\"; done | jq -s | tr -d ' ' | tr -d '\n' | xargs -0 -I {} echo 'dirs={}' >> "$GITHUB_OUTPUT"
+        if: ${{ github.event_name == 'push' || steps.release.outputs.should_run == 'true' }}
         id: demos
   generate:
-    if: ${{ !github.event.repository.fork }}
+    if: ${{ !github.event.repository.fork && (github.event_name == 'push' || needs.prepare.outputs.should_run == 'true') }}
     needs: prepare
     runs-on: ubuntu-latest
     permissions:
