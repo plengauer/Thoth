@@ -6,7 +6,8 @@ if \[ "${GITHUB_ACTIONS:-false}" = true ] && \[ "${GITHUB_EVENT_NAME:-}" = dynam
     \[ -n "${GITHUB_ENV:-}" ] && printf '%s\n' "COPILOT_OTEL_ENABLED=$COPILOT_OTEL_ENABLED" >>"$GITHUB_ENV"
   fi
   if \[ -z "${OTEL_EXPORTER_OTLP_ENDPOINT+x}" ] && \[ -n "${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-}" ]; then
-    export OTEL_EXPORTER_OTLP_ENDPOINT="${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT%/v1/traces}"
+    otel_exporter_otlp_endpoint="${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT%/}"
+    export OTEL_EXPORTER_OTLP_ENDPOINT="${otel_exporter_otlp_endpoint%/v1/traces}"
     \[ -n "${GITHUB_ENV:-}" ] && printf '%s\n' "OTEL_EXPORTER_OTLP_ENDPOINT=$OTEL_EXPORTER_OTLP_ENDPOINT" >>"$GITHUB_ENV"
   fi
 fi
