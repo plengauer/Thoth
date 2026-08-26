@@ -89,6 +89,11 @@ runs:
         if [ -L "$path" ]; then
           target="$(readlink "$path")"
           case "$target" in
+            /*) ;;
+            *) target="$GITHUB_WORKSPACE/$target" ;;
+          esac
+          target="$(realpath -m "$target")"
+          case "$target" in
             */actions/instrument/deploy-local) rm -f "$path" ;;
           esac
         fi
