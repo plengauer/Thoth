@@ -47,7 +47,7 @@ jobs:
             sudo /usr/local/opt/opentelemetry_shell/venv/bin/pip3 install -r /usr/local/opt/opentelemetry_shell/requirements.txt
           fi
           for gnubin in /opt/homebrew/opt/coreutils/libexec/gnubin /opt/homebrew/opt/findutils/libexec/gnubin /opt/homebrew/opt/grep/libexec/gnubin /opt/homebrew/opt/gnu-sed/libexec/gnubin /opt/homebrew/opt/gawk/libexec/gnubin /usr/local/opt/coreutils/libexec/gnubin /usr/local/opt/findutils/libexec/gnubin /usr/local/opt/grep/libexec/gnubin /usr/local/opt/gnu-sed/libexec/gnubin /usr/local/opt/gawk/libexec/gnubin; do
-            [ -d "$gnubin" ] && echo "$gnubin" >> "$GITHUB_PATH"
+            [ -d "$gnubin" ] && echo "$gnubin" >> "$GITHUB_PATH" || true
           done
       - run: bash -c "cd tests && bash run_tests.sh bash"
         env:

@@ -5,7 +5,7 @@ if [ "$(uname -s)" = "Darwin" ]; then
   ensure_installed() { for item in "$@"; do type "${item%%;*}" 1>/dev/null 2>/dev/null || echo "${item#*;}"; done | sort -u | xargs -n 1 -I '{}' brew install '{}'; }
   ensure_installed jq curl wget coreutils findutils grep gnu-sed gawk "$@"
   for gnubin in /opt/homebrew/opt/coreutils/libexec/gnubin /opt/homebrew/opt/findutils/libexec/gnubin /opt/homebrew/opt/grep/libexec/gnubin /opt/homebrew/opt/gnu-sed/libexec/gnubin /opt/homebrew/opt/gawk/libexec/gnubin /usr/local/opt/coreutils/libexec/gnubin /usr/local/opt/findutils/libexec/gnubin /usr/local/opt/grep/libexec/gnubin /usr/local/opt/gnu-sed/libexec/gnubin /usr/local/opt/gawk/libexec/gnubin; do
-    [ -d "$gnubin" ] && export PATH="$gnubin:$PATH"
+    [ -d "$gnubin" ] && export PATH="$gnubin:$PATH" || true
   done
 else
   ensure_installed() { for item in "$@"; do type "${item%%;*}" 1>/dev/null 2>/dev/null || echo "${item#*;}"; done | sort -u | xargs -r sudo apt-get -y install; }
