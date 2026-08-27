@@ -83,18 +83,30 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
       fi
       cp -r /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"/site-packages/* "$venv"/lib/python"$version"/site-packages/
       . "$venv"/bin/activate
-      pip3 install -r /usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.txt
+      pip3 install --no-deps --no-index --find-links /usr/share/opentelemetry_shell/agent.instrumentation.python/wheels -r /usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.lock.txt || pip3 install --no-deps -r /usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.lock.txt || pip3 install -r /usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.txt
+      pip3 check
       pip3 uninstall --yes pip setuptools
       deactivate # SKIP_DEPENDENCY_CHECK
       cp -r -u "$venv"/lib/python"$version"/site-packages/* /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"/site-packages/
       rm -rf "$venv"
     done
   fi 2>&1 | perl -0777 -pe '' >&2 &
-  if type uv 1>/dev/null 2>/dev/null; then
-    uv venv /opt/opentelemetry_shell/venv && ( uv pip install --offline --python /opt/opentelemetry_shell/venv/bin/python3 -r /opt/opentelemetry_shell/requirements.txt || uv pip install --python /opt/opentelemetry_shell/venv/bin/python3 -r /opt/opentelemetry_shell/requirements.txt ) && uv pip check --python /opt/opentelemetry_shell/venv/bin/python3 # SKIP_DEPENDENCY_CHECK
-  else
-    python3 -m venv /opt/opentelemetry_shell/venv && . /opt/opentelemetry_shell/venv/bin/activate && pip3 install -r /opt/opentelemetry_shell/requirements.txt && pip3 check && deactivate # SKIP_DEPENDENCY_CHECK
+  python3_version="$(python3 -V 2>&1 | cut -d ' ' -f 2 | cut -d . -f 1-2)"
+  python3_version_minor="$(printf '%s\n' "$python3_version" | cut -d . -f 2)"
+  python3_archived_versions="$(tar -tJf /usr/share/opentelemetry_shell/agent.instrumentation.python/python_site_packages.tar.xz 2>/dev/null | cut -d / -f 2 | grep '^3\.' | sort -t. -k2 -n -u)"
+  python3_archived_minor="$python3_version_minor"
+  while [ "$python3_archived_minor" -ge 0 ]; do
+    printf '%s\n' "$python3_archived_versions" | grep -q "^3\.$python3_archived_minor$" && break
+    python3_archived_minor=$((python3_archived_minor - 1))
+  done
+  python3 -m venv /opt/opentelemetry_shell/venv
+  if [ "$python3_archived_minor" -ge 0 ]; then
+    tar -xJf /usr/share/opentelemetry_shell/agent.instrumentation.python/python_site_packages.tar.xz -C /opt/opentelemetry_shell/venv/lib/python"$python3_version"/site-packages --strip-components=3 ./3."$python3_archived_minor"/site-packages
   fi
+  . /opt/opentelemetry_shell/venv/bin/activate
+  pip3 install --no-deps --no-index --find-links /opt/opentelemetry_shell/wheels -r /usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.lock.txt || pip3 install --no-deps -r /usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.lock.txt || pip3 install -r /opt/opentelemetry_shell/requirements.txt
+  pip3 check
+  deactivate # SKIP_DEPENDENCY_CHECK
   cat /usr/share/opentelemetry_shell/*.py | while read -r line; do printf '%s\n' "$line"; done | grep -E '^import |^from ' | /opt/opentelemetry_shell/venv/bin/python3 # venv may be used by different users that may not be allowed to create pyc files
   wait
 else
