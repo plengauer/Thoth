@@ -17,29 +17,29 @@ _otel_inject_netcat() {
     else
       local span_handle_file="$(\mktemp)"
       local exit_code_file="$(\mktemp)"
-      \echo 0 > "$exit_code_file"
+      \echo 0 >"$exit_code_file"
       local span_handle="$(otel_span_start CONSUMER "$name")"
       otel_span_activate "$span_handle"
-      _otel_netcat_parse_args 0 "$span_handle" "$@" > /dev/null
-      _otel_netcat_parse_response 1 "$span_handle_file" | { _otel_call "$@" || \echo "$?" > "$exit_code_file"; } | _otel_netcat_parse_request 1 "$span_handle_file" "$@"
+      _otel_netcat_parse_args 0 "$span_handle" "$@" >/dev/null
+      _otel_netcat_parse_response 1 "$span_handle_file" | { _otel_call "$@" || \echo "$?" >"$exit_code_file"; } | _otel_netcat_parse_request 1 "$span_handle_file" "$@"
       otel_span_deactivate "$span_handle"
       otel_span_end "$span_handle"
       local exit_code="$(\cat "$exit_code_file")"
-      \rm "$span_handle_file" "$exit_code_file" 2> /dev/null
+      \rm "$span_handle_file" "$exit_code_file" 2>/dev/null
       return "$exit_code"
     fi
   else
     local span_handle_file="$(\mktemp)"
     local exit_code_file="$(\mktemp)"
-    \echo 0 > "$exit_code_file"
+    \echo 0 >"$exit_code_file"
     local span_handle="$(otel_span_start PRODUCER "$name")"
     otel_span_activate "$span_handle"
-    _otel_netcat_parse_args 0 "$span_handle" "$@" > /dev/null
-    _otel_netcat_parse_request 0 "$span_handle_file" "$@" | { _otel_call "$@" || \echo "$?" > "$exit_code_file"; } | _otel_netcat_parse_response 0 "$span_handle_file"
+    _otel_netcat_parse_args 0 "$span_handle" "$@" >/dev/null
+    _otel_netcat_parse_request 0 "$span_handle_file" "$@" | { _otel_call "$@" || \echo "$?" >"$exit_code_file"; } | _otel_netcat_parse_response 0 "$span_handle_file"
     otel_span_deactivate "$span_handle"
     otel_span_end "$span_handle"
     local exit_code="$(\cat "$exit_code_file")"
-    \rm "$span_handle_file" "$exit_code_file" 2> /dev/null
+    \rm "$span_handle_file" "$exit_code_file" 2>/dev/null
     return "$exit_code"
   fi
 }
@@ -50,24 +50,29 @@ _otel_inject_netcat_listen_and_respond_args() {
   while \[ "$#" -gt 0 ]; do
     \echo -n ' '
     if \[ "$#" -gt 1 ] && { \[ "$1" = -e ] || \[ "$1" = --exec ] || \[ "$1" = -c ] || \[ "$1" = --sh-exec ]; }; then
-      local command="$2"; shift; shift
+      local command="$2"
+      shift
+      shift
       _otel_escape_args -c "otel4netcat_handler $command"
     else
-      _otel_escape_arg "$1"; shift
+      _otel_escape_arg "$1"
+      shift
     fi
   done
 }
 
 _otel_netcat_parse_request() {
-  local is_server_side="$1"; shift
-  local span_handle_file="$1"; shift
+  local is_server_side="$1"
+  shift
+  local span_handle_file="$1"
+  shift
   if ! _otel_binary_read line; then
-    \echo -n '' > "$span_handle_file"
+    \echo -n '' >"$span_handle_file"
     \printf '%s' "$line" | _otel_binary_write
     return 0
   fi
   if _otel_binary_contains_null "$line" || ! _otel_string_starts_with "$(\printf '%s' "$line" | _otel_binary_write | \cut -sd ' ' -f 3)" HTTP/; then
-    \echo -n '' > "$span_handle_file"
+    \echo -n '' >"$span_handle_file"
     \printf '%s' "$line" | _otel_binary_write
     \printf '\n'
     \cat
@@ -84,7 +89,7 @@ _otel_netcat_parse_request() {
   while \read -r line; do
     local line="$(\printf '%s' "$line" | \tr -d '\r')"
     if \[ "${#line}" = 0 ]; then break; fi
-    \echo "$line" >> "$headers"
+    \echo "$line" >>"$headers"
     if \[ "$is_server_side" = 1 ]; then
       local key="$(\printf '%s' "$line" | \cut -d ' ' -f 1 | \tr -d : | \tr '[:upper:]' '[:lower:]')"
       local value="$(\printf '%s' "$line" | \cut -d ' ' -f 2-)"
@@ -94,7 +99,7 @@ _otel_netcat_parse_request() {
     fi
   done
   if \[ "$is_server_side" = 1 ]; then local span_handle="$(otel_span_start SERVER "$method")"; else local span_handle="$(otel_span_start CLIENT "$method")"; fi
-  \echo "$span_handle" > "$span_handle_file"
+  \echo "$span_handle" >"$span_handle_file"
   if \[ "$TRACEPARENT" != "$nc_traceparent" ] || \[ "$TRACESTATE" != "$nc_tracestate" ]; then
     otel_span_activate "$span_handle"
     otel_link_add "$(otel_link_create "$TRACEPARENT" "$TRACESTATE")" "$nc_span_handle"
@@ -123,24 +128,26 @@ _otel_netcat_parse_request() {
     local key="$(\printf '%s' "$line" | \cut -d ' ' -f 1 | \tr -d : | \tr '[:upper:]' '[:lower:]')"
     local value="$(\printf '%s' "$line" | \cut -d ' ' -f 2-)"
     otel_span_attribute_typed "$span_handle" +string[1] http.request.header."$key"="$value"
-  done < "$headers"
+  done <"$headers"
   \printf '\r\n'
   if \[ -n "${length:-}" ]; then # TODO this should transparently pipe the entire request through, even if it is not in line with content-length (or content-length hasn't been set at all)
     \head -c "$length"
   fi
-  \rm "$headers" 2> /dev/null
+  \rm "$headers" 2>/dev/null
 }
 
 _otel_netcat_parse_response() {
-  local is_server_side="$1"; shift
-  local span_handle_file="$1"; shift  
+  local is_server_side="$1"
+  shift
+  local span_handle_file="$1"
+  shift
   if ! _otel_binary_read line; then
-    \cat "$span_handle_file" > /dev/null 2> /dev/null
+    \cat "$span_handle_file" >/dev/null 2>/dev/null
     \printf '%s' "$line" | _otel_binary_write
     return 0
   fi
   if _otel_binary_contains_null "$line" || ! _otel_string_starts_with "$(\printf '%s' "$line" | _otel_binary_write)" HTTP/; then
-    \cat "$span_handle_file" > /dev/null 2> /dev/null
+    \cat "$span_handle_file" >/dev/null 2>/dev/null
     \printf '%s' "$line" | _otel_binary_write
     \printf '\n'
     \cat
@@ -171,18 +178,20 @@ _otel_netcat_parse_response() {
   local body_size_pipe="$(\mktemp -u)"
   local body_size_file="$(\mktemp)"
   \mkfifo "$body_size_pipe"
-  \wc -c < "$body_size_pipe" > "$body_size_file" &
+  \wc -c <"$body_size_pipe" >"$body_size_file" &
   local pid="$!"
   \tee "$body_size_pipe"
   \wait "$pid"
   otel_span_attribute_typed "$span_handle" int http.response.body.size="$(\cat "$body_size_file")"
-  \rm "$body_size_file" "$body_size_pipe" 2> /dev/null
+  \rm "$body_size_file" "$body_size_pipe" 2>/dev/null
   otel_span_end "$span_handle"
 }
 
 _otel_netcat_parse_args() {
-  local is_server_side="$1"; shift
-  local span_handle="$1"; shift
+  local is_server_side="$1"
+  shift
+  local span_handle="$1"
+  shift
   if \[ -n "${NCAT_PROTO:-}" ]; then
     otel_span_attribute_typed "$span_handle" string network.transport="$NCAT_PROTO"
     otel_span_attribute_typed "$span_handle" string network.peer.address="$NCAT_REMOTE_ADDR"
@@ -207,13 +216,19 @@ _otel_netcat_parse_args() {
     local host=""
     local port=31337
     while \[ "$#" -gt 0 ]; do
-      if \[ "$1" = -u ] || \[ "$1" = --udp ]; then local transport=udp
-      elif \[ "$1" = --sctp ]; then local transport=sctp
-      elif \[ "$1" = -p ] && \[ "$#" -ge 2 ]; then local port="$2"; shift
-      elif _otel_string_starts_with "$1" - && \[ "$#" -gt 1 ] && _otel_is_netcat_arg_arg "$1"; then shift
-      elif _otel_string_starts_with "$1" -; then \true
+      if \[ "$1" = -u ] || \[ "$1" = --udp ]; then
+        local transport=udp
+      elif \[ "$1" = --sctp ]; then
+        local transport=sctp
+      elif \[ "$1" = -p ] && \[ "$#" -ge 2 ]; then
+        local port="$2"
+        shift
+      elif _otel_string_starts_with "$1" - && \[ "$#" -gt 1 ] && _otel_is_netcat_arg_arg "$1"; then
+        shift
+      elif _otel_string_starts_with "$1" -; then
+        \true
       else
-        if \[ "$1" -eq "$1" ] 2> /dev/null; then
+        if \[ "$1" -eq "$1" ] 2>/dev/null; then
           local port="$1"
         elif _otel_is_ip "$1"; then
           local ip="$1"
@@ -240,17 +255,19 @@ _otel_is_ip() {
     *.*.*.*)
       for part in $(\echo "$1" | \tr '.' ' '); do
         case "$part" in
-          ""|*[!0-9]*) return 1;;
+          "" | *[!0-9]*) return 1 ;;
         esac
       done
-      return 0;;
+      return 0
+      ;;
     *:*:*:*:*:*:*:*)
       for part in $(\echo "$1" | \tr ':' ' '); do
         case "$part" in
-          ""|*[!0-9a-fA-F]*) return 1;;
+          "" | *[!0-9a-fA-F]*) return 1 ;;
         esac
       done
-      return 0;;
+      return 0
+      ;;
   esac
   return 1
 }
@@ -258,32 +275,32 @@ _otel_is_ip() {
 _otel_is_netcat_arg_arg() {
   # https://man7.org/linux/man-pages/man1/ncat.1.html
   case "$1" in
-    -i|--idle-timeout) return 0;;
-    -P) return 0;;
-    -T) return 0;;
-    -w|--wait) return 0;;
-    -x) return 0;;
-    -X) return 0;;
-    -L) return 0;;
-    -e|--exec) return 0;;
-    -c|--sh-exec) return 0;;
-    --lua-exec) return 0;;
-    -g) return 0;;
-    -G) return 0;;
-    -b) return 0;;
-    -q) return 0;;
-    -m|--max-conns) return 0;;
-    -I) return 0;;
-    -O) return 0;;
-    -S) return 0;;
-    -R) return 0;;
-    -d|--delay) return 0;;
-    -o|--output) return 0;;
-    -x|--hexdump) return 0;;
-    -p|--source-port) return 0;;
-    -s|--source) return 0;;
-    --proxy|--proxy-type|--proxy-auth|--proxy-dns) return 0;;
-     *) return 1;;
+    -i | --idle-timeout) return 0 ;;
+    -P) return 0 ;;
+    -T) return 0 ;;
+    -w | --wait) return 0 ;;
+    -x) return 0 ;;
+    -X) return 0 ;;
+    -L) return 0 ;;
+    -e | --exec) return 0 ;;
+    -c | --sh-exec) return 0 ;;
+    --lua-exec) return 0 ;;
+    -g) return 0 ;;
+    -G) return 0 ;;
+    -b) return 0 ;;
+    -q) return 0 ;;
+    -m | --max-conns) return 0 ;;
+    -I) return 0 ;;
+    -O) return 0 ;;
+    -S) return 0 ;;
+    -R) return 0 ;;
+    -d | --delay) return 0 ;;
+    -o | --output) return 0 ;;
+    -x | --hexdump) return 0 ;;
+    -p | --source-port) return 0 ;;
+    -s | --source) return 0 ;;
+    --proxy | --proxy-type | --proxy-auth | --proxy-dns) return 0 ;;
+    *) return 1 ;;
   esac
 }
 
@@ -304,8 +321,11 @@ _otel_binary_read() {
   local __line=""
   local eos=0
   while \true; do
-    local byte="$(\timeout "${OTEL_SHELL_CONFIG_NETCAT_READ_TIMEOUT:-0}" \dd bs=1 count=1 2> /dev/null | \xxd -p)"
-    if \[ "$byte" = '' ]; then local eos=1; break; fi
+    local byte="$(\timeout "${OTEL_SHELL_CONFIG_NETCAT_READ_TIMEOUT:-0}" \dd bs=1 count=1 2>/dev/null | \xxd -p)"
+    if \[ "$byte" = '' ]; then
+      local eos=1
+      break
+    fi
     if \[ "$byte" = 0a ]; then break; fi
     local __line="$__line$byte"
   done
@@ -318,7 +338,8 @@ _otel_binary_write() {
 }
 
 _otel_args_contains() {
-  local needle="$1"; shift
+  local needle="$1"
+  shift
   for _otel_netcat_arg in "$@"; do
     if \[ "$_otel_netcat_arg" = "$needle" ]; then return 0; fi
   done

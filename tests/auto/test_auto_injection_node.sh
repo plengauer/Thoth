@@ -59,7 +59,7 @@ assert_not_equals null $(\echo "$span" | jq -r '.parent_id')
 
 # lets check with the above test if it works on any node version, but lets not rely on instrumentations actually working
 
-\node -e "require('http').createServer(function (req, res) { console.log(req.method, req.url); res.writeHead(200); res.end(); }).listen(8081);" 1> /tmp/http.log 2> /dev/null &
+\node -e "require('http').createServer(function (req, res) { console.log(req.method, req.url); res.writeHead(200); res.end(); }).listen(8081);" 1>/tmp/http.log 2>/dev/null &
 server_pid="$!"
 
 directory="$(mktemp -d)"
@@ -76,7 +76,7 @@ const options = {
 };
 const req = http.request(options, (res) => {});
 req.end();
-" > "$directory"/index.js
+" >"$directory"/index.js
 span="$(node "$directory"/index.js 2>&1)"
 assert_equals 0 $?
 \echo "$span"
@@ -107,7 +107,7 @@ const options = {
 };
 const req = http.request(options, (res) => {});
 req.end();
-" > "$directory"/index.js
+" >"$directory"/index.js
 (cd "$directory" && npm install @opentelemetry/api @opentelemetry/sdk-node @opentelemetry/sdk-trace-node @opentelemetry/auto-instrumentations-node)
 span="$(node "$directory"/index.js 2>&1)"
 assert_equals 0 $?
@@ -133,7 +133,7 @@ opentelemetry_api.trace.getTracerProvider().getTracer('my-tracer').startActiveSp
   let proc = child_process.spawn('echo', [ 'hello', 'world', '7' ], { stdio: 'inherit' });
   proc.on('exit', () => span.end());
 });
-" > "$directory"/index.js
+" >"$directory"/index.js
 (cd "$directory" && npm install @opentelemetry/api @opentelemetry/sdk-node @opentelemetry/sdk-trace-node @opentelemetry/auto-instrumentations-node)
 span="$(node "$directory"/index.js 2>&1)"
 assert_equals 0 $?

@@ -18,10 +18,10 @@ import io.opentelemetry.javaagent.shaded.io.opentelemetry.context.Context;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.context.Scope;
 
 public class GradleHttpPropagationAgent {
-    private static final ThreadLocal<Span> clientSpan = new ThreadLocal<>();
-    private static final ThreadLocal<Scope> clientScope = new ThreadLocal<>();
-    private static final ThreadLocal<Span> serverSpan = new ThreadLocal<>();
-    private static final ThreadLocal<Scope> serverScope = new ThreadLocal<>();
+    public static final ThreadLocal<Span> clientSpan = new ThreadLocal<>();
+    public static final ThreadLocal<Scope> clientScope = new ThreadLocal<>();
+    public static final ThreadLocal<Span> serverSpan = new ThreadLocal<>();
+    public static final ThreadLocal<Scope> serverScope = new ThreadLocal<>();
 
     public static void premain(String args, Instrumentation instrumentation) throws Exception {
         instrumentation.appendToBootstrapClassLoaderSearch(new java.util.jar.JarFile("/usr/share/opentelemetry_shell/agent.instrumentation.java/gradlehttppropagationagent.jar"));

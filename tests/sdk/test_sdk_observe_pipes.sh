@@ -17,15 +17,15 @@ otel_observe true
 assert_equals 0 "$?"
 otel_observe false
 assert_not_equals 0 "$?"
-otel_observe false 1> /dev/null 2> /dev/null
+otel_observe false 1>/dev/null 2>/dev/null
 assert_not_equals 0 "$?"
-otel_observe false < /dev/null
+otel_observe false </dev/null
 assert_not_equals 0 "$?"
 file="$(mktemp)"
 exit_code=0
-otel_observe false < /dev/null 1> /dev/null 2> /dev/null
+otel_observe false </dev/null 1>/dev/null 2>/dev/null
 assert_not_equals 0 "$(cat "$file")"
-echo '{"dependencies":{}}' > "$file"
+echo '{"dependencies":{}}' >"$file"
 if otel_observe jq '.version' "$file"; then _if=1; else _if=0; fi
 assert_equals 1 "$_if"
 otel_shutdown

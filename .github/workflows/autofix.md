@@ -35,7 +35,7 @@ When triggered by the completion of the "Analyze" workflow on the main branch:
    - Verify the triggering run is from workflow "Analyze" and has conclusion "failure". If it does not, use the `noop` safe output.
    - If the triggering run from context is unavailable in your tools, list recent completed workflow runs of "Analyze" with conclusion "failure" and select the most recent run with matching `head_sha` from context.
 
-2. **Get the failing job logs**: Use the GitHub actions toolset to list all jobs for the triggering workflow run (use the run ID from step 1). For each failed job, download the job logs.
+2. **Get the failing job logs directly from the run ID**: Use the GitHub `get_job_logs` tool with `run_id=<workflow_run.id>` and `failed_only=true` to retrieve logs for failed jobs in that run. Do not call `actions_list` or `actions_get`.
 
 3. **Analyze the logs**: Determine if any jobs failed due to severe security or linting issues detected by analysis tools (e.g., CodeQL security findings, linting rule violations). Clearly distinguish these from infrastructure failures such as:
    - Missing permissions or secrets
@@ -63,3 +63,4 @@ When triggered by the completion of the "Analyze" workflow on the main branch:
 - **Only real findings**: Do not create issues for infrastructure failures, missing permissions, or workflow operational problems.
 - **Access restrictions are operational**: If run/job log access is denied by policy, return `noop`.
 - **Be precise**: Issue titles should clearly identify the tool, finding type, file, and location.
+- **Infrastructure/tooling failures are `noop`**: If logs cannot be retrieved or are missing because of permissions/tooling limitations, treat that as infrastructure failure and use `noop`.

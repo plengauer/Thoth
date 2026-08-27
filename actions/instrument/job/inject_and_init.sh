@@ -7,17 +7,17 @@ ASYNC_INIT="${ASYNC_INIT:-TRUE}"
 
 if [ "${ASYNC_INIT:-FALSE}" = TRUE ]; then
   run() {
-    "$@" 2>&1 | { type perl &> /dev/null && perl -0777 -pe '' || cat > /dev/null; } &
+    "$@" 2>&1 | { type perl &>/dev/null && perl -0777 -pe '' || cat >/dev/null; } &
   }
 else
   run() { "$@"; }
 fi
 
-if true; then
-  container_marker_file="${OTEL_SHELL_GITHUB_JOB_CONTAINER_MARKER_FILE:-/.dockerenv}"
-  cgroup_file="${OTEL_SHELL_GITHUB_JOB_CGROUP_FILE:-/proc/1/cgroup}"
+if [ "${OTEL_GITHUB_JOB_SKIP_CONTAINERS:-FALSE}" = TRUE ]; then
+  container_marker_file="${OTEL_GITHUB_JOB_CONTAINER_MARKER_FILE:-/.dockerenv}"
+  cgroup_file="${OTEL_GITHUB_JOB_CGROUP_FILE:-/proc/1/cgroup}"
   if [ -f "$container_marker_file" ] || { [ -r "$cgroup_file" ] && head -n 10 "$cgroup_file" | grep -qE '(docker|containerd|kubepods|podman|containers)'; }; then
-    [ -n "${GITHUB_STATE:-}" ] && echo "disabled=true" >> "$GITHUB_STATE"
+    [ -n "${GITHUB_STATE:-}" ] && echo "disabled=true" >>"$GITHUB_STATE"
     echo "::notice::Skipping job-level instrumentation because this runner appears to be a GitHub ubuntu-slim image with network-constrained startup that can take anywhere between 2 seconds to 15+ minutes and trigger timeouts."
     exit 0
   fi
@@ -33,8 +33,8 @@ export OTEL_SHELL_CONFIG_OBSERVE_PIPES="${OTEL_SHELL_CONFIG_OBSERVE_PIPES:-TRUE}
 export OTEL_SHELL_CONFIG_OBSERVE_SUBPROCESSES="${OTEL_SHELL_CONFIG_OBSERVE_SUBPROCESSES:-TRUE}"
 export OTEL_SHELL_CONFIG_OBSERVE_SIGNALS="${OTEL_SHELL_CONFIG_OBSERVE_SIGNALS:-TRUE}"
 . ../shared/config_validation.sh
-if ! jq . <<< "$INPUT_SECRETS_TO_REDACT" 1> /dev/null 2> /dev/null; then
-  export INPUT_SECRETS_TO_REDACT="$(printf '%s' "$INPUT_SECRETS_TO_REDACT" | ( grep -v '^$' || true ) | jq -R | jq -s)"
+if ! jq . <<<"$INPUT_SECRETS_TO_REDACT" 1>/dev/null 2>/dev/null; then
+  export INPUT_SECRETS_TO_REDACT="$(printf '%s' "$INPUT_SECRETS_TO_REDACT" | (grep -v '^$' || true) | jq -R | jq -s)"
 fi
 echo "::endgroup::"
 
@@ -62,7 +62,7 @@ fi
 if [ "$deferred" = true ]; then
   echo "::group::Setup Deferred Export"
   export INTERNAL_OTEL_DEFERRED_EXPORT_DIR="$(TMPDIR="$(pwd)" mktemp -d)"
-  ( nohup node -e "
+  (nohup node -e "
     let counter = 0;
     require('http').createServer(function (req, res) {
       let filename = '$INTERNAL_OTEL_DEFERRED_EXPORT_DIR' + '/' + counter++ + '.' + req.url.split('/').pop();
@@ -70,20 +70,20 @@ if [ "$deferred" = true ]; then
       req.on('data', (chunk) => { require('fs').appendFileSync(filename, chunk); });
       req.on('end', () => { res.writeHead(200); res.end(); });
     }).listen(4320);
-  " 1> /dev/null 2> /dev/null & )
+  " 1>/dev/null 2>/dev/null &)
   echo "::endgroup::"
 fi
 
 echo "::group::Setup SDK Output Redirect"
 tmp_dir="$(mktemp -d)"
 chmod 777 "$tmp_dir"
-echo otel_shell_sdk_output_redirect="${OTEL_SHELL_SDK_OUTPUT_REDIRECT:-/dev/null}" >> "$GITHUB_STATE"
+echo otel_shell_sdk_output_redirect="${OTEL_SHELL_SDK_OUTPUT_REDIRECT:-/dev/null}" >>"$GITHUB_STATE"
 export OTEL_SHELL_SDK_OUTPUT_REDIRECT="$(mktemp -u -p "$tmp_dir")"
 mkfifo "$OTEL_SHELL_SDK_OUTPUT_REDIRECT"
 chmod 777 "$OTEL_SHELL_SDK_OUTPUT_REDIRECT"
 log_file="$(mktemp -u -p "$tmp_dir")"
-echo "log_file=$log_file" >> "$GITHUB_STATE"
-( while true; do cat "$OTEL_SHELL_SDK_OUTPUT_REDIRECT"; done >> "$log_file" 2> /dev/null & )
+echo "log_file=$log_file" >>"$GITHUB_STATE"
+(while true; do cat "$OTEL_SHELL_SDK_OUTPUT_REDIRECT"; done >>"$log_file" 2>/dev/null &)
 echo "::endgroup::"
 
 echo "::group::Install Dependencies"
@@ -126,7 +126,7 @@ if [ "$INPUT_CACHE" = "true" ]; then
   cache_restore_fast "$INSTRUMENTATION_CACHE_KEY" || true
   cache_key="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} dependencies $({ cat /etc/os-release; arch; python3 --version || true; printenv | grep -E '^OTEL_SHELL_CONFIG_INSTALL_' || true; } | md5sum | cut -d ' ' -f 1)"
   if [ "$GITHUB_ACTION_REPOSITORY" = "$GITHUB_REPOSITORY" ] && [ -f "$GITHUB_WORKSPACE"/package.deb ]; then cache_key="$cache_key local"; fi
-  cache_restore_fast "$cache_key" || (wait && sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.restoreCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip'], '$cache_key');")
+  cache_restore_fast "$cache_key" || { wait; sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.restoreCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip', '/root/.cache/uv'], '$cache_key');"; }
   [ "$(find /var/cache/apt/archives/ -name '*.deb' | wc -l)" -gt 0 ] || write_back_cache=TRUE
 fi
 if ! type otel.sh && [ -r /var/cache/apt/archives/opentelemetry-shell_*_*.deb ]; then
@@ -161,8 +161,8 @@ fi
 bash -e -o pipefail ../shared/install.sh perl curl wget jq sed unzip parallel 'node;nodejs' npm 'gcc;build-essential'
 if ! type otelcol-contrib; then
   if ! [ -r /var/cache/apt/archives/otelcol-contrib.deb ]; then
-    GITHUB_REPOSITORY=open-telemetry/opentelemetry-collector-releases gh_release v"$(cat Dockerfile | grep '^FROM ' | cut -d ' ' -f 2- | cut -d : -f 2)" | jq '.assets[] | select(.name | endswith(".deb")) | [ .name, .url ] | @tsv' -r | grep contrib | grep linux | grep "$(arch | sed 's/x86_64/amd64/g' | sed 's/aarch64/arm64/g' | sed 's/le$/el/g')" | head -n 1 | cut -d $'\t' -f 2 \
-      | xargs -I '{}' wget -q --header "Authorization: Bearer $INPUT_GITHUB_TOKEN" --header "Accept: application/octet-stream" '{}' -O - | sudo tee /var/cache/apt/archives/otelcol-contrib.deb > /dev/null
+    GITHUB_REPOSITORY=open-telemetry/opentelemetry-collector-releases gh_release v"$(cat Dockerfile | grep '^FROM ' | cut -d ' ' -f 2- | cut -d : -f 2)" | jq '.assets[] | select(.name | endswith(".deb")) | [ .name, .url ] | @tsv' -r | grep contrib | grep linux | grep "$(arch | sed 's/x86_64/amd64/g' | sed 's/aarch64/arm64/g' | sed 's/le$/el/g')" | head -n 1 | cut -d $'\t' -f 2 |
+      xargs -I '{}' wget -q --header "Authorization: Bearer $INPUT_GITHUB_TOKEN" --header "Accept: application/octet-stream" '{}' -O - | sudo tee /var/cache/apt/archives/otelcol-contrib.deb >/dev/null
   fi
   if [ "${FAST_DEB_INSTALL:-FALSE}" = TRUE ]; then # lets assume no install scripts or dependencies or triggers
     extract_dir="$(mktemp -d)"
@@ -173,34 +173,34 @@ if ! type otelcol-contrib; then
 fi
 if [ "${write_back_cache:-FALSE}" = TRUE ] && [ -n "${cache_key:-}" ]; then
   wait # only join in case we wanna write back, this will be rare and is necessary to have a good cache
-  run sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.saveCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip'], '$cache_key');"
+  run sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.saveCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip', '/root/.cache/uv'], '$cache_key');"
 fi
 echo "::endgroup::"
 
 echo "::group::Build Collector Configuration and Reconfigure"
 backup_otel_exporter_otlp_traces_endpoint="${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT:-}}"
 case "${OTEL_LOGS_EXPORTER:-otlp}" in
-  otlp) if [ "${OTEL_EXPORTER_OTLP_LOGS_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/protobuf ] || [ "${OTEL_EXPORTER_OTLP_LOGS_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/json ]; then collector_logs_exporter=otlp_http/logs; else collector_logs_exporter=otlp/logs; fi;;
-  console) collector_logs_exporter=debug;;
-  none) collector_logs_exporter=nop;;
-  *) echo ::error::Unsupported logs exporter: "${OTEL_LOGS_EXPORTER:-otlp}" && exit 1;;
+  otlp) if [ "${OTEL_EXPORTER_OTLP_LOGS_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/protobuf ] || [ "${OTEL_EXPORTER_OTLP_LOGS_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/json ]; then collector_logs_exporter=otlp_http/logs; else collector_logs_exporter=otlp/logs; fi ;;
+  console) collector_logs_exporter=debug ;;
+  none) collector_logs_exporter=nop ;;
+  *) echo ::error::Unsupported logs exporter: "${OTEL_LOGS_EXPORTER:-otlp}" && exit 1 ;;
 esac
 case "${OTEL_METRICS_EXPORTER:-otlp}" in
-  otlp) if [ "${OTEL_EXPORTER_OTLP_METRICS_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/protobuf ] || [ "${OTEL_EXPORTER_OTLP_METRICS_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/json ]; then collector_metrics_exporter=otlp_http/metrics; else collector_metrics_exporter=otlp/metrics; fi;;
-  console) collector_metrics_exporter=debug;;
-  none) collector_metrics_exporter=nop;;
-  *) echo ::error::Unsupported metrics exporter: "${OTEL_METRICS_EXPORTER:-otlp}" && exit 1;;
+  otlp) if [ "${OTEL_EXPORTER_OTLP_METRICS_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/protobuf ] || [ "${OTEL_EXPORTER_OTLP_METRICS_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/json ]; then collector_metrics_exporter=otlp_http/metrics; else collector_metrics_exporter=otlp/metrics; fi ;;
+  console) collector_metrics_exporter=debug ;;
+  none) collector_metrics_exporter=nop ;;
+  *) echo ::error::Unsupported metrics exporter: "${OTEL_METRICS_EXPORTER:-otlp}" && exit 1 ;;
 esac
 case "${OTEL_TRACES_EXPORTER:-otlp}" in
-  otlp) if [ "${OTEL_EXPORTER_OTLP_TRACES_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/protobuf ] || [ "${OTEL_EXPORTER_OTLP_TRACES_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/json ]; then collector_traces_exporter=otlp_http/traces; else collector_traces_exporter=otlp/traces; fi;;
-  console) collector_traces_exporter=debug;;
-  none) collector_traces_exporter=nop;;
-  *) echo ::error::Unsupported traces exporter: "${OTEL_TRACES_EXPORTER:-otlp}" && exit 1;;
+  otlp) if [ "${OTEL_EXPORTER_OTLP_TRACES_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/protobuf ] || [ "${OTEL_EXPORTER_OTLP_TRACES_PROTOCOL:-${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}}" = http/json ]; then collector_traces_exporter=otlp_http/traces; else collector_traces_exporter=otlp/traces; fi ;;
+  console) collector_traces_exporter=debug ;;
+  none) collector_traces_exporter=nop ;;
+  *) echo ::error::Unsupported traces exporter: "${OTEL_TRACES_EXPORTER:-otlp}" && exit 1 ;;
 esac
-( set +x && printf '%s' "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_LOGS_HEADERS","$OTEL_EXPORTER_OTLP_METRICS_HEADERS","$OTEL_EXPORTER_OTLP_TRACES_HEADERS" | tr ',' '\n' | ( grep -v '^$' || true ) | cut -d = -f 2- | xargs -d '\n' -I '{}' echo '::add-mask::{}' >&2 )
-( set +x && printf '%s' "$INPUT_SECRETS_TO_REDACT" | jq -r '. | to_entries[].value' | sed 's/[.[\(*^$+?{|]/\\\\&/g' | ( grep -v '^$' || true ) | xargs -d '\n' -I '{}' echo '::add-mask::{}' >&2 )
-mask_patterns="$(printf '%s' "$INPUT_SECRETS_TO_REDACT" | jq -r '. | to_entries[].value' | sed 's/[.[\(*^$+?{|]/\\\\&/g' | ( grep -v '^$' || true ) | sed 's/"/\\"/g')"
-cat > collector.yml <<EOF
+(set +x && printf '%s' "$OTEL_EXPORTER_OTLP_HEADERS","$OTEL_EXPORTER_OTLP_LOGS_HEADERS","$OTEL_EXPORTER_OTLP_METRICS_HEADERS","$OTEL_EXPORTER_OTLP_TRACES_HEADERS" | tr ',' '\n' | (grep -v '^$' || true) | cut -d = -f 2- | xargs -d '\n' -I '{}' echo '::add-mask::{}' >&2)
+(set +x && printf '%s' "$INPUT_SECRETS_TO_REDACT" | jq -r '. | to_entries[].value' | sed 's/[.[\(*^$+?{|]/\\\\&/g' | (grep -v '^$' || true) | xargs -d '\n' -I '{}' echo '::add-mask::{}' >&2)
+mask_patterns="$(printf '%s' "$INPUT_SECRETS_TO_REDACT" | jq -r '. | to_entries[].value' | sed 's/[.[\(*^$+?{|]/\\\\&/g' | (grep -v '^$' || true) | sed 's/"/\\"/g')"
+cat >collector.yml <<EOF
 receivers:
   otlp:
     protocols:
@@ -333,14 +333,14 @@ unset OTEL_EXPORTER_OTLP_HEADERS OTEL_EXPORTER_OTLP_ENDPOINT OTEL_EXPORTER_OTLP_
 echo "::endgroup::"
 
 echo "::group::Instrument shell/javascript/docker actions"
-echo "$GITHUB_ACTION" > /tmp/opentelemetry_shell_action_name # to avoid recursions
+echo "$GITHUB_ACTION" >/tmp/opentelemetry_shell_action_name # to avoid recursions
 export GITHUB_ACTION_PATH="$(pwd)"
 new_binary_dir="$GITHUB_ACTION_PATH/bin"
 relocated_binary_dir="$GITHUB_ACTION_PATH/relocated_bin"
 mkdir -p "$new_binary_dir" "$relocated_binary_dir"
-echo "$new_binary_dir" >> "$GITHUB_PATH"
-if type sh;   then run gcc -o "$new_binary_dir"/sh forward.c -DEXECUTABLE="$(which sh)" -DARG1="$GITHUB_ACTION_PATH"/decorate_action_run.sh -DARG2="$(which sh)"; fi
-if type ash;  then run gcc -o "$new_binary_dir"/dash forward.c -DEXECUTABLE="$(which ash)" -DARG1="$GITHUB_ACTION_PATH"/decorate_action_run.sh -DARG2="$(which ash)"; fi
+echo "$new_binary_dir" >>"$GITHUB_PATH"
+if type sh; then run gcc -o "$new_binary_dir"/sh forward.c -DEXECUTABLE="$(which sh)" -DARG1="$GITHUB_ACTION_PATH"/decorate_action_run.sh -DARG2="$(which sh)"; fi
+if type ash; then run gcc -o "$new_binary_dir"/dash forward.c -DEXECUTABLE="$(which ash)" -DARG1="$GITHUB_ACTION_PATH"/decorate_action_run.sh -DARG2="$(which ash)"; fi
 if type dash; then run gcc -o "$new_binary_dir"/dash forward.c -DEXECUTABLE="$(which dash)" -DARG1="$GITHUB_ACTION_PATH"/decorate_action_run.sh -DARG2="$(which dash)"; fi
 if type bash; then run gcc -o "$new_binary_dir"/bash forward.c -DEXECUTABLE="$(which bash)" -DARG1="$GITHUB_ACTION_PATH"/decorate_action_run.sh -DARG2="$(which bash)"; fi
 for node_path in "$(readlink -f /proc/*/exe | grep '/Runner.Worker$' | rev | cut -d / -f 4- | rev)"/*/externals/node*/bin/node; do
@@ -365,7 +365,7 @@ while [ "$count" -lt 60 ] && ! gh_artifact_download "$GITHUB_RUN_ID" "$GITHUB_RU
   wait # only join within this loop, because we need to make sure everything is installed properly at this point, in most cases, it is unnecessary though and we can join later
   . otelapi.sh
   otel_init
-  otel_span_traceparent "$(otel_span_start INTERNAL dummy)" > "$opentelemetry_root_dir"/traceparent
+  otel_span_traceparent "$(otel_span_start INTERNAL dummy)" >"$opentelemetry_root_dir"/traceparent
   gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_workflow_run_"$GITHUB_RUN_ATTEMPT" "$opentelemetry_root_dir"/traceparent || true
   rm "$opentelemetry_root_dir"/traceparent
   otel_shutdown
@@ -394,7 +394,10 @@ if [ -n "$INPUT___JOB_ID" ]; then
   echo "Resolved GitHub job id to $GITHUB_JOB_ID"
 else
   GITHUB_JOB_ID="$(gh_jobs "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" | jq --unbuffered -r '. | .jobs[] | [.id, .name] | @tsv' | sed 's/\t/ /g' | grep " $OTEL_SHELL_GITHUB_JOB"'$' | cut -d ' ' -f 1)"
-  if [ "$(printf '%s' "$GITHUB_JOB_ID" | wc -l)" -le 1 ]; then echo "Guessing GitHub job id to be $GITHUB_JOB_ID" >&2; export GITHUB_JOB_ID; else echo ::warning ::Could not guess GitHub job id.; fi
+  if [ "$(printf '%s' "$GITHUB_JOB_ID" | wc -l)" -le 1 ]; then
+    echo "Guessing GitHub job id to be $GITHUB_JOB_ID" >&2
+    export GITHUB_JOB_ID
+  else echo ::warning ::Could not guess GitHub job id.; fi
 fi
 echo "::endgroup::"
 
@@ -421,20 +424,23 @@ observe_rate_limit() {
 export -f observe_rate_limit
 
 root4job_end() {
-  exec 1> /tmp/opentelemetry_shell.github.debug.log
-  exec 2> /tmp/opentelemetry_shell.github.debug.log
+  exec 1>/tmp/opentelemetry_shell.github.debug.log
+  exec 2>/tmp/opentelemetry_shell.github.debug.log
   rm /tmp/opentelemetry_shell.github.observe_rate_limits
-  [ -z "${INSTRUMENTATION_CACHE_KEY:-}" ] || sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.saveCache(['/tmp/*.aliases'], '$INSTRUMENTATION_CACHE_KEY');" &> /dev/null &
+  [ -z "${INSTRUMENTATION_CACHE_KEY:-}" ] || sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.saveCache(['/tmp/*.aliases'], '$INSTRUMENTATION_CACHE_KEY');" &>/dev/null &
 
   if [ -f /tmp/opentelemetry_shell.github.error ]; then local conclusion=failure; else local conclusion=success; fi
   otel_span_attribute_typed $span_handle string github.actions.conclusion="$conclusion"
   case "$conclusion" in
-    failure) otel_span_attribute_typed "$span_handle" string cicd.pipeline.result=failure; otel_span_error "$span_handle";;
-    neutral) otel_span_attribute_typed "$span_handle" string cicd.pipeline.result=success;;
-    cancelled) otel_span_attribute_typed "$span_handle" string cicd.pipeline.result=cancellation;;
-    timed_out) otel_span_attribute_typed "$span_handle" string cicd.pipeline.result=timeout;;
-    skipped) otel_span_attribute_typed "$span_handle" string cicd.pipeline.result=skip;;
-    *) otel_span_attribute_typed "$span_handle" string cicd.pipeline.result="$conclusion";;
+    failure)
+      otel_span_attribute_typed "$span_handle" string cicd.pipeline.result=failure
+      otel_span_error "$span_handle"
+      ;;
+    neutral) otel_span_attribute_typed "$span_handle" string cicd.pipeline.result=success ;;
+    cancelled) otel_span_attribute_typed "$span_handle" string cicd.pipeline.result=cancellation ;;
+    timed_out) otel_span_attribute_typed "$span_handle" string cicd.pipeline.result=timeout ;;
+    skipped) otel_span_attribute_typed "$span_handle" string cicd.pipeline.result=skip ;;
+    *) otel_span_attribute_typed "$span_handle" string cicd.pipeline.result="$conclusion" ;;
   esac
   otel_span_end "$span_handle"
   time_end="$(date +%s.%N)"
@@ -443,11 +449,11 @@ root4job_end() {
   otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.name="${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}"
   otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.run.state=executing
   case "$conclusion" in
-    neutral) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result=success;;
-    skipped) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result=skip;;
-    cancelled) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result=cancellation;;
-    timed_out) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result=timeout;;
-    *) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result="$conclusion";;
+    neutral) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result=success ;;
+    skipped) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result=skip ;;
+    cancelled) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result=cancellation ;;
+    timed_out) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result=timeout ;;
+    *) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result="$conclusion" ;;
   esac
   otel_counter_observe "$cicd_pipeline_run_duration_handle" "$observation_handle"
   if [ "$conclusion" = failure ]; then
@@ -521,25 +527,34 @@ root4job_end() {
       otel_observation_attribute_typed "$invocation_observation_handle" string github.actions.runner.environment="$RUNNER_ENVIRONMENT"
       otel_counter_observe "$(otel_counter_create counter selfmonitoring.opentelemetry.github.job.invocations 1 'Invocations of job-level instrumentation')" "$invocation_observation_handle"
       self_monitoring_metrics_file="$(mktemp)"
-      curl -s http://localhost:8888/metrics > "$self_monitoring_metrics_file"
-      metrics_observation_handle="$(otel_observation_create "$({ echo 0; cat "$self_monitoring_metrics_file" | grep '^otelcol_receiver_accepted_metric_points' | rev | cut -d ' ' -f 1 | rev; } | paste -sd+ | bc)")"
+      curl -s http://localhost:8888/metrics >"$self_monitoring_metrics_file"
+      metrics_observation_handle="$(otel_observation_create "$({
+        echo 0
+        cat "$self_monitoring_metrics_file" | grep '^otelcol_receiver_accepted_metric_points' | rev | cut -d ' ' -f 1 | rev
+      } | paste -sd+ | bc)")"
       otel_observation_attribute_typed "$metrics_observation_handle" string github.actions.runner.os="$RUNNER_OS"
       otel_observation_attribute_typed "$metrics_observation_handle" string github.actions.runner.arch="$RUNNER_ARCH"
       otel_observation_attribute_typed "$metrics_observation_handle" string github.actions.runner.environment="$RUNNER_ENVIRONMENT"
       otel_counter_observe "$(otel_counter_create counter selfmonitoring.opentelemetry.github.job.metric_points 1 'Metric Datapoints created by job-level instrumentation')" "$metrics_observation_handle"
-      logs_observation_handle="$(otel_observation_create "$({ echo 0; cat "$self_monitoring_metrics_file" | grep '^otelcol_receiver_accepted_log_records' | rev | cut -d ' ' -f 1 | rev; } | paste -sd+ | bc)")"
+      logs_observation_handle="$(otel_observation_create "$({
+        echo 0
+        cat "$self_monitoring_metrics_file" | grep '^otelcol_receiver_accepted_log_records' | rev | cut -d ' ' -f 1 | rev
+      } | paste -sd+ | bc)")"
       otel_observation_attribute_typed "$logs_observation_handle" string github.actions.runner.os="$RUNNER_OS"
       otel_observation_attribute_typed "$logs_observation_handle" string github.actions.runner.arch="$RUNNER_ARCH"
       otel_observation_attribute_typed "$logs_observation_handle" string github.actions.runner.environment="$RUNNER_ENVIRONMENT"
       otel_counter_observe "$(otel_counter_create counter selfmonitoring.opentelemetry.github.job.logs 1 'Logs created by job-level instrumentation')" "$logs_observation_handle"
-      spans_observation_handle="$(otel_observation_create "$({ echo 0; cat "$self_monitoring_metrics_file" | grep '^otelcol_receiver_accepted_spans' | rev | cut -d ' ' -f 1 | rev; } | paste -sd+ | bc)")"
+      spans_observation_handle="$(otel_observation_create "$({
+        echo 0
+        cat "$self_monitoring_metrics_file" | grep '^otelcol_receiver_accepted_spans' | rev | cut -d ' ' -f 1 | rev
+      } | paste -sd+ | bc)")"
       otel_observation_attribute_typed "$spans_observation_handle" string github.actions.runner.os="$RUNNER_OS"
       otel_observation_attribute_typed "$spans_observation_handle" string github.actions.runner.arch="$RUNNER_ARCH"
       otel_observation_attribute_typed "$spans_observation_handle" string github.actions.runner.environment="$RUNNER_ENVIRONMENT"
       otel_counter_observe "$(otel_counter_create counter selfmonitoring.opentelemetry.github.job.spans 1 'Spans created by job-level instrumentation')" "$spans_observation_handle"
       rm "$self_monitoring_metrics_file"
       step_counter_handle="$(otel_counter_create counter selfmonitoring.opentelemetry.github.job.steps 1 'Steps observed by job-level instrumentation')"
-      ( cat /tmp/opentelemetry_shell.github.step.log || true ) | while read -r action_type action_name; do
+      (cat /tmp/opentelemetry_shell.github.step.log || true) | while read -r action_type action_name; do
         step_observation_handle="$(otel_observation_create 1)"
         otel_observation_attribute_typed "$step_observation_handle" string github.actions.runner.os="$RUNNER_OS"
         otel_observation_attribute_typed "$step_observation_handle" string github.actions.runner.arch="$RUNNER_ARCH"
@@ -552,9 +567,12 @@ root4job_end() {
     )
   fi
 
-  if [ -p /tmp/otel_shell/sdk_factory."$USER".pipe ]; then echo "EOF" > /tmp/otel_shell/sdk_factory."$USER".pipe; rm -rf /tmp/otel_shell; fi
-  timeout 5s sh -c 'while fuser /opt/opentelemetry_shell/venv/bin/python; do sleep 1; done; true' &> /dev/null || echo "Found leaked SDK processes (this may be due to leaked processes that are still being observed)."
-  
+  if [ -p /tmp/otel_shell/sdk_factory."$USER".pipe ]; then
+    echo "EOF" >/tmp/otel_shell/sdk_factory."$USER".pipe
+    rm -rf /tmp/otel_shell
+  fi
+  timeout 5s sh -c 'while fuser /opt/opentelemetry_shell/venv/bin/python; do sleep 1; done; true' &>/dev/null || echo "Found leaked SDK processes (this may be due to leaked processes that are still being observed)."
+
   kill -SIGINT "$OTEL_COLLECTOR_PID" || INPUT_DEBUG=1
   wait "$OTEL_COLLECTOR_PID"
   local collector_pipe_warning="$(mktemp -u)"
@@ -562,13 +580,13 @@ root4job_end() {
   mkfifo "$collector_pipe_warning" "$collector_pipe_error"
   cat "$collector_pipe_warning" | grep '^warn ' | cut -d ' ' -f 2- | sort -u | while read -r line; do echo ::warning::"$line"; done &
   cat "$collector_pipe_error" | grep '^err ' | cut -d ' ' -f 2- | sort -u | while read -r line; do echo ::error::"$line"; done &
-  cat otelcol."$$".log | tr '\t' ' ' | cut -d ' ' -f 2- | tee "$collector_pipe_warning" | tee "$collector_pipe_error" | { if [ -n "$INPUT_DEBUG" ]; then cat; else cat > /dev/null; fi; }
-  
+  cat otelcol."$$".log | tr '\t' ' ' | cut -d ' ' -f 2- | tee "$collector_pipe_warning" | tee "$collector_pipe_error" | { if [ -n "$INPUT_DEBUG" ]; then cat; else cat >/dev/null; fi; }
+
   if [ -n "${INTERNAL_OTEL_DEFERRED_EXPORT_DIR:-}" ]; then
     export -f gh_artifact_upload
     find "$INTERNAL_OTEL_DEFERRED_EXPORT_DIR" | grep -E '.logs$|.metrics$|.traces$' | parallel -X gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_job_"$GITHUB_JOB_ID"_signals_'{#}' '{}' &
   fi
-  
+
   wait
   exit 0
 }
@@ -576,13 +594,13 @@ export -f root4job_end
 
 root4job() {
   if [ -n "$INPUT_DEBUG" ]; then set -x; fi
-  exec 1> /tmp/opentelemetry_shell.github.debug.log
-  exec 2> /tmp/opentelemetry_shell.github.debug.log
+  exec 1>/tmp/opentelemetry_shell.github.debug.log
+  exec 2>/tmp/opentelemetry_shell.github.debug.log
   export OTEL_GITHUB_COLLECTOR_CONFIG="$(cat collector.yml)"
-  otelcol-contrib --config=env:OTEL_GITHUB_COLLECTOR_CONFIG &> otelcol."$$".log &
+  otelcol-contrib --config=env:OTEL_GITHUB_COLLECTOR_CONFIG &>otelcol."$$".log &
   OTEL_COLLECTOR_PID="$!"
-  rm -rf collector.yml 2> /dev/null
-  rm /tmp/opentelemetry_shell.github.error 2> /dev/null
+  rm -rf collector.yml 2>/dev/null
+  rm /tmp/opentelemetry_shell.github.error 2>/dev/null
   traceparent_file="$1"
   . otelapi.sh
   _otel_resource_attributes_process() {
@@ -593,7 +611,7 @@ root4job() {
   }
   otel_init
   touch /tmp/opentelemetry_shell.github.observe_rate_limits
-  observe_rate_limit &> /dev/null &
+  observe_rate_limit &>/dev/null &
   cicd_worker_count_handle="$(otel_counter_create up_down_counter cicd.worker.count '{worker}' 'The number of workers of the CICD system by state')"
   observation_handle="$(otel_observation_create -1)"
   otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.worker.state=available
@@ -624,11 +642,11 @@ root4job() {
   otel_span_attribute_typed $span_handle string github.actions.runner.arch="$RUNNER_ARCH"
   otel_span_attribute_typed $span_handle string github.actions.runner.environment="$RUNNER_ENVIRONMENT"
   otel_span_activate "$span_handle"
-  echo "$TRACEPARENT" > "$traceparent_file"
+  echo "$TRACEPARENT" >"$traceparent_file"
   if [ -n "${GITHUB_JOB_ID:-}" ]; then
     opentelemetry_job_dir="$(mktemp -d)"
-    echo "$TRACEPARENT" > "$opentelemetry_job_dir"/traceparent
-    ( gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_job_"$GITHUB_JOB_ID" "$opentelemetry_job_dir"/traceparent && rm -rf "$opentelemetry_job_dir" ) &> /dev/null &
+    echo "$TRACEPARENT" >"$opentelemetry_job_dir"/traceparent
+    (gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_job_"$GITHUB_JOB_ID" "$opentelemetry_job_dir"/traceparent && rm -rf "$opentelemetry_job_dir") &>/dev/null &
   fi
   otel_span_deactivate "$span_handle"
   trap root4job_end SIGUSR1
@@ -644,8 +662,8 @@ echo "::endgroup::"
 
 echo "::group::Setting Up SDK Factory"
 mv sdk_factory.py sdk_factory.py.backup
-cat /usr/share/opentelemetry_shell/sdk.py | grep -E 'from|import' | while read -r line; do echo "$line"; done | sort -u > sdk_factory.py
-cat sdk_factory.py.backup >> sdk_factory.py
+cat /usr/share/opentelemetry_shell/sdk.py | grep -E 'from|import' | while read -r line; do echo "$line"; done | sort -u >sdk_factory.py
+cat sdk_factory.py.backup >>sdk_factory.py
 rm sdk_factory.py.backup
 echo "::endgroup::"
 
@@ -654,16 +672,16 @@ traceparent_file="$(mktemp -u)"
 mkdir -p /tmp/otel_shell
 mkfifo /tmp/opentelemetry_shell.github.debug.log /tmp/otel_shell/sdk_factory."$USER".pipe # subdirectory to avoid sticky bit
 sudo find /tmp | grep -qE '.aliases$' && unset INSTRUMENTATION_CACHE_KEY || true
-nohup /opt/opentelemetry_shell/venv/bin/python sdk_factory.py /tmp/otel_shell/sdk_factory."$USER".pipe &> /dev/null &
-nohup bash -c 'root4job "$@"' bash "$traceparent_file" &> /dev/null &
-echo "pid=$!" >> "$GITHUB_STATE"
+nohup /opt/opentelemetry_shell/venv/bin/python sdk_factory.py /tmp/otel_shell/sdk_factory."$USER".pipe &>/dev/null &
+nohup bash -c 'root4job "$@"' bash "$traceparent_file" &>/dev/null &
+echo "pid=$!" >>"$GITHUB_STATE"
 cat /tmp/opentelemetry_shell.github.debug.log
 echo "::endgroup::"
 
 echo "::group::Propagate W3C Tracecontext to Steps"
 export TRACEPARENT="$(cat "$traceparent_file")"
 rm "$traceparent_file"
-printenv | grep -E '^OTEL_|^TRACEPARENT=|^TRACESTATE=' >> "$GITHUB_ENV"
+printenv | grep -E '^OTEL_|^TRACEPARENT=|^TRACESTATE=' >>"$GITHUB_ENV"
 echo "::endgroup::"
 
 echo ::notice title=Observability Information for ${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}::"Trace ID: $(echo "$TRACEPARENT" | cut -d - -f 2), Span ID: $(echo "$TRACEPARENT" | cut -d - -f 3), Trace Deep Link: $(OTEL_EXPORTER_OTLP_TRACES_ENDPOINT="$backup_otel_exporter_otlp_traces_endpoint" print_trace_link "$(date +%Y-%M-%dT%H:%M:%S.%N%:z | jq -sRr @uri)" || echo unavailable)"

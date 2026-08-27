@@ -4,11 +4,14 @@
 
 _otel_propagate_wget() {
   case "$-" in
-    *m*) local job_control=1; \set +m;;
-    *) local job_control=0;;
+    *m*)
+      local job_control=1
+      \set +m
+      ;;
+    *) local job_control=0 ;;
   esac
   local file=/usr/share/opentelemetry_shell/agent.instrumentation.http/libinjecthttpheader.so
-  if \[ -f "$file" ] && ! \ldd "$file" 2> /dev/null | \grep -q 'not found' && ! ( \[ "$_otel_shell" = 'busybox sh' ] && \help | \tail -n +3 | \grep -q wget ); then
+  if \[ -f "$file" ] && ! \ldd "$file" 2>/dev/null | \grep -q 'not found' && ! (\[ "$_otel_shell" = 'busybox sh' ] && \help | \tail -n +3 | \grep -q wget); then
     export OTEL_SHELL_INJECT_HTTP_SDK_PIPE="$_otel_remote_sdk_pipe"
     export OTEL_SHELL_INJECT_HTTP_HANDLE_FILE="$(\mktemp -u)_opentelemetry_shell_$$.wget.handle"
     local OLD_LD_PRELOAD="${LD_PRELOAD:-}"
@@ -19,10 +22,10 @@ _otel_propagate_wget() {
   fi
   local stderr_pipe="$(\mktemp -u)_opentelemetry_shell_$$.stderr.wget.pipe"
   \mkfifo "$stderr_pipe"
-  _otel_pipe_wget_stderr "${OTEL_SHELL_INJECT_HTTP_HANDLE_FILE:-}" < "$stderr_pipe" >&2 &
+  _otel_pipe_wget_stderr "${OTEL_SHELL_INJECT_HTTP_HANDLE_FILE:-}" <"$stderr_pipe" >&2 &
   local stderr_pid="$!"
   local exit_code=0
-  _otel_call "$@" --header="traceparent: $TRACEPARENT" --header="tracestate: $TRACESTATE" 2> "$stderr_pipe" || exit_code="$?"
+  _otel_call "$@" --header="traceparent: $TRACEPARENT" --header="tracestate: $TRACESTATE" 2>"$stderr_pipe" || exit_code="$?"
   if \[ -f "$file" ]; then
     if \[ -n "${OLD_LD_PRELOAD:-}" ]; then
       export LD_PRELOAD="$OLD_LD_PRELOAD"
@@ -44,19 +47,19 @@ _otel_propagate_wget() {
 # HTTP request sent, awaiting response... 200 OK
 # Length: unspecified [text/html]
 # Saving to: ‘index.html.3’
-# 
+#
 # 0K .......... .........                                   98.9M=0s
-# 
+#
 # 2024-05-26 09:21:52 (98.9 MB/s) - ‘index.html.3’ saved [19975]
-# 
+#
 # --2024-05-26 09:21:52--  http://www.google.com/index.html
 # Reusing existing connection to www.google.com:80.
 # HTTP request sent, awaiting response... 200 OK
 # Length: unspecified [text/html]
 # Saving to: ‘index.html.4’
-# 
+#
 # 0K .......... .........                                    119M=0s
-# 
+#
 # 2024-05-26 09:21:52 (119 MB/s) - ‘index.html.4’ saved [19608]
 
 _otel_pipe_wget_stderr() {
@@ -139,7 +142,11 @@ _otel_pipe_wget_stderr() {
       otel_observation_attribute_typed "$observation_handle" string url.scheme="$protocol"
       otel_observation_attribute_typed "$observation_handle" string http.request.method=GET
       otel_counter_observe "$http_client_active_requests_handle" "$observation_handle"
-      if \[ -n "$span_handle_file" ]; then while ! \[ -f "$span_handle_file" ]; do \sleep 1; done; local span_handle="$(\cat "$span_handle_file")"; \rm "$span_handle_file"; fi
+      if \[ -n "$span_handle_file" ]; then
+        while ! \[ -f "$span_handle_file" ]; do \sleep 1; done
+        local span_handle="$(\cat "$span_handle_file")"
+        \rm "$span_handle_file"
+      fi
       if \[ -z "$span_handle" ]; then
         local span_handle="$(otel_span_start CLIENT GET)"
       else
