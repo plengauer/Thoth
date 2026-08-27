@@ -13,6 +13,12 @@ else
   run() { "$@"; }
 fi
 
+if [ "$(cat /tmp/opentelemetry_shell_action_name 2>/dev/null)" = "$GITHUB_ACTION" ] && [ "$(command -v sh 2>/dev/null)" = "$(pwd)/bin/sh" ]; then
+  [ -n "${GITHUB_STATE:-}" ] && echo "disabled=true" >>"$GITHUB_STATE"
+  echo "::notice::Skipping job-level instrumentation because this environment is already instrumented."
+  exit 0
+fi
+
 if [ "${OTEL_GITHUB_JOB_SKIP_CONTAINERS:-FALSE}" = TRUE ]; then
   container_marker_file="${OTEL_GITHUB_JOB_CONTAINER_MARKER_FILE:-/.dockerenv}"
   cgroup_file="${OTEL_GITHUB_JOB_CGROUP_FILE:-/proc/1/cgroup}"
@@ -345,15 +351,18 @@ if type dash; then run gcc -o "$new_binary_dir"/dash forward.c -DEXECUTABLE="$(w
 if type bash; then run gcc -o "$new_binary_dir"/bash forward.c -DEXECUTABLE="$(which bash)" -DARG1="$GITHUB_ACTION_PATH"/decorate_action_run.sh -DARG2="$(which bash)"; fi
 for node_path in "$(readlink -f /proc/*/exe | grep '/Runner.Worker$' | rev | cut -d / -f 4- | rev)"/*/externals/node*/bin/node; do
   dir_path_new="$relocated_binary_dir"/"$(echo "$node_path" | rev | cut -d / -f 3 | rev)"-"$(echo "$node_path" | md5sum | cut -d ' ' -f 1)"
-  mkdir "$dir_path_new"
+  mkdir -p "$dir_path_new"
   node_path_new="$dir_path_new"/node
+  [ -e "$node_path_new" ] && continue
   mv "$node_path" "$node_path_new"
   run gcc -o "$node_path" forward.c -DEXECUTABLE=/bin/bash -DARG1="$GITHUB_ACTION_PATH"/decorate_action_node.sh -DARG2="$node_path_new" # path is hardcoded in the runners
 done
 if type docker; then
   docker_path="$(which docker)"
-  sudo mv "$docker_path" "$relocated_binary_dir"
-  run sudo gcc -o "$docker_path" forward.c -DEXECUTABLE=/bin/bash -DARG1="$GITHUB_ACTION_PATH"/decorate_action_docker.sh -DARG2="$relocated_binary_dir"/docker
+  if ! [ -e "$relocated_binary_dir"/docker ]; then
+    sudo mv "$docker_path" "$relocated_binary_dir"
+    run sudo gcc -o "$docker_path" forward.c -DEXECUTABLE=/bin/bash -DARG1="$GITHUB_ACTION_PATH"/decorate_action_docker.sh -DARG2="$relocated_binary_dir"/docker
+  fi
 fi
 echo "::endgroup::"
 
