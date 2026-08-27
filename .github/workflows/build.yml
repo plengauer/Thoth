@@ -262,7 +262,8 @@ jobs:
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.python
           python3 -m venv venv
           . venv/bin/activate
-          pip3 install -r requirements.lock.txt
+          pip3 install --no-deps -r requirements.lock.txt
+          pip3 check
           deactivate
       - run: |
           set +f
@@ -316,7 +317,7 @@ jobs:
               prev_hash="$hash"
             fi
           done
-      - run: find . -type f -print0 | xargs -0 sha256sum | sort | cut -d ' ' -f 3- | tar -cf python_site_packages.tar -T - && xz -9 python_site_packages.tar
+      - run: '{ find . -type d -print0; find . -type f -print0 | xargs -0 sha256sum | sort | cut -d " " -f 3- | tr "\n" "\0"; } | tar --null --no-recursion -cf python_site_packages.tar -T - && xz -9 python_site_packages.tar'
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: python_site_packages_${{ inputs.ref }}
@@ -503,7 +504,8 @@ jobs:
           mkdir -p src/opt/opentelemetry_shell/wheels
           python3 -m venv venv
           . venv/bin/activate
-          pip3 download -r src/usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.lock.txt -d src/usr/share/opentelemetry_shell/agent.instrumentation.python/wheels
+          pip3 download --no-deps --only-binary=:all: -r src/usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.lock.txt -d src/usr/share/opentelemetry_shell/agent.instrumentation.python/wheels
+          find src/usr/share/opentelemetry_shell/agent.instrumentation.python/wheels -type f ! -name '*-none-any.whl' -delete
           cp src/usr/share/opentelemetry_shell/agent.instrumentation.python/wheels/* src/opt/opentelemetry_shell/wheels/
           deactivate
           rm -rf venv
