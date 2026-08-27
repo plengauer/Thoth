@@ -13,7 +13,7 @@ permissions:
   issues: read
 tools:
   github:
-    toolsets: [context, actions, issues]
+    toolsets: [context, actions, repos, issues]
 safe-outputs:
   noop:
   create-issue:
