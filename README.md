@@ -128,9 +128,16 @@ gh attestation verify ./package.deb -R plengauer/opentelemetry-bash
 You can either use the fully automatic instrumentation (recommended) or just import the API to do everything manually. In both cases, you can use the API to manually create customized spans and metrics. However, the automatic approach creates rich spans and logs fully automatically. We recommend to use the manual approach only to augment the automatic approach where necessary.
 
 ## Automatic Instrumentation of Shell Scrips
-This project currently supports and is actively tested on debian-based (Debian and Ubuntu), rpm-based (Fedora, OpenSuse, and Red Hat Enterprise Linux (RHEL)) operating systems, Alpine Linux, as well as on the Windows Subsystem for Linux. The code also works on other Linux-based operating systems, however, there are no readily available installation packages for these systems. Mac-based operating systems are currently not supported. For deployment in GitHub actions, see Automatic Instrumentation of GitHub Actions below. For deployment on other any Linux-based system, install either via
+This project currently supports and is actively tested on debian-based (Debian and Ubuntu), rpm-based (Fedora, OpenSuse, and Red Hat Enterprise Linux (RHEL)) operating systems, Alpine Linux, macOS, as well as on the Windows Subsystem for Linux. The code also works on other Linux-based operating systems, however, there are no readily available installation packages for these systems. For deployment in GitHub actions, see Automatic Instrumentation of GitHub Actions below. For deployment on any Linux-based system, install either via
 ```bash
 wget -O - https://raw.githubusercontent.com/plengauer/opentelemetry-shell/main/INSTALL.sh | sh
+```
+or, for macOS systems, via
+```bash
+brew tap plengauer/opentelemetry-shell https://github.com/plengauer/Thoth
+brew install opentelemetry-shell
+export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:/opt/homebrew/opt/findutils/libexec/gnubin:/opt/homebrew/opt/grep/libexec/gnubin:/opt/homebrew/opt/gnu-sed/libexec/gnubin:/opt/homebrew/opt/gawk/libexec/gnubin:$PATH"
+export PATH="/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/findutils/libexec/gnubin:/usr/local/opt/grep/libexec/gnubin:/usr/local/opt/gnu-sed/libexec/gnubin:/usr/local/opt/gawk/libexec/gnubin:$PATH"
 ```
 or, for debian-based systems, via
 ```bash

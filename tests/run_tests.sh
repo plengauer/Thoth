@@ -5,9 +5,22 @@ if [ "$SHELL" = "" ]; then
   echo "need to specify shell to test"
   exit 1
 fi
-. /etc/os-release
-if [ "$SHELL" = dash ] && ! ([ "$ID" = debian ] || [ "$ID_LIKE" = debian ]); then
+if [ -r /etc/os-release ]; then . /etc/os-release; fi
+if [ "$SHELL" = dash ] && ! ( [ "$ID" = debian ] || [ "$ID_LIKE" = debian ] ); then
   exit 0
+fi
+
+if command -v timeout >/dev/null 2>&1; then
+  :
+elif command -v gtimeout >/dev/null 2>&1; then
+  timeout() {
+    gtimeout "$@"
+  }
+else
+  timeout() {
+    shift
+    "$@"
+  }
 fi
 
 if [ "$SHELL" = busybox ]; then
@@ -17,11 +30,10 @@ else
 fi
 
 if ! type perl 1>/dev/null 2>/dev/null; then
-  function perl() {
+  perl() {
     cat
   }
 fi
-
 failed_flag="$(mktemp -u)"
 
 for dir in unit sdk auto integration performance; do
