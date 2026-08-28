@@ -11,6 +11,7 @@ else
   echo "Unsupported operating system (no apt-get, no rpm, and no apk available)" >&2
   exit 1
 fi
+
 package="$(mktemp -u)"."$extension"
 extract_release_version() {
   while IFS= read -r location_header; do
