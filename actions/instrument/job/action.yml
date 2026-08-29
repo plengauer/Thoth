@@ -34,6 +34,9 @@ inputs:
   __job_id:
     description: 'INTERNAL ONLY - DO NOT SET MANUALLY'
     default: '${{ job.check_run_id }}'
+outputs:
+  cache_restored_fast:
+    description: 'Whether the dependency cache was restored via the fast path (direct Actions Cache REST API) instead of falling back to the @actions/cache toolkit or a cold install. "true" or "false".'
 runs:
   using: 'node24'
   pre: 'inject_and_init.js'
