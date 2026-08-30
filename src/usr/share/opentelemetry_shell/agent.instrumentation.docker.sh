@@ -4,16 +4,29 @@
 
 _otel_is_boolean_docker_option() {
   case "$1" in
-    -i) return 0 ;;
-    -it) return 0 ;;
+    -[a-zA-Z]*)
+      local short_options="${1#-}"
+      while \[ -n "$short_options" ]; do
+        case "${short_options%"${short_options#?}"}" in
+          d|i|P|t) ;;
+          *) return 1 ;;
+        esac
+        short_options="${short_options#?}"
+      done
+      return 0
+      ;;
     --interactive) return 0 ;;
     --init) return 0 ;;
-    -d) return 0 ;;
     --detach) return 0 ;;
-    -t) return 0 ;;
     --tty) return 0 ;;
-    -rm) return 0 ;;
+    --disable-content-trust) return 0 ;;
+    --no-healthcheck) return 0 ;;
+    --oom-kill-disable) return 0 ;;
+    --publish-all) return 0 ;;
+    --quiet) return 0 ;;
+    --read-only) return 0 ;;
     --rm) return 0 ;;
+    --sig-proxy) return 0 ;;
     --privileged) return 0 ;;
     --version) return 0 ;;
     --help) return 0 ;;

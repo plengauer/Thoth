@@ -3,6 +3,13 @@ if ! type docker; then exit 0; fi
 . ./assert.sh
 . /usr/bin/opentelemetry_shell.sh
 
+for docker_option in -ti -di -id -dit -itd -tid -P --disable-content-trust --no-healthcheck --oom-kill-disable --publish-all --quiet --read-only --rm --sig-proxy; do
+  _otel_is_boolean_docker_option "$docker_option"
+  assert_equals 0 "$?"
+done
+_otel_is_boolean_docker_option -rm
+assert_equals 1 "$?"
+
 assert_equals "hello world 0" "$(sudo docker run debian:latest echo hello world 0)"
 span="$(resolve_span '.name == "echo hello world 0"')"
 assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | \jq -r '.kind')"
@@ -27,6 +34,10 @@ assert_equals "hello world 5" "$(sudo docker run --volume /tmp:/tmp debian:lates
 span="$(resolve_span '.name == "echo hello world 5"')"
 assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | \jq -r '.kind')"
 
+assert_equals "hello world 6" "$(sudo docker run -Pi --no-healthcheck --oom-kill-disable --read-only --sig-proxy debian:latest echo hello world 6)"
+span="$(resolve_span '.name == "echo hello world 6"')"
+assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | \jq -r '.kind')"
+
 sudo docker image ls
 assert_equals 0 "$?"
 
@@ -42,8 +53,8 @@ assert_equals 0 "$?"
 # from https://github.com/actions/first-interaction/blob/main/Dockerfile (added because it was hanging forever)
 dockerfile="$(mktemp)"
 echo 'FROM node:20.10-buster-slim' >>"$dockerfile"
-echo 'ENTRYPOINT ["node", "-e", "console.log(\"hello world 6\")"]' >>"$dockerfile"
+echo 'ENTRYPOINT ["node", "-e", "console.log(\"hello world 7\")"]' >>"$dockerfile"
 sudo docker build -t docker_test_0 -f "$dockerfile" .
 assert_equals 0 "$?"
-assert_equals "hello world 6" "$(sudo docker run --rm=true docker_test_0)"
+assert_equals "hello world 7" "$(sudo docker run --rm=true docker_test_0)"
 assert_equals 0 "$?"
