@@ -224,9 +224,15 @@ jobs:
         with:
           name: packages.deb.${{ inputs.ref }}
       - uses: ./actions/instrument/job
+        id: instrument
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
+      - name: assert dependency cache was restored via the fast path
+        if: steps.instrument.outputs.cache_restored_fast != 'true'
+        run: |
+          echo "::error::Expected the cache warmed by job-cache to be restored via the fast path, got cache_restored_fast='${{ steps.instrument.outputs.cache_restored_fast }}'."
+          exit 1
       - run: touch /opt/helloworld
   job-integration-renovate:
     needs: job-smoke
