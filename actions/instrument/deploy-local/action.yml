@@ -9,38 +9,44 @@ inputs:
     default: '${{ github.token }}'
     required: true
   workflows_directory:
+    description: 'Directory containing workflow files to instrument'
     default: '.github/workflows'
   workflow_level_instrumentation:
-    default: true
+    description: 'Whether to deploy workflow-level instrumentation'
+    default: 'true'
   workflow_level_instrumentation_file_name:
+    description: 'File name for workflow-level instrumentation workflow'
     default: 'observability_workflow.yml'
   workflow_level_instrumentation_workflow_name:
+    description: 'Workflow name for workflow-level instrumentation'
     default: 'OpenTelemetry'
   workflow_level_instrumentation_exclude:
     description: 'Comma-separated list of workflow names to exclude from workflow-level instrumentation.'
     default: ''
   workflow_level_instrumentation_use_container:
     description: 'Use a container image to avoid repeated installation on every run.'
-    default: true
+    default: 'true'
   check_suite_level_instrumentation:
-    default: true
+    description: 'Whether to deploy check suite-level instrumentation'
+    default: 'true'
   check_suite_level_instrumentation_file_name:
     description: 'File name for check suite instrumentation workflow'
     default: 'observability_checksuite.yml'
   check_suite_level_instrumentation_use_container:
     description: 'Use a container image to avoid repeated installation on every run.'
-    default: true
+    default: 'true'
   repository_level_instrumentation:
     description: 'Deploy repository-level instrumentation to collect VCS metrics'
-    default: true
+    default: 'true'
   repository_level_instrumentation_file_name:
     description: 'File name for repository instrumentation workflow'
     default: 'observability_repository.yml'
   repository_level_instrumentation_use_container:
     description: 'Use a container image to avoid repeated installation on every run.'
-    default: true
+    default: 'true'
   job_level_instrumentation:
-    default: true
+    description: 'Whether to deploy job-level instrumentation'
+    default: 'true'
   job_level_instrumentation_exclude:
     description: 'Comma-separated list of workflow names to exclude from job-level instrumentation.'
     default: ''
@@ -49,13 +55,16 @@ inputs:
     default: 'plain'
   job_level_instrumentation_copilot:
     description: 'Instrument Copilot'
-    default: true
+    default: 'true'
   action_repository:
+    description: 'Override the action repository to deploy from'
     default: ''
   action_version:
+    description: 'Override the action version to deploy'
     default: same
   dry_run:
-    default: false
+    description: 'Preview the deployment without modifying workflow files'
+    default: 'false'
   debug:
     description: 'Enable debug logging'
     default: ${{ runner.debug }}

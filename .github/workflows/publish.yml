@@ -1,8 +1,9 @@
 name: Publish
 
-on:
+'on':
   push:
-    paths: VERSION
+    paths:
+      - VERSION
     branches:
       - main
       - 'release/v*.*'
