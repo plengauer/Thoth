@@ -410,6 +410,7 @@ jobs:
         with:
           secrets_to_redact: |-
             ${{ github.token }}
+            ${{ secrets.ACTIONS_GITHUB_TOKEN }}
             ${{ secrets.COPILOT_GITHUB_TOKEN }}
             ${{ secrets.GH_AW_GITHUB_MCP_SERVER_TOKEN || secrets.GH_AW_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
             ${{ secrets.GH_AW_GITHUB_MCP_SERVER_TOKEN }}
@@ -1629,6 +1630,7 @@ jobs:
         with:
           secrets_to_redact: |-
             ${{ github.token }}
+            ${{ secrets.ACTIONS_GITHUB_TOKEN }}
             ${{ secrets.GH_AW_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
       - name: Setup Scripts
         id: setup
