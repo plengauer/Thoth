@@ -53,10 +53,11 @@ jobs:
               ;;
           esac
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        if: ${{ github.event_name == 'push' || steps.release.outputs.should_run == 'true' }}
-      - run: |
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+      - if: ${{ github.event_name == 'push' || steps.release.outputs.should_run == 'true' }}
+        run: |
           cd demos && echo */ | tr ' ' '\n' | tr -d / | while read -r dir; do echo \""$dir"\"; done | jq -s | tr -d ' ' | tr -d '\n' | xargs -0 -I {} echo 'dirs={}' >> "$GITHUB_OUTPUT"
-        if: ${{ github.event_name == 'push' || steps.release.outputs.should_run == 'true' }}
         id: demos
   generate:
     if: ${{ !github.event.repository.fork && (github.event_name == 'push' || needs.prepare.outputs.should_run == 'true') }}
@@ -74,6 +75,8 @@ jobs:
           { if [ "$GITHUB_EVENT_NAME" = release ]; then cat "$GITHUB_EVENT_PATH"; else curl --header "Authorization: Bearer ${{ github.token }}" https://api.github.com/repos/"$GITHUB_REPOSITORY"/releases/latest; fi; } | jq -r '.assets[] | select(.name | endswith("_amd64.deb")) | .url' | xargs wget --header "Authorization: Bearer ${{ github.token }}" --header "Accept: application/octet-stream" -O package.deb
       - run: sudo apt-get -y install ./package.deb
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.repository.default_branch }}
       - id: demo
         env:
           GITHUB_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
