@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        architecture: [ 'amd64', 'arm64/v8', 'mips64le', 'ppc64le', 'riscv64', 's390x' ] # 'i386', 'arm32/v7'
+        architecture: ['amd64', 'arm64/v8', 'mips64le', 'ppc64le', 'riscv64', 's390x'] # 'i386', 'arm32/v7'
       fail-fast: false
     permissions:
       contents: read
@@ -411,7 +411,7 @@ jobs:
             src/usr/share/opentelemetry_shell/agent.instrumentation.java/version
     permissions:
       actions: read
-      
+
   verify-deb-python-dependency:
     runs-on: ubuntu-slim
     permissions:

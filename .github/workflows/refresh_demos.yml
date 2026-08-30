@@ -67,7 +67,7 @@ jobs:
       actions: read
     strategy:
       fail-fast: false
-      matrix: 
+      matrix:
         demo_directory: ${{ fromJSON(needs.prepare.outputs.dirs) }}
     steps:
       - run: |

@@ -8,7 +8,7 @@ jobs:
   env:
     strategy:
       matrix:
-        runner: [ ubuntu-latest, macos-26, macos-latest, windows-latest, ubuntu-slim ]
+        runner: [ubuntu-latest, macos-26, macos-latest, windows-latest, ubuntu-slim]
     runs-on: ${{ matrix.runner }}
     permissions:
       actions: read
@@ -27,7 +27,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: $/actions/instrument/job
         with:
-          # secrets_to_redact: '{"foo":"*"}'        
+          # secrets_to_redact: '{"foo":"*"}'
           secrets_to_redact: '${{ toJSON(secrets) }}'
           debug: 1
         env:
