@@ -30,6 +30,20 @@ _otel_is_boolean_docker_option() {
     --privileged) return 0 ;;
     --version) return 0 ;;
     --help) return 0 ;;
+    -*[!itd-]*) return 1 ;;
+    -*) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+_otel_is_docker_detach_option() {
+  case "$1" in
+    -d) return 0 ;;
+    --detach) return 0 ;;
+    --detach=true) return 0 ;;
+    --detach=*) return 1 ;;
+    -*[!itd-]*) return 1 ;;
+    -*d*) return 0 ;;
     *) return 1 ;;
   esac
 }
@@ -93,6 +107,7 @@ _otel_inject_docker_args() {
   while \[ "$#" -gt 0 ] && _otel_string_starts_with "$1" -; do
     if _otel_string_starts_with "$1" --entrypoint=; then local entrypoint_override="${1#*=}"; fi
     if _otel_string_starts_with "$1" --network=; then local docker_network="${1#*=}"; fi
+    if _otel_is_docker_detach_option "$1"; then local docker_detached=true; fi
     \echo -n ' '
     _otel_escape_arg "$1"
     if ! _otel_is_boolean_docker_option "$1" && ! _otel_string_contains "$1" =; then
@@ -107,7 +122,7 @@ _otel_inject_docker_args() {
   if \[ "$#" = 0 ]; then return 0; fi
   # extract image
   local image="$1"
-  if _otel_is_docker_image_injectable "$executable" "$image" && ! _otel_is_docker_image_injected "$executable" "$image" && _otel_is_docker_image_github_input_injectable "$executable" "$image"; then
+  if \[ "${docker_detached:-}" != true ] && _otel_is_docker_image_injectable "$executable" "$image" && ! _otel_is_docker_image_injected "$executable" "$image" && _otel_is_docker_image_github_input_injectable "$executable" "$image"; then
     \echo -n ' '
     _otel_escape_args --env TRACEPARENT="$TRACEPARENT" --env TRACESTATE="$TRACESTATE"
     {
