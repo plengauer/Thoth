@@ -34,6 +34,10 @@ jobs:
         run: |
           gh extension install github/gh-aw
           gh aw compile --approve
+      - uses: plengauer/opentelemetry-github/actions/instrument/deploy-local@be259b5ae1e13e2398a8b96dce8baeaddac0663d # v5.61.2
+        with:
+          github_token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          job_level_instrumentation_exclude: 'Refresh Demos,Test Package Repositories,Shell,GitHub,Workflow Example,Experiment'
       - id: push
         run: |
           if [ -z "$(git status --porcelain)" ]; then exit 0; fi

@@ -22,7 +22,7 @@ resolve_span '.name == "'"$command"'"'
 
 assert_equals 0 "$(\cat "$OTEL_EXPORT_LOCATION" | \jq '. | select(.name != null) | .events[] | select(.name | startswith("SIG") | not) | .name' | \wc -l)"
 assert_equals 0 "$(\cat "$OTEL_EXPORT_LOCATION" | \jq '. | select(.name != null) | select(.name | contains("execve(")) | .name' | \wc -l)"
-\cat "$OTEL_EXPORT_LOCATION" | \jq -r '. | select(.name != null) | .name' | \cut -d ' ' -f 1 | while \read -r my_command; do
+\cat "$OTEL_EXPORT_LOCATION" | \jq -r '. | select(.name != null) | select(.name | startswith("SIG") | not) | .name' | \cut -d ' ' -f 1 | while \read -r my_command; do
   assert_not_equals "" "$(\which "$my_command")"
 done
 
