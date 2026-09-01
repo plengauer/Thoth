@@ -82,6 +82,21 @@ runs:
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         token: ${{ inputs.github_token }}
+    - name: "Cleanup legacy .deploy-local artifact"
+      shell: bash
+      run: |
+        path="$GITHUB_WORKSPACE/.deploy-local"
+        if [ -L "$path" ]; then
+          target="$(readlink "$path")"
+          case "$target" in
+            /*) ;;
+            *) target="$(dirname "$path")/$target" ;;
+          esac
+          target="$(realpath -m "$target")"
+          case "$target" in
+            */actions/instrument/deploy-local) rm -f "$path" ;;
+          esac
+        fi
     - name: "Setup deploy-local"
       shell: bash
       run: |
