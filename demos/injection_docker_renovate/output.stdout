@@ -1,15 +1,15 @@
  INFO: Renovate started
-       "renovateVersion": "44.41.0"
+       "renovateVersion": "44.54.0"
  WARN: cli config dryRun property has been changed to full
  INFO: Repository started (repository=plengauer/Thoth)
-       "renovateVersion": "44.41.0"
+       "renovateVersion": "44.54.0"
  WARN: Cannot access vulnerability alerts. Please ensure permissions have been granted. (repository=plengauer/Thoth)
        "url": "https://docs.renovatebot.com/configuration-options/#vulnerabilityalerts"
  INFO: Dependency extraction complete (repository=plengauer/Thoth, baseBranch=main)
        "stats": {
          "managers": {
            "dockerfile": {"fileCount": 4, "depCount": 4},
-           "github-actions": {"fileCount": 33, "depCount": 648},
+           "github-actions": {"fileCount": 32, "depCount": 648},
            "gradle": {"fileCount": 4, "depCount": 3},
            "gradle-wrapper": {"fileCount": 1, "depCount": 1},
            "maven": {"fileCount": 1, "depCount": 2},
@@ -17,15 +17,15 @@
            "pip_requirements": {"fileCount": 3, "depCount": 19},
            "regex": {"fileCount": 3, "depCount": 4}
          },
-         "total": {"fileCount": 51, "depCount": 695}
+         "total": {"fileCount": 50, "depCount": 695}
        }
- INFO: DRY-RUN: Would commit files to branch renovate/renovatebot-github-action-46.x. See debug logs for raw commit information (repository=plengauer/Thoth, branch=renovate/renovatebot-github-action-46.x)
+ INFO: DRY-RUN: Would commit files to branch renovate/docker-setup-qemu-action-4.x. See debug logs for raw commit information (repository=plengauer/Thoth, branch=renovate/docker-setup-qemu-action-4.x)
  INFO: DRY-RUN: Would ensure Dependency Dashboard (repository=plengauer/Thoth)
        "title": "Dependency Dashboard"
  INFO: DRY-RUN: Would save repository cache. (repository=plengauer/Thoth)
  INFO: Repository finished (repository=plengauer/Thoth)
        "cloned": true,
-       "durationMs": 41207,
+       "durationMs": 42007,
        "result": "done",
        "status": "onboarded",
        "enabled": true,
