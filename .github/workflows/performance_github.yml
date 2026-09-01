@@ -25,7 +25,7 @@ jobs:
       - run: echo hello world
 
   baseline:
-    needs: [ warmup ]
+    needs: [warmup]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -35,7 +35,7 @@ jobs:
       - run: echo hello world | cat
 
   default:
-    needs: [ warmup ]
+    needs: [warmup]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -48,17 +48,17 @@ jobs:
       - run: echo hello world | cat
 
   performance:
-    needs: [ warmup ]
+    needs: [warmup]
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        cache: [ 'false', 'true' ]
-        observe-pipes: [ 'FALSE', 'TRUE' ]
-        mute-internals: [ 'FALSE', 'TRUE' ]
-        mute-builtins: [ 'FALSE', 'TRUE' ]
-        inject-deep: [ 'FALSE', 'TRUE' ]
-        observe-signals: [ 'FALSE', 'TRUE' ]
-        observe-subprocesses: [ 'FALSE', 'TRUE' ]
+        cache: ['false', 'true']
+        observe-pipes: ['FALSE', 'TRUE']
+        mute-internals: ['FALSE', 'TRUE']
+        mute-builtins: ['FALSE', 'TRUE']
+        inject-deep: ['FALSE', 'TRUE']
+        observe-signals: ['FALSE', 'TRUE']
+        observe-subprocesses: ['FALSE', 'TRUE']
     permissions:
       contents: read
       actions: read
