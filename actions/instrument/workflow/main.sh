@@ -183,7 +183,7 @@ if [ "$(jq <"$workflow_json" .conclusion -r)" = failure ]; then otel_span_error 
 echo ::notice title=Observability Information::"Trace ID: $(echo "$TRACEPARENT" | cut -d - -f 2), Span ID: $(echo "$TRACEPARENT" | cut -d - -f 3), Trace Deep Link: $(print_trace_link "$workflow_started_at" || echo unavailable) , GitHub Workflow Run: $link/attempts/$(jq <"$workflow_json" -r .run_attempt)"
 otel_span_end "$workflow_span_handle" @"$workflow_ended_at"
 
-jq <"$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .started_at, .completed_at, .name] | @tsv' | while IFS=$'\t' read -r TRACEPARENT job_id job_conclusion job_started_at job_completed_at job_name; do
+jq <"$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .created_at, .started_at, .completed_at, .name, (.runner_name // ""), (.runner_group_name // ""), ((.labels // []) | join(","))] | @tsv' | while IFS=$'\t' read -r TRACEPARENT job_id job_conclusion job_created_at job_started_at job_completed_at job_name job_runner_name job_runner_group_name job_runner_labels; do
   if [ "$job_conclusion" = skipped ]; then continue; fi
   if jq <"$artifacts_json" -r .name | grep -qE '^opentelemetry_job_'"$job_id"'_signals_.*$'; then
     export_deferred_signal_artifacts() {
@@ -285,6 +285,11 @@ jq <"$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .st
   otel_span_attribute_typed "$job_span_handle" int github.actions.job.id="$job_id"
   otel_span_attribute_typed "$job_span_handle" string github.actions.job.name="$job_name"
   otel_span_attribute_typed "$job_span_handle" string github.actions.conclusion="$job_conclusion"
+  [ -z "$job_runner_name" ] || otel_span_attribute_typed "$job_span_handle" string github.actions.runner.name="$job_runner_name"
+  [ -z "$job_runner_group_name" ] || otel_span_attribute_typed "$job_span_handle" string github.actions.runner.group.name="$job_runner_group_name"
+  [ -z "$job_runner_labels" ] || otel_span_attribute_typed "$job_span_handle" string github.actions.runner.labels="$job_runner_labels"
+  job_queue_duration_s="$(python3 -c "print(str(max(0, $(date -d "$job_started_at" '+%s.%N') - $(date -d "$job_created_at" '+%s.%N'))))" 2>/dev/null || true)"
+  [ -z "$job_queue_duration_s" ] || otel_span_attribute_typed "$job_span_handle" double cicd.pipeline.run.queue.duration="$job_queue_duration_s"
   otel_span_activate "$job_span_handle"
   [ -z "${INPUT_DEBUG}" ] || echo "span job $TRACEPARENT $job_name" >&2
   jq <"$jobs_json" -r --unbuffered '. | select(.id == '"$job_id"') | .steps[] | ["'"$TRACEPARENT"'", "'"$job_id"'", .number, .conclusion, if .started_at == null or .started_at == "" then "null" else .started_at end, if .completed_at == null or .completed_at == "" then "null" else .completed_at end, .name] | @tsv'
