@@ -236,6 +236,35 @@ permissions:
 ```
 When using automatic deployment, permissions are adjusted automatically.
 
+## Context Propagation
+
+In addition to propagating trace context over HTTP, this project propagates it via environment variables, following the OpenTelemetry specification for <a href="https://opentelemetry.io/docs/specs/otel/context/env-carriers/">Environment Variables as Context Propagation Carriers</a>. This makes it interoperable with any other tool that reads or writes the same variables, for example <a href="https://github.com/tobert/otel-cli">otel-cli</a>.
+
+| Variable | Direction | Behavior |
+| --- | --- | --- |
+| `TRACEPARENT` | read and written | Extracted once at startup. Rewritten whenever a span is activated, so every child process sees the innermost enclosing span as its parent. |
+| `TRACESTATE` | read, passed through | Propagated unchanged. This project never adds, removes, or modifies entries. |
+| `BAGGAGE` | not supported | Neither read nor written, see Configuration above. |
+| `TRACEPARENT_STACK` | internal | An implementation detail used to restore the previous span on deactivation. It is not part of any specification, and other tools should ignore it. |
+
+Context is extracted from the environment when a script starts. If `TRACEPARENT` is already set, the root span of the script becomes a child of the incoming span. If it is not set, the script starts a new trace. Context is injected whenever a span is activated, which for automatic instrumentation means once per observed command. A tool invoked by an instrumented script therefore becomes a child of the span for the command that invoked it, not of the script as a whole. If traces are disabled, no trace context is written and any incoming `TRACEPARENT` is left untouched.
+
+In GitHub actions, job-level instrumentation writes the trace context of the job into `$GITHUB_ENV` before any other step runs, so all subsequent steps inherit it. Steps are additionally wrapped so that each step sees the trace context of its own step span, and each command within a step sees the trace context of its own command span. On runners where the wrapping cannot be installed, steps fall back to the trace context of the job.
+
+```yaml
+steps:
+  - uses: plengauer/Thoth/actions/instrument/job@v5
+    env:
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+
+  - name: Instrument custom build command
+    run: otel-cli exec --name build -- make build
+```
+
+Note that `otel-cli` defaults to gRPC and does not support the `http/json` protocol, so it needs a compatible endpoint and protocol configuration if the defaults of this project are overridden.
+
+Environment variables are visible to other processes, and to other users with sufficient permissions. This project copies the trace context into child processes, into containers started by instrumented `docker` commands, across `sudo`, and into `$GITHUB_ENV`. Trace context itself is not sensitive, but this is a reason not to place sensitive information into `TRACESTATE`.
+
 ## Manual Instrumentation
 Import the API by referencing the `otelapi.sh` file. This is only necessary if you do not choose a fully automatic approach described above. In case you use automatic instrumentation, the API will be imported automatically for you.
 The SDK needs to be initialized and shut down manually at the start and at the end of your script respectively. All config must be set before the call to `otel_init`. You can configure the underlying SDK with the same variables as any other OpenTelemetry SDK as described <a href="https://opentelemetry.io/docs/languages/sdk-configuration/">here</a>. We recommend not just setting the environment variables, but also exporting them so that automatically injected children inherit the same configuration.
