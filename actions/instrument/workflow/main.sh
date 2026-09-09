@@ -174,6 +174,10 @@ otel_span_attribute_typed "$workflow_span_handle" string github.actions.event.na
 otel_span_attribute_typed "$workflow_span_handle" string github.actions.event.ref="refs/heads/$(jq <"$workflow_json" -r .head_branch)"
 otel_span_attribute_typed "$workflow_span_handle" string github.actions.event.ref.sha="$(jq <"$workflow_json" -r .head_sha)"
 otel_span_attribute_typed "$workflow_span_handle" string github.actions.event.ref.name="$(jq <"$workflow_json" -r .head_branch)"
+workflow_triggering_actor="$(jq <"$workflow_json" -r '.triggering_actor.login // empty')"
+[ -z "$workflow_triggering_actor" ] || [ "$workflow_triggering_actor" = "$(jq <"$workflow_json" -r .actor.login)" ] || otel_span_attribute_typed "$workflow_span_handle" string github.actions.triggering_actor.name="$workflow_triggering_actor"
+workflow_pr_numbers="$(jq <"$workflow_json" -r '[.pull_requests[]?.number] | map(tostring) | join(",")' 2>/dev/null || true)"
+[ -z "$workflow_pr_numbers" ] || otel_span_attribute_typed "$workflow_span_handle" string github.actions.pull_request.numbers="$workflow_pr_numbers"
 if [ "$INPUT_WORKFLOW_RUN_ATTEMPT" -gt 1 ] && gh_artifact_download "$INPUT_WORKFLOW_RUN_ID" "$((INPUT_WORKFLOW_RUN_ATTEMPT - 1))" opentelemetry_workflow_run_"$((INPUT_WORKFLOW_RUN_ATTEMPT - 1))" opentelemetry_workflow_run_prev; then
   otel_link_add "$(otel_link_create "$(cat opentelemetry_workflow_run_prev/traceparent)" "")" "$workflow_span_handle"
 fi
