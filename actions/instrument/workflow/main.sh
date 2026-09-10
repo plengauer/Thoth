@@ -128,6 +128,7 @@ workflow_duration_counter_handle="$(otel_counter_create counter github.actions.w
 job_duration_counter_handle="$(otel_counter_create counter github.actions.jobs.duration s 'Duration of job runs')"
 step_duration_counter_handle="$(otel_counter_create counter github.actions.steps.duration s 'Duration of step runs')"
 action_duration_counter_handle="$(otel_counter_create counter github.actions.actions.duration s 'Duration of action runs')"
+job_queue_duration_counter_handle="$(otel_counter_create counter cicd.pipeline.run.queue.duration s 'Duration of a pipeline run waiting for a runner')"
 
 link="${GITHUB_SERVER_URL:-https://github.com}"/"$(jq <"$workflow_json" -r .repository.owner.login)"/"$(jq <"$workflow_json" -r .repository.name)"/actions/runs/"$(jq <"$workflow_json" -r .id)"
 workflow_started_at="$(jq <"$workflow_json" -r .run_started_at)"
@@ -176,8 +177,7 @@ otel_span_attribute_typed "$workflow_span_handle" string github.actions.event.re
 otel_span_attribute_typed "$workflow_span_handle" string github.actions.event.ref.name="$(jq <"$workflow_json" -r .head_branch)"
 workflow_triggering_actor="$(jq <"$workflow_json" -r '.triggering_actor.login // empty')"
 [ -z "$workflow_triggering_actor" ] || [ "$workflow_triggering_actor" = "$(jq <"$workflow_json" -r .actor.login)" ] || otel_span_attribute_typed "$workflow_span_handle" string github.actions.triggering_actor.name="$workflow_triggering_actor"
-workflow_pr_numbers="$(jq <"$workflow_json" -r '[.pull_requests[]?.number] | map(tostring) | join(",")' 2>/dev/null || true)"
-[ -z "$workflow_pr_numbers" ] || otel_span_attribute_typed "$workflow_span_handle" string github.actions.pull_request.numbers="$workflow_pr_numbers"
+jq <"$workflow_json" -r '.pull_requests[]?.number | tostring' 2>/dev/null | while read -r pr_number; do otel_span_attribute_typed "$workflow_span_handle" +string[1] github.actions.pull_request.numbers="$pr_number"; done
 if [ "$INPUT_WORKFLOW_RUN_ATTEMPT" -gt 1 ] && gh_artifact_download "$INPUT_WORKFLOW_RUN_ID" "$((INPUT_WORKFLOW_RUN_ATTEMPT - 1))" opentelemetry_workflow_run_"$((INPUT_WORKFLOW_RUN_ATTEMPT - 1))" opentelemetry_workflow_run_prev; then
   otel_link_add "$(otel_link_create "$(cat opentelemetry_workflow_run_prev/traceparent)" "")" "$workflow_span_handle"
 fi
@@ -187,7 +187,7 @@ if [ "$(jq <"$workflow_json" .conclusion -r)" = failure ]; then otel_span_error 
 echo ::notice title=Observability Information::"Trace ID: $(echo "$TRACEPARENT" | cut -d - -f 2), Span ID: $(echo "$TRACEPARENT" | cut -d - -f 3), Trace Deep Link: $(print_trace_link "$workflow_started_at" || echo unavailable) , GitHub Workflow Run: $link/attempts/$(jq <"$workflow_json" -r .run_attempt)"
 otel_span_end "$workflow_span_handle" @"$workflow_ended_at"
 
-jq <"$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .created_at, .started_at, .completed_at, .name, (.runner_name // ""), (.runner_group_name // ""), ((.labels // []) | join(","))] | @tsv' | while IFS=$'\t' read -r TRACEPARENT job_id job_conclusion job_created_at job_started_at job_completed_at job_name job_runner_name job_runner_group_name job_runner_labels; do
+jq <"$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .created_at, .started_at, .completed_at, .name] | @tsv' | while IFS=$'\t' read -r TRACEPARENT job_id job_conclusion job_created_at job_started_at job_completed_at job_name; do
   if [ "$job_conclusion" = skipped ]; then continue; fi
   if jq <"$artifacts_json" -r .name | grep -qE '^opentelemetry_job_'"$job_id"'_signals_.*$'; then
     export_deferred_signal_artifacts() {
@@ -289,11 +289,20 @@ jq <"$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .cr
   otel_span_attribute_typed "$job_span_handle" int github.actions.job.id="$job_id"
   otel_span_attribute_typed "$job_span_handle" string github.actions.job.name="$job_name"
   otel_span_attribute_typed "$job_span_handle" string github.actions.conclusion="$job_conclusion"
+  [ -z "$workflow_triggering_actor" ] || otel_span_attribute_typed "$job_span_handle" string github.actions.triggering_actor.name="$workflow_triggering_actor"
+  jq <"$workflow_json" -r '.pull_requests[]?.number | tostring' 2>/dev/null | while read -r pr_number; do otel_span_attribute_typed "$job_span_handle" +string[1] github.actions.pull_request.numbers="$pr_number"; done
+  job_runner_name="$(jq <"$jobs_json" -r '. | select(.id == '"$job_id"') | .runner_name // empty')"
+  job_runner_group_name="$(jq <"$jobs_json" -r '. | select(.id == '"$job_id"') | .runner_group_name // empty')"
   [ -z "$job_runner_name" ] || otel_span_attribute_typed "$job_span_handle" string github.actions.runner.name="$job_runner_name"
   [ -z "$job_runner_group_name" ] || otel_span_attribute_typed "$job_span_handle" string github.actions.runner.group.name="$job_runner_group_name"
-  [ -z "$job_runner_labels" ] || otel_span_attribute_typed "$job_span_handle" string github.actions.runner.labels="$job_runner_labels"
+  jq <"$jobs_json" -r '. | select(.id == '"$job_id"') | .labels[]? // empty' | while read -r label; do otel_span_attribute_typed "$job_span_handle" +string[1] github.actions.runner.labels="$label"; done
   job_queue_duration_s="$(python3 -c "print(str(max(0, $(date -d "$job_started_at" '+%s.%N') - $(date -d "$job_created_at" '+%s.%N'))))" 2>/dev/null || true)"
-  [ -z "$job_queue_duration_s" ] || otel_span_attribute_typed "$job_span_handle" double cicd.pipeline.run.queue.duration="$job_queue_duration_s"
+  if [ -n "$job_queue_duration_s" ]; then
+    otel_span_attribute_typed "$job_span_handle" double cicd.pipeline.run.queue.duration="$job_queue_duration_s"
+    observation_handle="$(otel_observation_create "$job_queue_duration_s")"
+    otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.name="$job_name"
+    otel_counter_observe "$job_queue_duration_counter_handle" "$observation_handle"
+  fi
   otel_span_activate "$job_span_handle"
   [ -z "${INPUT_DEBUG}" ] || echo "span job $TRACEPARENT $job_name" >&2
   jq <"$jobs_json" -r --unbuffered '. | select(.id == '"$job_id"') | .steps[] | ["'"$TRACEPARENT"'", "'"$job_id"'", .number, .conclusion, if .started_at == null or .started_at == "" then "null" else .started_at end, if .completed_at == null or .completed_at == "" then "null" else .completed_at end, .name] | @tsv'
