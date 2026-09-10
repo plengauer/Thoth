@@ -289,8 +289,6 @@ jq <"$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .cr
   otel_span_attribute_typed "$job_span_handle" int github.actions.job.id="$job_id"
   otel_span_attribute_typed "$job_span_handle" string github.actions.job.name="$job_name"
   otel_span_attribute_typed "$job_span_handle" string github.actions.conclusion="$job_conclusion"
-  [ -z "$workflow_triggering_actor" ] || otel_span_attribute_typed "$job_span_handle" string github.actions.triggering_actor.name="$workflow_triggering_actor"
-  jq <"$workflow_json" -r '.pull_requests[]?.number | tostring' 2>/dev/null | while read -r pr_number; do otel_span_attribute_typed "$job_span_handle" +string[1] github.actions.pull_request.numbers="$pr_number"; done
   job_runner_name="$(jq <"$jobs_json" -r '. | select(.id == '"$job_id"') | .runner_name // empty')"
   job_runner_group_name="$(jq <"$jobs_json" -r '. | select(.id == '"$job_id"') | .runner_group_name // empty')"
   [ -z "$job_runner_name" ] || otel_span_attribute_typed "$job_span_handle" string github.actions.runner.name="$job_runner_name"

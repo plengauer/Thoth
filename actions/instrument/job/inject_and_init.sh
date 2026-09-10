@@ -646,6 +646,14 @@ root4job() {
   otel_span_attribute_typed $span_handle string github.actions.runner.os="$RUNNER_OS"
   otel_span_attribute_typed $span_handle string github.actions.runner.arch="$RUNNER_ARCH"
   otel_span_attribute_typed $span_handle string github.actions.runner.environment="$RUNNER_ENVIRONMENT"
+  if [ -n "${GITHUB_JOB_ID:-}" ]; then
+    job_json="$(gh_jobs "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" | jq --unbuffered -c ".jobs[] | select(.id == $GITHUB_JOB_ID)" 2>/dev/null || true)"
+    if [ -n "$job_json" ]; then
+      job_runner_group_name="$(printf '%s' "$job_json" | jq -r '.runner_group_name // empty')"
+      [ -z "$job_runner_group_name" ] || otel_span_attribute_typed $span_handle string github.actions.runner.group.name="$job_runner_group_name"
+      printf '%s' "$job_json" | jq -r '.labels[]? // empty' | while read -r label; do otel_span_attribute_typed $span_handle +string[1] github.actions.runner.labels="$label"; done
+    fi
+  fi
   otel_span_activate "$span_handle"
   echo "$TRACEPARENT" >"$traceparent_file"
   if [ -n "${GITHUB_JOB_ID:-}" ]; then
