@@ -642,22 +642,25 @@ root4job() {
   otel_span_attribute_typed $span_handle int github.actions.job.id="${GITHUB_JOB_ID:-}"
   otel_span_attribute_typed $span_handle string github.actions.job.name="$GITHUB_JOB"
   printf '%s' "$INPUT___JOB_MATRIX" | jq 'to_entries | .[] | [ .key, .value ] | @tsv' -r | while IFS=$'\t' read -r key value; do otel_span_attribute_typed $span_handle string github.actions.job.matrix."$key"="$value"; done
-  [ -z "${GITHUB_TRIGGERING_ACTOR:-}" ] || [ "$GITHUB_TRIGGERING_ACTOR" = "${GITHUB_ACTOR:-}" ] || otel_span_attribute_typed $span_handle string github.actions.triggering_actor.name="$GITHUB_TRIGGERING_ACTOR"
   otel_span_attribute_typed $span_handle string github.actions.runner.name="$RUNNER_NAME"
   otel_span_attribute_typed $span_handle string github.actions.runner.os="$RUNNER_OS"
   otel_span_attribute_typed $span_handle string github.actions.runner.arch="$RUNNER_ARCH"
   otel_span_attribute_typed $span_handle string github.actions.runner.environment="$RUNNER_ENVIRONMENT"
+  otel_span_activate "$span_handle"
+  echo "$TRACEPARENT" >"$traceparent_file"
   if [ -n "${GITHUB_JOB_ID:-}" ]; then
-    job_json="$(gh_jobs "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" | jq --unbuffered -c ".jobs[] | select(.id == $GITHUB_JOB_ID)" 2>/dev/null || true)"
+    job_json="$(gh_job "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" "$GITHUB_JOB_ID" 2>/dev/null || true)"
     if [ -n "$job_json" ]; then
       job_runner_group_name="$(printf '%s' "$job_json" | jq -r '.runner_group_name // empty')"
       [ -z "$job_runner_group_name" ] || otel_span_attribute_typed $span_handle string github.actions.runner.group.name="$job_runner_group_name"
       printf '%s' "$job_json" | jq -r '.labels[]? // empty' | while read -r label; do otel_span_attribute_typed $span_handle +string[1] github.actions.runner.labels="$label"; done
+      job_created_at="$(printf '%s' "$job_json" | jq -r '.created_at // empty')"
+      job_started_at="$(printf '%s' "$job_json" | jq -r '.started_at // empty')"
+      if [ -n "$job_created_at" ] && [ -n "$job_started_at" ]; then
+        job_queue_duration_s="$(python3 -c "print(str(max(0, $(date -d "$job_started_at" '+%s.%N') - $(date -d "$job_created_at" '+%s.%N'))))" 2>/dev/null || true)"
+        [ -z "$job_queue_duration_s" ] || otel_span_attribute_typed $span_handle float cicd.pipeline.run.queue.duration="$job_queue_duration_s"
+      fi
     fi
-  fi
-  otel_span_activate "$span_handle"
-  echo "$TRACEPARENT" >"$traceparent_file"
-  if [ -n "${GITHUB_JOB_ID:-}" ]; then
     opentelemetry_job_dir="$(mktemp -d)"
     echo "$TRACEPARENT" >"$opentelemetry_job_dir"/traceparent
     (gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_job_"$GITHUB_JOB_ID" "$opentelemetry_job_dir"/traceparent && rm -rf "$opentelemetry_job_dir") &>/dev/null &
