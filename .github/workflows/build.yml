@@ -15,7 +15,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@be259b5ae1e13e2398a8b96dce8baeaddac0663d # v5.61.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@74b46584d99a285f5f5300264c94538dcf6e9596 # v5.62.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
@@ -30,13 +30,13 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        architecture: [ 'amd64', 'arm64/v8', 'mips64le', 'ppc64le', 'riscv64', 's390x' ] # 'i386', 'arm32/v7'
+        architecture: ['amd64', 'arm64/v8', 'mips64le', 'ppc64le', 'riscv64', 's390x'] # 'i386', 'arm32/v7'
       fail-fast: false
     permissions:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@be259b5ae1e13e2398a8b96dce8baeaddac0663d # v5.61.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@74b46584d99a285f5f5300264c94538dcf6e9596 # v5.62.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
@@ -46,7 +46,7 @@ jobs:
         with:
           ref: ${{ inputs.ref }}
       - if: ${{ matrix.architecture != 'amd64' }}
-        uses: docker/setup-qemu-action@96fe6ef7f33517b61c61be40b68a1882f3264fb8 # v4.2.0
+        uses: docker/setup-qemu-action@1f40c72289eff860ee54a304f1438e3cff362e0a # v4.3.0
       - id: build
         run: |
           debian_architecture="$(echo ${{ matrix.architecture }} | cut -d / -f 1 | sed 's/le$/el/g')"
@@ -78,7 +78,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@be259b5ae1e13e2398a8b96dce8baeaddac0663d # v5.61.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@74b46584d99a285f5f5300264c94538dcf6e9596 # v5.62.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
@@ -107,7 +107,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@be259b5ae1e13e2398a8b96dce8baeaddac0663d # v5.61.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@74b46584d99a285f5f5300264c94538dcf6e9596 # v5.62.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
@@ -132,7 +132,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@be259b5ae1e13e2398a8b96dce8baeaddac0663d # v5.61.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@74b46584d99a285f5f5300264c94538dcf6e9596 # v5.62.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
@@ -163,7 +163,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@be259b5ae1e13e2398a8b96dce8baeaddac0663d # v5.61.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@74b46584d99a285f5f5300264c94538dcf6e9596 # v5.62.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
@@ -202,11 +202,11 @@ jobs:
               prev_version="$version"
             fi
           done
-      - run: find . -type f -print0 | xargs -0 sha256sum | sort | cut -d ' ' -f 3- | tar -cf node_modules.tar -T - && xz -9 node_modules.tar
+      - run: find . -type f -print0 | xargs -0 sha256sum | sort | cut -d ' ' -f 3- | tar -cf node_modules.tar -T - && zstd --rm -19 --long=27 -T0 node_modules.tar
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: node_modules_${{ inputs.ref }}
-          path: node_modules.tar.xz
+          path: node_modules.tar.zst
 
   list-python-versions:
     runs-on: ubuntu-slim
@@ -216,7 +216,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@be259b5ae1e13e2398a8b96dce8baeaddac0663d # v5.61.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@74b46584d99a285f5f5300264c94538dcf6e9596 # v5.62.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
@@ -245,7 +245,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@be259b5ae1e13e2398a8b96dce8baeaddac0663d # v5.61.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@74b46584d99a285f5f5300264c94538dcf6e9596 # v5.62.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
@@ -302,7 +302,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@be259b5ae1e13e2398a8b96dce8baeaddac0663d # v5.61.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@74b46584d99a285f5f5300264c94538dcf6e9596 # v5.62.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
@@ -331,16 +331,16 @@ jobs:
               prev_hash="$hash"
             fi
           done
-      - run: find . -type f -print0 | xargs -0 sha256sum | sort | cut -d ' ' -f 3- | tar -cf python_site_packages.tar -T - && xz -9 python_site_packages.tar
+      - run: find . -type f -print0 | xargs -0 sha256sum | sort | cut -d ' ' -f 3- | tar -cf python_site_packages.tar -T - && zstd --rm -19 --long=27 -T0 python_site_packages.tar
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: python_site_packages_${{ inputs.ref }}
-          path: python_site_packages.tar.xz
+          path: python_site_packages.tar.zst
 
   build-java-agents:
     runs-on: ubuntu-latest
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@be259b5ae1e13e2398a8b96dce8baeaddac0663d # v5.61.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@74b46584d99a285f5f5300264c94538dcf6e9596 # v5.62.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
@@ -349,7 +349,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.ref }}
-      - uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c # v6.0.0
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
         with:
           java-version: 8
           distribution: temurin
@@ -371,7 +371,7 @@ jobs:
           class_file_version_base=44
           java_version=$((class_file_version - class_file_version_base))
           echo version="$java_version" >> "$GITHUB_OUTPUT"
-      - uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c # v6.0.0
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
         with:
           java-version: ${{ steps.determine-minimum-version.outputs.version }}
           distribution: temurin
@@ -411,14 +411,14 @@ jobs:
             src/usr/share/opentelemetry_shell/agent.instrumentation.java/version
     permissions:
       actions: read
-      
+
   verify-deb-python-dependency:
     runs-on: ubuntu-slim
     permissions:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@be259b5ae1e13e2398a8b96dce8baeaddac0663d # v5.61.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@74b46584d99a285f5f5300264c94538dcf6e9596 # v5.62.0
         with:
           secrets_to_redact: '["${{ github.token }}"]'
         env:
@@ -442,7 +442,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@be259b5ae1e13e2398a8b96dce8baeaddac0663d # v5.61.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@74b46584d99a285f5f5300264c94538dcf6e9596 # v5.62.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
@@ -481,7 +481,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@be259b5ae1e13e2398a8b96dce8baeaddac0663d # v5.61.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@74b46584d99a285f5f5300264c94538dcf6e9596 # v5.62.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
@@ -543,7 +543,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@be259b5ae1e13e2398a8b96dce8baeaddac0663d # v5.61.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@74b46584d99a285f5f5300264c94538dcf6e9596 # v5.62.0
         with:
           secrets_to_redact: '["${{ github.token }}"]'
         env:
@@ -568,7 +568,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@be259b5ae1e13e2398a8b96dce8baeaddac0663d # v5.61.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@74b46584d99a285f5f5300264c94538dcf6e9596 # v5.62.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
@@ -650,7 +650,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@be259b5ae1e13e2398a8b96dce8baeaddac0663d # v5.61.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@74b46584d99a285f5f5300264c94538dcf6e9596 # v5.62.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
@@ -702,7 +702,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@be259b5ae1e13e2398a8b96dce8baeaddac0663d # v5.61.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@74b46584d99a285f5f5300264c94538dcf6e9596 # v5.62.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}

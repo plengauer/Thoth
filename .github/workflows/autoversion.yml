@@ -17,7 +17,7 @@ jobs:
     if: ${{ !github.event.repository.fork }}
     runs-on: ubuntu-slim
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@be259b5ae1e13e2398a8b96dce8baeaddac0663d # v5.61.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@74b46584d99a285f5f5300264c94538dcf6e9596 # v5.62.0
         with:
           secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}","${{ secrets.OPENAI_TOKEN }}"]'
         env:

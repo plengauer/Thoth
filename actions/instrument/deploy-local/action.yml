@@ -9,38 +9,44 @@ inputs:
     default: '${{ github.token }}'
     required: true
   workflows_directory:
+    description: 'Directory containing workflow files to instrument'
     default: '.github/workflows'
   workflow_level_instrumentation:
-    default: true
+    description: 'Whether to deploy workflow-level instrumentation'
+    default: 'true'
   workflow_level_instrumentation_file_name:
+    description: 'File name for workflow-level instrumentation workflow'
     default: 'observability_workflow.yml'
   workflow_level_instrumentation_workflow_name:
+    description: 'Workflow name for workflow-level instrumentation'
     default: 'OpenTelemetry'
   workflow_level_instrumentation_exclude:
     description: 'Comma-separated list of workflow names to exclude from workflow-level instrumentation.'
     default: ''
   workflow_level_instrumentation_use_container:
     description: 'Use a container image to avoid repeated installation on every run.'
-    default: true
+    default: 'true'
   check_suite_level_instrumentation:
-    default: true
+    description: 'Whether to deploy check suite-level instrumentation'
+    default: 'true'
   check_suite_level_instrumentation_file_name:
     description: 'File name for check suite instrumentation workflow'
     default: 'observability_checksuite.yml'
   check_suite_level_instrumentation_use_container:
     description: 'Use a container image to avoid repeated installation on every run.'
-    default: true
+    default: 'true'
   repository_level_instrumentation:
     description: 'Deploy repository-level instrumentation to collect VCS metrics'
-    default: true
+    default: 'true'
   repository_level_instrumentation_file_name:
     description: 'File name for repository instrumentation workflow'
     default: 'observability_repository.yml'
   repository_level_instrumentation_use_container:
     description: 'Use a container image to avoid repeated installation on every run.'
-    default: true
+    default: 'true'
   job_level_instrumentation:
-    default: true
+    description: 'Whether to deploy job-level instrumentation'
+    default: 'true'
   job_level_instrumentation_exclude:
     description: 'Comma-separated list of workflow names to exclude from job-level instrumentation.'
     default: ''
@@ -49,20 +55,23 @@ inputs:
     default: 'plain'
   job_level_instrumentation_copilot:
     description: 'Instrument Copilot'
-    default: true
+    default: 'true'
   action_repository:
+    description: 'Override the action repository to deploy from'
     default: ''
   action_version:
+    description: 'Override the action version to deploy'
     default: same
   dry_run:
-    default: false
+    description: 'Preview the deployment without modifying workflow files'
+    default: 'false'
   debug:
     description: 'Enable debug logging'
     default: ${{ runner.debug }}
   __repository_level_instrumentation_file_name_override:
     description: 'INTERNAL ONLY - DO NOT SET MANUALLY'
     default: ''
-    
+
 runs:
   using: composite
   steps:
@@ -163,7 +172,7 @@ runs:
         (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
           cat "$workflow_file" | yq .jobs.*.steps[].uses | grep -q /actions/instrument/repository && echo path="$workflow_file" >> "$GITHUB_OUTPUT" && break || true
         done
-  
+
     - name: "Deploy workflow-level observability"
       if: ${{ inputs.workflow_level_instrumentation == 'true' && steps.find-workflow-level-instrumentation.outputs.path == null }}
       shell: bash
@@ -232,7 +241,7 @@ runs:
           [ -n "$names" ] && names="${names}, ${line}" || names="$line"
         done < "$names_file"
         yq -i ".on.workflow_run.workflows = [${names}]" "$path"
-  
+
     - name: "Deploy check suite-level instrumentation"
       if: ${{ inputs.check_suite_level_instrumentation == 'true' && steps.find-check-suite-level-instrumentation.outputs.path == null }}
       shell: bash
@@ -272,7 +281,7 @@ runs:
           fi
           echo ::warning::'Runner image '"$image"' is unavailable, skipping configuration since it its only for optimization. A common cause for this is that the package is not publicly visible in the ghcr. This needs to be configured manually. Another possible cause is that it cannot be identified (no docker command available and token cannot read packages)'
         fi
-  
+
     - name: "Deploy repository-level instrumentation"
       if: ${{ inputs.repository_level_instrumentation == 'true' && steps.find-repository-level-instrumentation.outputs.path == null }}
       shell: bash
@@ -365,10 +374,12 @@ runs:
             job_level_instrumentation_secret_redaction_strategy="${{ inputs.job_level_instrumentation_secret_redaction_strategy }}"
             if [ "$workflow_file" = '.github/workflows/copilot-setup-steps.yml' ]; then job_level_instrumentation_secret_redaction_strategy=none; fi
             case "$job_level_instrumentation_secret_redaction_strategy" in
+              # yamllint disable rule:line-length
               none)  [ "$(cat "$workflow_file" | yq '.jobs.'"$job_name"'.steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*") | .with.secrets_to_redact')" = null ] || yq -i 'del(.jobs.'"$job_name"'.steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*").with.secrets_to_redact)' "$workflow_file";;
               list)  [ "$(cat "$workflow_file" | yq '.jobs.'"$job_name"'.steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*") | .with.secrets_to_redact')" = "$(cat "$workflow_file" | yq '.jobs.'"$job_name"'.steps[] | select(.uses != "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*")' | { echo JHt7IGdpdGh1Yi50b2tlbiB9fQo= | base64 -d; grep -oE "$(echo XCR7e1tefV0qW1s6Ymxhbms6XV0qc2VjcmV0c1wuW2EtekEtWjAtOV8uLV0rW1s6Ymxhbms6XV0qW159XSp9fQ== | base64 -d)" || true; } | sort -u | jq --raw-input --slurp 'split("\n") | .[0:-1]' -c)" ] || yq -i '(.jobs.'"$job_name"'.steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*")).with.secrets_to_redact = "'"$(cat "$workflow_file" | yq '.jobs.'"$job_name"'.steps[] | select(.uses != "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*")' | { echo JHt7IGdpdGh1Yi50b2tlbiB9fQo= | base64 -d; grep -oE "$(echo XCR7e1tefV0qW1s6Ymxhbms6XV0qc2VjcmV0c1wuW2EtekEtWjAtOV8uLV0rW1s6Ymxhbms6XV0qW159XSp9fQ== | base64 -d)" || true; } | sort -u | jq --raw-input --slurp 'split("\n") | .[0:-1]' -c | sed 's/"/\\"/g')"'"' "$workflow_file";;
               plain) [ "$(cat "$workflow_file" | yq '.jobs.'"$job_name"'.steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*") | .with.secrets_to_redact')" = "$(cat "$workflow_file" | yq '.jobs.'"$job_name"'.steps[] | select(.uses != "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*")' | { echo JHt7IGdpdGh1Yi50b2tlbiB9fQo= | base64 -d; grep -oE "$(echo XCR7e1tefV0qW1s6Ymxhbms6XV0qc2VjcmV0c1wuW2EtekEtWjAtOV8uLV0rW1s6Ymxhbms6XV0qW159XSp9fQ== | base64 -d)" || true; } | sort -u | jq --raw-input --slurp 'split("\n") | .[0:-1]' -c)" ] || yq -i '(.jobs.'"$job_name"'.steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*")).with.secrets_to_redact = "'"$(cat "$workflow_file" | yq '.jobs.'"$job_name"'.steps[] | select(.uses != "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*")' | { echo JHt7IGdpdGh1Yi50b2tlbiB9fQo= | base64 -d; grep -oE "$(echo XCR7e1tefV0qW1s6Ymxhbms6XV0qc2VjcmV0c1wuW2EtekEtWjAtOV8uLV0rW1s6Ymxhbms6XV0qW159XSp9fQ== | base64 -d)" || true; } | sort -u | jq --raw-input --slurp 'split("\n") | .[0:-1]' | jq .[] -r | sed 's/"/\\"/g')"'"' "$workflow_file";;
                all)  [ "$(cat "$workflow_file" | yq '.jobs.'"$job_name"'.steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*") | .with.secrets_to_redact')" = "$(echo JHt7IHRvSlNPTihzZWNyZXRzKSB9fQo= | base64 -d)" ] || yq -i 'del((.jobs.'"$job_name"'.steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*")).with.secrets_to_redact) | (.jobs.'"$job_name"'.steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*")).with.secrets_to_redact = "'"$(echo JHt7IHRvSlNPTihzZWNyZXRzKSB9fQo= | base64 -d)"'"' "$workflow_file";;
+              # yamllint enable rule:line-length
                  *) echo '::error ::Illegal secret redaction strategy "${{ inputs.job_level_instrumentation_secret_redaction_strategy }}"!' && exit 1;;
             esac
           done
@@ -394,15 +405,6 @@ runs:
           done
         done
   
-    - name: "Restore blank lines"
-      shell: bash
-      run: |
-        (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
-          if git diff -U0 -w -b --ignore-blank-lines "$workflow_file" > "$workflow_file".patch && git checkout "$workflow_file"; then
-            patch "$workflow_file" < "$workflow_file".patch
-          fi
-          rm -rf "$workflow_file".patch
-        done
     - name: "Annotate instrumentation action versions"
       if: ${{ steps.determine-instrumentation-version-comment.outputs.comment != '' }}
       shell: bash
@@ -414,6 +416,19 @@ runs:
           for target in workflow checksuite repository job; do
             sed -i "s~^\([[:space:]]*- uses: ${{ steps.determine-repository.outputs.repository }}/actions/instrument/$target@$version\)\$~\1 $comment~" "$workflow_file"
           done
+        done
+    - name: "Restore blank lines"
+      shell: bash
+      run: |
+        (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
+          if git diff -U0 -w -b --ignore-blank-lines "$workflow_file" > "$workflow_file".patch && git checkout "$workflow_file"; then
+            if ! patch "$workflow_file" < "$workflow_file".patch; then
+              echo "::error::Failed to restore blank lines in $workflow_file, patch did not apply cleanly"
+              rm -f "$workflow_file".patch "$workflow_file".rej "$workflow_file".orig
+              exit 1
+            fi
+          fi
+          rm -f "$workflow_file".patch "$workflow_file".rej "$workflow_file".orig
         done
     - name: Log
       if: ${{ inputs.dry_run == 'true' }}

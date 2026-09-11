@@ -1,7 +1,40 @@
 name: OpenTelemetry
 on:
   workflow_run:
-    workflows: [.github/workflows/copilot-setup-steps.yml, Agentic Maintenance, Analyze, Autoapprove, Autobackport, Autofix, Autorerun, Autotriage, Autoversion, Build, CI, Claude, Copilot, Copilot cloud agent, Copilot code review, Dependency Graph, Experiment, GitHub, Greetings, Initialize Fork, Monitor GitHub Changelog, OpenAI Codex, Performance GitHub Job, Publish, Recompile Agentic Workflows, Refresh Demos, Renovate, Report Failed Workflows, Rerequest Reviews, Shell, Test, Test Package Repositories, Update Package Repository, Workflow Example]
+    workflows:
+      - .github/workflows/copilot-setup-steps.yml
+      - Agentic Maintenance
+      - Analyze
+      - Autoapprove
+      - Autobackport
+      - Autofix
+      - Autorerun
+      - Autotriage
+      - Autoversion
+      - Build
+      - CI
+      - Claude
+      - Copilot
+      - Copilot cloud agent
+      - Copilot code review
+      - Dependency Graph
+      - Experiment
+      - GitHub
+      - Greetings
+      - Initialize Fork
+      - Monitor GitHub Changelog
+      - OpenAI Codex
+      - Performance GitHub Job
+      - Publish
+      - Recompile Agentic Workflows
+      - Refresh Demos
+      - Renovate
+      - Rerequest Reviews
+      - Shell
+      - Test
+      - Test Package Repositories
+      - Update Package Repository
+      - Workflow Example
     types:
       - completed
 jobs:
@@ -10,9 +43,9 @@ jobs:
     permissions:
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/workflow@be259b5ae1e13e2398a8b96dce8baeaddac0663d # v5.61.2
+      - uses: plengauer/opentelemetry-github/actions/instrument/workflow@74b46584d99a285f5f5300264c94538dcf6e9596 # v5.62.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: '/dev/stderr'
-    container: ghcr.io/plengauer/opentelemetry-github-workflow-instrumentation-runner:v5.61.2
+    container: ghcr.io/plengauer/opentelemetry-github-workflow-instrumentation-runner:v5.62.0

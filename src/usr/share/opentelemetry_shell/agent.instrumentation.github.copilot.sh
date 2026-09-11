@@ -1,7 +1,6 @@
 #!/bin/false
 
-if \[ "${GITHUB_ACTIONS:-false}" = true ] && \[ "$GITHUB_EVENT_NAME" = dynamic ] && \[ -n "${COPILOT_AGENT_RUNTIME_VERSION:-}" ] && \[ -n "${GITHUB_COPILOT_ACTION_DOWNLOAD_URL:-}" ] && (\[ "$GITHUB_JOB" = copilot ] || \[ "$GITHUB_JOB" = claude ] || \[ "$GITHUB_JOB" = codex ]); then
-  \[ -n "${OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT:-}" ] || \echo OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT=span_and_event >>"$GITHUB_ENV"
+if \[ "${GITHUB_ACTIONS:-false}" = true ] && \[ "${GITHUB_EVENT_NAME:-}" = dynamic ] && \[ -n "${COPILOT_AGENT_RUNTIME_VERSION:-}" ] && \[ -n "${GITHUB_COPILOT_ACTION_DOWNLOAD_URL:-}" ] && (\[ "${GITHUB_JOB:-}" = copilot ] || \[ "${GITHUB_JOB:-}" = claude ] || \[ "${GITHUB_JOB:-}" = codex ]); then
   _otel_inject_copilot() {
     local exit_code=0
     _otel_call "$@" || local exit_code=$?

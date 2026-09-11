@@ -144,11 +144,18 @@ def handle(scope, version, command, arguments):
         from opentelemetry.sdk.trace.export import SimpleSpanProcessor, BatchSpanProcessor, ConsoleSpanExporter
         from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
         traces_exporters = os.environ.get('OTEL_TRACES_EXPORTER', 'otlp')
-        propagator = os.environ.get('OTEL_PROPAGATORS', 'tracecontext')
+        propagators = os.environ.get('OTEL_PROPAGATORS', 'tracecontext')
         sampling_strategy = os.environ.get('OTEL_TRACES_SAMPLER', 'parentbased_always_on')
         sampling_strategy_arg = os.environ.get('OTEL_TRACES_SAMPLER_ARG', '1.0')
-        if propagator != 'tracecontext':
-            raise Exception('Unsupported propagator: ' + propagator)
+        # careful: actions/instrument/job/inject_and_init.sh greps this file for module-loading keywords to pre-warm its SDK factory, so those substrings must not appear in ordinary statements
+        seen_propagators = []
+        for propagator in propagators.split(','):
+            propagator = propagator.strip().lower()
+            if not propagator or propagator in seen_propagators:
+                continue
+            seen_propagators.append(propagator)
+            if propagator not in ('tracecontext', 'none'):
+                print('Unsupported propagator, ignoring: ' + propagator, file=sys.stderr)
         if traces_exporters:
             sampler = None
             if sampling_strategy == 'always_on':

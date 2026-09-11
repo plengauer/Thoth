@@ -8,10 +8,13 @@ inputs:
     description: 'A GitHub token for API access (read-only)'
     default: '${{ github.token }}'
   event_name:
+    description: 'The GitHub event name to observe'
     default: '${{ github.event_name }}'
   event_action:
+    description: 'The GitHub event action to observe'
     default: '${{ github.event.action }}'
   event_body:
+    description: 'The full GitHub event payload to observe'
     default: '${{ toJson(github.event) }}'
   self_monitoring:
     description: 'Submit self-monitoring metrics to the OpenTelemetry project'

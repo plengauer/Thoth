@@ -263,8 +263,9 @@ otel_span_traceparent() {
 
 otel_span_activate() {
   local span_handle="$1"
+  local traceparent="$(otel_span_traceparent "$span_handle")"
   \export TRACEPARENT_STACK="${TRACEPARENT:-}/${TRACEPARENT_STACK:-}"
-  \export TRACEPARENT="$(otel_span_traceparent "$span_handle")"
+  if \[ -n "$traceparent" ]; then \export TRACEPARENT="$traceparent"; fi
   if \[ -z "${TRACESTATE:-}" ]; then \export TRACESTATE=""; fi
 }
 
