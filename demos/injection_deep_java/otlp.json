@@ -18,13 +18,13 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "5.61.5"
+              "stringValue": "5.62.0"
             }
           },
           {
             "key": "service.instance.id",
             "value": {
-              "stringValue": "0d4f75bb-56fb-4e22-bae9-773534ba6cba"
+              "stringValue": "0178a89e-3469-428c-a637-17d489269193"
             }
           },
           {
@@ -66,25 +66,25 @@
           {
             "key": "cloud.resource_id",
             "value": {
-              "stringValue": "/subscriptions/e5b640f6-e5d7-4068-b010-34284a62ea24/resourceGroups/azure-westus3-general-e5b640f6-e5d7-4068-b010-34284a62ea24/providers/Microsoft.Compute/virtualMachines/qYTYhtnZeYwk7h"
+              "stringValue": "/subscriptions/1b81a300-6f1d-4a2a-8639-a65857d71bc5/resourceGroups/azure-westus3-general-1b81a300-6f1d-4a2a-8639-a65857d71bc5/providers/Microsoft.Compute/virtualMachines/dWLYyLbEYkve8G"
             }
           },
           {
             "key": "host.id",
             "value": {
-              "stringValue": "7c277410-99f7-4a2b-b14f-77960d305712"
+              "stringValue": "60532da7-6192-4306-90f3-b430bb7d180f"
             }
           },
           {
             "key": "host.name",
             "value": {
-              "stringValue": "qYTYhtnZeYwk7h"
+              "stringValue": "dWLYyLbEYkve8G"
             }
           },
           {
             "key": "host.type",
             "value": {
-              "stringValue": "Standard_D4ads_v5"
+              "stringValue": "Standard_D4ads_v6"
             }
           },
           {
@@ -102,13 +102,13 @@
           {
             "key": "process.pid",
             "value": {
-              "intValue": "3935"
+              "intValue": "3736"
             }
           },
           {
             "key": "process.parent_pid",
             "value": {
-              "intValue": "2864"
+              "intValue": "2679"
             }
           },
           {
@@ -171,30 +171,30 @@
         {
           "scope": {
             "name": "shell",
-            "version": "5.61.5"
+            "version": "5.62.0"
           },
           "logRecords": [
             {
-              "timeUnixNano": "1788274365627579648",
-              "observedTimeUnixNano": "1788274365627590381",
+              "timeUnixNano": "1789140984073510144",
+              "observedTimeUnixNano": "1789140984073518879",
               "severityText": "unspecified",
               "body": {
                 "stringValue": "OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended"
               },
               "flags": 3,
-              "traceId": "c8d1b233045154ba993cc3bbab2cedd8",
-              "spanId": "cb623b574d6d18a2"
+              "traceId": "e8971fc819a0d30d49e36eabe17f4e5b",
+              "spanId": "b09988b2edb32725"
             },
             {
-              "timeUnixNano": "1788274366007781632",
-              "observedTimeUnixNano": "1788274366007806803",
+              "timeUnixNano": "1789140984409942016",
+              "observedTimeUnixNano": "1789140984409962578",
               "severityText": "unspecified",
               "body": {
-                "stringValue": "[otel.javaagent 2026-09-01 14:52:46:005 +0000] [main] INFO io.opentelemetry.javaagent.tooling.VersionLogger - opentelemetry-javaagent - version: 2.30.0"
+                "stringValue": "[otel.javaagent 2026-09-11 15:36:24:407 +0000] [main] INFO io.opentelemetry.javaagent.tooling.VersionLogger - opentelemetry-javaagent - version: 2.31.1"
               },
               "flags": 3,
-              "traceId": "c8d1b233045154ba993cc3bbab2cedd8",
-              "spanId": "cb623b574d6d18a2"
+              "traceId": "e8971fc819a0d30d49e36eabe17f4e5b",
+              "spanId": "b09988b2edb32725"
             }
           ]
         }
@@ -203,7 +203,211 @@
   ]
 }
 {
-  "resourceSpans": [
+  "resourceLogs": [
+    {
+      "resource": {
+        "attributes": [
+          {
+            "key": "telemetry.sdk.language",
+            "value": {
+              "stringValue": "shell"
+            }
+          },
+          {
+            "key": "telemetry.sdk.name",
+            "value": {
+              "stringValue": "opentelemetry"
+            }
+          },
+          {
+            "key": "telemetry.sdk.version",
+            "value": {
+              "stringValue": "5.62.0"
+            }
+          },
+          {
+            "key": "service.instance.id",
+            "value": {
+              "stringValue": "0178a89e-3469-428c-a637-17d489269193"
+            }
+          },
+          {
+            "key": "service.name",
+            "value": {
+              "stringValue": "unknown_service"
+            }
+          },
+          {
+            "key": "azure.vm.scaleset.name",
+            "value": {
+              "stringValue": ""
+            }
+          },
+          {
+            "key": "azure.vm.sku",
+            "value": {
+              "stringValue": ""
+            }
+          },
+          {
+            "key": "cloud.platform",
+            "value": {
+              "stringValue": "azure_vm"
+            }
+          },
+          {
+            "key": "cloud.provider",
+            "value": {
+              "stringValue": "azure"
+            }
+          },
+          {
+            "key": "cloud.region",
+            "value": {
+              "stringValue": "WestUS3"
+            }
+          },
+          {
+            "key": "cloud.resource_id",
+            "value": {
+              "stringValue": "/subscriptions/1b81a300-6f1d-4a2a-8639-a65857d71bc5/resourceGroups/azure-westus3-general-1b81a300-6f1d-4a2a-8639-a65857d71bc5/providers/Microsoft.Compute/virtualMachines/dWLYyLbEYkve8G"
+            }
+          },
+          {
+            "key": "host.id",
+            "value": {
+              "stringValue": "60532da7-6192-4306-90f3-b430bb7d180f"
+            }
+          },
+          {
+            "key": "host.name",
+            "value": {
+              "stringValue": "dWLYyLbEYkve8G"
+            }
+          },
+          {
+            "key": "host.type",
+            "value": {
+              "stringValue": "Standard_D4ads_v6"
+            }
+          },
+          {
+            "key": "os.type",
+            "value": {
+              "stringValue": "linux"
+            }
+          },
+          {
+            "key": "os.version",
+            "value": {
+              "stringValue": "6.17.0-1022-azure"
+            }
+          },
+          {
+            "key": "process.pid",
+            "value": {
+              "intValue": "3736"
+            }
+          },
+          {
+            "key": "process.parent_pid",
+            "value": {
+              "intValue": "2679"
+            }
+          },
+          {
+            "key": "process.executable.name",
+            "value": {
+              "stringValue": "bash"
+            }
+          },
+          {
+            "key": "process.executable.path",
+            "value": {
+              "stringValue": "/usr/bin/bash"
+            }
+          },
+          {
+            "key": "process.command_line",
+            "value": {
+              "stringValue": "bash -e demo.sh"
+            }
+          },
+          {
+            "key": "process.command",
+            "value": {
+              "stringValue": "bash"
+            }
+          },
+          {
+            "key": "process.owner",
+            "value": {
+              "stringValue": "runner"
+            }
+          },
+          {
+            "key": "process.runtime.name",
+            "value": {
+              "stringValue": "bash"
+            }
+          },
+          {
+            "key": "process.runtime.description",
+            "value": {
+              "stringValue": "Bourne Again Shell"
+            }
+          },
+          {
+            "key": "process.runtime.version",
+            "value": {
+              "stringValue": "5.2.21-2ubuntu4"
+            }
+          },
+          {
+            "key": "process.runtime.options",
+            "value": {
+              "stringValue": "ehB"
+            }
+          }
+        ]
+      },
+      "scopeLogs": [
+        {
+          "scope": {
+            "name": "shell",
+            "version": "5.62.0"
+          },
+          "logRecords": [
+            {
+              "timeUnixNano": "1789140986838319872",
+              "observedTimeUnixNano": "1789140986838340682",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended"
+              },
+              "flags": 3,
+              "traceId": "e8971fc819a0d30d49e36eabe17f4e5b",
+              "spanId": "b09988b2edb32725"
+            },
+            {
+              "timeUnixNano": "1789140987023888640",
+              "observedTimeUnixNano": "1789140987023909305",
+              "severityText": "unspecified",
+              "body": {
+                "stringValue": "OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended"
+              },
+              "flags": 3,
+              "traceId": "e8971fc819a0d30d49e36eabe17f4e5b",
+              "spanId": "b09988b2edb32725"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+{
+  "resourceMetrics": [
     {
       "resource": {
         "attributes": [
@@ -216,7 +420,7 @@
           {
             "key": "host.name",
             "value": {
-              "stringValue": "runnervmgx7h7"
+              "stringValue": "runnervmlun5p"
             }
           },
           {
@@ -273,7 +477,7 @@
           {
             "key": "process.pid",
             "value": {
-              "intValue": "4674"
+              "intValue": "4474"
             }
           },
           {
@@ -297,7 +501,7 @@
           {
             "key": "service.instance.id",
             "value": {
-              "stringValue": "c1308065-3d95-472a-a246-85a683190e9f"
+              "stringValue": "ee6ce1cc-12df-4f18-a698-0c2c6fd26aca"
             }
           },
           {
@@ -315,7 +519,7 @@
           {
             "key": "telemetry.distro.version",
             "value": {
-              "stringValue": "2.30.0"
+              "stringValue": "2.31.1"
             }
           },
           {
@@ -333,7 +537,339 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "1.64.0"
+              "stringValue": "1.65.0"
+            }
+          }
+        ]
+      },
+      "scopeMetrics": [
+        {
+          "scope": {
+            "name": "io.opentelemetry.runtime-telemetry-java8",
+            "version": "2.31.1-alpha"
+          },
+          "metrics": [
+            {
+              "name": "jvm.gc.duration",
+              "description": "Duration of JVM garbage collection actions.",
+              "unit": "s",
+              "histogram": {
+                "dataPoints": [
+                  {
+                    "attributes": [
+                      {
+                        "key": "jvm.gc.action",
+                        "value": {
+                          "stringValue": "end of minor GC"
+                        }
+                      },
+                      {
+                        "key": "jvm.gc.name",
+                        "value": {
+                          "stringValue": "G1 Young Generation"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1789140987100145525",
+                    "timeUnixNano": "1789140987265096552",
+                    "count": "1",
+                    "sum": 0.006,
+                    "bucketCounts": [
+                      "1",
+                      "0",
+                      "0",
+                      "0",
+                      "0"
+                    ],
+                    "explicitBounds": [
+                      0.01,
+                      0.1,
+                      1,
+                      10
+                    ],
+                    "min": 0.006,
+                    "max": 0.006
+                  }
+                ],
+                "aggregationTemporality": 2
+              }
+            }
+          ]
+        },
+        {
+          "scope": {
+            "name": "io.opentelemetry.http-url-connection",
+            "version": "2.31.1-alpha"
+          },
+          "metrics": [
+            {
+              "name": "http.client.request.duration",
+              "description": "Duration of HTTP client requests.",
+              "unit": "s",
+              "histogram": {
+                "dataPoints": [
+                  {
+                    "attributes": [
+                      {
+                        "key": "http.request.method",
+                        "value": {
+                          "stringValue": "GET"
+                        }
+                      },
+                      {
+                        "key": "http.response.status_code",
+                        "value": {
+                          "intValue": "200"
+                        }
+                      },
+                      {
+                        "key": "network.protocol.version",
+                        "value": {
+                          "stringValue": "1.1"
+                        }
+                      },
+                      {
+                        "key": "server.address",
+                        "value": {
+                          "stringValue": "example.com"
+                        }
+                      },
+                      {
+                        "key": "server.port",
+                        "value": {
+                          "intValue": "80"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1789140987257360945",
+                    "timeUnixNano": "1789140987265096552",
+                    "count": "1",
+                    "sum": 0.101320784,
+                    "bucketCounts": [
+                      "0",
+                      "0",
+                      "0",
+                      "0",
+                      "0",
+                      "0",
+                      "1",
+                      "0",
+                      "0",
+                      "0",
+                      "0",
+                      "0",
+                      "0",
+                      "0",
+                      "0"
+                    ],
+                    "explicitBounds": [
+                      0.005,
+                      0.01,
+                      0.025,
+                      0.05,
+                      0.075,
+                      0.1,
+                      0.25,
+                      0.5,
+                      0.75,
+                      1,
+                      2.5,
+                      5,
+                      7.5,
+                      10
+                    ],
+                    "exemplars": [
+                      {
+                        "filteredAttributes": [
+                          {
+                            "key": "url.full",
+                            "value": {
+                              "stringValue": "http://example.com"
+                            }
+                          }
+                        ],
+                        "timeUnixNano": "1789140987257000000",
+                        "asDouble": 0.101320784,
+                        "traceId": "e8971fc819a0d30d49e36eabe17f4e5b",
+                        "spanId": "5d88402fe48c450c"
+                      }
+                    ],
+                    "min": 0.101320784,
+                    "max": 0.101320784
+                  }
+                ],
+                "aggregationTemporality": 2
+              }
+            }
+          ],
+          "schemaUrl": "https://opentelemetry.io/schemas/1.41.0"
+        },
+        {
+          "scope": {
+            "name": "io.opentelemetry.sdk.trace"
+          },
+          "metrics": [
+            {
+              "name": "queueSize",
+              "description": "The number of items queued",
+              "unit": "1",
+              "gauge": {
+                "dataPoints": [
+                  {
+                    "attributes": [
+                      {
+                        "key": "processorType",
+                        "value": {
+                          "stringValue": "BatchSpanProcessor"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1789140987260483376",
+                    "timeUnixNano": "1789140987265096552",
+                    "asInt": "0"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "schemaUrl": "https://opentelemetry.io/schemas/1.24.0"
+    }
+  ]
+}
+{
+  "resourceSpans": [
+    {
+      "resource": {
+        "attributes": [
+          {
+            "key": "host.arch",
+            "value": {
+              "stringValue": "amd64"
+            }
+          },
+          {
+            "key": "host.name",
+            "value": {
+              "stringValue": "runnervmlun5p"
+            }
+          },
+          {
+            "key": "os.description",
+            "value": {
+              "stringValue": "Linux 6.17.0-1022-azure"
+            }
+          },
+          {
+            "key": "os.type",
+            "value": {
+              "stringValue": "linux"
+            }
+          },
+          {
+            "key": "os.version",
+            "value": {
+              "stringValue": "6.17.0-1022-azure"
+            }
+          },
+          {
+            "key": "process.command_args",
+            "value": {
+              "arrayValue": {
+                "values": [
+                  {
+                    "stringValue": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java"
+                  },
+                  {
+                    "stringValue": "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/opentelemetry-javaagent.jar"
+                  },
+                  {
+                    "stringValue": "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/rootcontextagent.jar"
+                  },
+                  {
+                    "stringValue": "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/subprocessinjectionagent.jar"
+                  },
+                  {
+                    "stringValue": "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/gradlehttppropagationagent.jar"
+                  },
+                  {
+                    "stringValue": "Main"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "key": "process.executable.path",
+            "value": {
+              "stringValue": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java"
+            }
+          },
+          {
+            "key": "process.pid",
+            "value": {
+              "intValue": "4474"
+            }
+          },
+          {
+            "key": "process.runtime.description",
+            "value": {
+              "stringValue": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.20.1+1"
+            }
+          },
+          {
+            "key": "process.runtime.name",
+            "value": {
+              "stringValue": "OpenJDK Runtime Environment"
+            }
+          },
+          {
+            "key": "process.runtime.version",
+            "value": {
+              "stringValue": "17.0.20.1+1"
+            }
+          },
+          {
+            "key": "service.instance.id",
+            "value": {
+              "stringValue": "ee6ce1cc-12df-4f18-a698-0c2c6fd26aca"
+            }
+          },
+          {
+            "key": "service.name",
+            "value": {
+              "stringValue": "unknown_service:java"
+            }
+          },
+          {
+            "key": "telemetry.distro.name",
+            "value": {
+              "stringValue": "opentelemetry-java-instrumentation"
+            }
+          },
+          {
+            "key": "telemetry.distro.version",
+            "value": {
+              "stringValue": "2.31.1"
+            }
+          },
+          {
+            "key": "telemetry.sdk.language",
+            "value": {
+              "stringValue": "java"
+            }
+          },
+          {
+            "key": "telemetry.sdk.name",
+            "value": {
+              "stringValue": "opentelemetry"
+            }
+          },
+          {
+            "key": "telemetry.sdk.version",
+            "value": {
+              "stringValue": "1.65.0"
             }
           }
         ]
@@ -342,47 +878,23 @@
         {
           "scope": {
             "name": "io.opentelemetry.http-url-connection",
-            "version": "2.30.0-alpha"
+            "version": "2.31.1-alpha"
           },
           "spans": [
             {
-              "traceId": "c8d1b233045154ba993cc3bbab2cedd8",
-              "spanId": "ad5c74e68653619e",
-              "parentSpanId": "cb623b574d6d18a2",
+              "traceId": "e8971fc819a0d30d49e36eabe17f4e5b",
+              "spanId": "5d88402fe48c450c",
+              "parentSpanId": "b09988b2edb32725",
               "flags": 259,
               "name": "GET",
               "kind": 3,
-              "startTimeUnixNano": "1788274369102059371",
-              "endTimeUnixNano": "1788274369171687316",
+              "startTimeUnixNano": "1789140987154553832",
+              "endTimeUnixNano": "1789140987257851638",
               "attributes": [
-                {
-                  "key": "network.protocol.version",
-                  "value": {
-                    "stringValue": "1.1"
-                  }
-                },
-                {
-                  "key": "http.request.method",
-                  "value": {
-                    "stringValue": "GET"
-                  }
-                },
-                {
-                  "key": "server.address",
-                  "value": {
-                    "stringValue": "example.com"
-                  }
-                },
                 {
                   "key": "server.port",
                   "value": {
                     "intValue": "80"
-                  }
-                },
-                {
-                  "key": "thread.name",
-                  "value": {
-                    "stringValue": "main"
                   }
                 },
                 {
@@ -392,15 +904,39 @@
                   }
                 },
                 {
-                  "key": "http.response.status_code",
+                  "key": "server.address",
                   "value": {
-                    "intValue": "200"
+                    "stringValue": "example.com"
+                  }
+                },
+                {
+                  "key": "http.request.method",
+                  "value": {
+                    "stringValue": "GET"
                   }
                 },
                 {
                   "key": "thread.id",
                   "value": {
                     "intValue": "1"
+                  }
+                },
+                {
+                  "key": "thread.name",
+                  "value": {
+                    "stringValue": "main"
+                  }
+                },
+                {
+                  "key": "http.response.status_code",
+                  "value": {
+                    "intValue": "200"
+                  }
+                },
+                {
+                  "key": "network.protocol.version",
+                  "value": {
+                    "stringValue": "1.1"
                   }
                 }
               ],
@@ -411,11 +947,7 @@
         }
       ],
       "schemaUrl": "https://opentelemetry.io/schemas/1.24.0"
-    }
-  ]
-}
-{
-  "resourceLogs": [
+    },
     {
       "resource": {
         "attributes": [
@@ -434,13 +966,13 @@
           {
             "key": "telemetry.sdk.version",
             "value": {
-              "stringValue": "5.61.5"
+              "stringValue": "5.62.0"
             }
           },
           {
             "key": "service.instance.id",
             "value": {
-              "stringValue": "0d4f75bb-56fb-4e22-bae9-773534ba6cba"
+              "stringValue": "0178a89e-3469-428c-a637-17d489269193"
             }
           },
           {
@@ -482,25 +1014,25 @@
           {
             "key": "cloud.resource_id",
             "value": {
-              "stringValue": "/subscriptions/e5b640f6-e5d7-4068-b010-34284a62ea24/resourceGroups/azure-westus3-general-e5b640f6-e5d7-4068-b010-34284a62ea24/providers/Microsoft.Compute/virtualMachines/qYTYhtnZeYwk7h"
+              "stringValue": "/subscriptions/1b81a300-6f1d-4a2a-8639-a65857d71bc5/resourceGroups/azure-westus3-general-1b81a300-6f1d-4a2a-8639-a65857d71bc5/providers/Microsoft.Compute/virtualMachines/dWLYyLbEYkve8G"
             }
           },
           {
             "key": "host.id",
             "value": {
-              "stringValue": "7c277410-99f7-4a2b-b14f-77960d305712"
+              "stringValue": "60532da7-6192-4306-90f3-b430bb7d180f"
             }
           },
           {
             "key": "host.name",
             "value": {
-              "stringValue": "qYTYhtnZeYwk7h"
+              "stringValue": "dWLYyLbEYkve8G"
             }
           },
           {
             "key": "host.type",
             "value": {
-              "stringValue": "Standard_D4ads_v5"
+              "stringValue": "Standard_D4ads_v6"
             }
           },
           {
@@ -518,217 +1050,13 @@
           {
             "key": "process.pid",
             "value": {
-              "intValue": "3935"
+              "intValue": "3736"
             }
           },
           {
             "key": "process.parent_pid",
             "value": {
-              "intValue": "2864"
-            }
-          },
-          {
-            "key": "process.executable.name",
-            "value": {
-              "stringValue": "bash"
-            }
-          },
-          {
-            "key": "process.executable.path",
-            "value": {
-              "stringValue": "/usr/bin/bash"
-            }
-          },
-          {
-            "key": "process.command_line",
-            "value": {
-              "stringValue": "bash -e demo.sh"
-            }
-          },
-          {
-            "key": "process.command",
-            "value": {
-              "stringValue": "bash"
-            }
-          },
-          {
-            "key": "process.owner",
-            "value": {
-              "stringValue": "runner"
-            }
-          },
-          {
-            "key": "process.runtime.name",
-            "value": {
-              "stringValue": "bash"
-            }
-          },
-          {
-            "key": "process.runtime.description",
-            "value": {
-              "stringValue": "Bourne Again Shell"
-            }
-          },
-          {
-            "key": "process.runtime.version",
-            "value": {
-              "stringValue": "5.2.21-2ubuntu4"
-            }
-          },
-          {
-            "key": "process.runtime.options",
-            "value": {
-              "stringValue": "ehB"
-            }
-          }
-        ]
-      },
-      "scopeLogs": [
-        {
-          "scope": {
-            "name": "shell",
-            "version": "5.61.5"
-          },
-          "logRecords": [
-            {
-              "timeUnixNano": "1788274368662548224",
-              "observedTimeUnixNano": "1788274368662569898",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended"
-              },
-              "flags": 3,
-              "traceId": "c8d1b233045154ba993cc3bbab2cedd8",
-              "spanId": "cb623b574d6d18a2"
-            },
-            {
-              "timeUnixNano": "1788274368931410688",
-              "observedTimeUnixNano": "1788274368931431555",
-              "severityText": "unspecified",
-              "body": {
-                "stringValue": "OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended"
-              },
-              "flags": 3,
-              "traceId": "c8d1b233045154ba993cc3bbab2cedd8",
-              "spanId": "cb623b574d6d18a2"
-            }
-          ]
-        }
-      ]
-    }
-  ]
-}
-{
-  "resourceSpans": [
-    {
-      "resource": {
-        "attributes": [
-          {
-            "key": "telemetry.sdk.language",
-            "value": {
-              "stringValue": "shell"
-            }
-          },
-          {
-            "key": "telemetry.sdk.name",
-            "value": {
-              "stringValue": "opentelemetry"
-            }
-          },
-          {
-            "key": "telemetry.sdk.version",
-            "value": {
-              "stringValue": "5.61.5"
-            }
-          },
-          {
-            "key": "service.instance.id",
-            "value": {
-              "stringValue": "0d4f75bb-56fb-4e22-bae9-773534ba6cba"
-            }
-          },
-          {
-            "key": "service.name",
-            "value": {
-              "stringValue": "unknown_service"
-            }
-          },
-          {
-            "key": "azure.vm.scaleset.name",
-            "value": {
-              "stringValue": ""
-            }
-          },
-          {
-            "key": "azure.vm.sku",
-            "value": {
-              "stringValue": ""
-            }
-          },
-          {
-            "key": "cloud.platform",
-            "value": {
-              "stringValue": "azure_vm"
-            }
-          },
-          {
-            "key": "cloud.provider",
-            "value": {
-              "stringValue": "azure"
-            }
-          },
-          {
-            "key": "cloud.region",
-            "value": {
-              "stringValue": "WestUS3"
-            }
-          },
-          {
-            "key": "cloud.resource_id",
-            "value": {
-              "stringValue": "/subscriptions/e5b640f6-e5d7-4068-b010-34284a62ea24/resourceGroups/azure-westus3-general-e5b640f6-e5d7-4068-b010-34284a62ea24/providers/Microsoft.Compute/virtualMachines/qYTYhtnZeYwk7h"
-            }
-          },
-          {
-            "key": "host.id",
-            "value": {
-              "stringValue": "7c277410-99f7-4a2b-b14f-77960d305712"
-            }
-          },
-          {
-            "key": "host.name",
-            "value": {
-              "stringValue": "qYTYhtnZeYwk7h"
-            }
-          },
-          {
-            "key": "host.type",
-            "value": {
-              "stringValue": "Standard_D4ads_v5"
-            }
-          },
-          {
-            "key": "os.type",
-            "value": {
-              "stringValue": "linux"
-            }
-          },
-          {
-            "key": "os.version",
-            "value": {
-              "stringValue": "6.17.0-1022-azure"
-            }
-          },
-          {
-            "key": "process.pid",
-            "value": {
-              "intValue": "3935"
-            }
-          },
-          {
-            "key": "process.parent_pid",
-            "value": {
-              "intValue": "2864"
+              "intValue": "2679"
             }
           },
           {
@@ -791,18 +1119,18 @@
         {
           "scope": {
             "name": "shell",
-            "version": "5.61.5"
+            "version": "5.62.0"
           },
           "spans": [
             {
-              "traceId": "c8d1b233045154ba993cc3bbab2cedd8",
-              "spanId": "d1fd717d2704436d",
-              "parentSpanId": "2222d45f6cb2b636",
+              "traceId": "e8971fc819a0d30d49e36eabe17f4e5b",
+              "spanId": "c97b8c294e095312",
+              "parentSpanId": "8b23a1082e53e0d8",
               "flags": 768,
               "name": "javac Main.java",
               "kind": 1,
-              "startTimeUnixNano": "1788274364476692992",
-              "endTimeUnixNano": "1788274365457341440",
+              "startTimeUnixNano": "1789140983127932928",
+              "endTimeUnixNano": "1789140983846344960",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -862,14 +1190,14 @@
               "status": {}
             },
             {
-              "traceId": "c8d1b233045154ba993cc3bbab2cedd8",
-              "spanId": "cb623b574d6d18a2",
-              "parentSpanId": "2222d45f6cb2b636",
+              "traceId": "e8971fc819a0d30d49e36eabe17f4e5b",
+              "spanId": "b09988b2edb32725",
+              "parentSpanId": "8b23a1082e53e0d8",
               "flags": 768,
               "name": "java Main",
               "kind": 1,
-              "startTimeUnixNano": "1788274365460813568",
-              "endTimeUnixNano": "1788274369364655360",
+              "startTimeUnixNano": "1789140983849550080",
+              "endTimeUnixNano": "1789140987716735488",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -929,14 +1257,14 @@
               "status": {}
             },
             {
-              "traceId": "c8d1b233045154ba993cc3bbab2cedd8",
-              "spanId": "84aeab526508d6a7",
-              "parentSpanId": "2222d45f6cb2b636",
+              "traceId": "e8971fc819a0d30d49e36eabe17f4e5b",
+              "spanId": "5bc4912ad1b3fef9",
+              "parentSpanId": "8b23a1082e53e0d8",
               "flags": 768,
               "name": "rm Main.class",
               "kind": 1,
-              "startTimeUnixNano": "1788274369368792832",
-              "endTimeUnixNano": "1788274369375587840",
+              "startTimeUnixNano": "1789140987720350464",
+              "endTimeUnixNano": "1789140987726339840",
               "attributes": [
                 {
                   "key": "shell.command_line",
@@ -984,297 +1312,18 @@
               "status": {}
             },
             {
-              "traceId": "c8d1b233045154ba993cc3bbab2cedd8",
-              "spanId": "2222d45f6cb2b636",
+              "traceId": "e8971fc819a0d30d49e36eabe17f4e5b",
+              "spanId": "8b23a1082e53e0d8",
               "flags": 256,
               "name": "bash -e demo.sh",
               "kind": 2,
-              "startTimeUnixNano": "1788274364469792256",
-              "endTimeUnixNano": "1788274369375734272",
+              "startTimeUnixNano": "1789140983121875456",
+              "endTimeUnixNano": "1789140987726476288",
               "status": {}
             }
           ]
         }
       ]
-    }
-  ]
-}
-{
-  "resourceMetrics": [
-    {
-      "resource": {
-        "attributes": [
-          {
-            "key": "host.arch",
-            "value": {
-              "stringValue": "amd64"
-            }
-          },
-          {
-            "key": "host.name",
-            "value": {
-              "stringValue": "runnervmgx7h7"
-            }
-          },
-          {
-            "key": "os.description",
-            "value": {
-              "stringValue": "Linux 6.17.0-1022-azure"
-            }
-          },
-          {
-            "key": "os.type",
-            "value": {
-              "stringValue": "linux"
-            }
-          },
-          {
-            "key": "os.version",
-            "value": {
-              "stringValue": "6.17.0-1022-azure"
-            }
-          },
-          {
-            "key": "process.command_args",
-            "value": {
-              "arrayValue": {
-                "values": [
-                  {
-                    "stringValue": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java"
-                  },
-                  {
-                    "stringValue": "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/opentelemetry-javaagent.jar"
-                  },
-                  {
-                    "stringValue": "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/rootcontextagent.jar"
-                  },
-                  {
-                    "stringValue": "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/subprocessinjectionagent.jar"
-                  },
-                  {
-                    "stringValue": "-javaagent:/usr/share/opentelemetry_shell/agent.instrumentation.java/gradlehttppropagationagent.jar"
-                  },
-                  {
-                    "stringValue": "Main"
-                  }
-                ]
-              }
-            }
-          },
-          {
-            "key": "process.executable.path",
-            "value": {
-              "stringValue": "/usr/lib/jvm/temurin-17-jdk-amd64/bin/java"
-            }
-          },
-          {
-            "key": "process.pid",
-            "value": {
-              "intValue": "4674"
-            }
-          },
-          {
-            "key": "process.runtime.description",
-            "value": {
-              "stringValue": "Eclipse Adoptium OpenJDK 64-Bit Server VM 17.0.20.1+1"
-            }
-          },
-          {
-            "key": "process.runtime.name",
-            "value": {
-              "stringValue": "OpenJDK Runtime Environment"
-            }
-          },
-          {
-            "key": "process.runtime.version",
-            "value": {
-              "stringValue": "17.0.20.1+1"
-            }
-          },
-          {
-            "key": "service.instance.id",
-            "value": {
-              "stringValue": "c1308065-3d95-472a-a246-85a683190e9f"
-            }
-          },
-          {
-            "key": "service.name",
-            "value": {
-              "stringValue": "unknown_service:java"
-            }
-          },
-          {
-            "key": "telemetry.distro.name",
-            "value": {
-              "stringValue": "opentelemetry-java-instrumentation"
-            }
-          },
-          {
-            "key": "telemetry.distro.version",
-            "value": {
-              "stringValue": "2.30.0"
-            }
-          },
-          {
-            "key": "telemetry.sdk.language",
-            "value": {
-              "stringValue": "java"
-            }
-          },
-          {
-            "key": "telemetry.sdk.name",
-            "value": {
-              "stringValue": "opentelemetry"
-            }
-          },
-          {
-            "key": "telemetry.sdk.version",
-            "value": {
-              "stringValue": "1.64.0"
-            }
-          }
-        ]
-      },
-      "scopeMetrics": [
-        {
-          "scope": {
-            "name": "io.opentelemetry.http-url-connection",
-            "version": "2.30.0-alpha"
-          },
-          "metrics": [
-            {
-              "name": "http.client.request.duration",
-              "description": "Duration of HTTP client requests.",
-              "unit": "s",
-              "histogram": {
-                "dataPoints": [
-                  {
-                    "attributes": [
-                      {
-                        "key": "http.request.method",
-                        "value": {
-                          "stringValue": "GET"
-                        }
-                      },
-                      {
-                        "key": "http.response.status_code",
-                        "value": {
-                          "intValue": "200"
-                        }
-                      },
-                      {
-                        "key": "network.protocol.version",
-                        "value": {
-                          "stringValue": "1.1"
-                        }
-                      },
-                      {
-                        "key": "server.address",
-                        "value": {
-                          "stringValue": "example.com"
-                        }
-                      },
-                      {
-                        "key": "server.port",
-                        "value": {
-                          "intValue": "80"
-                        }
-                      }
-                    ],
-                    "startTimeUnixNano": "1788274369168971545",
-                    "timeUnixNano": "1788274369187408831",
-                    "count": "1",
-                    "sum": 0.064219578,
-                    "bucketCounts": [
-                      "0",
-                      "0",
-                      "0",
-                      "0",
-                      "1",
-                      "0",
-                      "0",
-                      "0",
-                      "0",
-                      "0",
-                      "0",
-                      "0",
-                      "0",
-                      "0",
-                      "0"
-                    ],
-                    "explicitBounds": [
-                      0.005,
-                      0.01,
-                      0.025,
-                      0.05,
-                      0.075,
-                      0.1,
-                      0.25,
-                      0.5,
-                      0.75,
-                      1,
-                      2.5,
-                      5,
-                      7.5,
-                      10
-                    ],
-                    "exemplars": [
-                      {
-                        "filteredAttributes": [
-                          {
-                            "key": "url.full",
-                            "value": {
-                              "stringValue": "http://example.com"
-                            }
-                          }
-                        ],
-                        "timeUnixNano": "1788274369171000000",
-                        "asDouble": 0.064219578,
-                        "traceId": "c8d1b233045154ba993cc3bbab2cedd8",
-                        "spanId": "ad5c74e68653619e"
-                      }
-                    ],
-                    "min": 0.064219578,
-                    "max": 0.064219578
-                  }
-                ],
-                "aggregationTemporality": 2
-              }
-            }
-          ],
-          "schemaUrl": "https://opentelemetry.io/schemas/1.41.0"
-        },
-        {
-          "scope": {
-            "name": "io.opentelemetry.sdk.trace"
-          },
-          "metrics": [
-            {
-              "name": "queueSize",
-              "description": "The number of items queued",
-              "unit": "1",
-              "gauge": {
-                "dataPoints": [
-                  {
-                    "attributes": [
-                      {
-                        "key": "processorType",
-                        "value": {
-                          "stringValue": "BatchSpanProcessor"
-                        }
-                      }
-                    ],
-                    "startTimeUnixNano": "1788274369175633978",
-                    "timeUnixNano": "1788274369187408831",
-                    "asInt": "0"
-                  }
-                ]
-              }
-            }
-          ]
-        }
-      ],
-      "schemaUrl": "https://opentelemetry.io/schemas/1.24.0"
     }
   ]
 }
