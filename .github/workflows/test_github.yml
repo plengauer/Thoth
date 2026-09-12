@@ -1163,6 +1163,8 @@ jobs:
   deploy-smoke:
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    outputs:
+     secret_available: ${{ steps.is-secret-available.outputs.available }}
     permissions:
       actions: read
     steps:
@@ -1180,8 +1182,11 @@ jobs:
           OTEL_LOGS_EXPORTER: console
           OTEL_TRACES_EXPORTER: console
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
+      - id: is-secret-available
+        run: |
+          [ -n '${{ secrets.TEST_GITHUB_TOKEN }}' ] && echo available=true >> "$GITHUB_OUTPUT"
   deploy:
-    if: ${{ !github.event.repository.fork }}
+    if: ${{ !github.event.repository.fork && needs.deploy-smoke.outputs.secret_available == 'true' }}
     needs: deploy-smoke
     runs-on: ubuntu-latest
     permissions:
