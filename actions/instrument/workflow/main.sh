@@ -128,7 +128,6 @@ workflow_duration_counter_handle="$(otel_counter_create counter github.actions.w
 job_duration_counter_handle="$(otel_counter_create counter github.actions.jobs.duration s 'Duration of job runs')"
 step_duration_counter_handle="$(otel_counter_create counter github.actions.steps.duration s 'Duration of step runs')"
 action_duration_counter_handle="$(otel_counter_create counter github.actions.actions.duration s 'Duration of action runs')"
-job_queue_duration_counter_handle="$(otel_counter_create counter github.actions.jobs.queue.duration s 'Duration of a pipeline run waiting for a runner')"
 
 link="${GITHUB_SERVER_URL:-https://github.com}"/"$(jq <"$workflow_json" -r .repository.owner.login)"/"$(jq <"$workflow_json" -r .repository.name)"/actions/runs/"$(jq <"$workflow_json" -r .id)"
 workflow_started_at="$(jq <"$workflow_json" -r .run_started_at)"
@@ -296,11 +295,18 @@ jq <"$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .cr
   jq <"$jobs_json" -r '. | select(.id == '"$job_id"') | .labels[]? // empty' | while read -r label; do otel_span_attribute_typed "$job_span_handle" +string[1] github.actions.runner.labels="$label"; done
   job_queue_duration_s="$(python3 -c "print(str(max(0, $(date -d "$job_started_at" '+%s.%N') - $(date -d "$job_created_at" '+%s.%N'))))" 2>/dev/null || true)"
   if [ -n "$job_queue_duration_s" ]; then
-    otel_span_attribute_typed "$job_span_handle" float cicd.pipeline.run.queue.duration="$job_queue_duration_s"
+    otel_span_attribute_typed "$job_span_handle" float github.actions.job.queue.duration="$job_queue_duration_s"
     observation_handle="$(otel_observation_create "$job_queue_duration_s")"
-    otel_observation_attribute_typed "$observation_handle" string github.actions.job.name="$job_name"
-    otel_observation_attribute_typed "$observation_handle" string github.actions.job.conclusion="$job_conclusion"
-    otel_counter_observe "$job_queue_duration_counter_handle" "$observation_handle"
+    otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.name="$job_name"
+    otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.run.state=pending
+    case "$job_conclusion" in
+      neutral) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result=success ;;
+      skipped) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result=skip ;;
+      cancelled) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result=cancellation ;;
+      timed_out) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result=timeout ;;
+      *) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result="$job_conclusion" ;;
+    esac
+    otel_counter_observe "$cicd_pipeline_run_duration_handle" "$observation_handle"
   fi
   otel_span_activate "$job_span_handle"
   [ -z "${INPUT_DEBUG}" ] || echo "span job $TRACEPARENT $job_name" >&2
