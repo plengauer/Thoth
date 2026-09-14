@@ -1184,7 +1184,7 @@ jobs:
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
       - id: is-secret-available
         run: |
-          [ -n '${{ secrets.TEST_GITHUB_TOKEN }}' ] && echo available=true >> "$GITHUB_OUTPUT"
+          [ -z '${{ secrets.TEST_GITHUB_TOKEN }}' ] || echo available=true >> "$GITHUB_OUTPUT"
   deploy:
     if: ${{ !github.event.repository.fork && needs.deploy-smoke.outputs.secret_available == 'true' }}
     needs: deploy-smoke
