@@ -462,6 +462,19 @@ root4job_end() {
     *) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result="$conclusion" ;;
   esac
   otel_counter_observe "$cicd_pipeline_run_duration_handle" "$observation_handle"
+  if [ -n "${job_queue_duration_s:-}" ]; then
+    observation_handle="$(otel_observation_create "$job_queue_duration_s")"
+    otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.name="${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}"
+    otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.run.state=pending
+    case "$conclusion" in
+      neutral) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result=success ;;
+      skipped) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result=skip ;;
+      cancelled) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result=cancellation ;;
+      timed_out) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result=timeout ;;
+      *) otel_observation_attribute_typed "$observation_handle" string cicd.pipeline.result="$conclusion" ;;
+    esac
+    otel_counter_observe "$cicd_pipeline_run_duration_handle" "$observation_handle"
+  fi
   if [ "$conclusion" = failure ]; then
     local cicd_pipeline_run_errors_handle="$(otel_counter_create counter cicd.pipeline.run.errors '{error}' 'The number of errors encountered in pipeline runs')"
     observation_handle="$(otel_observation_create 1)"
@@ -650,6 +663,18 @@ root4job() {
   otel_span_activate "$span_handle"
   echo "$TRACEPARENT" >"$traceparent_file"
   if [ -n "${GITHUB_JOB_ID:-}" ]; then
+    job_json="$(gh_job "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" "$GITHUB_JOB_ID" 2>/dev/null || true)"
+    if [ -n "$job_json" ]; then
+      job_runner_group_name="$(printf '%s' "$job_json" | jq -r '.runner_group_name // empty')"
+      [ -z "$job_runner_group_name" ] || otel_span_attribute_typed $span_handle string github.actions.runner.group.name="$job_runner_group_name"
+      printf '%s' "$job_json" | jq -r '.labels[]? // empty' | while read -r label; do otel_span_attribute_typed $span_handle +string[1] github.actions.runner.labels="$label"; done
+      job_created_at="$(printf '%s' "$job_json" | jq -r '.created_at // empty')"
+      job_started_at="$(printf '%s' "$job_json" | jq -r '.started_at // empty')"
+      if [ -n "$job_created_at" ] && [ -n "$job_started_at" ]; then
+        job_queue_duration_s="$(python3 -c "print(str(max(0, $(date -d "$job_started_at" '+%s.%N') - $(date -d "$job_created_at" '+%s.%N'))))" 2>/dev/null || true)"
+        [ -z "$job_queue_duration_s" ] || otel_span_attribute_typed $span_handle float github.actions.job.queue.duration="$job_queue_duration_s"
+      fi
+    fi
     opentelemetry_job_dir="$(mktemp -d)"
     echo "$TRACEPARENT" >"$opentelemetry_job_dir"/traceparent
     (gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_job_"$GITHUB_JOB_ID" "$opentelemetry_job_dir"/traceparent && rm -rf "$opentelemetry_job_dir") &>/dev/null &
