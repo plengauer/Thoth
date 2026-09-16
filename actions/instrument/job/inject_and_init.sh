@@ -184,7 +184,7 @@ if [ "${write_back_cache:-FALSE}" = TRUE ] && [ -n "${cache_key:-}" ]; then
   run sudo -E -H pip3 download --only-binary=:all: --disable-pip-version-check --no-input -d /var/cache/opentelemetry_shell/wheels -r /opt/opentelemetry_shell/requirements.txt
   for path_path in /usr/share/opentelemetry_shell/agent.instrumentation.python/*/; do
     python_version="${path%/}"
-    python_version="${path##*/}"
+    python_version="${python_version##*/}"
     run sudo -E -H "python$python_version" -m pip download --only-binary=:all: --disable-pip-version-check --no-input -d /var/cache/opentelemetry_shell/wheels -r /usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.txt
   done
   wait # only join in case we wanna write back, this will be rare and is necessary to have a good cache
