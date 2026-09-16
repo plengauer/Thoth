@@ -1,10 +1,10 @@
 #!/bin/sh -e
 export GITHUB_ACTION_REPOSITORY="${GITHUB_ACTION_REPOSITORY:-"$GITHUB_REPOSITORY"}"
 
-ensure_installed() { for item in "$@"; do type "${item%%;*}" 1>/dev/null 2>/dev/null || echo "${item#*;}"; done | sort -u | xargs -r sudo apt-get -y install; }
+ensure_installed() { for item in "$@"; do type "${item%%;*}" 1>/dev/null 2>/dev/null || echo "${item#*;}"; done | sort -u | xargs -r sudo apt-get -o Dpkg::Options::=--force-unsafe-io -y install; }
 ensure_installed jq curl wget "$@" || (sudo apt-get update && ensure_installed jq curl wget "$@")
 
-install_deb() { sudo -E -H apt-get "$@" || { sudo apt-get update && sudo -E -H apt-get "$@"; }; }
+install_deb() { sudo -E -H apt-get -o Dpkg::Options::=--force-unsafe-io "$@" || { sudo apt-get update && sudo -E -H apt-get -o Dpkg::Options::=--force-unsafe-io "$@"; }; } # runners are ephemeral, dpkg does not need to fsync every unpacked file
 
 if ! type otel.sh 2>/dev/null; then
   echo "::debug::Installing ..."
