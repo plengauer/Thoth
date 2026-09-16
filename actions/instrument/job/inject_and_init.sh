@@ -180,15 +180,14 @@ if ! type otelcol-contrib; then
   fi
 fi
 if [ "${write_back_cache:-FALSE}" = TRUE ] && [ -n "${cache_key:-}" ]; then
-  wait # only join in case we wanna write back, this will be rare and is necessary to have a good cache
-  # prime a wheelhouse next to the apt archives so the next (warm) run can install the python dependencies without touching the network at all, best effort only
   sudo mkdir -p /var/cache/opentelemetry_shell/wheels || true
-  sudo -E -H pip3 download --only-binary=:all: --disable-pip-version-check --no-input -d /var/cache/opentelemetry_shell/wheels -r /opt/opentelemetry_shell/requirements.txt || true
-  # a few dependencies (grpcio, wrapt, charset-normalizer, ...) ship interpreter specific wheels, so prime one set per python the postinst actually instruments
-  find /usr/share/opentelemetry_shell/agent.instrumentation.python -maxdepth 1 -mindepth 1 -type d -printf '%f\n' 2>/dev/null | grep -E '^3\.[0-9]+$' | while read -r python_version; do
-    type "python$python_version" 1>/dev/null 2>/dev/null || continue
-    sudo -E -H "python$python_version" -m pip download --only-binary=:all: --disable-pip-version-check --no-input -d /var/cache/opentelemetry_shell/wheels -r /usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.txt || true
+  run sudo -E -H pip3 download --only-binary=:all: --disable-pip-version-check --no-input -d /var/cache/opentelemetry_shell/wheels -r /opt/opentelemetry_shell/requirements.txt
+  for path_path in /usr/share/opentelemetry_shell/agent.instrumentation.python/*/; do
+    python_version="${path%/}"
+    python_version="${path##*/}"
+    run sudo -E -H "python$python_version" -m pip download --only-binary=:all: --disable-pip-version-check --no-input -d /var/cache/opentelemetry_shell/wheels -r /usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.txt
   done
+  wait # only join in case we wanna write back, this will be rare and is necessary to have a good cache
   run sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.saveCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip', '/root/.cache/uv', '/var/cache/opentelemetry_shell/wheels/*.whl'], '$cache_key');"
 fi
 echo "::endgroup::"
