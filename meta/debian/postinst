@@ -83,7 +83,7 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
       fi
       python"$version" -m pip --version 1>/dev/null 2>/dev/null || python"$version" -m ensurepip --default-pip 1>/dev/null 2>/dev/null || true
       staging="$(mktemp -d)"
-      cp -r "$target"/. "$staging"/ 2>/dev/null || true
+      cp -a "$target"/. "$staging"/ 2>/dev/null || true # -a keeps the timestamps so the write back below only copies what pip actually changed
       if ! python"$version" -m pip install --no-compile --target "$staging" -r /usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.txt; then
         rm -rf "$staging"
         [ "$_python_keep_archived" = true ] && continue
