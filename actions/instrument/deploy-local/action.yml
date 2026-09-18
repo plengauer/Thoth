@@ -138,7 +138,7 @@ runs:
       run: |
         comment=
         if [ "${{ inputs.action_version }}" = same ]; then
-          comment="$(grep -E '/actions/instrument/deploy@' "${{ steps.find-self.outputs.path }}" | sed -n 's/.*# *//p' | head -n 1)"
+          comment="$(grep -E '/actions/instrument/deploy[^@[:space:]]*@' "${{ steps.find-self.outputs.path }}" | sed -n 's/.*# *//p' | head -n 1 || true)"
         elif echo '${{ inputs.action_version }}' | grep -qE '^v[0-9]'; then
           comment='${{ inputs.action_version }}'
         fi
@@ -414,7 +414,7 @@ runs:
         comment='${{ steps.determine-instrumentation-version-comment.outputs.comment }}'
         (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
           for target in workflow checksuite repository job; do
-            sed -i "s~^\([[:space:]]*- uses: ${{ steps.determine-repository.outputs.repository }}/actions/instrument/$target@$version\)\$~\1 $comment~" "$workflow_file"
+            sed -i "s~^\\([[:space:]]*- uses: ${{ steps.determine-repository.outputs.repository }}/actions/instrument/$target@$version\\)\\$~\\1 $comment~" "$workflow_file"
           done
         done
     - name: "Restore blank lines"
