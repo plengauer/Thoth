@@ -132,7 +132,7 @@ if [ "$INPUT_CACHE" = "true" ]; then
     || { echo "cache_restored_fast=false" >> "$GITHUB_OUTPUT"; wait; sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.restoreCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip', '/root/.cache/uv'], '$cache_key');"; }
   [ "$(find /var/cache/apt/archives/ -name '*.deb' | wc -l)" -gt 0 ] || write_back_cache=TRUE
 fi
-install_deb() { sudo -E -H apt-get "$@" || { sudo apt-get update && sudo -E -H apt-get "$@"; }; }
+install_deb() { sudo -E -H apt-get -o Dpkg::Options::=--force-unsafe-io "$@" || { sudo apt-get update && sudo -E -H apt-get -o Dpkg::Options::=--force-unsafe-io "$@"; }; } # runners are ephemeral, dpkg does not need to fsync every unpacked file
 deb_file="$(sudo find /var/cache/apt/archives/ -maxdepth 1 -name 'opentelemetry-shell_*.deb' 2>/dev/null | sort -V | tail -n 1)"
 if [ "$INPUT_CACHE" = "true" ] && [ -z "$deb_file" ]; then write_back_cache=TRUE; fi
 if ! type otel.sh && [ -n "$deb_file" ] && [ -r "$deb_file" ]; then
