@@ -4,6 +4,9 @@ if [ "$1" = 'abort-configure' ] || [ "$1" = 'abort-upgrade' ] || [ "$1" = 'abort
   true
 elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' ]; then
   export PATH=/usr/local/bin:"$PATH"
+  # one fewer network round trip per pip invocation (the version check only prints an upgrade notice), and never let an unattended package install block on an interactive prompt
+  export PIP_DISABLE_PIP_VERSION_CHECK=1
+  export PIP_NO_INPUT=1
   if type node; then
     rm -rf /usr/share/opentelemetry_shell/agent.instrumentation.node/*/
     _node_archived="$(tar --use-compress-program="zstd -d --long=27" -tf /usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules.tar.zst 2>/dev/null | cut -d / -f 2 | grep '^[0-9]' | sort -n -u)"
