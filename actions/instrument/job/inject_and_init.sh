@@ -147,10 +147,10 @@ if ! type otel.sh && [ -n "$deb_file" ] && [ -r "$deb_file" ]; then
         sudo dpkg-deb --extract "$deb_file" "$extract_dir"
         tar -C "$extract_dir" -cf - . | sudo tar -C / -xf - --no-overwrite-dir
         sudo rm -rf "$extract_dir"
-        run eval sudo "$control_dir"/postinst configure '&&' rm -rf "$control_dir"
+        run eval sudo -E -H "$control_dir"/postinst configure '&&' rm -rf "$control_dir"
       else
         echo "::debug::Fast install ..."
-        sudo dpkg-deb --extract "$deb_file" / && run eval sudo "$control_dir"/postinst configure '&&' rm -rf "$control_dir"
+        sudo dpkg-deb --extract "$deb_file" / && run eval sudo -E -H "$control_dir"/postinst configure '&&' rm -rf "$control_dir"
       fi
       export OTEL_SHELL_PACKAGE_VERSION_CACHE_opentelemetry_shell="$(cat ../../../VERSION)"
     else
