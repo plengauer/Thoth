@@ -167,7 +167,7 @@ jobs:
       - run: dotnet --version
   job-arm:
     needs: job-smoke
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 60
     permissions:
       contents: read
@@ -188,7 +188,7 @@ jobs:
       - run: echo hello world
   job-arm-otelcol-contrib:
     needs: job-smoke
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 60
     permissions:
       contents: read
