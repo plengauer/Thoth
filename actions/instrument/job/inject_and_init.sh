@@ -129,8 +129,10 @@ if [ "$INPUT_CACHE" = "true" ]; then
   cache_key="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} dependencies $({ cat /etc/os-release; arch; python3 --version || true; printenv | grep -E '^OTEL_SHELL_CONFIG_INSTALL_' || true; } | md5sum | cut -d ' ' -f 1)"
   if [ "$GITHUB_ACTION_REPOSITORY" = "$GITHUB_REPOSITORY" ] && [ -f "$GITHUB_WORKSPACE"/package.deb ]; then cache_key="$cache_key local"; fi
   cache_restore_fast "$cache_key" && echo "cache_restored_fast=true" >> "$GITHUB_OUTPUT" \
-    || { echo "cache_restored_fast=false" >> "$GITHUB_OUTPUT"; wait; sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.restoreCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip', '/root/.cache/uv'], '$cache_key');"; }
+    || { echo "cache_restored_fast=false" >> "$GITHUB_OUTPUT"; wait; sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.restoreCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip', '/root/.cache/uv', '/var/cache/opentelemetry_shell/wheels/*.whl'], '$cache_key');"; }
   [ "$(find /var/cache/apt/archives/ -name '*.deb' | wc -l)" -gt 0 ] || write_back_cache=TRUE
+  # hand the restored wheelhouse to the debian postinst so its pip installs can resolve fully offline (it falls back to the network on its own if the wheelhouse is incomplete)
+  if [ -n "$(sudo find /var/cache/opentelemetry_shell/wheels -maxdepth 1 -name '*.whl' 2>/dev/null | head -n 1)" ]; then export OTEL_SHELL_CONFIG_INSTALL_PIP_FIND_LINKS=/var/cache/opentelemetry_shell/wheels; fi
 fi
 install_deb() { sudo -E -H apt-get -o Dpkg::Options::=--force-unsafe-io "$@" || { sudo apt-get update && sudo -E -H apt-get -o Dpkg::Options::=--force-unsafe-io "$@"; }; } # runners are ephemeral, dpkg does not need to fsync every unpacked file
 deb_file="$(sudo find /var/cache/apt/archives/ -maxdepth 1 -name 'opentelemetry-shell_*.deb' 2>/dev/null | sort -V | tail -n 1)"
@@ -178,8 +180,15 @@ if ! type otelcol-contrib; then
   fi
 fi
 if [ "${write_back_cache:-FALSE}" = TRUE ] && [ -n "${cache_key:-}" ]; then
+  sudo mkdir -p /var/cache/opentelemetry_shell/wheels || true
+  run sudo -E -H pip3 download --only-binary=:all: --disable-pip-version-check --no-input -d /var/cache/opentelemetry_shell/wheels -r /opt/opentelemetry_shell/requirements.txt
+  for path_path in /usr/share/opentelemetry_shell/agent.instrumentation.python/*/; do
+    python_version="${path%/}"
+    python_version="${python_version##*/}"
+    run sudo -E -H "python$python_version" -m pip download --only-binary=:all: --disable-pip-version-check --no-input -d /var/cache/opentelemetry_shell/wheels -r /usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.txt
+  done
   wait # only join in case we wanna write back, this will be rare and is necessary to have a good cache
-  run sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.saveCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip', '/root/.cache/uv'], '$cache_key');"
+  run sudo -E -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.saveCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip', '/root/.cache/uv', '/var/cache/opentelemetry_shell/wheels/*.whl'], '$cache_key');"
 fi
 echo "::endgroup::"
 
