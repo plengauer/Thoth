@@ -7,6 +7,13 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
   # one fewer network round trip per pip invocation (the version check only prints an upgrade notice), and never let an unattended package install block on an interactive prompt
   export PIP_DISABLE_PIP_VERSION_CHECK=1
   export PIP_NO_INPUT=1
+  # if a local wheelhouse is configured (for example primed from a CI cache) try it first so the install can run fully offline, and fall back to the regular online resolution if it does not satisfy everything
+  _otel_pip_install() {
+    if [ -n "${OTEL_SHELL_CONFIG_INSTALL_PIP_FIND_LINKS:-}" ] && [ -d "${OTEL_SHELL_CONFIG_INSTALL_PIP_FIND_LINKS:-}" ]; then
+      "$@" --no-index --find-links "$OTEL_SHELL_CONFIG_INSTALL_PIP_FIND_LINKS" && return 0
+    fi
+    "$@"
+  }
   if type node; then
     rm -rf /usr/share/opentelemetry_shell/agent.instrumentation.node/*/
     _node_archived="$(tar --use-compress-program="zstd -d --long=27" -tf /usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules.tar.zst 2>/dev/null | cut -d / -f 2 | grep '^[0-9]' | sort -n -u)"
@@ -87,7 +94,7 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
       python"$version" -m pip --version 1>/dev/null 2>/dev/null || python"$version" -m ensurepip --default-pip 1>/dev/null 2>/dev/null || true
       staging="$(mktemp -d)"
       cp -r "$target"/. "$staging"/ 2>/dev/null || true
-      if ! python"$version" -m pip install --no-compile --target "$staging" -r /usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.txt; then
+      if ! _otel_pip_install python"$version" -m pip install --no-compile --target "$staging" -r /usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.txt; then
         rm -rf "$staging"
         [ "$_python_keep_archived" = true ] && continue
         rm -rf /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"
@@ -99,9 +106,9 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
     done
   fi 2>&1 | perl -0777 -pe '' >&2 &
   if type uv 1>/dev/null 2>/dev/null; then
-    uv venv /opt/opentelemetry_shell/venv && ( uv pip install --offline --python /opt/opentelemetry_shell/venv/bin/python3 -r /opt/opentelemetry_shell/requirements.txt || uv pip install --python /opt/opentelemetry_shell/venv/bin/python3 -r /opt/opentelemetry_shell/requirements.txt ) && uv pip check --python /opt/opentelemetry_shell/venv/bin/python3 # SKIP_DEPENDENCY_CHECK
+    uv venv /opt/opentelemetry_shell/venv && ( uv pip install --offline --python /opt/opentelemetry_shell/venv/bin/python3 -r /opt/opentelemetry_shell/requirements.txt || _otel_pip_install uv pip install --python /opt/opentelemetry_shell/venv/bin/python3 -r /opt/opentelemetry_shell/requirements.txt ) && uv pip check --python /opt/opentelemetry_shell/venv/bin/python3 # SKIP_DEPENDENCY_CHECK
   else
-    python3 -m venv /opt/opentelemetry_shell/venv && . /opt/opentelemetry_shell/venv/bin/activate && pip3 install --no-compile -r /opt/opentelemetry_shell/requirements.txt && pip3 check && deactivate && (/opt/opentelemetry_shell/venv/bin/python3 -m compileall -q -j 0 /opt/opentelemetry_shell/venv || true) # SKIP_DEPENDENCY_CHECK
+    python3 -m venv /opt/opentelemetry_shell/venv && . /opt/opentelemetry_shell/venv/bin/activate && _otel_pip_install pip3 install --no-compile -r /opt/opentelemetry_shell/requirements.txt && pip3 check && deactivate && (/opt/opentelemetry_shell/venv/bin/python3 -m compileall -q -j 0 /opt/opentelemetry_shell/venv || true) # SKIP_DEPENDENCY_CHECK
   fi
   cat /usr/share/opentelemetry_shell/*.py | while read -r line; do printf '%s\n' "$line"; done | grep -E '^import |^from ' | /opt/opentelemetry_shell/venv/bin/python3 # venv may be used by different users that may not be allowed to create pyc files
   wait
