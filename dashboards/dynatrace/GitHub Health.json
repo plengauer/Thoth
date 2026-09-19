@@ -32,26 +32,25 @@
       "visualizationSettings": {
         "autoSelectVisualization": false,
         "honeycomb": {
-          "legend": {
-            "hidden": true
-          },
           "dataMappings": {
             "value": "github.actions.conclusion"
           },
           "displayedFields": [
             "github.actions.workflow.name"
-          ]
+          ],
+          "legend": {
+            "hidden": true
+          }
         },
         "coloring": {
           "colorRules": [
             {
               "colorMode": "custom-color",
-              "customColor": {
-                "Default": "var(--dt-colors-charts-loglevel-emergency-default, #ae132d)"
-              },
+              "customColor": "#D40036",
               "field": "github.actions.conclusion",
               "value": "failure",
-              "comparator": "="
+              "comparator": "=",
+              "type": "string"
             },
             {
               "colorMode": "custom-color",
@@ -60,7 +59,8 @@
               },
               "field": "github.actions.conclusion",
               "value": "success",
-              "comparator": "="
+              "comparator": "=",
+              "type": "string"
             }
           ]
         }
@@ -158,7 +158,7 @@
               "field": "DT.name",
               "type": "string",
               "colorMode": "custom-color",
-              "customColor": "#C21930"
+              "customColor": "#D40036"
             },
             {
               "colorMode": "custom-color",
@@ -172,9 +172,7 @@
             },
             {
               "colorMode": "custom-color",
-              "customColor": {
-                "Default": "var(--dt-colors-charts-categorical-color-02-default, #2c2f3f)"
-              },
+              "customColor": "#E0E2E3",
               "type": "string",
               "field": "DT.name",
               "comparator": "=",
@@ -186,7 +184,7 @@
               "field": "DT.name",
               "value": "skipped",
               "type": "string",
-              "customColor": "#36383A"
+              "customColor": "#E0E2E3"
             }
           ]
         },
@@ -273,9 +271,7 @@
             },
             {
               "colorMode": "custom-color",
-              "customColor": {
-                "Default": "var(--dt-colors-charts-loglevel-emergency-default, #ae132d)"
-              },
+              "customColor": "#D40036",
               "type": "string",
               "field": "DT.name",
               "comparator": "=",
@@ -291,9 +287,7 @@
             },
             {
               "colorMode": "custom-color",
-              "customColor": {
-                "Default": "var(--dt-colors-charts-categorical-color-02-default, #2c2f3f)"
-              },
+              "customColor": "#E0E2E3",
               "type": "string",
               "field": "DT.name",
               "comparator": "=",
@@ -301,9 +295,7 @@
             },
             {
               "colorMode": "custom-color",
-              "customColor": {
-                "Default": "var(--dt-colors-charts-categorical-color-02-default, #2c2f3f)"
-              },
+              "customColor": "#E0E2E3",
               "type": "string",
               "field": "DT.name",
               "comparator": "=",
@@ -394,9 +386,7 @@
             },
             {
               "colorMode": "custom-color",
-              "customColor": {
-                "Default": "var(--dt-colors-charts-loglevel-emergency-default, #ae132d)"
-              },
+              "customColor": "#D40036",
               "type": "string",
               "field": "DT.name",
               "comparator": "=",
@@ -412,9 +402,7 @@
             },
             {
               "colorMode": "custom-color",
-              "customColor": {
-                "Default": "var(--dt-colors-charts-categorical-color-02-default, #2c2f3f)"
-              },
+              "customColor": "#E0E2E3",
               "type": "string",
               "field": "DT.name",
               "comparator": "=",
@@ -422,9 +410,7 @@
             },
             {
               "colorMode": "custom-color",
-              "customColor": {
-                "Default": "var(--dt-colors-charts-categorical-color-02-default, #2c2f3f)"
-              },
+              "customColor": "#E0E2E3",
               "type": "string",
               "field": "DT.name",
               "comparator": "=",
@@ -455,15 +441,15 @@
       "visualizationSettings": {
         "autoSelectVisualization": false,
         "honeycomb": {
-          "legend": {
-            "hidden": true
-          },
           "dataMappings": {
             "value": "github.actions.conclusion.success.ratio"
           },
           "displayedFields": [
             "github.actions.workflow.name"
-          ]
+          ],
+          "legend": {
+            "hidden": true
+          }
         },
         "unitsOverrides": [
           {
@@ -482,9 +468,7 @@
           "colorRules": [
             {
               "colorMode": "custom-color",
-              "customColor": {
-                "Default": "var(--dt-colors-charts-categorical-color-12-default, #cd3741)"
-              },
+              "customColor": "#D40036",
               "field": "github.actions.conclusion.success.ratio",
               "value": 0,
               "comparator": "≥",
@@ -492,13 +476,11 @@
             },
             {
               "colorMode": "custom-color",
-              "customColor": {
-                "Default": "var(--dt-colors-charts-categorical-themed-swamps-color-04-default, #8f4624)"
-              },
               "field": "github.actions.conclusion.success.ratio",
               "value": 20,
               "comparator": "≥",
-              "type": "double"
+              "type": "double",
+              "customColor": "#844E2F"
             },
             {
               "colorMode": "custom-color",
@@ -570,15 +552,15 @@
       "visualizationSettings": {
         "autoSelectVisualization": false,
         "honeycomb": {
-          "legend": {
-            "hidden": true
-          },
           "dataMappings": {
             "value": "github.actions.conclusion.success.ratio"
           },
           "displayedFields": [
             "github.actions.job.name"
-          ]
+          ],
+          "legend": {
+            "hidden": true
+          }
         },
         "unitsOverrides": [
           {
@@ -607,13 +589,11 @@
             },
             {
               "colorMode": "custom-color",
-              "customColor": {
-                "Default": "var(--dt-colors-charts-categorical-themed-swamps-color-04-default, #8f4624)"
-              },
               "field": "github.actions.conclusion.success.ratio",
               "value": 20,
               "comparator": "≥",
-              "type": "double"
+              "type": "double",
+              "customColor": "#844E2F"
             },
             {
               "colorMode": "custom-color",
@@ -685,15 +665,15 @@
       "visualizationSettings": {
         "autoSelectVisualization": false,
         "honeycomb": {
-          "legend": {
-            "hidden": true
-          },
           "dataMappings": {
             "value": "github.actions.conclusion.success.ratio"
           },
           "displayedFields": [
             "github.actions.step.name"
-          ]
+          ],
+          "legend": {
+            "hidden": true
+          }
         },
         "unitsOverrides": [
           {
@@ -722,9 +702,7 @@
             },
             {
               "colorMode": "custom-color",
-              "customColor": {
-                "Default": "var(--dt-colors-charts-categorical-themed-swamps-color-04-default, #8f4624)"
-              },
+              "customColor": "#844E2F",
               "field": "github.actions.conclusion.success.ratio",
               "value": 20,
               "comparator": "≥",
@@ -860,9 +838,7 @@
             },
             {
               "colorMode": "custom-color",
-              "customColor": {
-                "Default": "var(--dt-colors-charts-loglevel-emergency-default, #ae132d)"
-              },
+              "customColor": "#D40036",
               "type": "string",
               "field": "DT.name",
               "comparator": "=",
@@ -878,9 +854,7 @@
             },
             {
               "colorMode": "custom-color",
-              "customColor": {
-                "Default": "var(--dt-colors-charts-categorical-color-02-default, #2c2f3f)"
-              },
+              "customColor": "#E0E2E3",
               "type": "string",
               "field": "DT.name",
               "comparator": "=",
@@ -888,9 +862,7 @@
             },
             {
               "colorMode": "custom-color",
-              "customColor": {
-                "Default": "var(--dt-colors-charts-categorical-color-02-default, #2c2f3f)"
-              },
+              "customColor": "#E0E2E3",
               "type": "string",
               "field": "DT.name",
               "comparator": "=",
@@ -1697,20 +1669,20 @@
         "coloring": {
           "colorRules": [
             {
-              "colorMode": "single-color",
+              "colorMode": "custom-color",
               "comparator": ">",
               "field": "interval",
               "value": 0,
               "type": "duration",
-              "color": "var(--dt-colors-charts-loglevel-none-default, #2c2f3f)"
+              "customColor": "#E0E2E3"
             },
             {
-              "colorMode": "single-color",
+              "colorMode": "custom-color",
               "comparator": "!=",
               "field": "http.response.status_code",
               "value": "0",
               "type": "string",
-              "color": "var(--dt-colors-charts-loglevel-none-default, #2c2f3f)"
+              "customColor": "#E0E2E3"
             },
             {
               "colorMode": "custom-color",
@@ -1950,7 +1922,7 @@
               "field": "http.response.status_code",
               "value": "500",
               "type": "string",
-              "customColor": "#C21930"
+              "customColor": "#D40036"
             },
             {
               "colorMode": "custom-color",
@@ -1958,7 +1930,7 @@
               "field": "http.response.status_code",
               "value": "501",
               "type": "string",
-              "customColor": "#C21930"
+              "customColor": "#D40036"
             },
             {
               "colorMode": "custom-color",
@@ -1966,7 +1938,7 @@
               "field": "http.response.status_code",
               "value": "502",
               "type": "string",
-              "customColor": "#C21930"
+              "customColor": "#D40036"
             },
             {
               "colorMode": "custom-color",
@@ -1974,7 +1946,7 @@
               "field": "http.response.status_code",
               "value": "503",
               "type": "string",
-              "customColor": "#C21930"
+              "customColor": "#D40036"
             },
             {
               "colorMode": "custom-color",
@@ -1982,7 +1954,7 @@
               "field": "http.response.status_code",
               "value": "504",
               "type": "string",
-              "customColor": "#C21930"
+              "customColor": "#D40036"
             }
           ]
         },
