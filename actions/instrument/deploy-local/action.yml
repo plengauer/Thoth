@@ -138,7 +138,7 @@ runs:
       run: |
         comment=
         if [ "${{ inputs.action_version }}" = same ]; then
-          comment="$(grep -E '/actions/instrument/deploy@' "${{ steps.find-self.outputs.path }}" | sed -n 's/.*# *//p' | head -n 1)"
+          comment="$(grep -E '/actions/instrument/deploy[^@[:space:]]*@' "${{ steps.find-self.outputs.path }}" | sed -n 's/.*# *//p' | head -n 1 || true)"
         elif echo '${{ inputs.action_version }}' | grep -qE '^v[0-9]'; then
           comment='${{ inputs.action_version }}'
         fi
