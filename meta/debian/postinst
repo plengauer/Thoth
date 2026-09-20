@@ -7,6 +7,8 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
   # one fewer network round trip per pip invocation (the version check only prints an upgrade notice), and never let an unattended package install block on an interactive prompt
   export PIP_DISABLE_PIP_VERSION_CHECK=1
   export PIP_NO_INPUT=1
+  # the per-version instrumentation trees are byte identical copies that are only ever read at runtime, so hardlink them instead of duplicating hundreds of megabytes, and fall back to a real copy where hardlinks are not available
+  _otel_copy_tree() { cp -a -l "$1" "$2" 2>/dev/null || { rm -rf "$2" && cp -r "$1" "$2"; }; }
   # if a local wheelhouse is configured (for example primed from a CI cache) try it first so the install can run fully offline, and fall back to the regular online resolution if it does not satisfy everything
   _otel_pip_install() {
     if [ -n "${OTEL_SHELL_CONFIG_INSTALL_PIP_FIND_LINKS:-}" ] && [ -d "${OTEL_SHELL_CONFIG_INSTALL_PIP_FIND_LINKS:-}" ]; then
@@ -42,7 +44,7 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
         printf '%s\n' "$_node_archived" | grep -q "^${v}$" && break
         v=$((v - 1))
       done
-      [ "$v" -gt 0 ] && [ "$v" != "$version" ] && [ ! -d /usr/share/opentelemetry_shell/agent.instrumentation.node/"$version" ] && cp -r /usr/share/opentelemetry_shell/agent.instrumentation.node/"$v" /usr/share/opentelemetry_shell/agent.instrumentation.node/"$version" || true
+      [ "$v" -gt 0 ] && [ "$v" != "$version" ] && [ ! -d /usr/share/opentelemetry_shell/agent.instrumentation.node/"$version" ] && _otel_copy_tree /usr/share/opentelemetry_shell/agent.instrumentation.node/"$v" /usr/share/opentelemetry_shell/agent.instrumentation.node/"$version" || true
     done
     ls /usr/share/opentelemetry_shell/agent.instrumentation.node | grep -v '.json$' | grep -v '.js$' | grep -v -E '.(xz|zst)$' | grep -v 'Dockerfile$' | while read -r directory; do
       ls /usr/share/opentelemetry_shell/agent.instrumentation.node | grep '.js$' | while read -r file; do
@@ -82,7 +84,7 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
         printf '%s\n' "$_python_archived" | grep -q "^3\.$v$" && break
         v=$((v - 1))
       done
-      [ "$v" -ge 0 ] && [ "3.$v" != "$version" ] && [ ! -d /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version" ] && cp -r /usr/share/opentelemetry_shell/agent.instrumentation.python/3."$v" /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version" || true
+      [ "$v" -ge 0 ] && [ "3.$v" != "$version" ] && [ ! -d /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version" ] && _otel_copy_tree /usr/share/opentelemetry_shell/agent.instrumentation.python/3."$v" /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version" || true
     done
     ls /usr/share/opentelemetry_shell/agent.instrumentation.python | grep -v '.txt$' | grep -v '.py$' | grep -v -E '.(xz|zst)$' | grep -v 'Dockerfile$' | while read -r version; do
       target=/usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"/site-packages
