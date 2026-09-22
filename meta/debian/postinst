@@ -56,9 +56,7 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
     rm -rf /usr/share/opentelemetry_shell/agent.instrumentation.python/*/
     _python_archived="$(tar --use-compress-program="zstd -d --long=27" -tf /usr/share/opentelemetry_shell/agent.instrumentation.python/python_site_packages.tar.zst 2>/dev/null | cut -d / -f 2 | grep '^3\.' | sort -t. -k2 -n -u)"
     _python_versions=""
-    _python_keep_archived=false
     if type docker 1>/dev/null 2>/dev/null || [ "$GITHUB_ACTIONS" = true ]; then
-      _python_keep_archived=true
       _python_min_minor="$(printf '%s\n' "$_python_archived" | sort -t. -k2 -n | head -n 1 | cut -d . -f 2)"
       _python_max_minor="$(grep '^FROM ' /usr/share/opentelemetry_shell/agent.instrumentation.python/Dockerfile 2>/dev/null | cut -d ' ' -f 2 | cut -d : -f 2 | cut -d - -f 1 | cut -d . -f 2)"
       [ -n "$_python_min_minor" ] && [ -n "$_python_max_minor" ] && _python_versions="$(seq "$_python_min_minor" "$_python_max_minor" | while read -r v; do printf '3.%s\n' "$v"; done)" || true
@@ -89,7 +87,6 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
     ls /usr/share/opentelemetry_shell/agent.instrumentation.python | grep -v '.txt$' | grep -v '.py$' | grep -v -E '.(xz|zst)$' | grep -v 'Dockerfile$' | while read -r version; do
       target=/usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"/site-packages
       if ! type python"$version"; then
-        [ "$_python_keep_archived" = true ] && continue
         rm -rf /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"
         continue
       fi
@@ -98,7 +95,6 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
       cp -a "$target"/. "$staging"/ 2>/dev/null || true
       if ! _otel_pip_install python"$version" -m pip install --no-compile --target "$staging" -r /usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.txt; then
         rm -rf "$staging"
-        [ "$_python_keep_archived" = true ] && continue
         rm -rf /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"
         continue
       fi
