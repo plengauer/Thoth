@@ -19,7 +19,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@74b46584d99a285f5f5300264c94538dcf6e9596 # v5.62.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@db7b5a16bf2d905493c86f582aba4bb056d8aada # v5.62.1
         with:
           secrets_to_redact: '["${{ github.token }}"]'
       - run: echo hello world
@@ -41,7 +41,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@74b46584d99a285f5f5300264c94538dcf6e9596 # v5.62.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@db7b5a16bf2d905493c86f582aba4bb056d8aada # v5.62.1
         with:
           secrets_to_redact: '["${{ github.token }}"]'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -63,7 +63,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@74b46584d99a285f5f5300264c94538dcf6e9596 # v5.62.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@db7b5a16bf2d905493c86f582aba4bb056d8aada # v5.62.1
         with:
           secrets_to_redact: '["${{ github.token }}"]'
           cache: '${{ matrix.cache }}'
