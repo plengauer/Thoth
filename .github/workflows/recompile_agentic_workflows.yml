@@ -20,7 +20,7 @@ jobs:
       pull-requests: write
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@74b46584d99a285f5f5300264c94538dcf6e9596 # v5.62.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@db7b5a16bf2d905493c86f582aba4bb056d8aada # v5.62.1
         with:
           secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}"]'
         env:
@@ -34,7 +34,7 @@ jobs:
         run: |
           gh extension install github/gh-aw
           gh aw compile --approve
-      - uses: plengauer/opentelemetry-github/actions/instrument/deploy-local@74b46584d99a285f5f5300264c94538dcf6e9596 # v5.62.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/deploy-local@db7b5a16bf2d905493c86f582aba4bb056d8aada # v5.62.1
         with:
           github_token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           job_level_instrumentation_exclude: 'Refresh Demos,Test Package Repositories,Shell,GitHub,Workflow Example,Experiment'
