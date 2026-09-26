@@ -7,11 +7,7 @@ on:
         required: true
 jobs:
   smoke:
-    strategy:
-      matrix:
-        runner: ['ubuntu-latest', 'ubuntu-24.04-arm']
-      fail-fast: false
-    runs-on: ${{ matrix.runner }}
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       actions: read
@@ -339,7 +335,7 @@ jobs:
     timeout-minutes: 180
     strategy:
       matrix:
-        runner: [windows-2022, windows-latest]
+        runner: [windows-2022, windows-2025]
         version: [1, 2]
         shell: ${{ fromJSON(needs.list-shells.outputs.shells) }}
       fail-fast: false
