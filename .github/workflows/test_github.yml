@@ -9,8 +9,11 @@ env:
   OTEL_SHELL_CONFIG_GITHUB_IS_TEST: 'TRUE'
 jobs:
   job-smoke:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.runner }}
     timeout-minutes: 60
+    strategy:
+      matrix:
+        runner: [ubuntu-22.04, ubuntu-24.04, ubuntu-26.04, ubuntu-latest]
     permissions:
       contents: read
       actions: read
@@ -29,7 +32,7 @@ jobs:
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
   job-node:
     needs: job-smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 60
     permissions:
       contents: read
@@ -52,7 +55,7 @@ jobs:
           name: packages.deb.${{ inputs.ref }}
   job-docker:
     needs: job-smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 60
     permissions:
       contents: read
@@ -88,7 +91,7 @@ jobs:
             shell=bash
   job-run:
     needs: job-smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 60
     permissions:
       contents: read
@@ -116,7 +119,7 @@ jobs:
           [ -n "$TRACEPARENT" ]
   job-composite:
     needs: job-smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 60
     permissions:
       contents: read
@@ -143,7 +146,7 @@ jobs:
           ref: main
   job-dotnet:
     needs: job-smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 60
     permissions:
       contents: read
@@ -211,7 +214,7 @@ jobs:
           otelcol-contrib --version
   job-integration-simulated-opt-acl-modification:
     needs: [job-smoke, job-cache]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 60
     permissions:
       contents: read
@@ -236,7 +239,7 @@ jobs:
       - run: touch /opt/helloworld
   job-integration-renovate:
     needs: job-smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 60
     strategy:
       matrix:
@@ -266,7 +269,7 @@ jobs:
           RENOVATE_REPOSITORIES: ${{ github.repository }}
   job-integration-codeql:
     needs: job-smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 60
     permissions:
       contents: read
@@ -302,7 +305,7 @@ jobs:
           upload: never
   job-integration-superlinter:
     needs: job-smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 180
     permissions:
       contents: read
@@ -333,7 +336,7 @@ jobs:
           # LOG_LEVEL: DEBUG
   job-integration-megalinter:
     needs: job-smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 180
     permissions:
       contents: read
@@ -359,7 +362,7 @@ jobs:
           VALIDATE_ALL_CODEBASE: 'true'
   job-integration-python-venv:
     needs: job-smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 60
     permissions:
       contents: read
@@ -385,7 +388,7 @@ jobs:
           deactivate
   job-integration-checkout-submodules:
     needs: job-smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 60
     permissions:
       contents: read
@@ -410,7 +413,7 @@ jobs:
           submodules: recursive
   job-integration-copilot-install:
     needs: job-smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 60
     permissions:
       contents: read
@@ -432,7 +435,7 @@ jobs:
       - run: bash "${RUNNER_TEMP}/gh-aw/actions/install_copilot_cli.sh" 1.0.40
   job-io-1:
     needs: job-smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 60
     permissions:
       contents: read
@@ -456,7 +459,7 @@ jobs:
           [ ${{ steps.my-step.outputs.foo }} = bar ]
   job-io-2:
     needs: job-io-1
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 60
     permissions:
       contents: read
@@ -476,7 +479,7 @@ jobs:
           [ ${{ needs.job-io-1.outputs.foo }} = bar ]
   job-background:
     needs: job-smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 60
     permissions:
       contents: read
@@ -498,7 +501,7 @@ jobs:
           ( { echo foo; sleep $((60 * 60 * 60)); echo bar; } ) &
   job-background-indirect:
     needs: job-smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 60
     permissions:
       contents: read
@@ -519,7 +522,7 @@ jobs:
           sh ./start_background.sh
   job-cache:
     needs: job-smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 60
     strategy:
       matrix:
@@ -544,7 +547,7 @@ jobs:
       - run: echo hello world
   job-exporter-local:
     needs: job-smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 60
     permissions:
       contents: read
@@ -579,7 +582,7 @@ jobs:
       - run: cat /tmp/http.log | grep -q '^POST /v1/traces$'
   job-exporter-global:
     needs: job-smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 60
     strategy:
       matrix:
@@ -674,7 +677,7 @@ jobs:
         if: ${{ matrix.exporter_traces == 'otlp' && matrix.protocol == 'http/json' }}
   job-exporter-deferred:
     needs: job-smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 60
     permissions:
       contents: read
@@ -698,7 +701,7 @@ jobs:
       - run: echo "hello world" >&2
   job-permissions-restricted:
     needs: job-smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 60
     permissions: # according to https://docs.github.com/en/actions/security-for-github-actions/security-guides/automatic-token-authentication
       actions: read
@@ -729,7 +732,7 @@ jobs:
       - run: echo hello world >&2
   job-selfmonitoring:
     needs: job-smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 60
     strategy:
       matrix:
@@ -764,7 +767,7 @@ jobs:
     timeout-minutes: 60
     strategy:
       matrix:
-        runner: [windows-2022, windows-latest]
+        runner: [windows-2022, windows-2025, windows-latest]
     permissions:
       contents: read
       actions: read
@@ -825,7 +828,7 @@ jobs:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
       - run: echo hello world
   workflow-smoke:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 180
     permissions:
       contents: read
@@ -860,7 +863,7 @@ jobs:
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
   workflow:
     needs: workflow-smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 180
     strategy:
       matrix:
@@ -923,7 +926,7 @@ jobs:
           # cat "$OTLP_JSON" | jq -r .body | grep -v '^null$' | sort -u | grep -F 'hello world, im a job with some special characters (not injected)'
           # cat "$OTLP_JSON" | jq -r .body | grep -v '^null$' | sort -u | grep -F 'hello world, im a job with custom name (not injected)'
   checksuite-smoke:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 180
     permissions:
       contents: read
@@ -953,7 +956,7 @@ jobs:
           OTEL_TRACES_EXPORTER: console
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
   repository-smoke:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 60
     permissions:
       contents: read
@@ -973,7 +976,7 @@ jobs:
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
   repository-pull-request-opened:
     needs: repository-smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 60
     permissions:
       contents: read
@@ -997,7 +1000,7 @@ jobs:
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
   repository-pull-request-closed:
     needs: repository-smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 60
     permissions:
       contents: read
@@ -1021,7 +1024,7 @@ jobs:
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
   repository-pull-request-merged:
     needs: repository-smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 60
     permissions:
       contents: read
@@ -1045,7 +1048,7 @@ jobs:
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
   repository-pull-request-reopened:
     needs: repository-smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 60
     permissions:
       contents: read
@@ -1069,7 +1072,7 @@ jobs:
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
   repository-pull-request-review-submitted:
     needs: repository-smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 60
     permissions:
       contents: read
@@ -1093,7 +1096,7 @@ jobs:
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
   repository-create:
     needs: repository-smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 60
     permissions:
       contents: read
@@ -1116,7 +1119,7 @@ jobs:
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
   repository-delete:
     needs: repository-smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 60
     permissions:
       contents: read
@@ -1139,7 +1142,7 @@ jobs:
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
   repository-push:
     needs: repository-smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 60
     permissions:
       contents: read
@@ -1161,7 +1164,7 @@ jobs:
           OTEL_TRACES_EXPORTER: console
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
   deploy-smoke:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 60
     outputs:
      secret_available: ${{ steps.is-secret-available.outputs.available }}
@@ -1188,7 +1191,7 @@ jobs:
   deploy:
     if: ${{ !github.event.repository.fork && needs.deploy-smoke.outputs.secret_available == 'true' }}
     needs: deploy-smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
       actions: read
@@ -1233,7 +1236,7 @@ jobs:
           jobs:
 
             hello-world:
-              runs-on: ubuntu-latest
+              runs-on: ubuntu-26.04
               steps:
                 - run: echo hello world
           ' >> .github/workflows/test.yml
