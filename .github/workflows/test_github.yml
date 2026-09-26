@@ -134,7 +134,7 @@ jobs:
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
-      - uses: plengauer/autoversion@badee98ba4eb3a38f99cf8acab7f5510e7e8736f # v5.0.0
+      - uses: plengauer/autoversion@9539a8fa1c0e662cb733fa58e1a6fd7573e26af6 # v5.1.0
         with:
           github_token: ${{ github.token }}
           path_exclude: ./
