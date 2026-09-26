@@ -7,10 +7,6 @@ on:
         required: true
 jobs:
   smoke:
-    strategy:
-      matrix:
-        runner: [ubuntu-latest, ubuntu-26.04-arm]
-      fail-fast: false
     runs-on: ubuntu-latest
     permissions:
       contents: read
