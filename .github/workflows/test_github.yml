@@ -9,11 +9,8 @@ env:
   OTEL_SHELL_CONFIG_GITHUB_IS_TEST: 'TRUE'
 jobs:
   job-smoke:
-    runs-on: ${{ matrix.runner }}
+    runs-on: ubuntu-latest
     timeout-minutes: 60
-    strategy:
-      matrix:
-        runner: [ubuntu-22.04, ubuntu-24.04, ubuntu-26.04, ubuntu-latest, ubuntu-22.04-arm, ubuntu-24.04-arm, ubuntu-26.04-arm]
     permissions:
       contents: read
       actions: read
@@ -168,10 +165,12 @@ jobs:
         with:
           dotnet-version: 10.0.401
       - run: dotnet --version
-  job-arm:
-    needs: job-smoke
-    runs-on: ubuntu-26.04-arm
+  job-image:
+    runs-on: ${{ matrix.runner }}
     timeout-minutes: 60
+    strategy:
+      matrix:
+        runner: [ubuntu-22.04, ubuntu-24.04, ubuntu-26.04, ubuntu-latest, ubuntu-22.04-arm, ubuntu-24.04-arm, ubuntu-26.04-arm]
     permissions:
       contents: read
       actions: read
