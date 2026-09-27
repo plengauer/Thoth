@@ -355,7 +355,7 @@ jobs:
           distribution: temurin
       - run: |
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.java
-          javac SystemPropertiesPrinter.java
+          javac -source 8 -target 8 SystemPropertiesPrinter.java
       - run: |
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.java
           mvn dependency:resolve
