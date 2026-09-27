@@ -542,10 +542,6 @@ jobs:
     needs: job-cache
     runs-on: ubuntu-26.04
     timeout-minutes: 60
-    strategy:
-      matrix:
-        cache: ['false', 'true']
-      fail-fast: false
     permissions:
       contents: read
       actions: read
@@ -559,7 +555,7 @@ jobs:
       - id: instrument
         uses: ./actions/instrument/job
         with:
-          cache: ${{ matrix.cache }}
+          cache: 'true'
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
