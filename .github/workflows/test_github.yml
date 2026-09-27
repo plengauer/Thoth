@@ -226,15 +226,9 @@ jobs:
         with:
           name: packages.deb.${{ inputs.ref }}
       - uses: ./actions/instrument/job
-        id: instrument
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
-      - name: assert dependency cache was restored via the fast path
-        if: steps.instrument.outputs.cache_restored_fast != 'true'
-        run: |
-          echo "::error::Expected the cache warmed by job-cache to be restored via the fast path, got cache_restored_fast='${{ steps.instrument.outputs.cache_restored_fast }}'."
-          exit 1
       - run: touch /opt/helloworld
   job-integration-renovate:
     needs: job-smoke
@@ -544,6 +538,36 @@ jobs:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
       - run: echo hello world
+  job-cache-warm:
+    needs: job-cache
+    runs-on: ubuntu-26.04
+    timeout-minutes: 60
+    strategy:
+      matrix:
+        cache: ['false', 'true']
+      fail-fast: false
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: packages.deb.${{ inputs.ref }}
+      - id: instrument
+        uses: ./actions/instrument/job
+        with:
+          cache: ${{ matrix.cache }}
+        env:
+          OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
+          OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
+      - name: assert dependency cache was restored via the fast path
+        if: steps.instrument.outputs.cache_restored_fast != 'true'
+        run: |
+          echo "::error::Expected the cache warmed by job-cache to be restored via the fast path, got cache_restored_fast='${{ steps.instrument.outputs.cache_restored_fast }}'."
+          exit 1
   job-exporter-local:
     needs: job-smoke
     runs-on: ubuntu-26.04
