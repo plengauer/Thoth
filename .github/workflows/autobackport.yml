@@ -60,7 +60,7 @@ jobs:
             ${{ secrets.ACTIONS_GITHUB_TOKEN }}
             ${{ secrets.OPENAI_TOKEN }}
       - id: autoversion
-        uses: plengauer/autoversion@badee98ba4eb3a38f99cf8acab7f5510e7e8736f # v5.0.0
+        uses: plengauer/autoversion@9539a8fa1c0e662cb733fa58e1a6fd7573e26af6 # v5.1.0
         with:
           github_token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           openai_token: ${{ secrets.OPENAI_TOKEN }}
