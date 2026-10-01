@@ -1,15 +1,15 @@
  INFO: Renovate started
-       "renovateVersion": "44.115.7"
+       "renovateVersion": "44.126.1"
  WARN: cli config dryRun property has been changed to full
  INFO: Repository started (repository=plengauer/Thoth)
-       "renovateVersion": "44.115.7"
+       "renovateVersion": "44.126.1"
  WARN: Cannot access vulnerability alerts. Please ensure permissions have been granted. (repository=plengauer/Thoth)
        "url": "https://docs.renovatebot.com/configuration-options/#vulnerabilityalerts"
  INFO: Dependency extraction complete (repository=plengauer/Thoth, baseBranch=main)
        "stats": {
          "managers": {
            "dockerfile": {"fileCount": 4, "depCount": 11},
-           "github-actions": {"fileCount": 32, "depCount": 681},
+           "github-actions": {"fileCount": 32, "depCount": 683},
            "gradle": {"fileCount": 4, "depCount": 3},
            "gradle-wrapper": {"fileCount": 1, "depCount": 1},
            "maven": {"fileCount": 1, "depCount": 2},
@@ -17,17 +17,15 @@
            "pip_requirements": {"fileCount": 3, "depCount": 19},
            "regex": {"fileCount": 3, "depCount": 4}
          },
-         "total": {"fileCount": 50, "depCount": 735}
+         "total": {"fileCount": 50, "depCount": 737}
        }
- INFO: DRY-RUN: Would commit files to branch renovate/renovatebot-github-action-46.x. See debug logs for raw commit information (repository=plengauer/Thoth, branch=renovate/renovatebot-github-action-46.x)
- INFO: DRY-RUN: Would commit files to branch renovate/opentelemetry-python-monorepo. See debug logs for raw commit information (repository=plengauer/Thoth, branch=renovate/opentelemetry-python-monorepo)
- INFO: DRY-RUN: Would commit files to branch renovate/plengauer-autoversion-5.x. See debug logs for raw commit information (repository=plengauer/Thoth, branch=renovate/plengauer-autoversion-5.x)
+ INFO: DRY-RUN: Would commit files to branch renovate/github-gh-aw-actions-0.x. See debug logs for raw commit information (repository=plengauer/Thoth, branch=renovate/github-gh-aw-actions-0.x)
  INFO: DRY-RUN: Would ensure Dependency Dashboard (repository=plengauer/Thoth)
        "title": "Dependency Dashboard"
  INFO: DRY-RUN: Would save repository cache. (repository=plengauer/Thoth)
  INFO: Repository finished (repository=plengauer/Thoth)
        "cloned": true,
-       "durationMs": 53582,
+       "durationMs": 49974,
        "result": "done",
        "status": "onboarded",
        "enabled": true,
