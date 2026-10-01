@@ -57,7 +57,7 @@ jobs:
           ref: ${{ github.event.repository.default_branch }}
       - if: ${{ github.event_name == 'push' || steps.release.outputs.should_run == 'true' }}
         run: |
-          cd demos && echo */ | tr ' ' '\n' | tr -d / | while read -r dir; do echo \""$dir"\"; done | jq -s | tr -d ' ' | tr -d '\n' | xargs -0 -I {} echo 'dirs={}' >> "$GITHUB_OUTPUT"
+          cd demos && echo */ | tr ' ' '\n' | tr -d / | grep -Ev '^(_complex_download_github_releases|injection_deep_gradle|injection_deep_python|injection_docker_renovate|observe_subprocesses)$' | while read -r dir; do echo \""$dir"\"; done | jq -s | tr -d ' ' | tr -d '\n' | xargs -0 -I {} echo 'dirs={}' >> "$GITHUB_OUTPUT"
         id: demos
   generate:
     if: ${{ !github.event.repository.fork && (github.event_name == 'push' || needs.prepare.outputs.should_run == 'true') }}
@@ -142,7 +142,7 @@ jobs:
           }
 
           get_child_span_ids() {
-            spans | jq '. | select(.name != null) | select(.parentSpanId == "'"$1"'") | .startTimeUnixNano |= .[0:-8]' | jq -r -s '. | sort_by(.endTimeUnixNano) | .[].spanId'
+            spans | jq '. | select(.name != null) | select(.parentSpanId == "'"$1"'") | .startTimeUnixNano |= .[0:-8]' | jq -r -s '. | sort_by(.startTimeUnixNano, .name, .attributes) | .[].spanId'
           }
 
           print_span_name_tree() {
@@ -233,7 +233,38 @@ jobs:
               | jq 'with_entries(if .key == "status" and .value == 0 then .value = "UNSET" else . end)' \
               | jq 'with_entries(if .key == "status" and .value == 1 then .value = "OK" else . end)' \
               | jq 'with_entries(if .key == "status" and .value == 2 then .value = "ERROR" else . end)' \
-              | jq -s '. | sort_by(.name) | .[]'
+              | jq -s '
+                  def stable_attributes:
+                    with_entries(
+                      select(.key | test("(?i)(id|time|timestamp|[.]version$|[.]ip(v4|v6)?$|peer\\[[0-9]+\\][.]ipv[46]$|[.]port$|host[.]|cloud[.]|azure[.]|os[.]version$|url[.](full|path)$|thread[.]name$|process[.](pid|parent_pid|owner|runtime[.]version|start_time|command.*|executable[.]path)$|http[.](user_agent|request[.]header[.]|response[.]header[.])|user_agent[.]original$|network[.].*(address|port)$|client[.](address|port)$|server[.]port$|code[.](lineno|filepath|column|stacktrace)$|(^|[.])path$|filepath$)") | not)
+                      | if (.value | type) == "string"
+                        then .value |= gsub("/home/runner/[^ ]+"; "<runner-path>") | .value |= gsub("/tmp/[^ ]+"; "<tmp-path>")
+                        else .
+                        end
+                    );
+                  map(
+                    .attributes |= stable_attributes
+                    | .resource_attributes |= stable_attributes
+                    | .events |= map(.time = 0 | .attributes |= stable_attributes)
+                    | .links |= map(.attributes |= stable_attributes)
+                    | .duration = (((.time_end - .time_start) / 100000000 | round) * 100000000)
+                  )
+                  | sort_by(.name, .attributes, .resource_attributes, .kind, .status, .events, .duration)
+                  | (map(.span_id) | to_entries | map({key: .value, value: "span-\((.key + 1) | tostring)"}) | from_entries) as $span_ids
+                  | map(
+                      .trace_id = "trace-1"
+                      | .parent_span_id = (if .parent_span_id == null or .parent_span_id == "" then null else ($span_ids[.parent_span_id] // "span-external") end)
+                      | .span_id = $span_ids[.span_id]
+                      | .time_end = .duration
+                      | .time_start = 0
+                      | del(.duration)
+                      | .links |= map(
+                          .trace_id = "trace-1"
+                          | .span_id = ($span_ids[.span_id] // "span-external")
+                        )
+                    )
+                  | .[]
+                '
           }
 
           # Validate that at least one root span exists
@@ -264,27 +295,7 @@ jobs:
           rm otlp.json.minimized
       - run: |
           cd demos/${{ matrix.demo_directory }}
-          git add --intent-to-add README.md output.stdout output.stderr otlp.json
-          volatile_keys='"[^"]*[Ii]d"|[Tt]ime|timestamp|"vcs[.][^"]*"|"github[.][^"]*"|"[^"]*[.]version"|"[^"]*[.]ip"|"[^"]*[.]port"|"peer[.][^"]*"|"process[.]pid"|"process[.]parent_pid"|"process[.]owner"|"process[.]runtime[.]version"|"process[.]start_time"|"http[.]user_agent"|"user_agent[.]original"|"host[.]name"|"host[.]type"|"host[.]arch"|"cloud[.]region"|"cloud[.]account[.]id"|"cloud[.]availability_zone"|"azure[.][^"]*"|"os[.]build_id"|"os[.]description"|"network[.]local[.]address"|"network[.]local[.]port"|"network[.]peer[.]address"|"network[.]peer[.]port"|"client[.]address"|"client[.]port"|"server[.]port"|"code[.]lineno"|"code[.]filepath"|"code[.]column"|"code[.]stacktrace"|"http[.]request[.]header[.][^"]*"|"http[.]response[.]header[.][^"]*"|/tmp|"00-'
-          if git diff README.md | grep -v '^+++' | grep -v '^---' \
-            | awk -v pat="$volatile_keys" '
-                /^[+-]/ {
-                  line = substr($0, 2)
-                  if (depth > 0) {
-                    if (index(line, "[") > 0) depth++
-                    if (index(line, "]") > 0) depth--
-                    next
-                  }
-                  if (line ~ pat) {
-                    if (index(line, "[") > 0) depth=1
-                    next
-                  }
-                  print
-                  next
-                }
-                { print }
-              ' \
-            | grep -q '^+'; then echo dirty=true >> "$GITHUB_OUTPUT"; fi
+          if ! git diff --quiet -- README.md; then echo dirty=true >> "$GITHUB_OUTPUT"; fi
         id: diff
       - name: "Open Pull Request"
         if: steps.diff.outputs.dirty
@@ -299,6 +310,7 @@ jobs:
           body: |
             (this PR is automatically generated)
           delete-branch: true
+          add-paths: demos/${{ matrix.demo_directory }}/README.md
       - run: sleep 60 # make sure PR state is updated and API can catch up
         if: steps.open-pr.outputs.pull-request-number != null
       - uses: peter-evans/enable-pull-request-automerge@a660677d5469627102a1c1e11409dd063606628d # v3.0.0
