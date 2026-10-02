@@ -7,6 +7,10 @@ const _execSync = child_process.execSync;
 const _execFile = child_process.execFile;
 const _execFileSync = child_process.execFileSync;
 
+delete process.env.OTEL_SHELL_COMMANDLINE_OVERRIDE;
+delete process.env.OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE;
+delete process.env.OTEL_SHELL_AUTO_INJECTED;
+
 if (process.platform != 'linux') return;
 
 child_process.spawn = function(command, args, options) {
