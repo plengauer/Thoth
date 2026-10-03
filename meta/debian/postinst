@@ -4,8 +4,8 @@ if [ "$1" = 'abort-configure' ] || [ "$1" = 'abort-upgrade' ] || [ "$1" = 'abort
   true
 elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' ]; then
   export PATH=/usr/local/bin:"$PATH"
-  hardlink_or_copy() { cp -a -l "$1" "$2" 2>/dev/null || { rm -rf "$2" && cp -r "$1" "$2"; }; }
-  my_pip() {
+  _otel_hardlink_or_copy() { cp -a -l "$1" "$2" 2>/dev/null || { rm -rf "$2" && cp -r "$1" "$2"; }; }
+  _otel_pip() {
     export PIP_DISABLE_PIP_VERSION_CHECK=1
     export PIP_NO_INPUT=1
     if [ -n "${OTEL_SHELL_CONFIG_INSTALL_PIP_FIND_LINKS:-}" ] && [ -d "${OTEL_SHELL_CONFIG_INSTALL_PIP_FIND_LINKS:-}" ]; then
@@ -13,100 +13,170 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
     fi
     "$@"
   }
-  # extract node instrumentation
+  # prints the highest archived version (one per line in $1) that is lower than or equal to the requested version $2, versions are compared by their field $3 (separated by dots)
+  _otel_best_archived() {
+    _otel_requested="$(printf '%s' "$2" | cut -d . -f "$3")"
+    printf '%s\n' "$1" | while read -r _otel_candidate; do
+      [ -n "$_otel_candidate" ] || continue
+      [ "$(printf '%s' "$_otel_candidate" | cut -d . -f "$3")" -le "$_otel_requested" ] && printf '%s\n' "$_otel_candidate" || true
+    done | sort -t . -k "$3" -n | tail -n 1
+  }
+
+  # node instrumentation: the prebuilt node_modules archive is only an optimization, if no suitable version is archived, build it via npm
   if type node; then
-    rm -rf /usr/share/opentelemetry_shell/agent.instrumentation.node/*/
-    _node_archived="$(tar --use-compress-program="zstd -d --long=27" -tf /usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules.tar.zst 2>/dev/null | cut -d / -f 2 | grep '^[0-9]' | sort -n -u)"
+    _node_dir=/usr/share/opentelemetry_shell/agent.instrumentation.node
+    _otel_node_build() {
+      if ! type npm 1>/dev/null 2>/dev/null; then
+        echo "WARNING: no prebuilt node instrumentation for node $1 and npm is not available to build it, node $1 will not be deep instrumented" >&2
+        return 1
+      fi
+      _otel_node_build_dir="$(mktemp -d)"
+      cp "$_node_dir"/package.json "$_otel_node_build_dir"/ && (cd "$_otel_node_build_dir" && npm install --no-audit --no-fund --no-package-lock 1>&2) && mkdir -p "$_node_dir"/"$1" && mv "$_otel_node_build_dir"/node_modules "$_node_dir"/"$1"/node_modules || { rm -rf "$_otel_node_build_dir" "${_node_dir:?}"/"$1"; return 1; } # SKIP_DEPENDENCY_CHECK
+      rm -rf "$_otel_node_build_dir"
+    }
+    rm -rf "${_node_dir:?}"/*/
+    _node_archived="$(tar --use-compress-program="zstd -d --long=27" -tf "$_node_dir"/node_modules.tar.zst 2>/dev/null | cut -d / -f 2 | grep '^[0-9][0-9]*$' | sort -n -u || true)"
+    _node_local="$(echo "$PATH" | tr : '\n' | while read -r directory; do find "$directory" -name node; done | while read -r executable; do eval "$executable --version"; done | tr -d v | cut -d . -f 1 | sort -n -u)"
     _node_versions=""
     if type docker 1>/dev/null 2>/dev/null || [ "$GITHUB_ACTIONS" = true ]; then
-      _node_min="$(printf '%s\n' "$_node_archived" | sort -n | head -n 1)"
-      _node_max="$(grep '^FROM ' /usr/share/opentelemetry_shell/agent.instrumentation.node/Dockerfile 2>/dev/null | cut -d ' ' -f 2 | cut -d : -f 2 | cut -d - -f 1)"
+      _node_min="$(printf '%s\n' "$_node_archived" | grep . | sort -n | head -n 1)"
+      _node_max="$(grep '^FROM ' "$_node_dir"/Dockerfile 2>/dev/null | cut -d ' ' -f 2 | cut -d : -f 2 | cut -d - -f 1)"
       [ -n "$_node_min" ] && [ -n "$_node_max" ] && _node_versions="$(seq "$_node_min" "$_node_max")" || true
       [ -n "$_node_versions" ] || _node_versions="$_node_archived"
-    else
-      _node_versions="$(echo "$PATH" | tr : '\n' | while read -r directory; do find "$directory" -name node; done | while read -r executable; do eval "$executable --version"; done | tr -d v | cut -d . -f 1 | sort -n -u)"
     fi
+    _node_versions="$(printf '%s\n%s\n' "$_node_versions" "$_node_local" | grep '^[0-9][0-9]*$' | sort -n -u || true)"
+    # extract the exact or next lower archived version for every version we need
     printf '%s\n' "$_node_versions" | while read -r version; do
       [ -n "$version" ] || continue
-      v="$version"
-      while [ "$v" -gt 0 ]; do
-        printf '%s\n' "$_node_archived" | grep -q "^${v}$" && break
-        v=$((v - 1))
-      done
-      [ "$v" -gt 0 ] && printf './%s\n' "$v" || true
-    done | sort -u | (xargs -r tar --use-compress-program="zstd -d --long=27" -xf /usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules.tar.zst -C /usr/share/opentelemetry_shell/agent.instrumentation.node/ || true)
+      v="$(_otel_best_archived "$_node_archived" "$version" 1)"
+      [ -n "$v" ] && printf './%s\n' "$v" || true
+    done | sort -u | (xargs -r tar --use-compress-program="zstd -d --long=27" -xf "$_node_dir"/node_modules.tar.zst -C "$_node_dir"/ || true)
+    # fill the gaps, either via the version fallback or via building it on demand
+    _node_built=""
     printf '%s\n' "$_node_versions" | while read -r version; do
       [ -n "$version" ] || continue
-      v="$version"
-      while [ "$v" -gt 0 ]; do
-        printf '%s\n' "$_node_archived" | grep -q "^${v}$" && break
-        v=$((v - 1))
-      done
-      [ "$v" -gt 0 ] && [ "$v" != "$version" ] && [ ! -d /usr/share/opentelemetry_shell/agent.instrumentation.node/"$version" ] && hardlink_or_copy /usr/share/opentelemetry_shell/agent.instrumentation.node/"$v" /usr/share/opentelemetry_shell/agent.instrumentation.node/"$version" || true
+      [ -d "$_node_dir"/"$version"/node_modules ] && continue
+      rm -rf "${_node_dir:?}"/"$version"
+      v="$(_otel_best_archived "$_node_archived" "$version" 1)"
+      if [ -n "$v" ] && [ -d "$_node_dir"/"$v"/node_modules ]; then
+        _otel_hardlink_or_copy "$_node_dir"/"$v" "$_node_dir"/"$version" && continue
+      fi
+      if [ -n "$_node_built" ] && [ -d "$_node_dir"/"$_node_built"/node_modules ]; then
+        _otel_hardlink_or_copy "$_node_dir"/"$_node_built" "$_node_dir"/"$version" && continue
+      fi
+      _otel_node_build "$version" && _node_built="$version" || true
     done
-    ls /usr/share/opentelemetry_shell/agent.instrumentation.node | grep -v '.json$' | grep -v '.js$' | grep -v -E '.(xz|zst)$' | grep -v 'Dockerfile$' | while read -r directory; do
-      ls /usr/share/opentelemetry_shell/agent.instrumentation.node | grep '.js$' | while read -r file; do
-        cp /usr/share/opentelemetry_shell/agent.instrumentation.node/"$file" /usr/share/opentelemetry_shell/agent.instrumentation.node/"$directory"/"$file"
+    find "$_node_dir" -mindepth 1 -maxdepth 1 -type d | while read -r directory; do
+      find "$_node_dir" -mindepth 1 -maxdepth 1 -type f -name '*.js' | while read -r file; do
+        cp "$file" "$directory"/
       done
     done
   fi 2>&1 | perl -0777 -pe '' >&2 &
-  # extract python instrumentation
+
+  # python instrumentation: the prebuilt site-packages archive is only an optimization (it is built for one specific architecture),
+  # if no suitable version is archived, or the archived one does not work on this system, build it via venv and pip
   if type python3; then
-    rm -rf /usr/share/opentelemetry_shell/agent.instrumentation.python/*/
-    _python_archived="$(tar --use-compress-program="zstd -d --long=27" -tf /usr/share/opentelemetry_shell/agent.instrumentation.python/python_site_packages.tar.zst 2>/dev/null | cut -d / -f 2 | grep '^3\.' | sort -t. -k2 -n -u)"
+    _python_dir=/usr/share/opentelemetry_shell/agent.instrumentation.python
+    _otel_python_requirements() { # the closest instrumentation list for the requested version (shipped arch-independent)
+      _otel_python_instrumentations="$(_otel_best_archived "$(find "$_python_dir" -maxdepth 1 -type f -name 'instrumentations_3.*.txt' | sed 's~^.*/instrumentations_\(.*\)\.txt$~\1~')" "$1" 2)"
+      [ -z "$_otel_python_instrumentations" ] || printf '%s\n' "$_python_dir"/instrumentations_"$_otel_python_instrumentations".txt
+    }
+    _otel_python_works() {
+      [ -d "$_python_dir"/"$1"/site-packages ] && python"$1" -s -c 'import sys; sys.path.insert(0, sys.argv[1]); import wrapt, opentelemetry.sdk.trace, opentelemetry.instrumentation.auto_instrumentation, opentelemetry.exporter.otlp.proto.http.trace_exporter, opentelemetry.exporter.otlp.proto.grpc.trace_exporter' "$_python_dir"/"$1"/site-packages 1>/dev/null 2>/dev/null
+    }
+    _otel_python_ensure_pip() {
+      python"$1" -m pip --version 1>/dev/null 2>/dev/null || python"$1" -m ensurepip --default-pip 1>/dev/null 2>/dev/null || true
+    }
+    _otel_python_build() { # build from scratch, prefer a venv, fall back to a pip target directory if venv is not available for this python version
+      _otel_python_build_dir="$(mktemp -d)"
+      _otel_python_build_instrumentations="$(_otel_python_requirements "$1")"
+      if python"$1" -m venv "$_otel_python_build_dir"/venv 1>&2 && "$_otel_python_build_dir"/venv/bin/python -m pip --version 1>/dev/null 2>/dev/null; then
+        _otel_pip "$_otel_python_build_dir"/venv/bin/python -m pip install --no-compile -r "$_python_dir"/requirements.txt 1>&2 \
+          && { [ -z "$_otel_python_build_instrumentations" ] || _otel_pip "$_otel_python_build_dir"/venv/bin/python -m pip install --no-compile -r "$_otel_python_build_instrumentations" 1>&2; } \
+          && { "$_otel_python_build_dir"/venv/bin/python -m pip uninstall --yes setuptools pip 1>&2 || true; } \
+          && mv "$_otel_python_build_dir"/venv/lib/python"$1"/site-packages "$_otel_python_build_dir"/site-packages \
+          || { rm -rf "$_otel_python_build_dir"; return 1; }
+      else
+        _otel_python_ensure_pip "$1"
+        # a target directory cannot be installed into incrementally (shared namespace packages would be skipped or replaced), so resolve everything at once
+        _otel_pip python"$1" -m pip install --no-compile --target "$_otel_python_build_dir"/site-packages -r "$_python_dir"/requirements.txt ${_otel_python_build_instrumentations:+-r "$_otel_python_build_instrumentations"} 1>&2 \
+          || { rm -rf "$_otel_python_build_dir"; return 1; }
+        rm -rf "$_otel_python_build_dir"/site-packages/bin
+      fi
+      rm -rf "${_python_dir:?}"/"$1" && mkdir -p "$_python_dir"/"$1" && mv "$_otel_python_build_dir"/site-packages "$_python_dir"/"$1"/site-packages
+      rm -rf "$_otel_python_build_dir"
+    }
+    _otel_python_incompatible_dists() { # dists of a fallback version that contain native extensions compiled for a different python version
+      _otel_python_tag="cpython-$(printf '%s' "$1" | tr -d .)"
+      find "$_python_dir"/"$1"/site-packages -mindepth 2 -maxdepth 2 -path '*.dist-info/RECORD' | while read -r record; do
+        if cut -d , -f 1 "$record" | grep '\.cpython-[^/]*\.so$' | grep -q -v "\.$_otel_python_tag-"; then dirname "$record"; fi
+      done
+    }
+    _otel_python_repair() { # replace native dists of a fallback version with the ones matching this python version
+      _otel_python_repair_specs=""
+      for dist in $(_otel_python_incompatible_dists "$1"); do
+        _otel_python_dist_name="$(basename "$dist" .dist-info)"
+        _otel_python_repair_specs="$_otel_python_repair_specs ${_otel_python_dist_name%-*}==${_otel_python_dist_name##*-}"
+        cut -d , -f 1 "$dist"/RECORD | grep -v '\.\./' | while read -r file; do rm -f "$_python_dir"/"$1"/site-packages/"$file"; done
+        rm -rf "$dist"
+      done
+      find "$_python_dir"/"$1"/site-packages -depth -mindepth 1 -type d -empty -delete
+      [ -n "$_otel_python_repair_specs" ] || return 0
+      _otel_python_ensure_pip "$1"
+      _otel_python_repair_dir="$(mktemp -d)"
+      # shellcheck disable=SC2086
+      _otel_pip python"$1" -m pip install --no-compile --no-deps --target "$_otel_python_repair_dir" $_otel_python_repair_specs 1>&2 || { rm -rf "$_otel_python_repair_dir"; return 1; }
+      rm -rf "${_otel_python_repair_dir:?}"/bin
+      cp -R "$_otel_python_repair_dir"/. "$_python_dir"/"$1"/site-packages/
+      rm -rf "$_otel_python_repair_dir"
+    }
+    rm -rf "${_python_dir:?}"/*/
+    _python_archived="$(tar --use-compress-program="zstd -d --long=27" -tf "$_python_dir"/python_site_packages.tar.zst 2>/dev/null | cut -d / -f 2 | grep '^3\.[0-9][0-9]*$' | sort -t. -k2 -n -u || true)"
+    _python_supported="$(find "$_python_dir" -maxdepth 1 -type f -name 'instrumentations_3.*.txt' | sed 's~^.*/instrumentations_\(.*\)\.txt$~\1~' | sort -t. -k2 -n -u)"
+    _python_local="$(echo "$PATH" | tr : '\n' | while read -r directory; do find "$directory" -name 'python3.*'; done | grep -v -- - | while read -r executable; do eval "$executable -V"; done | cut -d ' ' -f 2 | cut -d . -f -2 | sort -t. -k2 -n -u)"
     _python_versions=""
     if type docker 1>/dev/null 2>/dev/null || [ "$GITHUB_ACTIONS" = true ]; then
-      _python_min_minor="$(printf '%s\n' "$_python_archived" | sort -t. -k2 -n | head -n 1 | cut -d . -f 2)"
-      _python_max_minor="$(grep '^FROM ' /usr/share/opentelemetry_shell/agent.instrumentation.python/Dockerfile 2>/dev/null | cut -d ' ' -f 2 | cut -d : -f 2 | cut -d - -f 1 | cut -d . -f 2)"
+      _python_min_minor="$(printf '%s\n%s\n' "$_python_archived" "$_python_supported" | grep . | sort -t. -k2 -n | head -n 1 | cut -d . -f 2)"
+      _python_max_minor="$(grep '^FROM ' "$_python_dir"/Dockerfile 2>/dev/null | cut -d ' ' -f 2 | cut -d : -f 2 | cut -d - -f 1 | cut -d . -f 2)"
       [ -n "$_python_min_minor" ] && [ -n "$_python_max_minor" ] && _python_versions="$(seq "$_python_min_minor" "$_python_max_minor" | while read -r v; do printf '3.%s\n' "$v"; done)" || true
       [ -n "$_python_versions" ] || _python_versions="$_python_archived"
-    else
-      _python_versions="$(echo "$PATH" | tr : '\n' | while read -r directory; do find "$directory" -name 'python3.*'; done | grep -v -- - | while read -r executable; do eval "$executable -V"; done | cut -d ' ' -f 2 | cut -d . -f -2 | sort -t. -k2 -n -u)"
     fi
+    _python_versions="$(printf '%s\n%s\n' "$_python_versions" "$_python_local" | grep '^3\.[0-9][0-9]*$' | sort -t. -k2 -n -u || true)"
+    # extract the exact or next lower archived version for every version we need
     printf '%s\n' "$_python_versions" | while read -r version; do
       [ -n "$version" ] || continue
-      minor="$(echo "$version" | cut -d . -f 2)"
-      v="$minor"
-      while [ "$v" -ge 0 ]; do
-        printf '%s\n' "$_python_archived" | grep -q "^3\.$v$" && break
-        v=$((v - 1))
-      done
-      [ "$v" -ge 0 ] && printf './3.%s\n' "$v" || true
-    done | sort -u | (xargs -r tar --use-compress-program="zstd -d --long=27" -xf /usr/share/opentelemetry_shell/agent.instrumentation.python/python_site_packages.tar.zst -C /usr/share/opentelemetry_shell/agent.instrumentation.python/ || true)
+      v="$(_otel_best_archived "$_python_archived" "$version" 2)"
+      [ -n "$v" ] && printf './%s\n' "$v" || true
+    done | sort -u | (xargs -r tar --use-compress-program="zstd -d --long=27" -xf "$_python_dir"/python_site_packages.tar.zst -C "$_python_dir"/ || true)
+    # fill the gaps via version fallback (and repair of native extensions) or via building it on demand, and verify everything that can be verified
     printf '%s\n' "$_python_versions" | while read -r version; do
       [ -n "$version" ] || continue
-      minor="$(echo "$version" | cut -d . -f 2)"
-      v="$minor"
-      while [ "$v" -ge 0 ]; do
-        printf '%s\n' "$_python_archived" | grep -q "^3\.$v$" && break
-        v=$((v - 1))
-      done
-      [ "$v" -ge 0 ] && [ "3.$v" != "$version" ] && [ ! -d /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version" ] && hardlink_or_copy /usr/share/opentelemetry_shell/agent.instrumentation.python/3."$v" /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version" || true
-    done
-    ls /usr/share/opentelemetry_shell/agent.instrumentation.python | grep -v '.txt$' | grep -v '.py$' | grep -v -E '.(xz|zst)$' | grep -v 'Dockerfile$' | while read -r version; do
-      target=/usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"/site-packages
-      if ! type python"$version"; then
-        rm -rf /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"
+      if ! [ -d "$_python_dir"/"$version"/site-packages ]; then
+        rm -rf "${_python_dir:?}"/"$version"
+        v="$(_otel_best_archived "$_python_archived" "$version" 2)"
+        [ -n "$v" ] && [ -d "$_python_dir"/"$v"/site-packages ] && _otel_hardlink_or_copy "$_python_dir"/"$v" "$_python_dir"/"$version" || true
+      fi
+      if ! type python"$version"; then # cannot repair, build, or verify without the interpreter, keep only what is complete as is
+        [ -z "$(_otel_python_incompatible_dists "$version" 2>/dev/null)" ] && [ -d "$_python_dir"/"$version"/site-packages ] || rm -rf "${_python_dir:?}"/"$version"
         continue
       fi
-      python"$version" -m pip --version 1>/dev/null 2>/dev/null || python"$version" -m ensurepip --default-pip 1>/dev/null 2>/dev/null || true
-      staging="$(mktemp -d)"
-      cp -a "$target"/. "$staging"/ 2>/dev/null || true
-      if ! my_pip python"$version" -m pip install --no-compile --target "$staging" -r /usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.txt; then
-        rm -rf "$staging"
-        rm -rf /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"
-        continue
+      if [ -d "$_python_dir"/"$version"/site-packages ]; then
+        _otel_python_repair "$version" || rm -rf "${_python_dir:?}"/"$version"
       fi
-      cp -r -u "$staging"/. "$target"/
-      rm -rf "$staging"
-      python"$version" -m compileall -q -j 0 "$target" || true
+      _otel_python_works "$version" || _otel_python_build "$version" || true
+      if _otel_python_works "$version"; then
+        python"$version" -m compileall -q -j 0 "$_python_dir"/"$version"/site-packages 1>/dev/null 2>/dev/null || true
+      else
+        rm -rf "${_python_dir:?}"/"$version"
+      fi
     done
   fi 2>&1 | perl -0777 -pe '' >&2 &
+
   # init sdk venv
   if type uv 1>/dev/null 2>/dev/null; then
-    uv venv /opt/opentelemetry_shell/venv && ( uv pip install --offline --python /opt/opentelemetry_shell/venv/bin/python3 -r /opt/opentelemetry_shell/requirements.txt || my_pip uv pip install --python /opt/opentelemetry_shell/venv/bin/python3 -r /opt/opentelemetry_shell/requirements.txt ) && uv pip check --python /opt/opentelemetry_shell/venv/bin/python3 # SKIP_DEPENDENCY_CHECK
+    uv venv /opt/opentelemetry_shell/venv && ( uv pip install --offline --python /opt/opentelemetry_shell/venv/bin/python3 -r /opt/opentelemetry_shell/requirements.txt || _otel_pip uv pip install --python /opt/opentelemetry_shell/venv/bin/python3 -r /opt/opentelemetry_shell/requirements.txt ) && uv pip check --python /opt/opentelemetry_shell/venv/bin/python3 # SKIP_DEPENDENCY_CHECK
   else
-    python3 -m venv /opt/opentelemetry_shell/venv && . /opt/opentelemetry_shell/venv/bin/activate && my_pip pip3 install --no-compile -r /opt/opentelemetry_shell/requirements.txt && pip3 check && deactivate && (/opt/opentelemetry_shell/venv/bin/python3 -m compileall -q -j 0 /opt/opentelemetry_shell/venv || true) # SKIP_DEPENDENCY_CHECK
+    python3 -m venv /opt/opentelemetry_shell/venv && . /opt/opentelemetry_shell/venv/bin/activate && _otel_pip pip3 install --no-compile -r /opt/opentelemetry_shell/requirements.txt && pip3 check && deactivate && (/opt/opentelemetry_shell/venv/bin/python3 -m compileall -q -j 0 /opt/opentelemetry_shell/venv || true) # SKIP_DEPENDENCY_CHECK
   fi
   # precompile sdk venv
   cat /usr/share/opentelemetry_shell/*.py | while read -r line; do printf '%s\n' "$line"; done | grep -E '^import |^from ' | /opt/opentelemetry_shell/venv/bin/python3 # venv may be used by different users that may not be allowed to create pyc files
