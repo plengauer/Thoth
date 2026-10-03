@@ -282,7 +282,6 @@ jobs:
   build-python-site-packages:
     needs: [list-python-versions, resolve-python-instrumentations]
     runs-on: ubuntu-latest
-    continue-on-error: true # prebuilt site-packages are an optimization only, whatever cannot be built here is installed on demand during postinst
     strategy:
       matrix:
         version: ${{ fromJSON(needs.list-python-versions.outputs.versions) }}
@@ -308,7 +307,7 @@ jobs:
         with:
           name: python_instrumentations_${{ matrix.version }}_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.python
-      - run: | # pip cannot compile for a foreign platform, so everything must be available as wheel, otherwise this fails and the package ships without
+      - run: |
           \unalias -a # disable all instrumentations, cant build the instrumentations while instrumentations are active, pip resolution then pretends to it already being installed
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.python
           target="$RUNNER_TEMP"/out/${{ matrix.architecture }}/${{ matrix.version }}/site-packages
