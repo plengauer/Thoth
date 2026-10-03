@@ -2,28 +2,17 @@
 if [ -n "${INPUT___KILL_SWITCH:-}" ]; then
   echo "::warning ::OpenTelemetry for GitHub actions disabled by kill switch!" && exit 0
 fi
-_otel_load_github_variables() {
-  for _otel_variables_scope in repos/"$GITHUB_REPOSITORY"/actions/variables repos/"$GITHUB_REPOSITORY"/actions/organization-variables; do
-    _otel_variables_page=1
-    while [ "$_otel_variables_page" -le 100 ]; do
-      _otel_variables_response="$(curl -sf -H "Authorization: ******" "${GITHUB_API_URL:-https://api.github.com}/$_otel_variables_scope?per_page=30&page=$_otel_variables_page" 2>/dev/null || true)"
-      _otel_variables_count="$(printf '%s' "$_otel_variables_response" | jq -r '.variables | length' 2>/dev/null || true)"
-      case "${_otel_variables_count:-}" in '' | *[!0-9]*) break ;; esac
-      _otel_variables_lines="$(printf '%s' "$_otel_variables_response" | jq -r '.variables[] | select((.name | test("^OTEL_[A-Za-z0-9_]+$")) and ((.value // "") | contains("\n") | not)) | .name + "=" + (.value // "")' 2>/dev/null || true)"
-      while IFS= read -r _otel_variable_line; do
-        [ -n "$_otel_variable_line" ] || continue
-        _otel_variable_name="${_otel_variable_line%%=*}"
-        eval "[ -n \"\${$_otel_variable_name:-}\" ]" || export "$_otel_variable_name=${_otel_variable_line#*=}"
-      done <<EOF_OTEL_VARIABLES
-$_otel_variables_lines
-EOF_OTEL_VARIABLES
-      [ "$_otel_variables_count" -ge 30 ] || break
-      _otel_variables_page=$((_otel_variables_page + 1))
-    done
-  done
-}
 if [ -n "${INPUT_GITHUB_TOKEN:-}" ] && [ -n "${GITHUB_REPOSITORY:-}" ]; then
-  _otel_load_github_variables || true
+  . ../shared/github.sh
+  for variables_path in /actions/variables /actions/organization-variables; do
+    variables="$(gh_curl_paginated "$variables_path"'?per_page=30' 2>/dev/null | jq -r '.variables[]? | select((.name | test("^OTEL_[A-Za-z0-9_]+$")) and ((.value // "") | contains("\n") | not)) | .name + "=" + (.value // "")' 2>/dev/null || true)"
+    while IFS= read -r variable; do
+      [ -n "$variable" ] || continue
+      eval "[ -n \"\${${variable%%=*}:-}\" ]" || export "${variable%%=*}=${variable#*=}"
+    done <<EOF_OTEL_VARIABLES
+$variables
+EOF_OTEL_VARIABLES
+  done
 fi
 if [ -n "${OTEL_KILL_SWITCH:-}" ]; then
   echo "::warning ::OpenTelemetry for GitHub actions disabled by kill switch!" && exit 0
