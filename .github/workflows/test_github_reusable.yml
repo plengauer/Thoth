@@ -48,26 +48,31 @@ jobs:
       - run: |
           jq -se --arg expected "$GITHUB_WORKFLOW_REF" '
             any(.[].resourceSpans[]?.resource.attributes[]?;
-              .key == "github.actions.workflow.ref" and .value.stringValue == $expected
+              .key == "github.actions.workflow.caller.ref" and .value.stringValue == $expected
+            )
+          ' /tmp/traces.json
+          jq -se --arg expected "$GITHUB_WORKFLOW_SHA" '
+            any(.[].resourceSpans[]?.resource.attributes[]?;
+              .key == "github.actions.workflow.caller.sha" and .value.stringValue == $expected
             )
           ' /tmp/traces.json
           jq -se --arg expected "${{ github.repository }}/.github/workflows/test_github_reusable.yml@${{ github.ref }}" '
             any(.[].resourceSpans[]?.resource.attributes[]?;
-              .key == "github.actions.job.workflow.ref" and .value.stringValue == $expected
+              .key == "github.actions.workflow.ref" and .value.stringValue == $expected
             )
           ' /tmp/traces.json
           jq -se --arg expected "${{ github.sha }}" '
             any(.[].resourceSpans[]?.resource.attributes[]?;
-              .key == "github.actions.job.workflow.sha" and .value.stringValue == $expected
+              .key == "github.actions.workflow.sha" and .value.stringValue == $expected
             )
           ' /tmp/traces.json
           jq -se --arg expected "${{ github.repository }}" '
             any(.[].resourceSpans[]?.resource.attributes[]?;
-              .key == "github.actions.job.workflow.repository" and .value.stringValue == $expected
+              .key == "github.actions.workflow.repository" and .value.stringValue == $expected
             )
           ' /tmp/traces.json
           jq -se --arg expected ".github/workflows/test_github_reusable.yml" '
             any(.[].resourceSpans[]?.resource.attributes[]?;
-              .key == "github.actions.job.workflow.file_path" and .value.stringValue == $expected
+              .key == "github.actions.workflow.file_path" and .value.stringValue == $expected
             )
           ' /tmp/traces.json
