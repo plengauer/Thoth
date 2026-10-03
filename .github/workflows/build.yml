@@ -282,11 +282,11 @@ jobs:
   build-python-site-packages:
     needs: [list-python-versions, resolve-python-instrumentations]
     runs-on: ubuntu-latest
-    continue-on-error: true # prebuilt site-packages are an optimization only, whatever cannot be built here is built on demand during install
+    continue-on-error: true # prebuilt site-packages are an optimization only, whatever cannot be built here is installed on demand during postinst
     strategy:
       matrix:
         version: ${{ fromJSON(needs.list-python-versions.outputs.versions) }}
-        architecture: ['amd64', 'arm64/v8', 'mips64le', 'ppc64le', 'riscv64', 's390x']
+        architecture: ['x86_64', 'aarch64', 'ppc64le', 'riscv64', 's390x'] # as named by build-http (uname -m), mips has no manylinux wheels
       fail-fast: false
     permissions:
       contents: read
@@ -298,6 +298,9 @@ jobs:
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
         with:
           secrets_to_redact: ${{ github.token }}
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: ${{ matrix.version }}
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.ref }}
@@ -305,41 +308,15 @@ jobs:
         with:
           name: python_instrumentations_${{ matrix.version }}_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.python
-      - if: ${{ matrix.architecture != 'amd64' }}
-        uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
-      - id: build
-        run: |
-          platform=linux/${{ matrix.architecture }}
-          repository=docker.io/"$(echo ${{ matrix.architecture }} | tr -d /)"/python
-          image=""
-          for tag in ${{ matrix.version }}-slim-bookworm ${{ matrix.version }}-slim; do
-            if sudo docker pull --platform "$platform" "$repository:$tag"; then image="$repository:$tag"; break; fi
-          done
-          if [ -z "$image" ]; then
-            echo "::warning::No python ${{ matrix.version }} image available for ${{ matrix.architecture }}, packages will ship without prebuilt site-packages for it"
-            exit 1
-          fi
-          mkdir -p "$RUNNER_TEMP"/out
-          echo '
-            set -e
-            python3 -m venv /tmp/venv
-            /tmp/venv/bin/pip install --disable-pip-version-check --no-input -r requirements.txt 1>&2
-            /tmp/venv/bin/pip install --disable-pip-version-check --no-input -r instrumentations_${{ matrix.version }}.txt 1>&2
-            /tmp/venv/bin/pip uninstall --yes setuptools pip 1>&2
-            mkdir -p /out/"$(uname -m)"/${{ matrix.version }}
-            cp -a /tmp/venv/lib/python${{ matrix.version }}/site-packages /out/"$(uname -m)"/${{ matrix.version }}/site-packages
-            uname -m
-          ' | sudo docker run -i --rm --network host --platform "$platform" \
-              -v "$(pwd)"/src/usr/share/opentelemetry_shell/agent.instrumentation.python:/build:ro -v "$RUNNER_TEMP"/out:/out -w /build "$image" sh \
-            | tail -n 1 | xargs -I {} echo 'architecture={}' >> "$GITHUB_OUTPUT"
-          sudo chown -R "$(id -u)":"$(id -g)" "$RUNNER_TEMP"/out
-      - run: |
-          [ -n "${{ steps.build.outputs.architecture }}" ] && [ -d "$RUNNER_TEMP"/out/${{ steps.build.outputs.architecture }}/${{ matrix.version }}/site-packages/opentelemetry ]
-      - run: |
-          ! find -L "$RUNNER_TEMP"/out -type l -exec readlink -f '{}' ';' | while read -r file; do realpath "$file"; done | grep '^'"$RUNNER_TEMP"/out/
+      - run: | # pip cannot compile for a foreign platform, so everything must be available as wheel, otherwise this fails and the package ships without
+          \unalias -a # disable all instrumentations, cant build the instrumentations while instrumentations are active, pip resolution then pretends to it already being installed
+          cd src/usr/share/opentelemetry_shell/agent.instrumentation.python
+          target="$RUNNER_TEMP"/out/${{ matrix.architecture }}/${{ matrix.version }}/site-packages
+          pip3 install --target "$target" --implementation cp --python-version ${{ matrix.version }} --platform manylinux2014_${{ matrix.architecture }} --platform manylinux_2_28_${{ matrix.architecture }} --only-binary=:all: -r requirements.txt -r instrumentations_${{ matrix.version }}.txt
+          rm -rf "$target"/bin
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: python_site_packages_${{ steps.build.outputs.architecture }}_${{ matrix.version }}_${{ inputs.ref }}
+          name: python_site_packages_${{ matrix.architecture }}_${{ matrix.version }}_${{ inputs.ref }}
           path: ${{ runner.temp }}/out
           if-no-files-found: error
   merge-python-site-packages:
