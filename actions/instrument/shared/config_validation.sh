@@ -2,12 +2,31 @@
 if [ -n "${INPUT___KILL_SWITCH:-}" ]; then
   echo "::warning ::OpenTelemetry for GitHub actions disabled by kill switch!" && exit 0
 fi
-if [ -z "${INPUT___KILL_SWITCH:-}" ] && [ -n "${INPUT_GITHUB_TOKEN:-}" ]; then
-  kill_switch_value="$(curl -sf -H "Authorization: Bearer $INPUT_GITHUB_TOKEN" "${GITHUB_API_URL:-https://api.github.com}/repos/$GITHUB_REPOSITORY/actions/variables/OTEL_KILL_SWITCH" 2>/dev/null | jq -r '.value // empty' || true)"
-  [ -n "${kill_switch_value:-}" ] || kill_switch_value="$(curl -sf -H "Authorization: Bearer $INPUT_GITHUB_TOKEN" "${GITHUB_API_URL:-https://api.github.com}/orgs/$GITHUB_REPOSITORY_OWNER/actions/variables/OTEL_KILL_SWITCH" 2>/dev/null | jq -r '.value // empty' || true)"
-  if [ -n "${kill_switch_value:-}" ]; then
-    echo "::warning ::OpenTelemetry for GitHub actions disabled by kill switch!" && exit 0
-  fi
+_otel_load_github_variables() {
+  for _otel_variables_scope in repos/"$GITHUB_REPOSITORY"/actions/variables repos/"$GITHUB_REPOSITORY"/actions/organization-variables; do
+    _otel_variables_page=1
+    while [ "$_otel_variables_page" -le 100 ]; do
+      _otel_variables_response="$(curl -sf -H "Authorization: ******" "${GITHUB_API_URL:-https://api.github.com}/$_otel_variables_scope?per_page=30&page=$_otel_variables_page" 2>/dev/null || true)"
+      _otel_variables_count="$(printf '%s' "$_otel_variables_response" | jq -r '.variables | length' 2>/dev/null || true)"
+      case "${_otel_variables_count:-}" in '' | *[!0-9]*) break ;; esac
+      _otel_variables_lines="$(printf '%s' "$_otel_variables_response" | jq -r '.variables[] | select((.name | test("^OTEL_[A-Za-z0-9_]+$")) and ((.value // "") | contains("\n") | not)) | .name + "=" + (.value // "")' 2>/dev/null || true)"
+      while IFS= read -r _otel_variable_line; do
+        [ -n "$_otel_variable_line" ] || continue
+        _otel_variable_name="${_otel_variable_line%%=*}"
+        eval "[ -n \"\${$_otel_variable_name:-}\" ]" || export "$_otel_variable_name=${_otel_variable_line#*=}"
+      done <<EOF_OTEL_VARIABLES
+$_otel_variables_lines
+EOF_OTEL_VARIABLES
+      [ "$_otel_variables_count" -ge 30 ] || break
+      _otel_variables_page=$((_otel_variables_page + 1))
+    done
+  done
+}
+if [ -n "${INPUT_GITHUB_TOKEN:-}" ] && [ -n "${GITHUB_REPOSITORY:-}" ]; then
+  _otel_load_github_variables || true
+fi
+if [ -n "${OTEL_KILL_SWITCH:-}" ]; then
+  echo "::warning ::OpenTelemetry for GitHub actions disabled by kill switch!" && exit 0
 fi
 if [ "${OTEL_LOGS_EXPORTER:-otlp}" != otlp ] && [ "${OTEL_LOGS_EXPORTER:-otlp}" != console ] && [ "${OTEL_LOGS_EXPORTER:-otlp}" != none ] && [ "${OTEL_LOGS_EXPORTER:-otlp}" != deferred ]; then
   echo "::error ::OpenTelemetry for GitHub actions only supports otlp exporters ($OTEL_LOGS_EXPORTER). For other exporters, pipe the data through a collector outside of GitHub to translate the data to a different protocol." && false
