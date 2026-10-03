@@ -31,7 +31,7 @@ jobs:
     permissions:
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@db7b5a16bf2d905493c86f582aba4bb056d8aada # v5.62.1
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@48918a17e96079ba32d8379d536c89679ab39340 # v5.63.0
         with:
           secrets_to_redact: '["${{ github.token }}"]'
         env:
@@ -74,7 +74,7 @@ jobs:
     permissions:
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@db7b5a16bf2d905493c86f582aba4bb056d8aada # v5.62.1
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@48918a17e96079ba32d8379d536c89679ab39340 # v5.63.0
         with:
           secrets_to_redact: '["${{ github.token }}","${{ secrets.DOCKERHUB_TOKEN }}","${{ secrets.DOCKERHUB_USERNAME }}"]'
         env:
@@ -130,7 +130,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@db7b5a16bf2d905493c86f582aba4bb056d8aada # v5.62.1
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@48918a17e96079ba32d8379d536c89679ab39340 # v5.63.0
         with:
           secrets_to_redact: '["${{ github.token }}"]'
         env:
@@ -194,7 +194,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@db7b5a16bf2d905493c86f582aba4bb056d8aada # v5.62.1
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@48918a17e96079ba32d8379d536c89679ab39340 # v5.63.0
         with:
           secrets_to_redact: '["${{ github.token }}"]'
         env:
@@ -375,7 +375,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@db7b5a16bf2d905493c86f582aba4bb056d8aada # v5.62.1
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@48918a17e96079ba32d8379d536c89679ab39340 # v5.63.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
@@ -431,7 +431,7 @@ jobs:
     permissions:
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@db7b5a16bf2d905493c86f582aba4bb056d8aada # v5.62.1
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@48918a17e96079ba32d8379d536c89679ab39340 # v5.63.0
         with:
           secrets_to_redact: '["${{ github.token }}"]'
         env:
