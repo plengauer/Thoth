@@ -539,7 +539,6 @@ jobs:
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
       - run: echo hello world
   job-cache-warm:
-    if: false
     needs: job-cache
     runs-on: ubuntu-26.04
     timeout-minutes: 60
