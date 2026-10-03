@@ -257,7 +257,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.ref }}
-      - run: | # the list of instrumentations is architecture independent, resolve it once per python version, it is used for the per-architecture builds as well as for building on demand during install
+      - run: |
           \unalias -a # disable all instrumentations, cant build the instrumentations while instrumentations are active, pip resolution then pretends to it already being installed
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.python
           (
