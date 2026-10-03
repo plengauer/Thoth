@@ -406,6 +406,38 @@ _otel_curl_genai_extract_prompt_messages() {
   esac
 }
 
+_otel_curl_genai_extract_output_messages() {
+  local response="$(\cat)"
+  case "$(\printf '%s' "$response" | \jq -r '.object // ""' 2>/dev/null)" in
+    chat.completion)
+      local finish_reasons="$(\printf '%s' "$response" | \jq -c '[ .choices[] | .finish_reason ]' 2>/dev/null)"
+      \printf '%s' "$response" | \jq -c '{ "messages": [ .choices[] | .message ] }' 2>/dev/null | _otel_curl_genai_normalize_messages | \jq -c --argjson finish_reasons "${finish_reasons:-[]}" '
+        if type == "array" then to_entries | map(.value + (if $finish_reasons[.key] != null then { "finish_reason": $finish_reasons[.key] } else {} end)) else null end # SKIP_DEPENDENCY_CHECK
+      ' 2>/dev/null || \echo null
+      ;;
+    response)
+      \printf '%s' "$response" | \jq -c '
+        [ { "role": "assistant",
+            "parts": [ .output[]? |
+              if .type == "message" then
+                (.content[]? |
+                  if .type == "output_text" then { "type": "text", "content": .text }
+                  elif .type == "refusal" then { "type": "text", "content": .refusal }
+                  else empty end # SKIP_DEPENDENCY_CHECK
+                )
+              elif .type == "function_call" then
+                { "type": "tool_call", "id": .call_id, "name": .name, "arguments": (.arguments | (try fromjson catch .)) } | with_entries(select(.value != null))
+              else empty end # SKIP_DEPENDENCY_CHECK
+            ]
+          } + (( .incomplete_details.reason // (if .status == "completed" then "stop" else .status end) ) as $finish_reason | if $finish_reason != null then { "finish_reason": $finish_reason } else {} end) ]
+      ' 2>/dev/null || \echo null
+      ;;
+    *)
+      \echo null
+      ;;
+  esac
+}
+
 _otel_curl_record_api_response_llm_openai() {
   local request_file="$1"
   local span_handle_file="$2"
@@ -450,7 +482,7 @@ _otel_curl_record_api_response_llm_openai() {
     if \[ "${status_code%${status_code#?}}" = "2" ]; then
       process_stdout=1
       \cat "$stdout" &
-      \tee "$stdout" | \jq '[ .object // "null", .id // "null", .model // "null", .system_fingerprint // "null", .service_tier // "null", .temperature // "null", .top_k // "null", .top_p // "null", .frequency_penalty // "null", .presence_penalty // "null", .usage.prompt_tokens // .usage.input_tokens // "null", .usage.completion_tokens // .usage.output_tokens // "null" ] | @tsv' -c -r --unbuffered | while IFS="$(\printf '\t')" read -r object id model system_fingerprint service_tier temperature top_k top_p frequency_penalty presence_penalty prompt_tokens completion_tokens; do
+      \tee "$stdout" | \jq '[ .object // "null", .id // "null", .model // "null", .system_fingerprint // "null", .service_tier // "null", .temperature // "null", .top_k // "null", .top_p // "null", .frequency_penalty // "null", .presence_penalty // "null", .usage.prompt_tokens // .usage.input_tokens // "null", .usage.completion_tokens // .usage.output_tokens // "null", ( if .object == "response" then ( .incomplete_details.reason // (if .status == "completed" then "stop" else .status end) // "null" ) else ( [ .choices[]? | select(.finish_reason != null) | .finish_reason ] | if length > 0 then join(",") else "null" end ) end ), ( . | tojson | @base64 ) ] | @tsv' -c -r --unbuffered | while IFS="$(\printf '\t')" read -r object id model system_fingerprint service_tier temperature top_k top_p frequency_penalty presence_penalty prompt_tokens completion_tokens finish_reasons response_base64; do
         case "$object" in
           'response' | 'response.chunk')
             local operation_name=chat
@@ -459,7 +491,6 @@ _otel_curl_record_api_response_llm_openai() {
           'chat.completion' | 'chat.completion.chunk')
             local operation_name=chat
             local output_type=text
-            \printf '%s' "$json" | \jq '.choices[] | select(.finish_reason != null) | .finish_reason' -r | while \read -r finish_reason; do otel_span_attribute_typed "$span_handle" +string[1] gen_ai.response.finish_reasons="$finish_reason"; done
             ;;
           *)
             local operation_name=null
@@ -478,6 +509,13 @@ _otel_curl_record_api_response_llm_openai() {
         \[ "$frequency_penalty" = null ] || otel_span_attribute_typed "$span_handle" float gen_ai.request.frequency_penalty="$frequency_penalty"
         \[ "$presence_penalty" = null ] || otel_span_attribute_typed "$span_handle" float gen_ai.request.presence_penalty="$presence_penalty"
         \[ "$output_type" = null ] || otel_span_attribute_typed "$span_handle" string gen_ai.output.type="$output_type"
+        if \[ "$operation_name" != null ] && \[ "$finish_reasons" != null ]; then
+          \printf '%s' "$finish_reasons" | \tr ',' '\n' | while \read -r finish_reason; do otel_span_attribute_typed "$span_handle" +string[1] gen_ai.response.finish_reasons="$finish_reason"; done
+        fi
+        if \[ "$operation_name" != null ] && _otel_curl_genai_capture_prompt_on_spans; then
+          local output_messages="$(\printf '%s' "$response_base64" | \jq -R -r '@base64d' 2>/dev/null | _otel_curl_genai_extract_output_messages)"
+          \[ -z "$output_messages" ] || \[ "$output_messages" = null ] || otel_span_attribute_typed "$span_handle" string gen_ai.output.messages="$output_messages"
+        fi
         if \[ "$prompt_tokens" != null ]; then
           otel_span_attribute_typed "$span_handle" int gen_ai.usage.input_tokens="$prompt_tokens"
           local observation_handle="$(otel_observation_create $prompt_tokens)"
