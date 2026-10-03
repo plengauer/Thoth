@@ -27,6 +27,10 @@ jobs:
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
+  job-reusable-workflow:
+    uses: ./.github/workflows/test_github_reusable.yml
+    with:
+      ref: ${{ inputs.ref }}
   job-node:
     needs: job-smoke
     runs-on: ubuntu-26.04
