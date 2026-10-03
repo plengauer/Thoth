@@ -25,6 +25,8 @@ if [ "${OTEL_GITHUB_JOB_SKIP_CONTAINERS:-FALSE}" = TRUE ]; then
   fi
 fi
 
+. ../shared/github.sh
+
 echo "::group::Validate Configuration"
 export OTEL_SERVICE_NAME="${OTEL_SERVICE_NAME:-"$(echo "$GITHUB_REPOSITORY" | cut -d / -f 2-) CI"}"
 export OTEL_SEMCONV_STABILITY_OPT_IN="${OTEL_SEMCONV_STABILITY_OPT_IN:-http,database,messaging}"
@@ -41,8 +43,6 @@ if ! jq . <<<"$INPUT_SECRETS_TO_REDACT" 1>/dev/null 2>/dev/null; then
   export INPUT_SECRETS_TO_REDACT="$(printf '%s' "$INPUT_SECRETS_TO_REDACT" | (grep -v '^$' || true) | jq -R | jq -s)"
 fi
 echo "::endgroup::"
-
-. ../shared/github.sh
 
 echo "::group::Ensuring rate limit"
 gh_ensure_min_rate_limit_remaining 0.05
