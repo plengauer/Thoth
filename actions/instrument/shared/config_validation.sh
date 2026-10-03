@@ -3,7 +3,6 @@ if [ -n "${INPUT___KILL_SWITCH:-}" ]; then
   echo "::warning ::OpenTelemetry for GitHub actions disabled by kill switch!" && exit 0
 fi
 if [ -n "${INPUT_GITHUB_TOKEN:-}" ] && [ -n "${GITHUB_REPOSITORY:-}" ]; then
-  . ../shared/github.sh
   for variables_path in /actions/variables /actions/organization-variables; do
     variables="$(gh_curl_paginated "$variables_path"'?per_page=30' 2>/dev/null | jq -r '.variables[]? | select((.name | test("^OTEL_[A-Za-z0-9_]+$")) and ((.value // "") | contains("\n") | not)) | .name + "=" + (.value // "")' 2>/dev/null || true)"
     while IFS= read -r variable; do
