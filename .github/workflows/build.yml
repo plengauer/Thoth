@@ -286,7 +286,7 @@ jobs:
     strategy:
       matrix:
         version: ${{ fromJSON(needs.list-python-versions.outputs.versions) }}
-        architecture: ['x86_64', 'aarch64', 'ppc64le', 'riscv64', 's390x'] # as named by build-http (uname -m), mips has no manylinux wheels
+        architecture: ['x86_64', 'aarch64'] # 'ppc64le', 'riscv64', 's390x'
       fail-fast: false
     permissions:
       contents: read
