@@ -416,6 +416,19 @@ else
     export GITHUB_JOB_ID
   else echo ::warning ::Could not guess GitHub job id.; fi
 fi
+# jobs using environment.deployment=false create no deployment and therefore report none
+GITHUB_JOB_ENVIRONMENT=unknown
+if [ -n "${GITHUB_JOB_ID:-}" ]; then
+  if deployments_json="$(gh_deployments "$GITHUB_SHA" 2>/dev/null)" && deployment_ids="$(printf '%s' "$deployments_json" | jq -r '.[].id' 2>/dev/null)"; then
+    GITHUB_JOB_ENVIRONMENT=none
+    for deployment_id in $deployment_ids; do
+      if ! statuses_json="$(gh_deployment_statuses "$deployment_id" 2>/dev/null)"; then GITHUB_JOB_ENVIRONMENT=unknown; break; fi
+      environment="$(printf '%s' "$statuses_json" | jq -r --arg job "$GITHUB_JOB_ID" '.[] | select((.log_url // "") | endswith("/job/" + $job)) | .environment' 2>/dev/null | head -n 1)"
+      if [ -n "$environment" ]; then GITHUB_JOB_ENVIRONMENT="$environment"; break; fi
+    done
+  fi
+fi
+export GITHUB_JOB_ENVIRONMENT
 echo "::endgroup::"
 
 # observe ...
@@ -506,6 +519,7 @@ root4job_end() {
   otel_observation_attribute_typed "$observation_handle" string github.actions.event.ref="/refs/heads/$GITHUB_REF_NAME"
   otel_observation_attribute_typed "$observation_handle" string github.actions.event.ref.name="$GITHUB_REF_NAME"
   otel_observation_attribute_typed "$observation_handle" string github.actions.job.name="$GITHUB_JOB"
+  otel_observation_attribute_typed "$observation_handle" string github.actions.job.environment="$GITHUB_JOB_ENVIRONMENT"
   otel_observation_attribute_typed "$observation_handle" string github.actions.job.conclusion="$conclusion"
   otel_counter_observe "$counter_handle" "$observation_handle"
   local counter_handle="$(otel_counter_create counter github.actions.jobs.duration s 'Duration of job runs')"
@@ -518,6 +532,7 @@ root4job_end() {
   otel_observation_attribute_typed "$observation_handle" string github.actions.event.ref="/refs/heads/$GITHUB_REF_NAME"
   otel_observation_attribute_typed "$observation_handle" string github.actions.event.ref.name="$GITHUB_REF_NAME"
   otel_observation_attribute_typed "$observation_handle" string github.actions.job.name="$GITHUB_JOB"
+  otel_observation_attribute_typed "$observation_handle" string github.actions.job.environment="$GITHUB_JOB_ENVIRONMENT"
   otel_observation_attribute_typed "$observation_handle" string github.actions.job.conclusion="$conclusion"
   otel_counter_observe "$counter_handle" "$observation_handle"
   observation_handle="$(otel_observation_create -1)"
@@ -666,6 +681,7 @@ root4job() {
   fi
   otel_span_attribute_typed $span_handle int github.actions.job.id="${GITHUB_JOB_ID:-}"
   otel_span_attribute_typed $span_handle string github.actions.job.name="$GITHUB_JOB"
+  otel_span_attribute_typed $span_handle string github.actions.job.environment="$GITHUB_JOB_ENVIRONMENT"
   printf '%s' "$INPUT___JOB_MATRIX" | jq 'to_entries | .[] | [ .key, .value ] | @tsv' -r | while IFS=$'\t' read -r key value; do otel_span_attribute_typed $span_handle string github.actions.job.matrix."$key"="$value"; done
   otel_span_attribute_typed $span_handle string github.actions.runner.name="$RUNNER_NAME"
   otel_span_attribute_typed $span_handle string github.actions.runner.os="$RUNNER_OS"
