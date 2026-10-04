@@ -19,14 +19,13 @@ jobs:
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@48918a17e96079ba32d8379d536c89679ab39340 # v5.63.0
         with:
-          secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}","${{ secrets.OPENAI_TOKEN }}"]'
+          secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}"]'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
       - uses: plengauer/autoversion@de18b86671e27145d689f84b43978cf5f1a5d16c # v5.2.0
         with:
           github_token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
-          openai_token: ${{ secrets.OPENAI_TOKEN }}
           path_include: ./meta:./src:./actions
           increments: ${{ github.ref_name == 'main' && 'major;minor' || 'patch' }}
     permissions:
