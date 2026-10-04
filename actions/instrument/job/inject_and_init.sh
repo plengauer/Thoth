@@ -48,7 +48,7 @@ if [ -n "${GITHUB_JOB_ID:-}" ]; then
     if [ -n "$environment" ]; then GITHUB_JOB_ENVIRONMENT="$environment"; break; fi
   done
 fi
-export GITHUB_JOB_ENVIRONMENT="${GITHUB_JOB_ENVIRONMENT:-}
+export GITHUB_JOB_ENVIRONMENT="${GITHUB_JOB_ENVIRONMENT:-}"
 echo "::endgroup::"
 
 echo "::group::Validate Configuration"
