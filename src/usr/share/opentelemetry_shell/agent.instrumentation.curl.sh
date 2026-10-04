@@ -510,7 +510,7 @@ _otel_curl_record_api_response_llm_openai() {
         \[ "$presence_penalty" = null ] || otel_span_attribute_typed "$span_handle" float gen_ai.request.presence_penalty="$presence_penalty"
         \[ "$output_type" = null ] || otel_span_attribute_typed "$span_handle" string gen_ai.output.type="$output_type"
         if \[ "$operation_name" != null ] && \[ "$finish_reasons" != null ]; then
-          \printf '%s' "$finish_reasons" | \tr ',' '\n' | while \read -r finish_reason; do otel_span_attribute_typed "$span_handle" +string[1] gen_ai.response.finish_reasons="$finish_reason"; done
+          \printf '%s\n' "$finish_reasons" | \tr ',' '\n' | while \read -r finish_reason; do otel_span_attribute_typed "$span_handle" +string[1] gen_ai.response.finish_reasons="$finish_reason"; done
         fi
         if \[ "$operation_name" != null ] && _otel_curl_genai_capture_prompt_on_spans; then
           local output_messages="$(\printf '%s' "$response_base64" | \jq -R -r '@base64d' 2>/dev/null | _otel_curl_genai_extract_output_messages)"

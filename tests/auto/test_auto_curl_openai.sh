@@ -22,6 +22,6 @@ echo "$span" | jq -er '.attributes."gen_ai.output.messages" | fromjson | length 
 assert_not_equals "null" "$(echo "$span" | jq -r '.attributes."gen_ai.response.finish_reasons"')"
 
 $TEST_SHELL auto/curl.sh -X POST https://api.openai.com/v1/responses -H "Content-Type: application/json" -H "Authorization: Bearer $OPENAI_TOKEN" -d '{"model":"gpt-4.1-nano","input":"say hello","max_output_tokens":16}'
-span="$(resolve_span '.attributes."gen_ai.request.model" == "gpt-4.1-nano" and .attributes."gen_ai.input.messages" != null)'
+span="$(resolve_span '.attributes."gen_ai.request.model" == "gpt-4.1-nano" and .attributes."gen_ai.input.messages" != null')"
 assert_not_equals "null" "$(echo "$span" | jq -r '.attributes."gen_ai.input.messages"')"
 echo "$span" | jq -er '.attributes."gen_ai.output.messages" | fromjson | length > 0' > /dev/null
