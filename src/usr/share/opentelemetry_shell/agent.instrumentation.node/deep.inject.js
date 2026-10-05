@@ -7,6 +7,10 @@ const _execSync = child_process.execSync;
 const _execFile = child_process.execFile;
 const _execFileSync = child_process.execFileSync;
 
+delete process.env.OTEL_SHELL_COMMANDLINE_OVERRIDE;
+delete process.env.OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE;
+delete process.env.OTEL_SHELL_AUTO_INJECTED;
+
 if (process.platform != 'linux') return;
 
 child_process.spawn = function(command, args, options) {
@@ -35,6 +39,9 @@ function otel_spawn(command, args, options, original) {
     options.env['OTEL_SHELL_AUTO_INJECTED'] = 'FALSE'
     return original(options.shell, [ '-c', '. otel.sh\n' + command + ' "$@"', options.shell ].concat(args ? args : []), { ... options, shell: false });
   } else {
+    options.env['OTEL_SHELL_COMMANDLINE_OVERRIDE'] = [ command ].concat(args ? args : []).join(' ');
+    options.env['OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE'] = process.pid;
+    options.env['OTEL_SHELL_AUTO_INJECTED'] = 'TRUE';
     return original('/bin/sh', [ '-c', '. otel.sh\n' + command + ' "$@"', 'node' ].concat(args ? args : []), options);
   }
 }

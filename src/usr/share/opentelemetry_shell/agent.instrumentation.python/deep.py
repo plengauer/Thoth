@@ -2,6 +2,9 @@ import os
 import subprocess
 import sys
 
+for _otel_key in ("OTEL_SHELL_COMMANDLINE_OVERRIDE", "OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE", "OTEL_SHELL_AUTO_INJECTED"):
+    os.environ.pop(_otel_key, None)
+
 
 def inject_env_minimal(env, file, args):
     env.update({k: v for k, v in os.environ.items() if k.startswith("OTEL_")})
