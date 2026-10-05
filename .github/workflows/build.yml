@@ -234,7 +234,7 @@ jobs:
         run: |
           seq "$(cat venv/lib/python*/site-packages/opentelemetry_*.dist-info/METADATA | grep '^Requires-Python: >=' | cut -d . -f 2 | sort -n -u | tail -n 1)" "$(cat src/usr/share/opentelemetry_shell/agent.instrumentation.python/Dockerfile | grep '^FROM ' | cut -d ' ' -f 2 | cut -d : -f 2 | cut -d . -f 2)" \
             | while read -r version; do echo '"'3."$version"'"'; done | jq -s -c | xargs -0 -I {} echo 'versions={}' >> "$GITHUB_OUTPUT"
-  build-python-site-packages:
+  resolve-python-instrumentations:
     needs: list-python-versions
     runs-on: ubuntu-latest
     strategy:
@@ -272,28 +272,51 @@ jobs:
             find venv_instrumentations -name METADATA -exec cat '{}' ';' | grep '^Requires-Dist:' | cut -d ':' -f 2- | tr -d ' ' | grep '^opentelemetry-instrumentation-' | cat
             deactivate
             rm -rf venv_instrumentations
-          ) | grep -v opentelemetry-instrumentation-system-metrics | (
-            python3 -m venv venv
-            . venv/bin/activate
-            pip3 install -r requirements.txt
-            xargs pip3 install
-            deactivate
-          )
-      - run: |
-          set +f
-          cd src/usr/share/opentelemetry_shell/agent.instrumentation.python
-          . venv/bin/activate
-          find venv/lib/python*/site-packages/ -maxdepth 1 -name '*.dist-info' -printf '%f\n' | cut -d - -f 1 | while read -r package; do if grep -q '.so,' venv/lib/python*/site-packages/"$package"-*.dist-info/RECORD; then echo "$package"; fi; done | grep -v pip | xargs -r pip3 uninstall --yes
-          pip3 uninstall --yes setuptools pip
-          deactivate
-      - run: |
-          ! find src/usr/share/opentelemetry_shell/agent.instrumentation.python/venv -iname '*.so' | grep '.so$'
-      - run: |
-          ! find -L src/usr/share/opentelemetry_shell/agent.instrumentation.python/venv/lib/python${{ matrix.version }}/site-packages -type l -exec readlink -f '{}' ';' | while read -r file; do realpath "$file"; done | grep '^'"$(pwd)"/src/usr/share/opentelemetry_shell/agent.instrumentation.python/
+          ) | grep -v '^$' | grep -v opentelemetry-instrumentation-system-metrics | sort -u > instrumentations_${{ matrix.version }}.txt
+          [ -s instrumentations_${{ matrix.version }}.txt ]
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: python_site_packages_${{ matrix.version }}_${{ inputs.ref }}
-          path: src/usr/share/opentelemetry_shell/agent.instrumentation.python/venv/lib/python${{ matrix.version }}/site-packages
+          name: python_instrumentations_${{ matrix.version }}_${{ inputs.ref }}
+          path: src/usr/share/opentelemetry_shell/agent.instrumentation.python/instrumentations_${{ matrix.version }}.txt
+          if-no-files-found: error
+  build-python-site-packages:
+    needs: [list-python-versions, resolve-python-instrumentations]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: ${{ fromJSON(needs.list-python-versions.outputs.versions) }}
+        architecture: ['x86_64', 'aarch64'] # 'ppc64le', 'riscv64', 's390x'
+      fail-fast: false
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@db7b5a16bf2d905493c86f582aba4bb056d8aada # v5.62.1
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: ${{ github.token }}
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: ${{ matrix.version }}
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: python_instrumentations_${{ matrix.version }}_${{ inputs.ref }}
+          path: src/usr/share/opentelemetry_shell/agent.instrumentation.python
+      - run: |
+          \unalias -a # disable all instrumentations, cant build the instrumentations while instrumentations are active, pip resolution then pretends to it already being installed
+          cd src/usr/share/opentelemetry_shell/agent.instrumentation.python
+          target="$RUNNER_TEMP"/out/${{ matrix.architecture }}/${{ matrix.version }}/site-packages
+          pip3 install --target "$target" --implementation cp --python-version ${{ matrix.version }} --platform manylinux2014_${{ matrix.architecture }} --platform manylinux_2_28_${{ matrix.architecture }} --only-binary=:all: -r requirements.txt -r instrumentations_${{ matrix.version }}.txt
+          rm -rf "$target"/bin
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: python_site_packages_${{ matrix.architecture }}_${{ matrix.version }}_${{ inputs.ref }}
+          path: ${{ runner.temp }}/out
           if-no-files-found: error
   merge-python-site-packages:
     needs: build-python-site-packages
@@ -311,31 +334,37 @@ jobs:
           secrets_to_redact: '["${{ github.token }}"]'
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          pattern: python_site_packages_*_${{ inputs.ref }}
-      - run: |
-          find . -maxdepth 1 -name 'python_site_packages_*' -type d -printf '%f\n' | while read -r directory; do
-            version="${directory#python_site_packages_}"
-            version="${version%_*}"
-            mkdir "$version"
-            mv "$directory" "$version"/site-packages
-          done
+          pattern: python_site_packages_*_*_${{ inputs.ref }}
+          path: site-packages
+          merge-multiple: true
       - env:
           OTEL_SHELL_CONFIG_MUTE_INTERNALS: TRUE
-        run: |
-          prev_hash=""
-          for version in $(find . -maxdepth 1 -regextype posix-extended -regex './3\.[0-9]+' -printf '%f\n' | sort -t. -k2 -n); do
-            hash="$(find "$version" -type f | sort | while IFS= read -r f; do printf '%s\n' "${f#*/}"; \cat "$f"; done | sha256sum | cut -d ' ' -f 1)"
-            if [ "$hash" = "$prev_hash" ]; then
-              rm -rf "$version"
-            else
-              prev_hash="$hash"
-            fi
+        run: | # layout is <arch>/<version>/site-packages, deduplicate versions per architecture (identical trees cannot contain version specific native extensions, so the version fallback during install is exact for them)
+          mkdir -p site-packages
+          find site-packages -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | while read -r arch; do
+            prev_hash=""
+            for version in $(find site-packages/"$arch" -maxdepth 1 -regextype posix-extended -regex '.*/3\.[0-9]+' -printf '%f\n' | sort -t. -k2 -n); do
+              hash="$(cd site-packages/"$arch" && find "$version" -type f | sort | while IFS= read -r f; do printf '%s\n' "${f#*/}"; \cat "$f"; done | sha256sum | cut -d ' ' -f 1)"
+              if [ "$hash" = "$prev_hash" ]; then
+                rm -rf site-packages/"$arch"/"$version"
+              else
+                prev_hash="$hash"
+              fi
+            done
           done
-      - run: find . -type f -print0 | xargs -0 sha256sum | sort | cut -d ' ' -f 3- | tar -cf python_site_packages.tar -T - && zstd --rm -19 --long=27 -T0 python_site_packages.tar
+      - run: |
+          mkdir out
+          find site-packages -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | while read -r arch; do
+            mkdir out/"$arch"
+            (cd site-packages/"$arch" && find . -type f -print0 | xargs -0 sha256sum | sort | cut -d ' ' -f 3- | tar -cf ../../out/"$arch"/python_site_packages.tar -T - && zstd --rm -19 --long=27 -T0 ../../out/"$arch"/python_site_packages.tar)
+            echo "$arch" >> out/architectures.txt
+          done
+          touch out/architectures.txt
+          cat out/architectures.txt
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: python_site_packages_${{ inputs.ref }}
-          path: python_site_packages.tar.zst
+          path: out/
 
   build-java-agents:
     runs-on: ubuntu-latest
@@ -508,7 +537,12 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: python_site_packages_${{ inputs.ref }}
+          path: ${{ runner.temp }}/python_site_packages
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          pattern: python_instrumentations_*_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.python
+          merge-multiple: true
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: java_${{ inputs.ref }}
@@ -527,9 +561,11 @@ jobs:
           find "$replaced_binaries" -maxdepth 1 -mindepth 1 -type d -printf '%f\n' | while read -r arch; do
             debian_arch="$(echo "$arch" | sed s/x86_64/amd64/g | sed s/aarch64/arm64/g | sed 's/le$/el/g')"
             cp "$replaced_binaries"/"$arch"/*.so usr/share/opentelemetry_shell/agent.instrumentation.http
+            [ ! -r "$RUNNER_TEMP"/python_site_packages/"$arch"/python_site_packages.tar.zst ] || cp "$RUNNER_TEMP"/python_site_packages/"$arch"/python_site_packages.tar.zst usr/share/opentelemetry_shell/agent.instrumentation.python/
             sed -i "s/Architecture: .*/Architecture: $debian_arch/g" DEBIAN/control
             dpkg-deb --root-owner-group -Zgzip --build . ../opentelemetry-shell_"$(cat ../VERSION)"_"$debian_arch".deb
             rm usr/share/opentelemetry_shell/agent.instrumentation.http/*.so
+            rm -f usr/share/opentelemetry_shell/agent.instrumentation.python/python_site_packages.tar.zst
           done
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
@@ -588,7 +624,12 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: python_site_packages_${{ inputs.ref }}
+          path: ${{ runner.temp }}/python_site_packages
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          pattern: python_instrumentations_*_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.python
+          merge-multiple: true
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: java_${{ inputs.ref }}
@@ -611,6 +652,7 @@ jobs:
             sed -i "s/__VERSION__/$(cat VERSION)/g" opentelemetry-shell.spec
             # sed -i "s/BuildArch: .*/BuildArch: $arch/g" opentelemetry-shell.spec
             [ "$arch" = noarch ] || cp "$replaced_binaries"/"$arch"/*.so src/usr/share/opentelemetry_shell/agent.instrumentation.http
+            [ "$arch" = noarch ] || [ ! -r "$RUNNER_TEMP"/python_site_packages/"$arch"/python_site_packages.tar.zst ] || cp "$RUNNER_TEMP"/python_site_packages/"$arch"/python_site_packages.tar.zst src/usr/share/opentelemetry_shell/agent.instrumentation.python/
             {
               cat meta/debian/triggers | grep -v '^$' | cut -d ' ' -f 2 | rev | cut -d / -f 1 | rev | sort -u | grep -v python3 | while read -r package; do
                 echo "%triggerin -- $package"
@@ -644,7 +686,7 @@ jobs:
           if-no-files-found: error
 
   build-apk:
-    needs: [verify-scripts, merge-node-modules, merge-python-site-packages, build-java-agents]
+    needs: [verify-scripts, merge-node-modules, resolve-python-instrumentations, build-java-agents]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -672,8 +714,9 @@ jobs:
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.node
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          name: python_site_packages_${{ inputs.ref }}
+          pattern: python_instrumentations_*_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.python
+          merge-multiple: true
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: java_${{ inputs.ref }}
