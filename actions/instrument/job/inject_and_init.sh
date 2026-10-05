@@ -394,7 +394,10 @@ rm -rf "$opentelemetry_root_dir"
 echo "::endgroup::"
 
 echo "::group::Calculate Resource Attributes"
-export OTEL_RESOURCE_ATTRIBUTES=github.repository.id="$GITHUB_REPOSITORY_ID",github.repository.name="${GITHUB_REPOSITORY#*/}",github.repository.owner.id="$GITHUB_REPOSITORY_OWNER_ID",github.repository.owner.name="$GITHUB_REPOSITORY_OWNER",github.actions.workflow.ref="$GITHUB_WORKFLOW_REF",github.actions.workflow.sha="$GITHUB_WORKFLOW_SHA",github.actions.workflow.name="$GITHUB_WORKFLOW"${OTEL_RESOURCE_ATTRIBUTES:+,$OTEL_RESOURCE_ATTRIBUTES}
+export OTEL_RESOURCE_ATTRIBUTES=github.repository.id="$GITHUB_REPOSITORY_ID",github.repository.name="${GITHUB_REPOSITORY#*/}",github.repository.owner.id="$GITHUB_REPOSITORY_OWNER_ID",github.repository.owner.name="$GITHUB_REPOSITORY_OWNER",github.actions.workflow.ref="${INPUT___JOB_WORKFLOW_REF:-$GITHUB_WORKFLOW_REF}",github.actions.workflow.sha="${INPUT___JOB_WORKFLOW_SHA:-$GITHUB_WORKFLOW_SHA}",github.actions.workflow.name="$GITHUB_WORKFLOW",github.actions.workflow.caller.ref="$GITHUB_WORKFLOW_REF",github.actions.workflow.caller.sha="$GITHUB_WORKFLOW_SHA",github.actions.workflow.caller.name="$GITHUB_WORKFLOW"${OTEL_RESOURCE_ATTRIBUTES:+,$OTEL_RESOURCE_ATTRIBUTES}
+[ -z "${INPUT___JOB_WORKFLOW_REPOSITORY:-}" ] || OTEL_RESOURCE_ATTRIBUTES="$OTEL_RESOURCE_ATTRIBUTES,github.actions.workflow.repository=$INPUT___JOB_WORKFLOW_REPOSITORY"
+[ -z "${INPUT___JOB_WORKFLOW_FILE_PATH:-}" ] || OTEL_RESOURCE_ATTRIBUTES="$OTEL_RESOURCE_ATTRIBUTES,github.actions.workflow.file_path=$INPUT___JOB_WORKFLOW_FILE_PATH"
+export OTEL_RESOURCE_ATTRIBUTES
 repo_property_attributes="$(gh_repo_properties 2>/dev/null | jq -r '.[] | select(.value != null and .value != "") | "github.repository.property." + .property_name + "=\"" + .value + "\""' 2>/dev/null | tr '\n' ',' | sed 's/,$//' || true)"
 if [ -n "$repo_property_attributes" ]; then
   export OTEL_RESOURCE_ATTRIBUTES="${OTEL_RESOURCE_ATTRIBUTES},${repo_property_attributes}"
