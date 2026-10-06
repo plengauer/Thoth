@@ -93,8 +93,7 @@ jobs:
           # MegaLinter runs as root in a container, so its report folder is not writable for the runner user
           sudo chown -R "$(id -u):$(id -g)" megalinter-reports
           # Drop `fixes` (MegaLinter emits invalid ones that code scanning rejects: empty artifactChanges, duplicates)
-          # and devskim runs (thousands of untriaged findings that would drown everything else)
-          jq '(.runs[]?.results[]? |= del(.fixes)) | .runs |= map(select(((.tool.driver.name // "") | ascii_downcase) != "devskim"))' "$sarif" > "$sarif.tmp"
+          jq '(.runs[]?.results[]? |= del(.fixes))' "$sarif" > "$sarif.tmp"
           mv "$sarif.tmp" "$sarif"
           jq -e '[.runs[]?.results[]? | select(has("fixes"))] | length == 0' "$sarif" > /dev/null
       - if: github.ref_name == 'main' && hashFiles('megalinter-reports/megalinter-report.sarif') != ''
