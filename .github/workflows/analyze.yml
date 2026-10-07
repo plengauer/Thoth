@@ -84,18 +84,6 @@ jobs:
           name: megalinter-reports
           path: megalinter-reports/
           if-no-files-found: ignore
-      - name: Sanitize MegaLinter SARIF
-        if: github.ref_name == 'main'
-        run: |
-          set -e
-          sarif=megalinter-reports/megalinter-report.sarif
-          [ -f "$sarif" ] || exit 0
-          # MegaLinter runs as root in a container, so its report folder is not writable for the runner user
-          sudo chown -R "$(id -u):$(id -g)" megalinter-reports
-          # Drop `fixes` (MegaLinter emits invalid ones that code scanning rejects: empty artifactChanges, duplicates)
-          jq '(.runs[]?.results[]? |= del(.fixes))' "$sarif" > "$sarif.tmp"
-          mv "$sarif.tmp" "$sarif"
-          jq -e '[.runs[]?.results[]? | select(has("fixes"))] | length == 0' "$sarif" > /dev/null
       - if: github.ref_name == 'main' && hashFiles('megalinter-reports/megalinter-report.sarif') != ''
         uses: github/codeql-action/upload-sarif@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4.38.2
         with:
