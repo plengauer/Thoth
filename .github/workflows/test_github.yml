@@ -561,15 +561,33 @@ jobs:
         run: |
           echo "::error::Expected the cache warmed by job-cache to be restored via the fast path, got cache_restored_fast='${{ steps.instrument.outputs.cache_restored_fast }}'."
           exit 1
-  job-cache-modes:
-    needs: job-smoke
+  job-cache-mode-read:
+    needs: job-cache
     runs-on: ubuntu-26.04
     timeout-minutes: 60
-    strategy:
-      matrix:
-        cache_mode: ['read', 'write-only', 'none']
-      fail-fast: false
-    cache-mode: ${{ matrix.cache_mode }}
+    cache-mode: read
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: packages.deb.${{ inputs.ref }}
+      - id: instrument
+        uses: ./actions/instrument/job
+        with:
+          cache: 'true'
+        env:
+          OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
+          OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
+  job-cache-mode-write-only:
+    needs: job-cache
+    runs-on: ubuntu-26.04
+    timeout-minutes: 60
+    cache-mode: write-only
     permissions:
       contents: read
       actions: read
@@ -588,9 +606,31 @@ jobs:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
       - name: assert restore is blocked in write-only and none modes
-        if: matrix.cache_mode == 'write-only' || matrix.cache_mode == 'none'
         run: test '${{ steps.instrument.outputs.cache_restored_fast }}' = 'false'
-      - run: echo "Cache mode ${{ matrix.cache_mode }} completed without failing instrumentation."
+  job-cache-mode-none:
+    needs: job-cache
+    runs-on: ubuntu-26.04
+    timeout-minutes: 60
+    cache-mode: none
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: packages.deb.${{ inputs.ref }}
+      - id: instrument
+        uses: ./actions/instrument/job
+        with:
+          cache: 'true'
+        env:
+          OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
+          OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
+      - name: assert restore is blocked in write-only and none modes
+        run: test '${{ steps.instrument.outputs.cache_restored_fast }}' = 'false'
   job-exporter-local:
     needs: job-smoke
     runs-on: ubuntu-26.04
