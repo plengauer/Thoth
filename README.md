@@ -213,6 +213,10 @@ jobs:
           # ...
 ```
 
+GitHub Actions execution protections can restrict which actors and events are allowed to start a workflow. For public repositories without an applicable event policy, GitHub's default rule for `pull_request_target` is initially in evaluate mode and is scheduled to be enforced on November 2, 2026. This repository's `.github/workflows/greetings.yml` uses `pull_request_target`; repository administrators should review the rule's Insights and explicitly allow this event for that workflow file if the pull-request greeting should continue. Moving the trigger to `pull_request` does not preserve write access for fork pull requests.
+
+Execution protections can also affect workflow-level instrumentation: it listens for completed `workflow_run` events and can only report workflow runs GitHub exposes to it. A blocked or held start may not produce that event or have jobs and logs to inspect, so use GitHub's evaluate-mode Insights to identify affected runs rather than treating missing telemetry as evidence that no start was blocked. Apply event policies to the instrumentation workflow as well as the workflows it observes.
+
 To deploy job-level instrumentation, add the following step as first in every job you want to observe. You can configure the SDK as described <a href="https://opentelemetry.io/docs/languages/sdk-configuration/">here</a> by adding according environment variables to the setup step. Job-level instrumentation can be combined arbitrarily with workflow-level instrumentation.
 ```yaml
 - uses: plengauer/opentelemetry-github/actions/instrument/job@v5
