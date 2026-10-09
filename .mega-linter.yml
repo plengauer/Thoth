@@ -19,6 +19,11 @@ DISABLE_LINTERS:
   # individual sub-rules. See tracking issue for the small number of
   # genuinely useful catches (unused vars, camelCase, etc.) that this
   # trades away.
+  - REPOSITORY_DEVSKIM
+  # Regex-based pattern matcher that reported ~21k untriaged findings
+  # (errors) in the 2026-10-06 run and took ~7 minutes of the quality job.
+  # Disabled outright rather than filtered from the SARIF so it neither
+  # runs nor buries the findings of the other linters.
 
 # --- Generated / captured files: not source of truth, exclude everywhere ---
 # - *.lock.yml under .github/workflows/ are compiled by the gh-aw CLI from
