@@ -31,7 +31,7 @@ if \[ "${GITHUB_ACTIONS:-false}" = true ] && \[ "${GITHUB_EVENT_NAME:-}" = dynam
     _otel_alias_prepend_function=_otel_alias_prepend
     $_otel_alias_prepend_function tar _otel_inject_copilot
   elif \[ "${COPILOT_PREINSTALLED_RUNTIME:-}" = true ] && ! \[ -f /tmp/thoth.copilot.instrumented ] ; then
-    ( \export -f _otel_instrument_copilot && \sudo bash '_otel_instrument_copilot /opt/copilot-runtime/*-action-*' ) || \true
+    ( \sudo bash -c "$(\declare -f _otel_instrument_copilot); _otel_instrument_copilot /opt/copilot-runtime/*-action-*" ) || \true
     \touch /tmp/thoth.copilot.instrumented
   fi
 fi
