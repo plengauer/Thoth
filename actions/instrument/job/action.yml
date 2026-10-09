@@ -8,7 +8,7 @@ inputs:
     description: 'A GitHub token for API access, needs read access to the scopes repo and actions. Do not set manually unless you know exactly what you are doing, the default token should always be enough.'
     default: '${{ github.token }}'
   cache:
-    description: 'Whether to use GitHub Actions Cache to cache dependencies'
+    description: 'Whether to use GitHub Actions Cache for dependencies and instrumentation. GitHub cache-mode independently controls which operations are permitted.'
     default: 'true'
   secrets_to_redact:
     description: 'A JSON object containing all secrets to redact from any attribute (secrets in parameters and env vars of usages of this action dont need to be listed).'
@@ -34,6 +34,18 @@ inputs:
   __job_id:
     description: 'INTERNAL ONLY - DO NOT SET MANUALLY'
     default: '${{ job.check_run_id }}'
+  __job_workflow_ref:
+    description: 'INTERNAL ONLY - DO NOT SET MANUALLY'
+    default: '${{ job.workflow_ref }}'
+  __job_workflow_sha:
+    description: 'INTERNAL ONLY - DO NOT SET MANUALLY'
+    default: '${{ job.workflow_sha }}'
+  __job_workflow_repository:
+    description: 'INTERNAL ONLY - DO NOT SET MANUALLY'
+    default: '${{ job.workflow_repository }}'
+  __job_workflow_file_path:
+    description: 'INTERNAL ONLY - DO NOT SET MANUALLY'
+    default: '${{ job.workflow_file_path }}'
 outputs:
   cache_restored_fast:
     description: 'Whether the dependency cache was restored via the fast path (direct Actions Cache REST API) instead of falling back to the @actions/cache toolkit or a cold install. "true" or "false".'

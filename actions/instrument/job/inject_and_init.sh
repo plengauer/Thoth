@@ -27,30 +27,6 @@ fi
 
 . ../shared/github.sh
 
-echo "::group::Resolve Job ID, Job name, and Job environment"
-OTEL_SHELL_GITHUB_JOB="$GITHUB_JOB"
-job_arguments="$(printf '%s' "$INPUT___JOB_MATRIX" | jq -r '. | [.. | scalars] | @tsv' | sed 's/\t/, /g')"
-if [ -n "$job_arguments" ]; then OTEL_SHELL_GITHUB_JOB="$OTEL_SHELL_GITHUB_JOB ($job_arguments)"; fi
-export OTEL_SHELL_GITHUB_JOB
-if [ -n "$INPUT___JOB_ID" ]; then
-  export GITHUB_JOB_ID="$INPUT___JOB_ID"
-  echo "Resolved GitHub job id to $GITHUB_JOB_ID"
-else
-  GITHUB_JOB_ID="$(gh_jobs "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" | jq --unbuffered -r '. | .jobs[] | [.id, .name] | @tsv' | sed 's/\t/ /g' | grep " $OTEL_SHELL_GITHUB_JOB"'$' | cut -d ' ' -f 1)"
-  if [ "$(printf '%s' "$GITHUB_JOB_ID" | wc -l)" -le 1 ]; then
-    echo "Guessing GitHub job id to be $GITHUB_JOB_ID" >&2
-    export GITHUB_JOB_ID
-  else echo ::warning ::Could not guess GitHub job id.; fi
-fi
-if [ -n "${GITHUB_JOB_ID:-}" ]; then
-  for deployment_id in $(gh_deployments "$GITHUB_SHA" 2>/dev/null | jq -r '.[].id' 2>/dev/null); do
-    environment="$(gh_deployment_statuses "$deployment_id" 2>/dev/null | jq -r --arg job "$GITHUB_JOB_ID" '.[] | select((.log_url // "") | endswith("/job/" + $job)) | .environment' 2>/dev/null | head -n 1)"
-    if [ -n "$environment" ]; then GITHUB_JOB_ENVIRONMENT="$environment"; break; fi
-  done
-fi
-export GITHUB_JOB_ENVIRONMENT="${GITHUB_JOB_ENVIRONMENT:-}"
-echo "::endgroup::"
-
 echo "::group::Validate Configuration"
 export OTEL_SERVICE_NAME="${OTEL_SERVICE_NAME:-"$(echo "$GITHUB_REPOSITORY" | cut -d / -f 2-) CI"}"
 export OTEL_SEMCONV_STABILITY_OPT_IN="${OTEL_SEMCONV_STABILITY_OPT_IN:-http,database,messaging}"
@@ -147,6 +123,12 @@ cache_restore_fast() {
   fi
   rm -f "$tmpfile"
 }
+cache_restore_toolkit() {
+  sudo_e -H node --input-type=module -e "try { const cache = await import('@actions/cache'); await cache.restoreCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip', '/root/.cache/uv', '/var/cache/opentelemetry_shell/wheels/*.whl'], '$cache_key'); } catch { console.log('::debug::Dependency cache restore was unavailable.'); }"
+}
+cache_save_toolkit() {
+  sudo_e -H node --input-type=module -e "try { const cache = await import('@actions/cache'); await cache.saveCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip', '/root/.cache/uv', '/var/cache/opentelemetry_shell/wheels/*.whl'], '$cache_key'); } catch { console.log('::debug::Dependency cache save was unavailable.'); }"
+}
 run npm --no-audit ci
 if [ "$INPUT_CACHE" = "true" ]; then
   echo "::debug::Resolving cache ..."
@@ -155,7 +137,7 @@ if [ "$INPUT_CACHE" = "true" ]; then
   cache_key="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} dependencies $({ cat /etc/os-release; arch; python3 --version || true; printenv | grep -E '^OTEL_SHELL_CONFIG_INSTALL_' || true; } | md5sum | cut -d ' ' -f 1)"
   if [ "$GITHUB_ACTION_REPOSITORY" = "$GITHUB_REPOSITORY" ] && [ -f "$GITHUB_WORKSPACE"/package.deb ]; then cache_key="$cache_key local"; fi
   cache_restore_fast "$cache_key" && echo "cache_restored_fast=true" >> "$GITHUB_OUTPUT" \
-    || { echo "cache_restored_fast=false" >> "$GITHUB_OUTPUT"; wait; sudo_e -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.restoreCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip', '/root/.cache/uv', '/var/cache/opentelemetry_shell/wheels/*.whl'], '$cache_key');"; }
+    || { echo "cache_restored_fast=false" >> "$GITHUB_OUTPUT"; wait; cache_restore_toolkit || echo "::debug::Dependency cache restore was unavailable."; }
   [ "$(find /var/cache/apt/archives/ -name '*.deb' | wc -l)" -gt 0 ] || write_back_cache=TRUE
   # hand the restored wheelhouse to the debian postinst so its pip installs can resolve fully offline (it falls back to the network on its own if the wheelhouse is incomplete)
   if [ -n "$(sudo find /var/cache/opentelemetry_shell/wheels -maxdepth 1 -name '*.whl' 2>/dev/null | head -n 1)" ]; then export OTEL_SHELL_CONFIG_INSTALL_PIP_FIND_LINKS=/var/cache/opentelemetry_shell/wheels; fi
@@ -206,15 +188,7 @@ if ! type otelcol-contrib; then
   fi
 fi
 if [ "${write_back_cache:-FALSE}" = TRUE ] && [ -n "${cache_key:-}" ]; then
-  sudo mkdir -p /var/cache/opentelemetry_shell/wheels || true
-  run sudo_e -H pip3 download --only-binary=:all: --disable-pip-version-check --no-input -d /var/cache/opentelemetry_shell/wheels -r /opt/opentelemetry_shell/requirements.txt
-  for path_path in /usr/share/opentelemetry_shell/agent.instrumentation.python/*/; do
-    python_version="${path%/}"
-    python_version="${python_version##*/}"
-    run sudo_e -H "python$python_version" -m pip download --only-binary=:all: --disable-pip-version-check --no-input -d /var/cache/opentelemetry_shell/wheels -r /usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.txt
-  done
-  wait # only join in case we wanna write back, this will be rare and is necessary to have a good cache
-  run sudo_e -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.saveCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip', '/root/.cache/uv', '/var/cache/opentelemetry_shell/wheels/*.whl'], '$cache_key');"
+  run cache_save_toolkit || echo "::debug::Dependency cache save was unavailable."
 fi
 echo "::endgroup::"
 
@@ -418,11 +392,44 @@ rm -rf "$opentelemetry_root_dir"
 echo "::endgroup::"
 
 echo "::group::Calculate Resource Attributes"
-export OTEL_RESOURCE_ATTRIBUTES=github.repository.id="$GITHUB_REPOSITORY_ID",github.repository.name="${GITHUB_REPOSITORY#*/}",github.repository.owner.id="$GITHUB_REPOSITORY_OWNER_ID",github.repository.owner.name="$GITHUB_REPOSITORY_OWNER",github.actions.workflow.ref="$GITHUB_WORKFLOW_REF",github.actions.workflow.sha="$GITHUB_WORKFLOW_SHA",github.actions.workflow.name="$GITHUB_WORKFLOW"${OTEL_RESOURCE_ATTRIBUTES:+,$OTEL_RESOURCE_ATTRIBUTES}
+export OTEL_RESOURCE_ATTRIBUTES=github.repository.id="$GITHUB_REPOSITORY_ID",github.repository.name="${GITHUB_REPOSITORY#*/}",github.repository.owner.id="$GITHUB_REPOSITORY_OWNER_ID",github.repository.owner.name="$GITHUB_REPOSITORY_OWNER",github.actions.workflow.ref="${INPUT___JOB_WORKFLOW_REF:-$GITHUB_WORKFLOW_REF}",github.actions.workflow.sha="${INPUT___JOB_WORKFLOW_SHA:-$GITHUB_WORKFLOW_SHA}",github.actions.workflow.name="$GITHUB_WORKFLOW",github.actions.workflow.caller.ref="$GITHUB_WORKFLOW_REF",github.actions.workflow.caller.sha="$GITHUB_WORKFLOW_SHA",github.actions.workflow.caller.name="$GITHUB_WORKFLOW"${OTEL_RESOURCE_ATTRIBUTES:+,$OTEL_RESOURCE_ATTRIBUTES}
+[ -z "${INPUT___JOB_WORKFLOW_REPOSITORY:-}" ] || OTEL_RESOURCE_ATTRIBUTES="$OTEL_RESOURCE_ATTRIBUTES,github.actions.workflow.repository=$INPUT___JOB_WORKFLOW_REPOSITORY"
+[ -z "${INPUT___JOB_WORKFLOW_FILE_PATH:-}" ] || OTEL_RESOURCE_ATTRIBUTES="$OTEL_RESOURCE_ATTRIBUTES,github.actions.workflow.file_path=$INPUT___JOB_WORKFLOW_FILE_PATH"
+export OTEL_RESOURCE_ATTRIBUTES
 repo_property_attributes="$(gh_repo_properties 2>/dev/null | jq -r '.[] | select(.value != null and .value != "") | "github.repository.property." + .property_name + "=\"" + .value + "\""' 2>/dev/null | tr '\n' ',' | sed 's/,$//' || true)"
 if [ -n "$repo_property_attributes" ]; then
   export OTEL_RESOURCE_ATTRIBUTES="${OTEL_RESOURCE_ATTRIBUTES},${repo_property_attributes}"
 fi
+echo "::endgroup::"
+
+echo "::group::Resolve Job ID and Job name"
+OTEL_SHELL_GITHUB_JOB="$GITHUB_JOB"
+job_arguments="$(printf '%s' "$INPUT___JOB_MATRIX" | jq -r '. | [.. | scalars] | @tsv' | sed 's/\t/, /g')"
+if [ -n "$job_arguments" ]; then OTEL_SHELL_GITHUB_JOB="$OTEL_SHELL_GITHUB_JOB ($job_arguments)"; fi
+export OTEL_SHELL_GITHUB_JOB
+if [ -n "$INPUT___JOB_ID" ]; then
+  export GITHUB_JOB_ID="$INPUT___JOB_ID"
+  echo "Resolved GitHub job id to $GITHUB_JOB_ID"
+else
+  GITHUB_JOB_ID="$(gh_jobs "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" | jq --unbuffered -r '. | .jobs[] | [.id, .name] | @tsv' | sed 's/\t/ /g' | grep " $OTEL_SHELL_GITHUB_JOB"'$' | cut -d ' ' -f 1)"
+  if [ "$(printf '%s' "$GITHUB_JOB_ID" | wc -l)" -le 1 ]; then
+    echo "Guessing GitHub job id to be $GITHUB_JOB_ID" >&2
+    export GITHUB_JOB_ID
+  else echo ::warning ::Could not guess GitHub job id.; fi
+fi
+# jobs using environment.deployment=false create no deployment and therefore report none
+GITHUB_JOB_ENVIRONMENT=unknown
+if [ -n "${GITHUB_JOB_ID:-}" ]; then
+  if deployments_json="$(gh_deployments "$GITHUB_SHA" 2>/dev/null)" && deployment_ids="$(printf '%s' "$deployments_json" | jq -r '.[].id' 2>/dev/null)"; then
+    GITHUB_JOB_ENVIRONMENT=none
+    for deployment_id in $deployment_ids; do
+      if ! statuses_json="$(gh_deployment_statuses "$deployment_id" 2>/dev/null)"; then GITHUB_JOB_ENVIRONMENT=unknown; break; fi
+      environment="$(printf '%s' "$statuses_json" | jq -r --arg job "$GITHUB_JOB_ID" '.[] | select((.log_url // "") | endswith("/job/" + $job)) | .environment' 2>/dev/null | head -n 1)"
+      if [ -n "$environment" ]; then GITHUB_JOB_ENVIRONMENT="$environment"; break; fi
+    done
+  fi
+fi
+export GITHUB_JOB_ENVIRONMENT
 echo "::endgroup::"
 
 # observe ...
@@ -451,7 +458,7 @@ root4job_end() {
   exec 1>/tmp/opentelemetry_shell.github.debug.log
   exec 2>/tmp/opentelemetry_shell.github.debug.log
   rm /tmp/opentelemetry_shell.github.observe_rate_limits
-  [ -z "${INSTRUMENTATION_CACHE_KEY:-}" ] || sudo_e -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.saveCache(['/tmp/*.aliases'], '$INSTRUMENTATION_CACHE_KEY');" &>/dev/null &
+  [ -z "${INSTRUMENTATION_CACHE_KEY:-}" ] || sudo_e -H node --input-type=module -e "try { const cache = await import('@actions/cache'); await cache.saveCache(['/tmp/*.aliases'], '$INSTRUMENTATION_CACHE_KEY'); } catch {}" &>/dev/null &
 
   if [ -f /tmp/opentelemetry_shell.github.error ]; then local conclusion=failure; else local conclusion=success; fi
   otel_span_attribute_typed $span_handle string github.actions.conclusion="$conclusion"
@@ -513,7 +520,7 @@ root4job_end() {
   otel_observation_attribute_typed "$observation_handle" string github.actions.event.ref="/refs/heads/$GITHUB_REF_NAME"
   otel_observation_attribute_typed "$observation_handle" string github.actions.event.ref.name="$GITHUB_REF_NAME"
   otel_observation_attribute_typed "$observation_handle" string github.actions.job.name="$GITHUB_JOB"
-  otel_observation_attribute_typed "$observation_handle" string github.actions.job.environment="GITHUB_JOB_ENVIRONMENT"
+  otel_observation_attribute_typed "$observation_handle" string github.actions.job.environment="$GITHUB_JOB_ENVIRONMENT"
   otel_observation_attribute_typed "$observation_handle" string github.actions.job.conclusion="$conclusion"
   otel_counter_observe "$counter_handle" "$observation_handle"
   local counter_handle="$(otel_counter_create counter github.actions.jobs.duration s 'Duration of job runs')"
@@ -526,7 +533,7 @@ root4job_end() {
   otel_observation_attribute_typed "$observation_handle" string github.actions.event.ref="/refs/heads/$GITHUB_REF_NAME"
   otel_observation_attribute_typed "$observation_handle" string github.actions.event.ref.name="$GITHUB_REF_NAME"
   otel_observation_attribute_typed "$observation_handle" string github.actions.job.name="$GITHUB_JOB"
-  otel_observation_attribute_typed "$observation_handle" string github.actions.job.environment="GITHUB_JOB_ENVIRONMENT"
+  otel_observation_attribute_typed "$observation_handle" string github.actions.job.environment="$GITHUB_JOB_ENVIRONMENT"
   otel_observation_attribute_typed "$observation_handle" string github.actions.job.conclusion="$conclusion"
   otel_counter_observe "$counter_handle" "$observation_handle"
   observation_handle="$(otel_observation_create -1)"
@@ -618,7 +625,7 @@ root4job_end() {
   local collector_pipe_error="$(mktemp -u)"
   mkfifo "$collector_pipe_warning" "$collector_pipe_error"
   cat "$collector_pipe_warning" | grep '^warn ' | cut -d ' ' -f 2- | sort -u | while read -r line; do echo ::warning::"$line"; done &
-  cat "$collector_pipe_error" | grep '^err ' | cut -d ' ' -f 2- | sort -u | while read -r line; do echo ::error::"$line"; done &
+  cat "$collector_pipe_error" | grep -E '^(err|error|fatal|dpanic) ' | cut -d ' ' -f 2- | sort -u | while read -r line; do echo ::error::"$line"; done &
   cat otelcol."$$".log | tr '\t' ' ' | cut -d ' ' -f 2- | tee "$collector_pipe_warning" | tee "$collector_pipe_error" | { if [ -n "$INPUT_DEBUG" ]; then cat; else cat >/dev/null; fi; }
 
   if [ -n "${INTERNAL_OTEL_DEFERRED_EXPORT_DIR:-}" ]; then
@@ -737,3 +744,4 @@ printenv | grep -E '^OTEL_|^TRACEPARENT=|^TRACESTATE=|^COPILOT_OTEL_ENABLED=' >>
 echo "::endgroup::"
 
 echo ::notice title=Observability Information for ${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}::"Trace ID: $(echo "$TRACEPARENT" | cut -d - -f 2), Span ID: $(echo "$TRACEPARENT" | cut -d - -f 3), Trace Deep Link: $(OTEL_EXPORTER_OTLP_TRACES_ENDPOINT="$backup_otel_exporter_otlp_traces_endpoint" print_trace_link "$(date +%Y-%M-%dT%H:%M:%S.%N%:z | jq -sRr @uri)" || echo unavailable)"
+

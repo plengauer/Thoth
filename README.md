@@ -134,7 +134,7 @@ wget -O - https://raw.githubusercontent.com/plengauer/opentelemetry-shell/main/I
 ```
 or, for debian-based systems, via
 ```bash
-echo "deb [arch=all] https://plengauer.github.io/Thoth stable main" | sudo tee /etc/apt/sources.list.d/otel.list
+echo "deb [arch=all trusted=yes] https://plengauer.github.io/Thoth stable main" | sudo tee /etc/apt/sources.list.d/otel.list
 sudo apt-get update
 sudo apt-get install opentelemetry-shell
 ```
@@ -221,6 +221,7 @@ To deploy job-level instrumentation, add the following step as first in every jo
     # ...
 - run: ...
 ```
+The job instrumentation's `cache` input (default `true`) enables its dependency and instrumentation cache attempts; it does not grant cache access. GitHub's workflow/job `cache-mode` setting independently controls access: `read` permits restores only, `write-only` permits saves only, and `none` disables both. The effective mode is enforced by GitHub, including for reusable workflows. Cache operations rejected by that policy are treated as unavailable, and installation continues without relying on the cache. Set `cache: 'false'` to disable the instrumentation's cache attempts entirely.
 Depending on the actions in use, GitHub `secrets` or other sensitive information could appear in commandlines or action inputs/states which may captured as attributes on spans, metrics, or logs recorded by job-level instrumentation. To redact these secrets, use the following parameter to redact their values from any attribute. The value of the parameter must be a `json` object, whereas every value of every field is considered a secret to be redacted. By default, if left unset, the implicit GitHub token is redacted.
 ```yaml
 - uses: plengauer/opentelemetry-github/actions/instrument/job@v5

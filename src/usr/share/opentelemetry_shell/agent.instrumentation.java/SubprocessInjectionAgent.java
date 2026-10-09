@@ -37,7 +37,9 @@ public class SubprocessInjectionAgent {
                     Method method = Class.forName("java.lang.ProcessEnvironment").getDeclaredMethod("emptyEnvironment", Integer.TYPE);
                     method.setAccessible(true);
                     environment = (Map<String, String>) method.invoke(null, new Object[] { rootenvironment.size() + 2 });
-                    for (String key : rootenvironment.keySet()) environment.put(key, rootenvironment.get(key));
+                    for (String key : rootenvironment.keySet()) {
+                        if (!key.startsWith("OTEL_SHELL_COMMANDLINE_OVERRIDE") && !key.equals("OTEL_SHELL_AUTO_INJECTED")) environment.put(key, rootenvironment.get(key));
+                    }
                 } catch (ClassNotFoundException e) {
                     // here be dragons
                 } catch (NoSuchMethodException e) {
@@ -50,7 +52,7 @@ public class SubprocessInjectionAgent {
             }
             if (environment != null) {
                 for (Map.Entry<String, String> entry : System.getenv().entrySet()) {
-                    if (entry.getKey().startsWith("OTEL_")) {
+                    if (entry.getKey().startsWith("OTEL_") && !entry.getKey().startsWith("OTEL_SHELL_COMMANDLINE_OVERRIDE") && !entry.getKey().equals("OTEL_SHELL_AUTO_INJECTED")) {
                         environment.put(entry.getKey(), entry.getValue());
                     }
                 }

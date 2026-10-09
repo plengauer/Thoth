@@ -1,12 +1,12 @@
 #!/bin/bash
 set -e
 
+. ../shared/github.sh
+. ../shared/id_printer.sh
+
 echo "::group::Validate Configuration"
 . ../shared/config_validation.sh
 echo "::endgroup::"
-
-. ../shared/github.sh
-. ../shared/id_printer.sh
 
 echo "::group::Install Dependencies"
 if type dpkg; then
