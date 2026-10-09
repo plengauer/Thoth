@@ -27,6 +27,30 @@ fi
 
 . ../shared/github.sh
 
+echo "::group::Resolve Job ID, Job name, and Job environment"
+OTEL_SHELL_GITHUB_JOB="$GITHUB_JOB"
+job_arguments="$(printf '%s' "$INPUT___JOB_MATRIX" | jq -r '. | [.. | scalars] | @tsv' | sed 's/\t/, /g')"
+if [ -n "$job_arguments" ]; then OTEL_SHELL_GITHUB_JOB="$OTEL_SHELL_GITHUB_JOB ($job_arguments)"; fi
+export OTEL_SHELL_GITHUB_JOB
+if [ -n "$INPUT___JOB_ID" ]; then
+  export GITHUB_JOB_ID="$INPUT___JOB_ID"
+  echo "Resolved GitHub job id to $GITHUB_JOB_ID"
+else
+  GITHUB_JOB_ID="$(gh_jobs "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" | jq --unbuffered -r '. | .jobs[] | [.id, .name] | @tsv' | sed 's/\t/ /g' | grep " $OTEL_SHELL_GITHUB_JOB"'$' | cut -d ' ' -f 1)"
+  if [ "$(printf '%s' "$GITHUB_JOB_ID" | wc -l)" -le 1 ]; then
+    echo "Guessing GitHub job id to be $GITHUB_JOB_ID" >&2
+    export GITHUB_JOB_ID
+  else echo ::warning ::Could not guess GitHub job id.; fi
+fi
+if [ -n "${GITHUB_JOB_ID:-}" ]; then
+  for deployment_id in $(gh_deployments "$GITHUB_SHA" 2>/dev/null | jq -r '.[].id' 2>/dev/null); do
+    environment="$(gh_deployment_statuses "$deployment_id" 2>/dev/null | jq -r --arg job "$GITHUB_JOB_ID" '.[] | select((.log_url // "") | endswith("/job/" + $job)) | .environment' 2>/dev/null | head -n 1)"
+    if [ -n "$environment" ]; then GITHUB_JOB_ENVIRONMENT="$environment"; break; fi
+  done
+fi
+export GITHUB_JOB_ENVIRONMENT="${GITHUB_JOB_ENVIRONMENT:-}"
+echo "::endgroup::"
+
 echo "::group::Validate Configuration"
 export OTEL_SERVICE_NAME="${OTEL_SERVICE_NAME:-"$(echo "$GITHUB_REPOSITORY" | cut -d / -f 2-) CI"}"
 export OTEL_SEMCONV_STABILITY_OPT_IN="${OTEL_SEMCONV_STABILITY_OPT_IN:-http,database,messaging}"
@@ -402,23 +426,6 @@ if [ -n "$repo_property_attributes" ]; then
 fi
 echo "::endgroup::"
 
-echo "::group::Resolve Job ID and Job name"
-OTEL_SHELL_GITHUB_JOB="$GITHUB_JOB"
-job_arguments="$(printf '%s' "$INPUT___JOB_MATRIX" | jq -r '. | [.. | scalars] | @tsv' | sed 's/\t/, /g')"
-if [ -n "$job_arguments" ]; then OTEL_SHELL_GITHUB_JOB="$OTEL_SHELL_GITHUB_JOB ($job_arguments)"; fi
-export OTEL_SHELL_GITHUB_JOB
-if [ -n "$INPUT___JOB_ID" ]; then
-  export GITHUB_JOB_ID="$INPUT___JOB_ID"
-  echo "Resolved GitHub job id to $GITHUB_JOB_ID"
-else
-  GITHUB_JOB_ID="$(gh_jobs "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" | jq --unbuffered -r '. | .jobs[] | [.id, .name] | @tsv' | sed 's/\t/ /g' | grep " $OTEL_SHELL_GITHUB_JOB"'$' | cut -d ' ' -f 1)"
-  if [ "$(printf '%s' "$GITHUB_JOB_ID" | wc -l)" -le 1 ]; then
-    echo "Guessing GitHub job id to be $GITHUB_JOB_ID" >&2
-    export GITHUB_JOB_ID
-  else echo ::warning ::Could not guess GitHub job id.; fi
-fi
-echo "::endgroup::"
-
 # observe ...
 
 observe_rate_limit() {
@@ -507,6 +514,7 @@ root4job_end() {
   otel_observation_attribute_typed "$observation_handle" string github.actions.event.ref="/refs/heads/$GITHUB_REF_NAME"
   otel_observation_attribute_typed "$observation_handle" string github.actions.event.ref.name="$GITHUB_REF_NAME"
   otel_observation_attribute_typed "$observation_handle" string github.actions.job.name="$GITHUB_JOB"
+  otel_observation_attribute_typed "$observation_handle" string github.actions.job.environment="$GITHUB_JOB_ENVIRONMENT"
   otel_observation_attribute_typed "$observation_handle" string github.actions.job.conclusion="$conclusion"
   otel_counter_observe "$counter_handle" "$observation_handle"
   local counter_handle="$(otel_counter_create counter github.actions.jobs.duration s 'Duration of job runs')"
@@ -519,6 +527,7 @@ root4job_end() {
   otel_observation_attribute_typed "$observation_handle" string github.actions.event.ref="/refs/heads/$GITHUB_REF_NAME"
   otel_observation_attribute_typed "$observation_handle" string github.actions.event.ref.name="$GITHUB_REF_NAME"
   otel_observation_attribute_typed "$observation_handle" string github.actions.job.name="$GITHUB_JOB"
+  otel_observation_attribute_typed "$observation_handle" string github.actions.job.environment="$GITHUB_JOB_ENVIRONMENT"
   otel_observation_attribute_typed "$observation_handle" string github.actions.job.conclusion="$conclusion"
   otel_counter_observe "$counter_handle" "$observation_handle"
   observation_handle="$(otel_observation_create -1)"
@@ -667,6 +676,7 @@ root4job() {
   fi
   otel_span_attribute_typed $span_handle int github.actions.job.id="${GITHUB_JOB_ID:-}"
   otel_span_attribute_typed $span_handle string github.actions.job.name="$GITHUB_JOB"
+  otel_span_attribute_typed $span_handle string github.actions.job.environment="$GITHUB_JOB_ENVIRONMENT"
   printf '%s' "$INPUT___JOB_MATRIX" | jq 'to_entries | .[] | [ .key, .value ] | @tsv' -r | while IFS=$'\t' read -r key value; do otel_span_attribute_typed $span_handle string github.actions.job.matrix."$key"="$value"; done
   otel_span_attribute_typed $span_handle string github.actions.runner.name="$RUNNER_NAME"
   otel_span_attribute_typed $span_handle string github.actions.runner.os="$RUNNER_OS"

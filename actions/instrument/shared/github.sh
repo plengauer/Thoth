@@ -71,6 +71,16 @@ gh_job() {
 }
 export -f gh_job
 
+gh_deployments() {
+  gh_curl_paginated /deployments'?sha='"$1"'&per_page=100'
+}
+export -f gh_deployments
+
+gh_deployment_statuses() {
+  gh_curl_paginated /deployments/"$1"/statuses'?per_page=100'
+}
+export -f gh_deployment_statuses
+
 gh_artifacts() {
   gh_curl_paginated /actions/runs/"$1"/artifacts'?per_page=100'
 }
