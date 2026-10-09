@@ -262,7 +262,6 @@ jq <"$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .cr
   otel_observation_attribute_typed "$observation_handle" string github.actions.event.ref="refs/heads/$(jq <"$workflow_json" -r .head_branch)"
   otel_observation_attribute_typed "$observation_handle" string github.actions.event.ref.name="$(jq <"$workflow_json" -r .head_branch)"
   otel_observation_attribute_typed "$observation_handle" string github.actions.job.name="$job_name"
-  otel_observation_attribute_typed "$observation_handle" string github.actions.job.environment=unknown
   otel_observation_attribute_typed "$observation_handle" string github.actions.job.conclusion="$job_conclusion"
   otel_counter_observe "$job_run_counter_handle" "$observation_handle"
 
@@ -276,7 +275,6 @@ jq <"$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .cr
   otel_observation_attribute_typed "$observation_handle" string github.actions.event.ref="refs/heads/$(jq <"$workflow_json" -r .head_branch)"
   otel_observation_attribute_typed "$observation_handle" string github.actions.event.ref.name="$(jq <"$workflow_json" -r .head_branch)"
   otel_observation_attribute_typed "$observation_handle" string github.actions.job.name="$job_name"
-  otel_observation_attribute_typed "$observation_handle" string github.actions.job.environment=unknown
   otel_observation_attribute_typed "$observation_handle" string github.actions.job.conclusion="$job_conclusion"
   otel_counter_observe "$job_duration_counter_handle" "$observation_handle"
 
@@ -289,7 +287,6 @@ jq <"$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .cr
   otel_span_attribute_typed "$job_span_handle" string github.actions.url.full="$link"/job/"$job_id"
   otel_span_attribute_typed "$job_span_handle" int github.actions.job.id="$job_id"
   otel_span_attribute_typed "$job_span_handle" string github.actions.job.name="$job_name"
-  otel_span_attribute_typed "$job_span_handle" string github.actions.job.environment=unknown
   otel_span_attribute_typed "$job_span_handle" string github.actions.conclusion="$job_conclusion"
   job_runner_name="$(jq <"$jobs_json" -r '. | select(.id == '"$job_id"') | .runner_name // empty')"
   job_runner_group_name="$(jq <"$jobs_json" -r '. | select(.id == '"$job_id"') | .runner_group_name // empty')"

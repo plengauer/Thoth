@@ -27,6 +27,30 @@ fi
 
 . ../shared/github.sh
 
+echo "::group::Resolve Job ID, Job name, and Job environment"
+OTEL_SHELL_GITHUB_JOB="$GITHUB_JOB"
+job_arguments="$(printf '%s' "$INPUT___JOB_MATRIX" | jq -r '. | [.. | scalars] | @tsv' | sed 's/\t/, /g')"
+if [ -n "$job_arguments" ]; then OTEL_SHELL_GITHUB_JOB="$OTEL_SHELL_GITHUB_JOB ($job_arguments)"; fi
+export OTEL_SHELL_GITHUB_JOB
+if [ -n "$INPUT___JOB_ID" ]; then
+  export GITHUB_JOB_ID="$INPUT___JOB_ID"
+  echo "Resolved GitHub job id to $GITHUB_JOB_ID"
+else
+  GITHUB_JOB_ID="$(gh_jobs "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" | jq --unbuffered -r '. | .jobs[] | [.id, .name] | @tsv' | sed 's/\t/ /g' | grep " $OTEL_SHELL_GITHUB_JOB"'$' | cut -d ' ' -f 1)"
+  if [ "$(printf '%s' "$GITHUB_JOB_ID" | wc -l)" -le 1 ]; then
+    echo "Guessing GitHub job id to be $GITHUB_JOB_ID" >&2
+    export GITHUB_JOB_ID
+  else echo ::warning ::Could not guess GitHub job id.; fi
+fi
+if [ -n "${GITHUB_JOB_ID:-}" ]; then
+  for deployment_id in $(gh_deployments "$GITHUB_SHA" 2>/dev/null | jq -r '.[].id' 2>/dev/null); do
+    environment="$(gh_deployment_statuses "$deployment_id" 2>/dev/null | jq -r --arg job "$GITHUB_JOB_ID" '.[] | select((.log_url // "") | endswith("/job/" + $job)) | .environment' 2>/dev/null | head -n 1)"
+    if [ -n "$environment" ]; then GITHUB_JOB_ENVIRONMENT="$environment"; break; fi
+  done
+fi
+export GITHUB_JOB_ENVIRONMENT="${GITHUB_JOB_ENVIRONMENT:-}"
+echo "::endgroup::"
+
 echo "::group::Validate Configuration"
 export OTEL_SERVICE_NAME="${OTEL_SERVICE_NAME:-"$(echo "$GITHUB_REPOSITORY" | cut -d / -f 2-) CI"}"
 export OTEL_SEMCONV_STABILITY_OPT_IN="${OTEL_SEMCONV_STABILITY_OPT_IN:-http,database,messaging}"
@@ -400,36 +424,6 @@ repo_property_attributes="$(gh_repo_properties 2>/dev/null | jq -r '.[] | select
 if [ -n "$repo_property_attributes" ]; then
   export OTEL_RESOURCE_ATTRIBUTES="${OTEL_RESOURCE_ATTRIBUTES},${repo_property_attributes}"
 fi
-echo "::endgroup::"
-
-echo "::group::Resolve Job ID and Job name"
-OTEL_SHELL_GITHUB_JOB="$GITHUB_JOB"
-job_arguments="$(printf '%s' "$INPUT___JOB_MATRIX" | jq -r '. | [.. | scalars] | @tsv' | sed 's/\t/, /g')"
-if [ -n "$job_arguments" ]; then OTEL_SHELL_GITHUB_JOB="$OTEL_SHELL_GITHUB_JOB ($job_arguments)"; fi
-export OTEL_SHELL_GITHUB_JOB
-if [ -n "$INPUT___JOB_ID" ]; then
-  export GITHUB_JOB_ID="$INPUT___JOB_ID"
-  echo "Resolved GitHub job id to $GITHUB_JOB_ID"
-else
-  GITHUB_JOB_ID="$(gh_jobs "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" | jq --unbuffered -r '. | .jobs[] | [.id, .name] | @tsv' | sed 's/\t/ /g' | grep " $OTEL_SHELL_GITHUB_JOB"'$' | cut -d ' ' -f 1)"
-  if [ "$(printf '%s' "$GITHUB_JOB_ID" | wc -l)" -le 1 ]; then
-    echo "Guessing GitHub job id to be $GITHUB_JOB_ID" >&2
-    export GITHUB_JOB_ID
-  else echo ::warning ::Could not guess GitHub job id.; fi
-fi
-# jobs using environment.deployment=false create no deployment and therefore report none
-GITHUB_JOB_ENVIRONMENT=unknown
-if [ -n "${GITHUB_JOB_ID:-}" ]; then
-  if deployments_json="$(gh_deployments "$GITHUB_SHA" 2>/dev/null)" && deployment_ids="$(printf '%s' "$deployments_json" | jq -r '.[].id' 2>/dev/null)"; then
-    GITHUB_JOB_ENVIRONMENT=none
-    for deployment_id in $deployment_ids; do
-      if ! statuses_json="$(gh_deployment_statuses "$deployment_id" 2>/dev/null)"; then GITHUB_JOB_ENVIRONMENT=unknown; break; fi
-      environment="$(printf '%s' "$statuses_json" | jq -r --arg job "$GITHUB_JOB_ID" '.[] | select((.log_url // "") | endswith("/job/" + $job)) | .environment' 2>/dev/null | head -n 1)"
-      if [ -n "$environment" ]; then GITHUB_JOB_ENVIRONMENT="$environment"; break; fi
-    done
-  fi
-fi
-export GITHUB_JOB_ENVIRONMENT
 echo "::endgroup::"
 
 # observe ...
