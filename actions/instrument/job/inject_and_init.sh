@@ -123,6 +123,12 @@ cache_restore_fast() {
   fi
   rm -f "$tmpfile"
 }
+cache_restore_toolkit() {
+  sudo_e -H node --input-type=module -e "try { const cache = await import('@actions/cache'); await cache.restoreCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip', '/root/.cache/uv', '/var/cache/opentelemetry_shell/wheels/*.whl'], '$cache_key'); } catch { console.log('::debug::Dependency cache restore was unavailable.'); }"
+}
+cache_save_toolkit() {
+  sudo_e -H node --input-type=module -e "try { const cache = await import('@actions/cache'); await cache.saveCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip', '/root/.cache/uv', '/var/cache/opentelemetry_shell/wheels/*.whl'], '$cache_key'); } catch { console.log('::debug::Dependency cache save was unavailable.'); }"
+}
 run npm --no-audit ci
 if [ "$INPUT_CACHE" = "true" ]; then
   echo "::debug::Resolving cache ..."
@@ -131,7 +137,7 @@ if [ "$INPUT_CACHE" = "true" ]; then
   cache_key="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} dependencies $({ cat /etc/os-release; arch; python3 --version || true; printenv | grep -E '^OTEL_SHELL_CONFIG_INSTALL_' || true; } | md5sum | cut -d ' ' -f 1)"
   if [ "$GITHUB_ACTION_REPOSITORY" = "$GITHUB_REPOSITORY" ] && [ -f "$GITHUB_WORKSPACE"/package.deb ]; then cache_key="$cache_key local"; fi
   cache_restore_fast "$cache_key" && echo "cache_restored_fast=true" >> "$GITHUB_OUTPUT" \
-    || { echo "cache_restored_fast=false" >> "$GITHUB_OUTPUT"; wait; sudo_e -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.restoreCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip', '/root/.cache/uv', '/var/cache/opentelemetry_shell/wheels/*.whl'], '$cache_key');"; }
+    || { echo "cache_restored_fast=false" >> "$GITHUB_OUTPUT"; wait; cache_restore_toolkit || echo "::debug::Dependency cache restore was unavailable."; }
   [ "$(find /var/cache/apt/archives/ -name '*.deb' | wc -l)" -gt 0 ] || write_back_cache=TRUE
   # hand the restored wheelhouse to the debian postinst so its pip installs can resolve fully offline (it falls back to the network on its own if the wheelhouse is incomplete)
   if [ -n "$(sudo find /var/cache/opentelemetry_shell/wheels -maxdepth 1 -name '*.whl' 2>/dev/null | head -n 1)" ]; then export OTEL_SHELL_CONFIG_INSTALL_PIP_FIND_LINKS=/var/cache/opentelemetry_shell/wheels; fi
@@ -182,15 +188,7 @@ if ! type otelcol-contrib; then
   fi
 fi
 if [ "${write_back_cache:-FALSE}" = TRUE ] && [ -n "${cache_key:-}" ]; then
-  sudo mkdir -p /var/cache/opentelemetry_shell/wheels || true
-  run sudo_e -H pip3 download --only-binary=:all: --disable-pip-version-check --no-input -d /var/cache/opentelemetry_shell/wheels -r /opt/opentelemetry_shell/requirements.txt
-  for path_path in /usr/share/opentelemetry_shell/agent.instrumentation.python/*/; do
-    python_version="${path%/}"
-    python_version="${python_version##*/}"
-    run sudo_e -H "python$python_version" -m pip download --only-binary=:all: --disable-pip-version-check --no-input -d /var/cache/opentelemetry_shell/wheels -r /usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.txt
-  done
-  wait # only join in case we wanna write back, this will be rare and is necessary to have a good cache
-  run sudo_e -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.saveCache(['/var/cache/apt/archives/*.deb', '/root/.cache/pip', '/root/.cache/uv', '/var/cache/opentelemetry_shell/wheels/*.whl'], '$cache_key');"
+  run cache_save_toolkit || echo "::debug::Dependency cache save was unavailable."
 fi
 echo "::endgroup::"
 
@@ -447,7 +445,7 @@ root4job_end() {
   exec 1>/tmp/opentelemetry_shell.github.debug.log
   exec 2>/tmp/opentelemetry_shell.github.debug.log
   rm /tmp/opentelemetry_shell.github.observe_rate_limits
-  [ -z "${INSTRUMENTATION_CACHE_KEY:-}" ] || sudo_e -H node --input-type=module -e "import * as cache from '@actions/cache'; await cache.saveCache(['/tmp/*.aliases'], '$INSTRUMENTATION_CACHE_KEY');" &>/dev/null &
+  [ -z "${INSTRUMENTATION_CACHE_KEY:-}" ] || sudo_e -H node --input-type=module -e "try { const cache = await import('@actions/cache'); await cache.saveCache(['/tmp/*.aliases'], '$INSTRUMENTATION_CACHE_KEY'); } catch {}" &>/dev/null &
 
   if [ -f /tmp/opentelemetry_shell.github.error ]; then local conclusion=failure; else local conclusion=success; fi
   otel_span_attribute_typed $span_handle string github.actions.conclusion="$conclusion"
