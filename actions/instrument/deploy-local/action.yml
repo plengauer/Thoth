@@ -189,7 +189,7 @@ runs:
             steps:
               - uses: ${{ steps.determine-repository.outputs.repository }}/actions/instrument/workflow@${{ steps.determine-instrumentation-version.outputs.version }}
         ' > "${{ inputs.workflows_directory }}/${{ inputs.workflow_level_instrumentation_file_name }}"
-        cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/deploy*") | .env | keys[]' | grep '^OTEL_' | while read -r key; do
+        cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/deploy*") | .env // {} | keys[]' | { grep '^OTEL_' || true; } | while read -r key; do
           value="$(cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/deploy*") | .env.'"$key")"
           yq -i '.jobs[].steps[0].env.'"$key"' = "'"$value"'"' "${{ inputs.workflows_directory }}/${{ inputs.workflow_level_instrumentation_file_name }}"
         done
@@ -261,7 +261,7 @@ runs:
             steps:
               - uses: ${{ steps.determine-repository.outputs.repository }}/actions/instrument/checksuite@${{ steps.determine-instrumentation-version.outputs.version }}
         ' > "$path"
-        cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/deploy*") | .env | keys[]' | grep '^OTEL_' | while read -r key; do
+        cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/deploy*") | .env // {} | keys[]' | { grep '^OTEL_' || true; } | while read -r key; do
           value="$(cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/deploy*") | .env.'"$key")"
           yq -i '.jobs[].steps[0].env.'"$key"' = "'"$value"'"' "$path"
         done
@@ -304,7 +304,7 @@ runs:
             steps:
               - uses: ${{ steps.determine-repository.outputs.repository }}/actions/instrument/repository@${{ steps.determine-instrumentation-version.outputs.version }}
         ' > "$path"
-        cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/deploy*") | .env | keys[]' | grep '^OTEL_' | while read -r key; do
+        cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/deploy*") | .env // {} | keys[]' | { grep '^OTEL_' || true; } | while read -r key; do
           value="$(cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/deploy*") | .env.'"$key")"
           yq -i '.jobs[].steps[0].env.'"$key"' = "'"$value"'"' "$path"
         done
@@ -358,7 +358,7 @@ runs:
             if [ -n "$(cat "$workflow_file" | yq ".jobs.$job_name.steps[] | select(.uses == \"${{ steps.determine-repository.outputs.repository }}/actions/instrument/repository@*\") | .uses")" ]; then continue; fi
             if [ -n "$(cat "$workflow_file" | yq ".jobs.$job_name.steps[] | select(.uses == \"${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*\") | .uses")" ]; then continue; fi
             yq -i ".jobs.$job_name.steps |= ([{ \"uses\": \"${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@${{ steps.determine-instrumentation-version.outputs.version }}\" }] + .)" "$workflow_file"
-            cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/deploy*") | .env | keys[]' | grep '^OTEL_' | while read -r key; do
+            cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/deploy*") | .env // {} | keys[]' | { grep '^OTEL_' || true; } | while read -r key; do
               yq -i ".jobs.$job_name.steps[0].env.$key = \"$(cat "${{ steps.find-self.outputs.path }}" | yq '.jobs[].steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/deploy*") | .env.'"$key")\"" "$workflow_file"
             done
           done
