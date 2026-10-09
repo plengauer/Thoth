@@ -1,12 +1,12 @@
 #!/bin/bash
 set -e
 
+. ../shared/github.sh
+. ../shared/id_printer.sh
+
 echo "::group::Validate Configuration"
 . ../shared/config_validation.sh
 echo "::endgroup::"
-
-. ../shared/github.sh
-. ../shared/id_printer.sh
 
 echo "::group::Ensuring rate limit"
 gh_ensure_min_rate_limit_remaining 0.2
