@@ -1,4 +1,5 @@
 #!/bin/false
+# shellcheck shell=bash
 ################################################################################################################
 # This file is doing auto-instrumentation, auto-injection and auto-context-propagation.                        #
 # It should be sourced at the very top of any shell script that should be observed.                            #
