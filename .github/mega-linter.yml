@@ -1,5 +1,7 @@
-# MegaLinter main configuration for Thoth, loaded through MEGALINTER_CONFIG in
-# analyze.yml and in test_github.yml (job-integration-megalinter).
+# MegaLinter main configuration for Thoth. MegaLinter only auto-discovers its
+# main config in the repository root, so it is loaded from here through
+# MEGALINTER_CONFIG in analyze.yml and in test_github.yml
+# (job-integration-megalinter). The per-linter configs are in .github/linters.
 # Added following a full triage of the 2026-07-24 Analyze workflow run (#3833).
 # Every entry is preceded by why it exists. "#1234" refers to the pull request
 # of this repository that introduced the entry (or the issue it fixed).
@@ -72,23 +74,14 @@ BASH_SHFMT_ARGUMENTS: "-i 2 -ci"
 ACTION_ZIZMOR_UNSECURED_ENV_VARIABLES:
   - GITHUB_TOKEN
 
-# --- Names of the per-linter config files in .github/linters ---
-# Why (#4383): MegaLinter's defaults are .yamllint.yml, .cspell.json and
-# .jscpd.json. The names are set explicitly so the files in .github/linters can
-# be named without a leading dot (the directory is MegaLinter's default
-# LINTER_RULES_PATH; #4354 moved the configs there from the repo root).
-YAML_YAMLLINT_CONFIG_FILE: yamllint.yml
-# Why (#4383): additionally .jsonc instead of .json, so that cspell.jsonc
-# can carry comments. MegaLinter's JSON linters only pick up .json files and
-# would reject comments; cspell reads .jsonc natively.
-SPELL_CSPELL_CONFIG_FILE: cspell.jsonc
-
-# --- jscpd (copy/paste detection) ---
-# jscpd runs in CLI lint mode `project`, so FILTER_REGEX_EXCLUDE does not apply
-# to it and the generated-file exclusions are repeated in its own config. The
-# duplication is intentional. jscpd rejects comments in its config (tested with
-# jscpd 5.4.1: "key must be a string"), so the reasons for jscpd.json's entries
-# are recorded here:
+# --- Reasons for entries in the per-linter configs that cannot hold comments ---
+# MegaLinter picks up the per-linter configs in .github/linters by their
+# default names, so nothing has to be configured here for them.
+#
+# .jscpd.json: jscpd runs in CLI lint mode `project`, so FILTER_REGEX_EXCLUDE
+# does not apply to it and the generated-file exclusions are repeated in its own
+# config. The duplication is intentional. jscpd rejects comments in its config
+# (tested with jscpd 5.4.1: "key must be a string"), so the reasons are here:
 # - threshold 5 (#3833): MegaLinter's own default is 0%, which fails on any repo
 #   with normal duplication; the threshold is raised to 5%.
 # - ignore, generated files (#3833, #3863): the same patterns as
@@ -97,4 +90,19 @@ SPELL_CSPELL_CONFIG_FILE: cspell.jsonc
 #   the file in #3833, which gives no reason for these two.
 # - reporters console and html: added in #3833, which gives no reason for them.
 #   MegaLinter's jscpd descriptor also passes `--reporters console,html`.
-COPYPASTE_JSCPD_CONFIG_FILE: jscpd.json
+#
+# .cspell.json: kept as plain JSON (plain JSON has no comments, and the file
+# has to keep its .json name for MegaLinter's default lookup), so its reasons
+# are recorded here too.
+# - $schema, version, language (#3857): came with the original file, which
+#   gives no reason for them.
+# - words (#3857, fixes #3843): cspell flagged 3,215 instances across 382
+#   legitimate technical terms - project-specific jargon, tool names, shell
+#   keywords and third-party proper nouns - as unknown words. None are typos.
+#   #3857 groups them as OpenTelemetry, shell, Azure, TLS and certificate
+#   authorities, tooling, project names, Debian packaging, dev and CI tools,
+#   networking, plus further terms without a category.
+# - ignorePaths *.lock and .git/**: #3857 gives no reason for either. No *.lock
+#   files are tracked at the moment. The generated *.lock.yml files are not
+#   listed because FILTER_REGEX_EXCLUDE above already keeps them away from
+#   cspell, which runs with a file list.

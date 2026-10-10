@@ -74,8 +74,8 @@ jobs:
         continue-on-error: true
         env:
           # MegaLinter only auto-discovers its main config in the repository
-          # root, so the config kept in .github/linters has to be pointed to.
-          MEGALINTER_CONFIG: .github/linters/mega-linter.yml
+          # root, so the config kept in .github has to be pointed to.
+          MEGALINTER_CONFIG: .github/mega-linter.yml
           GITHUB_TOKEN: ${{ github.token }}
           VALIDATE_ALL_CODEBASE: ${{ github.event_name != 'pull_request' }}
           GITHUB_STATUS_REPORTER: true

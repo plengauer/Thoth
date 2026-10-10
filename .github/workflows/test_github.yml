@@ -321,8 +321,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
           VALIDATE_ALL_CODEBASE: 'true'
-          # Keep picking up the jscpd config in .github/linters, whose file name no longer starts with a dot.
-          JSCPD_CONFIG_FILE: jscpd.json
           DISABLE_ERRORS: 'false'
           MULTI_STATUS: 'false'
           ENABLE_GITHUB_PULL_REQUEST_SUMMARY_COMMENT: 'false'
@@ -354,8 +352,8 @@ jobs:
         continue-on-error: true
         env:
           # MegaLinter only auto-discovers its main config in the repository
-          # root, so the config kept in .github/linters has to be pointed to.
-          MEGALINTER_CONFIG: .github/linters/mega-linter.yml
+          # root, so the config kept in .github has to be pointed to.
+          MEGALINTER_CONFIG: .github/mega-linter.yml
           GITHUB_TOKEN: ${{ github.token }}
           VALIDATE_ALL_CODEBASE: 'true'
   job-integration-python-venv:

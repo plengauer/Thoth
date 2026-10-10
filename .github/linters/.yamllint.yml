@@ -1,7 +1,7 @@
 ---
-# yamllint config for MegaLinter's YAML_YAMLLINT (see YAML_YAMLLINT_CONFIG_FILE
-# in mega-linter.yml). "#1234" refers to the pull request of this repository
-# that introduced the entry.
+# yamllint config for MegaLinter's YAML_YAMLLINT. MegaLinter finds it in
+# .github/linters under its default name .yamllint.yml. "#1234" refers to the
+# pull request of this repository that introduced the entry.
 extends: default
 rules:
   # Why (#4131, fixes #4092): shell one-liners in deploy-local/action.yml
