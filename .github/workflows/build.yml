@@ -66,7 +66,7 @@ jobs:
            | sudo docker run -i --rm --network host -v "$(pwd)"/src:/home/root/src -w /home/root --platform linux/${{ matrix.architecture }} docker.io/"$(echo ${{ matrix.architecture }} | tr -d /)"/"$image" | xargs -0 -I {} echo 'architecture={}' >> "$GITHUB_OUTPUT"
       - run: |
           [ -r src/usr/share/opentelemetry_shell/agent.instrumentation.http/libinjecthttpheader.so ]
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: http_${{ steps.build.outputs.architecture }}_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.http/libinjecthttpheader.so
@@ -94,7 +94,7 @@ jobs:
             architecture="${architecture%_*}"
             mv "$directory" bin/"$architecture"
           done
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: http_${{ inputs.ref }}
           path: bin/
@@ -152,7 +152,7 @@ jobs:
           ! find src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules -iname '*.so' | grep '.so$'
       - run: |
           ! find -L src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules -type l -exec readlink -f '{}' ';' | while read -r file; do realpath "$file"; done | grep '^'"$(pwd)"/src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: node_modules_${{ matrix.version }}_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules
@@ -203,7 +203,7 @@ jobs:
             fi
           done
       - run: find . -type f -print0 | xargs -0 sha256sum | sort | cut -d ' ' -f 3- | tar -cf node_modules.tar -T - && zstd --rm -19 --long=27 -T0 node_modules.tar
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: node_modules_${{ inputs.ref }}
           path: node_modules.tar.zst
@@ -274,7 +274,7 @@ jobs:
             rm -rf venv_instrumentations
           ) | grep -v '^$' | grep -v opentelemetry-instrumentation-system-metrics | sort -u > instrumentations_${{ matrix.version }}.txt
           [ -s instrumentations_${{ matrix.version }}.txt ]
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: python_instrumentations_${{ matrix.version }}_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.python/instrumentations_${{ matrix.version }}.txt
@@ -313,7 +313,7 @@ jobs:
           target="$RUNNER_TEMP"/out/${{ matrix.architecture }}/${{ matrix.version }}/site-packages
           pip3 install --target "$target" --implementation cp --python-version ${{ matrix.version }} --platform manylinux2014_${{ matrix.architecture }} --platform manylinux_2_28_${{ matrix.architecture }} --only-binary=:all: -r requirements.txt -r instrumentations_${{ matrix.version }}.txt
           rm -rf "$target"/bin
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: python_site_packages_${{ matrix.architecture }}_${{ matrix.version }}_${{ inputs.ref }}
           path: ${{ runner.temp }}/out
@@ -361,7 +361,7 @@ jobs:
           done
           touch out/architectures.txt
           cat out/architectures.txt
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: python_site_packages_${{ inputs.ref }}
           path: out/
@@ -431,7 +431,7 @@ jobs:
       - run: |
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.java
           echo "${{ steps.determine-minimum-version.outputs.version }}" > version
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: java_${{ inputs.ref }}
           path: |
@@ -567,7 +567,7 @@ jobs:
             rm usr/share/opentelemetry_shell/agent.instrumentation.http/*.so
             rm -f usr/share/opentelemetry_shell/agent.instrumentation.python/python_site_packages.tar.zst
           done
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: packages.deb.${{ inputs.ref }}
           path: opentelemetry-shell_*_*.deb
@@ -679,7 +679,7 @@ jobs:
             rpmbuild -bb --buildroot="$(pwd)/src" opentelemetry-shell.spec
             mv /home/runner/rpmbuild/RPMS/noarch/opentelemetry-shell-"$(cat VERSION)"-1.noarch.rpm opentelemetry-shell-"$(cat VERSION)"-1."$arch".rpm
           done
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: packages.rpm.${{ inputs.ref }}
           path: opentelemetry-shell-*.*.rpm
@@ -732,7 +732,7 @@ jobs:
           cp -r src "$workspace"/my_src
           echo 'cd ~/workspace && apk add abuild && SUDO=env abuild-keygen -a -i -n && abuild -F -r && find ~/packages -iname '\''*.apk'\'' | xargs -I "{}" mv "{}" .' | \sudo docker run --rm --network host -v "$workspace":/root/workspace -i alpine:latest
           mv "$workspace"/*.apk .
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: packages.apk.${{ inputs.ref }}
           path: opentelemetry-shell-*.apk
@@ -765,7 +765,7 @@ jobs:
           sudo docker save -o opentelemetry-github-workflow-instrumentation-runner.image opentelemetry-github-workflow-instrumentation-runner
           sudo chmod +r opentelemetry-github-workflow-instrumentation-runner.image
           rm actions/instrument/workflow/*.apk
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: images.${{ inputs.ref }}
           path: '*.image'
