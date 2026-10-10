@@ -1,4 +1,5 @@
 #!/bin/false
+# shellcheck shell=bash
 
 # write | netcat 127.0.0.1 8080 | read
 # netcat -l -p 8080 | read
