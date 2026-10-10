@@ -1,4 +1,5 @@
 #!/bin/false
+# shellcheck shell=bash
 
 # wget -O - https://www.google.at => wget -O - https://www.google.at '--header=traceparent: 00-XXXXXX-01'
 
