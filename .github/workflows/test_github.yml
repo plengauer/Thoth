@@ -1254,7 +1254,7 @@ jobs:
     runs-on: ubuntu-26.04
     timeout-minutes: 60
     outputs:
-     secret_available: ${{ steps.is-secret-available.outputs.available }}
+      secret_available: ${{ steps.is-secret-available.outputs.available }}
     permissions:
       actions: read
     steps:
