@@ -14,7 +14,7 @@ _otel_call_and_record_logs() {
   local exit_code=0
   $call_command "$@" 2>"$stderr_logs" || local exit_code="$?"
   # we accept, by not waiting for the background job above, that there is slight chance of the last few lines of stderr may be interleaved with the next few lines of the parent.
-  # alternatively, we would have to wait, but we do not know if the stream is not opened by a background job of the child and will never close
+  # alternatively, we would have to wait, but we do not know if the stderr stream is not opened by a background job of the child and will never close
   # the control flow of this must continue when the command terminates, which is not the same as when the stream closes (the stream may be inherited to others)
   \rm "$stderr_logs" 2>/dev/null
   return "$exit_code"

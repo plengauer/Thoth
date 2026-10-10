@@ -1,4 +1,5 @@
 #!/bin/false
+# shellcheck shell=bash
 
 # find . => find .
 # find . -iname "*.txt" => find . -iname "*.txt"
