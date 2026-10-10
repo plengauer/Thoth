@@ -1,4 +1,5 @@
 #!/bin/false
+# shellcheck shell=bash
 
 # /usr/bin/docker run --rm --privileged tonistiigi/binfmt:latest --install all
 
