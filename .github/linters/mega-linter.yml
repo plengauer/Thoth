@@ -56,3 +56,8 @@ BASH_SHFMT_ARGUMENTS: "-i 2 -ci"
 # 401 Unauthorized instead of producing actual audit results.
 ACTION_ZIZMOR_UNSECURED_ENV_VARIABLES:
   - GITHUB_TOKEN
+
+# --- Names of the per-linter config files in .github/linters ---
+YAML_YAMLLINT_CONFIG_FILE: yamllint.yml
+SPELL_CSPELL_CONFIG_FILE: cspell.jsonc
+COPYPASTE_JSCPD_CONFIG_FILE: jscpd.json
