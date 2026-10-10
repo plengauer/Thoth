@@ -1,4 +1,5 @@
 #!/bin/false
+# shellcheck shell=bash
 
 # sh => sh
 # sh -E => sh -E
@@ -76,7 +77,7 @@ _otel_inject_shell_args_with_copy() {
   \echo ". otel.sh" >>"$temporary_script"
   \echo "\set -- $(_otel_escape_args "$@")" >>"$temporary_script"
   if \[ "$is_script" -eq 1 ]; then \cat "$command"; else \echo "$command"; fi | if \[ "${OTEL_SHELL_CONFIG_INSTRUMENT_ABSOLUTE_PATHS:-FALSE}" = TRUE ]; then \awk '{
-      gsub(/^[ \t]+/, "", $0);
+      gsub(/^[ 	]+/, "", $0);
       if ($1 ~ /^\//) {
         print "_otel_inject " $0;
       } else {
