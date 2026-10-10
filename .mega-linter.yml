@@ -37,17 +37,19 @@ DISABLE_LINTERS:
 # - **/package-lock.json is an npm-generated lockfile.
 FILTER_REGEX_EXCLUDE: "(\\.lock\\.yml|/otlp\\.json|/gradlew|/package-lock\\.json)$"
 
-# --- Lychee-specific: template/placeholder URLs in workflow YAML ---
-# Every lychee failure outside the generated-file patterns above was a
-# GitHub Actions expression or credential placeholder that isn't a real
-# link (e.g. https://github.com/owner/repo/actions/runs/12345,
+# --- Per-linter scoping and arguments ---
+# Lychee (dead-link checker): every failure outside the generated-file
+# patterns above was a GitHub Actions expression or credential placeholder that
+# isn't a real link (e.g. https://github.com/owner/repo/actions/runs/12345,
 # https://x-access-token/, an un-interpolated ${{ github.repository }}).
 # Workflow YAML isn't documentation with links for a reader to click, so
 # it's excluded from the dead-link checker specifically (JSON/YAML/other
 # linters still cover these files normally).
-BASH_SHFMT_ARGUMENTS: "-i 2 -ci"
 SPELL_LYCHEE_FILTER_REGEX_EXCLUDE: "\\.github/workflows/"
+# v8r (schema validation): also skip workflow YAML.
 YAML_V8R_FILTER_REGEX_EXCLUDE: "\\.github/workflows/"
+# shfmt: 2-space indent, indent switch/case bodies.
+BASH_SHFMT_ARGUMENTS: "-i 2 -ci"
 
 # --- zizmor: allow GITHUB_TOKEN for online audits (e.g. artipacked check) ---
 # Without this, zizmor makes unauthenticated GitHub API calls that fail with
