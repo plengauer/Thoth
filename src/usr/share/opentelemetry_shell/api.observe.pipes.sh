@@ -1,4 +1,5 @@
 #!/bin/false
+# shellcheck shell=bash
 
 _otel_call_and_record_pipes() {
   local IFS=' 
