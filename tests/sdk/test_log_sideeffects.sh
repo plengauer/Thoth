@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 . ./assert.sh
 . /usr/bin/opentelemetry_shell_api.sh
 

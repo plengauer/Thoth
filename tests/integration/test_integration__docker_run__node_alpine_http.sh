@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 if ! type docker 1>/dev/null 2>/dev/null || ! type sudo 1>/dev/null 2>/dev/null; then exit 0; fi
 . ./assert.sh
 

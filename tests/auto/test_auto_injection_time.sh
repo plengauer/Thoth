@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 if [ "$SHELL" = sh ] && type rpm; then exit 0; fi
 
 . ./assert.sh

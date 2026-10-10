@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 if ! type sudo; then exit 0; fi
 . ./assert.sh
 . /usr/bin/opentelemetry_shell.sh

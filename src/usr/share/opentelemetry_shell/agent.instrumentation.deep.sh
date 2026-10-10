@@ -1,4 +1,5 @@
 #!/bin/false
+# shellcheck shell=bash
 
 _otel_inject_deep() {
   if \[ -z "${WSL_DISTRO_NAME:-}" ] && \type strace 1>/dev/null 2>/dev/null; then
