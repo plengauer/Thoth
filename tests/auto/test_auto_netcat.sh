@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 if ! type netcat; then exit 0; fi
 
 set -e

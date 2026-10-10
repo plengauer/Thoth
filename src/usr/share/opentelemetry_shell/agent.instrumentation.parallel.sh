@@ -1,4 +1,5 @@
 #!/bin/false
+# shellcheck shell=bash
 
 # parallel -j 10 rm -f -- ./file1.txt ./file2.txt ./file3.txt => parallel -j 10 sh -c '. /otel.sh; rm -f "$1"' parallel -- ./file1.txt ./file2.txt ./file3.txt
 # parallel -i -j 10 rm -f {} -- ./file1.txt ./file2.txt ./file3.txt => parallel -i -j 10 sh -c '. /otel.sh; rm -f {}' parallel -- ./file1.txt ./file2.txt ./file3.txt
