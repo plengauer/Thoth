@@ -1,0 +1,100 @@
+# MegaLinter main configuration for Thoth, loaded through MEGALINTER_CONFIG in
+# analyze.yml and in test_github.yml (job-integration-megalinter).
+# Added following a full triage of the 2026-07-24 Analyze workflow run (#3833).
+# Every entry is preceded by why it exists. "#1234" refers to the pull request
+# of this repository that introduced the entry (or the issue it fixed).
+# All options: https://megalinter.io/latest/configuration/
+
+# --- Linters that are switched off ---
+DISABLE_LINTERS:
+  # Why (#3833): BASH_EXEC checks that every discovered shell script has the
+  # executable bit set. Every script in this repo is invoked via an explicit
+  # interpreter - `wget ... | sh` per INSTALL.sh's own documented usage,
+  # `. otel.sh` / `. otelapi.sh` sourcing, `bash path/to/script.sh` from
+  # composite actions and test harnesses, or spawned from main.js via a Node
+  # child process - never `./script.sh` directly, so this check doesn't apply.
+  - BASH_EXEC
+  # Why (#3833): "standard" (JavaScript Standard Style) is a zero-config,
+  # semicolon-free style guide. This codebase consistently uses semicolons, so
+  # the large majority of findings were just "Extra semicolon" from that
+  # philosophy clash rather than real issues, and standard doesn't support
+  # disabling individual sub-rules. #3833 points to a tracking issue for the
+  # small number of genuinely useful catches (unused vars, camelCase, etc.)
+  # that this trades away.
+  - JAVASCRIPT_STANDARD
+  # Why (#4355): devskim reported ~21k untriaged findings (errors) in the last
+  # completed `quality` run (#7477) and took ~7 of its ~12 minutes (see also
+  # #3848). It is disabled outright instead of filtered out of the SARIF, so it
+  # neither runs nor buries the findings of the other linters, and everything
+  # MegaLinter still produces is uploaded to code scanning unfiltered.
+  - REPOSITORY_DEVSKIM
+
+# --- Files excluded from all linters that receive a file list ---
+# Why (#3833, #3863, fixes #3845): MegaLinter flagged lint errors in generated
+# or captured files that are not hand-authored source, producing noisy false
+# positives across yamllint, actionlint, the JSON linters, prettier, shfmt and lychee.
+# - *.lock.yml under .github/workflows/ are compiled by the gh-aw CLI from the
+#   sibling *.md files (see recompile_agentic_workflows.yml) - not hand-written.
+# - **/otlp.json under demos/ are captured OpenTelemetry export output
+#   (multiple concatenated JSON documents, not one JSON document per file),
+#   refreshed by refresh_demos.yml - not hand-written, and not valid
+#   single-document JSON by design.
+# - **/gradlew is the standard Gradle wrapper script, vendored boilerplate.
+# - **/package-lock.json is an npm-generated lockfile.
+# This filter is NOT applied to linters running in CLI lint mode `project`
+# (MegaLinter does not hand them a file list), see jscpd below.
+FILTER_REGEX_EXCLUDE: "(\\.lock\\.yml|/otlp\\.json|/gradlew|/package-lock\\.json)$"
+
+# --- Per-linter scoping and arguments ---
+# Why (#3833, #3869): lychee (dead-link checker) failures outside the
+# generated-file patterns above were all GitHub Actions expressions or
+# credential placeholders that aren't real links (e.g.
+# https://github.com/owner/repo/actions/runs/12345, https://x-access-token/, an
+# un-interpolated ${{ github.repository }}). Workflow YAML isn't documentation
+# with links for a reader to click, so it is excluded from the dead-link
+# checker specifically (JSON/YAML/other linters still cover these files).
+SPELL_LYCHEE_FILTER_REGEX_EXCLUDE: "\\.github/workflows/"
+# Why (#4155, requested in the review of #4128): v8r resolves the bare `on:` key
+# of a workflow to a YAML 1.1 boolean before validating it against the generic
+# GitHub workflow schema. That is a v8r/MegaLinter artifact GitHub itself does
+# not care about. Excluding workflows from v8r avoids quoting `on:` in every
+# workflow, while actionlint and zizmor keep validating them.
+YAML_V8R_FILTER_REGEX_EXCLUDE: "\\.github/workflows/"
+# Why (#3869, fixes #3840): shfmt flagged formatting diffs on ~60% of the shell
+# files because no shfmt configuration existed and its tab-indent default
+# conflicts with the codebase's 2-space style. `-i 2` indents with 2 spaces,
+# `-ci` indents `case` bodies. #4128 renamed the key from SHELL_SHFMT_ARGUMENTS,
+# which #4128 describes as deprecated/unsupported.
+BASH_SHFMT_ARGUMENTS: "-i 2 -ci"
+# Why (#3854, fixes #3844): without this, zizmor makes unauthenticated GitHub
+# API calls that fail with 401 Unauthorized (seen in the `artipacked` audit)
+# instead of producing audit results. analyze.yml already provides the token.
+ACTION_ZIZMOR_UNSECURED_ENV_VARIABLES:
+  - GITHUB_TOKEN
+
+# --- Names of the per-linter config files in .github/linters ---
+# Why (#4383): MegaLinter's defaults are .yamllint.yml, .cspell.json and
+# .jscpd.json. The names are set explicitly so the files in .github/linters can
+# be named without a leading dot (the directory is MegaLinter's default
+# LINTER_RULES_PATH; #4354 moved the configs there from the repo root).
+YAML_YAMLLINT_CONFIG_FILE: yamllint.yml
+# Why (#4383): additionally .jsonc instead of .json, so that cspell.jsonc
+# can carry comments. MegaLinter's JSON linters only pick up .json files and
+# would reject comments; cspell reads .jsonc natively.
+SPELL_CSPELL_CONFIG_FILE: cspell.jsonc
+
+# --- jscpd (copy/paste detection) ---
+# jscpd runs in CLI lint mode `project`, so FILTER_REGEX_EXCLUDE does not apply
+# to it and the generated-file exclusions are repeated in its own config. The
+# duplication is intentional. jscpd rejects comments in its config (tested with
+# jscpd 5.4.1: "key must be a string"), so the reasons for jscpd.json's entries
+# are recorded here:
+# - threshold 5 (#3833): MegaLinter's own default is 0%, which fails on any repo
+#   with normal duplication; the threshold is raised to 5%.
+# - ignore, generated files (#3833, #3863): the same patterns as
+#   FILTER_REGEX_EXCLUDE above, expressed as globs.
+# - ignore, **/node_modules/** and **/.git/**: added together with the rest of
+#   the file in #3833, which gives no reason for these two.
+# - reporters console and html: added in #3833, which gives no reason for them.
+#   MegaLinter's jscpd descriptor also passes `--reporters console,html`.
+COPYPASTE_JSCPD_CONFIG_FILE: jscpd.json

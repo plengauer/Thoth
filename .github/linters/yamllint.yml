@@ -1,0 +1,16 @@
+---
+# yamllint config for MegaLinter's YAML_YAMLLINT (see YAML_YAMLLINT_CONFIG_FILE
+# in mega-linter.yml). "#1234" refers to the pull request of this repository
+# that introduced the entry.
+extends: default
+rules:
+  # Why (#4131, fixes #4092): shell one-liners in deploy-local/action.yml
+  # contain base64-encoded content that cannot be shortened, so the default
+  # line length limit can't be met.
+  line-length:
+    max: 10000
+# document-start and truthy stay at yamllint's defaults (reported as warnings).
+# #4131 describes disabling both ("not applicable to GitHub Actions", which uses
+# `on:` as a top-level key), but the file it added set both to `enable`, which
+# is the default, so those two lines were redundant and have been dropped.
+# Set them to `disable` here if disabling was the intent.

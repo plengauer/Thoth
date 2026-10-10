@@ -1,0 +1,11 @@
+# actionlint config. MegaLinter finds it in .github/linters under its default
+# name actionlint.yml and passes it with -config-file. "#1234" refers to the
+# pull request of this repository that introduced the entry.
+paths:
+  .github/workflows/agentics-maintenance.yml:
+    # Why (#3860, fixes #3839): the file is auto-generated (DO NOT EDIT) and its
+    # `''` choice option is intentional (inputs.operation == '' guards are used
+    # throughout), which actionlint reports as "string should not be empty".
+    # Scoped to this one file.
+    ignore:
+      - 'string should not be empty'
