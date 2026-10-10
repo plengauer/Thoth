@@ -1,4 +1,5 @@
 #!/bin/false
+# shellcheck shell=bash
 
 if \[ "${GITHUB_ACTIONS:-false}" = true ] && \[ "${GITHUB_AW:-false}" = true ] && \type yq 1>/dev/null 2>/dev/null; then
   _otel_inject_docker_compose_up() {

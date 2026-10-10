@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 if ! which java; then exit 0; fi
 . ./assert.sh
 
