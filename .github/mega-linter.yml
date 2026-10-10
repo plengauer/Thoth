@@ -86,8 +86,10 @@ ACTION_ZIZMOR_UNSECURED_ENV_VARIABLES:
 #   with normal duplication; the threshold is raised to 5%.
 # - ignore, generated files (#3833, #3863): the same patterns as
 #   FILTER_REGEX_EXCLUDE above, expressed as globs.
-# - ignore, **/node_modules/** and **/.git/**: added together with the rest of
-#   the file in #3833, which gives no reason for these two.
+# - ignore, **/node_modules/** and **/.git/**: added in #3833, which gives no
+#   reason for them. They are needed: jscpd 5.4.1 scans both directories by
+#   default (tested), and MegaLinter's jscpd descriptor does not forward its
+#   default excluded directories (.git, node_modules) to jscpd.
 # - reporters console and html: added in #3833, which gives no reason for them.
 #   MegaLinter's jscpd descriptor also passes `--reporters console,html`.
 #
@@ -102,7 +104,10 @@ ACTION_ZIZMOR_UNSECURED_ENV_VARIABLES:
 #   #3857 groups them as OpenTelemetry, shell, Azure, TLS and certificate
 #   authorities, tooling, project names, Debian packaging, dev and CI tools,
 #   networking, plus further terms without a category.
-# - ignorePaths *.lock and .git/**: #3857 gives no reason for either. No *.lock
-#   files are tracked at the moment. The generated *.lock.yml files are not
-#   listed because FILTER_REGEX_EXCLUDE above already keeps them away from
-#   cspell, which runs with a file list.
+# - ignorePaths: none. #3857 had *.lock and .git/**. No *.lock files are
+#   tracked, the generated *.lock.yml files are kept away by FILTER_REGEX_EXCLUDE
+#   above, and MegaLinter never hands cspell files from .git because it excludes
+#   .git and node_modules from its file lists by default.
+# - words added in this pull request: shfmt, sarif, devskim, artipacked,
+#   untriaged (used in the comments of this file) and agentics (a path in
+#   actionlint.yml).
