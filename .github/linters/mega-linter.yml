@@ -45,15 +45,15 @@ DISABLE_LINTERS:
 # (MegaLinter does not hand them a file list), see jscpd below.
 FILTER_REGEX_EXCLUDE: "(\\.lock\\.yml|/otlp\\.json|/gradlew|/package-lock\\.json)$"
 
-# --- Per-linter scoping and arguments ---
-# Why (#3833, #3869): lychee (dead-link checker) failures outside the
-# generated-file patterns above were all GitHub Actions expressions or
-# credential placeholders that aren't real links (e.g.
-# https://github.com/owner/repo/actions/runs/12345, https://x-access-token/, an
-# un-interpolated ${{ github.repository }}). Workflow YAML isn't documentation
-# with links for a reader to click, so it is excluded from the dead-link
-# checker specifically (JSON/YAML/other linters still cover these files).
-SPELL_LYCHEE_FILTER_REGEX_EXCLUDE: "\\.github/workflows/"
+# --- Per-linter entries that have to stay here ---
+# These cannot move into a linter-native config under .github/linters:
+# - v8r only discovers its config (.v8rrc.*) from the working directory
+#   upwards and has no option to point to one, so it would have to live in the
+#   repository root.
+# - shfmt only reads .editorconfig, which also belongs in the repository root.
+# - ACTION_ZIZMOR_UNSECURED_ENV_VARIABLES is a MegaLinter mechanism for passing
+#   an environment variable to zizmor, not a zizmor setting.
+
 # Why (#4155, requested in the review of #4128): v8r resolves the bare `on:` key
 # of a workflow to a YAML 1.1 boolean before validating it against the generic
 # GitHub workflow schema. That is a v8r/MegaLinter artifact GitHub itself does
