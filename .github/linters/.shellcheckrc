@@ -1,0 +1,28 @@
+# ShellCheck configuration for Thoth, picked up by MegaLinter from
+# .github/linters (the descriptor passes --rcfile=.shellcheckrc and runs
+# shellcheck with --external-sources).
+# Every entry is preceded by why it exists.
+
+# Why: this library instruments commands by defining aliases for them (for
+# example an alias for "[" ), and the sources deliberately bypass those aliases
+# with a leading backslash (\[ , \printf , \kill , ...). ShellCheck reads "\["
+# as a command name ending in "[" (SC2288) in every such line, although the
+# syntax is intended.
+disable=SC2288
+
+# Why: many sources use non-constant paths (SC1090) or paths that only exist
+# once installed or relative to the working directory at run time, such as
+# "./assert.sh" in tests (SC1091). ShellCheck can't follow either of them, and
+# the message offers no way to make it do so.
+disable=SC1090
+disable=SC1091
+
+# Why: SC2155 fires about 400 times, almost always on "local var=$(command)"
+# (plus a few "export" lines), because the declaration hides the exit status of
+# the command substitution. It is a style-level warning, and fixing it means
+# splitting every one of those declarations, which is beyond linter configuration.
+disable=SC2155
+
+# Why: lets ShellCheck follow "source" statements that point to a file next to
+# the script that sources it.
+source-path=SCRIPTDIR
