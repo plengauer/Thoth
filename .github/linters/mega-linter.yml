@@ -73,12 +73,12 @@ ACTION_ZIZMOR_UNSECURED_ENV_VARIABLES:
   - GITHUB_TOKEN
 
 # --- Names of the per-linter config files in .github/linters ---
-# Why (this change): MegaLinter's defaults are .yamllint.yml, .cspell.json and
+# Why (#4383): MegaLinter's defaults are .yamllint.yml, .cspell.json and
 # .jscpd.json. The names are set explicitly so the files in .github/linters can
 # be named without a leading dot (the directory is MegaLinter's default
 # LINTER_RULES_PATH; #4354 moved the configs there from the repo root).
 YAML_YAMLLINT_CONFIG_FILE: yamllint.yml
-# Why (this change): additionally .jsonc instead of .json, so that cspell.jsonc
+# Why (#4383): additionally .jsonc instead of .json, so that cspell.jsonc
 # can carry comments. MegaLinter's JSON linters only pick up .json files and
 # would reject comments; cspell reads .jsonc natively.
 SPELL_CSPELL_CONFIG_FILE: cspell.jsonc
