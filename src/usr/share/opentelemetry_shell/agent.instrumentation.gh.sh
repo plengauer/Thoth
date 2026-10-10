@@ -1,4 +1,5 @@
 #!/bin/false
+# shellcheck shell=bash
 
 _otel_propagate_gh() {
   case "$-" in
