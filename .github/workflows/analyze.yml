@@ -73,6 +73,9 @@ jobs:
       - uses: oxsecurity/megalinter@9949bad031045f366be2467e00e8371a7328a2e2 # v10.1.0
         continue-on-error: true
         env:
+          # MegaLinter only auto-discovers its main config in the repository
+          # root, so the config kept in .github/linters has to be pointed to.
+          MEGALINTER_CONFIG: .github/linters/mega-linter.yml
           GITHUB_TOKEN: ${{ github.token }}
           VALIDATE_ALL_CODEBASE: ${{ github.event_name != 'pull_request' }}
           GITHUB_STATUS_REPORTER: true
