@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 . /usr/bin/opentelemetry_shell.sh
 
 count_0=$(alias | wc -l)

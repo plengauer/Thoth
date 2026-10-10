@@ -1,4 +1,5 @@
 #!/bin/false
+# shellcheck shell=bash
 
 _otel_inject_busybox() {
   if \[ "$#" -gt 0 ] && _otel_string_starts_with "$1" -; then

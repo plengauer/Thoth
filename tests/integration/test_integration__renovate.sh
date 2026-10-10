@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 # renovate is really a docker running an npm package, that is pre-isntrumented with otel running in a docker container that during startup runs through an exec and a shebang first!
 if ! type docker; then exit 0; fi
 . ./assert.sh

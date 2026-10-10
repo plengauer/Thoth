@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 . ./assert.sh
 if [ "$(whoami)" = "root" ]; then
   echo "#!/bin/sh" >/usr/bin/fail_no_auto.sh

@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 if [ -n "${WSL_DISTRO_NAME:-}" ]; then exit 0; fi
 
 set -e

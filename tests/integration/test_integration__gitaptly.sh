@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 set +f
 if ! type sudo || ! type systemctl || ! type apt-get || [ -n "${WSL_DISTRO_NAME:-}" ]; then
   exit 0

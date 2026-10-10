@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 . ./assert.sh
 
 # Regression test: a script's EXIT trap must fire exactly once, at the real end of the

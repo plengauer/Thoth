@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 if ! \[ -f /usr/share/debconf/confmodule ]; then exit 0; fi
 \export DEBIAN_FRONTEND=noninteractive
 set +u

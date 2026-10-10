@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 if ! type wget2; then exit 0; fi
 
 set -e

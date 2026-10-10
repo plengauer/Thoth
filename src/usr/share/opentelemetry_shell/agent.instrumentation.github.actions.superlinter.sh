@@ -1,4 +1,5 @@
 #!/bin/false
+# shellcheck shell=bash
 
 if \[ "${GITHUB_ACTIONS:-false}" = true ] && \[ "${GITHUB_ACTION_REPOSITORY:-}" = super-linter/super-linter ] && \[ -d /action/lib/ ] && ! \[ -r /action/lib/.otel ]; then
   \touch /action/lib/.otel

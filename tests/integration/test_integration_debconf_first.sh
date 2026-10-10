@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 . ./assert.sh
 if ! [ -f /usr/share/debconf/confmodule ]; then exit 0; fi
 set +u

@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 if [ "$(readlink -f /proc/$$/exe | sed 's#.*/##')" = busybox ]; then exit 0; fi
 
 . ./assert.sh

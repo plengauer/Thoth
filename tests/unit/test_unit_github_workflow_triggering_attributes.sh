@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 . ./assert.sh
 
 # PR numbers emitted one per line for +string[1] array accumulation

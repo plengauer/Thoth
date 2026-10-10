@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 # DISABLED because such a situation is super hard to reproduce manually
 # in this case the stdin tee will try to read (maybe), process will either hang or terminate, and that will in turn then kill the tee
 . ./assert.sh
