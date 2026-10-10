@@ -1,4 +1,5 @@
 #!/bin/false
+# shellcheck shell=bash
 
 # time cat ./file.txt => time sh -c '. /otel.sh; cat ./file.txt "$@"' 'time'
 # timeout 10s cat ./file.txt => timeout 10s time.output sh -c '. /otel.sh; cat ./file.txt "$@"' 'time'
