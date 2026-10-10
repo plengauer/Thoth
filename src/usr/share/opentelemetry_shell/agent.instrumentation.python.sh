@@ -1,4 +1,5 @@
 #!/bin/false
+# shellcheck shell=bash
 
 _otel_inject_python() {
   local version="$(\eval "$1 -V" | \cut -d ' ' -f 2 | \cut -d . -f -2)"
