@@ -8,16 +8,17 @@ ARG update
 WORKDIR /tests
 COPY . ./
 
+# hadolint ignore=DL3015
 RUN <<EOF
   packages_mandatory="jq psmisc wget curl time sudo bash"
   packages_optional="parallel moreutils ncat wget2 nodejs npm python3 python3-pip gcc default-jdk-headless jdk"
   if type apt-get; then
     apt-get update
     [ "$update" = TRUE ] && DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y || true
-    type "$shell" || DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y "$shell"
-    DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y $packages_mandatory debconf debconf-utils python3-venv
-    DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y $packages_optional || true
-    DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y ./opentelemetry-shell_*_"$(arch | sed s/x86_64/amd64/g | sed s/aarch64/arm64/g | sed 's/le$/el/g')".deb
+    type "$shell" || DEBIAN_FRONTEND=noninteractive apt-get install -y "$shell"
+    DEBIAN_FRONTEND=noninteractive apt-get install -y $packages_mandatory debconf debconf-utils python3-venv
+    DEBIAN_FRONTEND=noninteractive apt-get install -y $packages_optional || true
+    DEBIAN_FRONTEND=noninteractive apt-get install -y ./opentelemetry-shell_*_"$(arch | sed s/x86_64/amd64/g | sed s/aarch64/arm64/g | sed 's/le$/el/g')".deb
   elif type dnf; then
     [ "$update" = TRUE ] && dnf -y upgrade --refresh
     type "$shell" || dnf -y install "$shell"
