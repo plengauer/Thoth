@@ -47,6 +47,16 @@ RUN <<EOF
   fi
 EOF
 
+RUN if type apk >/dev/null 2>&1; then \
+      adduser -D testuser; \
+    else \
+      useradd --create-home --shell /bin/sh testuser; \
+    fi \
+    && printf 'testuser ALL=(ALL) NOPASSWD: ALL\n' >> /etc/sudoers \
+    && chown -R testuser /tests
+
+USER testuser
+
 ENV shell="$shell"
 
 CMD ! type "$shell" || bash run_tests.sh "$shell"
