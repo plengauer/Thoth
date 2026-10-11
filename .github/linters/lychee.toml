@@ -1,0 +1,13 @@
+# lychee config for MegaLinter's SPELL_LYCHEE. MegaLinter finds it in
+# .github/linters under its default name lychee.toml and passes it with
+# --config. "#1234" refers to the pull request of this repository that
+# introduced the entry.
+
+# Why (#3833, #3869): lychee (dead-link checker) failures outside the generated
+# files left out by FILTER_REGEX_EXCLUDE in mega-linter.yml were all GitHub
+# Actions expressions or credential placeholders that aren't real links (e.g.
+# https://github.com/owner/repo/actions/runs/12345, https://x-access-token/, an
+# un-interpolated ${{ github.repository }}). Workflow YAML isn't documentation
+# with links for a reader to click, so it is excluded from the dead-link
+# checker specifically (JSON/YAML/other linters still cover these files).
+exclude_path = ['\.github/workflows/']

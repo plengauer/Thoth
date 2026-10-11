@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 . ./assert.sh
 
 # runner_name and runner_group_name re-looked up from JSON by job id

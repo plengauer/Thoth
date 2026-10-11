@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 set -e
 . ./assert.sh
 

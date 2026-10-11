@@ -1,4 +1,5 @@
 #!/bin/false
+# shellcheck shell=bash
 
 if \[ "${GITHUB_ACTIONS:-false}" = true ]; then
   if \[ "${GITHUB_ACTION:-}" = github/gh-aw-actions/setup ] && \[ -z "${GH_AW_OTLP_ENDPOINTS:-}" ]; then

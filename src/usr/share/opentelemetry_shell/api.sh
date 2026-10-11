@@ -1,4 +1,5 @@
 #!/bin/false
+# shellcheck shell=bash
 ##################################################################################################
 # This file is providing an API for creating and managing open telemetry spans.                  #
 # It should be sourced at the very top of any shell script where the functions are to be used.   #

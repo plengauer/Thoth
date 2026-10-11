@@ -1,4 +1,5 @@
 #!/bin/false
+# shellcheck shell=bash
 
 print_trace_link() {
   local endpoint="${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT:-http://localhost:4318}}"

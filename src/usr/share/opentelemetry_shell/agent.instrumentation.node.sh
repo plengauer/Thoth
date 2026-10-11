@@ -1,4 +1,5 @@
 #!/bin/false
+# shellcheck shell=bash
 
 _otel_is_node_injected() {
   local dir="$dir"

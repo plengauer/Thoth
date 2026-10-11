@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 if ! type docker 1> /dev/null 2> /dev/null; then exit 0; fi
 if ! [ -f /usr/share/opentelemetry_shell/agent.instrumentation.python/python_site_packages.tar.zst ]; then exit 0; fi
 

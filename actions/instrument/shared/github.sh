@@ -1,4 +1,5 @@
 #!/bin/false
+# shellcheck shell=bash
 
 gh_curl() {
   curl -L --no-progress-meter --fail --retry 16 -H "Authorization: Bearer $INPUT_GITHUB_TOKEN" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_REPOSITORY""$@"

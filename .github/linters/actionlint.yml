@@ -1,0 +1,21 @@
+# actionlint config. MegaLinter finds it in .github/linters under its default
+# name actionlint.yml and passes it with -config-file. "#1234" refers to the
+# pull request of this repository that introduced the entry.
+self-hosted-runner:
+  # Why: test_github.yml runs on ubuntu-26.04 and ubuntu-26.04-arm, which GitHub
+  # offers as hosted runner labels since Ubuntu 26 became generally available
+  # (https://github.blog/changelog/2026-09-17-ubuntu-26-generally-available-and-latest-migration).
+  # actionlint 1.7.12 reports them as unknown labels because its built-in list
+  # does not include them. Remove this entry once the actionlint bundled in
+  # MegaLinter knows both labels.
+  labels:
+    - ubuntu-26.04
+    - ubuntu-26.04-arm
+paths:
+  .github/workflows/agentics-maintenance.yml:
+    # Why (#3860, fixes #3839): the file is auto-generated (DO NOT EDIT) and its
+    # `''` choice option is intentional (inputs.operation == '' guards are used
+    # throughout), which actionlint reports as "string should not be empty".
+    # Scoped to this one file.
+    ignore:
+      - 'string should not be empty'

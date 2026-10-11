@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 . ./assert.sh
 export OTEL_SHELL_CONFIG_OBSERVE_PIPES=TRUE
 export OTEL_SHELL_CONFIG_OBSERVE_PIPES_STDIN=TRUE

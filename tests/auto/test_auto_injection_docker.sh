@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 if ! type docker; then exit 0; fi
 
 . ./assert.sh

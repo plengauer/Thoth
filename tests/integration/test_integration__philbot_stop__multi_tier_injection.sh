@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 if ! dpkg -s moreutils; then exit 0; fi
 . ./assert.sh
 

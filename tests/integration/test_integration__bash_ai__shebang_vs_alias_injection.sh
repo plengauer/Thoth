@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 if ! [ -x /bin/"$TEST_SHELL" ]; then exit 0; fi
 . ./assert.sh
 # from a real world example

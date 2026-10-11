@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 . ./assert.sh
 
 line="$(printf '*   Trying 140.82.121.4:443...< location: https://github.com/plengauer/Thoth/releases/tag/v1.2.3\r')"

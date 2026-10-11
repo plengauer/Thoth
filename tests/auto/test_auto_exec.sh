@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 . ./assert.sh
 
 eval "$TEST_SHELL auto/exec.sh hello world 0"

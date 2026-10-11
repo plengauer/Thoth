@@ -1,4 +1,5 @@
 #!/bin/false
+# shellcheck shell=bash
 
 # curl -v https://www.google.at => curl -v https://www.google.at -H 'traceparent: 00-XXXXXX-01'
 

@@ -1,6 +1,19 @@
+---
+# yamllint config for MegaLinter's YAML_YAMLLINT. MegaLinter finds it in
+# .github/linters under its default name .yamllint.yml. "#1234" refers to the
+# pull request of this repository that introduced the entry.
 extends: default
+# document-start stays at yamllint's default (reported as a warning). #4131
+# describes disabling it together with truthy, but the file it added set both to
+# `enable`, which is the default, so that line was redundant and has been
+# dropped. truthy is now disabled below, as #4131 describes.
+# Set document-start to `disable` here if disabling it was the intent.
 rules:
-    line-length:
-      max: 10000
-    document-start: enable
-    truthy: enable
+  # Why (#4131): "not applicable to GitHub Actions", which uses `on:` as a
+  # top-level key. yamllint's truthy rule reports that key in every workflow.
+  truthy: disable
+  # Why (#4131, fixes #4092): shell one-liners in deploy-local/action.yml
+  # contain base64-encoded content that cannot be shortened, so the default
+  # line length limit can't be met.
+  line-length:
+    max: 10000

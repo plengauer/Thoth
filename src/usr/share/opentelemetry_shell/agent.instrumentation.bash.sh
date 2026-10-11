@@ -1,4 +1,5 @@
 #!/bin/false
+# shellcheck shell=bash
 
 # bash => bash
 # bash -E => bash -E

@@ -1,0 +1,121 @@
+# MegaLinter main configuration for Thoth. MegaLinter only auto-discovers its
+# main config in the repository root, so it is loaded from here through
+# MEGALINTER_CONFIG in analyze.yml and in test_github.yml
+# (job-integration-megalinter). The per-linter configs are in .github/linters.
+# Added following a full triage of the 2026-07-24 Analyze workflow run (#3833).
+# Every entry is preceded by why it exists. "#1234" refers to the pull request
+# of this repository that introduced the entry (or the issue it fixed).
+# All options: https://megalinter.io/latest/configuration/
+
+# --- Linters that are switched off ---
+DISABLE_LINTERS:
+  # Why (#3833): BASH_EXEC checks that every discovered shell script has the
+  # executable bit set. Every script in this repo is invoked via an explicit
+  # interpreter - `wget ... | sh` per INSTALL.sh's own documented usage,
+  # `. otel.sh` / `. otelapi.sh` sourcing, `bash path/to/script.sh` from
+  # composite actions and test harnesses, or spawned from main.js via a Node
+  # child process - never `./script.sh` directly, so this check doesn't apply.
+  - BASH_EXEC
+  # Why (#3833): "standard" (JavaScript Standard Style) is a zero-config,
+  # semicolon-free style guide. This codebase consistently uses semicolons, so
+  # the large majority of findings were just "Extra semicolon" from that
+  # philosophy clash rather than real issues, and standard doesn't support
+  # disabling individual sub-rules. #3833 points to a tracking issue for the
+  # small number of genuinely useful catches (unused vars, camelCase, etc.)
+  # that this trades away.
+  - JAVASCRIPT_STANDARD
+  # Why (#4355): devskim reported ~21k untriaged findings (errors) in the last
+  # completed `quality` run (#7477) and took ~7 of its ~12 minutes (see also
+  # #3848). It is disabled outright instead of filtered out of the SARIF, so it
+  # neither runs nor buries the findings of the other linters, and everything
+  # MegaLinter still produces is uploaded to code scanning unfiltered.
+  - REPOSITORY_DEVSKIM
+
+# --- Files excluded from all linters that receive a file list ---
+# Why (#3833, #3863, fixes #3845): MegaLinter flagged lint errors in generated
+# or captured files that are not hand-authored source, producing noisy false
+# positives across yamllint, actionlint, the JSON linters, prettier, shfmt and lychee.
+# - *.lock.yml under .github/workflows/ are compiled by the gh-aw CLI from the
+#   sibling *.md files (see recompile_agentic_workflows.yml) - not hand-written.
+# - **/otlp.json under demos/ are captured OpenTelemetry export output
+#   (multiple concatenated JSON documents, not one JSON document per file),
+#   refreshed by refresh_demos.yml - not hand-written, and not valid
+#   single-document JSON by design.
+# - **/gradlew is the standard Gradle wrapper script, vendored boilerplate.
+# - **/package-lock.json is an npm-generated lockfile.
+# This filter is NOT applied to linters running in CLI lint mode `project`
+# (MegaLinter does not hand them a file list), see jscpd below.
+FILTER_REGEX_EXCLUDE: "(\\.lock\\.yml|/otlp\\.json|/gradlew|/package-lock\\.json)$"
+
+# --- Per-linter entries that have to stay here ---
+# These cannot move into a linter-native config under .github/linters:
+# - v8r only discovers its config (.v8rrc.*) from the working directory
+#   upwards and has no option to point to one, so it would have to live in the
+#   repository root.
+# - shfmt only reads .editorconfig, which also belongs in the repository root.
+# - ACTION_ZIZMOR_UNSECURED_ENV_VARIABLES is a MegaLinter mechanism for passing
+#   an environment variable to zizmor, not a zizmor setting.
+
+# Why (#4155, requested in the review of #4128): v8r resolves the bare `on:` key
+# of a workflow to a YAML 1.1 boolean before validating it against the generic
+# GitHub workflow schema. That is a v8r/MegaLinter artifact GitHub itself does
+# not care about. Excluding workflows from v8r avoids quoting `on:` in every
+# workflow, while actionlint and zizmor keep validating them.
+YAML_V8R_FILTER_REGEX_EXCLUDE: "\\.github/workflows/"
+# Why (#3869, fixes #3840): shfmt flagged formatting diffs on ~60% of the shell
+# files because no shfmt configuration existed and its tab-indent default
+# conflicts with the codebase's 2-space style. `-i 2` indents with 2 spaces,
+# `-ci` indents `case` bodies. #4128 renamed the key from SHELL_SHFMT_ARGUMENTS,
+# which #4128 describes as deprecated/unsupported.
+BASH_SHFMT_ARGUMENTS: "-i 2 -ci"
+# Why (#3854, fixes #3844): without this, zizmor makes unauthenticated GitHub
+# API calls that fail with 401 Unauthorized (seen in the `artipacked` audit)
+# instead of producing audit results. analyze.yml already provides the token.
+ACTION_ZIZMOR_UNSECURED_ENV_VARIABLES:
+  - GITHUB_TOKEN
+
+# --- Reasons for entries in the per-linter configs that cannot hold comments ---
+# MegaLinter picks up the per-linter configs in .github/linters by their
+# default names, so nothing has to be configured here for them.
+#
+# .jscpd.json: jscpd runs in CLI lint mode `project`, so FILTER_REGEX_EXCLUDE
+# does not apply to it and the generated-file exclusions are repeated in its own
+# config. The duplication is intentional. jscpd rejects comments in its config
+# (tested with jscpd 5.4.1: "key must be a string"), so the reasons are here:
+# - threshold 5 (#3833): MegaLinter's own default is 0%, which fails on any repo
+#   with normal duplication; the threshold is raised to 5%.
+# - ignore, generated files (#3833, #3863): the same patterns as
+#   FILTER_REGEX_EXCLUDE above, expressed as globs.
+# - ignore, **/node_modules/** and **/.git/**: added in #3833, which gives no
+#   reason for them. They are needed: jscpd 5.4.1 scans both directories by
+#   default (tested), and MegaLinter's jscpd descriptor does not forward its
+#   default excluded directories (.git, node_modules) to jscpd.
+# - ignore, **/.github/workflows/**: workflow files repeat the same checkout,
+#   setup and permissions boilerplate. GitHub Actions has no way to share it
+#   between files other than reusable workflows. Measured on this repository:
+#   together with the next entry it takes jscpd from 833 clones / 32.3% to
+#   111 clones / 10.6%.
+# - ignore, **/demos/*/README.md: these files are generated by refresh_demos.yml
+#   from demo.sh, meta.json and the recorded spans, so their embedded JSON
+#   duplicates by construction (564 of the 833 clones).
+# - reporters console and html: added in #3833, which gives no reason for them.
+#   MegaLinter's jscpd descriptor also passes `--reporters console,html`.
+#
+# .cspell.json: kept as plain JSON (plain JSON has no comments, and the file
+# has to keep its .json name for MegaLinter's default lookup), so its reasons
+# are recorded here too.
+# - $schema, version, language (#3857): came with the original file, which
+#   gives no reason for them.
+# - words (#3857, fixes #3843): cspell flagged 3,215 instances across 382
+#   legitimate technical terms - project-specific jargon, tool names, shell
+#   keywords and third-party proper nouns - as unknown words. None are typos.
+#   #3857 groups them as OpenTelemetry, shell, Azure, TLS and certificate
+#   authorities, tooling, project names, Debian packaging, dev and CI tools,
+#   networking, plus further terms without a category.
+# - ignorePaths: none. #3857 had *.lock and .git/**. No *.lock files are
+#   tracked, the generated *.lock.yml files are kept away by FILTER_REGEX_EXCLUDE
+#   above, and MegaLinter never hands cspell files from .git because it excludes
+#   .git and node_modules from its file lists by default.
+# - words added in this pull request: shfmt, sarif, devskim, artipacked,
+#   untriaged (used in the comments of this file), agentics (a path in
+#   actionlint.yml), rcfile and scriptdir (used in .shellcheckrc).

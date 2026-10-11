@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 if [ -z "${OPENAI_TOKEN:-}" ]; then exit 0; fi
 set -e
 . ./assert.sh

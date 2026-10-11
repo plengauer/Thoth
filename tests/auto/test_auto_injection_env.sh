@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 . ./assert.sh
 . otel.sh
 

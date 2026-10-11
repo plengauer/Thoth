@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 set -e
 . /usr/bin/opentelemetry_shell.sh
 if [ "$OPEN_FD" = TRUE ]; then exec 3>&2; fi

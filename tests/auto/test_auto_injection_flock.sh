@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 touch .lock
 if [ -x .lock ]; then exit 0; fi
 # chmod +x .lock

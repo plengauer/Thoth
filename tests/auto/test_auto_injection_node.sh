@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 if ! type node; then exit 0; fi
 if ! [ -d /usr/share/opentelemetry_shell/agent.instrumentation.node/"$(node -v | tr -d v | cut -d . -f 1)"/node_modules ]; then exit 0; fi
 . ./assert.sh

@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 #/bin/false
 if [ -n "${INPUT___KILL_SWITCH:-}" ]; then
   echo "::warning ::OpenTelemetry for GitHub actions disabled by kill switch!" && exit 0

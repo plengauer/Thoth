@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 . /usr/bin/opentelemetry_shell.sh
 
 # An EXIT trap with an observable side effect, like a wrapper that starts a

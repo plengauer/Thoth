@@ -1,4 +1,5 @@
 #!/bin/false
+# shellcheck shell=bash
 
 if _otel_string_contains "$(_otel_resolve_command_self)" /usr/local/bin/renovate || _otel_string_contains "$(_otel_resolve_command_self)" /usr/local/sbin/renovate; then # renovate looks at some very specific env vars to enable tracing
   \export OTEL_SHELL_CONFIG_INJECT_DEEP=TRUE

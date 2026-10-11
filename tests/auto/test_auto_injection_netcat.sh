@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 if ! type ncat; then exit 0; fi
 [ -z "${WSL_DISTRO_NAME:-}" ] || exit 0
 set -e

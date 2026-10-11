@@ -1,4 +1,5 @@
 #!/bin/false
+# shellcheck shell=bash
 
 if \[ "${GITHUB_ACTIONS:-false}" = true ] && \[ "${GITHUB_ACTION_REPOSITORY:-}" = github/codeql-action ] && \[ -x "$0" ] && _otel_string_ends_with "$0" /codeql && ! \cat "$0" | \grep -q _otel_inject; then
   \sudo sed -i 's~#!/bin/sh~#!/bin/sh\n. otel.sh~g' "$0"     # SKIP_DEPENDENCY_CHECK
