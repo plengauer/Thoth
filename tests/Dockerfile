@@ -1,3 +1,4 @@
+#checkov:skip=CKV_DOCKER_3:This image is intended for local test execution and tests run as root
 ARG image
 ARG update
 ARG shell
@@ -46,16 +47,6 @@ RUN <<EOF
     exit 1
   fi
 EOF
-
-RUN if type apk >/dev/null 2>&1; then \
-      adduser -D testuser; \
-    else \
-      useradd --create-home --shell /bin/sh testuser; \
-    fi \
-    && printf 'testuser ALL=(ALL) NOPASSWD: ALL\n' >> /etc/sudoers \
-    && chown -R testuser /tests
-
-USER testuser
 
 ENV shell="$shell"
 
