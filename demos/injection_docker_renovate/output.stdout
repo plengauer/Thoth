@@ -1,15 +1,15 @@
  INFO: Renovate started
-       "renovateVersion": "44.126.1"
+       "renovateVersion": "44.149.2"
  WARN: cli config dryRun property has been changed to full
  INFO: Repository started (repository=plengauer/Thoth)
-       "renovateVersion": "44.126.1"
+       "renovateVersion": "44.149.2"
  WARN: Cannot access vulnerability alerts. Please ensure permissions have been granted. (repository=plengauer/Thoth)
        "url": "https://docs.renovatebot.com/configuration-options/#vulnerabilityalerts"
  INFO: Dependency extraction complete (repository=plengauer/Thoth, baseBranch=main)
        "stats": {
          "managers": {
            "dockerfile": {"fileCount": 4, "depCount": 11},
-           "github-actions": {"fileCount": 32, "depCount": 683},
+           "github-actions": {"fileCount": 32, "depCount": 718},
            "gradle": {"fileCount": 4, "depCount": 3},
            "gradle-wrapper": {"fileCount": 1, "depCount": 1},
            "maven": {"fileCount": 1, "depCount": 2},
@@ -17,15 +17,14 @@
            "pip_requirements": {"fileCount": 3, "depCount": 19},
            "regex": {"fileCount": 3, "depCount": 4}
          },
-         "total": {"fileCount": 50, "depCount": 737}
+         "total": {"fileCount": 50, "depCount": 772}
        }
- INFO: DRY-RUN: Would commit files to branch renovate/github-gh-aw-actions-0.x. See debug logs for raw commit information (repository=plengauer/Thoth, branch=renovate/github-gh-aw-actions-0.x)
  INFO: DRY-RUN: Would ensure Dependency Dashboard (repository=plengauer/Thoth)
        "title": "Dependency Dashboard"
  INFO: DRY-RUN: Would save repository cache. (repository=plengauer/Thoth)
  INFO: Repository finished (repository=plengauer/Thoth)
        "cloned": true,
-       "durationMs": 49974,
+       "durationMs": 45773,
        "result": "done",
        "status": "onboarded",
        "enabled": true,
