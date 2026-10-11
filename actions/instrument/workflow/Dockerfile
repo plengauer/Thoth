@@ -7,5 +7,6 @@ COPY ./*.apk /root/
 # need unzip because builtin doesnt support listing files in short form
 # need findutils because xargs builtin doesnt support -d parameter
 # need coretuls because date builtin doesnt recognize date format of GitHub logs
-RUN cd /root && apk add --allow-untrusted bash jq curl parallel unzip findutils coreutils /root/*.apk && rm -rf /root/*.apk /usr/share/opentelemetry_shell/agent.instrumentation.*/*.xz /usr/share/opentelemetry_shell/agent.instrumentation.*/*.zst /usr/share/opentelemetry_shell/agent.instrumentation.*/*/
+RUN cd /root && apk add --allow-untrusted bash jq curl parallel unzip findutils coreutils /root/*.apk && rm -rf /root/*.apk /usr/share/opentelemetry_shell/agent.instrumentation.*/*.xz /usr/share/opentelemetry_shell/agent.instrumentation.*/*.zst /usr/share/opentelemetry_shell/agent.instrumentation.*/*/ && adduser -D -u 1001 workflow
+USER workflow
 CMD [ "sh", "-c", "exit 1" ]
