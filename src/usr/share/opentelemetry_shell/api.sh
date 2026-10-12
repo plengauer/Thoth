@@ -363,14 +363,16 @@ otel_counter_create() {
 otel_counter_observe() {
   local counter_handle="$1"
   local observation_handle="$2"
-  _otel_sdk_communicate "COUNTER_OBSERVE" "$counter_handle" "$observation_handle"
+  if _otel_string_starts_with "${3:-}" @; then local time="${3#@}"; else local time=auto; fi
+  _otel_sdk_communicate "COUNTER_OBSERVE" "$counter_handle" "$observation_handle" "$time"
 }
 
 otel_observation_create() {
   local value="$1"
+  if _otel_string_starts_with "${2:-}" @; then local time="${2#@}"; else local time=auto; fi
   local response_pipe="$(\mktemp -u -p "$_otel_shell_pipe_dir")_opentelemetry_shell_$$.observation_handle.pipe"
   \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
-  _otel_sdk_communicate "OBSERVATION_CREATE" "$response_pipe" "$value"
+  _otel_sdk_communicate "OBSERVATION_CREATE" "$response_pipe" "$value" "$time"
   local handle
   \read handle <"$response_pipe" || \true
   \echo "$handle"
