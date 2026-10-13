@@ -29,7 +29,7 @@ jobs:
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
   renovate-copilot-instrumentation:
-    if: ${{ !github.event.repository.fork }}
+    if: ${{ !github.event.repository.fork && false }} # this is currently broken ebcause we dont deploy it the same time anymore, so the check doesnt work
     runs-on: ubuntu-slim
     permissions:
       actions: read
