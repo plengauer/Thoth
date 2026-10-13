@@ -1,3 +1,4 @@
+#checkov:skip=CKV_DOCKER_3:This image is intended for local test execution and tests run as root
 ARG image
 ARG update
 ARG shell
