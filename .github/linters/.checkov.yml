@@ -1,0 +1,5 @@
+skip-check:
+  # Why: CKV2_GHA_1 only looks at the top-level `permissions:` key, which none
+  # of the workflows of the templates sets (8 of 8 files reported). Instead,
+  # every job declares its own `permissions:`.
+  - CKV2_GHA_1
