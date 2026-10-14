@@ -1,0 +1,22 @@
+rules:
+  # Why: zizmor reports that the actions/checkout steps of analyze.yml,
+  # autobackport.yml, ci.yml and recompile_agentic_workflows.yml do not set
+  # `persist-credentials: false`. The checkouts are unchanged in the templates;
+  # the files are ignored one by one, so that all other workflows are still
+  # audited. Remove an entry when the template sets the option.
+  artipacked:
+    ignore:
+      - analyze.yml
+      - autobackport.yml
+      - ci.yml
+      - recompile_agentic_workflows.yml
+  # Why: zizmor reports `${{ }}` expansions inside `run:` scripts of
+  # autobackport.yml (github.event_path, matrix.ref and step outputs) and
+  # recompile_agentic_workflows.yml (a step output). The scripts are unchanged
+  # in the templates; the files are ignored one by one, so that all other
+  # workflows are still audited. Remove an entry when the template passes the
+  # values through environment variables.
+  template-injection:
+    ignore:
+      - autobackport.yml
+      - recompile_agentic_workflows.yml
