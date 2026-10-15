@@ -38,6 +38,7 @@ RUN <<EOF
     zypper --non-interactive install $packages_mandatory
     for package in $packages_optional; do zypper --non-interactive install $package || true; done
     zypper --non-interactive install --allow-unsigned-rpm ./opentelemetry-shell-*."$(arch)".rpm
+    zypper clean --all
   elif type apk; then
     [ "$update" = TRUE ] && apk upgrade
     type "$shell" || apk add "$shell"
