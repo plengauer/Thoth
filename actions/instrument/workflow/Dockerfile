@@ -8,4 +8,6 @@ COPY ./*.apk /root/
 # need findutils because xargs builtin doesnt support -d parameter
 # need coretuls because date builtin doesnt recognize date format of GitHub logs
 RUN apk add --no-cache --allow-untrusted bash jq curl parallel unzip findutils coreutils /root/*.apk && rm -rf /root/*.apk /usr/share/opentelemetry_shell/agent.instrumentation.*/*.xz /usr/share/opentelemetry_shell/agent.instrumentation.*/*.zst /usr/share/opentelemetry_shell/agent.instrumentation.*/*/
+RUN adduser -D -u 1001 workflow
+USER workflow
 CMD [ "sh", "-c", "exit 1" ]
