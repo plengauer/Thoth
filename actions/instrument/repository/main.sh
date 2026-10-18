@@ -186,7 +186,7 @@ case "$INPUT_EVENT_NAME" in
     base="$(jq <<<"$INPUT_EVENT_BODY" '.base_ref // empty' -r)"
     ref="$(jq <<<"$INPUT_EVENT_BODY" .ref -r)"
     if [ -z "$base" ]; then
-      base="$(curl --no-progress-meter --fail --retry 16 --header "Authorization: ******" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_REPOSITORY"/pulls?state=open\&head="${GITHUB_REPOSITORY%%/*}:${ref#refs/heads/}" | jq '.[0].base.ref // empty' -r)"
+      base="$(gh_curl /pulls'?state=open&head='"${GITHUB_REPOSITORY%%/*}:${ref#refs/heads/}" | jq '.[0].base.ref // empty' -r)"
       [ -n "$base" ] || base="$(jq <<<"$INPUT_EVENT_BODY" '.repository.default_branch // empty' -r)"
       [ -z "$base" ] || base="refs/heads/$base"
       [ "$base" != "$ref" ] || base=
