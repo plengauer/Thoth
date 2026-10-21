@@ -4,7 +4,7 @@ if [ "$1" = 'abort-configure' ] || [ "$1" = 'abort-upgrade' ] || [ "$1" = 'abort
   true
 elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' ]; then
   export PATH=/usr/local/bin:"$PATH"
-  buffer_output() { if type perl 1>/dev/null 2>/dev/null; then perl -0777 -pe ''; else cat; fi; } # print everything at once so parallel jobs dont interleave
+  buffer_output() { if type perl 1>/dev/null 2>/dev/null; then perl -0777 -pe ''; else cat; fi; }
   hardlink_or_copy() { cp -a -l "$1" "$2" 2>/dev/null || { rm -rf "$2" && cp -r "$1" "$2"; }; }
   my_pip() {
     export PIP_DISABLE_PIP_VERSION_CHECK=1
@@ -16,20 +16,20 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
   }
   # extract node instrumentation
   if type node; then
-    set +e # best effort, a failing version must not stop the others
+    set +e
     rm -rf /usr/share/opentelemetry_shell/agent.instrumentation.node/*/
     archived="$(tar -I 'zstd -d --long=27' -tf /usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules.tar.zst 2>/dev/null | cut -d / -f 2 | grep -E '^[0-9]+$' | sort -n -u)"
-    if [ -n "$archived" ] && { type docker >/dev/null 2>&1 || [ "$GITHUB_ACTIONS" = true ]; }; then # containers may bring any version
+    if [ -n "$archived" ] && { type docker >/dev/null 2>&1 || [ "$GITHUB_ACTIONS" = true ]; }; then
       versions="$(seq "$(echo "$archived" | head -n 1)" "$(grep '^FROM ' /usr/share/opentelemetry_shell/agent.instrumentation.node/Dockerfile | cut -d : -f 2 | cut -d - -f 1)")"
     else
       versions="$(echo "$PATH" | tr : '\n' | while read -r d; do [ -x "$d"/node ] && "$d"/node --version; done | tr -d v | cut -d . -f 1 | sort -n -u)"
     fi
     for version in $versions; do
       lower="$(echo "$archived" | while read -r a; do [ "$a" -le "$version" ] && echo "$a"; done | tail -n 1)"
-      if [ -n "$lower" ]; then # archived as this or a lower version (CI drops versions identical to the one below)
+      if [ -n "$lower" ]; then
         [ -d /usr/share/opentelemetry_shell/agent.instrumentation.node/"$lower" ] || tar -I 'zstd -d --long=27' -xf /usr/share/opentelemetry_shell/agent.instrumentation.node/node_modules.tar.zst -C /usr/share/opentelemetry_shell/agent.instrumentation.node ./"$lower"
         [ "$lower" = "$version" ] || hardlink_or_copy /usr/share/opentelemetry_shell/agent.instrumentation.node/"$lower" /usr/share/opentelemetry_shell/agent.instrumentation.node/"$version"
-      elif type npm; then # not archived, build it
+      elif type npm; then
         mkdir /usr/share/opentelemetry_shell/agent.instrumentation.node/"$version" && cp /usr/share/opentelemetry_shell/agent.instrumentation.node/package.json /usr/share/opentelemetry_shell/agent.instrumentation.node/"$version"/ && (cd /usr/share/opentelemetry_shell/agent.instrumentation.node/"$version" && npm install --no-audit --no-fund --no-package-lock) || rm -rf /usr/share/opentelemetry_shell/agent.instrumentation.node/"$version" # SKIP_DEPENDENCY_CHECK
       fi
     done
@@ -37,21 +37,21 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
   fi 2>&1 | buffer_output >&2 &
   # extract python instrumentation
   if type python3; then
-    set +e # best effort, a failing version must not stop the others
+    set +e
     rm -rf /usr/share/opentelemetry_shell/agent.instrumentation.python/*/
     listing="$(tar -I 'zstd -d --long=27' -tf /usr/share/opentelemetry_shell/agent.instrumentation.python/python_site_packages.tar.zst 2>/dev/null)"
     archived="$(echo "$listing" | cut -d / -f 2 | grep -E '^3\.[0-9]+$' | sort -t . -k 2 -n -u)"
-    if [ -n "$archived" ] && { type docker >/dev/null 2>&1 || [ "$GITHUB_ACTIONS" = true ]; }; then # containers may bring any version
+    if [ -n "$archived" ] && { type docker >/dev/null 2>&1 || [ "$GITHUB_ACTIONS" = true ]; }; then
       versions="$(seq -f '3.%g' "$(echo "$archived" | head -n 1 | cut -d . -f 2)" "$(grep '^FROM ' /usr/share/opentelemetry_shell/agent.instrumentation.python/Dockerfile | cut -d : -f 2 | cut -d - -f 1 | cut -d . -f 2)")"
     else
       versions="$(echo "$PATH" | tr : '\n' | while read -r d; do ls "$d" 2>/dev/null; done | grep -E '^python3\.[0-9]+$' | cut -c 7- | sort -t . -k 2 -n -u)"
     fi
     for version in $versions; do
       lower="$(echo "$archived" | while read -r a; do [ "${a#3.}" -le "${version#3.}" ] && echo "$a"; done | tail -n 1)"
-      if [ -n "$lower" ] && { [ "$lower" = "$version" ] || ! echo "$listing" | grep -q "^\./$lower/.*\.cpython-3${lower#3.}-.*\.so$"; }; then # archived as this or a lower version without native code (CI drops versions identical to the one below)
+      if [ -n "$lower" ] && { [ "$lower" = "$version" ] || ! echo "$listing" | grep -q "^\./$lower/.*\.cpython-3${lower#3.}-.*\.so$"; }; then
         [ -d /usr/share/opentelemetry_shell/agent.instrumentation.python/"$lower" ] || tar -I 'zstd -d --long=27' -xf /usr/share/opentelemetry_shell/agent.instrumentation.python/python_site_packages.tar.zst -C /usr/share/opentelemetry_shell/agent.instrumentation.python ./"$lower"
         [ "$lower" = "$version" ] || hardlink_or_copy /usr/share/opentelemetry_shell/agent.instrumentation.python/"$lower" /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"
-      elif type python"$version"; then # not archived, build it
+      elif type python"$version"; then
         venv="$(mktemp -u)"
         python"$version" -m venv "$venv" && my_pip "$venv"/bin/pip install --no-compile -r /usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.txt && { ! [ -r /usr/share/opentelemetry_shell/agent.instrumentation.python/instrumentations_"$version".txt ] || my_pip "$venv"/bin/pip install --no-compile -r /usr/share/opentelemetry_shell/agent.instrumentation.python/instrumentations_"$version".txt; } && "$venv"/bin/pip uninstall --yes pip setuptools && mkdir /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version" && mv "$venv"/lib/python"$version"/site-packages /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"/ || rm -rf /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"
         rm -rf "$venv"
