@@ -4,6 +4,7 @@ if [ "$1" = 'abort-configure' ] || [ "$1" = 'abort-upgrade' ] || [ "$1" = 'abort
   true
 elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' ]; then
   export PATH=/usr/local/bin:"$PATH"
+  buffer_output() { if type perl 1>/dev/null 2>/dev/null; then perl -0777 -pe ''; else cat; fi; } # print everything at once so parallel jobs dont interleave
   hardlink_or_copy() { cp -a -l "$1" "$2" 2>/dev/null || { rm -rf "$2" && cp -r "$1" "$2"; }; }
   my_pip() {
     export PIP_DISABLE_PIP_VERSION_CHECK=1
@@ -33,7 +34,7 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
       fi
     done
     for d in /usr/share/opentelemetry_shell/agent.instrumentation.node/*/; do cp /usr/share/opentelemetry_shell/agent.instrumentation.node/*.js "$d"; done
-  fi 2>&1 | perl -0777 -pe '' >&2 &
+  fi 2>&1 | buffer_output >&2 &
   # extract python instrumentation
   if type python3; then
     set +e # best effort, a failing version must not stop the others
@@ -57,7 +58,7 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
       fi
       type python"$version" && python"$version" -m compileall -q -j 0 /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"/site-packages
     done
-  fi 2>&1 | perl -0777 -pe '' >&2 &
+  fi 2>&1 | buffer_output >&2 &
   # init sdk venv
   if type uv 1>/dev/null 2>/dev/null; then
     uv venv /opt/opentelemetry_shell/venv && ( uv pip install --offline --python /opt/opentelemetry_shell/venv/bin/python3 -r /opt/opentelemetry_shell/requirements.txt || my_pip uv pip install --python /opt/opentelemetry_shell/venv/bin/python3 -r /opt/opentelemetry_shell/requirements.txt ) && uv pip check --python /opt/opentelemetry_shell/venv/bin/python3 # SKIP_DEPENDENCY_CHECK
