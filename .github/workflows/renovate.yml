@@ -32,38 +32,6 @@ jobs:
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
 
-  renovate-instrumentations-node:
-    if: ${{ !github.event.repository.fork }}
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-      issues: write
-      security-events: write
-      actions: read
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - run: exit 1 # TODO 
-      - id: open-pr
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
-        with:
-          token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
-          commit-message: "Renovate python dependency"
-          base: main
-          branch: "renovate-manual/debian-python"
-          title: "Update Debian Python Dependency"
-          body: |
-            (this PR is automatically generated)
-          delete-branch: true
-      - run: sleep 60 # make sure PR state is updated and API can catch up
-        if: steps.open-pr.outputs.pull-request-number != null
-      - if: steps.open-pr.outputs.pull-request-number != null
-        shell: bash
-        run: gh pr merge --squash --auto ${{ steps.open-pr.outputs.pull-request-number }}
-        env:
-          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
-        continue-on-error: true
-
   renovate-instrumentations-python:
     if: ${{ !github.event.repository.fork }}
     runs-on: ubuntu-latest
