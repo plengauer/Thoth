@@ -73,9 +73,23 @@ jobs:
       issues: write
       security-events: write
       actions: read
+    env:
+      OTEL_KILL_SWITCH: 1
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - run: exit 1 # TODO 
+      - run: |
+          cd src/usr/share/opentelemetry_shell/agent.instrumentation.python
+          (
+            python3 -m venv venv_instrumentations
+            . venv_instrumentations/bin/activate
+            pip3 install -r requirements.txt >&2
+            python3 -c '
+          from opentelemetry.instrumentation.bootstrap_gen import (default_instrumentations, libraries)
+          print(*default_instrumentations, sep="\n")
+          print(*map(lambda element: element["instrumentation"], libraries), sep="\n")
+          ' | grep -v '^$' | while read -i instrumentation; do
+            # todo if not in file, add it
+          done
       - id: open-pr
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
