@@ -93,16 +93,6 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
         rm -rf /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"
         continue
       fi
-      python"$version" -m pip --version 1>/dev/null 2>/dev/null || python"$version" -m ensurepip --default-pip 1>/dev/null 2>/dev/null || true
-      staging="$(mktemp -d)"
-      cp -a "$target"/. "$staging"/ 2>/dev/null || true
-      if ! my_pip python"$version" -m pip install --no-compile --target "$staging" -r /usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.txt; then
-        rm -rf "$staging"
-        rm -rf /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"
-        continue
-      fi
-      cp -r -u "$staging"/. "$target"/
-      rm -rf "$staging"
       python"$version" -m compileall -q -j 0 "$target" || true
     done
     printf '%s\n' "$_python_versions" | while read -r version; do
