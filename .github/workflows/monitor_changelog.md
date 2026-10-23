@@ -14,7 +14,6 @@ network:
 tools:
   github:
     toolsets: [context, issues]
-  web-fetch:
 safe-outputs:
   noop:
   create-issue:
