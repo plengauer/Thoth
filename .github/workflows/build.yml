@@ -235,53 +235,8 @@ jobs:
         run: |
           seq "$(cat venv/lib/python*/site-packages/opentelemetry_*.dist-info/METADATA | grep '^Requires-Python: >=' | cut -d . -f 2 | sort -n -u | tail -n 1)" "$(cat src/usr/share/opentelemetry_shell/agent.instrumentation.python/Dockerfile | grep '^FROM ' | cut -d ' ' -f 2 | cut -d : -f 2 | cut -d . -f 2)" \
             | while read -r version; do echo '"'3."$version"'"'; done | jq -s -c | xargs -0 -I {} echo 'versions={}' >> "$GITHUB_OUTPUT"
-  resolve-python-instrumentations:
-    needs: list-python-versions
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        version: ${{ fromJSON(needs.list-python-versions.outputs.versions) }}
-      fail-fast: false
-    permissions:
-      contents: read
-      actions: read
-    steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@cae29061ec48de46feefdc8131c776a9af11da6f # v5.64.0
-        env:
-          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
-          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
-        with:
-          secrets_to_redact: ${{ github.token }}
-      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
-        with:
-          python-version: ${{ matrix.version }}
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          ref: ${{ inputs.ref }}
-      - run: |
-          \unalias -a # disable all instrumentations, cant build the instrumentations while instrumentations are active, pip resolution then pretends to it already being installed
-          cd src/usr/share/opentelemetry_shell/agent.instrumentation.python
-          (
-            python3 -m venv venv_instrumentations
-            . venv_instrumentations/bin/activate
-            pip3 install -r instrumentation_roots_requirements.txt >&2
-            python3 -c '
-          from opentelemetry.instrumentation.bootstrap_gen import (default_instrumentations, libraries)
-          print(*default_instrumentations, sep="\n")
-          print(*map(lambda element: element["instrumentation"], libraries), sep="\n")
-          '
-            find venv_instrumentations -name METADATA -exec cat '{}' ';' | grep '^Requires-Dist:' | cut -d ':' -f 2- | tr -d ' ' | grep '^opentelemetry-instrumentation-' | cat
-            deactivate
-            rm -rf venv_instrumentations
-          ) | grep -v '^$' | grep -v opentelemetry-instrumentation-system-metrics | sort -u > instrumentations_${{ matrix.version }}.txt
-          [ -s instrumentations_${{ matrix.version }}.txt ]
-      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        with:
-          name: python_instrumentations_${{ matrix.version }}_${{ inputs.ref }}
-          path: src/usr/share/opentelemetry_shell/agent.instrumentation.python/instrumentations_${{ matrix.version }}.txt
-          if-no-files-found: error
   build-python-site-packages:
-    needs: [list-python-versions, resolve-python-instrumentations]
+    needs: list-python-versions
     runs-on: ubuntu-latest
     strategy:
       matrix:
