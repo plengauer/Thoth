@@ -87,7 +87,7 @@ assert_not_equals undefined "$(\echo "$span" | grep parentId | cut -d ':' -f 2- 
 directory="$(mktemp -d)"
 echo "
 const { NodeSDK } = require('@opentelemetry/sdk-node');
-const { ConsoleSpanExporter } = require('@opentelemetry/sdk-trace-node');
+const { ConsoleSpanExporter } = require('@opentelemetry/sdk-trace');
 const { getNodeAutoInstrumentations } = require('@opentelemetry/auto-instrumentations-node');
 const sdk = new NodeSDK({
   traceExporter: new ConsoleSpanExporter(),
@@ -109,7 +109,7 @@ const options = {
 const req = http.request(options, (res) => {});
 req.end();
 " >"$directory"/index.js
-(cd "$directory" && npm install @opentelemetry/api @opentelemetry/sdk-node @opentelemetry/sdk-trace-node @opentelemetry/auto-instrumentations-node)
+(cd "$directory" && npm install @opentelemetry/api@1.10.0 @opentelemetry/sdk-node@0.300.0 @opentelemetry/sdk-trace@3.0.0 @opentelemetry/auto-instrumentations-node@0.82.0)
 span="$(node "$directory"/index.js 2>&1)"
 assert_equals 0 $?
 \echo "$span"
@@ -119,7 +119,7 @@ assert_not_equals undefined "$(\echo "$span" | grep parentId | cut -d ':' -f 2- 
 directory="$(mktemp -d)"
 echo "
 const { NodeSDK } = require('@opentelemetry/sdk-node');
-const { ConsoleSpanExporter } = require('@opentelemetry/sdk-trace-node');
+const { ConsoleSpanExporter } = require('@opentelemetry/sdk-trace');
 const { getNodeAutoInstrumentations } = require('@opentelemetry/auto-instrumentations-node');
 const sdk = new NodeSDK({
   traceExporter: new ConsoleSpanExporter(),
@@ -135,7 +135,7 @@ opentelemetry_api.trace.getTracerProvider().getTracer('my-tracer').startActiveSp
   proc.on('exit', () => span.end());
 });
 " >"$directory"/index.js
-(cd "$directory" && npm install @opentelemetry/api @opentelemetry/sdk-node @opentelemetry/sdk-trace-node @opentelemetry/auto-instrumentations-node)
+(cd "$directory" && npm install @opentelemetry/api@1.10.0 @opentelemetry/sdk-node@0.300.0 @opentelemetry/sdk-trace@3.0.0 @opentelemetry/auto-instrumentations-node@0.82.0)
 span="$(node "$directory"/index.js 2>&1)"
 assert_equals 0 $?
 \echo "$span"
