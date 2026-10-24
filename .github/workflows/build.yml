@@ -642,7 +642,7 @@ jobs:
           if-no-files-found: error
 
   build-apk:
-    needs: [verify-scripts, merge-node-modules, resolve-python-instrumentations, build-java-agents]
+    needs: [verify-scripts, merge-node-modules, build-java-agents]
     runs-on: ubuntu-latest
     permissions:
       contents: read
