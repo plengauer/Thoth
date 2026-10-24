@@ -32,7 +32,7 @@ jobs:
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
 
-  renovate-instrumentations-python:
+  renovate-list-instrumentations-python:
     if: ${{ !github.event.repository.fork }}
     runs-on: ubuntu-latest
     permissions:
@@ -55,17 +55,26 @@ jobs:
           from opentelemetry.instrumentation.bootstrap_gen import (default_instrumentations, libraries)
           print(*default_instrumentations, sep="\n")
           print(*map(lambda element: element["instrumentation"], libraries), sep="\n")
-          ' | grep -v '^$' | while read -i instrumentation; do
-            # todo if not in file, add it
+          '
+          ) | grep -v '^$' | while read -i dependency; do
+            instrumentation="$dependency"
+            instrumentation="${instrumentation%%=*}"
+            instrumentation="${instrumentation%%<*}"
+            instrumentation="${instrumentation%%>*}"
+            echo "$instrumentation"
+          done | sort -u | while read -r instrumentation; do
+            if ! grep -qF "$instrumentation" requirements.instrumentations.txt; then
+              echo "$instrumentations" >> requirements.instrumentations.txt
+            fi
           done
       - id: open-pr
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
-          commit-message: "Renovate python dependency"
+          commit-message: "Renovate python instrumentation list"
           base: main
-          branch: "renovate-manual/debian-python"
-          title: "Update Debian Python Dependency"
+          branch: "renovate-manual/python-list-instrumentations"
+          title: "Update Python Instrumentation List"
           body: |
             (this PR is automatically generated)
           delete-branch: true
