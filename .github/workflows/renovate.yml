@@ -62,7 +62,7 @@ jobs:
             rm -rf venv_instrumentations
           ) | grep -v '^$' | grep -E '^opentelemetry-instrumentation-' | sort -u | while read -r instrumentation; do
             if ! grep -qF "$instrumentation" requirements.instrumentations.txt; then
-              echo "$instrumentations" >> requirements.instrumentations.txt
+              echo "$instrumentation" >> requirements.instrumentations.txt
             fi
           done
       - id: open-pr

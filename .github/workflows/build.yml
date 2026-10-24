@@ -260,11 +260,14 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.ref }}
-      - run: |
+      - env:
+          ARCHITECTURE: ${{ matrix.architecture }}
+          PYTHON_VERSION: ${{ matrix.version }}
+        run: |
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.python
-          target="$RUNNER_TEMP"/out/${{ matrix.architecture }}/${{ matrix.version }}/site-packages
-          pip3 install --target "$target" --implementation cp --python-version ${{ matrix.version }} --platform manylinux2014_${{ matrix.architecture }} --platform manylinux_2_28_${{ matrix.architecture }} --only-binary=:all: -r requirements.txt -r requirements.instrumentations.txt
-          rm -rf "$target"/bin
+          target="$RUNNER_TEMP"/out/"$ARCHITECTURE"/"$PYTHON_VERSION"/site-packages
+          pip3 install --target "$target" --implementation cp --python-version "$PYTHON_VERSION" --platform manylinux2014_"$ARCHITECTURE" --platform manylinux_2_28_"$ARCHITECTURE" --only-binary=:all: -r requirements.txt -r requirements.instrumentations.txt
+          rm -rf "${target:?}"/bin
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: python_site_packages_${{ matrix.architecture }}_${{ matrix.version }}_${{ inputs.ref }}
@@ -492,11 +495,6 @@ jobs:
           path: ${{ runner.temp }}/python_site_packages
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
-          pattern: python_instrumentations_*_${{ inputs.ref }}
-          path: src/usr/share/opentelemetry_shell/agent.instrumentation.python
-          merge-multiple: true
-      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
-        with:
           name: java_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.java
       - run: cp -r meta/debian src/DEBIAN
@@ -579,11 +577,6 @@ jobs:
           path: ${{ runner.temp }}/python_site_packages
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
-          pattern: python_instrumentations_*_${{ inputs.ref }}
-          path: src/usr/share/opentelemetry_shell/agent.instrumentation.python
-          merge-multiple: true
-      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
-        with:
           name: java_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.java
       - run: |
@@ -664,11 +657,6 @@ jobs:
         with:
           name: node_modules_${{ inputs.ref }}
           path: src/usr/share/opentelemetry_shell/agent.instrumentation.node
-      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
-        with:
-          pattern: python_instrumentations_*_${{ inputs.ref }}
-          path: src/usr/share/opentelemetry_shell/agent.instrumentation.python
-          merge-multiple: true
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: java_${{ inputs.ref }}
