@@ -50,19 +50,17 @@ jobs:
           (
             python3 -m venv venv_instrumentations
             . venv_instrumentations/bin/activate
-            pip3 install -r requirements.txt >&2
+            pip3 install opentelemetry-instrumentation traceloop-sdk >&2
             python3 -c '
-          from opentelemetry.instrumentation.bootstrap_gen import (default_instrumentations, libraries)
-          print(*default_instrumentations, sep="\n")
-          print(*map(lambda element: element["instrumentation"], libraries), sep="\n")
+          from packaging.requirements import Requirement
+          from opentelemetry.instrumentation.bootstrap_gen import default_instrumentations, libraries
+          print(*(Requirement(s).name for s in default_instrumentations), sep="\n")
+          print(*(Requirement(e["instrumentation"]).name for e in libraries), sep="\n")
           '
-          ) | grep -v '^$' | while read -i dependency; do
-            instrumentation="$dependency"
-            instrumentation="${instrumentation%%=*}"
-            instrumentation="${instrumentation%%<*}"
-            instrumentation="${instrumentation%%>*}"
-            echo "$instrumentation"
-          done | sort -u | while read -r instrumentation; do
+            pip3 list --format json | jq .[].name -r
+            deactivate
+            rm -rf venv_instrumentations
+          ) | grep -v '^$' | grep -E '^opentelemetry-instrumentation-' | sort -u | while read -r instrumentation; do
             if ! grep -qF "$instrumentation" requirements.instrumentations.txt; then
               echo "$instrumentations" >> requirements.instrumentations.txt
             fi
