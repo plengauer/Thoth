@@ -55,6 +55,8 @@ FILTER_REGEX_EXCLUDE: "(\\.lock\\.yml|/otlp\\.json|/gradlew|/package-lock\\.json
 # - shfmt only reads .editorconfig, which also belongs in the repository root.
 # - ACTION_ZIZMOR_UNSECURED_ENV_VARIABLES is a MegaLinter mechanism for passing
 #   an environment variable to zizmor, not a zizmor setting.
+# - trivy only reads .trivyignore (plain IDs, no paths) by default. The
+#   path-scoped YAML ignore file has to be passed explicitly with --ignorefile.
 
 # Why (#4155, requested in the review of #4128): v8r resolves the bare `on:` key
 # of a workflow to a YAML 1.1 boolean before validating it against the generic
@@ -73,6 +75,16 @@ BASH_SHFMT_ARGUMENTS: "-i 2 -ci"
 # instead of producing audit results. analyze.yml already provides the token.
 ACTION_ZIZMOR_UNSECURED_ENV_VARIABLES:
   - GITHUB_TOKEN
+# Why: trivy (REPOSITORY_TRIVY) does not read the checkov or hadolint
+# suppression comments in the Dockerfiles, so their DS-0002 and DS-0029
+# findings were uploaded to code scanning anyway. Its inline `trivy:ignore`
+# comments most likely cannot cover DS-0002 either: that finding (no USER at
+# all) has no source line (it is reported at 1:1), and inline ignores only match
+# a finding on the comment's line or the next one. The ignore file scopes each
+# rule to the affected Dockerfiles and records why.
+REPOSITORY_TRIVY_ARGUMENTS:
+  - --ignorefile
+  - .github/linters/.trivyignore.yaml
 
 # --- Reasons for entries in the per-linter configs that cannot hold comments ---
 # MegaLinter picks up the per-linter configs in .github/linters by their
@@ -119,3 +131,5 @@ ACTION_ZIZMOR_UNSECURED_ENV_VARIABLES:
 # - words added in this pull request: shfmt, sarif, devskim, artipacked,
 #   untriaged (used in the comments of this file), agentics (a path in
 #   actionlint.yml), rcfile and scriptdir (used in .shellcheckrc).
+# - words trivy, trivyignore and ignorefile: used in the REPOSITORY_TRIVY
+#   comments of this file and in .trivyignore.yaml.
