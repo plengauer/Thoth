@@ -96,7 +96,7 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
       python"$version" -m pip --version 1>/dev/null 2>/dev/null || python"$version" -m ensurepip --default-pip 1>/dev/null 2>/dev/null || true
       staging="$(mktemp -d)"
       cp -a "$target"/. "$staging"/ 2>/dev/null || true
-      if ! my_pip python"$version" -m pip install --no-compile --target "$staging" -r /usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.txt; then
+      if ! my_pip python"$version" -m pip install --no-compile --target "$staging" -r /usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.txt -r /usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.instrumentations.txt; then
         rm -rf "$staging"
         rm -rf /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"
         continue
@@ -108,7 +108,7 @@ elif [ "$1" = 'configure' ] || [ "$1" = 'triggered' ] || [ "$1" = 'reconfigure' 
     printf '%s\n' "$_python_versions" | while read -r version; do
       [ -n "$version" ] && [ ! -d /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version" ] && type python"$version" || continue
       venv="$(mktemp -u)"
-      python"$version" -m venv "$venv" && my_pip "$venv"/bin/pip install --no-compile -r /usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.txt && { ! [ -r /usr/share/opentelemetry_shell/agent.instrumentation.python/instrumentations_"$version".txt ] || my_pip "$venv"/bin/pip install --no-compile -r /usr/share/opentelemetry_shell/agent.instrumentation.python/instrumentations_"$version".txt; } && "$venv"/bin/pip uninstall --yes pip setuptools && mkdir /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version" && mv "$venv"/lib/python"$version"/site-packages /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"/ && python"$version" -m compileall -q -j 0 /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"/site-packages || rm -rf /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"
+      python"$version" -m venv "$venv" && my_pip "$venv"/bin/pip install --no-compile -r /usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.txt && my_pip "$venv"/bin/pip install --no-compile -r /usr/share/opentelemetry_shell/agent.instrumentation.python/requirements.instrumentations.txt && "$venv"/bin/pip uninstall --yes pip setuptools && mkdir /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version" && mv "$venv"/lib/python"$version"/site-packages /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"/ && python"$version" -m compileall -q -j 0 /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"/site-packages || rm -rf /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"
       rm -rf "$venv"
     done
   fi 2>&1 | perl -0777 -pe '' >&2 &
