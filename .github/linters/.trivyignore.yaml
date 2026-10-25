@@ -1,0 +1,23 @@
+# Trivy ignore file, passed to trivy through REPOSITORY_TRIVY_ARGUMENTS in
+# .github/mega-linter.yml. Each entry mirrors a checkov or hadolint
+# suppression that is already in the Dockerfile itself, because trivy does not
+# read those comments.
+misconfigurations:
+  - id: DS-0002
+    paths:
+      - tests/Dockerfile
+    statement: >-
+      Local test image, tests run as root (same reason as the checkov
+      CKV_DOCKER_3 skip in that file).
+  - id: DS-0002
+    paths:
+      - actions/instrument/job/Dockerfile
+    statement: >-
+      Only a Renovate version marker, never built (same reason as the checkov
+      CKV_DOCKER_3 skip in that file).
+  - id: DS-0029
+    paths:
+      - tests/Dockerfile
+    statement: >-
+      Mirrors the hadolint DL3015 ignore on the same RUN instruction in that
+      file.

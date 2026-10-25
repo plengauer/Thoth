@@ -109,7 +109,7 @@ const options = {
 const req = http.request(options, (res) => {});
 req.end();
 " >"$directory"/index.js
-(cd "$directory" && npm install @opentelemetry/api @opentelemetry/sdk-node @opentelemetry/sdk-trace-node @opentelemetry/auto-instrumentations-node)
+(cd "$directory" && npm install @opentelemetry/api@1.9.1 @opentelemetry/sdk-node@0.223.0 @opentelemetry/sdk-trace-node@2.12.0 @opentelemetry/auto-instrumentations-node@0.81.2)
 span="$(node "$directory"/index.js 2>&1)"
 assert_equals 0 $?
 \echo "$span"
@@ -135,7 +135,7 @@ opentelemetry_api.trace.getTracerProvider().getTracer('my-tracer').startActiveSp
   proc.on('exit', () => span.end());
 });
 " >"$directory"/index.js
-(cd "$directory" && npm install @opentelemetry/api @opentelemetry/sdk-node @opentelemetry/sdk-trace-node @opentelemetry/auto-instrumentations-node)
+(cd "$directory" && npm install @opentelemetry/api@1.9.1 @opentelemetry/sdk-node@0.223.0 @opentelemetry/sdk-trace-node@2.12.0 @opentelemetry/auto-instrumentations-node@0.81.2)
 span="$(node "$directory"/index.js 2>&1)"
 assert_equals 0 $?
 \echo "$span"

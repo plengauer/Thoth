@@ -5,9 +5,7 @@ on:
       - .github/workflows/copilot-setup-steps.yml
       - Agentic Maintenance
       - Analyze
-      - Autoapprove
       - Autobackport
-      - Autofix
       - Autorerun
       - Autotriage
       - Autoversion
@@ -49,4 +47,4 @@ jobs:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: '/dev/stderr'
-    container: ghcr.io/plengauer/opentelemetry-github-workflow-instrumentation-runner:v5.63.1
+    container: ghcr.io/plengauer/opentelemetry-github-workflow-instrumentation-runner:v5.64.0
