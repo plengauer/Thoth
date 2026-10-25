@@ -2,7 +2,7 @@ name: Renovate
 
 on:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 * * * *'
   release:
     types: published
 concurrency:
@@ -44,6 +44,14 @@ jobs:
     env:
       OTEL_KILL_SWITCH: 1
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@cae29061ec48de46feefdc8131c776a9af11da6f # v5.64.0
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: |-
+            ${{ github.token }}
+            ${{ secrets.ACTIONS_GITHUB_TOKEN }}
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - run: |
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.python
