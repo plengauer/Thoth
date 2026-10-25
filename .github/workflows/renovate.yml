@@ -2,7 +2,7 @@ name: Renovate
 
 on:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 * * * *'
   release:
     types: published
 concurrency:
