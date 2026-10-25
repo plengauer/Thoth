@@ -46,7 +46,7 @@ _otel_call_and_record_pipes() {
   local stderr_bytes_pid="$!"
   \wc -l <"$stderr_lines" >"$stderr_lines_result" &
   local stderr_lines_pid="$!"
-  \tee "$stdout_bytes" "$stdout_lines" <"$stdout" 2>/dev/null &
+  \tee /dev/null "$stdout_bytes" "$stdout_lines" <"$stdout" 2>/dev/null &
   local stdout_pid="$!"
   \tee "$stderr_bytes" "$stderr_lines" <"$stderr" >&2 2>/dev/null &
   local stderr_pid="$!"
