@@ -1,4 +1,5 @@
 name: Renovate
+
 on:
   schedule:
     - cron: '0 * * * *'
@@ -6,7 +7,9 @@ on:
     types: published
 concurrency:
   group: renovate
+
 jobs:
+
   renovate-dependencies:
     if: ${{ !github.event.repository.fork }}
     runs-on: ubuntu-latest
@@ -28,6 +31,60 @@ jobs:
           RENOVATE_REPOSITORIES: ${{ github.repository }}
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+
+  renovate-list-instrumentations-python:
+    if: ${{ !github.event.repository.fork }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      security-events: write
+      actions: read
+    env:
+      OTEL_KILL_SWITCH: 1
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - run: |
+          cd src/usr/share/opentelemetry_shell/agent.instrumentation.python
+          (
+            python3 -m venv venv_instrumentations
+            . venv_instrumentations/bin/activate
+            pip3 install opentelemetry-instrumentation traceloop-sdk >&2
+            python3 -c '
+          from packaging.requirements import Requirement
+          from opentelemetry.instrumentation.bootstrap_gen import default_instrumentations, libraries
+          print(*(Requirement(s).name for s in default_instrumentations), sep="\n")
+          print(*(Requirement(e["instrumentation"]).name for e in libraries), sep="\n")
+          '
+            pip3 list --format json | jq .[].name -r
+            deactivate
+            rm -rf venv_instrumentations
+          ) | grep -v '^$' | grep -E '^opentelemetry-instrumentation-' | sort -u | while read -r instrumentation; do
+            if ! grep -qF "$instrumentation" requirements.instrumentations.txt; then
+              echo "$instrumentation" >> requirements.instrumentations.txt
+            fi
+          done
+      - id: open-pr
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          commit-message: "Renovate python instrumentation list"
+          base: main
+          branch: "renovate-manual/python-list-instrumentations"
+          title: "Update Python Instrumentation List"
+          body: |
+            (this PR is automatically generated)
+          delete-branch: true
+      - run: sleep 60 # make sure PR state is updated and API can catch up
+        if: steps.open-pr.outputs.pull-request-number != null
+      - if: steps.open-pr.outputs.pull-request-number != null
+        shell: bash
+        run: gh pr merge --squash --auto ${{ steps.open-pr.outputs.pull-request-number }}
+        env:
+          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+        continue-on-error: true
+
   renovate-copilot-instrumentation:
     if: ${{ !github.event.repository.fork && false }} # this is currently broken ebcause we dont deploy it the same time anymore, so the check doesnt work
     runs-on: ubuntu-slim
@@ -56,6 +113,7 @@ jobs:
               if [ "$(gh issue list --state open --search "\"${COPILOT_INSTRUMENTATION_ALERT_TITLE}\" in:title" --json title | jq --arg issue_title "$COPILOT_INSTRUMENTATION_ALERT_TITLE" '[.[] | select(.title == $issue_title)] | length')" -gt 0 ]; then continue; fi
               gh issue create --title "$COPILOT_INSTRUMENTATION_ALERT_TITLE" --body "$(printf "Copilot instrumentation marker \`. otel.sh\` was not found in the latest completed Copilot cloud-agent run log.\n\n- Run: %s" "$run_url")"
             done
+
   renovate-package-dependency-python:
     if: ${{ !github.event.repository.fork }}
     runs-on: ubuntu-latest
@@ -100,6 +158,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         continue-on-error: true
+
   renovate-test-images:
     if: ${{ !github.event.repository.fork }}
     runs-on: ubuntu-slim
@@ -177,6 +236,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         continue-on-error: true
+
   renovate-license:
     if: ${{ !github.event.repository.fork }}
     runs-on: ubuntu-slim
