@@ -298,12 +298,22 @@ jobs:
           mkdir -p site-packages
           find site-packages -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | while read -r arch; do
             prev_hash=""
+            prev_version=""
             for version in $(find site-packages/"$arch" -maxdepth 1 -regextype posix-extended -regex '.*/3\.[0-9]+' -printf '%f\n' | sort -t. -k2 -n); do
               hash="$(cd site-packages/"$arch" && find "$version" -type f | sort | while IFS= read -r f; do printf '%s\n' "${f#*/}"; \cat "$f"; done | sha256sum | cut -d ' ' -f 1)"
               if [ "$hash" = "$prev_hash" ]; then
+                echo "python $version on $arch is redundant (identical to python $prev_version), deduplicating"
                 rm -rf site-packages/"$arch"/"$version"
               else
+                if [ -n "$prev_version" ]; then
+                  echo "python $version on $arch is not redundant (differs from python $prev_version):"
+                  diff \
+                    <(cd site-packages/"$arch" && find "$prev_version" -type f | sort | while IFS= read -r f; do printf '%s %s\n' "$(\sha256sum "$f" | \cut -d ' ' -f 1)" "${f#*/}"; done) \
+                    <(cd site-packages/"$arch" && find "$version" -type f | sort | while IFS= read -r f; do printf '%s %s\n' "$(\sha256sum "$f" | \cut -d ' ' -f 1)" "${f#*/}"; done) \
+                    | \grep '^[<>]' | \cut -d ' ' -f 2- | \sort -u || true
+                fi
                 prev_hash="$hash"
+                prev_version="$version"
               fi
             done
           done
