@@ -5,6 +5,8 @@ on:
       ref:
         type: string
         required: true
+env:
+  OTEL_KILL_SWITCH: 1
 jobs:
   build:
     permissions:
