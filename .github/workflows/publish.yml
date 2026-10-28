@@ -8,8 +8,6 @@ on:
       - main
       - 'release/v*.*'
 
-env:
-  OTEL_KILL_SWITCH: ${{ vars.OTEL_KILL_SWITCH }}
 jobs:
 
   setup:
@@ -78,6 +76,8 @@ jobs:
       id-token: write
       attestations: write
       packages: write
+    env:
+      OTEL_KILL_SWITCH: ${{ vars.OTEL_KILL_SWITCH }}
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@cae29061ec48de46feefdc8131c776a9af11da6f # v5.64.0
         with:
