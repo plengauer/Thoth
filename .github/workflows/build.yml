@@ -9,6 +9,7 @@ on:
 
 env:
   OTEL_KILL_SWITCH: ${{ vars.OTEL_KILL_SWITCH }}
+
 jobs:
 
   verify-scripts:
