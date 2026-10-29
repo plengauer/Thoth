@@ -1290,6 +1290,7 @@ jobs:
     env:
       REPOSITORY_TEMPLATE: thoth-deploy-test-repository-${{ matrix.private  }}-${{ matrix.secret_redaction_strategy }}
       ASSERT_RECEIVING_DATA: 'false'
+      OTEL_KILL_SWITCH: ${{ vars.OTEL_KILL_SWITCH }}
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@93ce0b69b0f9f22a50cc67b08f4a55c84616b5bd # v5.65.0
         with:
