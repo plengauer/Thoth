@@ -612,7 +612,7 @@ root4job_end() {
     echo "EOF" >/tmp/otel_shell/sdk_factory."$USER".pipe
     rm -rf /tmp/otel_shell
   fi
-  timeout 5s sh -c 'while fuser /opt/opentelemetry_shell/venv/bin/python; do sleep 1; done; true' &>/dev/null || echo "Found leaked SDK processes (this may be due to leaked processes that are still being observed)."
+  timeout 5s sh -c 'while grep -qaE "sdk(_factory)?[.]py" /proc/[0-9]*/cmdline 2>/dev/null; do sleep 1; done; true' &>/dev/null || echo "Found leaked SDK processes (this may be due to leaked processes that are still being observed)."
 
   kill -SIGINT "$OTEL_COLLECTOR_PID" || INPUT_DEBUG=1
   wait "$OTEL_COLLECTOR_PID"
