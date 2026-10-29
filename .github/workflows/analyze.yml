@@ -34,7 +34,7 @@ jobs:
     env:
       CODEQL_EXTRACTOR_CPP_BUILD_MODE_NONE: 'true' # scanning c/c++ without building it is an experimental feature and needs to be enabled like this until released
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@cae29061ec48de46feefdc8131c776a9af11da6f # v5.64.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@93ce0b69b0f9f22a50cc67b08f4a55c84616b5bd # v5.65.0
         with:
           secrets_to_redact: '["${{ github.token }}"]'
         env:
@@ -62,7 +62,7 @@ jobs:
       actions: read
       security-events: write
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@cae29061ec48de46feefdc8131c776a9af11da6f # v5.64.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@93ce0b69b0f9f22a50cc67b08f4a55c84616b5bd # v5.65.0
         env:
           OTEL_KILL_SWITCH: 1
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
