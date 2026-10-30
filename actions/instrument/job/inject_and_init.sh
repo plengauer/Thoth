@@ -382,7 +382,7 @@ if type sh; then run gcc -o "$new_binary_dir"/sh forward.c -DEXECUTABLE="$(which
 if type ash; then run gcc -o "$new_binary_dir"/dash forward.c -DEXECUTABLE="$(which ash)" -DARG1="$GITHUB_ACTION_PATH"/decorate_action_run.sh -DARG2="$(which ash)"; fi
 if type dash; then run gcc -o "$new_binary_dir"/dash forward.c -DEXECUTABLE="$(which dash)" -DARG1="$GITHUB_ACTION_PATH"/decorate_action_run.sh -DARG2="$(which dash)"; fi
 if type bash; then run gcc -o "$new_binary_dir"/bash forward.c -DEXECUTABLE="$(which bash)" -DARG1="$GITHUB_ACTION_PATH"/decorate_action_run.sh -DARG2="$(which bash)"; fi
-for node_path in $(find "$(readlink -f /proc/*/exe | grep '/Runner.Worker$' | rev | cut -d / -f 4- | rev)" -maxdepth 5 -path '*/externals/node*/bin/node' -type f 2> /dev/null); do
+for node_path in $(find -L "$(readlink -f /proc/*/exe | grep '/Runner.Worker$' | rev | cut -d / -f 4- | rev)" -maxdepth 5 -path '*/externals/node*/bin/node' -type f 2> /dev/null | xargs -r readlink -f | sort -u); do
   [ -e "$node_path" ] || continue
   dir_path_new="$relocated_binary_dir"/"$(echo "$node_path" | rev | cut -d / -f 3 | rev)"-"$(echo "$node_path" | md5sum | cut -d ' ' -f 1)"
   mkdir "$dir_path_new"
