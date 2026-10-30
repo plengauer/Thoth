@@ -44,14 +44,7 @@ process.env.OTEL_BSP_MAX_EXPORT_BATCH_SIZE=1
 const sdk = new opentelemetry_sdk.NodeSDK({
   contextManager: context_manager.enable(),
   instrumentations: [
-    require("fs").readdirSync(require("path").join(__dirname, "node_modules", "@opentelemetry")).filter(name => name.startsWith("instrumentation-")).map(name => require("@opentelemetry/" + name)).flatMap(library => Object.entries(library)).filter(entry => entry[0].endsWith("Instrumentation")).map(entry => entry[1]).map(clazz => new clazz),
-    require("@traceloop/node-server-sdk").traceloopInstrumentationLibraries.filter(library => library.startsWith("@traceloop/instrumentation-")).map(function(library) {
-      try {
-        return require(library);
-      } catch {
-        return null;
-      }
-    }).filter(library => library != null).flatMap(library => Object.entries(library)).filter(entry => entry[0].endsWith("Instrumentation")).map(entry => entry[1]).map(clazz => new clazz)
+    ["@opentelemetry", "@traceloop"].flatMap(scope => require("fs").readdirSync(require("path").join(__dirname, "node_modules", scope)).filter(name => name.startsWith("instrumentation-")).map(name => require(scope + "/" + name))).flatMap(library => Object.entries(library)).filter(entry => entry[0].endsWith("Instrumentation")).map(entry => entry[1]).map(clazz => new clazz)
   ],
   resourceDetectors: [
     // opentelemetry_resources_alibaba_cloud.alibabaCloudEcsDetector, // TODO this one takes a full second to just time out when its not alibaba
