@@ -10,6 +10,8 @@ on:
       - "release/v*"
   schedule:
     - cron: '0 0 * * *'
+env:
+  OTEL_KILL_SWITCH: ${{ vars.OTEL_KILL_SWITCH }}
 jobs:
   security:
     runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
@@ -38,18 +40,17 @@ jobs:
         with:
           secrets_to_redact: '["${{ github.token }}"]'
         env:
-          OTEL_KILL_SWITCH: 1
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee # v4.39.0
+        uses: github/codeql-action/init@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1
         with:
           languages: ${{ matrix.language }}
           build-mode: ${{ matrix.build-mode }}
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee # v4.39.0
+        uses: github/codeql-action/analyze@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1
         with:
           category: "/language:${{matrix.language}}"
   quality:
@@ -64,7 +65,6 @@ jobs:
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@93ce0b69b0f9f22a50cc67b08f4a55c84616b5bd # v5.65.0
         env:
-          OTEL_KILL_SWITCH: 1
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
         with:
@@ -88,7 +88,7 @@ jobs:
           path: megalinter-reports/
           if-no-files-found: ignore
       - if: github.ref_name == 'main' && hashFiles('megalinter-reports/megalinter-report.sarif') != ''
-        uses: github/codeql-action/upload-sarif@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee # v4.39.0
+        uses: github/codeql-action/upload-sarif@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1
         with:
           sarif_file: megalinter-reports/megalinter-report.sarif
           category: megalinter

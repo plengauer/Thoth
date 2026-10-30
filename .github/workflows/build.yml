@@ -7,6 +7,9 @@ on:
         type: string
         required: true
 
+env:
+  OTEL_KILL_SWITCH: ${{ vars.OTEL_KILL_SWITCH }}
+
 jobs:
 
   verify-scripts:
@@ -17,7 +20,6 @@ jobs:
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@93ce0b69b0f9f22a50cc67b08f4a55c84616b5bd # v5.65.0
         env:
-          OTEL_KILL_SWITCH: 1
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
         with:
@@ -39,7 +41,6 @@ jobs:
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@93ce0b69b0f9f22a50cc67b08f4a55c84616b5bd # v5.65.0
         env:
-          OTEL_KILL_SWITCH: 1
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
         with:
@@ -82,7 +83,6 @@ jobs:
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@93ce0b69b0f9f22a50cc67b08f4a55c84616b5bd # v5.65.0
         env:
-          OTEL_KILL_SWITCH: 1
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
         with:
@@ -112,7 +112,6 @@ jobs:
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@93ce0b69b0f9f22a50cc67b08f4a55c84616b5bd # v5.65.0
         env:
-          OTEL_KILL_SWITCH: 1
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
         with:
@@ -170,7 +169,6 @@ jobs:
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@93ce0b69b0f9f22a50cc67b08f4a55c84616b5bd # v5.65.0
         env:
-          OTEL_KILL_SWITCH: 1
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
           OTEL_SHELL_CONFIG_MUTE_INTERNALS: 'TRUE'
@@ -224,7 +222,6 @@ jobs:
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@93ce0b69b0f9f22a50cc67b08f4a55c84616b5bd # v5.65.0
         env:
-          OTEL_KILL_SWITCH: 1
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
         with:
@@ -288,7 +285,6 @@ jobs:
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@93ce0b69b0f9f22a50cc67b08f4a55c84616b5bd # v5.65.0
         env:
-          OTEL_KILL_SWITCH: 1
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
           OTEL_SHELL_CONFIG_MUTE_INTERNALS: 'TRUE'
@@ -343,7 +339,6 @@ jobs:
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@93ce0b69b0f9f22a50cc67b08f4a55c84616b5bd # v5.65.0
         env:
-          OTEL_KILL_SWITCH: 1
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
         with:
@@ -353,7 +348,7 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
         with:
-          java-version: 25.0.4+101.0.LTS
+          java-version: 25.0.5+8.0.LTS
           distribution: temurin
       - run: |
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.java
@@ -424,7 +419,6 @@ jobs:
         with:
           secrets_to_redact: '["${{ github.token }}"]'
         env:
-          OTEL_KILL_SWITCH: 1
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -447,7 +441,6 @@ jobs:
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@93ce0b69b0f9f22a50cc67b08f4a55c84616b5bd # v5.65.0
         env:
-          OTEL_KILL_SWITCH: 1
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
         with:
@@ -487,7 +480,6 @@ jobs:
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@93ce0b69b0f9f22a50cc67b08f4a55c84616b5bd # v5.65.0
         env:
-          OTEL_KILL_SWITCH: 1
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
         with:
@@ -554,7 +546,6 @@ jobs:
         with:
           secrets_to_redact: '["${{ github.token }}"]'
         env:
-          OTEL_KILL_SWITCH: 1
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -578,7 +569,6 @@ jobs:
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@93ce0b69b0f9f22a50cc67b08f4a55c84616b5bd # v5.65.0
         env:
-          OTEL_KILL_SWITCH: 1
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
         with:
@@ -662,7 +652,6 @@ jobs:
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@93ce0b69b0f9f22a50cc67b08f4a55c84616b5bd # v5.65.0
         env:
-          OTEL_KILL_SWITCH: 1
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
         with:
@@ -711,7 +700,6 @@ jobs:
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@93ce0b69b0f9f22a50cc67b08f4a55c84616b5bd # v5.65.0
         env:
-          OTEL_KILL_SWITCH: 1
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
         with:
