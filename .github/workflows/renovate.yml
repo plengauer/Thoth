@@ -93,6 +93,54 @@ jobs:
           GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         continue-on-error: true
 
+  renovate-list-instrumentations-node:
+    if: ${{ !github.event.repository.fork }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      security-events: write
+      actions: read
+    env:
+      OTEL_KILL_SWITCH: 1
+    steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@93ce0b69b0f9f22a50cc67b08f4a55c84616b5bd # v5.65.0
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: |-
+            ${{ github.token }}
+            ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - run: |
+          cd src/usr/share/opentelemetry_shell/agent.instrumentation.node
+          (npm view @opentelemetry/auto-instrumentations-node dependencies --json; npm view @traceloop/node-server-sdk dependencies --json) | jq -r 'keys[]' | grep -E '^@(opentelemetry|traceloop)/instrumentation-' | while read -r instrumentation; do
+            if ! jq -e --arg i "$instrumentation" '.dependencies[$i] or (.excludedInstrumentations | index($i))' package.json > /dev/null; then
+              jq --arg i "$instrumentation" --arg v "$(npm view "$instrumentation" version)" '.dependencies[$i] = $v' package.json > package.json.tmp && mv package.json.tmp package.json
+            fi
+          done
+      - id: open-pr
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          commit-message: "Renovate node instrumentation list"
+          base: main
+          branch: "renovate-manual/node-list-instrumentations"
+          title: "Update Node Instrumentation List"
+          body: |
+            (this PR is automatically generated)
+          delete-branch: true
+      - run: sleep 60 # make sure PR state is updated and API can catch up
+        if: steps.open-pr.outputs.pull-request-number != null
+      - if: steps.open-pr.outputs.pull-request-number != null
+        shell: bash
+        run: gh pr merge --squash --auto ${{ steps.open-pr.outputs.pull-request-number }}
+        env:
+          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+        continue-on-error: true
+
   renovate-copilot-instrumentation:
     if: ${{ !github.event.repository.fork && false }} # this is currently broken ebcause we dont deploy it the same time anymore, so the check doesnt work
     runs-on: ubuntu-slim
