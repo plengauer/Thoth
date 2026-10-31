@@ -62,5 +62,10 @@
     "@traceloop/instrumentation-qdrant": "0.27.0",
     "@traceloop/instrumentation-together": "0.27.0",
     "@traceloop/instrumentation-vertexai": "0.27.0"
-  }
+  },
+  "excludedInstrumentations": [
+    "@opentelemetry/instrumentation-fs",
+    "@opentelemetry/instrumentation-host-metrics",
+    "@traceloop/instrumentation-utils"
+  ]
 }
