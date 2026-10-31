@@ -57,7 +57,6 @@
     "@traceloop/instrumentation-langchain": "0.27.0",
     "@traceloop/instrumentation-llamaindex": "0.27.0",
     "@traceloop/instrumentation-mcp": "0.27.0",
-    "@traceloop/instrumentation-openai": "0.27.0",
     "@traceloop/instrumentation-pinecone": "0.27.0",
     "@traceloop/instrumentation-qdrant": "0.27.0",
     "@traceloop/instrumentation-together": "0.27.0",
@@ -66,6 +65,7 @@
   "excludedInstrumentations": [
     "@opentelemetry/instrumentation-fs",
     "@opentelemetry/instrumentation-host-metrics",
+    "@traceloop/instrumentation-openai",
     "@traceloop/instrumentation-utils"
   ]
 }
