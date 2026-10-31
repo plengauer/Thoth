@@ -69,8 +69,8 @@ jobs:
             deactivate
             rm -rf venv_instrumentations
           ) | grep -v '^$' | grep -E '^opentelemetry-instrumentation-' | sort -u | while read -r instrumentation; do
-            if ! grep -qF "$instrumentation" requirements.instrumentations.txt; then
-              echo "$instrumentation" >> requirements.instrumentations.txt
+            if ! grep -qF "$instrumentation" requirements.txt; then
+              echo "$instrumentation==$(pip3 index versions --pre "$instrumentation" | sed -n '1s/.*(\(.*\)).*/\1/p')" >> requirements.txt
             fi
           done
       - id: open-pr

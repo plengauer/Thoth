@@ -269,7 +269,7 @@ jobs:
         run: |
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.python
           target="$RUNNER_TEMP"/out/"$ARCHITECTURE"/"$PYTHON_VERSION"/site-packages
-          pip3 install --target "$target" --implementation cp --python-version "$PYTHON_VERSION" --platform manylinux2014_"$ARCHITECTURE" --platform manylinux_2_28_"$ARCHITECTURE" --only-binary=:all: -r requirements.txt -r requirements.instrumentations.txt
+          pip3 install --target "$target" --implementation cp --python-version "$PYTHON_VERSION" --platform manylinux2014_"$ARCHITECTURE" --platform manylinux_2_28_"$ARCHITECTURE" --only-binary=:all: -r requirements.txt
           rm -rf "${target:?}"/bin
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
