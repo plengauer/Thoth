@@ -116,7 +116,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - run: |
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.node
-          (npm view @opentelemetry/auto-instrumentations-node dependencies --json; npm view @traceloop/node-server-sdk dependencies --json) | jq -r 'keys[]' | grep -E '^@(opentelemetry|traceloop)/instrumentation-' | grep -v '^@traceloop/instrumentation-utils$' | while read -r instrumentation; do
+          (npm view @opentelemetry/auto-instrumentations-node dependencies --json; npm view @traceloop/node-server-sdk dependencies --json) | jq -r 'keys[]' | grep -E '^@(opentelemetry|traceloop)/instrumentation-' | grep -v -E '^@traceloop/instrumentation-utils$|^@opentelemetry/instrumentation-(fs|host-metrics)$' | while read -r instrumentation; do
             if ! jq -e --arg i "$instrumentation" '.dependencies[$i]' package.json > /dev/null; then
               jq --arg i "$instrumentation" --arg v "$(npm view "$instrumentation" version)" '.dependencies[$i] = $v' package.json > package.json.tmp && mv package.json.tmp package.json
             fi
