@@ -16,6 +16,7 @@
       "matchManagers": [
         "pip_requirements"
       ],
+      "separateMajorMinor": false,
       "ignoreUnstable": false,
       "matchPackageNames": [
         "/^opentelemetry-/",
@@ -27,6 +28,7 @@
       "matchManagers": [
         "npm"
       ],
+      "separateMajorMinor": false,
       "matchPackageNames": [
         "/^@opentelemetry\\//",
         "/^@traceloop\\//"
