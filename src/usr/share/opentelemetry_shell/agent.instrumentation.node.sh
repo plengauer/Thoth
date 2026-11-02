@@ -90,7 +90,7 @@ _otel_inject_node() {
   local args="$(_otel_inject_node_args "$@")"
   case "$args" in
     *agent.instrumentation.node/*/deep.inject.js*) \eval OTEL_SHELL_COMMANDLINE_OVERRIDE="$(_otel_escape_arg "$cmdline")" OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE="0" OTEL_SHELL_AUTO_INJECTED=TRUE _otel_call "$args" ;;
-    *) _otel_call "$args" ;;
+    *) \eval _otel_call "$args" ;;
   esac
 }
 
