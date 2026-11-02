@@ -109,7 +109,7 @@ jobs:
       text: ${{ steps.sanitized.outputs.text }}
       title: ${{ steps.sanitized.outputs.title }}
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@93ce0b69b0f9f22a50cc67b08f4a55c84616b5bd # v5.65.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@5d34a21816f798c24f19857225b018a7f2af731f # v5.66.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
@@ -486,7 +486,7 @@ jobs:
       shell_expansion_guard_rejected: ${{ steps.detect-agent-errors.outputs.shell_expansion_guard_rejected || 'false' }}
       unknown_model_ai_credits: ${{ steps.parse-mcp-gateway.outputs.unknown_model_ai_credits || 'false' }}
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@93ce0b69b0f9f22a50cc67b08f4a55c84616b5bd # v5.65.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@5d34a21816f798c24f19857225b018a7f2af731f # v5.66.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
@@ -1425,7 +1425,7 @@ jobs:
       tools_reported: ${{ steps.missing_tool.outputs.tools_reported }}
       total_count: ${{ steps.missing_tool.outputs.total_count }}
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@93ce0b69b0f9f22a50cc67b08f4a55c84616b5bd # v5.65.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@5d34a21816f798c24f19857225b018a7f2af731f # v5.66.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
@@ -1772,7 +1772,7 @@ jobs:
       detection_success: ${{ steps.detection_conclusion.outputs.success }}
       run_detection: ${{ steps.detection_guard.outputs.run_detection }}
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@93ce0b69b0f9f22a50cc67b08f4a55c84616b5bd # v5.65.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@5d34a21816f798c24f19857225b018a7f2af731f # v5.66.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
@@ -2126,7 +2126,7 @@ jobs:
       setup-span-id: ${{ steps.setup.outputs.span-id }}
       setup-trace-id: ${{ steps.setup.outputs.trace-id }}
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@93ce0b69b0f9f22a50cc67b08f4a55c84616b5bd # v5.65.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@5d34a21816f798c24f19857225b018a7f2af731f # v5.66.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
@@ -2213,7 +2213,7 @@ jobs:
       process_safe_outputs_processed_count: ${{ steps.process_safe_outputs.outputs.processed_count }}
       process_safe_outputs_status: ${{ steps.process_safe_outputs.outputs.status }}
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@93ce0b69b0f9f22a50cc67b08f4a55c84616b5bd # v5.65.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@5d34a21816f798c24f19857225b018a7f2af731f # v5.66.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
