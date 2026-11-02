@@ -82,9 +82,9 @@ child_process.execFile = function(file, args, options, callback) {
 function shell_propagator_inject(env) {
   try {
     let opentelemetry_api = require('@opentelemetry/api');
-    let opentelemetry_sdk = require('@opentelemetry/sdk-node');
+    let opentelemetry_core = require('@opentelemetry/core');
     let carrier = {};
-    new opentelemetry_sdk.core.W3CTraceContextPropagator().inject(opentelemetry_api.context.active(), carrier, opentelemetry_api.defaultTextMapSetter);
+    new opentelemetry_core.W3CTraceContextPropagator().inject(opentelemetry_api.context.active(), carrier, opentelemetry_api.defaultTextMapSetter);
     env.TRACEPARENT = carrier.traceparent ? carrier.traceparent : (process.env.TRACEPARENT ? process.env.TRACEPARENT : '');
     env.TRACESTATE = carrier.tracestate ? carrier.tracestate : (process.env.TRACESTATE ? process.env.TRACESTATE : '');
   } catch (err) {
