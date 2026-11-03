@@ -24,6 +24,15 @@
       ]
     },
     {
+      "matchManagers": [
+        "pip_requirements"
+      ],
+      "matchPackageNames": [
+        "opentelemetry-instrumentation-vertexai"
+      ],
+      "allowedVersions": "<1"
+    },
+    {
       "groupName": "opentelemetry-js monorepo",
       "matchManagers": [
         "npm"
