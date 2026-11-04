@@ -116,13 +116,13 @@ case "$INPUT_EVENT_NAME" in
         created_at="$(jq <<<"$INPUT_EVENT_BODY" .pull_request.created_at -r)"
         closed_at="$(jq <<<"$INPUT_EVENT_BODY" '.pull_request.merged_at // .pull_request.closed_at // empty' -r)"
         duration_opened="$(python3 -c "print(str(max(0, $(date -d "$closed_at" '+%s.%N') - $(date -d "$created_at" '+%s.%N'))))")"
-        base_label="$(jq <<<"$INPUT_EVENT_BODY" .pull_request.base.label -r)"
+        base_ref="$(jq <<<"$INPUT_EVENT_BODY" .pull_request.base.ref -r)"
         base_sha="$(jq <<<"$INPUT_EVENT_BODY" .pull_request.base.sha -r)"
-        head_label="$(jq <<<"$INPUT_EVENT_BODY" .pull_request.head.label -r)"
+        head_ref="$(jq <<<"$INPUT_EVENT_BODY" .pull_request.head.ref -r)"
         head_sha="$(jq <<<"$INPUT_EVENT_BODY" .pull_request.head.sha -r)"
         observation_handle="$(otel_github_repository_observation_create "$duration_opened")"
         otel_observation_attribute_typed "$observation_handle" string vcs.change.state=open
-        otel_observation_attribute_typed "$observation_handle" string vcs.ref.head.name="$head_label"
+        otel_observation_attribute_typed "$observation_handle" string vcs.ref.head.name="$head_ref"
         otel_observation_attribute_typed "$observation_handle" string vcs.ref.head.revision="$head_sha"
         otel_counter_observe "$vcs_change_duration_handle" "$observation_handle"
         observation_handle="$(otel_github_repository_observation_create -1)"
@@ -130,9 +130,9 @@ case "$INPUT_EVENT_NAME" in
         otel_counter_observe "$vcs_change_count_handle" "$observation_handle"
         if [ -n "$(jq <<<"$INPUT_EVENT_BODY" '.pull_request.merge_commit_sha // empty' -r)" ]; then
           observation_handle="$(otel_github_repository_observation_create "$duration_opened")"
-          otel_observation_attribute_typed "$observation_handle" string vcs.ref.base.name="$base_label"
+          otel_observation_attribute_typed "$observation_handle" string vcs.ref.base.name="$base_ref"
           otel_observation_attribute_typed "$observation_handle" string vcs.ref.base.revision="$base_sha"
-          otel_observation_attribute_typed "$observation_handle" string vcs.ref.head.name="$head_label"
+          otel_observation_attribute_typed "$observation_handle" string vcs.ref.head.name="$head_ref"
           otel_observation_attribute_typed "$observation_handle" string vcs.ref.head.revision="$head_sha"
           otel_counter_observe "$vcs_change_time_to_merge_handle" "$observation_handle"
           observation_handle="$(otel_github_repository_observation_create 1)"
@@ -192,10 +192,10 @@ case "$INPUT_EVENT_NAME" in
       [ "$base" != "$ref" ] || base=
     fi
     if [ -n "$base" ]; then
-      [ "${base#/refs/tags/}" = "$base" ] && base_ref_type=branch || base_ref_type=tag
-      [ "${ref#/refs/tags/}" = "$ref" ] && ref_type=branch || ref_type=tag
-      base_name="${base#refs/heads/}"
-      base_name="${base_name#refs/tags/}"
+      [ "${base#refs/tags/}" = "$base" ] && base_ref_type=branch || base_ref_type=tag
+      [ "${ref#refs/tags/}" = "$ref" ] && ref_type=branch || ref_type=tag
+      base_ref_name="${base#refs/heads/}"
+      base_ref_name="${base_ref_name#refs/tags/}"
       ref_name="${ref#refs/heads/}"
       ref_name="${ref_name#refs/tags/}"
       curl --no-progress-meter --fail --retry 16 --header "Authorization: Bearer $INPUT_GITHUB_TOKEN" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_REPOSITORY"/compare/"$base"..."$ref" >compare.json
@@ -204,34 +204,34 @@ case "$INPUT_EVENT_NAME" in
       vcs_ref_time_handle="$(otel_counter_create gauge vcs.ref.time 's' 'Time a ref (branch) created from the default branch (trunk) has existed')"
       observation_handle="$(otel_github_repository_observation_create "$(jq <compare.json .files[].additions | jq -s add)")"
       otel_observation_attribute_typed "$observation_handle" string vcs.line_change.type=added
-      otel_observation_attribute_typed "$observation_handle" string vcs.ref.base.name="$base_name"
+      otel_observation_attribute_typed "$observation_handle" string vcs.ref.base.name="$base_ref_name"
       otel_observation_attribute_typed "$observation_handle" string vcs.ref.base.type="$base_ref_type"
       otel_observation_attribute_typed "$observation_handle" string vcs.ref.head.name="$ref_name"
       otel_observation_attribute_typed "$observation_handle" string vcs.ref.head.type="$ref_type"
       otel_counter_observe "$vcs_ref_lines_delta_handle" "$observation_handle"
       observation_handle="$(otel_github_repository_observation_create "$(jq <compare.json .files[].deletions | jq -s add)")"
       otel_observation_attribute_typed "$observation_handle" string vcs.line_change.type=removed
-      otel_observation_attribute_typed "$observation_handle" string vcs.ref.base.name="$base_name"
+      otel_observation_attribute_typed "$observation_handle" string vcs.ref.base.name="$base_ref_name"
       otel_observation_attribute_typed "$observation_handle" string vcs.ref.base.type="$base_ref_type"
       otel_observation_attribute_typed "$observation_handle" string vcs.ref.head.name="$ref_name"
       otel_observation_attribute_typed "$observation_handle" string vcs.ref.head.type="$ref_type"
       otel_counter_observe "$vcs_ref_lines_delta_handle" "$observation_handle"
       observation_handle="$(otel_github_repository_observation_create "$(jq <compare.json .ahead_by)")"
       otel_observation_attribute_typed "$observation_handle" string vcs.revision_delta.direction=ahead
-      otel_observation_attribute_typed "$observation_handle" string vcs.ref.base.name="$base_name"
+      otel_observation_attribute_typed "$observation_handle" string vcs.ref.base.name="$base_ref_name"
       otel_observation_attribute_typed "$observation_handle" string vcs.ref.base.type="$base_ref_type"
       otel_observation_attribute_typed "$observation_handle" string vcs.ref.head.name="$ref_name"
       otel_observation_attribute_typed "$observation_handle" string vcs.ref.head.type="$ref_type"
       otel_counter_observe "$vcs_ref_revisions_delta_handle" "$observation_handle"
       observation_handle="$(otel_github_repository_observation_create "$(jq <compare.json .behind_by)")"
       otel_observation_attribute_typed "$observation_handle" string vcs.revision_delta.direction=behind
-      otel_observation_attribute_typed "$observation_handle" string vcs.ref.base.name="$base_name"
+      otel_observation_attribute_typed "$observation_handle" string vcs.ref.base.name="$base_ref_name"
       otel_observation_attribute_typed "$observation_handle" string vcs.ref.base.type="$base_ref_type"
       otel_observation_attribute_typed "$observation_handle" string vcs.ref.head.name="$ref_name"
       otel_observation_attribute_typed "$observation_handle" string vcs.ref.head.type="$ref_type"
       otel_counter_observe "$vcs_ref_revisions_delta_handle" "$observation_handle"
       observation_handle="$(otel_github_repository_observation_create "$(python3 -c "print(str(max(0, $(date -d "$(jq <compare.json .commits[].commit.committer.date -r | sort | tail -n 1)" '+%s.%N') - $(date -d "$(jq <compare.json .commits[].commit.committer.date -r | sort | head -n 1)" '+%s.%N'))))")")"
-      otel_observation_attribute_typed "$observation_handle" string vcs.ref.base.name="$base_name"
+      otel_observation_attribute_typed "$observation_handle" string vcs.ref.base.name="$base_ref_name"
       otel_observation_attribute_typed "$observation_handle" string vcs.ref.base.type="$base_ref_type"
       otel_observation_attribute_typed "$observation_handle" string vcs.ref.head.name="$ref_name"
       otel_observation_attribute_typed "$observation_handle" string vcs.ref.head.type="$ref_type"

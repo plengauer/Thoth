@@ -2,7 +2,7 @@ name: Renovate
 
 on:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 * * * *'
   release:
     types: published
 concurrency:
@@ -20,13 +20,13 @@ jobs:
       security-events: write
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@cae29061ec48de46feefdc8131c776a9af11da6f # v5.64.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@5d34a21816f798c24f19857225b018a7f2af731f # v5.66.0
         with:
           secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}"]'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - uses: renovatebot/github-action@a63d9a7bc606f7336fd20b47f2f32259a35e6213 # v46.3.9
+      - uses: renovatebot/github-action@43b963bf5dd5e57f1f95c59765a018d782870211 # v46.3.11
         env:
           RENOVATE_REPOSITORIES: ${{ github.repository }}
         with:
@@ -44,6 +44,14 @@ jobs:
     env:
       OTEL_KILL_SWITCH: 1
     steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@5d34a21816f798c24f19857225b018a7f2af731f # v5.66.0
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: |-
+            ${{ github.token }}
+            ${{ secrets.ACTIONS_GITHUB_TOKEN }}
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - run: |
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.python
@@ -61,8 +69,8 @@ jobs:
             deactivate
             rm -rf venv_instrumentations
           ) | grep -v '^$' | grep -E '^opentelemetry-instrumentation-' | sort -u | while read -r instrumentation; do
-            if ! grep -qF "$instrumentation" requirements.instrumentations.txt; then
-              echo "$instrumentation" >> requirements.instrumentations.txt
+            if ! grep -qF "$instrumentation" requirements.txt; then
+              echo "$instrumentation==$(pip3 index versions --pre "$instrumentation" | sed -n '1s/.*(\(.*\)).*/\1/p')" >> requirements.txt
             fi
           done
       - id: open-pr
@@ -85,6 +93,54 @@ jobs:
           GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         continue-on-error: true
 
+  renovate-list-instrumentations-node:
+    if: ${{ !github.event.repository.fork }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      security-events: write
+      actions: read
+    env:
+      OTEL_KILL_SWITCH: 1
+    steps:
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@5d34a21816f798c24f19857225b018a7f2af731f # v5.66.0
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+        with:
+          secrets_to_redact: |-
+            ${{ github.token }}
+            ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - run: |
+          cd src/usr/share/opentelemetry_shell/agent.instrumentation.node
+          (npm view @opentelemetry/auto-instrumentations-node dependencies --json; npm view @traceloop/node-server-sdk dependencies --json) | jq -r 'keys[]' | grep -E '^@(opentelemetry|traceloop)/instrumentation-' | while read -r instrumentation; do
+            if ! jq -e --arg i "$instrumentation" '.dependencies[$i] or (.excludedInstrumentations | index($i))' package.json > /dev/null; then
+              jq --arg i "$instrumentation" --arg v "$(npm view "$instrumentation" version)" '.dependencies[$i] = $v' package.json > package.json.tmp && mv package.json.tmp package.json
+            fi
+          done
+      - id: open-pr
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          commit-message: "Renovate node instrumentation list"
+          base: main
+          branch: "renovate-manual/node-list-instrumentations"
+          title: "Update Node Instrumentation List"
+          body: |
+            (this PR is automatically generated)
+          delete-branch: true
+      - run: sleep 60 # make sure PR state is updated and API can catch up
+        if: steps.open-pr.outputs.pull-request-number != null
+      - if: steps.open-pr.outputs.pull-request-number != null
+        shell: bash
+        run: gh pr merge --squash --auto ${{ steps.open-pr.outputs.pull-request-number }}
+        env:
+          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+        continue-on-error: true
+
   renovate-copilot-instrumentation:
     if: ${{ !github.event.repository.fork && false }} # this is currently broken ebcause we dont deploy it the same time anymore, so the check doesnt work
     runs-on: ubuntu-slim
@@ -94,7 +150,7 @@ jobs:
     env:
       COPILOT_INSTRUMENTATION_ALERT_TITLE: "⚠️ Copilot Coding Agent instrumentation appears broken"
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@cae29061ec48de46feefdc8131c776a9af11da6f # v5.64.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@5d34a21816f798c24f19857225b018a7f2af731f # v5.66.0
         with:
           secrets_to_redact: '${{ github.token }}
 
@@ -121,7 +177,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@cae29061ec48de46feefdc8131c776a9af11da6f # v5.64.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@5d34a21816f798c24f19857225b018a7f2af731f # v5.66.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
@@ -166,7 +222,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@cae29061ec48de46feefdc8131c776a9af11da6f # v5.64.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@5d34a21816f798c24f19857225b018a7f2af731f # v5.66.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
@@ -244,7 +300,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@cae29061ec48de46feefdc8131c776a9af11da6f # v5.64.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@5d34a21816f798c24f19857225b018a7f2af731f # v5.66.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}

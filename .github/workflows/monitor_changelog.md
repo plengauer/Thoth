@@ -7,14 +7,17 @@ on:
 permissions:
   contents: read
   issues: read
+engine:
+  id: copilot
+  args: ["--allow-all-urls"]
 network:
   allowed:
     - defaults
     - github
 tools:
+  bash: ["curl", "wget", "echo", "printf", "ls", "pwd", "cat", "head", "tail", "grep", "wc", "sort", "uniq", "date", "yq"]
   github:
     toolsets: [context, issues]
-  web-fetch:
 safe-outputs:
   noop:
   create-issue:
@@ -30,11 +33,11 @@ You are an automated agent that monitors the GitHub changelog for announcements 
 
 Once a month this workflow runs and performs the following steps:
 
-1. **Fetch the GitHub changelog**: Use the web-fetch tool to retrieve the GitHub changelog page at <https://github.blog/changelog/>. Also fetch the RSS/Atom feed at <https://github.blog/changelog/feed/> to get structured data about recent posts.
+1. **Fetch the GitHub changelog**: Use `curl` (or `wget`) via the bash tool to retrieve the GitHub changelog page at <https://github.blog/changelog/>. Also fetch the RSS/Atom feed at <https://github.blog/changelog/feed/> to get structured data about recent posts.
 
 2. **Identify posts from the last month**: Determine the current date from context and filter for posts published in the previous calendar month (i.e., from 1st of the previous month 00:00 UTC up to but not including the 1st of the current month 00:00 UTC).
 
-3. **Evaluate each post for relevance**: For each post from the last month, fetch its full content using web-fetch and evaluate whether it is relevant to this project. This project provides OpenTelemetry instrumentation for shell scripts and GitHub Actions, so relevant topics include but are not limited to:
+3. **Evaluate each post for relevance**: For each post from the last month, fetch its full content using `curl` (or `wget`) and evaluate whether it is relevant to this project. This project provides OpenTelemetry instrumentation for shell scripts and GitHub Actions, so relevant topics include but are not limited to:
    - Changes to GitHub Actions runners (new OS versions, deprecations, new features)
    - Changes to GitHub Actions workflow syntax, expressions, or contexts
    - Changes to the GitHub Actions runner environment (pre-installed tools, environment variables, paths)

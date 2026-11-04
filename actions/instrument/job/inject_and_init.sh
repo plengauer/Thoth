@@ -382,7 +382,8 @@ if type sh; then run gcc -o "$new_binary_dir"/sh forward.c -DEXECUTABLE="$(which
 if type ash; then run gcc -o "$new_binary_dir"/dash forward.c -DEXECUTABLE="$(which ash)" -DARG1="$GITHUB_ACTION_PATH"/decorate_action_run.sh -DARG2="$(which ash)"; fi
 if type dash; then run gcc -o "$new_binary_dir"/dash forward.c -DEXECUTABLE="$(which dash)" -DARG1="$GITHUB_ACTION_PATH"/decorate_action_run.sh -DARG2="$(which dash)"; fi
 if type bash; then run gcc -o "$new_binary_dir"/bash forward.c -DEXECUTABLE="$(which bash)" -DARG1="$GITHUB_ACTION_PATH"/decorate_action_run.sh -DARG2="$(which bash)"; fi
-for node_path in "$(readlink -f /proc/*/exe | grep '/Runner.Worker$' | rev | cut -d / -f 4- | rev)"/*/externals/node*/bin/node; do
+for node_path in $(find -L "$(readlink -f /proc/*/exe | grep '/Runner.Worker$' | rev | cut -d / -f 4- | rev)" -maxdepth 5 -path '*/externals/node*/bin/node' -type f 2> /dev/null | xargs -r readlink -f | sort -u); do
+  [ -e "$node_path" ] || continue
   dir_path_new="$relocated_binary_dir"/"$(echo "$node_path" | rev | cut -d / -f 3 | rev)"-"$(echo "$node_path" | md5sum | cut -d ' ' -f 1)"
   mkdir "$dir_path_new"
   node_path_new="$dir_path_new"/node
@@ -399,7 +400,7 @@ echo "::endgroup::"
 echo "::group::Resolve W3C Tracecontext"
 opentelemetry_root_dir="$(mktemp -d)"
 count=0
-while [ "$count" -lt 60 ] && ! gh_artifact_download "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_workflow_run_"$GITHUB_RUN_ATTEMPT" "$opentelemetry_root_dir" || ! [ -r "$opentelemetry_root_dir"/traceparent ]; do
+while [ "$count" -lt 60 ] && ! ( gh_artifact_download "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_workflow_run_"$GITHUB_RUN_ATTEMPT" "$opentelemetry_root_dir" && [ -r "$opentelemetry_root_dir"/traceparent ] ); do
   if [ "$count" -gt 0 ]; then sleep $count; fi
   wait # only join within this loop, because we need to make sure everything is installed properly at this point, in most cases, it is unnecessary though and we can join later
   . otelapi.sh
@@ -611,7 +612,7 @@ root4job_end() {
     echo "EOF" >/tmp/otel_shell/sdk_factory."$USER".pipe
     rm -rf /tmp/otel_shell
   fi
-  timeout 5s sh -c 'while fuser /opt/opentelemetry_shell/venv/bin/python; do sleep 1; done; true' &>/dev/null || echo "Found leaked SDK processes (this may be due to leaked processes that are still being observed)."
+  timeout 5s sh -c 'while grep -qaE "sdk(_factory)?[.]py" /proc/[0-9]*/cmdline 2>/dev/null; do sleep 1; done; true' &>/dev/null || echo "Found leaked SDK processes (this may be due to leaked processes that are still being observed)."
 
   kill -SIGINT "$OTEL_COLLECTOR_PID" || INPUT_DEBUG=1
   wait "$OTEL_COLLECTOR_PID"

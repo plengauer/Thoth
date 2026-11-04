@@ -121,7 +121,7 @@ cd tests && bash run_tests.sh bash
 
 ## Key Architecture Facts
 - **Instrumentation cache**: `/tmp/opentelemetry_shell_*_instrumentation_cache_*.aliases` (invalidated on script/executable changes)
-- **Multi-language**: Shell (function wrapping), Python (`opentelemetry-instrumentation`), Node.js (`@opentelemetry/auto-instrumentations-node`), Java (OpenTelemetry agent), C (HTTP header injection)
+- **Multi-language**: Shell (function wrapping), Python (`opentelemetry-instrumentation`), Node.js (`@opentelemetry/instrumentation-*`), Java (OpenTelemetry agent), C (HTTP header injection)
 - **GitHub Actions**: Workflow-level (GitHub API, post-completion) + job-level (injected first step) can coexist without duplication
 - **Shell compatibility**: All code MUST work on bash, dash, ash, busybox with POSIX compliance.
 - **Instrumentation**: Instrumentation is done via aliasing commands. Aliases will redirect to a function that starts/stops spans and then forwards to the original command. To avoid endless recursion, internal commands are always used with a backslash in front to avoid alias resolution. We must make sure, that all code that runs in the observed shell script (but not, for example, in package install scripts) is not triggering the alias.

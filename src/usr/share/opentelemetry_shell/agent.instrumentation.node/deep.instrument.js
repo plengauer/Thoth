@@ -1,6 +1,6 @@
 const opentelemetry_api = require('@opentelemetry/api');
+const opentelemetry_core = require('@opentelemetry/core');
 const opentelemetry_sdk = require('@opentelemetry/sdk-node');
-const opentelemetry_auto_instrumentations = require('@opentelemetry/auto-instrumentations-node');
 const opentelemetry_resources = require('@opentelemetry/resources');
 const opentelemetry_resources_github = require('@opentelemetry/resource-detector-github');
 const opentelemetry_resources_container = require('@opentelemetry/resource-detector-container');
@@ -34,7 +34,7 @@ class CustomRootContextManager {
     return context;
   }
 }
-const MY_ROOT_CONTEXT = new opentelemetry_sdk.core.W3CTraceContextPropagator().extract(opentelemetry_api.ROOT_CONTEXT, { traceparent: process.env.TRACEPARENT, tracestate: process.env.TRACESTATE }, opentelemetry_api.defaultTextMapGetter);
+const MY_ROOT_CONTEXT = new opentelemetry_core.W3CTraceContextPropagator().extract(opentelemetry_api.ROOT_CONTEXT, { traceparent: process.env.TRACEPARENT, tracestate: process.env.TRACESTATE }, opentelemetry_api.defaultTextMapGetter);
 const context_manager = new CustomRootContextManager(semver.gte(process.version, '14.8.0') ? new context_async_hooks.AsyncLocalStorageContextManager() : new context_async_hooks.AsyncHooksContextManager(), MY_ROOT_CONTEXT);
 
 // node.js terminates when event loop is empty and flushing the SDK (below) is unfortunately async.
@@ -45,14 +45,7 @@ process.env.OTEL_BSP_MAX_EXPORT_BATCH_SIZE=1
 const sdk = new opentelemetry_sdk.NodeSDK({
   contextManager: context_manager.enable(),
   instrumentations: [
-    opentelemetry_auto_instrumentations.getNodeAutoInstrumentations(),
-    require("@traceloop/node-server-sdk").traceloopInstrumentationLibraries.filter(library => library.startsWith("@traceloop/instrumentation-")).map(function(library) {
-      try {
-        return require(library);
-      } catch {
-        return null;
-      }
-    }).filter(library => library != null).flatMap(library => Object.entries(library)).filter(entry => entry[0].endsWith("Instrumentation")).map(entry => entry[1]).map(clazz => new clazz)
+    ["@opentelemetry", "@traceloop"].flatMap(scope => require("fs").readdirSync(require("path").join(__dirname, "node_modules", scope)).filter(name => name.startsWith("instrumentation-")).map(name => require(scope + "/" + name))).flatMap(library => Object.entries(library)).filter(entry => entry[0].endsWith("Instrumentation")).map(entry => entry[1]).map(clazz => new clazz)
   ],
   resourceDetectors: [
     // opentelemetry_resources_alibaba_cloud.alibabaCloudEcsDetector, // TODO this one takes a full second to just time out when its not alibaba
