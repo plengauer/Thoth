@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 initialized_traces = False
 initialized_metrics = False
 initialized_logs = False
+metric_timestamp_context_key = 'opentelemetry_shell_metric_timestamp'
 
 resource = {}
 final_resources = None
@@ -25,6 +26,25 @@ auto_end = False
 
 def main():
     run(sys.argv[1], sys.argv[2], sys.stdin)
+
+def patch_metric_timestamps():
+    from opentelemetry.context import get_value
+    from opentelemetry.sdk.metrics._internal.measurement import Measurement
+    measurement_init = Measurement.__init__
+
+    def measurement_init_with_timestamp(self, value, time_unix_nano, instrument, context, attributes=None):
+        if context is not None:
+            timestamp = get_value(metric_timestamp_context_key, context)
+            if timestamp is not None:
+                time_unix_nano = timestamp
+        measurement_init(self, value, time_unix_nano, instrument, context, attributes)
+    Measurement.__init__ = measurement_init_with_timestamp
+
+def metric_context(timestamp):
+    if timestamp is None:
+        return None
+    from opentelemetry.context import get_current, set_value
+    return set_value(metric_timestamp_context_key, timestamp, get_current())
 
 def run(scope, version, commands):
     for line in commands:
@@ -220,6 +240,7 @@ def handle(scope, version, command, arguments):
         from opentelemetry.sdk.metrics import MeterProvider
         from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader, ConsoleMetricExporter
         from opentelemetry.exporter.otlp.proto.http.metric_exporter import OTLPMetricExporter
+        patch_metric_timestamps()
         metrics_exporters = os.environ.get('OTEL_METRICS_EXPORTER', 'otlp')
         if metrics_exporters:
             metric_readers = []
@@ -482,30 +503,44 @@ def handle(scope, version, command, arguments):
         with open(response_path, 'w') as response:
             response.write(counter_id)
     elif command == 'COUNTER_OBSERVE':
-        tokens = arguments.split(' ', 1)
+        tokens = arguments.split(' ', 2)
         counter_id = tokens[0]
         observation_id = tokens[1]
         observation = observations[observation_id]
         counter = counters[counter_id]
+        timestamp = parse_time(tokens[2]) if len(tokens) > 2 and tokens[2] != 'auto' else observation.get('timestamp')
+        context = metric_context(timestamp)
         if hasattr(counter, 'record'):
-            counter.record(observation['amount'], observation['attributes'])
+            if context is None:
+                counter.record(observation['amount'], observation['attributes'])
+            else:
+                counter.record(observation['amount'], observation['attributes'], context=context)
         elif hasattr(counter, 'add'):
-            counter.add(observation['amount'], observation['attributes'])
+            if context is None:
+                counter.add(observation['amount'], observation['attributes'])
+            else:
+                counter.add(observation['amount'], observation['attributes'], context=context)
         elif hasattr(counter, 'set'):
-            counter.set(observation['amount'], observation['attributes'])
+            if context is None:
+                counter.set(observation['amount'], observation['attributes'])
+            else:
+                counter.set(observation['amount'], observation['attributes'], context=context)
         else:
             import hashlib
             import json
-            delayed_observations[counter_id][hashlib.sha256(json.dumps(observation['attributes'], sort_keys=True).encode('utf-8')).hexdigest()] = observation
+            delayed_observation = dict(observation)
+            delayed_observation['timestamp'] = timestamp
+            delayed_observations[counter_id][hashlib.sha256(json.dumps(observation['attributes'], sort_keys=True).encode('utf-8')).hexdigest()] = delayed_observation
         del observations[str(observation_id)]
     elif command == 'OBSERVATION_CREATE':
         global next_observation_id
-        tokens = arguments.split(' ', 1)
+        tokens = arguments.split(' ', 2)
         response_path = tokens[0]
         amount = tokens[1]
+        timestamp = parse_time(tokens[2]) if len(tokens) > 2 and tokens[2] != 'auto' else None
         observation_id = str(next_observation_id)
         next_observation_id = next_observation_id + 1
-        observations[observation_id] = { 'amount': convert_type('auto', amount), 'attributes': {} }
+        observations[observation_id] = { 'amount': convert_type('auto', amount), 'attributes': {}, 'timestamp': timestamp }
         with open(response_path, 'w') as response:
             response.write(observation_id)
     elif command == 'OBSERVATION_ATTRIBUTE':
@@ -545,7 +580,7 @@ def handle(scope, version, command, arguments):
 def observable_counter_callback(counter_id, _):
     from opentelemetry.metrics import Observation
     for observation in delayed_observations[counter_id].values():
-        yield Observation(observation['amount'], observation['attributes'])
+        yield Observation(observation['amount'], observation['attributes'], context=metric_context(observation.get('timestamp')))
 
 def parse_time(time_string):
     if time_string == 'auto':
