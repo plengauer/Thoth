@@ -4,5 +4,6 @@ for _otel_var in $(\env | \cut -d= -f1 | \grep -E '^__OTEL_[A-Za-z_][A-Za-z0-9_]
   _otel_shadow_var="__$_otel_var"
   \eval "export $_otel_var=\${$_otel_shadow_var}"
 done
-\. /usr/bin/otel.sh
+\export OTEL_SHELL_AUTO_INJECTED=TRUE
+\. otel.sh
 \eval "$1"
