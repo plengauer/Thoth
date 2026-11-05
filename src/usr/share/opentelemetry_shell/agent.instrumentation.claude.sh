@@ -22,7 +22,7 @@ _otel_inject_claude() {
       \[ "${OTEL_LOG_TOOL_CONTENT+x}" = x ] || \export OTEL_LOG_TOOL_CONTENT=1
     fi
     \[ "${CLAUDE_CODE_SHELL_PREFIX+x}" = x ] || \export CLAUDE_CODE_SHELL_PREFIX=/usr/share/opentelemetry_shell/agent.instrumentation.claude/shell-prefix.sh
-    for _otel_var in $(\env | \cut -d= -f1 | \grep '^OTEL_'); do \eval "export __$_otel_var=\${$_otel_var}"; done
+    for _otel_var in $(\env | \cut -d= -f1 | \grep -E '^OTEL_[A-Za-z_][A-Za-z0-9_]*$'); do \eval "export __$_otel_var=\${$_otel_var}"; done
     OTEL_SHELL_COMMANDLINE_OVERRIDE="$cmdline" OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE=0 OTEL_SHELL_AUTO_INJECTED=TRUE _otel_call "$@"
   ) || local exit_code="$?"
   return "${exit_code:-0}"
