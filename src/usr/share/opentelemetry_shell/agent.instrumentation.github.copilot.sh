@@ -16,6 +16,14 @@ if \[ "${GITHUB_ACTIONS:-false}" = true ] && \[ "${GITHUB_EVENT_NAME:-}" = dynam
       \sed -i 's~^"${command_to_execute}"$~_otel_inject "${command_to_execute}"~g' "$script_file"
       \sed -i 's~eval exec \$command_to_execute~eval _otel_inject $command_to_execute~g' "$script_file"
     done
+    # The Copilot CLI does not pick up TRACEPARENT from its environment, it only joins a trace if the embedding SDK hands over a trace context with the session requests.
+    # The engine never sets the SDK's onGetTraceContext, so the CLI's LLM/tool spans end up in their own detached trace instead of the job trace.
+    # Default the provider to the (instrumented) engine process' own trace context.
+    for js_file in "$1"/*/*.js; do
+      [ -f "$js_file" ] || continue
+      \grep -q 'this\.onGetTraceContext = options\.onGetTraceContext;' "$js_file" || continue
+      \sed -i 's~this\.onGetTraceContext = options\.onGetTraceContext;~this.onGetTraceContext = options.onGetTraceContext ?? (async () => process.env.TRACEPARENT ? { traceparent: process.env.TRACEPARENT, ...(process.env.TRACESTATE ? { tracestate: process.env.TRACESTATE } : {}) } : {});~g' "$js_file"
+    done
   }
   if \[ -n "${COPILOT_AGENT_RUNTIME_VERSION:-}" ] && \[ -n "${GITHUB_COPILOT_ACTION_DOWNLOAD_URL:-}" ] && \[ "${COPILOT_PREINSTALLED_RUNTIME:-}" = false ]; then
     _otel_inject_copilot() {
