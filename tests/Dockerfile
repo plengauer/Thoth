@@ -52,4 +52,6 @@ EOF
 
 ENV shell="$shell"
 
+# the exit code of the test run must depend on the shell being available, which needs shell syntax
+# hadolint ignore=DL3025
 CMD ! type "$shell" || bash run_tests.sh "$shell"
