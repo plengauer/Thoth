@@ -546,11 +546,13 @@ _otel_escape_arg() {
 
 if \[ "$_otel_shell" = bash ]; then
   _otel_escape_arg_format() {
+    # shellcheck disable=SC2059 # the format string is intentionally composed from variables
     \printf "$1" "${2//\'/\'\\\'\'}"
   }
 else
   _otel_escape_arg_format() {
     local escaped="$(\printf '%s' "$2X" | \sed "s/'/'\\\\''/g")" # need the extra X to preserve trailing linefeeds (yay)
+    # shellcheck disable=SC2059 # the format string is intentionally composed from variables
     \printf "$1" "${escaped%X}"
   }
 fi
