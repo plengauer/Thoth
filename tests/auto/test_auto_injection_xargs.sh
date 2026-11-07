@@ -3,9 +3,9 @@
 . /usr/bin/opentelemetry_shell.sh
 
 file=$(mktemp)
-echo "hello world 0" >>$file
-echo "hello world 0" >>$file
-actual="$(cat $file | xargs)"
+echo "hello world 0" >>"$file"
+echo "hello world 0" >>"$file"
+actual="$(cat "$file" | xargs)"
 assert_equals 'hello world 0 hello world 0' "$actual"
 
 printf '%s' 'hello world 1' | xargs echo
