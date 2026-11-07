@@ -162,6 +162,7 @@ if \[ "$_otel_shell" = bash ]; then
     local varname="OTEL_SHELL_PACKAGE_VERSION_CACHE_$package_name"
     local varname="${varname//-/_}"
     \eval "local varvalue=\${$varname:-}"
+    # shellcheck disable=SC2154 # the variable is assigned by the sourced instrumentation library or provided by the environment
     if \[ -n "$varvalue" ]; then
       \echo "$varvalue"
       return 0
