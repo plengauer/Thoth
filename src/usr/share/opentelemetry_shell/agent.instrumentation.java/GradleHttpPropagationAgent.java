@@ -4,6 +4,7 @@ import net.bytebuddy.matcher.ElementMatchers;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.utility.JavaModule;
+import java.io.IOException;
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 import java.security.ProtectionDomain;
@@ -17,13 +18,16 @@ import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.TraceState;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.context.Context;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.context.Scope;
 
-public class GradleHttpPropagationAgent {
-    public static final ThreadLocal<Span> clientSpan = new ThreadLocal<>();
-    public static final ThreadLocal<Scope> clientScope = new ThreadLocal<>();
-    public static final ThreadLocal<Span> serverSpan = new ThreadLocal<>();
-    public static final ThreadLocal<Scope> serverScope = new ThreadLocal<>();
+public final class GradleHttpPropagationAgent {
+    public static final ThreadLocal<Span> CLIENT_SPAN = new ThreadLocal<>();
+    public static final ThreadLocal<Scope> CLIENT_SCOPE = new ThreadLocal<>();
+    public static final ThreadLocal<Span> SERVER_SPAN = new ThreadLocal<>();
+    public static final ThreadLocal<Scope> SERVER_SCOPE = new ThreadLocal<>();
 
-    public static void premain(String args, Instrumentation instrumentation) throws Exception {
+    private GradleHttpPropagationAgent() {
+    }
+
+    public static void premain(String args, Instrumentation instrumentation) throws IOException {
         instrumentation.appendToBootstrapClassLoaderSearch(new java.util.jar.JarFile("/usr/share/opentelemetry_shell/agent.instrumentation.java/gradlehttppropagationagent.jar"));
         new AgentBuilder.Default()
             .with(AgentBuilder.RedefinitionStrategy.RETRANSFORMATION)
@@ -47,7 +51,10 @@ public class GradleHttpPropagationAgent {
             .installOn(instrumentation);
     }
 
-    public static class ClientConnectionAdvice {
+    public static final class ClientConnectionAdvice {
+        private ClientConnectionAdvice() {
+        }
+
         @Advice.OnMethodEnter
         public static void onEnter(@Advice.Origin String method, @Advice.AllArguments Object[] args) {
             try {
@@ -57,8 +64,8 @@ public class GradleHttpPropagationAgent {
                     .setAttribute("rpc.system", "gradle")
                     .setAttribute("rpc.service", "daemon")
                     .startSpan();
-                clientSpan.set(span);
-                clientScope.set(span.makeCurrent());
+                CLIENT_SPAN.set(span);
+                CLIENT_SCOPE.set(span.makeCurrent());
                 String traceparent = String.format("%s-%s-%s-%s",
                     "00",
                     span.getSpanContext().getTraceId(),
@@ -69,7 +76,7 @@ public class GradleHttpPropagationAgent {
                         Class<?> clazz = args[0].getClass();
                         Method addHeader = null;
                         for (Method m : clazz.getMethods()) {
-                            if (m.getName().equals("addHeader") || m.getName().equals("setHeader") || m.getName().equals("withHeader")) {
+                            if ("addHeader".equals(m.getName()) || "setHeader".equals(m.getName()) || "withHeader".equals(m.getName())) {
                                 addHeader = m;
                                 break;
                             }
@@ -78,34 +85,40 @@ public class GradleHttpPropagationAgent {
                             addHeader.invoke(args[0], "traceparent", traceparent);
                         }
                     } catch (Exception e) {
+                        // the instrumentation must never break the instrumented application
                     }
                 }
             } catch (Exception e) {
+                // the instrumentation must never break the instrumented application
             }
         }
 
         @Advice.OnMethodExit(onThrowable = Throwable.class)
         public static void onExit(@Advice.Thrown Throwable throwable) {
             try {
-                Scope scope = clientScope.get();
+                Scope scope = CLIENT_SCOPE.get();
                 if (scope != null) {
                     scope.close();
-                    clientScope.remove();
+                    CLIENT_SCOPE.remove();
                 }
-                Span span = clientSpan.get();
+                Span span = CLIENT_SPAN.get();
                 if (span != null) {
                     if (throwable != null) {
                         span.recordException(throwable);
                     }
                     span.end();
-                    clientSpan.remove();
+                    CLIENT_SPAN.remove();
                 }
             } catch (Exception e) {
+                // the instrumentation must never break the instrumented application
             }
         }
     }
 
-    public static class DaemonConnectionAdvice {
+    public static final class DaemonConnectionAdvice {
+        private DaemonConnectionAdvice() {
+        }
+
         @Advice.OnMethodEnter
         public static void onEnter(@Advice.Origin String method, @Advice.AllArguments Object[] args) {
             try {
@@ -115,7 +128,7 @@ public class GradleHttpPropagationAgent {
                         Class<?> clazz = args[0].getClass();
                         Method getHeader = null;
                         for (Method m : clazz.getMethods()) {
-                            if (m.getName().equals("getHeader") || m.getName().equals("header")) {
+                            if ("getHeader".equals(m.getName()) || "header".equals(m.getName())) {
                                 getHeader = m;
                                 break;
                             }
@@ -127,6 +140,7 @@ public class GradleHttpPropagationAgent {
                             }
                         }
                     } catch (Exception e) {
+                        // the instrumentation must never break the instrumented application
                     }
                 }
                 if (traceparent != null && !traceparent.isEmpty()) {
@@ -146,31 +160,33 @@ public class GradleHttpPropagationAgent {
                             .setAttribute("rpc.service", "daemon")
                             .startSpan();
                         Scope scope = span.makeCurrent();
-                        serverSpan.set(span);
-                        serverScope.set(scope);
+                        SERVER_SPAN.set(span);
+                        SERVER_SCOPE.set(scope);
                     }
                 }
             } catch (Exception e) {
+                // the instrumentation must never break the instrumented application
             }
         }
 
         @Advice.OnMethodExit(onThrowable = Throwable.class)
         public static void onExit(@Advice.Thrown Throwable throwable) {
             try {
-                Scope scope = serverScope.get();
+                Scope scope = SERVER_SCOPE.get();
                 if (scope != null) {
                     scope.close();
-                    serverScope.remove();
+                    SERVER_SCOPE.remove();
                 }
-                Span span = serverSpan.get();
+                Span span = SERVER_SPAN.get();
                 if (span != null) {
                     if (throwable != null) {
                         span.recordException(throwable);
                     }
                     span.end();
-                    serverSpan.remove();
+                    SERVER_SPAN.remove();
                 }
             } catch (Exception e) {
+                // the instrumentation must never break the instrumented application
             }
         }
     }
