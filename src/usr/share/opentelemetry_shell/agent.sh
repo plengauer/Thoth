@@ -369,6 +369,7 @@ _otel_hash_and_reinstrument() {
 _otel_export_PATH_and_reinstrument() {
   shift
   local exit_code=0
+  # shellcheck disable=SC2163 # the arguments are names or assignments of variables to export
   \export "$@" || local exit_code="$?"
   if \[ "${1%%=*}" = PATH ]; then
     local aliases_pre="$(\mktemp)"
