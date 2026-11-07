@@ -8,9 +8,9 @@
 
 # translate legacy config
 if \[ -n "${OTEL_SHELL_TRACES_ENABLE:-}" ] || \[ -n "${OTEL_SHELL_METRICS_ENABLE:-}" ] || \[ -n "${OTEL_SHELL_LOGS_ENABLE:-}" ]; then
-  \[ "${OTEL_SHELL_TRACES_ENABLE:-FALSE}" = TRUE ] && \export OTEL_TRACES_EXPORTER=otlp || \export OTEL_TRACES_EXPORTER=""
-  \[ "${OTEL_SHELL_METRICS_ENABLE:-FALSE}" = TRUE ] && \export OTEL_METRICS_EXPORTER=otlp || \export OTEL_METRICS_EXPORTER=""
-  \[ "${OTEL_SHELL_LOGS_ENABLE:-FALSE}" = TRUE ] && \export OTEL_LOGS_EXPORTER=otlp || \export OTEL_LOGS_EXPORTER=""
+  if \[ "${OTEL_SHELL_TRACES_ENABLE:-FALSE}" = TRUE ]; then \export OTEL_TRACES_EXPORTER=otlp; else \export OTEL_TRACES_EXPORTER=""; fi
+  if \[ "${OTEL_SHELL_METRICS_ENABLE:-FALSE}" = TRUE ]; then \export OTEL_METRICS_EXPORTER=otlp; else \export OTEL_METRICS_EXPORTER=""; fi
+  if \[ "${OTEL_SHELL_LOGS_ENABLE:-FALSE}" = TRUE ]; then \export OTEL_LOGS_EXPORTER=otlp; else \export OTEL_LOGS_EXPORTER=""; fi
   \export OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE="${OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE:-delta}"
 fi
 
@@ -194,7 +194,7 @@ otel_span_current() {
   \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
   _otel_sdk_communicate "SPAN_HANDLE" "$response_pipe" "${TRACEPARENT:-}"
   local handle
-  \read handle <"$response_pipe" || \true
+  \read -r handle <"$response_pipe" || \true
   \echo "$handle"
   \rm "$response_pipe" 1>/dev/null 2>/dev/null
 }
@@ -210,7 +210,7 @@ otel_span_start() {
   \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
   _otel_sdk_communicate "SPAN_START" "$response_pipe" "${TRACEPARENT:-}" "${TRACESTATE:-}" "$time" "$kind" "$name"
   local handle
-  \read handle <"$response_pipe" || \true
+  \read -r handle <"$response_pipe" || \true
   \echo "$handle"
   \rm "$response_pipe" 1>/dev/null 2>/dev/null
 }
@@ -251,7 +251,7 @@ otel_span_traceparent() {
   \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
   _otel_sdk_communicate "SPAN_TRACEPARENT" "$response_pipe" "$span_handle"
   local traceparent
-  \read traceparent <"$response_pipe" || \true
+  \read -r traceparent <"$response_pipe" || \true
   \echo "$traceparent"
   \rm "$response_pipe" 1>/dev/null 2>/dev/null
 }
@@ -285,7 +285,7 @@ otel_event_create() {
   \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
   _otel_sdk_communicate "EVENT_CREATE" "$response_pipe" "$event_name"
   local handle
-  \read handle <"$response_pipe" || \true
+  \read -r handle <"$response_pipe" || \true
   \echo "$handle"
   \rm "$response_pipe" 1>/dev/null 2>/dev/null
 }
@@ -316,7 +316,7 @@ otel_link_create() {
   \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
   _otel_sdk_communicate "LINK_CREATE" "$response_pipe" "$traceparent" "$tracestate" END
   local handle
-  \read handle <"$response_pipe" || \true
+  \read -r handle <"$response_pipe" || \true
   \echo "$handle"
   \rm "$response_pipe" 1>/dev/null 2>/dev/null
 }
@@ -355,7 +355,7 @@ otel_counter_create() {
     _otel_sdk_communicate "COUNTER_CREATE" "$response_pipe" "$type" "$name" "$unit" "$description"
   fi
   local handle
-  \read handle <"$response_pipe" || \true
+  \read -r handle <"$response_pipe" || \true
   \echo "$handle"
   \rm "$response_pipe" 1>/dev/null 2>/dev/null
 }
@@ -372,7 +372,7 @@ otel_observation_create() {
   \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
   _otel_sdk_communicate "OBSERVATION_CREATE" "$response_pipe" "$value"
   local handle
-  \read handle <"$response_pipe" || \true
+  \read -r handle <"$response_pipe" || \true
   \echo "$handle"
   \rm "$response_pipe" 1>/dev/null 2>/dev/null
 }
@@ -415,12 +415,12 @@ otel_observe() {
   otel_span_attribute_typed "$span_handle" string shell.command="$command_name"
   otel_span_attribute_typed "$span_handle" string shell.command.type="$command_type"
   if _otel_string_contains "$command_name" /; then
-    otel_span_attribute_typed "$span_handle" string shell.command.name=""${command_name##*/}""
+    otel_span_attribute_typed "$span_handle" string shell.command.name="${command_name##*/}"
   else
     otel_span_attribute_typed "$span_handle" string shell.command.name="$command_name"
   fi
   if \[ "$command_type" = file ]; then
-    local executable_path="$(_otel_string_contains "$command_name" / && \echo "$command_name" || \which "$command_name")"
+    local executable_path="$(if _otel_string_contains "$command_name" /; then \echo "$command_name"; else \which "$command_name"; fi)"
     otel_span_attribute_typed "$span_handle" string subprocess.executable.path="$executable_path"
     otel_span_attribute_typed "$span_handle" string subprocess.executable.name="${executable_path##*/}" # "$(\printf '%s' "$command" | \cut -d' ' -f1 | \rev | \cut -d / -f 1 | \rev)"
   fi
@@ -483,7 +483,7 @@ fi
 _otel_call() {
   local command="$1"
   shift
-  \alias "$command" 1>/dev/null 2>/dev/null && \eval "$(_otel_escape_args "${command#\\}" "$@")" || "${command#\\}" "$@"
+  if \alias "$command" 1>/dev/null 2>/dev/null; then \eval "$(_otel_escape_args "${command#\\}" "$@")"; else "${command#\\}" "$@"; fi
 }
 
 \. /usr/share/opentelemetry_shell/api.observe.logs.sh

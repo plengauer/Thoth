@@ -9,7 +9,7 @@ ASYNC_INIT="${ASYNC_INIT:-TRUE}"
 
 if [ "${ASYNC_INIT:-FALSE}" = TRUE ]; then
   run() {
-    "$@" 2>&1 | { type perl &>/dev/null && perl -0777 -pe '' || cat >/dev/null; } &
+    "$@" 2>&1 | { if type perl &>/dev/null; then perl -0777 -pe ''; else cat >/dev/null; fi; } &
   }
 else
   run() { "$@"; }
@@ -160,8 +160,11 @@ if [ "$INPUT_CACHE" = "true" ]; then
   cache_restore_fast "$INSTRUMENTATION_CACHE_KEY" || true
   cache_key="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} dependencies $({ cat /etc/os-release; arch; python3 --version || true; printenv | grep -E '^OTEL_SHELL_CONFIG_INSTALL_' || true; } | md5sum | cut -d ' ' -f 1)"
   if [ "$GITHUB_ACTION_REPOSITORY" = "$GITHUB_REPOSITORY" ] && [ -f "$GITHUB_WORKSPACE"/package.deb ]; then cache_key="$cache_key local"; fi
-  cache_restore_fast "$cache_key" && echo "cache_restored_fast=true" >> "$GITHUB_OUTPUT" \
-    || { echo "cache_restored_fast=false" >> "$GITHUB_OUTPUT"; wait; cache_restore_toolkit || echo "::debug::Dependency cache restore was unavailable."; }
+  if cache_restore_fast "$cache_key"; then
+    echo "cache_restored_fast=true" >> "$GITHUB_OUTPUT"
+  else
+    echo "cache_restored_fast=false" >> "$GITHUB_OUTPUT"; wait; cache_restore_toolkit || echo "::debug::Dependency cache restore was unavailable."
+  fi
   [ "$(find /var/cache/apt/archives/ -name '*.deb' | wc -l)" -gt 0 ] || write_back_cache=TRUE
   # hand the restored wheelhouse to the debian postinst so its pip installs can resolve fully offline (it falls back to the network on its own if the wheelhouse is incomplete)
   if [ -n "$(sudo find /var/cache/opentelemetry_shell/wheels -maxdepth 1 -name '*.whl' 2>/dev/null | head -n 1)" ]; then export OTEL_SHELL_CONFIG_INSTALL_PIP_FIND_LINKS=/var/cache/opentelemetry_shell/wheels; fi
@@ -382,7 +385,7 @@ if type sh; then run gcc -o "$new_binary_dir"/sh forward.c -DEXECUTABLE="$(which
 if type ash; then run gcc -o "$new_binary_dir"/dash forward.c -DEXECUTABLE="$(which ash)" -DARG1="$GITHUB_ACTION_PATH"/decorate_action_run.sh -DARG2="$(which ash)"; fi
 if type dash; then run gcc -o "$new_binary_dir"/dash forward.c -DEXECUTABLE="$(which dash)" -DARG1="$GITHUB_ACTION_PATH"/decorate_action_run.sh -DARG2="$(which dash)"; fi
 if type bash; then run gcc -o "$new_binary_dir"/bash forward.c -DEXECUTABLE="$(which bash)" -DARG1="$GITHUB_ACTION_PATH"/decorate_action_run.sh -DARG2="$(which bash)"; fi
-for node_path in $(find -L "$(readlink -f /proc/*/exe | grep '/Runner.Worker$' | rev | cut -d / -f 4- | rev)" -maxdepth 5 -path '*/externals/node*/bin/node' -type f 2> /dev/null | xargs -r readlink -f | sort -u); do
+for node_path in $(find -L "$(readlink -f /proc/*/exe | grep '/Runner.Worker$' | rev | cut -d / -f 4- | rev)" -maxdepth 5 -path '*/externals/node*/bin/node' -type f -print0 2> /dev/null | xargs -0 -r readlink -f | sort -u); do
   [ -e "$node_path" ] || continue
   dir_path_new="$relocated_binary_dir"/"$(echo "$node_path" | rev | cut -d / -f 3 | rev)"-"$(echo "$node_path" | md5sum | cut -d ' ' -f 1)"
   mkdir "$dir_path_new"
@@ -539,14 +542,14 @@ root4job_end() {
   otel_counter_observe "$cicd_worker_count_handle" "$observation_handle"
   otel_shutdown
 
-  if false && ([ "$INPUT_SELF_MONITORING" = true ] || ([ "$INPUT_SELF_MONITORING" = auto ] && [ "$GITHUB_API_URL" = 'https://api.github.com' ])); then
+  if false && { [ "$INPUT_SELF_MONITORING" = true ] || { [ "$INPUT_SELF_MONITORING" = auto ] && [ "$GITHUB_API_URL" = 'https://api.github.com' ]; }; }; then
     (
       unset OTEL_EXPORTER_OTLP_METRICS_ENDPOINT OTEL_EXPORTER_OTLP_LOGS_ENDPOINT OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
       export OTEL_SHELL_SDK_OUTPUT_REDIRECT=/dev/null
       export OTEL_SERVICE_NAME="OpenTelemetry GitHub Selfmonitoring"
       export OTEL_TRACES_EXPORTER=none
       export OTEL_LOGS_EXPORTER=none
-      [ "${OTEL_SHELL_CONFIG_GITHUB_IS_TEST:-FALSE}" = FALSE ] && export OTEL_METRICS_EXPORTER=otlp || export OTEL_METRICS_EXPORTER=none
+      if [ "${OTEL_SHELL_CONFIG_GITHUB_IS_TEST:-FALSE}" = FALSE ]; then export OTEL_METRICS_EXPORTER=otlp; else export OTEL_METRICS_EXPORTER=none; fi
       export OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
       export OTEL_EXPORTER_OTLP_ENDPOINT=http://3.73.14.87:4318
       export OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE=delta
@@ -557,7 +560,7 @@ root4job_end() {
       _otel_resource_attributes_custom() {
         _otel_resource_attribute string telemetry.sdk.language=github
       }
-      if [ "$INPUT_SELF_MONITORING_ANONYMIZE" = true ] || ([ "$INPUT_SELF_MONITORING_ANONYMIZE" = auto ] && ([ "$GITHUB_API_URL" != 'https://api.github.com' ] || [ "$(gh_curl | jq -r .visibility)" != public ])); then
+      if [ "$INPUT_SELF_MONITORING_ANONYMIZE" = true ] || { [ "$INPUT_SELF_MONITORING_ANONYMIZE" = auto ] && { [ "$GITHUB_API_URL" != 'https://api.github.com' ] || [ "$(gh_curl | jq -r .visibility)" != public ]; }; }; then
         unset GITHUB_REPOSITORY_ID GITHUB_REPOSITORY GITHUB_REPOSITORY_OWNER_ID GITHUB_REPOSITORY_OWNER
       fi
       unset GITHUB_WORKFLOW_REF GITHUB_WORKFLOW_SHA GITHUB_WORKFLOW

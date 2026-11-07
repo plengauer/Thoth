@@ -76,7 +76,7 @@ _otel_auto_instrument() {
     if \type dpkg 1>/dev/null 2>/dev/null; then \ls -la /var/lib/dpkg/lock; else _otel_list_path_commands | _otel_filter_commands_by_special | _otel_filter_commands_by_hint "$hint"; fi
     \alias
   } | \md5sum | \cut -d ' ' -f 1)"
-  local cache_file="$TMPDIR/opentelemetry_shell_$(_otel_package_version opentelemetry-shell)"_"$_otel_shell"_instrumentation_cache_"$cache_key".aliases
+  local cache_file="$TMPDIR/opentelemetry_shell_$(_otel_package_version opentelemetry-shell)_${_otel_shell}_instrumentation_cache_${cache_key}.aliases"
   if \[ -r "$cache_file" ]; then
     \eval "$(\grep -vh '_otel_alias_prepend ' $(_otel_list_special_auto_instrument_files))"
     \. "$cache_file" && return 0 || \true
@@ -118,6 +118,7 @@ _otel_auto_instrument() {
 }
 
 _otel_list_special_auto_instrument_files() {
+  # shellcheck disable=SC2010 # globbing is disabled in this branch, so the files have to be listed instead of globbed
   case "$-" in
     *f*) \ls /usr/share/opentelemetry_shell | \grep -E '^agent.instrumentation.*.sh$' | while \read -r _otel_file_name; do \echo /usr/share/opentelemetry_shell/"$_otel_file_name"; done ;;
     *) \echo /usr/share/opentelemetry_shell/agent.instrumentation.*.sh ;;
@@ -135,7 +136,7 @@ _otel_list_path_commands() {
 }
 
 _otel_list_path_executables() {
-  \echo "$PATH" | \tr ':' '\n' | while \read dir; do
+  \echo "$PATH" | \tr ':' '\n' | while \read -r dir; do
     \find "$dir" -maxdepth 1 -type f -executable 2>/dev/null || \true
     \find "$dir" -maxdepth 1 -type l -executable 2>/dev/null || \true
   done
@@ -318,6 +319,7 @@ _otel_alias_prepend() {
 
 _otel_unquote() {
   # '\'' => ', '"'"' => ', '"'"$ => '', '"''"$ => ''' => '
+  # shellcheck disable=SC1003 # the patterns intentionally match the escape sequences for a single quote
   \sed -e 's/'\''\\'\'''\''/'\''/g' -e 's/'\''"'\''"'\''/'\''/g' -e 's/'\''"'\''"$/'\'''\''/g' -e 's/'\''"'\'\''"$/'\''/g' -e "s/^'\(.*\)'$/\1/"
 }
 
@@ -369,6 +371,7 @@ _otel_hash_and_reinstrument() {
 _otel_export_PATH_and_reinstrument() {
   shift
   local exit_code=0
+  # shellcheck disable=SC2163 # the arguments are names or assignments of variables to export
   \export "$@" || local exit_code="$?"
   if \[ "${1%%=*}" = PATH ]; then
     local aliases_pre="$(\mktemp)"
@@ -388,10 +391,10 @@ _otel_export_PATH_and_reinstrument() {
 _otel_instrument_and_source() {
   local n="$1"
   shift
-  local command="$(eval '\echo ${'"$(($n + 1))"'}')"
-  local file="$(eval '\echo ${'"$(($n + 2))"'}')"
+  local command="$(eval '\echo ${'"$((n + 1))"'}')"
+  local file="$(eval '\echo ${'"$((n + 2))"'}')"
   if \[ -f "$file" ]; then _otel_auto_instrument "$file"; fi
-  \eval "'$command' '$file' $(if \[ $# -gt $(($n + 2)) ]; then \seq $(($n + 2 + 1)) $#; else \seq 1 $n; fi | while \read i; do \echo '"${'"$i"'}"'; done | _otel_line_join)"
+  \eval "'$command' '$file' $(if \[ $# -gt $((n + 2)) ]; then \seq $((n + 2 + 1)) $#; else \seq 1 $n; fi | while \read -r i; do \echo '"${'"$i"'}"'; done | _otel_line_join)"
 }
 
 _otel_inject_and_exec_directly() { # this function assumes there is no fd fuckery
