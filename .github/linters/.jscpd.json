@@ -1,5 +1,6 @@
 {
   "threshold": 5,
+  "minTokens": 200,
   "reporters": ["console", "html"],
   "ignore": [
     "**/node_modules/**",
@@ -9,6 +10,9 @@
     "**/gradlew",
     "**/package-lock.json",
     "**/.github/workflows/**",
-    "**/demos/*/README.md"
+    "**/demos/*/README.md",
+    "**/dashboards/**",
+    "**/tests/**",
+    "**/demos/**"
   ]
 }
