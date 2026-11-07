@@ -104,6 +104,7 @@ _otel_auto_instrument() {
   if \[ "$_otel_shell" = bash ]; then \alias source='_otel_instrument_and_source "$#" "$@" source'; fi
   if \[ "$_otel_shell_conservative_exec" = TRUE ]; then
     if \[ -n "${LINENO:-}" ]; then
+      # shellcheck disable=SC2139 # the alias is intentionally expanded when it is defined
       \alias exec='eval "$(_otel_inject_and_exec_by_location "'$_otel_source_file_resolver'" "'$_otel_source_line_resolver'")"; exec'
     else
       \alias exec='_otel_record_exec; exec'
@@ -222,6 +223,7 @@ _otel_deshebangify() {
   if \[ "$(_otel_command_type "$cmd")" != file ]; then return 1; fi
   local shebang="$(_otel_resolve_shebang "$1")" # e.g., "/bin/bash -x"
   if \[ -z "$shebang" ]; then return 2; fi
+  # shellcheck disable=SC2139 # the alias is intentionally expanded when it is defined
   \alias "$1=OTEL_SHELL_COMMAND_TYPE_OVERRIDE=file $shebang $(\which "$1" 2>/dev/null)" # e.g., alias upgrade='/bin/bash -x /usr/bin/upgrade'
 }
 
@@ -313,6 +315,7 @@ _otel_alias_prepend() {
     local new_command="$overrides $prepend_command $previous_otel_command $previous_alias_command"
   fi
 
+  # shellcheck disable=SC2139 # the alias is intentionally expanded when it is defined
   \alias "$original_command"='OTEL_SHELL_SPAN_ATTRIBUTES_OVERRIDE="code.filepath='$_otel_source_file_resolver',code.lineno='$_otel_source_line_resolver',code.function='$_otel_source_func_resolver'" '"$new_command"
 }
 
