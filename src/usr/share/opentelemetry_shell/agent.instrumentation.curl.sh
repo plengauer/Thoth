@@ -187,8 +187,8 @@ _otel_pipe_curl_stderr() {
       otel_span_attribute_typed "$span_handle" string server.address="$host"
       otel_span_attribute_typed "$span_handle" int server.port="$port"
       otel_span_attribute_typed "$span_handle" string url.full="$protocol://$host:$port$path_and_query"
-      otel_span_attribute_typed "$span_handle" string url.path="$(\printf '%s' "$path_and_query" | \cut -d ? -f 1)"
-      otel_span_attribute_typed "$span_handle" string url.query="$(\printf '%s' "$path_and_query" | \cut -sd ? -f 2-)"
+      otel_span_attribute_typed "$span_handle" string url.path="$(\printf '%s' "$path_and_query" | \cut -d '?' -f 1)"
+      otel_span_attribute_typed "$span_handle" string url.query="$(\printf '%s' "$path_and_query" | \cut -sd '?' -f 2-)"
       otel_span_attribute_typed "$span_handle" string url.scheme="$protocol"
       otel_span_attribute_typed "$span_handle" string http.request.method="$method"
       otel_span_attribute_typed "$span_handle" string user_agent.original=curl
