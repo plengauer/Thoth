@@ -65,6 +65,7 @@ else
     else
       # several weird things going on in the next line, (1) using '((' fucks up the syntax highlighting in github while '( (' does not, and (2) &> causes weird buffering / late flushing behavior
       if \env --help 2>&1 | \grep -q 'ignore-signal'; then local extra_env_flags='--ignore-signal=INT --ignore-signal=HUP'; fi
+      # shellcheck disable=SC1001 # the backslash intentionally bypasses an alias of the command
       (\exec \env ${extra_env_flags:-} /opt/opentelemetry_shell/venv/bin/python /usr/share/opentelemetry_shell/sdk.py shell "$(_otel_package_version opentelemetry-shell)" <"$_otel_remote_sdk_pipe" 1>"$_otel_remote_sdk_stdout_redirect" 2>"$_otel_remote_sdk_stderr_redirect" &)
     fi
     \eval "\\exec ${_otel_remote_sdk_fd}> \"$_otel_remote_sdk_pipe\""
