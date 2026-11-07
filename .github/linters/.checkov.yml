@@ -3,3 +3,7 @@ skip-check:
   # of the workflows of the templates sets (8 of 8 files reported). Instead,
   # every job declares its own `permissions:`.
   - CKV2_GHA_1
+  # CKV2_DOCKER_7: the apk packages that are installed are built in the same
+  # pipeline and are unsigned local files (actions/instrument/workflow/Dockerfile
+  # and tests/Dockerfile).
+  - CKV2_DOCKER_7
