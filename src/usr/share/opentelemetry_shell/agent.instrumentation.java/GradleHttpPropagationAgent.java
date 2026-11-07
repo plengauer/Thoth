@@ -17,6 +17,8 @@ import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.TraceState;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.context.Context;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.context.Scope;
 
+// Byte Buddy and the OpenTelemetry API are fluent builders
+@SuppressWarnings("PMD.LawOfDemeter")
 public class GradleHttpPropagationAgent {
     public static final ThreadLocal<Span> clientSpan = new ThreadLocal<>();
     public static final ThreadLocal<Scope> clientScope = new ThreadLocal<>();
