@@ -25,11 +25,13 @@ if false && ([ "$INPUT_SELF_MONITORING" = true ] || ([ "$INPUT_SELF_MONITORING" 
   (
     unset OTEL_EXPORTER_OTLP_METRICS_ENDPOINT OTEL_EXPORTER_OTLP_LOGS_ENDPOINT OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
     export OTEL_SHELL_SDK_OUTPUT_REDIRECT=/dev/null
+    # shellcheck disable=SC2030 # the subshell is intentionally isolated so its environment does not leak into the main script
     export OTEL_SERVICE_NAME="OpenTelemetry GitHub Selfmonitoring"
     export OTEL_TRACES_EXPORTER=none
     export OTEL_LOGS_EXPORTER=none
     [ "${OTEL_SHELL_CONFIG_GITHUB_IS_TEST:-FALSE}" = FALSE ] && export OTEL_METRICS_EXPORTER=otlp || export OTEL_METRICS_EXPORTER=none
     export OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
+    # shellcheck disable=SC2030 # the subshell is intentionally isolated so its environment does not leak into the main script
     export OTEL_EXPORTER_OTLP_ENDPOINT=http://3.73.14.87:4318
     export OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE=delta
     . otelapi.sh
