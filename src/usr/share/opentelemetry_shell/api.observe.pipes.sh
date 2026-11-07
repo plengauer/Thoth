@@ -112,8 +112,8 @@ _otel_record_pipes() {
     (\[ -b /dev/"$2" ] && otel_span_attribute_typed "$1" string pipe."$2".type=block) ||
     otel_span_attribute_typed "$1" string pipe."$2".type=unknown
   local bytes lines
-  \read bytes <"$4"
-  \read lines <"$5"
+  \read -r bytes <"$4"
+  \read -r lines <"$5"
   otel_span_attribute_typed "$1" int pipe."$2".bytes="$bytes"
   otel_span_attribute_typed "$1" int pipe."$2".lines="$lines"
 }
