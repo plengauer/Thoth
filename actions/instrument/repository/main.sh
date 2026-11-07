@@ -33,9 +33,11 @@ if false && ([ "$INPUT_SELF_MONITORING" = true ] || ([ "$INPUT_SELF_MONITORING" 
     export OTEL_EXPORTER_OTLP_ENDPOINT=http://3.73.14.87:4318
     export OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE=delta
     . otelapi.sh
+    # shellcheck disable=SC2329 # the function is invoked indirectly by the sourced instrumentation library or by the test harness
     _otel_resource_attributes_process() {
       :
     }
+    # shellcheck disable=SC2329 # the function is invoked indirectly by the sourced instrumentation library or by the test harness
     _otel_resource_attributes_custom() {
       _otel_resource_attribute string telemetry.sdk.language=github
     }
