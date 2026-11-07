@@ -3,3 +3,6 @@ skip-check:
   # of the workflows of the templates sets (8 of 8 files reported). Instead,
   # every job declares its own `permissions:`.
   - CKV2_GHA_1
+  # CKV_DOCKER_7: tests/Dockerfile builds on a base image that is passed in as a build
+  # argument, once per tested distribution, so there is no fixed tag.
+  - CKV_DOCKER_7
