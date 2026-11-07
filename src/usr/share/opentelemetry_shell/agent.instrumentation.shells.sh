@@ -73,9 +73,11 @@ _otel_inject_shell_args_with_copy() {
   \touch "$temporary_script"
   \chmod +x "$temporary_script"
   # doing the following in several lines in theory offsets the observed linenumbers, however, they are not available anyway in these shells
-  \echo "OTEL_SHELL_AUTO_INSTRUMENTATION_HINT='$temporary_script'" >>"$temporary_script"
-  \echo ". otel.sh" >>"$temporary_script"
-  \echo "\set -- $(_otel_escape_args "$@")" >>"$temporary_script"
+  {
+    \echo "OTEL_SHELL_AUTO_INSTRUMENTATION_HINT='$temporary_script'"
+    \echo ". otel.sh"
+    \echo "\set -- $(_otel_escape_args "$@")"
+  } >>"$temporary_script"
   if \[ "$is_script" -eq 1 ]; then \cat "$command"; else \echo "$command"; fi | if \[ "${OTEL_SHELL_CONFIG_INSTRUMENT_ABSOLUTE_PATHS:-FALSE}" = TRUE ]; then \awk '{
       gsub(/^[ \t]+/, "", $0);
       if ($1 ~ /^\//) {
