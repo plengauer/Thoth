@@ -4,7 +4,9 @@ handler_command_string="_otel_inject $(_otel_escape_args "$@")"
 netcat_command_string="$OTEL_SHELL_NETCAT_COMMAND"
 unset OTEL_SHELL_NETCAT_COMMAND
 export OTEL_SHELL_SDK_OUTPUT_REDIRECT="${OTEL_SHELL_SDK_OUTPUT_REDIRECT:-/dev/null}"
+# shellcheck disable=SC2034 # read by the sourced instrumentation library
 OTEL_SHELL_AUTO_INSTRUMENTATION_HINT="$handler_command_string"
+# shellcheck disable=SC2034 # read by the sourced instrumentation library
 OTEL_SHELL_AUTO_INJECTED=TRUE
 . otel.sh
 
