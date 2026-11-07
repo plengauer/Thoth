@@ -65,6 +65,7 @@ _otel_inject_parallel_gnu_arguments() {
   local in_exec=0
   for arg in "$@"; do
     \echo -n ' '
+    # shellcheck disable=SC2154 # the variable is assigned by the sourced instrumentation library or provided by the environment
     if \[ "$in_exec" -eq 0 ] && _otel_string_contains "$arg" =; then
       local additional_code="export '$arg'
 ${additional_code:-}"
