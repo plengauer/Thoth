@@ -269,7 +269,7 @@ def handle(scope, version, command, arguments):
         value = tokens[1]
         resource[key] = convert_type(type, value)
     elif command == 'INIT':
-        from opentelemetry.sdk.resources import Resource, ResourceDetector, OTELResourceDetector, OsResourceDetector, get_aggregated_resources
+        from opentelemetry.sdk.resources import Resource, OTELResourceDetector, OsResourceDetector, get_aggregated_resources
         from opentelemetry_resourcedetector_docker import DockerResourceDetector
         from opentelemetry_resourcedetector_kubernetes import KubernetesResourceDetector
         final_resources = get_aggregated_resources(guess_cloud_resource_detectors() + [
