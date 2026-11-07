@@ -47,9 +47,6 @@ except ModuleNotFoundError:
         return inject_env_minimal(env, file, args)
 
 
-import functools
-
-
 def inject_arguments(file, args, is_file=True):
     try:
         file = file.decode()
