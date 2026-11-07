@@ -29,6 +29,7 @@ if \[ "${GITHUB_ACTIONS:-false}" = true ] && \[ "${GITHUB_AW:-false}" = true ] &
       ep_type=$(\yq ".services[\"$service\"].entrypoint | type" "$compose_file") # SKIP_DEPENDENCY_CHECK
       case "$ep_raw" in
         null)
+          # shellcheck disable=SC2016 # single quotes are intentional, the text is meant to be expanded later by another shell or tool
           OTEL_EP_WRAP='. otel.sh; eval _otel_inject "$0" "$@"' \yq -i ".services[\"$service\"].entrypoint = [\"/bin/sh\", \"-c\", strenv(OTEL_EP_WRAP)]" "$compose_file" # SKIP_DEPENDENCY_CHECK
           ;;
         *)

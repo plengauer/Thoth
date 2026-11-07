@@ -141,6 +141,7 @@ _otel_inject_docker_args() {
       \echo -n ' '
       _otel_escape_args --env "$kvp"
     done
+    # shellcheck disable=SC2154 # the variable is assigned by the sourced instrumentation library or provided by the environment
     \chmod 666 "$_otel_remote_sdk_pipe"
     \echo -n ' '
     _otel_escape_args --mount type=bind,source="$_otel_remote_sdk_pipe",target=/var/opentelemetry_shell"$_otel_remote_sdk_pipe"
@@ -165,6 +166,7 @@ _otel_inject_docker_args() {
     _otel_escape_arg "$1"
     shift
     \echo -n ' '
+    # shellcheck disable=SC2016 # single quotes are intentional, the text is meant to be expanded later by another shell or tool
     _otel_escape_args -c '. otel.sh
 eval _otel_inject "$(_otel_escape_args "$@")"' sh
     \echo -n ' '

@@ -2,6 +2,7 @@
 
 if ! [ -f /usr/share/debconf/confmodule ]; then exit 0; fi
 
+# shellcheck disable=SC2016 # single quotes are intentional, the text is meant to be expanded later by another shell or tool
 simple_command='. /usr/share/debconf/confmodule; echo $2 >&2'
 command=". /usr/bin/opentelemetry_shell.sh; $simple_command"
 

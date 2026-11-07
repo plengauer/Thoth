@@ -107,9 +107,11 @@ record_github_logs() {
 }
 
 . otelapi.sh
+# shellcheck disable=SC2329 # the function is invoked indirectly by the sourced instrumentation library or by the test harness
 _otel_resource_attributes_process() {
   :
 }
+# shellcheck disable=SC2329 # the function is invoked indirectly by the sourced instrumentation library or by the test harness
 _otel_resource_attributes_custom() {
   _otel_resource_attribute string telemetry.sdk.language=github
 }
