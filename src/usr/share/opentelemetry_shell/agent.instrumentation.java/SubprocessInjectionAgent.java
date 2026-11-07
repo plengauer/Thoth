@@ -36,7 +36,7 @@ public class SubprocessInjectionAgent {
                     Map<String, String> rootenvironment = System.getenv();
                     Method method = Class.forName("java.lang.ProcessEnvironment").getDeclaredMethod("emptyEnvironment", Integer.TYPE);
                     method.setAccessible(true);
-                    environment = (Map<String, String>) method.invoke(null, new Object[] { rootenvironment.size() + 2 });
+                    environment = (Map<String, String>) method.invoke(null, rootenvironment.size() + 2);
                     for (String key : rootenvironment.keySet()) {
                         if (!key.startsWith("OTEL_SHELL_COMMANDLINE_OVERRIDE") && !key.equals("OTEL_SHELL_AUTO_INJECTED")) environment.put(key, rootenvironment.get(key));
                     }
