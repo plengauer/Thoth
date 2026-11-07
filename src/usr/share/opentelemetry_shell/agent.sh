@@ -78,6 +78,7 @@ _otel_auto_instrument() {
   } | \md5sum | \cut -d ' ' -f 1)"
   local cache_file="$TMPDIR/opentelemetry_shell_$(_otel_package_version opentelemetry-shell)"_"$_otel_shell"_instrumentation_cache_"$cache_key".aliases
   if \[ -r "$cache_file" ]; then
+    # shellcheck disable=SC2046 # the helper prints a whitespace separated list of file paths that must be split into separate grep arguments
     \eval "$(\grep -vh '_otel_alias_prepend ' $(_otel_list_special_auto_instrument_files))"
     \. "$cache_file" && return 0 || \true
   fi

@@ -10,12 +10,12 @@ sudo chmod +x /usr/bin/bash-ai
 alias ai=bash-ai
 # lets simulate the caller
 . /usr/bin/opentelemetry_shell.sh
-if [ "$TEST_SHELL" = 'busybox sh' ] && ! [ -x /bin/busybox ]; then sudo ln --symbolic $(which busybox) /bin/busybox; fi
+if [ "$TEST_SHELL" = 'busybox sh' ] && ! [ -x /bin/busybox ]; then sudo ln --symbolic "$(which busybox)" /bin/busybox; fi
 alias
 ai some arguments
 # lets assert
 assert_equals 0 $?
 span="$(resolve_span '.name | endswith("/bash-ai some arguments")')"
-assert_equals "SpanKind.INTERNAL" $(\echo "$span" | jq -r '.kind')
+assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
 span="$(resolve_span '.name == "echo hello world"')"
-assert_equals "SpanKind.INTERNAL" $(\echo "$span" | jq -r '.kind')
+assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
