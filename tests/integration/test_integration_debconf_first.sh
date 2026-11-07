@@ -5,5 +5,5 @@ set +u
 export DEBIAN_FRONTEND=noninteractive
 . /usr/share/debconf/confmodule
 . /usr/bin/opentelemetry_shell.sh
-db_get $(debconf-show $(debconf-show --listowners | head -n1) | sed 's/^\* //' | sed 's/  //' | cut -d: -f1 | head -n1)
+db_get "$(debconf-show "$(debconf-show --listowners | head -n1)" | sed 's/^\* //' | sed 's/  //' | cut -d: -f1 | head -n1)"
 assert_equals 0 "$?"
