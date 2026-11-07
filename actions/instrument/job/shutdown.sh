@@ -38,4 +38,5 @@ fi
 if [ -n "${shutdown_warning:-}" ]; then
   echo "::warning::Job-level instrumentation could not be shut down cleanly because ${shutdown_warning}. Telemetry for this job is incomplete or missing. The job itself is unaffected. Please report this at https://github.com/plengauer/Thoth/issues."
 fi
+# shellcheck disable=SC2154 # the variable is assigned by the sourced instrumentation library or provided by the environment
 timeout "$shutdown_timeout" cat <"$STATE_log_file" >"$STATE_otel_shell_sdk_output_redirect" || true

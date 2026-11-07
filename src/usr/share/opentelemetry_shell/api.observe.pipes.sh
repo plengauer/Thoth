@@ -18,6 +18,7 @@ _otel_call_and_record_pipes() {
   shift
   local call_command="$1"
   shift
+  # shellcheck disable=SC2154 # the variable is assigned by the sourced instrumentation library or provided by the environment
   local stdin_bytes_result="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.stdin.bytes.result.XXXXXXXXXX)"
   local stdin_lines_result="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.stdin.lines.result.XXXXXXXXXX)"
   local stdout_bytes_result="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.stdout.bytes.result.XXXXXXXXXX)"
