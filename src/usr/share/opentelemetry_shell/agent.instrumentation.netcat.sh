@@ -297,7 +297,7 @@ _otel_is_netcat_arg_arg() {
     -R) return 0 ;;
     -d | --delay) return 0 ;;
     -o | --output) return 0 ;;
-    -x | --hexdump) return 0 ;;
+    --hexdump) return 0 ;;
     -p | --source-port) return 0 ;;
     -s | --source) return 0 ;;
     --proxy | --proxy-type | --proxy-auth | --proxy-dns) return 0 ;;
