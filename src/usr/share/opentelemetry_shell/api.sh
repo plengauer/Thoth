@@ -65,6 +65,7 @@ else
     else
       # several weird things going on in the next line, (1) using '((' fucks up the syntax highlighting in github while '( (' does not, and (2) &> causes weird buffering / late flushing behavior
       if \env --help 2>&1 | \grep -q 'ignore-signal'; then local extra_env_flags='--ignore-signal=INT --ignore-signal=HUP'; fi
+      # shellcheck disable=SC1001 # the backslash intentionally bypasses an alias of the command
       (\exec \env ${extra_env_flags:-} /opt/opentelemetry_shell/venv/bin/python /usr/share/opentelemetry_shell/sdk.py shell "$(_otel_package_version opentelemetry-shell)" <"$_otel_remote_sdk_pipe" 1>"$_otel_remote_sdk_stdout_redirect" 2>"$_otel_remote_sdk_stderr_redirect" &)
     fi
     \eval "\\exec ${_otel_remote_sdk_fd}> \"$_otel_remote_sdk_pipe\""
@@ -162,6 +163,7 @@ if \[ "$_otel_shell" = bash ]; then
     local varname="OTEL_SHELL_PACKAGE_VERSION_CACHE_$package_name"
     local varname="${varname//-/_}"
     \eval "local varvalue=\${$varname:-}"
+    # shellcheck disable=SC2154 # the variable is assigned by the sourced instrumentation library or provided by the environment
     if \[ -n "$varvalue" ]; then
       \echo "$varvalue"
       return 0
@@ -546,11 +548,13 @@ _otel_escape_arg() {
 
 if \[ "$_otel_shell" = bash ]; then
   _otel_escape_arg_format() {
+    # shellcheck disable=SC2059 # the format string is intentionally composed from variables
     \printf "$1" "${2//\'/\'\\\'\'}"
   }
 else
   _otel_escape_arg_format() {
     local escaped="$(\printf '%s' "$2X" | \sed "s/'/'\\\\''/g")" # need the extra X to preserve trailing linefeeds (yay)
+    # shellcheck disable=SC2059 # the format string is intentionally composed from variables
     \printf "$1" "${escaped%X}"
   }
 fi

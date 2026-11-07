@@ -25,17 +25,21 @@ if false && ([ "$INPUT_SELF_MONITORING" = true ] || ([ "$INPUT_SELF_MONITORING" 
   (
     unset OTEL_EXPORTER_OTLP_METRICS_ENDPOINT OTEL_EXPORTER_OTLP_LOGS_ENDPOINT OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
     export OTEL_SHELL_SDK_OUTPUT_REDIRECT=/dev/null
+    # shellcheck disable=SC2030 # the subshell is intentionally isolated so its environment does not leak into the main script
     export OTEL_SERVICE_NAME="OpenTelemetry GitHub Selfmonitoring"
     export OTEL_TRACES_EXPORTER=none
     export OTEL_LOGS_EXPORTER=none
     [ "${OTEL_SHELL_CONFIG_GITHUB_IS_TEST:-FALSE}" = FALSE ] && export OTEL_METRICS_EXPORTER=otlp || export OTEL_METRICS_EXPORTER=none
     export OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
+    # shellcheck disable=SC2030 # the subshell is intentionally isolated so its environment does not leak into the main script
     export OTEL_EXPORTER_OTLP_ENDPOINT=http://3.73.14.87:4318
     export OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE=delta
     . otelapi.sh
+    # shellcheck disable=SC2329 # the function is invoked indirectly by the sourced instrumentation library or by the test harness
     _otel_resource_attributes_process() {
       :
     }
+    # shellcheck disable=SC2329 # the function is invoked indirectly by the sourced instrumentation library or by the test harness
     _otel_resource_attributes_custom() {
       _otel_resource_attribute string telemetry.sdk.language=github
     }
@@ -51,6 +55,7 @@ if false && ([ "$INPUT_SELF_MONITORING" = true ] || ([ "$INPUT_SELF_MONITORING" 
   ) &
 fi
 
+# shellcheck disable=SC2031 # the subshell is intentionally isolated so its environment does not leak into the main script
 export OTEL_SERVICE_NAME="${OTEL_SERVICE_NAME:-"$(echo "$GITHUB_REPOSITORY" | cut -d / -f 2-) CI"}"
 
 echo "::group::Resolving Workflow Run Attempt"
@@ -189,6 +194,7 @@ otel_span_end "$workflow_span_handle" @"$workflow_ended_at"
 jq <"$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .created_at, .started_at, .completed_at, .name] | @tsv' | while IFS=$'\t' read -r TRACEPARENT job_id job_conclusion job_created_at job_started_at job_completed_at job_name; do
   if [ "$job_conclusion" = skipped ]; then continue; fi
   if jq <"$artifacts_json" -r .name | grep -qE '^opentelemetry_job_'"$job_id"'_signals_.*$'; then
+    # shellcheck disable=SC2329 # the function is invoked indirectly by the sourced instrumentation library or by the test harness
     export_deferred_signal_artifacts() {
       artifact_name="$1"
       dir="$(mktemp -d)"
@@ -197,18 +203,22 @@ jq <"$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .cr
       rm -rf "$dir"
     }
     export -f export_deferred_signal_artifacts
+    # shellcheck disable=SC2329 # the function is invoked indirectly by the sourced instrumentation library or by the test harness
     export_deferred_signal_file() {
       file="$1"
       case "$file" in
         *.logs)
+          # shellcheck disable=SC2031 # the subshell is intentionally isolated so its environment does not leak into the main script
           OTEL_EXPORTER_OTLP_SIGNAL_ENDPOINT="${OTEL_EXPORTER_OTLP_LOGS_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/logs}"
           OTEL_EXPORTER_OTLP_SIGNAL_HEADERS="$OTEL_EXPORTER_OTLP_LOGS_HEADERS"
           ;;
         *.metrics)
+          # shellcheck disable=SC2031 # the subshell is intentionally isolated so its environment does not leak into the main script
           OTEL_EXPORTER_OTLP_SIGNAL_ENDPOINT="${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/metrics}"
           OTEL_EXPORTER_OTLP_SIGNAL_HEADERS="$OTEL_EXPORTER_OTLP_METRICS_HEADERS"
           ;;
         *.traces)
+          # shellcheck disable=SC2031 # the subshell is intentionally isolated so its environment does not leak into the main script
           OTEL_EXPORTER_OTLP_SIGNAL_ENDPOINT="${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/traces}"
           OTEL_EXPORTER_OTLP_SIGNAL_HEADERS="$OTEL_EXPORTER_OTLP_TRACES_HEADERS"
           ;;

@@ -34,6 +34,7 @@ _otel_inject_inner_command_args() {
     _otel_escape_arg "$arg"
   done
   # wrap command
+  # shellcheck disable=SC2154 # the variable is assigned by the sourced instrumentation library or provided by the environment
   \echo -n " $_otel_shell -c '. otel.sh
 _otel_inject $(_otel_escape_arg "$1") "'"$@"'"'"
   shift

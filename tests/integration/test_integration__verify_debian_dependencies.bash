@@ -11,6 +11,7 @@ Maintainer: Philipp Lengauer <p.lengauer@gmail.com>
 Homepage: https://github.com/plengauer/opentelemetry-bash
 Description: Generate open telemetry traces, metrics, and logs from shell scripts fully automatically
 '
+# shellcheck disable=SC2016 # single quotes are intentional, the text is meant to be expanded later by another shell or tool
 SCRIPT_CONTENT='bash -c "echo hello world $@"
 if type foo; then echo '\''$1'\''; fi'
 

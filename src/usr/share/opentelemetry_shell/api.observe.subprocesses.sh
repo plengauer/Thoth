@@ -8,6 +8,7 @@ _otel_call_and_record_subprocesses() {
   shift
   local command="$1"
   shift
+  # shellcheck disable=SC2154 # the variable is assigned by the sourced instrumentation library or provided by the environment
   local strace_data="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.strace.pipe.XXXXXXXXXX)"
   local strace_signal="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.strace.signal.XXXXXXXXXX)"
   \mkfifo "$strace_data" "$strace_signal"
@@ -66,6 +67,7 @@ _otel_record_subprocesses() {
         if \[ -z "${span_name:-}" ]; then \eval "local span_name=\"\${span_name_$pid:-}\""; fi
         if \[ -z "${span_name:-}" ]; then
           \eval "local parent_pid=\$parent_pid_$pid"
+          # shellcheck disable=SC2154 # the variable is assigned by the sourced instrumentation library or provided by the environment
           \eval "local span_name=\"\${span_name_$parent_pid:-}\""
         fi
         local span_name="${span_name:-<unknown>}"
@@ -83,6 +85,7 @@ _otel_record_subprocesses() {
             local name="$line"
             local name="${name%\]*}"
             local name="${name#*\[}"
+            # shellcheck disable=SC2154 # the variable is assigned by the sourced instrumentation library or provided by the environment
             if \[ "$_otel_shell" = bash ]; then
               local name="${name//\", \"/ }"
             else
