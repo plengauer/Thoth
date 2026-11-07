@@ -9,7 +9,8 @@ ARG update
 WORKDIR /tests
 COPY . ./
 
-# hadolint ignore=DL3015
+# this is a throwaway test image for many distributions, so the word splitting of the package lists is intended
+# hadolint ignore=DL3015,SC2086
 RUN <<EOF
   packages_mandatory="jq psmisc wget curl time sudo bash"
   packages_optional="parallel moreutils ncat wget2 nodejs npm python3 python3-pip gcc default-jdk-headless jdk"
