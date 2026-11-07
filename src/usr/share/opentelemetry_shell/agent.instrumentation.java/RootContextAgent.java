@@ -6,7 +6,10 @@ import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.TraceFlags;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.TraceState;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.context.Context;
 
-public class RootContextAgent {
+public final class RootContextAgent {
+    private RootContextAgent() {
+    }
+
     public static void premain(String args, Instrumentation instrumentation) {
         String traceparent = System.getenv("TRACEPARENT");
         if (traceparent == null) return;
