@@ -95,7 +95,7 @@ _otel_inject "
 
 _otel_inject_parallel_normalize_argument() {
   local first_char="${1%"${1#?}"}"
-  local last_char="${1#${1%?}}"
+  local last_char="${1#"${1%?}"}"
   if \[ "$first_char" = '"' ] && \[ "$last_char" = '"' ] && \[ "${#1}" -ge 2 ]; then
     local normalized_arg="${1#\"}"
     \printf '%s' "${normalized_arg%\"}"
