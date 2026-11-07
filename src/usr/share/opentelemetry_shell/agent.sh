@@ -76,7 +76,7 @@ _otel_auto_instrument() {
     if \type dpkg 1>/dev/null 2>/dev/null; then \ls -la /var/lib/dpkg/lock; else _otel_list_path_commands | _otel_filter_commands_by_special | _otel_filter_commands_by_hint "$hint"; fi
     \alias
   } | \md5sum | \cut -d ' ' -f 1)"
-  local cache_file="$TMPDIR/opentelemetry_shell_$(_otel_package_version opentelemetry-shell)"_"$_otel_shell"_instrumentation_cache_"$cache_key".aliases
+  local cache_file="$TMPDIR/opentelemetry_shell_$(_otel_package_version opentelemetry-shell)_${_otel_shell}_instrumentation_cache_${cache_key}.aliases"
   if \[ -r "$cache_file" ]; then
     \eval "$(\grep -vh '_otel_alias_prepend ' $(_otel_list_special_auto_instrument_files))"
     \. "$cache_file" && return 0 || \true
