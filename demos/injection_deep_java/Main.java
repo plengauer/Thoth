@@ -9,8 +9,8 @@ public class Main {
         try {
             HttpURLConnection connection = (HttpURLConnection) new URL("http://example.com").openConnection();
             connection.setRequestMethod("GET");
-            try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
-                for (String line = in.readLine(); line != null; line = in.readLine());
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+                for (String line = reader.readLine(); line != null; line = reader.readLine());
             }
             connection.disconnect();
         } catch (IOException e) {
