@@ -6,7 +6,7 @@ if [ "$SHELL" = "" ]; then
   exit 1
 fi
 . /etc/os-release
-if [ "$SHELL" = dash ] && ! ([ "$ID" = debian ] || [ "$ID_LIKE" = debian ]); then
+if [ "$SHELL" = dash ] && ! { [ "$ID" = debian ] || [ "$ID_LIKE" = debian ]; }; then
   exit 0
 fi
 
