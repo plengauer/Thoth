@@ -22,6 +22,7 @@ span="$(resolve_span '.name == "echo hello world 2"')"
 assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
 assert_equals "xargs -I {} echo {}" "$(\echo "$span" | jq -r '.resource.attributes."process.command_line"')"
 
+# shellcheck disable=SC2267 # the deprecated -i option is exercised on purpose
 printf '%s' 'hello world 3' | xargs -i'{}' echo '{}'
 span="$(resolve_span '.name == "xargs -i'{}' echo '{}'"')"
 assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
