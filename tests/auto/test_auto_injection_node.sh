@@ -8,44 +8,44 @@ if ! [ -d /usr/share/opentelemetry_shell/agent.instrumentation.node/"$(node -v |
 node -e "const child_process = require('child_process'); child_process.exec('echo hello world 0', {}, (error, stdout, stderr) => { console.log(stdout); console.error(stderr); });"
 assert_equals 0 $?
 span="$(resolve_span '.name == "echo hello world 0"')"
-assert_equals "SpanKind.INTERNAL" $(\echo "$span" | jq -r '.kind')
-assert_not_equals null $(\echo "$span" | jq -r '.parent_id')
+assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
+assert_not_equals null "$(\echo "$span" | jq -r '.parent_id')"
 
 node -e "const child_process = require('child_process'); child_process.exec('echo hello world 1', {});"
 assert_equals 0 $?
 span="$(resolve_span '.name == "echo hello world 1"')"
-assert_equals "SpanKind.INTERNAL" $(\echo "$span" | jq -r '.kind')
-assert_not_equals null $(\echo "$span" | jq -r '.parent_id')
+assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
+assert_not_equals null "$(\echo "$span" | jq -r '.parent_id')"
 
 node -e "const child_process = require('child_process'); child_process.exec('echo hello world 2', (error, stdout, stderr) => { console.log(stdout); console.error(stderr); });"
 assert_equals 0 $?
 span="$(resolve_span '.name == "echo hello world 2"')"
-assert_equals "SpanKind.INTERNAL" $(\echo "$span" | jq -r '.kind')
-assert_not_equals null $(\echo "$span" | jq -r '.parent_id')
+assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
+assert_not_equals null "$(\echo "$span" | jq -r '.parent_id')"
 
 node -e "const child_process = require('child_process'); child_process.exec('echo hello world 3');"
 assert_equals 0 $?
 span="$(resolve_span '.name == "echo hello world 3"')"
-assert_equals "SpanKind.INTERNAL" $(\echo "$span" | jq -r '.kind')
-assert_not_equals null $(\echo "$span" | jq -r '.parent_id')
+assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
+assert_not_equals null "$(\echo "$span" | jq -r '.parent_id')"
 
 node -e "const child_process = require('child_process'); child_process.spawn('echo', [ 'hello', 'world', '4' ], { stdio: 'inherit' });"
 assert_equals 0 $?
 span="$(resolve_span '.name == "echo hello world 4"')"
-assert_equals "SpanKind.INTERNAL" $(\echo "$span" | jq -r '.kind')
-assert_not_equals null $(\echo "$span" | jq -r '.parent_id')
+assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
+assert_not_equals null "$(\echo "$span" | jq -r '.parent_id')"
 
 node -e "const child_process = require('child_process'); child_process.spawn('echo', [ 'hello', 'world', '5' ]);"
 assert_equals 0 $?
 span="$(resolve_span '.name == "echo hello world 5"')"
-assert_equals "SpanKind.INTERNAL" $(\echo "$span" | jq -r '.kind')
-assert_not_equals null $(\echo "$span" | jq -r '.parent_id')
+assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
+assert_not_equals null "$(\echo "$span" | jq -r '.parent_id')"
 
 node -e "const child_process = require('child_process'); child_process.spawn('echo', { stdio: 'inherit' });"
 assert_equals 0 $?
 span="$(resolve_span '.name == "echo"')"
-assert_equals "SpanKind.INTERNAL" $(\echo "$span" | jq -r '.kind')
-assert_not_equals null $(\echo "$span" | jq -r '.parent_id')
+assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
+assert_not_equals null "$(\echo "$span" | jq -r '.parent_id')"
 
 type npm || exit 1
 
@@ -54,8 +54,8 @@ export OTEL_SHELL_CONFIG_INJECT_DEEP=TRUE
 node -e "const child_process = require('child_process'); child_process.spawn('echo', [ 'hello', 'world', '6' ]);"
 assert_equals 0 $?
 span="$(resolve_span '.name == "echo hello world 6"')"
-assert_equals "SpanKind.INTERNAL" $(\echo "$span" | jq -r '.kind')
-assert_not_equals null $(\echo "$span" | jq -r '.parent_id')
+assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
+assert_not_equals null "$(\echo "$span" | jq -r '.parent_id')"
 # assert_equals $(resolve_span '.name == "echo hello world 6"' | jq -r .parent_id) $(resolve_span '.name == "TODO"' | jq -r .id)
 
 # lets check with the above test if it works on any node version, but lets not rely on instrumentations actually working
