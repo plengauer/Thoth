@@ -1,3 +1,5 @@
 FROM node:26
 # this file is just a dummy to trigger renovate on new versions
-USER nobody
+USER 65534
+
+HEALTHCHECK NONE

@@ -3,3 +3,20 @@ skip-check:
   # of the workflows of the templates sets (8 of 8 files reported). Instead,
   # every job declares its own `permissions:`.
   - CKV2_GHA_1
+  # Why: the checks below can not be satisfied by the images they flag, and
+  # the in-file `#checkov:skip` comments do not close the alerts in GitHub code
+  # scanning (the alerts stay open although the skip is honored by checkov
+  # itself), so they have to be skipped here.
+  # CKV_DOCKER_3: tests/Dockerfile is a local test image that has to run as
+  # root, and actions/instrument/job/Dockerfile is only a Renovate version
+  # marker that is never built.
+  - CKV_DOCKER_3
+  # CKV_DOCKER_7: tests/Dockerfile builds on a base image that is passed in as
+  # a build argument, once per tested distribution, so there is no fixed tag.
+  - CKV_DOCKER_7
+  # CKV2_DOCKER_1: the tests exercise sudo and so the test image has to have it.
+  - CKV2_DOCKER_1
+  # CKV2_DOCKER_7: the apk packages that are installed are built in the same
+  # pipeline and are unsigned local files (actions/instrument/workflow/Dockerfile
+  # and tests/Dockerfile).
+  - CKV2_DOCKER_7
