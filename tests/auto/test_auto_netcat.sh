@@ -69,7 +69,7 @@ http_body() {
     if \[ "${#line}" = 1 ]; then break; fi
   done
   \[ "${chunked:-0}" = 0 ] && \cat || {
-    while \read length && \[ "$length" != 0 ]; do
+    while \read -r length && \[ "$length" != 0 ]; do
       length_length="${#length}"
       length="$(\printf '%s' "$length" | \head -c "$(($length_length - 1))")"
       \head -c "$(\printf '%d' '0x'"$length")"
