@@ -5,8 +5,9 @@ on:
       ref:
         type: string
         required: true
-env:
-  OTEL_KILL_SWITCH: 1
+concurrency: # this is to not exhaust GitHub API rate-limits
+  group: ci
+  queue: max
 jobs:
   build:
     permissions:
