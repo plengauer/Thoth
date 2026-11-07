@@ -9,7 +9,8 @@ ARG update
 WORKDIR /tests
 COPY . ./
 
-# hadolint ignore=DL3015
+# the image is a throwaway test runner for many distributions, so packages are intentionally unpinned, caches are not cleaned, and the word splitting of the package lists is intended
+# hadolint ignore=DL3015,DL3008,DL3009,DL3019,DL3032,DL3033,DL3037,DL3040,DL3041,DL4006,SC2086
 RUN <<EOF
   packages_mandatory="jq psmisc wget curl time sudo bash"
   packages_optional="parallel moreutils ncat wget2 nodejs npm python3 python3-pip gcc default-jdk-headless jdk"
@@ -52,4 +53,8 @@ EOF
 
 ENV shell="$shell"
 
+# the exit code of the test run must depend on the shell being available, which needs shell syntax
+# hadolint ignore=DL3025
 CMD ! type "$shell" || bash run_tests.sh "$shell"
+
+HEALTHCHECK NONE
