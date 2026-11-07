@@ -475,6 +475,7 @@ _otel_trap() {
       _otel_deferred_exit_command="$command"
       _otel_deferred_exit_command_owner="${BASHPID:-$$}"
     else
+      # shellcheck disable=SC2064 # the command is intentionally expanded when the trap is set
       \trap "$command" "$signal"
     fi
   done
