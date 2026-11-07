@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<ruleset name="thoth"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+  <description>The PMD quickstart rules for Java plus the rules that fit agent code</description>
+
+  <rule ref="rulesets/java/quickstart.xml">
+    <!-- The agent classes have to stay in the default package because the agent manifests name them without a package -->
+    <exclude name="NoPackage"/>
+    <!-- The JVM-internal ProcessEnvironment can only be reached through reflection -->
+    <exclude name="AvoidAccessibilityAlteration"/>
+    <!-- Empty catch blocks are handled below so that a comment explaining the reason is accepted -->
+    <exclude name="EmptyCatchBlock"/>
+  </rule>
+
+  <rule ref="category/java/errorprone.xml/EmptyCatchBlock">
+    <properties>
+      <property name="allowCommentedBlocks" value="true"/>
+    </properties>
+  </rule>
+  <rule ref="category/java/codestyle.xml/FieldNamingConventions"/>
+  <rule ref="category/java/codestyle.xml/ShortVariable"/>
+  <rule ref="category/java/design.xml/SignatureDeclareThrowsException"/>
+</ruleset>

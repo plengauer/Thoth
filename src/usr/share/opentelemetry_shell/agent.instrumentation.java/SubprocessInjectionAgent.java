@@ -1,21 +1,19 @@
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.asm.Advice;
 import net.bytebuddy.matcher.ElementMatchers;
-import net.bytebuddy.implementation.bind.annotation.RuntimeType;
-import net.bytebuddy.implementation.bind.annotation.AllArguments;
-import net.bytebuddy.implementation.bind.annotation.Origin;
-import net.bytebuddy.implementation.MethodDelegation;
+import java.io.IOException;
 import java.lang.instrument.Instrumentation;
 import java.util.Map;
-import java.util.HashMap;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.NoSuchMethodException;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.Span;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.SpanContext;
 
-public class SubprocessInjectionAgent {
-    public static void premain(String args, Instrumentation instrumentation) throws Exception {
+public final class SubprocessInjectionAgent {
+    private SubprocessInjectionAgent() {
+    }
+
+    public static void premain(String args, Instrumentation instrumentation) throws IOException {
         instrumentation.appendToBootstrapClassLoaderSearch(new java.util.jar.JarFile("/usr/share/opentelemetry_shell/agent.instrumentation.java/subprocessinjectionagent.jar"));
         new AgentBuilder.Default()
             .with(AgentBuilder.RedefinitionStrategy.RETRANSFORMATION)
@@ -28,7 +26,10 @@ public class SubprocessInjectionAgent {
             .installOn(instrumentation);
     }
 
-    public static class InjectCommandAdvice {
+    public static final class InjectCommandAdvice {
+        private InjectCommandAdvice() {
+        }
+
         @Advice.OnMethodEnter
         public static void onEnter(@Advice.Argument(value = 0, readOnly = false) String[] cmdarray, @Advice.Argument(value = 1, readOnly = false) Map<String, String> environment) {
             if (environment == null) {
@@ -36,23 +37,19 @@ public class SubprocessInjectionAgent {
                     Map<String, String> rootenvironment = System.getenv();
                     Method method = Class.forName("java.lang.ProcessEnvironment").getDeclaredMethod("emptyEnvironment", Integer.TYPE);
                     method.setAccessible(true);
-                    environment = (Map<String, String>) method.invoke(null, new Object[] { rootenvironment.size() + 2 });
+                    environment = (Map<String, String>) method.invoke(null, rootenvironment.size() + 2);
                     for (String key : rootenvironment.keySet()) {
-                        if (!key.startsWith("OTEL_SHELL_COMMANDLINE_OVERRIDE") && !key.equals("OTEL_SHELL_AUTO_INJECTED")) environment.put(key, rootenvironment.get(key));
+                        if (!key.startsWith("OTEL_SHELL_COMMANDLINE_OVERRIDE") && !"OTEL_SHELL_AUTO_INJECTED".equals(key)) {
+                            environment.put(key, rootenvironment.get(key));
+                        }
                     }
-                } catch (ClassNotFoundException e) {
-                    // here be dragons
-                } catch (NoSuchMethodException e) {
-                    // here be dragons
-                } catch (IllegalAccessException e) {
-                    // here be dragons
-                } catch (InvocationTargetException e) {
+                } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                     // here be dragons
                 }
             }
             if (environment != null) {
                 for (Map.Entry<String, String> entry : System.getenv().entrySet()) {
-                    if (entry.getKey().startsWith("OTEL_") && !entry.getKey().startsWith("OTEL_SHELL_COMMANDLINE_OVERRIDE") && !entry.getKey().equals("OTEL_SHELL_AUTO_INJECTED")) {
+                    if (entry.getKey().startsWith("OTEL_") && !entry.getKey().startsWith("OTEL_SHELL_COMMANDLINE_OVERRIDE") && !"OTEL_SHELL_AUTO_INJECTED".equals(entry.getKey())) {
                         environment.put(entry.getKey(), entry.getValue());
                     }
                 }
