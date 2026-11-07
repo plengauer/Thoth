@@ -18,10 +18,10 @@ import io.opentelemetry.javaagent.shaded.io.opentelemetry.context.Context;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.context.Scope;
 
 public class GradleHttpPropagationAgent {
-    public static final ThreadLocal<Span> clientSpan = new ThreadLocal<>();
-    public static final ThreadLocal<Scope> clientScope = new ThreadLocal<>();
-    public static final ThreadLocal<Span> serverSpan = new ThreadLocal<>();
-    public static final ThreadLocal<Scope> serverScope = new ThreadLocal<>();
+    public static final ThreadLocal<Span> CLIENT_SPAN = new ThreadLocal<>();
+    public static final ThreadLocal<Scope> CLIENT_SCOPE = new ThreadLocal<>();
+    public static final ThreadLocal<Span> SERVER_SPAN = new ThreadLocal<>();
+    public static final ThreadLocal<Scope> SERVER_SCOPE = new ThreadLocal<>();
 
     public static void premain(String args, Instrumentation instrumentation) throws Exception {
         instrumentation.appendToBootstrapClassLoaderSearch(new java.util.jar.JarFile("/usr/share/opentelemetry_shell/agent.instrumentation.java/gradlehttppropagationagent.jar"));
@@ -57,8 +57,8 @@ public class GradleHttpPropagationAgent {
                     .setAttribute("rpc.system", "gradle")
                     .setAttribute("rpc.service", "daemon")
                     .startSpan();
-                clientSpan.set(span);
-                clientScope.set(span.makeCurrent());
+                CLIENT_SPAN.set(span);
+                CLIENT_SCOPE.set(span.makeCurrent());
                 String traceparent = String.format("%s-%s-%s-%s",
                     "00",
                     span.getSpanContext().getTraceId(),
@@ -87,18 +87,18 @@ public class GradleHttpPropagationAgent {
         @Advice.OnMethodExit(onThrowable = Throwable.class)
         public static void onExit(@Advice.Thrown Throwable throwable) {
             try {
-                Scope scope = clientScope.get();
+                Scope scope = CLIENT_SCOPE.get();
                 if (scope != null) {
                     scope.close();
-                    clientScope.remove();
+                    CLIENT_SCOPE.remove();
                 }
-                Span span = clientSpan.get();
+                Span span = CLIENT_SPAN.get();
                 if (span != null) {
                     if (throwable != null) {
                         span.recordException(throwable);
                     }
                     span.end();
-                    clientSpan.remove();
+                    CLIENT_SPAN.remove();
                 }
             } catch (Exception e) {
             }
@@ -146,8 +146,8 @@ public class GradleHttpPropagationAgent {
                             .setAttribute("rpc.service", "daemon")
                             .startSpan();
                         Scope scope = span.makeCurrent();
-                        serverSpan.set(span);
-                        serverScope.set(scope);
+                        SERVER_SPAN.set(span);
+                        SERVER_SCOPE.set(scope);
                     }
                 }
             } catch (Exception e) {
@@ -157,18 +157,18 @@ public class GradleHttpPropagationAgent {
         @Advice.OnMethodExit(onThrowable = Throwable.class)
         public static void onExit(@Advice.Thrown Throwable throwable) {
             try {
-                Scope scope = serverScope.get();
+                Scope scope = SERVER_SCOPE.get();
                 if (scope != null) {
                     scope.close();
-                    serverScope.remove();
+                    SERVER_SCOPE.remove();
                 }
-                Span span = serverSpan.get();
+                Span span = SERVER_SPAN.get();
                 if (span != null) {
                     if (throwable != null) {
                         span.recordException(throwable);
                     }
                     span.end();
-                    serverSpan.remove();
+                    SERVER_SPAN.remove();
                 }
             } catch (Exception e) {
             }
