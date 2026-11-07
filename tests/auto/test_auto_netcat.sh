@@ -68,14 +68,16 @@ http_body() {
     esac
     if \[ "${#line}" = 1 ]; then break; fi
   done
-  \[ "${chunked:-0}" = 0 ] && \cat || {
+  if \[ "${chunked:-0}" = 0 ]; then
+    \cat
+  else
     while \read length && \[ "$length" != 0 ]; do
       length_length="${#length}"
       length="$(\printf '%s' "$length" | \head -c "$(($length_length - 1))")"
       \head -c "$(\printf '%d' '0x'"$length")"
       \head -c 2 >/dev/null
     done
-  }
+  fi
 }
 \printf 'GET /index.html HTTP/1.1\r\nUser-agent: netcat/1.0\r\nAccept: */*\r\nHost: www.example.com\r\n\r\n' | \netcat -w 5 www.example.com 80 | http_body >"$expected"
 \printf 'GET /index.html HTTP/1.1\r\nUser-agent: netcat/1.0\r\nAccept: */*\r\nHost: www.example.com\r\n\r\n' | netcat -w 5 www.example.com 80 | http_body >"$actual"
