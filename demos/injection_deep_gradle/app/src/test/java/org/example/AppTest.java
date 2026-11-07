@@ -6,6 +6,8 @@ package org.example;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+// Making every local variable final is noise without a safety benefit
+@SuppressWarnings("PMD.LocalVariableCouldBeFinal")
 class AppTest {
     @Test void appHasAGreeting() {
         App classUnderTest = new App();
