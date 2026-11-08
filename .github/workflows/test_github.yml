@@ -166,6 +166,7 @@ jobs:
           dotnet-version: 10.0.403
       - run: dotnet --version
   job-image:
+    needs: job-smoke
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 60
     strategy:
