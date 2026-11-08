@@ -5,11 +5,11 @@ on:
       ref:
         type: string
         required: true
-concurrency: # this is to not exhaust GitHub API rate-limits
-  group: ci
-  queue: max
 jobs:
   build:
+    concurrency:
+      group: ci.build
+      queue: max
     permissions:
       actions: read
       contents: read
@@ -19,6 +19,9 @@ jobs:
     secrets: inherit
   shell:
     needs: build
+    concurrency:
+      group: ci.shell
+      queue: max
     permissions:
       actions: read
       contents: read
@@ -28,6 +31,9 @@ jobs:
     secrets: inherit
   github:
     needs: build
+    concurrency:
+      group: ci.github
+      queue: max
     permissions:
       actions: read
       attestations: none
