@@ -403,6 +403,8 @@ otel_observation_attribute_typed "$observation_handle" string foo=bar
 otel_counter_observe "$counter_handle" "$observation_handle"
 ```
 
+`otel_observation_create <value> [@timestamp]` and `otel_counter_observe <counter_handle> <observation_handle> [@timestamp]` accept an optional `@timestamp` argument, using the same timestamp syntax as spans. If both are specified, the timestamp passed to `otel_counter_observe` takes precedence; without either, the SDK uses the current time.
+
 For histograms, you can optionally specify explicit bucket boundaries as a comma-separated list of values as an additional parameter after the unit. Currently, histograms use default buckets; explicit bucket boundary configuration via Views is planned for a future enhancement:
 ```bash
 # Histogram without explicit buckets (uses defaults)
