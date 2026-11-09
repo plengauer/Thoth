@@ -24,7 +24,10 @@ delayed_observations = {}
 auto_end = False
 
 def main():
-    run(sys.argv[1], sys.argv[2], sys.stdin)
+    if sys.argv[1] == 'DETECT_RESOURCE_ATTRIBUTES':
+        dump_resource_attributes(sys.argv[2])
+    else:
+        run(sys.argv[1], sys.argv[2], sys.stdin)
 
 def run(scope, version, commands):
     for line in commands:
@@ -136,6 +139,31 @@ def guess_cloud_resource_detectors():
             AwsEksResourceDetector(),
             AwsEc2ResourceDetector(),
         ]
+
+def detect_resources():
+    from opentelemetry.sdk.resources import Resource, OTELResourceDetector, OsResourceDetector, get_aggregated_resources
+    from opentelemetry_resourcedetector_docker import DockerResourceDetector
+    from opentelemetry_resourcedetector_kubernetes import KubernetesResourceDetector
+    detected = get_aggregated_resources(guess_cloud_resource_detectors() + [
+        KubernetesResourceDetector(),
+        DockerResourceDetector(),
+        OsResourceDetector(),
+        OTELResourceDetector(),
+    ]) if os.environ.get('OTEL_DISABLE_RESOURCE_DETECTION', 'FALSE') == 'FALSE' else None
+    return detected
+
+def dump_resource_attributes(path):
+    import base64
+    import json
+    from urllib.parse import quote
+    from opentelemetry.sdk.resources import Resource
+    detected, defaults = detect_resources(), Resource.create()
+    resources = [None if item is None else [dict(item.attributes), item.schema_url] for item in (detected, defaults)]
+    combined = defaults if detected is None else detected.merge(defaults)
+    attributes = ','.join(key + '=' + quote(value, safe='') for key, value in combined.attributes.items()
+                          if isinstance(value, str) and key not in ('telemetry.sdk.name', 'telemetry.sdk.language', 'telemetry.sdk.version', 'service.name', 'service.instance.id'))
+    with open(path, 'w', encoding='utf-8') as output:
+        json.dump({'cache': base64.b64encode(json.dumps(resources).encode()).decode(), 'attributes': attributes}, output)
 
 def handle(scope, version, command, arguments):
     global initialized_traces, initialized_metrics, initialized_logs, final_resources
@@ -269,15 +297,28 @@ def handle(scope, version, command, arguments):
         value = tokens[1]
         resource[key] = convert_type(type, value)
     elif command == 'INIT':
-        from opentelemetry.sdk.resources import Resource, ResourceDetector, OTELResourceDetector, OsResourceDetector, get_aggregated_resources
-        from opentelemetry_resourcedetector_docker import DockerResourceDetector
-        from opentelemetry_resourcedetector_kubernetes import KubernetesResourceDetector
-        final_resources = get_aggregated_resources(guess_cloud_resource_detectors() + [
-                KubernetesResourceDetector(),
-                DockerResourceDetector(),
-                OsResourceDetector(),
-                OTELResourceDetector(),
-            ]).merge(Resource.create(resource)) if os.environ.get('OTEL_DISABLE_RESOURCE_DETECTION', 'FALSE') == 'FALSE' else Resource.create(resource)
+        from opentelemetry.sdk.resources import Resource
+        if os.environ.get('OTEL_SHELL_RESOURCE_DETECTION_CACHE'):
+            import base64
+            import json
+            from urllib.parse import unquote
+            cached = json.loads(base64.b64decode(os.environ['OTEL_SHELL_RESOURCE_DETECTION_CACHE']))
+            detected, defaults = [None if item is None else Resource(item[0], item[1]) for item in cached]
+            environment = {}
+            for item in os.environ.get('OTEL_RESOURCE_ATTRIBUTES', '').split(','):
+                if '=' in item:
+                    key, value = item.split('=', 1)
+                    environment[key.strip()] = unquote(value.strip())
+            if os.environ.get('OTEL_SERVICE_NAME'):
+                environment['service.name'] = os.environ['OTEL_SERVICE_NAME']
+            defaults = defaults.merge(Resource(environment))
+            defaults = defaults.merge(Resource(resource))
+            if not defaults.attributes.get('service.name'):
+                defaults = defaults.merge(Resource({'service.name': 'unknown_service' + (':' + os.path.basename(sys.executable) if sys.executable else '')}))
+            final_resources = defaults if detected is None else detected.merge(defaults)
+        else:
+            detected = detect_resources()
+            final_resources = detected.merge(Resource.create(resource)) if detected is not None else Resource.create(resource)
 
     elif command == 'SHUTDOWN':
         if auto_end:
