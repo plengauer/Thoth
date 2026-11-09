@@ -311,7 +311,7 @@ _otel_binary_contains_null() {
   local i=0
   while \[ "$i" -lt "${#string}" ]; do
     if \[ "$(\printf '%s' "$string" | \cut -c $((i + 1))-$((i + 1 + 2 - 1)))" = 00 ]; then return 0; fi
-    if \[ "$(\printf '%s' "$string" | \cut -c "$((i + 1))"-"$((i + 1 + 2 - 1))")" = 00 ]; then return 0; fi
+    if \[ "$(\printf '%s' "$string" | \cut -c "$((i + 1))-$((i + 1 + 2 - 1))")" = 00 ]; then return 0; fi
     local i="$((i + 2))"
   done
   return 1
