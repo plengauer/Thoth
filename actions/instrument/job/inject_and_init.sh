@@ -410,18 +410,14 @@ if [ -n "$repo_property_attributes" ]; then
   export OTEL_RESOURCE_ATTRIBUTES="${OTEL_RESOURCE_ATTRIBUTES},${repo_property_attributes}"
 fi
 wait
-get_resource_attributes() {
-  local resource_attributes_file
+if [ "${OTEL_PRECOMPUTE_RESOURCE_ATTRIBUTES:-TRUE}" = TRUE ]; then
   resource_attributes_file="$(mktemp)"
   printf 'INIT\nDUMP_RESOURCE_ATTRIBUTES %s\n' "$resource_attributes_file" | /opt/opentelemetry_shell/venv/bin/python /usr/share/opentelemetry_shell/sdk.py shell "$(cat ../../../VERSION)"
   detected_resource_attributes="$(cat "$resource_attributes_file")"
   rm "$resource_attributes_file"
   [ -z "$detected_resource_attributes" ] || export OTEL_RESOURCE_ATTRIBUTES="${detected_resource_attributes}${OTEL_RESOURCE_ATTRIBUTES:+,$OTEL_RESOURCE_ATTRIBUTES}"
-}
-if [ "${OTEL_DISABLE_RESOURCE_DETECTION:-FALSE}" = FALSE ]; then
-  get_resource_attributes
+  export OTEL_DISABLE_RESOURCE_DETECTION=TRUE
 fi
-export OTEL_DISABLE_RESOURCE_DETECTION=TRUE
 echo "::endgroup::"
 
 echo "::group::Resolve W3C Tracecontext"
