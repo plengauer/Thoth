@@ -141,16 +141,35 @@ def guess_cloud_resource_detectors():
 
 def detect_resources():
     from opentelemetry.sdk.resources import Resource, OTELResourceDetector, OsResourceDetector, get_aggregated_resources
+    from opentelemetry.sdk.version import __version__
     from opentelemetry_resourcedetector_docker import DockerResourceDetector
     from opentelemetry_resourcedetector_kubernetes import KubernetesResourceDetector
-    return get_aggregated_resources(
-        get_aggregated_resources(guess_cloud_resource_detectors() + [
+    detectors = []
+    if os.environ.get('OTEL_DISABLE_RESOURCE_DETECTION', 'FALSE') == 'FALSE':
+        detectors = guess_cloud_resource_detectors() + [
             KubernetesResourceDetector(),
             DockerResourceDetector(),
             OsResourceDetector(),
-        ]) if os.environ.get('OTEL_DISABLE_RESOURCE_DETECTION', 'FALSE') == 'FALSE' else Resources.create({}),
-        OTELResourceDetector(),
+        ]
+    detectors.append(OTELResourceDetector())
+    return get_aggregated_resources(
+        detectors,
+        Resource({
+            'telemetry.sdk.language': 'python',
+            'telemetry.sdk.name': 'opentelemetry',
+            'telemetry.sdk.version': __version__,
+        }),
     )
+
+def get_resource_attributes():
+    from opentelemetry.sdk.resources import Resource
+    final_resources = detect_resources().merge(Resource(resource))
+    if not final_resources.attributes.get('service.name'):
+        default_service_name = 'unknown_service'
+        if sys.executable:
+            default_service_name += ':' + os.path.basename(sys.executable)
+        final_resources = final_resources.merge(Resource({'service.name': default_service_name}))
+    return final_resources
 
 def dump_resource_attributes(path):
     from urllib.parse import quote
@@ -291,7 +310,7 @@ def handle(scope, version, command, arguments):
         value = tokens[1]
         resource[key] = convert_type(type, value)
     elif command == 'INIT':
-        final_resources = detect_resources()
+        final_resources = get_resource_attributes()
 
     elif command == 'DUMP_RESOURCE_ATTRIBUTES':
         dump_resource_attributes(arguments)
