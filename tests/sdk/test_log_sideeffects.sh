@@ -4,7 +4,7 @@
 
 otel_init
 
-expected="$(echo hello world 2>&1)"
+expected="hello world"
 actual="$(otel_observe echo hello world 2>&1)"
 assert_equals "$expected" "$actual"
 
