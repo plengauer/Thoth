@@ -29,7 +29,6 @@ def main():
     run(sys.argv[1], sys.argv[2], sys.stdin)
 
 def run(scope, version, commands):
-    preload_cached_resources()
     for line in commands:
         line = line.strip()
         if len(line) == 0:
@@ -152,32 +151,21 @@ def detect_resources():
     ]) if os.environ.get('OTEL_DISABLE_RESOURCE_DETECTION', 'FALSE') == 'FALSE' else None
     return detected
 
-def dump_resource_attributes():
-    import base64
-    import json
+def get_resource_attributes():
+    from opentelemetry.sdk.resources import Resource
+    detected_resources = detect_resources()
+    default_resources = Resource.create(resource)
+    return default_resources if detected_resources is None else detected_resources.merge(default_resources)
+
+def dump_resource_attributes(path):
     from urllib.parse import quote
-    resources = [None if item is None else [dict(item.attributes), item.schema_url] for item in (detected_resources, default_resources)]
     attributes = ','.join(key + '=' + quote(value, safe='') for key, value in final_resources.attributes.items()
                           if isinstance(value, str) and key not in ('telemetry.sdk.name', 'telemetry.sdk.language', 'telemetry.sdk.version', 'service.name', 'service.instance.id'))
-    print(json.dumps({'cache': base64.b64encode(json.dumps(resources).encode()).decode(), 'attributes': attributes}), flush=True)
-
-def preload_cached_resources():
-    if not os.environ.get('OTEL_SHELL_RESOURCE_DETECTION_CACHE') or 'opentelemetry.sdk._logs._internal' in sys.modules:
-        return
-    import base64
-    import json
-    from opentelemetry.sdk.resources import Resource
-    cached = json.loads(base64.b64decode(os.environ['OTEL_SHELL_RESOURCE_DETECTION_CACHE']))
-    defaults = Resource(cached[1][0], cached[1][1])
-    create = Resource.__dict__['create']
-    try:
-        Resource.create = staticmethod(lambda attributes=None, schema_url=None: defaults.merge(Resource(attributes or {}, schema_url)))
-        from opentelemetry.sdk._logs import _internal
-    finally:
-        Resource.create = create
+    with open(path, 'w') as output:
+        output.write(attributes)
 
 def handle(scope, version, command, arguments):
-    global initialized_traces, initialized_metrics, initialized_logs, final_resources, detected_resources, default_resources
+    global initialized_traces, initialized_metrics, initialized_logs, final_resources
 
     if command.startswith("SPAN_") and not initialized_traces:
         from opentelemetry.trace import set_tracer_provider, get_current_span
@@ -308,32 +296,10 @@ def handle(scope, version, command, arguments):
         value = tokens[1]
         resource[key] = convert_type(type, value)
     elif command == 'INIT':
-        from opentelemetry.sdk.resources import Resource
-        if os.environ.get('OTEL_SHELL_RESOURCE_DETECTION_CACHE'):
-            import base64
-            import json
-            from urllib.parse import unquote
-            cached = json.loads(base64.b64decode(os.environ['OTEL_SHELL_RESOURCE_DETECTION_CACHE']))
-            detected_resources, defaults = [None if item is None else Resource(item[0], item[1]) for item in cached]
-            environment = {}
-            for item in os.environ.get('OTEL_RESOURCE_ATTRIBUTES', '').split(','):
-                if '=' in item:
-                    key, value = item.split('=', 1)
-                    environment[key.strip()] = unquote(value.strip())
-            if os.environ.get('OTEL_SERVICE_NAME'):
-                environment['service.name'] = os.environ['OTEL_SERVICE_NAME']
-            defaults = defaults.merge(Resource(environment))
-            defaults = defaults.merge(Resource(resource))
-            if not defaults.attributes.get('service.name'):
-                defaults = defaults.merge(Resource({'service.name': 'unknown_service' + (':' + os.path.basename(sys.executable) if sys.executable else '')}))
-            default_resources = defaults
-        else:
-            detected_resources = detect_resources()
-            default_resources = Resource.create(resource)
-        final_resources = default_resources if detected_resources is None else detected_resources.merge(default_resources)
+        final_resources = get_resource_attributes()
 
     elif command == 'DUMP_RESOURCE_ATTRIBUTES':
-        dump_resource_attributes()
+        dump_resource_attributes(arguments)
     elif command == 'SHUTDOWN':
         if not (initialized_traces or initialized_metrics or initialized_logs):
             raise EOFError

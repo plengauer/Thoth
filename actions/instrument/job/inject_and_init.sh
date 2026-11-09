@@ -410,15 +410,18 @@ if [ -n "$repo_property_attributes" ]; then
   export OTEL_RESOURCE_ATTRIBUTES="${OTEL_RESOURCE_ATTRIBUTES},${repo_property_attributes}"
 fi
 wait
-unset OTEL_SHELL_RESOURCE_DETECTION_CACHE
+get_resource_attributes() {
+  local resource_attributes_file
+  resource_attributes_file="$(mktemp)"
+  printf 'INIT\nDUMP_RESOURCE_ATTRIBUTES %s\n' "$resource_attributes_file" | /opt/opentelemetry_shell/venv/bin/python /usr/share/opentelemetry_shell/sdk.py shell "$(cat ../../../VERSION)"
+  detected_resource_attributes="$(cat "$resource_attributes_file")"
+  rm "$resource_attributes_file"
+  [ -z "$detected_resource_attributes" ] || export OTEL_RESOURCE_ATTRIBUTES="${detected_resource_attributes}${OTEL_RESOURCE_ATTRIBUTES:+,$OTEL_RESOURCE_ATTRIBUTES}"
+}
 if [ "${OTEL_DISABLE_RESOURCE_DETECTION:-FALSE}" = FALSE ]; then
-  resource_snapshot="$(printf 'INIT\nDUMP_RESOURCE_ATTRIBUTES\n' | /opt/opentelemetry_shell/venv/bin/python /usr/share/opentelemetry_shell/sdk.py shell "$(cat ../../../VERSION)")"
-  [ -n "$resource_snapshot" ]
-  OTEL_SHELL_RESOURCE_DETECTION_CACHE="$(printf '%s' "$resource_snapshot" | jq -er '.cache | select(type == "string" and length > 0)')"
-  detected_resource_attributes="$(printf '%s' "$resource_snapshot" | jq -er '.attributes | select(type == "string")')"
-  export OTEL_SHELL_RESOURCE_DETECTION_CACHE
-  export OTEL_RESOURCE_ATTRIBUTES="${detected_resource_attributes:+$detected_resource_attributes,}${OTEL_RESOURCE_ATTRIBUTES}"
+  get_resource_attributes
 fi
+export OTEL_DISABLE_RESOURCE_DETECTION=TRUE
 echo "::endgroup::"
 
 echo "::group::Resolve W3C Tracecontext"
@@ -729,7 +732,6 @@ echo "::endgroup::"
 
 echo "::group::Setting Up SDK Factory"
 mv sdk_factory.py sdk_factory.py.backup
-echo "import runpy; runpy.run_path('/usr/share/opentelemetry_shell/sdk.py')['preload_cached_resources']()" >sdk_factory.py
 cat /usr/share/opentelemetry_shell/sdk.py | grep -E 'from|import' | while read -r line; do echo "$line"; done | sort -u >>sdk_factory.py
 cat sdk_factory.py.backup >>sdk_factory.py
 rm sdk_factory.py.backup
