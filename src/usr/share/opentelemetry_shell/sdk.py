@@ -143,19 +143,14 @@ def detect_resources():
     from opentelemetry.sdk.resources import Resource, OTELResourceDetector, OsResourceDetector, get_aggregated_resources
     from opentelemetry_resourcedetector_docker import DockerResourceDetector
     from opentelemetry_resourcedetector_kubernetes import KubernetesResourceDetector
-    detected = get_aggregated_resources(guess_cloud_resource_detectors() + [
-        KubernetesResourceDetector(),
-        DockerResourceDetector(),
-        OsResourceDetector(),
+    return get_aggregated_resources(
+        get_aggregated_resources(guess_cloud_resource_detectors() + [
+            KubernetesResourceDetector(),
+            DockerResourceDetector(),
+            OsResourceDetector(),
+        ]) if os.environ.get('OTEL_DISABLE_RESOURCE_DETECTION', 'FALSE') == 'FALSE' else Resources.create({}),
         OTELResourceDetector(),
-    ]) if os.environ.get('OTEL_DISABLE_RESOURCE_DETECTION', 'FALSE') == 'FALSE' else None
-    return detected
-
-def get_resource_attributes():
-    from opentelemetry.sdk.resources import Resource
-    detected_resources = detect_resources()
-    default_resources = Resource.create(resource)
-    return default_resources if detected_resources is None else detected_resources.merge(default_resources)
+    )
 
 def dump_resource_attributes(path):
     from urllib.parse import quote
@@ -296,7 +291,7 @@ def handle(scope, version, command, arguments):
         value = tokens[1]
         resource[key] = convert_type(type, value)
     elif command == 'INIT':
-        final_resources = get_resource_attributes()
+        final_resources = detect_resources()
 
     elif command == 'DUMP_RESOURCE_ATTRIBUTES':
         dump_resource_attributes(arguments)
