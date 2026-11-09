@@ -297,7 +297,7 @@ _otel_is_netcat_arg_arg() {
     -R) return 0 ;;
     -d | --delay) return 0 ;;
     -o | --output) return 0 ;;
-    -x | --hexdump) return 0 ;;
+    --hexdump) return 0 ;;
     -p | --source-port) return 0 ;;
     -s | --source) return 0 ;;
     --proxy | --proxy-type | --proxy-auth | --proxy-dns) return 0 ;;
@@ -311,7 +311,7 @@ _otel_binary_contains_null() {
   local i=0
   while \[ "$i" -lt "${#string}" ]; do
     if \[ "$(\printf '%s' "$string" | \cut -c $((i + 1))-$((i + 1 + 2 - 1)))" = 00 ]; then return 0; fi
-    if \[ "$(\printf '%s' "$string" | \cut -c "$((i + 1))"-"$((i + 1 + 2 - 1))")" = 00 ]; then return 0; fi
+    if \[ "$(\printf '%s' "$string" | \cut -c "$((i + 1))-$((i + 1 + 2 - 1))")" = 00 ]; then return 0; fi
     local i="$((i + 2))"
   done
   return 1
