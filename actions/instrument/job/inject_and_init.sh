@@ -410,15 +410,14 @@ if [ -n "$repo_property_attributes" ]; then
   export OTEL_RESOURCE_ATTRIBUTES="${OTEL_RESOURCE_ATTRIBUTES},${repo_property_attributes}"
 fi
 wait
+unset OTEL_SHELL_RESOURCE_DETECTION_CACHE
 if [ "${OTEL_DISABLE_RESOURCE_DETECTION:-FALSE}" = FALSE ]; then
-  resource_attributes_file="$(mktemp)"
-  /opt/opentelemetry_shell/venv/bin/python /usr/share/opentelemetry_shell/sdk.py DETECT_RESOURCE_ATTRIBUTES "$resource_attributes_file"
-  export OTEL_SHELL_RESOURCE_DETECTION_CACHE="$(jq -r '.cache' "$resource_attributes_file")"
-  detected_resource_attributes="$(jq -r '.attributes' "$resource_attributes_file")"
-  rm "$resource_attributes_file"
+  resource_snapshot="$(printf 'INIT\nDUMP_RESOURCE_ATTRIBUTES\n' | /opt/opentelemetry_shell/venv/bin/python /usr/share/opentelemetry_shell/sdk.py shell "$(cat ../../../VERSION)")"
+  [ -n "$resource_snapshot" ]
+  OTEL_SHELL_RESOURCE_DETECTION_CACHE="$(printf '%s' "$resource_snapshot" | jq -er '.cache | select(type == "string" and length > 0)')"
+  detected_resource_attributes="$(printf '%s' "$resource_snapshot" | jq -er '.attributes | select(type == "string")')"
+  export OTEL_SHELL_RESOURCE_DETECTION_CACHE
   export OTEL_RESOURCE_ATTRIBUTES="${detected_resource_attributes:+$detected_resource_attributes,}${OTEL_RESOURCE_ATTRIBUTES}"
-else
-  unset OTEL_SHELL_RESOURCE_DETECTION_CACHE
 fi
 echo "::endgroup::"
 
