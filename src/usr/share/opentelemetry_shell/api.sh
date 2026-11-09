@@ -415,7 +415,7 @@ otel_observe() {
   otel_span_attribute_typed "$span_handle" string shell.command="$command_name"
   otel_span_attribute_typed "$span_handle" string shell.command.type="$command_type"
   if _otel_string_contains "$command_name" /; then
-    otel_span_attribute_typed "$span_handle" string shell.command.name=""${command_name##*/}""
+    otel_span_attribute_typed "$span_handle" string shell.command.name="${command_name##*/}"
   else
     otel_span_attribute_typed "$span_handle" string shell.command.name="$command_name"
   fi
