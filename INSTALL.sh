@@ -61,7 +61,7 @@ if ! [ -r "$package" ]; then
 fi
 
 if [ "$(whoami)" = "root" ]; then
-  wrapper=env
+  wrapper="env"
 else
   wrapper=sudo
 fi
