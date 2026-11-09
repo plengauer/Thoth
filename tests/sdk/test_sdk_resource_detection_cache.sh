@@ -59,6 +59,8 @@ del os.environ['OTEL_DISABLE_RESOURCE_DETECTION']
 attributes = dict(item.split('=', 1) for item in snapshot['attributes'].split(','))
 assert unquote(attributes['cloud.resource_id']) == 'a,b=c/d e'
 assert unquote(attributes['user.value']) == 'x,y=z/w v'
+assert 'telemetry.sdk.language' not in attributes
+assert 'service.instance.id' not in attributes
 os.environ['OTEL_RESOURCE_ATTRIBUTES'] = snapshot['attributes'] + ',' + os.environ['OTEL_RESOURCE_ATTRIBUTES']
 os.environ['OTEL_SHELL_RESOURCE_DETECTION_CACHE'] = snapshot['cache']
 with patch.object(sdk, 'detect_resources', side_effect=AssertionError('unexpected detection')), \
@@ -124,17 +126,20 @@ with tempfile.TemporaryDirectory() as directory:
                     output.seek(0)
                     text = output.read()
                     if all(name in text for name in (f'factory-span-{pid}', f'factory.counter.{pid}', f'factory-log-{pid}')):
-                        break
+                        try:
+                            decoder = json.JSONDecoder()
+                            objects = []
+                            while text.strip():
+                                item, end = decoder.raw_decode(text.lstrip())
+                                text = text.lstrip()[end:]
+                                objects.append(item)
+                            break
+                        except json.JSONDecodeError:
+                            pass
                     if time.monotonic() >= deadline:
                         errors.seek(0)
                         raise AssertionError((text, errors.read()))
                     time.sleep(0.1)
-                decoder = json.JSONDecoder()
-                objects = []
-                while text.strip():
-                    item, end = decoder.raw_decode(text.lstrip())
-                    text = text.lstrip()[end:]
-                    objects.append(item)
                 resources = []
                 for item in objects:
                     if item.get('name') == f'factory-span-{pid}' or item.get('body') == f'factory-log-{pid}':
