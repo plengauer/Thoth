@@ -416,7 +416,9 @@ if [ "${OTEL_DISABLE_RESOURCE_DETECTION:-FALSE}" = FALSE ]; then
   export OTEL_SHELL_RESOURCE_DETECTION_CACHE="$(jq -r '.cache' "$resource_attributes_file")"
   detected_resource_attributes="$(jq -r '.attributes' "$resource_attributes_file")"
   rm "$resource_attributes_file"
-  export OTEL_RESOURCE_ATTRIBUTES="${detected_resource_attributes}${OTEL_RESOURCE_ATTRIBUTES:+,$OTEL_RESOURCE_ATTRIBUTES}"
+  export OTEL_RESOURCE_ATTRIBUTES="${detected_resource_attributes:+$detected_resource_attributes,}${OTEL_RESOURCE_ATTRIBUTES}"
+else
+  unset OTEL_SHELL_RESOURCE_DETECTION_CACHE
 fi
 echo "::endgroup::"
 
@@ -728,7 +730,8 @@ echo "::endgroup::"
 
 echo "::group::Setting Up SDK Factory"
 mv sdk_factory.py sdk_factory.py.backup
-cat /usr/share/opentelemetry_shell/sdk.py | grep -E 'from|import' | while read -r line; do echo "$line"; done | sort -u >sdk_factory.py
+echo "import runpy; runpy.run_path('/usr/share/opentelemetry_shell/sdk.py')['preload_cached_resources']()" >sdk_factory.py
+cat /usr/share/opentelemetry_shell/sdk.py | grep -E 'from|import' | while read -r line; do echo "$line"; done | sort -u >>sdk_factory.py
 cat sdk_factory.py.backup >>sdk_factory.py
 rm sdk_factory.py.backup
 echo "::endgroup::"

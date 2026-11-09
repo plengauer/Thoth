@@ -30,6 +30,7 @@ def main():
         run(sys.argv[1], sys.argv[2], sys.stdin)
 
 def run(scope, version, commands):
+    preload_cached_resources()
     for line in commands:
         line = line.strip()
         if len(line) == 0:
@@ -164,6 +165,21 @@ def dump_resource_attributes(path):
                           if isinstance(value, str) and key not in ('telemetry.sdk.name', 'telemetry.sdk.language', 'telemetry.sdk.version', 'service.name', 'service.instance.id'))
     with open(path, 'w', encoding='utf-8') as output:
         json.dump({'cache': base64.b64encode(json.dumps(resources).encode()).decode(), 'attributes': attributes}, output)
+
+def preload_cached_resources():
+    if not os.environ.get('OTEL_SHELL_RESOURCE_DETECTION_CACHE') or 'opentelemetry.sdk._logs._internal' in sys.modules:
+        return
+    import base64
+    import json
+    from opentelemetry.sdk.resources import Resource
+    cached = json.loads(base64.b64decode(os.environ['OTEL_SHELL_RESOURCE_DETECTION_CACHE']))
+    defaults = Resource(cached[1][0], cached[1][1])
+    create = Resource.__dict__['create']
+    try:
+        Resource.create = staticmethod(lambda attributes=None, schema_url=None: defaults.merge(Resource(attributes or {}, schema_url)))
+        from opentelemetry.sdk._logs import _internal
+    finally:
+        Resource.create = create
 
 def handle(scope, version, command, arguments):
     global initialized_traces, initialized_metrics, initialized_logs, final_resources
