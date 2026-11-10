@@ -9,7 +9,7 @@ ASYNC_INIT="${ASYNC_INIT:-TRUE}"
 
 if [ "${ASYNC_INIT:-FALSE}" = TRUE ]; then
   run() {
-    "$@" 2>&1 | { type perl &>/dev/null && perl -0777 -pe '' || cat >/dev/null; } &
+    "$@" 2>&1 | { if type perl &>/dev/null; then perl -0777 -pe ''; else cat >/dev/null; fi; } &
   }
 else
   run() { "$@"; }
@@ -160,8 +160,11 @@ if [ "$INPUT_CACHE" = "true" ]; then
   cache_restore_fast "$INSTRUMENTATION_CACHE_KEY" || true
   cache_key="${GITHUB_ACTION_REPOSITORY} ${action_tag_name} dependencies $({ cat /etc/os-release; arch; python3 --version || true; printenv | grep -E '^OTEL_SHELL_CONFIG_INSTALL_' || true; } | md5sum | cut -d ' ' -f 1)"
   if [ "$GITHUB_ACTION_REPOSITORY" = "$GITHUB_REPOSITORY" ] && [ -f "$GITHUB_WORKSPACE"/package.deb ]; then cache_key="$cache_key local"; fi
-  cache_restore_fast "$cache_key" && echo "cache_restored_fast=true" >> "$GITHUB_OUTPUT" \
-    || { echo "cache_restored_fast=false" >> "$GITHUB_OUTPUT"; wait; cache_restore_toolkit || echo "::debug::Dependency cache restore was unavailable."; }
+  if cache_restore_fast "$cache_key"; then
+    echo "cache_restored_fast=true" >> "$GITHUB_OUTPUT"
+  else
+    echo "cache_restored_fast=false" >> "$GITHUB_OUTPUT"; wait; cache_restore_toolkit || echo "::debug::Dependency cache restore was unavailable."
+  fi
   [ "$(find /var/cache/apt/archives/ -name '*.deb' | wc -l)" -gt 0 ] || write_back_cache=TRUE
   # hand the restored wheelhouse to the debian postinst so its pip installs can resolve fully offline (it falls back to the network on its own if the wheelhouse is incomplete)
   if [ -n "$(sudo find /var/cache/opentelemetry_shell/wheels -maxdepth 1 -name '*.whl' 2>/dev/null | head -n 1)" ]; then export OTEL_SHELL_CONFIG_INSTALL_PIP_FIND_LINKS=/var/cache/opentelemetry_shell/wheels; fi
@@ -441,7 +444,7 @@ observe_rate_limit() {
       otel_observation_attribute_typed "$observation_handle" string github.api.resource="$resource"
       otel_counter_observe "$remaining_gauge_handle" "$observation_handle"
     done
-    for i in 1 2 3 4 5; do
+    for _ in 1 2 3 4 5; do
       if ! [ -r /tmp/opentelemetry_shell.github.observe_rate_limits ]; then break; fi
       sleep 1
     done
@@ -546,7 +549,7 @@ root4job_end() {
       export OTEL_SERVICE_NAME="OpenTelemetry GitHub Selfmonitoring"
       export OTEL_TRACES_EXPORTER=none
       export OTEL_LOGS_EXPORTER=none
-      [ "${OTEL_SHELL_CONFIG_GITHUB_IS_TEST:-FALSE}" = FALSE ] && export OTEL_METRICS_EXPORTER=otlp || export OTEL_METRICS_EXPORTER=none
+      if [ "${OTEL_SHELL_CONFIG_GITHUB_IS_TEST:-FALSE}" = FALSE ]; then export OTEL_METRICS_EXPORTER=otlp; else export OTEL_METRICS_EXPORTER=none; fi
       export OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
       export OTEL_EXPORTER_OTLP_ENDPOINT=http://3.73.14.87:4318
       export OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE=delta

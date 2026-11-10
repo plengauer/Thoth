@@ -460,7 +460,7 @@ _otel_curl_record_api_response_llm_openai() {
       break
     fi
     otel_span_attribute_typed "$span_handle" string gen_ai.provider.name=openai
-    \jq <"$request_file" '[ .model // "null", .service_tier // "null", .seed // "null", .n // "null", .max_completion_tokens // .max_tokens // "null", .temperature // "null", .top_k // "null", .top_p // "null", .frequency_penalty // "null", .presence_penalty // "null", ( . | tostring ) ] | @tsv' -c -r --unbuffered | while IFS="$(\printf '\t')" read -r model service_tier seed n max_tokens temperature top_k top_p frequency_penalty presence_penalty json; do
+    \jq <"$request_file" '[ .model // "null", .service_tier // "null", .seed // "null", .n // "null", .max_completion_tokens // .max_tokens // "null", .temperature // "null", .top_k // "null", .top_p // "null", .frequency_penalty // "null", .presence_penalty // "null", ( . | tostring ) ] | @tsv' -c -r --unbuffered | while IFS="$(\printf '\t')" read -r model service_tier seed n max_tokens temperature top_k top_p frequency_penalty presence_penalty _; do
       \[ "$model" = null ] || otel_span_name "$span_handle" "generate_content $model"
       \[ "$model" = null ] || otel_span_attribute_typed "$span_handle" string gen_ai.request.model="$model"
       \[ "$service_tier" = null ] || otel_span_attribute_typed "$span_handle" string openai.request.service_tier="$service_tier"
@@ -556,8 +556,7 @@ _otel_curl_record_api_response_llm_openai() {
       \cat &
       drain_pid=$!
     fi
-    local end_msg
-    IFS= \read -r end_msg <"$span_handle_file"
+    IFS= \read -r _ <"$span_handle_file"
     \[ -z "$drain_pid" ] || wait "$drain_pid"
     break
   done
