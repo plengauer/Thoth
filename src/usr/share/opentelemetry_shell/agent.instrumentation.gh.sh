@@ -22,6 +22,7 @@ _otel_propagate_gh() {
   local arg
   for arg in "$@"; do
     case "$arg" in
+      repos/*/actions/workflows/*/dispatches | /repos/*/actions/workflows/*/dispatches) ;;
       repos/*/dispatches | /repos/*/dispatches) local is_dispatch=1 ;;
       --input=*) local input="${arg#--input=}" ;;
       *client_payload\[*)
