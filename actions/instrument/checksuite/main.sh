@@ -46,6 +46,7 @@ if false && ([ "$INPUT_SELF_MONITORING" = true ] || ([ "$INPUT_SELF_MONITORING" 
   ) &
 fi
 
+# shellcheck disable=SC2031 # the subshell is intentionally isolated so its environment does not leak into the main script
 export OTEL_SERVICE_NAME="${OTEL_SERVICE_NAME:-"$(echo "$GITHUB_REPOSITORY" | cut -d / -f 2-) CI"}"
 
 echo "::group::Resolve Check Suite"
