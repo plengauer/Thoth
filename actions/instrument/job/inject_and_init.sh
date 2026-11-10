@@ -459,7 +459,7 @@ root4job_end() {
   [ -z "${INSTRUMENTATION_CACHE_KEY:-}" ] || sudo_e -H node --input-type=module -e "try { const cache = await import('@actions/cache'); await cache.saveCache(['/tmp/*.aliases'], '$INSTRUMENTATION_CACHE_KEY'); } catch {}" &>/dev/null &
 
   if [ -f /tmp/opentelemetry_shell.github.error ]; then local conclusion=failure; else local conclusion=success; fi
-  otel_span_attribute_typed $span_handle string github.actions.conclusion="$conclusion"
+  otel_span_attribute_typed "$span_handle" string github.actions.conclusion="$conclusion"
   case "$conclusion" in
     failure)
       otel_span_attribute_typed "$span_handle" string cicd.pipeline.result=failure
@@ -673,32 +673,32 @@ root4job() {
   otel_span_attribute_typed "$span_handle" string cicd.pipeline.run_id="${GITHUB_JOB_ID:-}"
   otel_span_attribute_typed "$span_handle" string cicd.pipeline.name="${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}"
   otel_span_attribute_typed "$span_handle" string cicd.pipeline.action.name=RUN
-  otel_span_attribute_typed $span_handle string github.actions.type=job
+  otel_span_attribute_typed "$span_handle" string github.actions.type=job
   if [ -n "$GITHUB_JOB_ID" ]; then
     otel_span_attribute_typed "$span_handle" string cicd.pipeline.run.url.full="${GITHUB_SERVER_URL:-https://github.com}"/"$GITHUB_REPOSITORY"/actions/runs/"$GITHUB_RUN_ID"/job/"$GITHUB_JOB_ID"
-    otel_span_attribute_typed $span_handle string github.actions.url.full="${GITHUB_SERVER_URL:-https://github.com}"/"$GITHUB_REPOSITORY"/actions/runs/"$GITHUB_RUN_ID"/job/"$GITHUB_JOB_ID"
+    otel_span_attribute_typed "$span_handle" string github.actions.url.full="${GITHUB_SERVER_URL:-https://github.com}"/"$GITHUB_REPOSITORY"/actions/runs/"$GITHUB_RUN_ID"/job/"$GITHUB_JOB_ID"
   fi
-  otel_span_attribute_typed $span_handle int github.actions.job.id="${GITHUB_JOB_ID:-}"
-  otel_span_attribute_typed $span_handle string github.actions.job.name="$GITHUB_JOB"
-  otel_span_attribute_typed $span_handle string github.actions.job.environment="$GITHUB_JOB_ENVIRONMENT"
-  printf '%s' "$INPUT___JOB_MATRIX" | jq 'to_entries | .[] | [ .key, .value ] | @tsv' -r | while IFS=$'\t' read -r key value; do otel_span_attribute_typed $span_handle string github.actions.job.matrix."$key"="$value"; done
-  otel_span_attribute_typed $span_handle string github.actions.runner.name="$RUNNER_NAME"
-  otel_span_attribute_typed $span_handle string github.actions.runner.os="$RUNNER_OS"
-  otel_span_attribute_typed $span_handle string github.actions.runner.arch="$RUNNER_ARCH"
-  otel_span_attribute_typed $span_handle string github.actions.runner.environment="$RUNNER_ENVIRONMENT"
+  otel_span_attribute_typed "$span_handle" int github.actions.job.id="${GITHUB_JOB_ID:-}"
+  otel_span_attribute_typed "$span_handle" string github.actions.job.name="$GITHUB_JOB"
+  otel_span_attribute_typed "$span_handle" string github.actions.job.environment="$GITHUB_JOB_ENVIRONMENT"
+  printf '%s' "$INPUT___JOB_MATRIX" | jq 'to_entries | .[] | [ .key, .value ] | @tsv' -r | while IFS=$'\t' read -r key value; do otel_span_attribute_typed "$span_handle" string github.actions.job.matrix."$key"="$value"; done
+  otel_span_attribute_typed "$span_handle" string github.actions.runner.name="$RUNNER_NAME"
+  otel_span_attribute_typed "$span_handle" string github.actions.runner.os="$RUNNER_OS"
+  otel_span_attribute_typed "$span_handle" string github.actions.runner.arch="$RUNNER_ARCH"
+  otel_span_attribute_typed "$span_handle" string github.actions.runner.environment="$RUNNER_ENVIRONMENT"
   otel_span_activate "$span_handle"
   echo "$TRACEPARENT" >"$traceparent_file"
   if [ -n "${GITHUB_JOB_ID:-}" ]; then
     job_json="$(gh_job "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" "$GITHUB_JOB_ID" 2>/dev/null || true)"
     if [ -n "$job_json" ]; then
       job_runner_group_name="$(printf '%s' "$job_json" | jq -r '.runner_group_name // empty')"
-      [ -z "$job_runner_group_name" ] || otel_span_attribute_typed $span_handle string github.actions.runner.group.name="$job_runner_group_name"
-      printf '%s' "$job_json" | jq -r '.labels[]? // empty' | while read -r label; do otel_span_attribute_typed $span_handle +string[1] github.actions.runner.labels="$label"; done
+      [ -z "$job_runner_group_name" ] || otel_span_attribute_typed "$span_handle" string github.actions.runner.group.name="$job_runner_group_name"
+      printf '%s' "$job_json" | jq -r '.labels[]? // empty' | while read -r label; do otel_span_attribute_typed "$span_handle" +string[1] github.actions.runner.labels="$label"; done
       job_created_at="$(printf '%s' "$job_json" | jq -r '.created_at // empty')"
       job_started_at="$(printf '%s' "$job_json" | jq -r '.started_at // empty')"
       if [ -n "$job_created_at" ] && [ -n "$job_started_at" ]; then
         job_queue_duration_s="$(python3 -c "print(str(max(0, $(date -d "$job_started_at" '+%s.%N') - $(date -d "$job_created_at" '+%s.%N'))))" 2>/dev/null || true)"
-        [ -z "$job_queue_duration_s" ] || otel_span_attribute_typed $span_handle float github.actions.job.queue.duration="$job_queue_duration_s"
+        [ -z "$job_queue_duration_s" ] || otel_span_attribute_typed "$span_handle" float github.actions.job.queue.duration="$job_queue_duration_s"
       fi
     fi
     opentelemetry_job_dir="$(mktemp -d)"
@@ -741,5 +741,5 @@ rm "$traceparent_file"
 printenv | grep -E '^OTEL_|^TRACEPARENT=|^TRACESTATE=|^COPILOT_OTEL_ENABLED=' >>"$GITHUB_ENV"
 echo "::endgroup::"
 
-echo ::notice title=Observability Information for ${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}::"Trace ID: $(echo "$TRACEPARENT" | cut -d - -f 2), Span ID: $(echo "$TRACEPARENT" | cut -d - -f 3), Trace Deep Link: $(OTEL_EXPORTER_OTLP_TRACES_ENDPOINT="$backup_otel_exporter_otlp_traces_endpoint" print_trace_link "$(date +%Y-%M-%dT%H:%M:%S.%N%:z | jq -sRr @uri)" || echo unavailable)"
+echo ::notice title=Observability Information for "${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}"::"Trace ID: $(echo "$TRACEPARENT" | cut -d - -f 2), Span ID: $(echo "$TRACEPARENT" | cut -d - -f 3), Trace Deep Link: $(OTEL_EXPORTER_OTLP_TRACES_ENDPOINT="$backup_otel_exporter_otlp_traces_endpoint" print_trace_link "$(date +%Y-%M-%dT%H:%M:%S.%N%:z | jq -sRr @uri)" || echo unavailable)"
 

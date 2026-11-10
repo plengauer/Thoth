@@ -519,7 +519,7 @@ _otel_curl_record_api_response_llm_openai() {
         fi
         if \[ "$prompt_tokens" != null ]; then
           otel_span_attribute_typed "$span_handle" int gen_ai.usage.input_tokens="$prompt_tokens"
-          local observation_handle="$(otel_observation_create $prompt_tokens)"
+          local observation_handle="$(otel_observation_create "$prompt_tokens")"
           otel_observation_attribute_typed "$observation_handle" string gen_ai.provider.name=openai
           \[ "$operation_name" = null ] || otel_observation_attribute_typed "$observation_handle" string gen_ai.operation.name="$operation_name"
           \[ "$system_fingerprint" = null ] || otel_observation_attribute_typed "$observation_handle" string openai.response.system_fingerprint="$system_fingerprint"
@@ -530,7 +530,7 @@ _otel_curl_record_api_response_llm_openai() {
         fi
         if \[ "$completion_tokens" != null ]; then
           otel_span_attribute_typed "$span_handle" int gen_ai.usage.output_tokens="$completion_tokens"
-          local observation_handle="$(otel_observation_create $completion_tokens)"
+          local observation_handle="$(otel_observation_create "$completion_tokens")"
           otel_observation_attribute_typed "$observation_handle" string gen_ai.provider.name=openai
           \[ "$operation_name" = null ] || otel_observation_attribute_typed "$observation_handle" string gen_ai.operation.name="$operation_name"
           \[ "$system_fingerprint" = null ] || otel_observation_attribute_typed "$observation_handle" string openai.response.system_fingerprint="$system_fingerprint"
