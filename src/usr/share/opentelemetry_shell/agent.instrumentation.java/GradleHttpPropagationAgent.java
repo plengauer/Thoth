@@ -4,6 +4,7 @@ import net.bytebuddy.matcher.ElementMatchers;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.utility.JavaModule;
+import java.io.IOException;
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 import java.security.ProtectionDomain;
@@ -23,7 +24,7 @@ public class GradleHttpPropagationAgent {
     public static final ThreadLocal<Span> serverSpan = new ThreadLocal<>();
     public static final ThreadLocal<Scope> serverScope = new ThreadLocal<>();
 
-    public static void premain(String args, Instrumentation instrumentation) throws Exception {
+    public static void premain(String args, Instrumentation instrumentation) throws IOException {
         instrumentation.appendToBootstrapClassLoaderSearch(new java.util.jar.JarFile("/usr/share/opentelemetry_shell/agent.instrumentation.java/gradlehttppropagationagent.jar"));
         new AgentBuilder.Default()
             .with(AgentBuilder.RedefinitionStrategy.RETRANSFORMATION)
