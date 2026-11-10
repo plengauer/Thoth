@@ -17,11 +17,17 @@ _otel_propagate_gh() {
   local input=""
   local input_file=""
   local previous=""
+  local keys=""
+  local key
   local arg
   for arg in "$@"; do
     case "$arg" in
       repos/*/dispatches | /repos/*/dispatches) local is_dispatch=1 ;;
       --input=*) local input="${arg#--input=}" ;;
+      *client_payload\[*)
+        local key="${arg#*client_payload\[}"
+        local keys="$keys/${key%%]*}"
+        ;;
     esac
     if \[ "$previous" = --input ]; then local input="$arg"; fi
     local previous="$arg"
@@ -30,12 +36,17 @@ _otel_propagate_gh() {
     if \[ -n "$input" ]; then
       local input_file="$(\mktemp)"
       if \[ "$input" = - ]; then
-        \jq --arg traceparent "$TRACEPARENT" --arg tracestate "${TRACESTATE:-}" '.client_payload.traceparent = $traceparent | .client_payload.tracestate = $tracestate' >"$input_file"
+        \jq --arg traceparent "$TRACEPARENT" --arg tracestate "${TRACESTATE:-}" '(.client_payload // {} | length) as $count | if $count < 9 then .client_payload.traceparent = $traceparent | .client_payload.tracestate = $tracestate elif $count == 9 then .client_payload.traceparent = $traceparent else . end' >"$input_file"
       else
-        \jq --arg traceparent "$TRACEPARENT" --arg tracestate "${TRACESTATE:-}" '.client_payload.traceparent = $traceparent | .client_payload.tracestate = $tracestate' <"$input" >"$input_file"
+        \jq --arg traceparent "$TRACEPARENT" --arg tracestate "${TRACESTATE:-}" '(.client_payload // {} | length) as $count | if $count < 9 then .client_payload.traceparent = $traceparent | .client_payload.tracestate = $tracestate elif $count == 9 then .client_payload.traceparent = $traceparent else . end' <"$input" >"$input_file"
       fi && \set -- "$@" --input "$input_file"
     else
-      \set -- "$@" -f "client_payload[traceparent]=$TRACEPARENT" -f "client_payload[tracestate]=${TRACESTATE:-}"
+      local count="$(\printf '%s' "$keys" | \tr '/' '\n' | \sort -u | \grep -c . || \true)"
+      if \[ "$count" -lt 9 ]; then
+        \set -- "$@" -f "client_payload[traceparent]=$TRACEPARENT" -f "client_payload[tracestate]=${TRACESTATE:-}"
+      elif \[ "$count" = 9 ]; then
+        \set -- "$@" -f "client_payload[traceparent]=$TRACEPARENT"
+      fi
     fi
   fi
   local exit_code=0
