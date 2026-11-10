@@ -141,35 +141,6 @@ jobs:
           GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         continue-on-error: true
 
-  renovate-copilot-instrumentation:
-    if: ${{ !github.event.repository.fork && false }} # this is currently broken ebcause we dont deploy it the same time anymore, so the check doesnt work
-    runs-on: ubuntu-slim
-    permissions:
-      actions: read
-      issues: write
-    env:
-      COPILOT_INSTRUMENTATION_ALERT_TITLE: "⚠️ Copilot Coding Agent instrumentation appears broken"
-    steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@5d34a21816f798c24f19857225b018a7f2af731f # v5.66.0
-        with:
-          secrets_to_redact: '${{ github.token }}
-
-            ${{ secrets.ACTIONS_GITHUB_TOKEN || github.token }}'
-        env:
-          OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
-          OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - env:
-          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN || github.token }}
-          GH_REPO: ${{ github.repository }}
-        run: |
-          set -euo pipefail
-          gh api /repos/"${GITHUB_REPOSITORY}"/actions/workflows?per_page=100 | jq '.workflows[] | select((.path // "") == "dynamic/copilot-swe-agent/copilot") | .id' \
-            | xargs -I '{}' gh api "/repos/${GITHUB_REPOSITORY}/actions/workflows/{}/runs?status=completed&per_page=1" | jq '.workflow_runs | first' \
-            | jq '[ .id, .html_url ] | @tsv' | tr '\t' ' ' | while read -r run_id run_url && ! gh run view "$run_id" --log | grep -Fq -- '. otel.sh'; do
-              if [ "$(gh issue list --state open --search "\"${COPILOT_INSTRUMENTATION_ALERT_TITLE}\" in:title" --json title | jq --arg issue_title "$COPILOT_INSTRUMENTATION_ALERT_TITLE" '[.[] | select(.title == $issue_title)] | length')" -gt 0 ]; then continue; fi
-              gh issue create --title "$COPILOT_INSTRUMENTATION_ALERT_TITLE" --body "$(printf "Copilot instrumentation marker \`. otel.sh\` was not found in the latest completed Copilot cloud-agent run log.\n\n- Run: %s" "$run_url")"
-            done
-
   renovate-package-dependency-python:
     if: ${{ !github.event.repository.fork }}
     runs-on: ubuntu-latest
@@ -328,3 +299,88 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         continue-on-error: true
+
+  renovate-job-level-instrumentation:
+    if: ${{ !github.event.repository.fork && false }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - workflow: Copilot cloud agent
+            prompt: |
+              Check that the workflow that it didn't fail.
+              Find the log mentioning the trace and span id and find and query all spans from any connected trace storage backend.
+              Consider this test failed if any is true:
+              *) the workflow failed or timed out
+              *) any spans except the root span is orphaned (having a parent that is unavailable)
+              *) there is at least one span with gen_ai attributes.
+          - workflow: Copilot code review
+            prompt: |
+              Check that the workflow that it didn't fail.
+              Find the log mentioning the trace and span id and find and query all spans from any connected trace storage backend.
+              Consider this test failed if any is true:
+              *) the workflow failed or timed out
+              *) any spans except the root span is orphaned (having a parent that is unavailable)
+              *) there is at least one span with gen_ai attributes.
+          - workflow: Autotriage
+            prompt: |
+              Check that the workflow that it didn't fail.
+              Find the log mentioning the trace and span id and find and query all spans from any connected trace storage backend.
+              Consider this test failed if any is true:
+              *) the workflow failed or timed out
+              *) any spans except the root span is orphaned (having a parent that is unavailable)
+              *) there is at least one span with gen_ai attributes in every step doing ai-based work.
+          - workflow: TODO
+            prompt: |
+              Verify that the cache was warm when installing the action in the pre step. Compare to the code to search for indicators.
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: read
+      issues: read
+    steps:
+      - id: meta
+        run: |
+          gh api /repos/"${GITHUB_REPOSITORY}"/actions/workflows?per_page=100 | 'jq .workflows[] | select(.name == "${{ matrix.workflow }}")' > workflow.json
+          gh api "/repos/${GITHUB_REPOSITORY}/actions/workflows/"$(jq <workflow.json .id)"/runs?status=completed&per_page=1" | jq '.workflow_runs | first' > workflow_run.json
+      - uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            Your goal is to evaluate the correctness of the job-level instrumentation in this repository (${{ github.repository }}) in the context of a specific workflow with custom criteria.
+            If the evaluation fails, analyze by looking at the workflow code, the logs, as well as the instrumentation code, find the root cause, and fix it.
+            For any potential fix, open a PR, assign the owner of the repository, and enable automerge.
+            Before deep analysis or starting to fix, analyze if a fix has already been done and it has not been released yet. If so, do nothing.
+            For any non-git operations, use the gh cli via bash.
+            Several files provide meta information:
+              *) workflow.json: Metadata about the workflow
+              *) workflow_run.json: Metadata about the workflow run
+              *) workflow_run.log: Log of the workflow run
+            Verify the following and fix if necessary:
+            ${{ matrix.prompt }}
+          additional_permissions: |
+            actions: read
+          claude_args:
+            --allowedTools "Bash(*)"
+
+
+    
+      - uses: plengauer/opentelemetry-github/actions/instrument/job@5d34a21816f798c24f19857225b018a7f2af731f # v5.66.0
+        with:
+          secrets_to_redact: '${{ github.token }}
+
+            ${{ secrets.ACTIONS_GITHUB_TOKEN || github.token }}'
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
+          OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
+      - env:
+          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN || github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          gh api /repos/"${GITHUB_REPOSITORY}"/actions/workflows?per_page=100 | jq '.workflows[] | select((.path // "") == "dynamic/copilot-swe-agent/copilot") | .id' \
+            | xargs -I '{}' gh api "/repos/${GITHUB_REPOSITORY}/actions/workflows/{}/runs?status=completed&per_page=1" | jq '.workflow_runs | first' \
+            | jq '[ .id, .html_url ] | @tsv' | tr '\t' ' ' | while read -r run_id run_url && ! gh run view "$run_id" --log | grep -Fq -- '. otel.sh'; do
+              if [ "$(gh issue list --state open --search "\"${COPILOT_INSTRUMENTATION_ALERT_TITLE}\" in:title" --json title | jq --arg issue_title "$COPILOT_INSTRUMENTATION_ALERT_TITLE" '[.[] | select(.title == $issue_title)] | length')" -gt 0 ]; then continue; fi
+              gh issue create --title "$COPILOT_INSTRUMENTATION_ALERT_TITLE" --body "$(printf "Copilot instrumentation marker \`. otel.sh\` was not found in the latest completed Copilot cloud-agent run log.\n\n- Run: %s" "$run_url")"
+            done
