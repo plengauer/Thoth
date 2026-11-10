@@ -402,9 +402,9 @@ echo "::endgroup::"
 
 echo "::group::Resolve W3C Tracecontext"
 opentelemetry_root_dir="$(mktemp -d)"
-if [ "$GITHUB_EVENT_NAME" = repository_dispatch ]; then
-  caller_traceparent="$(jq -r '.client_payload.traceparent // empty' "$GITHUB_EVENT_PATH" 2>/dev/null || true)"
-  caller_tracestate="$(jq -r '.client_payload.tracestate // empty' "$GITHUB_EVENT_PATH" 2>/dev/null || true)"
+if [ "$GITHUB_EVENT_NAME" = repository_dispatch ] || [ "$GITHUB_EVENT_NAME" = workflow_dispatch ]; then
+  caller_traceparent="$(jq -r '(.client_payload // .inputs).traceparent // empty' "$GITHUB_EVENT_PATH" 2>/dev/null || true)"
+  caller_tracestate="$(jq -r '(.client_payload // .inputs).tracestate // empty' "$GITHUB_EVENT_PATH" 2>/dev/null || true)"
 fi
 count=0
 while [ "$count" -lt 60 ] && ! ( gh_artifact_download "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_workflow_run_"$GITHUB_RUN_ATTEMPT" "$opentelemetry_root_dir" && [ -r "$opentelemetry_root_dir"/traceparent ] ); do
