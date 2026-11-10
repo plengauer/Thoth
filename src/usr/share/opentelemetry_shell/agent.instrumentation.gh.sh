@@ -13,10 +13,36 @@ _otel_propagate_gh() {
   \mkfifo "$stderr_pipe"
   _otel_pipe_gh_stderr <"$stderr_pipe" >&2 &
   local stderr_pid="$!"
+  local is_dispatch=0
+  local input=""
+  local input_file=""
+  local previous=""
+  local arg
+  for arg in "$@"; do
+    case "$arg" in
+      repos/*/dispatches | /repos/*/dispatches) local is_dispatch=1 ;;
+      --input=*) local input="${arg#--input=}" ;;
+    esac
+    if \[ "$previous" = --input ]; then local input="$arg"; fi
+    local previous="$arg"
+  done
+  if \[ "${2:-}" = api ] && \[ "$is_dispatch" = 1 ] && \[ -n "${TRACEPARENT:-}" ]; then
+    if \[ -n "$input" ]; then
+      local input_file="$(\mktemp)"
+      if \[ "$input" = - ]; then
+        \jq --arg traceparent "$TRACEPARENT" --arg tracestate "${TRACESTATE:-}" '.client_payload.traceparent = $traceparent | .client_payload.tracestate = $tracestate' >"$input_file"
+      else
+        \jq --arg traceparent "$TRACEPARENT" --arg tracestate "${TRACESTATE:-}" '.client_payload.traceparent = $traceparent | .client_payload.tracestate = $tracestate' <"$input" >"$input_file"
+      fi && \set -- "$@" --input "$input_file"
+    else
+      \set -- "$@" -f "client_payload[traceparent]=$TRACEPARENT" -f "client_payload[tracestate]=${TRACESTATE:-}"
+    fi
+  fi
   local exit_code=0
   GH_DEBUG=api _otel_call "$@" 2>"$stderr_pipe" || exit_code="$?"
   \wait "$stderr_pid"
   \rm "$stderr_pipe"
+  if \[ -n "$input_file" ]; then \rm -f "$input_file"; fi
   if \[ "$job_control" = 1 ]; then \set -m; fi
   return "$exit_code"
 }

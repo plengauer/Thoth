@@ -92,6 +92,7 @@ echo "::group::Determine Trace ID"
 workflow_run_dir="$(mktemp -d)"
 gh_artifact_download "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" opentelemetry_workflow_run_"$INPUT_WORKFLOW_RUN_ATTEMPT" "$workflow_run_dir" || true
 if [ -r "$workflow_run_dir"/traceparent ]; then export OTEL_ID_GENERATOR_OVERRIDE_TRACEPARENT="$(cat "$workflow_run_dir"/traceparent)"; fi
+if [ -r "$workflow_run_dir"/caller_traceparent ]; then export TRACEPARENT="$(cat "$workflow_run_dir"/caller_traceparent)" TRACESTATE="$(cat "$workflow_run_dir"/caller_tracestate 2>/dev/null || true)"; fi
 echo "::endgroup::"
 
 echo "::group::Export"
