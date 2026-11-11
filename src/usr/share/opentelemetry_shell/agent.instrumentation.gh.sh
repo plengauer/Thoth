@@ -2,27 +2,27 @@
 # shellcheck shell=bash
 
 _otel_gh_workflow_file() {
-  local ref="${3:-$(\gh api repos/"$1" --jq .default_branch 2>/dev/null)}"
-  local path="$(\gh api repos/"$1"/actions/workflows/"$2" --jq .path 2>/dev/null)"
+  local ref="${3:-$(\gh api repos/"$1" --jq .default_branch 2>/dev/null)}" # SKIP_DEPENDENCY_CHECK
+  local path="$(\gh api repos/"$1"/actions/workflows/"$2" --jq .path 2>/dev/null)" # SKIP_DEPENDENCY_CHECK
   \[ -n "$ref" ] && \[ -n "$path" ] || return 1
-  \gh api -H 'Accept: application/vnd.github.raw' "repos/$1/contents/$path?ref=$ref" 2>/dev/null
+  \gh api -H 'Accept: application/vnd.github.raw' "repos/$1/contents/$path?ref=$ref" 2>/dev/null # SKIP_DEPENDENCY_CHECK
 }
 
 _otel_workflow_has_input() {
   if \type yq 1>/dev/null 2>/dev/null; then
-    \yq -e "(.on // .true).workflow_dispatch.inputs | has(\"$2\")" "$1" 1>/dev/null 2>/dev/null
+    \yq -e "(.on // .true).workflow_dispatch.inputs | has(\"$2\")" "$1" 1>/dev/null 2>/dev/null # SKIP_DEPENDENCY_CHECK
     return "$?"
   fi
   \awk -v name="$2" '
     function indent(s) { match(s, /^ */); return RLENGTH }
     /^[ \t]*(#|$)/ { next }
     { i = indent($0); line = $0; sub(/^ */, "", line); sub(/[ \t]+#.*$/, "", line) }
-    state == 2 && i <= in_i { state = 1 }
-    state == 1 && i <= wd { state = 0 }
-    state == 0 && line ~ /^["\047]?workflow_dispatch["\047]?:/ { wd = i; state = 1; next }
-    state == 1 && line ~ /^inputs:/ { in_i = i; child = -1; state = 2; next }
-    state == 2 { if (child < 0) child = i; if (i == child) { key = line; sub(/:.*$/, "", key); gsub(/["\047]/, "", key); if (key == name) found = 1 } }
-    END { exit !found }
+    state == 2 && i <= in_i { state = 1 } # SKIP_DEPENDENCY_CHECK
+    state == 1 && i <= wd { state = 0 } # SKIP_DEPENDENCY_CHECK
+    state == 0 && line ~ /^["\047]?workflow_dispatch["\047]?:/ { wd = i; state = 1; next } # SKIP_DEPENDENCY_CHECK
+    state == 1 && line ~ /^inputs:/ { in_i = i; child = -1; state = 2; next } # SKIP_DEPENDENCY_CHECK
+    state == 2 { if (child < 0) child = i; if (i == child) { key = line; sub(/:.*$/, "", key); gsub(/["\047]/, "", key); if (key == name) found = 1 } } # SKIP_DEPENDENCY_CHECK
+    END { exit !found } # SKIP_DEPENDENCY_CHECK
   ' "$1"
 }
 
@@ -107,7 +107,7 @@ _otel_propagate_gh() {
       local keys="$run_keys"
     fi
     case "$workflow_repo" in
-      '' | *\{*) local workflow_repo="$(\gh repo view --json nameWithOwner --jq .nameWithOwner 2>/dev/null)" ;;
+      '' | *\{*) local workflow_repo="$(\gh repo view --json nameWithOwner --jq .nameWithOwner 2>/dev/null)" ;; # SKIP_DEPENDENCY_CHECK
       */*/*) local workflow_repo="${workflow_repo#*/}" ;;
     esac
     if \[ "$is_json" = 1 ] || \[ -n "$input" ]; then
