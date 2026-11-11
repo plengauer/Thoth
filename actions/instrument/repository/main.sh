@@ -21,7 +21,7 @@ else
 fi
 echo "::endgroup::"
 
-if false && ([ "$INPUT_SELF_MONITORING" = true ] || ([ "$INPUT_SELF_MONITORING" = auto ] && [ "$GITHUB_API_URL" = 'https://api.github.com' ])); then
+if false && { [ "$INPUT_SELF_MONITORING" = true ] || { [ "$INPUT_SELF_MONITORING" = auto ] && [ "$GITHUB_API_URL" = 'https://api.github.com' ]; }; }; then
   (
     unset OTEL_EXPORTER_OTLP_METRICS_ENDPOINT OTEL_EXPORTER_OTLP_LOGS_ENDPOINT OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
     export OTEL_SHELL_SDK_OUTPUT_REDIRECT=/dev/null
@@ -39,7 +39,7 @@ if false && ([ "$INPUT_SELF_MONITORING" = true ] || ([ "$INPUT_SELF_MONITORING" 
     _otel_resource_attributes_custom() {
       _otel_resource_attribute string telemetry.sdk.language=github
     }
-    if [ "$INPUT_SELF_MONITORING_ANONYMIZE" = true ] || ([ "$INPUT_SELF_MONITORING_ANONYMIZE" = auto ] && ([ "$GITHUB_API_URL" != 'https://api.github.com' ] || [ "$(gh_curl | jq -r .visibility)" != public ])); then
+    if [ "$INPUT_SELF_MONITORING_ANONYMIZE" = true ] || { [ "$INPUT_SELF_MONITORING_ANONYMIZE" = auto ] && { [ "$GITHUB_API_URL" != 'https://api.github.com' ] || [ "$(gh_curl | jq -r .visibility)" != public ]; }; }; then
       unset GITHUB_REPOSITORY_ID GITHUB_REPOSITORY GITHUB_REPOSITORY_OWNER_ID GITHUB_REPOSITORY_OWNER
     fi
     otel_init
@@ -50,6 +50,7 @@ if false && ([ "$INPUT_SELF_MONITORING" = true ] || ([ "$INPUT_SELF_MONITORING" 
   ) &
 fi
 
+# shellcheck disable=SC2031 # the subshell is intentionally isolated so its environment does not leak into the main script
 export OTEL_SERVICE_NAME="${OTEL_SERVICE_NAME:-"$(echo "$GITHUB_REPOSITORY" | cut -d / -f 2-) CI"}"
 
 echo "::group::Resolving repository information"

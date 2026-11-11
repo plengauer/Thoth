@@ -1,2 +1,2 @@
 # shellcheck shell=bash
-exit $1
+exit "$1"
