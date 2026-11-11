@@ -69,7 +69,13 @@ echo "::group::Resolving Jobs, Steps, Logs, and Artifacts"
 jobs_json="$(mktemp)"
 logs_zip="$(mktemp)"
 artifacts_json="$(mktemp)"
-gh_jobs "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" | jq .jobs[] >"$jobs_json" && echo "Jobs and Steps ... done" >&2 &
+gh_jobs "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" | jq .jobs[] >"$jobs_json"
+echo "Jobs and Steps ... done" >&2
+if jq -s -e 'any(.[]; .conclusion != "skipped" and (.started_at == null or .started_at == "" or .completed_at == null or .completed_at == ""))' <"$jobs_json" >/dev/null; then
+  echo "::notice::Workflow telemetry not exported because a non-skipped job has missing timestamps."
+  echo "::endgroup::"
+  exit 0
+fi
 gh_artifacts "$INPUT_WORKFLOW_RUN_ID" | jq -r .artifacts[] >"$artifacts_json" && echo "Artifacts ... done" >&2 &
 count=1
 while [ "$count" -lt 60 ] && !(gh_workflow_run_logs "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" "$logs_zip" && unzip -t "$logs_zip" 1> /dev/null 2> /dev/null); do # sometimes downloads fail
@@ -132,7 +138,8 @@ action_duration_counter_handle="$(otel_counter_create counter github.actions.act
 
 link="${GITHUB_SERVER_URL:-https://github.com}"/"$(jq <"$workflow_json" -r .repository.owner.login)"/"$(jq <"$workflow_json" -r .repository.name)"/actions/runs/"$(jq <"$workflow_json" -r .id)"
 workflow_started_at="$(jq <"$workflow_json" -r .run_started_at)"
-workflow_ended_at="$(jq <"$jobs_json" -r .completed_at | sort -r | head -n 1)"
+workflow_ended_at="$(jq <"$jobs_json" -r '.completed_at | select(. != null and . != "")' | sort -r | head -n 1)"
+workflow_ended_at="${workflow_ended_at:-$(jq <"$workflow_json" -r '.updated_at // .run_started_at')}"
 last_log_timestamp="$(read_log_file '.txt' | cut -d ' ' -f 1 | sort | tail -n 1 || true)"
 if [ "$last_log_timestamp" '>' "$workflow_ended_at" ]; then workflow_ended_at="$last_log_timestamp"; fi
 
