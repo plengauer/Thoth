@@ -367,7 +367,7 @@ def handle(scope, version, command, arguments):
                 response.write('')
                 return
         span_id = tokens[1]
-        if not span_id in spans:
+        if span_id not in spans:
             with open(response_path, 'w') as response:
                 response.write('')
                 return
