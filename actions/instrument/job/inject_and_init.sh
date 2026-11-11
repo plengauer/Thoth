@@ -542,7 +542,7 @@ root4job_end() {
   otel_counter_observe "$cicd_worker_count_handle" "$observation_handle"
   otel_shutdown
 
-  if false && ([ "$INPUT_SELF_MONITORING" = true ] || ([ "$INPUT_SELF_MONITORING" = auto ] && [ "$GITHUB_API_URL" = 'https://api.github.com' ])); then
+  if false && { [ "$INPUT_SELF_MONITORING" = true ] || { [ "$INPUT_SELF_MONITORING" = auto ] && [ "$GITHUB_API_URL" = 'https://api.github.com' ]; }; }; then
     (
       unset OTEL_EXPORTER_OTLP_METRICS_ENDPOINT OTEL_EXPORTER_OTLP_LOGS_ENDPOINT OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
       export OTEL_SHELL_SDK_OUTPUT_REDIRECT=/dev/null
@@ -560,7 +560,7 @@ root4job_end() {
       _otel_resource_attributes_custom() {
         _otel_resource_attribute string telemetry.sdk.language=github
       }
-      if [ "$INPUT_SELF_MONITORING_ANONYMIZE" = true ] || ([ "$INPUT_SELF_MONITORING_ANONYMIZE" = auto ] && ([ "$GITHUB_API_URL" != 'https://api.github.com' ] || [ "$(gh_curl | jq -r .visibility)" != public ])); then
+      if [ "$INPUT_SELF_MONITORING_ANONYMIZE" = true ] || { [ "$INPUT_SELF_MONITORING_ANONYMIZE" = auto ] && { [ "$GITHUB_API_URL" != 'https://api.github.com' ] || [ "$(gh_curl | jq -r .visibility)" != public ]; }; }; then
         unset GITHUB_REPOSITORY_ID GITHUB_REPOSITORY GITHUB_REPOSITORY_OWNER_ID GITHUB_REPOSITORY_OWNER
       fi
       unset GITHUB_WORKFLOW_REF GITHUB_WORKFLOW_SHA GITHUB_WORKFLOW
