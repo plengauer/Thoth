@@ -26,9 +26,9 @@ fi
 
 file=$(mktemp)
 $TEST_SHELL -c '. /usr/bin/opentelemetry_shell.sh
-alias' | sed 's/^alias //g' | cut -d= -f1 >$file
-assert_equals "" "$(cat $file | grep '^OTEL_')"
-assert_equals "" "$(cat $file | grep '^_otel_')"
-assert_equals "" "$(cat $file | grep '^otel_')"
+alias' | sed 's/^alias //g' | cut -d= -f1 >"$file"
+assert_equals "" "$(cat "$file" | grep '^OTEL_')"
+assert_equals "" "$(cat "$file" | grep '^_otel_')"
+assert_equals "" "$(cat "$file" | grep '^otel_')"
 
 exit 0
