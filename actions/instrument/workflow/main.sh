@@ -69,13 +69,7 @@ echo "::group::Resolving Jobs, Steps, Logs, and Artifacts"
 jobs_json="$(mktemp)"
 logs_zip="$(mktemp)"
 artifacts_json="$(mktemp)"
-gh_jobs "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" | jq .jobs[] >"$jobs_json"
-echo "Jobs and Steps ... done" >&2
-if jq -s -e 'any(.[]; .conclusion != "skipped" and (.started_at == null or .started_at == "" or .completed_at == null or .completed_at == ""))' <"$jobs_json" >/dev/null; then
-  echo "::notice::Workflow telemetry not exported because a non-skipped job has missing timestamps."
-  echo "::endgroup::"
-  exit 0
-fi
+gh_jobs "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" | jq .jobs[] >"$jobs_json" && echo "Jobs and Steps ... done" >&2 &
 gh_artifacts "$INPUT_WORKFLOW_RUN_ID" | jq -r .artifacts[] >"$artifacts_json" && echo "Artifacts ... done" >&2 &
 count=1
 while [ "$count" -lt 60 ] && !(gh_workflow_run_logs "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" "$logs_zip" && unzip -t "$logs_zip" 1> /dev/null 2> /dev/null); do # sometimes downloads fail
@@ -84,6 +78,11 @@ while [ "$count" -lt 60 ] && !(gh_workflow_run_logs "$INPUT_WORKFLOW_RUN_ID" "$I
 done
 echo "Logs ... done" >&2
 wait
+if jq -s -e 'any(.[]; .conclusion != "skipped" and (.started_at == null or .started_at == "" or .completed_at == null or .completed_at == ""))' <"$jobs_json" >/dev/null; then
+  echo "::notice::Workflow telemetry not exported because a non-skipped job has missing timestamps."
+  echo "::endgroup::"
+  exit 0
+fi
 if [ -r "$logs_zip" ] && unzip -t "$logs_zip" 1>/dev/null 2>/dev/null; then
   read_log_file() {
     unzip -Z1 "$logs_zip" | grep '.txt$' | grep -E "$(printf '%s' "$1" | sed 's/[.[\(*^$+?{|]/\\\\&/g')" | xargs -d '\n' -r unzip -p "$logs_zip" | sed "s/^$(printf '\xef\xbb\xbf')//"
