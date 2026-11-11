@@ -69,12 +69,12 @@ record_github_logs() {
       ::group*) continue ;;
       ::save-state' 'name=*::*)
         line="${line#::save-state name=}"
-        otel_span_attribute_typed $span_handle string github.actions.step.state.after."$(variable_name_2_attribute_key "${line%%::*}")"="${line#*::}"
+        otel_span_attribute_typed "$span_handle" string github.actions.step.state.after."$(variable_name_2_attribute_key "${line%%::*}")"="${line#*::}"
         continue
         ;;
       ::set-output' 'name=*::*)
         line="${line#::set-output name=}"
-        otel_span_attribute_typed $span_handle string github.actions.step.output."$(variable_name_2_attribute_key "${line%%::*}")"="${line#*::}"
+        otel_span_attribute_typed "$span_handle" string github.actions.step.output."$(variable_name_2_attribute_key "${line%%::*}")"="${line#*::}"
         continue
         ;;
       ::add-mask::)
@@ -122,18 +122,18 @@ mkfifo "$log_0_pipe" "$log_1_pipe"
 otel_init
 time_start="$(date +%s.%N)"
 span_handle="$(otel_span_start INTERNAL "${GITHUB_STEP:-$GITHUB_ACTION}")"
-otel_span_attribute_typed $span_handle string cicd.pipeline.task.name="${GITHUB_STEP:-$GITHUB_ACTION}"
-otel_span_attribute_typed $span_handle string github.actions.type=step
-otel_span_attribute_typed $span_handle string github.actions.step.name="${GITHUB_STEP:-$GITHUB_ACTION}"
-printenv -0 | tr '\n' ' ' | tr '\0' '\n' | cut -d '=' -f 1 | grep '^INPUT_' | while read -r key; do otel_span_attribute_typed $span_handle string github.actions.step.input."$(variable_name_2_attribute_key "${key#INPUT_}")"="$(variable_name_2_attribute_value "$key")"; done
-printenv -0 | tr '\n' ' ' | tr '\0' '\n' | cut -d '=' -f 1 | grep '^STATE_' | while read -r key; do otel_span_attribute_typed $span_handle string github.actions.step.state.before."$(variable_name_2_attribute_key "${key#STATE_}")"="$(variable_name_2_attribute_value "$key")"; done
-printenv -0 | tr '\n' ' ' | tr '\0' '\n' | cut -d '=' -f 1 | grep '^STATE_' | while read -r key; do otel_span_attribute_typed $span_handle string github.actions.step.state.after."$(variable_name_2_attribute_key "${key#STATE_}")"="$(variable_name_2_attribute_value "$key")"; done
+otel_span_attribute_typed "$span_handle" string cicd.pipeline.task.name="${GITHUB_STEP:-$GITHUB_ACTION}"
+otel_span_attribute_typed "$span_handle" string github.actions.type=step
+otel_span_attribute_typed "$span_handle" string github.actions.step.name="${GITHUB_STEP:-$GITHUB_ACTION}"
+printenv -0 | tr '\n' ' ' | tr '\0' '\n' | cut -d '=' -f 1 | grep '^INPUT_' | while read -r key; do otel_span_attribute_typed "$span_handle" string github.actions.step.input."$(variable_name_2_attribute_key "${key#INPUT_}")"="$(variable_name_2_attribute_value "$key")"; done
+printenv -0 | tr '\n' ' ' | tr '\0' '\n' | cut -d '=' -f 1 | grep '^STATE_' | while read -r key; do otel_span_attribute_typed "$span_handle" string github.actions.step.state.before."$(variable_name_2_attribute_key "${key#STATE_}")"="$(variable_name_2_attribute_value "$key")"; done
+printenv -0 | tr '\n' ' ' | tr '\0' '\n' | cut -d '=' -f 1 | grep '^STATE_' | while read -r key; do otel_span_attribute_typed "$span_handle" string github.actions.step.state.after."$(variable_name_2_attribute_key "${key#STATE_}")"="$(variable_name_2_attribute_value "$key")"; done
 [ -z "${GITHUB_ACTION_PATH:-}" ] || ! [ -d "$GITHUB_ACTION_PATH" ] || _OTEL_GITHUB_STEP_ACTION_TYPE=composite/"$_OTEL_GITHUB_STEP_ACTION_TYPE"
 github_action_name="$(resolve_github_action_name)"
-otel_span_attribute_typed $span_handle string github.actions.action.type="$_OTEL_GITHUB_STEP_ACTION_TYPE"
-otel_span_attribute_typed $span_handle string github.actions.action.name="$github_action_name"
-otel_span_attribute_typed $span_handle string github.actions.action.ref="$GITHUB_ACTION_REF"
-[ -z "${_OTEL_GITHUB_STEP_ACTION_PHASE:-}" ] || otel_span_attribute_typed $span_handle string github.actions.action.phase="$_OTEL_GITHUB_STEP_ACTION_PHASE"
+otel_span_attribute_typed "$span_handle" string github.actions.action.type="$_OTEL_GITHUB_STEP_ACTION_TYPE"
+otel_span_attribute_typed "$span_handle" string github.actions.action.name="$github_action_name"
+otel_span_attribute_typed "$span_handle" string github.actions.action.ref="$GITHUB_ACTION_REF"
+[ -z "${_OTEL_GITHUB_STEP_ACTION_PHASE:-}" ] || otel_span_attribute_typed "$span_handle" string github.actions.action.phase="$_OTEL_GITHUB_STEP_ACTION_PHASE"
 otel_span_activate "$span_handle"
 
 record_github_logs <"$log_1_pipe" &
@@ -144,16 +144,16 @@ exit_code=0
 otel_observe "$_OTEL_GITHUB_STEP_AGENT_INJECTION_FUNCTION" "$@" 1>>"$log_0_pipe" 2>>"$log_0_pipe" || exit_code="$?"
 
 otel_span_deactivate "$span_handle"
-! [ -r "$GITHUB_STATE" ] || cat "$GITHUB_STATE" | github_properties_to_kvps | while read -r kvp; do otel_span_attribute_typed $span_handle string github.actions.step.state.after."$(variable_name_2_attribute_key "${kvp%%=*}")"="${kvp#*=}"; done
-! [ -r "$GITHUB_OUTPUT" ] || cat "$GITHUB_OUTPUT" | github_properties_to_kvps | while read -r kvp; do otel_span_attribute_typed $span_handle string github.actions.step.output."$(variable_name_2_attribute_key "${kvp%%=*}")"="${kvp#*=}"; done
+! [ -r "$GITHUB_STATE" ] || cat "$GITHUB_STATE" | github_properties_to_kvps | while read -r kvp; do otel_span_attribute_typed "$span_handle" string github.actions.step.state.after."$(variable_name_2_attribute_key "${kvp%%=*}")"="${kvp#*=}"; done
+! [ -r "$GITHUB_OUTPUT" ] || cat "$GITHUB_OUTPUT" | github_properties_to_kvps | while read -r kvp; do otel_span_attribute_typed "$span_handle" string github.actions.step.output."$(variable_name_2_attribute_key "${kvp%%=*}")"="${kvp#*=}"; done
 if [ "$exit_code" != 0 ]; then
   _otel_log_record "$TRACEPARENT" auto 17 "Process completed with exit code $exit_code."
   conclusion=failure
 else
   conclusion=success
 fi
-otel_span_attribute_typed $span_handle string cicd.pipeline.task.run.result="$conclusion"
-otel_span_attribute_typed $span_handle string github.actions.conclusion="$conclusion"
+otel_span_attribute_typed "$span_handle" string cicd.pipeline.task.run.result="$conclusion"
+otel_span_attribute_typed "$span_handle" string github.actions.conclusion="$conclusion"
 if [ "$conclusion" = failure ]; then
   otel_span_error "$span_handle"
   touch /tmp/opentelemetry_shell.github.error
