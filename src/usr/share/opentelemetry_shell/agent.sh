@@ -120,6 +120,7 @@ _otel_auto_instrument() {
 }
 
 _otel_list_special_auto_instrument_files() {
+  # shellcheck disable=SC2010 # globbing is disabled in this branch, so the files have to be listed instead of globbed
   case "$-" in
     *f*) \ls /usr/share/opentelemetry_shell | \grep -E '^agent.instrumentation.*.sh$' | while \read -r _otel_file_name; do \echo /usr/share/opentelemetry_shell/"$_otel_file_name"; done ;;
     *) \echo /usr/share/opentelemetry_shell/agent.instrumentation.*.sh ;;

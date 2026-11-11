@@ -194,7 +194,7 @@ jq <"$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .cr
       artifact_name="$1"
       dir="$(mktemp -d)"
       gh_artifact_download "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" "$artifact_name" "$dir" || return 0
-      (cd "$dir" && ls | grep -E '.logs$|.metrics$|.traces$' | parallel -j 16 export_deferred_signal_file)
+      (cd "$dir" && for file in *.logs *.metrics *.traces; do [ -e "$file" ] && echo "$file"; done | parallel -j 16 export_deferred_signal_file)
       rm -rf "$dir"
     }
     export -f export_deferred_signal_artifacts
