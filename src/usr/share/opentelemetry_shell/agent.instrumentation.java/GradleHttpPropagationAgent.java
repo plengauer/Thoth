@@ -4,6 +4,7 @@ import net.bytebuddy.matcher.ElementMatchers;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.utility.JavaModule;
+import java.io.IOException;
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 import java.security.ProtectionDomain;
@@ -19,14 +20,15 @@ import io.opentelemetry.javaagent.shaded.io.opentelemetry.context.Scope;
 
 // Making every parameter final is noise, and the advice parameters
 // are reassigned on purpose
-@SuppressWarnings("PMD.MethodArgumentCouldBeFinal")
+// The anonymous Transformer must implement a public method
+@SuppressWarnings({"PMD.PublicMemberInNonPublicType", "PMD.MethodArgumentCouldBeFinal"})
 public class GradleHttpPropagationAgent {
     public static final ThreadLocal<Span> clientSpan = new ThreadLocal<>();
     public static final ThreadLocal<Scope> clientScope = new ThreadLocal<>();
     public static final ThreadLocal<Span> serverSpan = new ThreadLocal<>();
     public static final ThreadLocal<Scope> serverScope = new ThreadLocal<>();
 
-    public static void premain(String args, Instrumentation instrumentation) throws Exception {
+    public static void premain(String args, Instrumentation instrumentation) throws IOException {
         instrumentation.appendToBootstrapClassLoaderSearch(new java.util.jar.JarFile("/usr/share/opentelemetry_shell/agent.instrumentation.java/gradlehttppropagationagent.jar"));
         new AgentBuilder.Default()
             .with(AgentBuilder.RedefinitionStrategy.RETRANSFORMATION)
