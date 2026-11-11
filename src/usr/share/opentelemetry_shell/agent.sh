@@ -321,6 +321,7 @@ _otel_alias_prepend() {
 
 _otel_unquote() {
   # '\'' => ', '"'"' => ', '"'"$ => '', '"''"$ => ''' => '
+  # shellcheck disable=SC1003 # the patterns intentionally match the escape sequences for a single quote
   \sed -e 's/'\''\\'\'''\''/'\''/g' -e 's/'\''"'\''"'\''/'\''/g' -e 's/'\''"'\''"$/'\'''\''/g' -e 's/'\''"'\'\''"$/'\''/g' -e "s/^'\(.*\)'$/\1/"
 }
 
