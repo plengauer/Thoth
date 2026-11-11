@@ -336,11 +336,13 @@ jobs:
             prompt: |
               Verify that the cache was warm when installing the action in the pre step. Compare to the code to search for indicators.
     permissions:
+      id-token: write
       contents: write
       pull-requests: write
-      actions: read
+      actions: write
       issues: read
     steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
@@ -354,7 +356,7 @@ jobs:
             These are the criteria:
             ${{ matrix.prompt }}
           additional_permissions: |
-            actions: read
+            actions: write
           claude_args: |
             --mcp-config '{"mcpServers": { "Dynatrace": { "command": "npx", "args": [ "mcp-remote", "${{ vars.DYNATRACE_MCP_URL }}", "--header", "Authorization: Bearer ${{ secrets.DYNATRACE_MCP_TOKEN }}" ] }}}'
-            --allowedTools "Bash(*),Grail Query Agent,DQL Explanation Agent"
+            --allowedTools "Bash(*),mcp__Dynatrace__execute-dql,mcp__Dynatrace__create-dql,mcp__Dynatrace__explain-dql"
