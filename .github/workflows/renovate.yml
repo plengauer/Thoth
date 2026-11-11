@@ -330,7 +330,7 @@ jobs:
               *) the workflow failed or timed out
               *) any spans except the root span is orphaned (having a parent that is unavailable)
               *) there is at least one span with gen_ai attributes in every step doing ai-based work.
-          - workflow: TODO
+          - workflow: any instrumented workflow that depends on another instrumented workflow - make sure its not a test run running the action locally but a properly instrumented workflow
             prompt: |
               Verify that the cache was warm when installing the action in the pre step. Compare to the code to search for indicators.
     permissions:
@@ -339,26 +339,20 @@ jobs:
       actions: read
       issues: read
     steps:
-      - id: meta
-        run: |
-          gh api /repos/"${GITHUB_REPOSITORY}"/actions/workflows?per_page=100 | 'jq .workflows[] | select(.name == "${{ matrix.workflow }}")' > workflow.json
-          gh api "/repos/${GITHUB_REPOSITORY}/actions/workflows/"$(jq <workflow.json .id)"/runs?status=completed&per_page=1" | jq '.workflow_runs | first' > workflow_run.json
       - uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           prompt: |
-            Your goal is to evaluate the correctness of the job-level instrumentation in this repository (${{ github.repository }}) in the context of a specific workflow with custom criteria.
+            Your goal is to evaluate the correctness and behavior of the job-level instrumentation in this repository (${{ github.repository }}) in the context of a specific workflow (${{ matrix.workflow }}) with custom criteria.
+            If the workflow run you select has been instrumented with any version but the latest, abort and do nothing.
             If the evaluation fails, analyze by looking at the workflow code, the logs, as well as the instrumentation code, find the root cause, and fix it.
             For any potential fix, open a PR, assign the owner of the repository, and enable automerge.
             Before deep analysis or starting to fix, analyze if a fix has already been done and it has not been released yet. If so, do nothing.
             For any non-git operations, use the gh cli via bash.
-            Several files provide meta information:
-              *) workflow.json: Metadata about the workflow
-              *) workflow_run.json: Metadata about the workflow run
-              *) workflow_run.log: Log of the workflow run
-            Verify the following and fix if necessary:
+            These are the criteria:
             ${{ matrix.prompt }}
           additional_permissions: |
             actions: read
-          claude_args:
-            --allowedTools "Bash(*)"
+          claude_args: |
+            --mcp-config '{"mcpServers": { "Dynatrace": { "command": "npx", "args": [ "mcp-remote", "${{ vars.DYNATRACE_MCP_URL }}", "--header", "Authorization: Bearer ${{ secrets.DYNATRACE_MCP_TOKEN }}" ] }}}'
+            --allowedTools "Bash(*),Grail Query Agent,DQL Explanation Agent"
