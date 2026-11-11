@@ -8,7 +8,7 @@ set -e
 expected="$(\mktemp)"
 actual="$(\mktemp)"
 
-for i in $(\seq 1 10); do
+for _ in $(\seq 1 10); do
   \cat /dev/urandom | \head -c $((1024 * 1)) >"$expected" || \true
   _otel_netcat_parse_request '' '/dev/null' <"$expected" >"$actual"
   assert_equals "$(\cat "$expected" | \xxd -p)" "$(\cat "$actual" | \xxd -p)"
@@ -50,11 +50,11 @@ assert_equals "200" "$(\echo "$span" | \jq -r '.attributes."http.response.status
 assert_not_equals null "$(\echo "$span" | \jq -r '.attributes."http.response.header.content-type"')"
 assert_not_equals null "$(\echo "$span" | \jq -r '.attributes."network.peer.port"')"
 span_id=$(\echo "$span" | \jq -r '.parent_id')
-span="$(resolve_span '.context.span_id == "'$span_id'"')"
+span="$(resolve_span '.context.span_id == "'"$span_id"'"')"
 assert_equals "SpanKind.PRODUCER" $(\echo "$span" | \jq -r '.kind')
 assert_equals "send/receive" $(\echo "$span" | \jq -r '.name')
 span_id=$(\echo "$span" | \jq -r '.parent_id')
-span="$(resolve_span '.context.span_id == "'$span_id'"')"
+span="$(resolve_span '.context.span_id == "'"$span_id"'"')"
 assert_equals "SpanKind.INTERNAL" $(\echo "$span" | \jq -r '.kind')
 assert_equals "netcat -w 5 www.google.com 80" "$(\echo "$span" | \jq -r '.name')"
 

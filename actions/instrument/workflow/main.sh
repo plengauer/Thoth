@@ -21,7 +21,7 @@ fi
 echo "::endgroup::"
 
 # selfmonitoring
-if false && ([ "$INPUT_SELF_MONITORING" = true ] || ([ "$INPUT_SELF_MONITORING" = auto ] && [ "$GITHUB_API_URL" = 'https://api.github.com' ])); then
+if false && { [ "$INPUT_SELF_MONITORING" = true ] || { [ "$INPUT_SELF_MONITORING" = auto ] && [ "$GITHUB_API_URL" = 'https://api.github.com' ]; }; }; then
   (
     unset OTEL_EXPORTER_OTLP_METRICS_ENDPOINT OTEL_EXPORTER_OTLP_LOGS_ENDPOINT OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
     export OTEL_SHELL_SDK_OUTPUT_REDIRECT=/dev/null
@@ -39,7 +39,7 @@ if false && ([ "$INPUT_SELF_MONITORING" = true ] || ([ "$INPUT_SELF_MONITORING" 
     _otel_resource_attributes_custom() {
       _otel_resource_attribute string telemetry.sdk.language=github
     }
-    if [ "$INPUT_SELF_MONITORING_ANONYMIZE" = true ] || ([ "$INPUT_SELF_MONITORING_ANONYMIZE" = auto ] && ([ "$GITHUB_API_URL" != 'https://api.github.com' ] || [ "$(gh_curl | jq -r .visibility)" != public ])); then
+    if [ "$INPUT_SELF_MONITORING_ANONYMIZE" = true ] || { [ "$INPUT_SELF_MONITORING_ANONYMIZE" = auto ] && { [ "$GITHUB_API_URL" != 'https://api.github.com' ] || [ "$(gh_curl | jq -r .visibility)" != public ]; }; }; then
       unset GITHUB_REPOSITORY_ID GITHUB_REPOSITORY GITHUB_REPOSITORY_OWNER_ID GITHUB_REPOSITORY_OWNER
     fi
     unset GITHUB_WORKFLOW_REF GITHUB_WORKFLOW_SHA GITHUB_WORKFLOW
@@ -51,6 +51,7 @@ if false && ([ "$INPUT_SELF_MONITORING" = true ] || ([ "$INPUT_SELF_MONITORING" 
   ) &
 fi
 
+# shellcheck disable=SC2031 # the subshell is intentionally isolated so its environment does not leak into the main script
 export OTEL_SERVICE_NAME="${OTEL_SERVICE_NAME:-"$(echo "$GITHUB_REPOSITORY" | cut -d / -f 2-) CI"}"
 
 echo "::group::Resolving Workflow Run Attempt"
@@ -71,7 +72,7 @@ artifacts_json="$(mktemp)"
 gh_jobs "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" | jq .jobs[] >"$jobs_json" && echo "Jobs and Steps ... done" >&2 &
 gh_artifacts "$INPUT_WORKFLOW_RUN_ID" | jq -r .artifacts[] >"$artifacts_json" && echo "Artifacts ... done" >&2 &
 count=1
-while [ "$count" -lt 60 ] && !(gh_workflow_run_logs "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" "$logs_zip" && unzip -t "$logs_zip" 1> /dev/null 2> /dev/null); do # sometimes downloads fail
+while [ "$count" -lt 60 ] && ! (gh_workflow_run_logs "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" "$logs_zip" && unzip -t "$logs_zip" 1> /dev/null 2> /dev/null); do # sometimes downloads fail
   sleep "$count"
   count=$((count * 2))
 done
@@ -193,7 +194,7 @@ jq <"$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .cr
       artifact_name="$1"
       dir="$(mktemp -d)"
       gh_artifact_download "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" "$artifact_name" "$dir" || return 0
-      (cd "$dir" && ls | grep -E '.logs$|.metrics$|.traces$' | parallel -j 16 export_deferred_signal_file)
+      (cd "$dir" && for file in *.logs *.metrics *.traces; do [ -e "$file" ] && echo "$file"; done | parallel -j 16 export_deferred_signal_file)
       rm -rf "$dir"
     }
     export -f export_deferred_signal_artifacts
@@ -201,14 +202,17 @@ jq <"$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .cr
       file="$1"
       case "$file" in
         *.logs)
+          # shellcheck disable=SC2031 # the subshell is intentionally isolated so its environment does not leak into the main script
           OTEL_EXPORTER_OTLP_SIGNAL_ENDPOINT="${OTEL_EXPORTER_OTLP_LOGS_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/logs}"
           OTEL_EXPORTER_OTLP_SIGNAL_HEADERS="$OTEL_EXPORTER_OTLP_LOGS_HEADERS"
           ;;
         *.metrics)
+          # shellcheck disable=SC2031 # the subshell is intentionally isolated so its environment does not leak into the main script
           OTEL_EXPORTER_OTLP_SIGNAL_ENDPOINT="${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/metrics}"
           OTEL_EXPORTER_OTLP_SIGNAL_HEADERS="$OTEL_EXPORTER_OTLP_METRICS_HEADERS"
           ;;
         *.traces)
+          # shellcheck disable=SC2031 # the subshell is intentionally isolated so its environment does not leak into the main script
           OTEL_EXPORTER_OTLP_SIGNAL_ENDPOINT="${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/traces}"
           OTEL_EXPORTER_OTLP_SIGNAL_HEADERS="$OTEL_EXPORTER_OTLP_TRACES_HEADERS"
           ;;

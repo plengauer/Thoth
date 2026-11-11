@@ -47,7 +47,8 @@ def run(scope, version, commands):
         handle(scope, version, 'SHUTDOWN', None)
     except EOFError:
         sys.exit(0)
-    except Exception:
+    # best effort during shutdown
+    except Exception:  # nosec B110
         pass
 
 def guess_cloud_resource_detectors():
@@ -403,7 +404,7 @@ def handle(scope, version, command, arguments):
                 response.write('')
                 return
         span_id = tokens[1]
-        if not span_id in spans:
+        if span_id not in spans:
             with open(response_path, 'w') as response:
                 response.write('')
                 return
@@ -628,11 +629,13 @@ def convert_type(type, value, base=None):
     elif type == 'auto':
         try:
             return int(value)
-        except Exception:
+        # not an int, try the next type
+        except Exception:  # nosec B110
             pass
         try:
             return float(value)
-        except Exception:
+        # not a float, fall back to string
+        except Exception:  # nosec B110
             pass
         return value
     else:
@@ -643,7 +646,8 @@ def file_contains(haystack, needle):
         with open(haystack, 'r') as file:
             if needle in file.read():
                 return True
-    except Exception:
+    # an unreadable file counts as not containing the text
+    except Exception:  # nosec B110
         pass
     return False
 
