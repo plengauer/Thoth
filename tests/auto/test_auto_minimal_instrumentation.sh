@@ -3,13 +3,13 @@
 . /usr/bin/opentelemetry_shell.sh
 alias
 
-if [ -n "$(alias | grep ech | grep cho)" ]; then
+if alias | grep ech | grep -q cho; then
   printf '%s\n' "e-cho has been instrumented"
   exit 1
 fi
 . auto/count_fail_no_auto.sh
 alias
-if [ -z "$(alias | grep ech | grep cho)" ]; then
+if ! alias | grep ech | grep -q cho; then
   printf '%s\n' "e-cho has not been instrumented"
   exit 1
 fi
@@ -19,7 +19,7 @@ if [ "$(alias | wc -l)" -gt "100" ]; then
   exit 1
 fi
 
-if [ -n "$(alias alias | grep otel_observe)" ] || [ -n "$(alias unalias | grep otel_observe)" ] || [ -n "$(alias . | grep otel_observe)" ]; then
+if alias alias | grep -q otel_observe || alias unalias | grep -q otel_observe || alias . | grep -q otel_observe; then
   printf '%s\n' "aliased or unalias or . has been instrumented"
   exit 1
 fi
