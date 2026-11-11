@@ -88,7 +88,7 @@ record_github_logs() {
         severity="${severity%% *}"
         line="${line#*::}"
         ;;
-      [command]*)
+      \[command]*)
         severity=trace
         line="${line#[command]}"
         ;;
