@@ -3,8 +3,10 @@ name: Renovate
 on:
   schedule:
     - cron: '0 * * * *'
+    - cron: '0 0 * * 1'
   release:
     types: published
+
 concurrency:
   group: renovate
 
@@ -301,7 +303,7 @@ jobs:
         continue-on-error: true
 
   renovate-job-level-instrumentation:
-    if: ${{ !github.event.repository.fork && false }}
+    if: ${{ !github.event.repository.fork && github.event.schedule == '0 0 * * 1' }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
