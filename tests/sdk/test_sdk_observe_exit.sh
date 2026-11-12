@@ -4,7 +4,7 @@
 
 otel_init
 func_fail() {
-  return $1
+  return "$1"
 }
 otel_observe func_fail 0
 assert_equals 0 $?
