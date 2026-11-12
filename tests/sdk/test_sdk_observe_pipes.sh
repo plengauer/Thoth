@@ -23,7 +23,6 @@ assert_not_equals 0 "$?"
 otel_observe false </dev/null
 assert_not_equals 0 "$?"
 file="$(mktemp)"
-exit_code=0
 otel_observe false </dev/null 1>/dev/null 2>/dev/null
 assert_not_equals 0 "$(cat "$file")"
 echo '{"dependencies":{}}' >"$file"

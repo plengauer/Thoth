@@ -5,12 +5,12 @@
 otel_init
 span_id=$(otel_span_start SERVER myspan)
 assert_equals 0 $?
-otel_span_attribute $span_id key=value
+otel_span_attribute "$span_id" key=value
 assert_equals 0 $?
-otel_span_attribute $span_id foo='bar
+otel_span_attribute "$span_id" foo='bar
 baz'
 assert_equals 0 $?
-otel_span_end $span_id
+otel_span_end "$span_id"
 assert_equals 0 $?
 otel_shutdown
 
