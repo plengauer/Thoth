@@ -71,9 +71,7 @@
   <!-- Checks for Size Violations.                    -->
   <!-- See https://checkstyle.org/checks/sizes/index.html -->
   <module name="FileLength"/>
-  <module name="LineLength">
-    <property name="fileExtensions" value="java"/>
-  </module>
+  <!-- LineLength is disabled: Byte Buddy matcher chains are fluent builders that read worse when wrapped -->
 
   <!-- Checks for whitespace                               -->
   <!-- See https://checkstyle.org/checks/whitespace/index.html -->
