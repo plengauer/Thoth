@@ -3,5 +3,7 @@ if ! type node || cat /etc/os-release | grep Alpine; then exit 0; fi
 . otel.sh
 nohup node -e "require('http').createServer(function (req, res) { console.log(req.method, req.url); res.writeHead(200); res.end(); }).listen(8080);" >/tmp/http.log &
 \sleep 5
+# shellcheck disable=SC2009 # pgrep is not available on all supported platforms
 \ps -ef | \grep node | \grep 'createServer'
+# shellcheck disable=SC2009 # pgrep is not available on all supported platforms
 \ps -ef | \grep node | \grep 'createServer' | \awk '{ print $2 }' | \xargs -I '{}' kill -9 '{}'

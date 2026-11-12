@@ -69,7 +69,6 @@ _otel_pipe_wget_stderr() {
   local span_handle_file="$1"
   local span_handle=""
   local http_client_request_duration_handle="$(otel_counter_create histogram http.client.request.duration s '0.005,0.01,0.025,0.05,0.075,0.1,0.25,0.5,0.75,1,2.5,5,7.5,10' 'Duration of HTTP client requests')"
-  local http_client_request_body_size_handle="$(otel_counter_create histogram http.client.request.body.size By '' 'Size of HTTP client request bodies')"
   local http_client_response_body_size_handle="$(otel_counter_create histogram http.client.response.body.size By '' 'Size of HTTP client response bodies')"
   local http_client_open_connections_handle="$(otel_counter_create up_down_counter http.client.open_connections '{connection}' 'Number of outbound HTTP connections that are currently active or idle on the client')"
   local http_client_connection_duration_handle="$(otel_counter_create histogram http.client.connection.duration s '0.01,0.02,0.05,0.1,0.2,0.5,1,2,5,10,30,60,120,300' 'The duration of the successfully established outbound HTTP connections')"
@@ -163,8 +162,8 @@ _otel_pipe_wget_stderr() {
       otel_span_attribute_typed "$span_handle" string server.address="$host"
       otel_span_attribute_typed "$span_handle" int server.port="$port"
       otel_span_attribute_typed "$span_handle" string url.full="$url"
-      otel_span_attribute_typed "$span_handle" string url.path="$(\printf '%s' "$path_and_query" | \cut -d ? -f 1)"
-      otel_span_attribute_typed "$span_handle" string url.query="$(\printf '%s' "$path_and_query" | \cut -sd ? -f 2-)"
+      otel_span_attribute_typed "$span_handle" string url.path="$(\printf '%s' "$path_and_query" | \cut -d '?' -f 1)"
+      otel_span_attribute_typed "$span_handle" string url.query="$(\printf '%s' "$path_and_query" | \cut -sd '?' -f 2-)"
       otel_span_attribute_typed "$span_handle" string url.scheme="$protocol"
       otel_span_attribute_typed "$span_handle" string user_agent.original=wget
       otel_span_attribute_typed "$span_handle" string http.request.method=GET

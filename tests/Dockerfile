@@ -53,3 +53,5 @@ EOF
 ENV shell="$shell"
 
 CMD ! type "$shell" || bash run_tests.sh "$shell"
+
+HEALTHCHECK NONE
