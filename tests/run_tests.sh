@@ -6,7 +6,7 @@ if [ "$SHELL" = "" ]; then
   exit 1
 fi
 . /etc/os-release
-if [ "$SHELL" = dash ] && ! ([ "$ID" = debian ] || [ "$ID_LIKE" = debian ]); then
+if [ "$SHELL" = dash ] && ! { [ "$ID" = debian ] || [ "$ID_LIKE" = debian ]; }; then
   exit 0
 fi
 
@@ -43,6 +43,7 @@ for dir in unit sdk auto integration performance; do
     touch "$stdout" "$stderr"
     chmod 0666 "$stdout" "$stderr"
     export OTEL_SHELL_SDK_STDERR_REDIRECT="$stderr"
+    # shellcheck disable=SC2086 # TEST_SHELL and options may be a command with arguments such as busybox sh and must be split into words
     (if timeout $((60 * 60 * 3)) $TEST_SHELL $options "$file" </dev/null 1>"$stdout" 2>"$stderr"; then echo "$file SUCCEEDED"; else echo "$file FAILED" && echo "stdout:" && cat "$stdout" && echo "stderr:" && cat "$stderr" && echo "otlp:" && cat "$OTEL_EXPORT_LOCATION" && touch "$failed_flag" && exit 1; fi) 2>&1 | perl -e '$| = 1; print while <>;' &
     wait # TODO force sequential for now
     [ "$dir" != performance ] || wait
