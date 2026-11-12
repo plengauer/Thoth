@@ -35,8 +35,6 @@ if type dpkg && dpkg -s moreutils; then
   assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
 fi
 
-shebang="$(alias parallel | grep -q env && echo /usr/bin/env perl || echo /usr/bin/perl)"
-
 parallel echo ::: c1 c2 c3
 span="$(resolve_span '.name | endswith("/parallel echo ::: c1 c2 c3")')"
 assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
