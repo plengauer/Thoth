@@ -111,8 +111,8 @@ _otel_netcat_parse_request() {
   otel_span_attribute_typed "$span_handle" string network.protocol.name="$(\printf '%s' "$protocol" | \cut -d / -f 1 | \tr '[:upper:]' '[:lower:]')"
   otel_span_attribute_typed "$span_handle" string network.protocol.version="$(\printf '%s' "$protocol" | \cut -d / -f 2-)"
   otel_span_attribute_typed "$span_handle" string url.full="$(\printf '%s' "$protocol" | \cut -d / -f 1 | \tr '[:upper:]' '[:lower:]')://$host_and_port$path_and_query"
-  otel_span_attribute_typed "$span_handle" string url.path="$(\printf '%s' "$path_and_query" | \cut -d ? -f 1)"
-  otel_span_attribute_typed "$span_handle" string url.query="$(\printf '%s' "$path_and_query" | \cut -sd ? -f 2-)"
+  otel_span_attribute_typed "$span_handle" string url.path="$(\printf '%s' "$path_and_query" | \cut -d '?' -f 1)"
+  otel_span_attribute_typed "$span_handle" string url.query="$(\printf '%s' "$path_and_query" | \cut -sd '?' -f 2-)"
   otel_span_attribute_typed "$span_handle" string url.scheme="$(\printf '%s' "$protocol" | \cut -d / -f 1 | \tr '[:upper:]' '[:lower:]')"
   otel_span_attribute_typed "$span_handle" string http.request.method="$method"
   otel_span_attribute_typed "$span_handle" int http.request.body.size="${content_length:-0}"
@@ -297,7 +297,7 @@ _otel_is_netcat_arg_arg() {
     -R) return 0 ;;
     -d | --delay) return 0 ;;
     -o | --output) return 0 ;;
-    -x | --hexdump) return 0 ;;
+    --hexdump) return 0 ;;
     -p | --source-port) return 0 ;;
     -s | --source) return 0 ;;
     --proxy | --proxy-type | --proxy-auth | --proxy-dns) return 0 ;;
@@ -311,7 +311,7 @@ _otel_binary_contains_null() {
   local i=0
   while \[ "$i" -lt "${#string}" ]; do
     if \[ "$(\printf '%s' "$string" | \cut -c $((i + 1))-$((i + 1 + 2 - 1)))" = 00 ]; then return 0; fi
-    if \[ "$(\printf '%s' "$string" | \cut -c "$((i + 1))"-"$((i + 1 + 2 - 1))")" = 00 ]; then return 0; fi
+    if \[ "$(\printf '%s' "$string" | \cut -c "$((i + 1))-$((i + 1 + 2 - 1))")" = 00 ]; then return 0; fi
     local i="$((i + 2))"
   done
   return 1
