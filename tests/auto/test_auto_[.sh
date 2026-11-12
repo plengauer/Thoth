@@ -2,12 +2,14 @@
 . ./assert.sh
 . /usr/bin/opentelemetry_shell.sh
 
+# shellcheck disable=SC2157 # the constant expression is intentional, the test exercises the instrumented test command
 if [ -n "hello world if" ]; then
   echo hello world
 else
   exit 1
 fi
 
+# shellcheck disable=SC2157 # the constant expression is intentional, the test exercises the instrumented test command
 while [ -z "hello world while" ]; do
   exit 1
 done

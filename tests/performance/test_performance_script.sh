@@ -15,4 +15,5 @@ echo "cat cut sed awk bash sh" >>"$script"
 echo "echo 'hello world'" >>"$script"
 echo "printf '%s %s' \"hello world\"" >>"$script"
 
+# shellcheck disable=SC2086 # TEST_SHELL and options may be a command with arguments such as busybox sh and must be split into words
 timeout 5s $TEST_SHELL "$script"
