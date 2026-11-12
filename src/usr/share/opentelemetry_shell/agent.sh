@@ -76,7 +76,7 @@ _otel_auto_instrument() {
     if \type dpkg 1>/dev/null 2>/dev/null; then \ls -la /var/lib/dpkg/lock; else _otel_list_path_commands | _otel_filter_commands_by_special | _otel_filter_commands_by_hint "$hint"; fi
     \alias
   } | \md5sum | \cut -d ' ' -f 1)"
-  local cache_file="$TMPDIR/opentelemetry_shell_$(_otel_package_version opentelemetry-shell)"_"$_otel_shell"_instrumentation_cache_"$cache_key".aliases
+  local cache_file="$TMPDIR/opentelemetry_shell_$(_otel_package_version opentelemetry-shell)_${_otel_shell}_instrumentation_cache_${cache_key}.aliases"
   if \[ -r "$cache_file" ]; then
     \eval "$(\grep -vh '_otel_alias_prepend ' $(_otel_list_special_auto_instrument_files))"
     \. "$cache_file" && return 0 || \true
@@ -100,12 +100,14 @@ _otel_auto_instrument() {
 
   # super special instrumentations
   if \[ "$_otel_shell" = bash ]; then \alias declare='declare $( ( _otel_string_starts_with "${FUNCNAME:-}" _otel_ || \[ "${FUNCNAME:-}" = source ] || \[ "${FUNCNAME:-}" = . ] ) && \printf '%s' -g || \true)'; fi
+  # shellcheck disable=SC2142 # the alias intentionally forwards the arguments of the instrumented command
   \alias .='_otel_instrument_and_source "$#" "$@" .'
+  # shellcheck disable=SC2142 # the alias intentionally forwards the arguments of the instrumented command
   if \[ "$_otel_shell" = bash ]; then \alias source='_otel_instrument_and_source "$#" "$@" source'; fi
   if \[ "$_otel_shell_conservative_exec" = TRUE ]; then
     if \[ -n "${LINENO:-}" ]; then
       # shellcheck disable=SC2139 # the alias is intentionally expanded when it is defined
-      \alias exec='eval "$(_otel_inject_and_exec_by_location "'$_otel_source_file_resolver'" "'$_otel_source_line_resolver'")"; exec'
+      \alias exec='eval "$(_otel_inject_and_exec_by_location "'"$_otel_source_file_resolver"'" "'"$_otel_source_line_resolver"'")"; exec'
     else
       \alias exec='_otel_record_exec; exec'
     fi
@@ -119,6 +121,7 @@ _otel_auto_instrument() {
 }
 
 _otel_list_special_auto_instrument_files() {
+  # shellcheck disable=SC2010 # globbing is disabled in this branch, so the files have to be listed instead of globbed
   case "$-" in
     *f*) \ls /usr/share/opentelemetry_shell | \grep -E '^agent.instrumentation.*.sh$' | while \read -r _otel_file_name; do \echo /usr/share/opentelemetry_shell/"$_otel_file_name"; done ;;
     *) \echo /usr/share/opentelemetry_shell/agent.instrumentation.*.sh ;;
@@ -251,7 +254,7 @@ _otel_dealiasify() {
   if ! _otel_string_starts_with "$full_alias" / && ! _otel_string_starts_with "$full_alias" .; then return 2; fi
   local cmd_alias="$(\printf '%s' "$full_alias" | _otel_line_split | \grep -v '^OTEL_' | \grep -v '^_otel_' | \head -n1 | _otel_path_2_name)" # e.g., upgrade => bash
   if \[ -z "$cmd_alias" ]; then return 3; fi
-  local cmd_aliased="$(_otel_resolve_alias $cmd_alias)" # e.g., bash => _otel_inject_shell bash
+  local cmd_aliased="$(_otel_resolve_alias "$cmd_alias")" # e.g., bash => _otel_inject_shell bash
   if \[ -z "$cmd_aliased" ]; then return 4; fi
   local otel_cmds="$(\printf '%s' "$cmd_aliased" | _otel_line_split | \grep '^_otel_' | \grep -v '^_otel_observe' | _otel_line_join)" # e.g., _otel_inject_shell bash => _otel_inject_shell
   if \[ -z "$otel_cmds" ]; then return 5; fi
@@ -316,11 +319,12 @@ _otel_alias_prepend() {
   fi
 
   # shellcheck disable=SC2139 # the alias is intentionally expanded when it is defined
-  \alias "$original_command"='OTEL_SHELL_SPAN_ATTRIBUTES_OVERRIDE="code.filepath='$_otel_source_file_resolver',code.lineno='$_otel_source_line_resolver',code.function='$_otel_source_func_resolver'" '"$new_command"
+  \alias "$original_command"='OTEL_SHELL_SPAN_ATTRIBUTES_OVERRIDE="code.filepath='"$_otel_source_file_resolver"',code.lineno='"$_otel_source_line_resolver"',code.function='"$_otel_source_func_resolver"'" '"$new_command"
 }
 
 _otel_unquote() {
   # '\'' => ', '"'"' => ', '"'"$ => '', '"''"$ => ''' => '
+  # shellcheck disable=SC1003 # the patterns intentionally match the escape sequences for a single quote
   \sed -e 's/'\''\\'\'''\''/'\''/g' -e 's/'\''"'\''"'\''/'\''/g' -e 's/'\''"'\''"$/'\'''\''/g' -e 's/'\''"'\'\''"$/'\''/g' -e "s/^'\(.*\)'$/\1/"
 }
 
@@ -372,6 +376,7 @@ _otel_hash_and_reinstrument() {
 _otel_export_PATH_and_reinstrument() {
   shift
   local exit_code=0
+  # shellcheck disable=SC2163 # the arguments are names or assignments of variables to export
   \export "$@" || local exit_code="$?"
   if \[ "${1%%=*}" = PATH ]; then
     local aliases_pre="$(\mktemp)"
@@ -394,7 +399,7 @@ _otel_instrument_and_source() {
   local command="$(eval '\echo ${'"$((n + 1))"'}')"
   local file="$(eval '\echo ${'"$((n + 2))"'}')"
   if \[ -f "$file" ]; then _otel_auto_instrument "$file"; fi
-  \eval "'$command' '$file' $(if \[ $# -gt $((n + 2)) ]; then \seq $((n + 2 + 1)) $#; else \seq 1 $n; fi | while \read i; do \echo '"${'"$i"'}"'; done | _otel_line_join)"
+  \eval "'$command' '$file' $(if \[ $# -gt $((n + 2)) ]; then \seq $((n + 2 + 1)) $#; else \seq 1 "$n"; fi | while \read i; do \echo '"${'"$i"'}"'; done | _otel_line_join)"
 }
 
 _otel_inject_and_exec_directly() { # this function assumes there is no fd fuckery
@@ -408,6 +413,7 @@ _otel_inject_and_exec_directly() { # this function assumes there is no fd fucker
       \export OTEL_SHELL_COMMANDLINE_OVERRIDE="$_otel_commandline_override"
       \export OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE="$PPID"
     fi
+    # shellcheck disable=SC2086 # the shell may be a command with arguments such as busybox sh and must be split into words
     \eval '"exec"' "$(\xargs -0 $_otel_shell -c '. otelapi.sh; _otel_escape_args "$@"' sh </proc/$$/cmdline)"
   fi
 
@@ -453,6 +459,7 @@ _otel_inject_and_exec_by_location() {
   \printf '%s\n' "$(_otel_escape_args export OTEL_SHELL_COMMANDLINE_OVERRIDE="$(_otel_command_self)")"
   \printf '%s\n' "$(_otel_escape_args export OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE="$PPID")"
   \echo -n '"exec" '
+  # shellcheck disable=SC2086 # the shell may be a command with arguments such as busybox sh and must be split into words
   _otel_escape_args $_otel_shell -c '. otel.sh
 _otel_inject '"$command"
   \echo -n ' "$0" "$@"'
@@ -514,29 +521,29 @@ _otel_start_script() {
   otel_init || return $?
   if \[ -n "${SSH_CLIENT:-}" ] && \[ -n "${SSH_CONNECTION:-}" ] && \[ "${PPID:-}" != 0 ] && \[ "$(\cat /proc/$PPID/cmdline | \tr -d '\000' | \cut -d ' ' -f 1)" = "sshd:" ]; then
     _root_span_handle="$(otel_span_start SERVER ssh)"
-    otel_span_attribute_typed $_root_span_handle string ssh.ip="$(\echo $SSH_CONNECTION | \cut -d ' ' -f 3)"
-    otel_span_attribute_typed $_root_span_handle int ssh.port="$(\echo $SSH_CONNECTION | \cut -d ' ' -f 4)"
-    otel_span_attribute_typed $_root_span_handle string network.peer.ip="$(\echo $SSH_CLIENT | \cut -d ' ' -f 1)"
-    otel_span_attribute_typed $_root_span_handle int network.peer.port="$(\echo $SSH_CLIENT | \cut -d ' ' -f 2)"
+    otel_span_attribute_typed "$_root_span_handle" string ssh.ip="$(\echo "$SSH_CONNECTION" | \cut -d ' ' -f 3)"
+    otel_span_attribute_typed "$_root_span_handle" int ssh.port="$(\echo "$SSH_CONNECTION" | \cut -d ' ' -f 4)"
+    otel_span_attribute_typed "$_root_span_handle" string network.peer.ip="$(\echo "$SSH_CLIENT" | \cut -d ' ' -f 1)"
+    otel_span_attribute_typed "$_root_span_handle" int network.peer.port="$(\echo "$SSH_CLIENT" | \cut -d ' ' -f 2)"
   elif \[ -n "${SERVER_SOFTWARE:-}" ] && \[ -n "${SCRIPT_NAME:-}" ] && \[ -n "${SERVER_NAME:-}" ] && \[ -n "${SERVER_PROTOCOL:-}" ] && ! \[ "${OTEL_SHELL_AUTO_INJECTED:FALSE}" = "TRUE" ] && \[ "${PPID:-}" != 0 ] && \[ "$(\cat "/proc/$PPID/cmdline" | \tr '\000' ' ' | \cut -d ' ' -f 1 | _otel_path_2_name)" = "python3" ]; then
     _root_span_handle="$(otel_span_start SERVER GET)"
-    otel_span_attribute_typed $_root_span_handle string network.protocol.name=http
-    otel_span_attribute_typed $_root_span_handle string network.transport=tcp
-    otel_span_attribute_typed $_root_span_handle string network.peer.address="$REMOTE_ADDR"
-    otel_span_attribute_typed $_root_span_handle string http.request.method=GET
-    otel_span_attribute_typed $_root_span_handle string http.route="$SCRIPT_NAME"
-    otel_span_attribute_typed $_root_span_handle string server.address="$SERVER_NAME"
-    otel_span_attribute_typed $_root_span_handle int server.port="$SERVER_PORT"
-    otel_span_attribute_typed $_root_span_handle string url.full="$(\echo "$SERVER_PROTOCOL" | \cut -d / -f 1 | \tr '[:upper:]' '[:lower:]')://$SERVER_NAME:$SERVER_PORT$SCRIPT_NAME"
-    otel_span_attribute_typed $_root_span_handle string url.path="$SCRIPT_NAME"
-    otel_span_attribute_typed $_root_span_handle string url.query=""
-    otel_span_attribute_typed $_root_span_handle string url.scheme="$(\echo "$SERVER_PROTOCOL" | \cut -d / -f 1 | \tr '[:upper:]' '[:lower:]')"
-    otel_span_attribute_typed $_root_span_handle string http.response.status_code=200
+    otel_span_attribute_typed "$_root_span_handle" string network.protocol.name=http
+    otel_span_attribute_typed "$_root_span_handle" string network.transport=tcp
+    otel_span_attribute_typed "$_root_span_handle" string network.peer.address="$REMOTE_ADDR"
+    otel_span_attribute_typed "$_root_span_handle" string http.request.method=GET
+    otel_span_attribute_typed "$_root_span_handle" string http.route="$SCRIPT_NAME"
+    otel_span_attribute_typed "$_root_span_handle" string server.address="$SERVER_NAME"
+    otel_span_attribute_typed "$_root_span_handle" int server.port="$SERVER_PORT"
+    otel_span_attribute_typed "$_root_span_handle" string url.full="$(\echo "$SERVER_PROTOCOL" | \cut -d / -f 1 | \tr '[:upper:]' '[:lower:]')://$SERVER_NAME:$SERVER_PORT$SCRIPT_NAME"
+    otel_span_attribute_typed "$_root_span_handle" string url.path="$SCRIPT_NAME"
+    otel_span_attribute_typed "$_root_span_handle" string url.query=""
+    otel_span_attribute_typed "$_root_span_handle" string url.scheme="$(\echo "$SERVER_PROTOCOL" | \cut -d / -f 1 | \tr '[:upper:]' '[:lower:]')"
+    otel_span_attribute_typed "$_root_span_handle" string http.response.status_code=200
   elif _otel_command_self | \grep -q '/var/lib/dpkg/' >/dev/null; then
     local cmdline="$(_otel_command_self | \sed 's/^.* \(\/var\/lib\/dpkg\/.*\)$/\1/')"
     _root_span_handle="$(otel_span_start SERVER "$(\echo "$cmdline" | \cut -d . -f 2- | \cut -d ' ' -f 1)")"
-    otel_span_attribute_typed $_root_span_handle string debian.package.name="$(\echo "$cmdline" | _otel_path_2_name | \cut -d . -f 1)"
-    otel_span_attribute_typed $_root_span_handle string debian.package.operation="$(\echo "$cmdline" | \cut -d . -f 2-)"
+    otel_span_attribute_typed "$_root_span_handle" string debian.package.name="$(\echo "$cmdline" | _otel_path_2_name | \cut -d . -f 1)"
+    otel_span_attribute_typed "$_root_span_handle" string debian.package.operation="$(\echo "$cmdline" | \cut -d . -f 2-)"
   elif ! \[ "${OTEL_SHELL_AUTO_INJECTED:-FALSE}" = TRUE ] && \[ -z "${TRACEPARENT:-}" ]; then
     _root_span_handle="$(otel_span_start SERVER "$(_otel_command_self)")"
   elif ! \[ "${OTEL_SHELL_AUTO_INJECTED:-FALSE}" = TRUE ] && \[ -n "${TRACEPARENT:-}" ]; then
