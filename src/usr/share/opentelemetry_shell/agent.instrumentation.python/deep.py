@@ -57,7 +57,7 @@ def inject_arguments(file, args, is_file=True):
         pass
     arg_zero = None
     if is_file:
-        if not "/" in file:
+        if "/" not in file:
             for path in os.environ["PATH"].split(":"):
                 file_candidate = path + "/" + file
                 if (
