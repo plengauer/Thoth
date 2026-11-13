@@ -33,7 +33,7 @@ assert_equals "GET" $(\echo "$span" | jq -r '.name')
 assert_equals "SpanKind.CLIENT" $(\echo "$span" | jq -r '.kind')
 assert_not_equals "null" $(\echo "$span" | jq -r '.parent_id')
 assert_equals "UNSET" $(\echo "$span" | jq -r '.status.status_code')
-assert_equals "https" "$(\echo "$span" | jq -r '.attributes."network.protocol.name"')"
+assert_equals "http" "$(\echo "$span" | jq -r '.attributes."network.protocol.name"')"
 assert_equals "tcp" "$(\echo "$span" | jq -r '.attributes."network.transport"')"
 assert_equals "https://www.google.de:443/index.html" "$(\echo "$span" | jq -r '.attributes."url.full"')"
 assert_equals "https" "$(\echo "$span" | jq -r '.attributes."url.scheme"')"
@@ -50,7 +50,7 @@ assert_equals "GET" $(\echo "$span" | jq -r '.name')
 assert_equals "SpanKind.CLIENT" $(\echo "$span" | jq -r '.kind')
 assert_not_equals "null" $(\echo "$span" | jq -r '.parent_id')
 assert_equals "ERROR" $(\echo "$span" | jq -r '.status.status_code')
-assert_equals "https" "$(\echo "$span" | jq -r '.attributes."network.protocol.name"')"
+assert_equals "http" "$(\echo "$span" | jq -r '.attributes."network.protocol.name"')"
 assert_equals "tcp" "$(\echo "$span" | jq -r '.attributes."network.transport"')"
 assert_equals "https://www.google.de:443/index" "$(\echo "$span" | jq -r '.attributes."url.full"')"
 assert_equals "https" "$(\echo "$span" | jq -r '.attributes."url.scheme"')"
