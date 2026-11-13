@@ -68,8 +68,14 @@ _otel_inject_git() {
     export GIT_TRACE_CURL="$trace_pipe"
     export GIT_TRACE_CURL_NO_DATA=1
   fi
+  local ssh_command="${GIT_SSH_COMMAND:-$(\git config core.sshCommand 2>/dev/null || true)}"
+  case "$1:${ssh_command:-ssh}" in
+    -c* | -C*) local ssh_assignment="" ;; # the ssh command may be overridden for this invocation only, which we cannot see
+    *:ssh | *:'ssh '*) local ssh_assignment="GIT_SSH_COMMAND=$(_otel_escape_arg "otel4sh ${ssh_command:-ssh}")" ;;
+    *) local ssh_assignment="" ;;
+  esac
   local exit_code=0
-  \eval OTEL_SHELL_COMMANDLINE_OVERRIDE="$(_otel_escape_arg "$cmdline")" OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE=0 OTEL_SHELL_AUTO_INJECTED=TRUE _otel_call "$(_otel_inject_git_arguments "$@")" || exit_code="$?"
+  \eval OTEL_SHELL_COMMANDLINE_OVERRIDE="$(_otel_escape_arg "$cmdline")" OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE=0 OTEL_SHELL_AUTO_INJECTED=TRUE $ssh_assignment _otel_call "$(_otel_inject_git_arguments "$@")" || exit_code="$?"
   if \[ -n "${trace_pid:-}" ]; then
     unset GIT_TRACE_CURL
     unset GIT_TRACE_CURL_NO_DATA
