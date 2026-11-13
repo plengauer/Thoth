@@ -12,7 +12,7 @@ COPY . ./
 # hadolint ignore=DL3015
 RUN <<EOF
   packages_mandatory="jq psmisc wget curl time sudo bash"
-  packages_optional="parallel moreutils ncat wget2 nodejs npm python3 python3-pip gcc default-jdk-headless jdk"
+  packages_optional="parallel moreutils ncat wget2 openssh-server nodejs npm python3 python3-pip gcc default-jdk-headless jdk"
   if type apt-get; then
     apt-get update
     [ "$update" = TRUE ] && DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y || true
