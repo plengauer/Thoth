@@ -141,6 +141,7 @@ record_github_logs_pid="$!"
 cat <"$log_0_pipe" >"$log_1_pipe" &
 redirect_github_logs_pid="$!"
 exit_code=0
+[ "${OTEL_GITHUB_TRACE_DETAIL_LEVEL:-}" != low ] || _OTEL_GITHUB_STEP_AGENT_INJECTION_FUNCTION=_otel_call
 otel_observe "$_OTEL_GITHUB_STEP_AGENT_INJECTION_FUNCTION" "$@" 1>>"$log_0_pipe" 2>>"$log_0_pipe" || exit_code="$?"
 
 otel_span_deactivate "$span_handle"

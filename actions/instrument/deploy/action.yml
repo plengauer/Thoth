@@ -56,6 +56,9 @@ inputs:
   job_level_instrumentation_copilot:
     description: 'Instrument Copilot'
     default: 'true'
+  trace_detail_level:
+    description: 'Level of detail of the recorded traces, one of "low" (only job and step spans, no injection into shells), "medium" (additionally commands within shells, but no internals), "high" (additionally internals), or "max" (additionally all subprocesses). Deployed to all job-level instrumentations, including already existing ones.'
+    default: 'medium'
   action_repository:
     description: 'Override the action repository to deploy from'
     default: ''
@@ -130,6 +133,7 @@ runs:
         job_level_instrumentation_exclude: ${{ inputs.job_level_instrumentation_exclude }}
         job_level_instrumentation_secret_redaction_strategy: ${{ inputs.job_level_instrumentation_secret_redaction_strategy }}
         job_level_instrumentation_copilot: ${{ inputs.job_level_instrumentation_copilot }}
+        trace_detail_level: ${{ inputs.trace_detail_level }}
         action_repository: ${{ inputs.action_repository }}
         action_version: ${{ inputs.action_version }}
         dry_run: ${{ inputs.dry_run }}
