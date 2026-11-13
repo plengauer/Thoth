@@ -9,6 +9,8 @@ initialized_logs = False
 
 resource = {}
 final_resources = None
+detected_resources = None
+default_resources = None
 spans: dict = {}
 next_span_id = 0
 events = {}
@@ -137,6 +139,45 @@ def guess_cloud_resource_detectors():
             AwsEksResourceDetector(),
             AwsEc2ResourceDetector(),
         ]
+
+def detect_resources():
+    from opentelemetry.sdk.resources import Resource, OTELResourceDetector, OsResourceDetector, get_aggregated_resources
+    from opentelemetry.sdk.version import __version__
+    from opentelemetry_resourcedetector_docker import DockerResourceDetector
+    from opentelemetry_resourcedetector_kubernetes import KubernetesResourceDetector
+    detectors = []
+    if os.environ.get('OTEL_DISABLE_RESOURCE_DETECTION', 'FALSE') == 'FALSE':
+        detectors = guess_cloud_resource_detectors() + [
+            KubernetesResourceDetector(),
+            DockerResourceDetector(),
+            OsResourceDetector(),
+        ]
+    detectors.append(OTELResourceDetector())
+    return get_aggregated_resources(
+        detectors,
+        Resource({
+            'telemetry.sdk.language': 'python',
+            'telemetry.sdk.name': 'opentelemetry',
+            'telemetry.sdk.version': __version__,
+        }),
+    )
+
+def get_resource_attributes():
+    from opentelemetry.sdk.resources import Resource
+    final_resources = detect_resources().merge(Resource(resource))
+    if not final_resources.attributes.get('service.name'):
+        default_service_name = 'unknown_service'
+        if sys.executable:
+            default_service_name += ':' + os.path.basename(sys.executable)
+        final_resources = final_resources.merge(Resource({'service.name': default_service_name}))
+    return final_resources
+
+def dump_resource_attributes(path):
+    from urllib.parse import quote
+    attributes = ','.join(key + '=' + quote(value, safe='') for key, value in final_resources.attributes.items()
+                          if isinstance(value, str) and key not in ('telemetry.sdk.name', 'telemetry.sdk.language', 'telemetry.sdk.version', 'service.name', 'service.instance.id'))
+    with open(path, 'w') as output:
+        output.write(attributes)
 
 def handle(scope, version, command, arguments):
     global initialized_traces, initialized_metrics, initialized_logs, final_resources
@@ -270,17 +311,13 @@ def handle(scope, version, command, arguments):
         value = tokens[1]
         resource[key] = convert_type(type, value)
     elif command == 'INIT':
-        from opentelemetry.sdk.resources import Resource, ResourceDetector, OTELResourceDetector, OsResourceDetector, get_aggregated_resources
-        from opentelemetry_resourcedetector_docker import DockerResourceDetector
-        from opentelemetry_resourcedetector_kubernetes import KubernetesResourceDetector
-        final_resources = get_aggregated_resources(guess_cloud_resource_detectors() + [
-                KubernetesResourceDetector(),
-                DockerResourceDetector(),
-                OsResourceDetector(),
-                OTELResourceDetector(),
-            ]).merge(Resource.create(resource)) if os.environ.get('OTEL_DISABLE_RESOURCE_DETECTION', 'FALSE') == 'FALSE' else Resource.create(resource)
+        final_resources = get_resource_attributes()
 
+    elif command == 'DUMP_RESOURCE_ATTRIBUTES':
+        dump_resource_attributes(arguments)
     elif command == 'SHUTDOWN':
+        if not (initialized_traces or initialized_metrics or initialized_logs):
+            raise EOFError
         if auto_end:
             for span in spans.values():
                 span.end()

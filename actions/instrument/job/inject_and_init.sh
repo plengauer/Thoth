@@ -400,6 +400,26 @@ if type docker; then
 fi
 echo "::endgroup::"
 
+echo "::group::Calculate Resource Attributes"
+export OTEL_RESOURCE_ATTRIBUTES=github.repository.id="$GITHUB_REPOSITORY_ID",github.repository.name="${GITHUB_REPOSITORY#*/}",github.repository.owner.id="$GITHUB_REPOSITORY_OWNER_ID",github.repository.owner.name="$GITHUB_REPOSITORY_OWNER",github.actions.workflow.ref="${INPUT___JOB_WORKFLOW_REF:-$GITHUB_WORKFLOW_REF}",github.actions.workflow.sha="${INPUT___JOB_WORKFLOW_SHA:-$GITHUB_WORKFLOW_SHA}",github.actions.workflow.name="$GITHUB_WORKFLOW",github.actions.workflow.caller.ref="$GITHUB_WORKFLOW_REF",github.actions.workflow.caller.sha="$GITHUB_WORKFLOW_SHA",github.actions.workflow.caller.name="$GITHUB_WORKFLOW"${OTEL_RESOURCE_ATTRIBUTES:+,$OTEL_RESOURCE_ATTRIBUTES}
+[ -z "${INPUT___JOB_WORKFLOW_REPOSITORY:-}" ] || OTEL_RESOURCE_ATTRIBUTES="$OTEL_RESOURCE_ATTRIBUTES,github.actions.workflow.repository=$INPUT___JOB_WORKFLOW_REPOSITORY"
+[ -z "${INPUT___JOB_WORKFLOW_FILE_PATH:-}" ] || OTEL_RESOURCE_ATTRIBUTES="$OTEL_RESOURCE_ATTRIBUTES,github.actions.workflow.file_path=$INPUT___JOB_WORKFLOW_FILE_PATH"
+export OTEL_RESOURCE_ATTRIBUTES
+repo_property_attributes="$(gh_repo_properties 2>/dev/null | jq -r '.[] | select(.value != null and .value != "") | "github.repository.property." + .property_name + "=\"" + .value + "\""' 2>/dev/null | tr '\n' ',' | sed 's/,$//' || true)"
+if [ -n "$repo_property_attributes" ]; then
+  export OTEL_RESOURCE_ATTRIBUTES="${OTEL_RESOURCE_ATTRIBUTES},${repo_property_attributes}"
+fi
+wait
+if [ "${OTEL_PRECOMPUTE_RESOURCE_ATTRIBUTES:-TRUE}" = TRUE ]; then
+  resource_attributes_file="$(mktemp)"
+  printf 'INIT\nDUMP_RESOURCE_ATTRIBUTES %s\n' "$resource_attributes_file" | /opt/opentelemetry_shell/venv/bin/python /usr/share/opentelemetry_shell/sdk.py shell "$(cat ../../../VERSION)"
+  detected_resource_attributes="$(cat "$resource_attributes_file")"
+  rm "$resource_attributes_file"
+  [ -z "$detected_resource_attributes" ] || export OTEL_RESOURCE_ATTRIBUTES="${detected_resource_attributes}${OTEL_RESOURCE_ATTRIBUTES:+,$OTEL_RESOURCE_ATTRIBUTES}"
+  export OTEL_DISABLE_RESOURCE_DETECTION=TRUE
+fi
+echo "::endgroup::"
+
 echo "::group::Resolve W3C Tracecontext"
 opentelemetry_root_dir="$(mktemp -d)"
 count=0
@@ -417,17 +437,6 @@ done
 [ -r "$opentelemetry_root_dir"/traceparent ] || (echo "::error ::Cannot sync trace id via artifacts. This is most likely a token permission issue, please consult the README." && false)
 export TRACEPARENT="$(cat "$opentelemetry_root_dir"/traceparent)"
 rm -rf "$opentelemetry_root_dir"
-echo "::endgroup::"
-
-echo "::group::Calculate Resource Attributes"
-export OTEL_RESOURCE_ATTRIBUTES=github.repository.id="$GITHUB_REPOSITORY_ID",github.repository.name="${GITHUB_REPOSITORY#*/}",github.repository.owner.id="$GITHUB_REPOSITORY_OWNER_ID",github.repository.owner.name="$GITHUB_REPOSITORY_OWNER",github.actions.workflow.ref="${INPUT___JOB_WORKFLOW_REF:-$GITHUB_WORKFLOW_REF}",github.actions.workflow.sha="${INPUT___JOB_WORKFLOW_SHA:-$GITHUB_WORKFLOW_SHA}",github.actions.workflow.name="$GITHUB_WORKFLOW",github.actions.workflow.caller.ref="$GITHUB_WORKFLOW_REF",github.actions.workflow.caller.sha="$GITHUB_WORKFLOW_SHA",github.actions.workflow.caller.name="$GITHUB_WORKFLOW"${OTEL_RESOURCE_ATTRIBUTES:+,$OTEL_RESOURCE_ATTRIBUTES}
-[ -z "${INPUT___JOB_WORKFLOW_REPOSITORY:-}" ] || OTEL_RESOURCE_ATTRIBUTES="$OTEL_RESOURCE_ATTRIBUTES,github.actions.workflow.repository=$INPUT___JOB_WORKFLOW_REPOSITORY"
-[ -z "${INPUT___JOB_WORKFLOW_FILE_PATH:-}" ] || OTEL_RESOURCE_ATTRIBUTES="$OTEL_RESOURCE_ATTRIBUTES,github.actions.workflow.file_path=$INPUT___JOB_WORKFLOW_FILE_PATH"
-export OTEL_RESOURCE_ATTRIBUTES
-repo_property_attributes="$(gh_repo_properties 2>/dev/null | jq -r '.[] | select(.value != null and .value != "") | "github.repository.property." + .property_name + "=\"" + .value + "\""' 2>/dev/null | tr '\n' ',' | sed 's/,$//' || true)"
-if [ -n "$repo_property_attributes" ]; then
-  export OTEL_RESOURCE_ATTRIBUTES="${OTEL_RESOURCE_ATTRIBUTES},${repo_property_attributes}"
-fi
 echo "::endgroup::"
 
 # observe ...
@@ -719,7 +728,7 @@ echo "::endgroup::"
 
 echo "::group::Setting Up SDK Factory"
 mv sdk_factory.py sdk_factory.py.backup
-cat /usr/share/opentelemetry_shell/sdk.py | grep -E 'from|import' | while read -r line; do echo "$line"; done | sort -u >sdk_factory.py
+cat /usr/share/opentelemetry_shell/sdk.py | grep -E 'from|import' | while read -r line; do echo "$line"; done | sort -u >>sdk_factory.py
 cat sdk_factory.py.backup >>sdk_factory.py
 rm sdk_factory.py.backup
 echo "::endgroup::"
@@ -742,4 +751,3 @@ printenv | grep -E '^OTEL_|^TRACEPARENT=|^TRACESTATE=|^COPILOT_OTEL_ENABLED=' >>
 echo "::endgroup::"
 
 echo ::notice title=Observability Information for "${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}"::"Trace ID: $(echo "$TRACEPARENT" | cut -d - -f 2), Span ID: $(echo "$TRACEPARENT" | cut -d - -f 3), Trace Deep Link: $(OTEL_EXPORTER_OTLP_TRACES_ENDPOINT="$backup_otel_exporter_otlp_traces_endpoint" print_trace_link "$(date +%Y-%M-%dT%H:%M:%S.%N%:z | jq -sRr @uri)" || echo unavailable)"
-
