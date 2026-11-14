@@ -212,7 +212,7 @@
       <property name="maximumMessage"
                 value="Avoid using more than three variables in the for clause."/>
     </module>
-    <module name="FinalParameters"/>
+    <!-- FinalParameters is disabled: making every parameter final is style noise, and the Byte Buddy advice parameters are reassigned on purpose -->
     <module name="Indentation"/>
     <module name="TodoComment"/>
     <module name="UpperEll"/>
