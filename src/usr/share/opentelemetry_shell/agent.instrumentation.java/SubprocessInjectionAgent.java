@@ -15,6 +15,8 @@ import java.lang.NoSuchMethodException;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.Span;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.SpanContext;
 
+// The agent manifest names this class without a package
+@SuppressWarnings("PMD.NoPackage")
 public class SubprocessInjectionAgent {
     public static void premain(String args, Instrumentation instrumentation) throws IOException {
         instrumentation.appendToBootstrapClassLoaderSearch(new java.util.jar.JarFile("/usr/share/opentelemetry_shell/agent.instrumentation.java/subprocessinjectionagent.jar"));

@@ -4,6 +4,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+// The demo is compiled and started by its plain file name
+@SuppressWarnings("PMD.NoPackage")
 public class Main {
     public static void main(String[] args) {
         try {

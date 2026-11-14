@@ -6,6 +6,8 @@ import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.TraceFlags;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.TraceState;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.context.Context;
 
+// The agent manifest names this class without a package
+@SuppressWarnings("PMD.NoPackage")
 public class RootContextAgent {
     public static void premain(String args, Instrumentation instrumentation) {
         String traceparent = System.getenv("TRACEPARENT");
