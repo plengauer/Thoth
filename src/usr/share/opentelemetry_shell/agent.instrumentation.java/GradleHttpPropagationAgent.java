@@ -19,7 +19,9 @@ import io.opentelemetry.javaagent.shaded.io.opentelemetry.context.Context;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.context.Scope;
 
 // The anonymous Transformer must implement a public method
-@SuppressWarnings("PMD.PublicMemberInNonPublicType")
+// The advice bodies are inlined into the target class
+// and cannot call helper methods
+@SuppressWarnings({"PMD.PublicMemberInNonPublicType", "PMD.AvoidDeeplyNestedIfStmts"})
 public class GradleHttpPropagationAgent {
     public static final ThreadLocal<Span> clientSpan = new ThreadLocal<>();
     public static final ThreadLocal<Scope> clientScope = new ThreadLocal<>();
