@@ -138,7 +138,7 @@ _otel_list_path_commands() {
 }
 
 _otel_list_path_executables() {
-  \echo "$PATH" | \tr ':' '\n' | while \read dir; do
+  \echo "$PATH" | \tr ':' '\n' | while \read -r dir; do
     \find "$dir" -maxdepth 1 -type f -executable 2>/dev/null || \true
     \find "$dir" -maxdepth 1 -type l -executable 2>/dev/null || \true
   done
@@ -396,7 +396,7 @@ _otel_instrument_and_source() {
   local command="$(eval '\echo ${'"$((n + 1))"'}')"
   local file="$(eval '\echo ${'"$((n + 2))"'}')"
   if \[ -f "$file" ]; then _otel_auto_instrument "$file"; fi
-  \eval "'$command' '$file' $(if \[ $# -gt $((n + 2)) ]; then \seq $((n + 2 + 1)) $#; else \seq 1 "$n"; fi | while \read i; do \echo '"${'"$i"'}"'; done | _otel_line_join)"
+  \eval "'$command' '$file' $(if \[ $# -gt $(($n + 2)) ]; then \seq $(($n + 2 + 1)) $#; else \seq 1 "$n"; fi | while \read -r i; do \echo '"${'"$i"'}"'; done | _otel_line_join)"
 }
 
 _otel_inject_and_exec_directly() { # this function assumes there is no fd fuckery
