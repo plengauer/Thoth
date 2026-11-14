@@ -67,7 +67,7 @@ jobs:
     needs: [setup, ci]
     concurrency:
       group: publish
-      cancel-in-progress: false
+      queue: max
     strategy:
       matrix:
         ref: ${{ fromJSON(needs.setup.outputs.refs) }}
