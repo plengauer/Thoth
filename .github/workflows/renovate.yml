@@ -349,14 +349,17 @@ jobs:
           prompt: |
             Your goal is to evaluate the correctness and behavior of the job-level instrumentation in this repository (${{ github.repository }}) in the context of a specific workflow (${{ matrix.workflow }}) with custom criteria.
             If the workflow run you select has been instrumented with any version but the latest, abort and do nothing.
-            If the evaluation fails, analyze by looking at the workflow code, the logs, as well as the instrumentation code, find the root cause, and fix it.
-            For any potential fix, open a PR, assign the owner of the repository, and enable automerge.
-            Before deep analysis or starting to fix, analyze if a fix has already been done and it has not been released yet. If so, do nothing.
+            Before deep analysis or starting to fix, analyze if a fix has already been done and it has not been released yet or if an issue has been filed. If so, do nothing.            
+            If the evaluation fails, analyze by looking at the workflow code, the logs, as well as the instrumentation code and the traces, and find the root cause.
+            File a detailed issue in the repository with all information, and relevant data like logs and traces including links.
+            If the issue affects the copilot coding agent or the autriage workflow, filing an issue will not work because it may not be picked up and implemented.
+            In that case and in that case only, fix it yourself, open a PR, assign the owner of the repository, and enable automerge.
             For any non-git operations, use the gh cli via bash.
-            These are the criteria:
+            These are the criteria to avaluate:
             ${{ matrix.prompt }}
           additional_permissions: |
             actions: write
           claude_args: |
+            --model claude-opus-5.5
             --mcp-config '{"mcpServers": { "Dynatrace": { "command": "npx", "args": [ "mcp-remote", "${{ vars.DYNATRACE_MCP_URL }}", "--header", "Authorization: Bearer ${{ secrets.DYNATRACE_MCP_TOKEN }}" ] }}}'
             --allowedTools "Bash(*),mcp__Dynatrace__execute-dql,mcp__Dynatrace__create-dql,mcp__Dynatrace__explain-dql"
