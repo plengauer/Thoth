@@ -68,7 +68,7 @@ _otel_inject_git() {
     export GIT_TRACE_CURL="$trace_pipe"
     export GIT_TRACE_CURL_NO_DATA=1
   fi
-  local ssh_command="${GIT_SSH_COMMAND:-$(\git config core.sshCommand 2>/dev/null || true)}"
+  local ssh_command="${GIT_SSH_COMMAND:-$(\git config core.sshCommand 2>/dev/null || true)}" # SKIP_DEPENDENCY_CHECK
   case "$1:${ssh_command:-ssh}" in
     -c* | -C*) local ssh_assignment="" ;; # the ssh command may be overridden for this invocation only, which we cannot see
     *:ssh | *:'ssh '*) local ssh_assignment="GIT_SSH_COMMAND=$(_otel_escape_arg "otel4sh ${ssh_command:-ssh}")" ;;
