@@ -110,7 +110,7 @@
     <module name="InvalidJavadocPosition"/>
     <module name="JavadocMethod"/>
     <module name="JavadocType"/>
-    <module name="JavadocVariable"/>
+    <!-- JavadocVariable is disabled: the agents are internal glue code without a public API to document -->
     <module name="MissingJavadocMethod"/>
 
     <!-- Checks for Naming Conventions.                  -->
