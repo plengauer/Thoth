@@ -4,6 +4,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+// Main is the conventional name of the entry point
+@SuppressWarnings("PMD.ShortClassName")
 public class Main {
     public static void main(String[] args) {
         try {
