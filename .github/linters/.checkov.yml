@@ -3,6 +3,10 @@ skip-check:
   # of the workflows of the templates sets (8 of 8 files reported). Instead,
   # every job declares its own `permissions:`.
   - CKV2_GHA_1
+  # CKV_DOCKER_3: tests/Dockerfile is a local test image that has to run as root, and
+  # actions/instrument/job/Dockerfile is only a Renovate version marker that is never built.
+  # Skipped here and not only in the files: the in-file `#checkov:skip` comments are honored by checkov but do not close the alerts in GitHub code scanning.
+  - CKV_DOCKER_3
   # CKV_DOCKER_7: tests/Dockerfile builds on a base image that is passed in as a build
   # argument, once per tested distribution, so there is no fixed tag.
   - CKV_DOCKER_7
