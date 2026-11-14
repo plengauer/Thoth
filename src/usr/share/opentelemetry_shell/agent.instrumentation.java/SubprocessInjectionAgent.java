@@ -41,13 +41,8 @@ public class SubprocessInjectionAgent {
                     for (String key : rootenvironment.keySet()) {
                         if (!key.startsWith("OTEL_SHELL_COMMANDLINE_OVERRIDE") && !key.equals("OTEL_SHELL_AUTO_INJECTED")) environment.put(key, rootenvironment.get(key));
                     }
-                } catch (ClassNotFoundException e) {
-                    // here be dragons
-                } catch (NoSuchMethodException e) {
-                    // here be dragons
-                } catch (IllegalAccessException e) {
-                    // here be dragons
-                } catch (InvocationTargetException e) {
+                } catch (ClassNotFoundException | NoSuchMethodException
+                    | IllegalAccessException | InvocationTargetException e) {
                     // here be dragons
                 }
             }
