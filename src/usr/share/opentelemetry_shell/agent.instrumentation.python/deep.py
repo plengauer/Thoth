@@ -1,6 +1,5 @@
 import os
 import subprocess
-import sys
 
 for _otel_key in ("OTEL_SHELL_COMMANDLINE_OVERRIDE", "OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE", "OTEL_SHELL_AUTO_INJECTED"):
     os.environ.pop(_otel_key, None)
@@ -47,9 +46,6 @@ except ModuleNotFoundError:
         return inject_env_minimal(env, file, args)
 
 
-import functools
-
-
 def inject_arguments(file, args, is_file=True):
     try:
         file = file.decode()
@@ -57,7 +53,7 @@ def inject_arguments(file, args, is_file=True):
         pass
     arg_zero = None
     if is_file:
-        if not "/" in file:
+        if "/" not in file:
             for path in os.environ["PATH"].split(":"):
                 file_candidate = path + "/" + file
                 if (

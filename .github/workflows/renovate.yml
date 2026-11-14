@@ -3,8 +3,10 @@ name: Renovate
 on:
   schedule:
     - cron: '0 * * * *'
+    - cron: '0 0 * * 1'
   release:
     types: published
+
 concurrency:
   group: renovate
 
@@ -26,7 +28,7 @@ jobs:
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - uses: renovatebot/github-action@1c0cf989c02653fba0efe7ca5772338860ca71dc # v46.3.12
+      - uses: renovatebot/github-action@266fef21329c44765ad42f9dea1f01f5d2d91084 # v46.3.13
         env:
           RENOVATE_REPOSITORIES: ${{ github.repository }}
         with:
@@ -74,7 +76,7 @@ jobs:
             fi
           done
       - id: open-pr
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        uses: peter-evans/create-pull-request@15733dbdfeedb4f7fdb73d13c6f5ac83b710fab8 # v8.1.2
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           commit-message: "Renovate python instrumentation list"
@@ -122,7 +124,7 @@ jobs:
             fi
           done
       - id: open-pr
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        uses: peter-evans/create-pull-request@15733dbdfeedb4f7fdb73d13c6f5ac83b710fab8 # v8.1.2
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           commit-message: "Renovate node instrumentation list"
@@ -140,35 +142,6 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         continue-on-error: true
-
-  renovate-copilot-instrumentation:
-    if: ${{ !github.event.repository.fork && false }} # this is currently broken ebcause we dont deploy it the same time anymore, so the check doesnt work
-    runs-on: ubuntu-slim
-    permissions:
-      actions: read
-      issues: write
-    env:
-      COPILOT_INSTRUMENTATION_ALERT_TITLE: "⚠️ Copilot Coding Agent instrumentation appears broken"
-    steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/job@5d34a21816f798c24f19857225b018a7f2af731f # v5.66.0
-        with:
-          secrets_to_redact: '${{ github.token }}
-
-            ${{ secrets.ACTIONS_GITHUB_TOKEN || github.token }}'
-        env:
-          OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
-          OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - env:
-          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN || github.token }}
-          GH_REPO: ${{ github.repository }}
-        run: |
-          set -euo pipefail
-          gh api /repos/"${GITHUB_REPOSITORY}"/actions/workflows?per_page=100 | jq '.workflows[] | select((.path // "") == "dynamic/copilot-swe-agent/copilot") | .id' \
-            | xargs -I '{}' gh api "/repos/${GITHUB_REPOSITORY}/actions/workflows/{}/runs?status=completed&per_page=1" | jq '.workflow_runs | first' \
-            | jq '[ .id, .html_url ] | @tsv' | tr '\t' ' ' | while read -r run_id run_url && ! gh run view "$run_id" --log | grep -Fq -- '. otel.sh'; do
-              if [ "$(gh issue list --state open --search "\"${COPILOT_INSTRUMENTATION_ALERT_TITLE}\" in:title" --json title | jq --arg issue_title "$COPILOT_INSTRUMENTATION_ALERT_TITLE" '[.[] | select(.title == $issue_title)] | length')" -gt 0 ]; then continue; fi
-              gh issue create --title "$COPILOT_INSTRUMENTATION_ALERT_TITLE" --body "$(printf "Copilot instrumentation marker \`. otel.sh\` was not found in the latest completed Copilot cloud-agent run log.\n\n- Run: %s" "$run_url")"
-            done
 
   renovate-package-dependency-python:
     if: ${{ !github.event.repository.fork }}
@@ -196,7 +169,7 @@ jobs:
           min_version_rpm="$(cat meta/rpm/*.spec | grep '^Requires:' | tr ',' '\n' | grep -F -- 'python3 >=' | cut -d '=' -f 2- | cut -d . -f 2)"
           [ "$min_version_debian" -ge "$min_version_otel" ] || sed -i "s/python3 >= $min_version_rpm/python3 >= 3.$min_version_otel/g" meta/rpm/*.spec
       - id: open-pr
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        uses: peter-evans/create-pull-request@15733dbdfeedb4f7fdb73d13c6f5ac83b710fab8 # v8.1.2
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           commit-message: "Renovate python dependency"
@@ -274,7 +247,7 @@ jobs:
           dev="$latest"
           cat .github/images.json | jq ".alpine.oldest = \"$oldest\"" | jq ".alpine.stable = \"$stable\"" | jq ".alpine.latest = \"$latest\"" | jq ".alpine.dev = \"$dev\"" > /tmp/images.json && cat < /tmp/images.json > .github/images.json
       - id: open-pr
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        uses: peter-evans/create-pull-request@15733dbdfeedb4f7fdb73d13c6f5ac83b710fab8 # v8.1.2
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           commit-message: "Update test images"
@@ -310,7 +283,7 @@ jobs:
       - run: |
           sed -i "s/$(($(date +%Y) - 1))/$(date +%Y)/g" LICENSE
       - id: open-pr
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        uses: peter-evans/create-pull-request@15733dbdfeedb4f7fdb73d13c6f5ac83b710fab8 # v8.1.2
         with:
           token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           commit-message: "Renovate license date"
@@ -328,3 +301,62 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         continue-on-error: true
+
+  renovate-job-level-instrumentation:
+    if: ${{ !github.event.repository.fork && github.event.schedule == '0 0 * * 1' }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - workflow: Copilot cloud agent
+            prompt: |
+              Check that the workflow that it didn't fail.
+              Find the log mentioning the trace and span id and find and query all spans from any connected trace storage backend.
+              Consider this test failed if any is true:
+              *) the workflow failed or timed out
+              *) any spans except the root span is orphaned (having a parent that is unavailable)
+              *) there is at least one span with gen_ai attributes.
+          - workflow: Copilot code review
+            prompt: |
+              Check that the workflow that it didn't fail.
+              Find the log mentioning the trace and span id and find and query all spans from any connected trace storage backend.
+              Consider this test failed if any is true:
+              *) the workflow failed or timed out
+              *) any spans except the root span is orphaned (having a parent that is unavailable)
+              *) there is at least one span with gen_ai attributes.
+          - workflow: Autotriage
+            prompt: |
+              Check that the workflow that it didn't fail.
+              Find the log mentioning the trace and span id and find and query all spans from any connected trace storage backend.
+              Consider this test failed if any is true:
+              *) the workflow failed or timed out
+              *) any spans except the root span is orphaned (having a parent that is unavailable)
+              *) there is at least one span with gen_ai attributes in every step doing ai-based work.
+          - workflow: any instrumented workflow that depends on another instrumented workflow - make sure its not a test run running the action locally but a properly instrumented workflow
+            prompt: |
+              Verify that the cache was warm when installing the action in the pre step. Compare to the code to search for indicators.
+    permissions:
+      id-token: write
+      contents: write
+      pull-requests: write
+      actions: write
+      issues: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            Your goal is to evaluate the correctness and behavior of the job-level instrumentation in this repository (${{ github.repository }}) in the context of a specific workflow (${{ matrix.workflow }}) with custom criteria.
+            If the workflow run you select has been instrumented with any version but the latest, abort and do nothing.
+            If the evaluation fails, analyze by looking at the workflow code, the logs, as well as the instrumentation code, find the root cause, and fix it.
+            For any potential fix, open a PR, assign the owner of the repository, and enable automerge.
+            Before deep analysis or starting to fix, analyze if a fix has already been done and it has not been released yet. If so, do nothing.
+            For any non-git operations, use the gh cli via bash.
+            These are the criteria:
+            ${{ matrix.prompt }}
+          additional_permissions: |
+            actions: write
+          claude_args: |
+            --mcp-config '{"mcpServers": { "Dynatrace": { "command": "npx", "args": [ "mcp-remote", "${{ vars.DYNATRACE_MCP_URL }}", "--header", "Authorization: Bearer ${{ secrets.DYNATRACE_MCP_TOKEN }}" ] }}}'
+            --allowedTools "Bash(*),mcp__Dynatrace__execute-dql,mcp__Dynatrace__create-dql,mcp__Dynatrace__explain-dql"
