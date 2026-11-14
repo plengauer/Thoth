@@ -5,4 +5,4 @@ if ! type which; then exit 0; fi
 . /usr/bin/opentelemetry_shell.sh
 assert_equals "$(\which flock)" "$(which flock)"
 span="$(resolve_span '.name | endswith("which flock")')"
-assert_equals "SpanKind.INTERNAL" $(\echo "$span" | jq -r '.kind')
+assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"

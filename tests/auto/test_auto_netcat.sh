@@ -27,18 +27,18 @@ pid="$!"
 \wait "$pid"
 assert_equals "hello world" "$(\cat "$response_file")"
 span="$(resolve_span '.kind == "SpanKind.PRODUCER"')"
-assert_equals "send/receive" $(\echo "$span" | \jq -r '.name')
+assert_equals "send/receive" "$(\echo "$span" | \jq -r '.name')"
 span="$(resolve_span '.kind == "SpanKind.CONSUMER"')"
-assert_equals "send/receive" $(\echo "$span" | \jq -r '.name')
+assert_equals "send/receive" "$(\echo "$span" | \jq -r '.name')"
 
 # check HTTP client with real HTTP server (check spans and structure)
 \echo "TEST 1" >&2
 \printf 'GET / HTTP/1.1\r\n\r\n' | netcat -w 5 www.google.com 80
 assert_equals 0 "$?"
 span="$(resolve_span '.name == "GET"')"
-assert_equals "SpanKind.CLIENT" $(\echo "$span" | \jq -r '.kind')
-assert_not_equals "null" $(\echo "$span" | \jq -r '.parent_id')
-assert_equals "UNSET" $(\echo "$span" | \jq -r '.status.status_code')
+assert_equals "SpanKind.CLIENT" "$(\echo "$span" | \jq -r '.kind')"
+assert_not_equals "null" "$(\echo "$span" | \jq -r '.parent_id')"
+assert_equals "UNSET" "$(\echo "$span" | \jq -r '.status.status_code')"
 assert_equals "http" "$(\echo "$span" | \jq -r '.attributes."network.protocol.name"')"
 assert_equals "tcp" "$(\echo "$span" | \jq -r '.attributes."network.transport"')"
 assert_equals "http://www.google.com:80/" "$(\echo "$span" | \jq -r '.attributes."url.full"')"
@@ -51,11 +51,11 @@ assert_not_equals null "$(\echo "$span" | \jq -r '.attributes."http.response.hea
 assert_not_equals null "$(\echo "$span" | \jq -r '.attributes."network.peer.port"')"
 span_id=$(\echo "$span" | \jq -r '.parent_id')
 span="$(resolve_span '.context.span_id == "'"$span_id"'"')"
-assert_equals "SpanKind.PRODUCER" $(\echo "$span" | \jq -r '.kind')
-assert_equals "send/receive" $(\echo "$span" | \jq -r '.name')
-span_id=$(\echo "$span" | \jq -r '.parent_id')
-span="$(resolve_span '.context.span_id == "'"$span_id"'"')"
-assert_equals "SpanKind.INTERNAL" $(\echo "$span" | \jq -r '.kind')
+assert_equals "SpanKind.PRODUCER" "$(\echo "$span" | \jq -r '.kind')"
+assert_equals "send/receive" "$(\echo "$span" | \jq -r '.name')"
+span_id="$(\echo "$span" | \jq -r '.parent_id')"
+span="$(resolve_span '.context.span_id == "'$span_id'"')"
+assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | \jq -r '.kind')"
 assert_equals "netcat -w 5 www.google.com 80" "$(\echo "$span" | \jq -r '.name')"
 
 # check HTTP client with real HTTP server (compare instrumented vs non-instrumented)
