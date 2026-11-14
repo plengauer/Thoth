@@ -6,6 +6,7 @@ set +u
 if \[ -x populate.sh ]; then
   . otel.sh
 else
+  # shellcheck disable=SC2016 # single quotes are intentional, the text is meant to be expanded later by another shell or tool
   \echo '. /usr/share/debconf/confmodule
 echo hello world
 value() {

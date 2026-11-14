@@ -50,11 +50,15 @@ else
 fi
 
 if \[ "$_otel_shell" = "bash" ]; then
+  # shellcheck disable=SC2016 # single quotes are intentional, the text is meant to be expanded later by another shell or tool
   _otel_source_file_resolver='${BASH_SOURCE:-}'
 else
+  # shellcheck disable=SC2016 # single quotes are intentional, the text is meant to be expanded later by another shell or tool
   _otel_source_file_resolver='$0'
 fi
+# shellcheck disable=SC2016 # single quotes are intentional, the text is meant to be expanded later by another shell or tool
 _otel_source_line_resolver='${LINENO:-}'
+# shellcheck disable=SC2016 # single quotes are intentional, the text is meant to be expanded later by another shell or tool
 _otel_source_func_resolver='${FUNCNAME:-}'
 
 if \[ "$_otel_shell" = "bash" ]; then
@@ -396,7 +400,8 @@ _otel_instrument_and_source() {
   local command="$(eval '\echo ${'"$((n + 1))"'}')"
   local file="$(eval '\echo ${'"$((n + 2))"'}')"
   if \[ -f "$file" ]; then _otel_auto_instrument "$file"; fi
-  \eval "'$command' '$file' $(if \[ $# -gt $((n + 2)) ]; then \seq $((n + 2 + 1)) $#; else \seq 1 "$n"; fi | while \read i; do \echo '"${'"$i"'}"'; done | _otel_line_join)"
+  # shellcheck disable=SC2016 # single quotes are intentional, the text is meant to be expanded later by another shell or tool
+  \eval "'$command' '$file' $(if \[ $# -gt $(($n + 2)) ]; then \seq $(($n + 2 + 1)) $#; else \seq 1 "$n"; fi | while \read i; do \echo '"${'"$i"'}"'; done | _otel_line_join)"
 }
 
 _otel_inject_and_exec_directly() { # this function assumes there is no fd fuckery
@@ -429,6 +434,7 @@ _otel_inject_and_exec_directly() { # this function assumes there is no fd fucker
   \export OTEL_SHELL_COMMANDLINE_OVERRIDE="$(_otel_command_self)"
   \export OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE="$PPID"
   shift
+  # shellcheck disable=SC2016 # single quotes are intentional, the text is meant to be expanded later by another shell or tool
   \exec $_otel_shell -c '. otel.sh
 eval _otel_inject "$(_otel_escape_args "$@")"' sh "$@"
 }
@@ -459,6 +465,7 @@ _otel_inject_and_exec_by_location() {
   # shellcheck disable=SC2086 # the shell may be a command with arguments such as busybox sh and must be split into words
   _otel_escape_args $_otel_shell -c '. otel.sh
 _otel_inject '"$command"
+  # shellcheck disable=SC2016 # single quotes are intentional, the text is meant to be expanded later by another shell or tool
   \echo -n ' "$0" "$@"'
 }
 

@@ -165,6 +165,7 @@ _otel_inject_docker_args() {
     _otel_escape_arg "$1"
     shift
     \echo -n ' '
+    # shellcheck disable=SC2016 # single quotes are intentional, the text is meant to be expanded later by another shell or tool
     _otel_escape_args -c '. otel.sh
 eval _otel_inject "$(_otel_escape_args "$@")"' sh
     \echo -n ' '
