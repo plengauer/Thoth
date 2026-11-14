@@ -335,6 +335,15 @@ jobs:
           - workflow: any instrumented workflow that depends on another instrumented workflow - make sure its not a test run running the action locally but a properly instrumented workflow
             prompt: |
               Verify that the cache was warm when installing the action in the pre step. Compare to the code to search for indicators.
+          - workflow: workflow-level instrumentation
+            prompt: |
+              Check the full log and evaluate if there are any error messages indicating either a missing or incomplete trace, metric, or log.
+          - workflow: checksuite-level instrumentation
+            prompt: |
+              Check the full log and evaluate if there are any error messages indicating either a missing or incomplete trace, metric, or log.
+          - workflow: repository-level instrumentation
+            prompt: |
+              Check the full log and evaluate if there are any error messages indicating either a missing or incomplete trace, metric, or log.
     permissions:
       id-token: write
       contents: write
@@ -348,6 +357,7 @@ jobs:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           prompt: |
             Your goal is to evaluate the correctness and behavior of the job-level instrumentation in this repository (${{ github.repository }}) in the context of a specific workflow (${{ matrix.workflow }}) with custom criteria.
+            Find the latest run of the workflow.
             If the workflow run you select has been instrumented with any version but the latest, abort and do nothing.
             If the evaluation fails, analyze by looking at the workflow code, the logs, as well as the instrumentation code, find the root cause, and fix it.
             For any potential fix, open a PR, assign the owner of the repository, and enable automerge.
