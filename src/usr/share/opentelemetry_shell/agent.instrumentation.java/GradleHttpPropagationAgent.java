@@ -20,11 +20,14 @@ import io.opentelemetry.javaagent.shaded.io.opentelemetry.context.Scope;
 
 // The anonymous Transformer must implement a public method
 @SuppressWarnings("PMD.PublicMemberInNonPublicType")
-public class GradleHttpPropagationAgent {
+public final class GradleHttpPropagationAgent {
     public static final ThreadLocal<Span> clientSpan = new ThreadLocal<>();
     public static final ThreadLocal<Scope> clientScope = new ThreadLocal<>();
     public static final ThreadLocal<Span> serverSpan = new ThreadLocal<>();
     public static final ThreadLocal<Scope> serverScope = new ThreadLocal<>();
+
+    private GradleHttpPropagationAgent() {
+    }
 
     public static void premain(String args, Instrumentation instrumentation) throws IOException {
         instrumentation.appendToBootstrapClassLoaderSearch(new java.util.jar.JarFile("/usr/share/opentelemetry_shell/agent.instrumentation.java/gradlehttppropagationagent.jar"));
@@ -50,7 +53,10 @@ public class GradleHttpPropagationAgent {
             .installOn(instrumentation);
     }
 
-    public static class ClientConnectionAdvice {
+    public static final class ClientConnectionAdvice {
+        private ClientConnectionAdvice() {
+        }
+
         @Advice.OnMethodEnter
         public static void onEnter(@Advice.Origin String method, @Advice.AllArguments Object[] args) {
             try {
@@ -108,7 +114,10 @@ public class GradleHttpPropagationAgent {
         }
     }
 
-    public static class DaemonConnectionAdvice {
+    public static final class DaemonConnectionAdvice {
+        private DaemonConnectionAdvice() {
+        }
+
         @Advice.OnMethodEnter
         public static void onEnter(@Advice.Origin String method, @Advice.AllArguments Object[] args) {
             try {
