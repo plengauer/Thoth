@@ -18,8 +18,10 @@ import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.TraceState;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.context.Context;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.context.Scope;
 
+// Making every parameter final is noise, and the advice parameters
+// are reassigned on purpose
 // The anonymous Transformer must implement a public method
-@SuppressWarnings("PMD.PublicMemberInNonPublicType")
+@SuppressWarnings({"PMD.PublicMemberInNonPublicType", "PMD.MethodArgumentCouldBeFinal"})
 public class GradleHttpPropagationAgent {
     public static final ThreadLocal<Span> clientSpan = new ThreadLocal<>();
     public static final ThreadLocal<Scope> clientScope = new ThreadLocal<>();
