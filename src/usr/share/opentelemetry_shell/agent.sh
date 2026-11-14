@@ -120,6 +120,7 @@ _otel_auto_instrument() {
 }
 
 _otel_list_special_auto_instrument_files() {
+  # shellcheck disable=SC2010 # globbing is disabled in this branch, so the files have to be listed instead of globbed
   case "$-" in
     *f*) \ls /usr/share/opentelemetry_shell | \grep -E '^agent.instrumentation.*.sh$' | while \read -r _otel_file_name; do \echo /usr/share/opentelemetry_shell/"$_otel_file_name"; done ;;
     *) \echo /usr/share/opentelemetry_shell/agent.instrumentation.*.sh ;;
@@ -320,6 +321,7 @@ _otel_alias_prepend() {
 
 _otel_unquote() {
   # '\'' => ', '"'"' => ', '"'"$ => '', '"''"$ => ''' => '
+  # shellcheck disable=SC1003 # the patterns intentionally match the escape sequences for a single quote
   \sed -e 's/'\''\\'\'''\''/'\''/g' -e 's/'\''"'\''"'\''/'\''/g' -e 's/'\''"'\''"$/'\'''\''/g' -e 's/'\''"'\'\''"$/'\''/g' -e "s/^'\(.*\)'$/\1/"
 }
 
@@ -371,6 +373,7 @@ _otel_hash_and_reinstrument() {
 _otel_export_PATH_and_reinstrument() {
   shift
   local exit_code=0
+  # shellcheck disable=SC2163 # the arguments are names or assignments of variables to export
   \export "$@" || local exit_code="$?"
   if \[ "${1%%=*}" = PATH ]; then
     local aliases_pre="$(\mktemp)"

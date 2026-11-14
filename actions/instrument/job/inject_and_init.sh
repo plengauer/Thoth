@@ -385,7 +385,7 @@ if type sh; then run gcc -o "$new_binary_dir"/sh forward.c -DEXECUTABLE="$(which
 if type ash; then run gcc -o "$new_binary_dir"/dash forward.c -DEXECUTABLE="$(which ash)" -DARG1="$GITHUB_ACTION_PATH"/decorate_action_run.sh -DARG2="$(which ash)"; fi
 if type dash; then run gcc -o "$new_binary_dir"/dash forward.c -DEXECUTABLE="$(which dash)" -DARG1="$GITHUB_ACTION_PATH"/decorate_action_run.sh -DARG2="$(which dash)"; fi
 if type bash; then run gcc -o "$new_binary_dir"/bash forward.c -DEXECUTABLE="$(which bash)" -DARG1="$GITHUB_ACTION_PATH"/decorate_action_run.sh -DARG2="$(which bash)"; fi
-for node_path in $(find -L "$(readlink -f /proc/*/exe | grep '/Runner.Worker$' | rev | cut -d / -f 4- | rev)" -maxdepth 5 -path '*/externals/node*/bin/node' -type f 2> /dev/null | xargs -r readlink -f | sort -u); do
+for node_path in $(find -L "$(readlink -f /proc/*/exe | grep '/Runner.Worker$' | rev | cut -d / -f 4- | rev)" -maxdepth 5 -path '*/externals/node*/bin/node' -type f -print0 2> /dev/null | xargs -0 -r readlink -f | sort -u); do
   [ -e "$node_path" ] || continue
   dir_path_new="$relocated_binary_dir"/"$(echo "$node_path" | rev | cut -d / -f 3 | rev)"-"$(echo "$node_path" | md5sum | cut -d ' ' -f 1)"
   mkdir "$dir_path_new"
@@ -542,7 +542,7 @@ root4job_end() {
   otel_counter_observe "$cicd_worker_count_handle" "$observation_handle"
   otel_shutdown
 
-  if false && ([ "$INPUT_SELF_MONITORING" = true ] || ([ "$INPUT_SELF_MONITORING" = auto ] && [ "$GITHUB_API_URL" = 'https://api.github.com' ])); then
+  if false && { [ "$INPUT_SELF_MONITORING" = true ] || { [ "$INPUT_SELF_MONITORING" = auto ] && [ "$GITHUB_API_URL" = 'https://api.github.com' ]; }; }; then
     (
       unset OTEL_EXPORTER_OTLP_METRICS_ENDPOINT OTEL_EXPORTER_OTLP_LOGS_ENDPOINT OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
       export OTEL_SHELL_SDK_OUTPUT_REDIRECT=/dev/null
@@ -560,7 +560,7 @@ root4job_end() {
       _otel_resource_attributes_custom() {
         _otel_resource_attribute string telemetry.sdk.language=github
       }
-      if [ "$INPUT_SELF_MONITORING_ANONYMIZE" = true ] || ([ "$INPUT_SELF_MONITORING_ANONYMIZE" = auto ] && ([ "$GITHUB_API_URL" != 'https://api.github.com' ] || [ "$(gh_curl | jq -r .visibility)" != public ])); then
+      if [ "$INPUT_SELF_MONITORING_ANONYMIZE" = true ] || { [ "$INPUT_SELF_MONITORING_ANONYMIZE" = auto ] && { [ "$GITHUB_API_URL" != 'https://api.github.com' ] || [ "$(gh_curl | jq -r .visibility)" != public ]; }; }; then
         unset GITHUB_REPOSITORY_ID GITHUB_REPOSITORY GITHUB_REPOSITORY_OWNER_ID GITHUB_REPOSITORY_OWNER
       fi
       unset GITHUB_WORKFLOW_REF GITHUB_WORKFLOW_SHA GITHUB_WORKFLOW

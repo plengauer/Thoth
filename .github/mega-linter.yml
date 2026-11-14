@@ -64,6 +64,15 @@ FILTER_REGEX_EXCLUDE: "(\\.lock\\.yml|/otlp\\.json|/gradlew|/package-lock\\.json
 # not care about. Excluding workflows from v8r avoids quoting `on:` in every
 # workflow, while actionlint and zizmor keep validating them.
 YAML_V8R_FILTER_REGEX_EXCLUDE: "\\.github/workflows/"
+# Why: demos/*/demo.sh (and child.sh) are documentation snippets without a
+# shebang, because refresh_demos.yml runs them with `bash -e demo.sh` and pastes
+# them verbatim into the README of each demo. ShellCheck can't tell their dialect
+# (SC2148, 15 alerts). A `# shellcheck shell=` line in each file would show up in
+# every README and shift the line numbers recorded in the demo's traces. Setting
+# `shell=` in .shellcheckrc is not an option either: it overrides the shebang of
+# every script (tested, 88 new findings in the POSIX scripts). That leaves
+# excluding these files from ShellCheck.
+BASH_SHELLCHECK_FILTER_REGEX_EXCLUDE: "(^|/)demos/[^/]+/[^/]+\\.sh$"
 # Why (#3869, fixes #3840): shfmt flagged formatting diffs on ~60% of the shell
 # files because no shfmt configuration existed and its tab-indent default
 # conflicts with the codebase's 2-space style. `-i 2` indents with 2 spaces,
