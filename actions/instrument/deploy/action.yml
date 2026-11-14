@@ -57,8 +57,7 @@ inputs:
     description: 'Instrument Copilot'
     default: 'true'
   trace_detail_level:
-    description: 'Level of detail of the recorded traces, one of "low" (only job and step spans, no injection into shells), "medium" (additionally commands within shells, but no internals), "high" (additionally internals), or "max" (additionally all subprocesses). Deployed to all job-level instrumentations, including already existing ones.'
-    default: 'medium'
+    description: 'Level of detail of the recorded traces, one of "low" (only job and step spans, no injection into steps), "medium" (additionally commands within shells, but no internals), "high" (additionally internals), or "max" (additionally all subprocesses). Deployed to all job-level instrumentations, including already existing ones.'
   action_repository:
     description: 'Override the action repository to deploy from'
     default: ''
