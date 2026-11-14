@@ -10,7 +10,10 @@ public class Main {
             HttpURLConnection connection = (HttpURLConnection) new URL("http://example.com").openConnection();
             connection.setRequestMethod("GET");
             try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
-                for (String line = in.readLine(); line != null; line = in.readLine());
+                String line = in.readLine();
+                while (line != null) {
+                    line = in.readLine();
+                }
             }
             connection.disconnect();
         } catch (IOException e) {
