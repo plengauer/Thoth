@@ -322,6 +322,7 @@ _otel_binary_read() {
   local __line=""
   local eos=0
   while \true; do
+    # shellcheck disable=SC1001 # the backslash intentionally bypasses an alias of the command
     local byte="$(\timeout "${OTEL_SHELL_CONFIG_NETCAT_READ_TIMEOUT:-0}" \dd bs=1 count=1 2>/dev/null | \xxd -p)"
     if \[ "$byte" = '' ]; then
       local eos=1
