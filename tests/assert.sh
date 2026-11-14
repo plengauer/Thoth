@@ -41,6 +41,7 @@ resolve_span() {
   exit 1
 }
 
+# shellcheck disable=SC2329 # the function is invoked indirectly by the sourced instrumentation library or by the test harness
 resolve_log() {
   local selector="$1"
   if [ -n "$selector" ]; then

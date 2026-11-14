@@ -554,9 +554,11 @@ root4job_end() {
       export OTEL_EXPORTER_OTLP_ENDPOINT=http://3.73.14.87:4318
       export OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE=delta
       . otelapi.sh
+      # shellcheck disable=SC2329 # the function is invoked indirectly by the sourced instrumentation library or by the test harness
       _otel_resource_attributes_process() {
         :
       }
+      # shellcheck disable=SC2329 # the function is invoked indirectly by the sourced instrumentation library or by the test harness
       _otel_resource_attributes_custom() {
         _otel_resource_attribute string telemetry.sdk.language=github
       }
@@ -647,9 +649,11 @@ root4job() {
   rm /tmp/opentelemetry_shell.github.error 2>/dev/null
   traceparent_file="$1"
   . otelapi.sh
+  # shellcheck disable=SC2329 # the function is invoked indirectly by the sourced instrumentation library or by the test harness
   _otel_resource_attributes_process() {
     :
   }
+  # shellcheck disable=SC2329 # the function is invoked indirectly by the sourced instrumentation library or by the test harness
   _otel_resource_attributes_custom() {
     _otel_resource_attribute string telemetry.sdk.language=github
   }
