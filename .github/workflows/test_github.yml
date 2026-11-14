@@ -930,9 +930,10 @@ jobs:
         with:
           name: packages.deb.${{ inputs.ref }}
       - uses: ./actions/instrument/job
+        with:
+          trace_detail_level: max
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
-          trace_detail_level: max
       - run: echo hello world
   workflow-smoke:
     runs-on: ubuntu-26.04
