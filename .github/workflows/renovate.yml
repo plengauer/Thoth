@@ -349,13 +349,14 @@ jobs:
           prompt: |
             Your goal is to evaluate the correctness and behavior of the job-level instrumentation in this repository (${{ github.repository }}) in the context of a specific workflow (${{ matrix.workflow }}) with custom criteria.
             If the workflow run you select has been instrumented with any version but the latest, abort and do nothing.
-            Before deep analysis or starting to fix, analyze if a fix has already been done and it has not been released yet or if an issue has been filed. If so, do nothing.            
-            If the evaluation fails, analyze by looking at the workflow code, the logs, as well as the instrumentation code and the traces, and find the root cause.
-            File a detailed issue in the repository with all information, and relevant data like logs and traces including links.
+            Before deep analysis or starting to fix, analyze if a fix has already been merged to main and it has not been released yet or if a related issue has been filed.
+            If so, do nothing.            
+            If the custom evaluation criteria below are not met, analyze by looking at the workflow code, the logs, as well as the instrumentation code and the traces, and find the root cause.
+            File a detailed issue in the repository with all information, and relevant data like log snippets, suspected root causes and traces including links for all.
             If the issue affects the copilot coding agent or the autriage workflow, filing an issue will not work because it may not be picked up and implemented.
             In that case and in that case only, fix it yourself, open a PR, assign the owner of the repository, and enable automerge.
             For any non-git operations, use the gh cli via bash.
-            These are the criteria to avaluate:
+            These are the custom criteria to evaluate:
             ${{ matrix.prompt }}
           additional_permissions: |
             actions: write
