@@ -5,6 +5,7 @@ _otel_call_and_record_logs() {
   local call_command="$1"
   shift
   local traceparent="$TRACEPARENT"
+  # shellcheck disable=SC2154 # the variable is assigned by the sourced instrumentation library or provided by the environment
   local stderr_logs="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.stderr.logs.pipe.XXXXXXXXXX)"
   # shellcheck disable=SC2086 # the mkfifo flags are an optional list of arguments that must be split into words or vanish when empty
   \mkfifo ${_otel_mkfifo_flags:-} "$stderr_logs"
