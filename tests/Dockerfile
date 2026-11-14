@@ -9,7 +9,8 @@ ARG update
 WORKDIR /tests
 COPY . ./
 
-# hadolint ignore=DL3015
+# this is a throwaway test image for many distributions, so apt packages are intentionally unpinned
+# hadolint ignore=DL3015,DL3008
 RUN <<EOF
   packages_mandatory="jq psmisc wget curl time sudo bash"
   packages_optional="parallel moreutils ncat wget2 nodejs npm python3 python3-pip gcc default-jdk-headless jdk"
