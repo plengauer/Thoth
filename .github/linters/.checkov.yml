@@ -7,3 +7,6 @@ skip-check:
   # actions/instrument/job/Dockerfile is only a Renovate version marker that is never built.
   # Skipped here and not only in the files: the in-file `#checkov:skip` comments are honored by checkov but do not close the alerts in GitHub code scanning.
   - CKV_DOCKER_3
+  # CKV_DOCKER_7: tests/Dockerfile builds on a base image that is passed in as a build
+  # argument, once per tested distribution, so there is no fixed tag.
+  - CKV_DOCKER_7
