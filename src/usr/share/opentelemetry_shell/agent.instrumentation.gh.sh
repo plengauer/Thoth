@@ -1,6 +1,31 @@
 #!/bin/false
 # shellcheck shell=bash
 
+_otel_gh_workflow_file() {
+  local ref="${3:-$(\gh api repos/"$1" --jq .default_branch 2>/dev/null)}" # SKIP_DEPENDENCY_CHECK
+  local path="$(\gh api repos/"$1"/actions/workflows/"$2" --jq .path 2>/dev/null)" # SKIP_DEPENDENCY_CHECK
+  \[ -n "$ref" ] && \[ -n "$path" ] || return 1
+  \gh api -H 'Accept: application/vnd.github.raw' "repos/$1/contents/$path?ref=$ref" 2>/dev/null # SKIP_DEPENDENCY_CHECK
+}
+
+_otel_workflow_has_input() {
+  if \type yq 1>/dev/null 2>/dev/null; then
+    \yq -e "(.on // .true).workflow_dispatch.inputs | has(\"$2\")" "$1" 1>/dev/null 2>/dev/null # SKIP_DEPENDENCY_CHECK
+    return "$?"
+  fi
+  \awk -v name="$2" '
+    function indent(s) { match(s, /^ */); return RLENGTH }
+    /^[ \t]*(#|$)/ { next }
+    { i = indent($0); line = $0; sub(/^ */, "", line); sub(/[ \t]+#.*$/, "", line) }
+    state == 2 && i <= in_i { state = 1 } # SKIP_DEPENDENCY_CHECK
+    state == 1 && i <= wd { state = 0 } # SKIP_DEPENDENCY_CHECK
+    state == 0 && line ~ /^["\047]?workflow_dispatch["\047]?:/ { wd = i; state = 1; next } # SKIP_DEPENDENCY_CHECK
+    state == 1 && line ~ /^inputs:/ { in_i = i; child = -1; state = 2; next } # SKIP_DEPENDENCY_CHECK
+    state == 2 { if (child < 0) child = i; if (i == child) { key = line; sub(/:.*$/, "", key); gsub(/["\047]/, "", key); if (key == name) found = 1 } } # SKIP_DEPENDENCY_CHECK
+    END { exit !found } # SKIP_DEPENDENCY_CHECK
+  ' "$1"
+}
+
 _otel_propagate_gh() {
   case "$-" in
     *m*)
@@ -13,10 +38,117 @@ _otel_propagate_gh() {
   \mkfifo "$stderr_pipe"
   _otel_pipe_gh_stderr <"$stderr_pipe" >&2 &
   local stderr_pid="$!"
+  local is_dispatch=0
+  local input=""
+  local input_file=""
+  local previous=""
+  local keys=""
+  local key
+  local workflow_path=""
+  local workflow_repo="${GH_REPO:-}"
+  local workflow_ref=""
+  local api_ref=""
+  local run_keys=""
+  local api_keys=""
+  local is_json=0
+  local stdin_file=""
+  local arg
+  for arg in "$@"; do
+    case "$arg" in
+      repos/*/actions/workflows/*/dispatches | /repos/*/actions/workflows/*/dispatches) local workflow_path="${arg#/}" ;;
+      repos/*/dispatches | /repos/*/dispatches) local is_dispatch=1 ;;
+      --input=*) local input="${arg#--input=}" ;;
+      --repo=*) local workflow_repo="${arg#--repo=}" ;;
+      --ref=*) local workflow_ref="${arg#--ref=}" ;;
+      --json) local is_json=1 ;;
+      ref=*) local api_ref="${arg#ref=}" ;;
+      *inputs\[*)
+        local key="${arg#*inputs\[}"
+        local api_keys="$api_keys/${key%%]*}"
+        ;;
+      *client_payload\[*)
+        local key="${arg#*client_payload\[}"
+        local keys="$keys/${key%%]*}"
+        ;;
+    esac
+    if \[ "$previous" = --input ]; then local input="$arg"; fi
+    case "$previous" in
+      -R | --repo) local workflow_repo="$arg" ;;
+      -r | --ref) local workflow_ref="$arg" ;;
+      -f | -F | --field | --raw-field) local run_keys="$run_keys/${arg%%=*}" ;;
+    esac
+    local previous="$arg"
+  done
+  if \[ "${2:-}" = api ] && \[ "$is_dispatch" = 1 ] && \[ -n "${TRACEPARENT:-}" ]; then
+    if \[ -n "$input" ]; then
+      local input_file="$(\mktemp)"
+      if \[ "$input" = - ]; then
+        \jq --arg traceparent "$TRACEPARENT" --arg tracestate "${TRACESTATE:-}" '(.client_payload // {} | length) as $count | if $count < 9 then .client_payload.traceparent = $traceparent | .client_payload.tracestate = $tracestate elif $count == 9 then .client_payload.traceparent = $traceparent else . end' >"$input_file"
+      else
+        \jq --arg traceparent "$TRACEPARENT" --arg tracestate "${TRACESTATE:-}" '(.client_payload // {} | length) as $count | if $count < 9 then .client_payload.traceparent = $traceparent | .client_payload.tracestate = $tracestate elif $count == 9 then .client_payload.traceparent = $traceparent else . end' <"$input" >"$input_file"
+      fi && \set -- "$@" --input "$input_file"
+    else
+      local count="$(\printf '%s' "$keys" | \tr '/' '\n' | \sort -u | \grep -c . || \true)"
+      if \[ "$count" -lt 9 ]; then
+        \set -- "$@" -f "client_payload[traceparent]=$TRACEPARENT" -f "client_payload[tracestate]=${TRACESTATE:-}"
+      elif \[ "$count" = 9 ]; then
+        \set -- "$@" -f "client_payload[traceparent]=$TRACEPARENT"
+      fi
+    fi
+  fi
+  if \[ -n "${TRACEPARENT:-}" ] && { { \[ "${2:-}" = workflow ] && \[ "${3:-}" = run ] && ! _otel_string_starts_with "${4:--}" - && ! { \[ -t 0 ] && \[ -z "$run_keys" ] && \[ "$is_json" = 0 ]; }; } || { \[ "${2:-}" = api ] && \[ -n "$workflow_path" ]; }; }; then
+    if \[ "$2" = api ]; then
+      local workflow_repo="$(\printf '%s' "$workflow_path" | \cut -d / -f 2-3)"
+      local workflow="$(\printf '%s' "$workflow_path" | \cut -d / -f 6)"
+      local workflow_ref="$api_ref"
+      local keys="$api_keys"
+    else
+      local workflow="$4"
+      local keys="$run_keys"
+    fi
+    case "$workflow_repo" in
+      '' | *\{*) local workflow_repo="$(\gh repo view --json nameWithOwner --jq .nameWithOwner 2>/dev/null)" ;; # SKIP_DEPENDENCY_CHECK
+      */*/*) local workflow_repo="${workflow_repo#*/}" ;;
+    esac
+    if \[ "$is_json" = 1 ] || \[ -n "$input" ]; then
+      local input_file="$(\mktemp)"
+      if \[ "$is_json" = 1 ] || \[ "$input" = - ]; then \cat >"$input_file"; else \cat "$input" >"$input_file"; fi
+      if \[ "$is_json" = 1 ]; then
+        local count="$(\jq 'length' "$input_file" 2>/dev/null || \echo 25)"
+      else
+        local count="$(\jq '.inputs // {} | length' "$input_file" 2>/dev/null || \echo 25)"
+        local workflow_ref="$(\jq -r '.ref // empty' "$input_file" 2>/dev/null)"
+      fi
+    else
+      local count="$(\printf '%s' "$keys" | \tr '/' '\n' | \sort -u | \grep -c . || \true)"
+    fi
+    local add_traceparent=false
+    local add_tracestate=false
+    local workflow_file="$(\mktemp)"
+    if _otel_gh_workflow_file "$workflow_repo" "$workflow" "$workflow_ref" >"$workflow_file" && _otel_workflow_has_input "$workflow_file" traceparent && \[ "$count" -lt 25 ]; then
+      local add_traceparent=true
+      if _otel_workflow_has_input "$workflow_file" tracestate && \[ "$count" -lt 24 ]; then local add_tracestate=true; fi
+    fi
+    \rm -f "$workflow_file"
+    if \[ -n "$input_file" ]; then
+      if \[ "$is_json" = 1 ]; then local inputs_path=''; else local inputs_path='.inputs'; fi
+      \jq --argjson add_traceparent "$add_traceparent" --argjson add_tracestate "$add_tracestate" --arg traceparent "$TRACEPARENT" --arg tracestate "${TRACESTATE:-}" "if \$add_traceparent then $inputs_path.traceparent = \$traceparent else . end | if \$add_tracestate then $inputs_path.tracestate = \$tracestate else . end" "$input_file" >"$input_file".tmp && \mv "$input_file".tmp "$input_file"
+      if \[ "$is_json" = 1 ]; then local stdin_file="$input_file"; else \set -- "$@" --input "$input_file"; fi
+    else
+      if \[ "$2" = api ]; then local prefix='inputs['; local suffix=']'; else local prefix=''; local suffix=''; fi
+      if \[ "$add_traceparent" = true ]; then \set -- "$@" -f "${prefix}traceparent${suffix}=$TRACEPARENT"; fi
+      if \[ "$add_tracestate" = true ]; then \set -- "$@" -f "${prefix}tracestate${suffix}=${TRACESTATE:-}"; fi
+    fi
+  fi
   local exit_code=0
-  GH_DEBUG=api _otel_call "$@" 2>"$stderr_pipe" || exit_code="$?"
+  if \[ -n "$stdin_file" ]; then
+    GH_DEBUG=api _otel_call "$@" 2>"$stderr_pipe" <"$stdin_file" || exit_code="$?"
+  else
+    GH_DEBUG=api _otel_call "$@" 2>"$stderr_pipe" || exit_code="$?"
+  fi
   \wait "$stderr_pid"
   \rm "$stderr_pipe"
+  if \[ -n "$input_file" ]; then \rm -f "$input_file"; fi
   if \[ "$job_control" = 1 ]; then \set -m; fi
   return "$exit_code"
 }

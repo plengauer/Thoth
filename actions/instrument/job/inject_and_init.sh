@@ -402,15 +402,21 @@ echo "::endgroup::"
 
 echo "::group::Resolve W3C Tracecontext"
 opentelemetry_root_dir="$(mktemp -d)"
+if [ "$GITHUB_EVENT_NAME" = repository_dispatch ] || [ "$GITHUB_EVENT_NAME" = workflow_dispatch ]; then
+  caller_traceparent="$(jq -r '(.client_payload // .inputs).traceparent // empty' "$GITHUB_EVENT_PATH" 2>/dev/null || true)"
+  caller_tracestate="$(jq -r '(.client_payload // .inputs).tracestate // empty' "$GITHUB_EVENT_PATH" 2>/dev/null || true)"
+fi
 count=0
 while [ "$count" -lt 60 ] && ! ( gh_artifact_download "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_workflow_run_"$GITHUB_RUN_ATTEMPT" "$opentelemetry_root_dir" && [ -r "$opentelemetry_root_dir"/traceparent ] ); do
   if [ "$count" -gt 0 ]; then sleep $count; fi
   wait # only join within this loop, because we need to make sure everything is installed properly at this point, in most cases, it is unnecessary though and we can join later
   . otelapi.sh
   otel_init
-  otel_span_traceparent "$(otel_span_start INTERNAL dummy)" >"$opentelemetry_root_dir"/traceparent
-  gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_workflow_run_"$GITHUB_RUN_ATTEMPT" "$opentelemetry_root_dir"/traceparent || true
-  rm "$opentelemetry_root_dir"/traceparent
+  otel_span_traceparent "$(TRACEPARENT="${caller_traceparent:-${TRACEPARENT:-}}" TRACESTATE="${caller_tracestate:-${TRACESTATE:-}}" otel_span_start INTERNAL dummy)" >"$opentelemetry_root_dir"/traceparent
+  [ -z "${caller_traceparent:-}" ] || echo "$caller_traceparent" >"$opentelemetry_root_dir"/caller_traceparent
+  [ -z "${caller_tracestate:-}" ] || echo "$caller_tracestate" >"$opentelemetry_root_dir"/caller_tracestate
+  gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_workflow_run_"$GITHUB_RUN_ATTEMPT" "$opentelemetry_root_dir"/traceparent ${caller_traceparent:+"$opentelemetry_root_dir"/caller_traceparent} ${caller_tracestate:+"$opentelemetry_root_dir"/caller_tracestate} || true
+  rm -f "$opentelemetry_root_dir"/*
   otel_shutdown
   count=$((count + 1))
 done
