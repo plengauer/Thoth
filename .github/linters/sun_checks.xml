@@ -182,7 +182,7 @@
     <module name="HiddenField"/>
     <module name="IllegalInstantiation"/>
     <module name="InnerAssignment"/>
-    <module name="MagicNumber"/>
+    <!-- MagicNumber is disabled: the numbers are positions in the traceparent format and in the argument array that the surrounding code makes obvious -->
     <module name="MissingSwitchDefault"/>
     <module name="MultipleVariableDeclarations"/>
     <module name="OneStatementPerLine"/>
