@@ -56,6 +56,8 @@ inputs:
   job_level_instrumentation_copilot:
     description: 'Instrument Copilot'
     default: 'true'
+  job_level_trace_detail_level:
+    description: 'Level of detail of the recorded traces, one of "low" (only job and step spans, no injection into steps), "medium" (additionally commands within steps, but no internals), "high" (additionally internals), or "max" (additionally all subprocesses). Deployed to all job-level instrumentations, including already existing ones.'
   action_repository:
     description: 'Override the action repository to deploy from'
     default: ''
@@ -389,6 +391,18 @@ runs:
               # yamllint enable rule:line-length
                  *) echo '::error ::Illegal secret redaction strategy "${{ inputs.job_level_instrumentation_secret_redaction_strategy }}"!' && exit 1;;
             esac
+          done
+        done
+    - name: "Configure job-level instrumentation trace detail level"
+      if: ${{ inputs.job_level_instrumentation == 'true' }}
+      shell: bash
+      run: |
+        case "${{ inputs.trace_detail_level }}" in low|medium|high|max) ;; *) echo "::error::Unsupported trace detail level: ${{ inputs.trace_detail_level }}"; exit 1 ;; esac
+        (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
+          cat "$workflow_file" | yq '.jobs | keys[]' | while read -r job_name; do
+            cat "$workflow_file" | yq ".jobs.$job_name.steps" | grep -qvF null || continue
+            if [ -z "$(cat "$workflow_file" | yq '.jobs.'"$job_name"'.steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*") | .uses')" ]; then continue; fi
+            yq -i '(.jobs.'"$job_name"'.steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*")).with.trace_detail_level = "${{ inputs.trace_detail_level }}"' "$workflow_file"
           done
         done
     - name: "Modify permissions for job-level instrumentations"

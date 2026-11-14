@@ -44,6 +44,7 @@ jobs:
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
+          trace_detail_level: medium
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
@@ -67,6 +68,7 @@ jobs:
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
+          trace_detail_level: medium
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
@@ -103,6 +105,7 @@ jobs:
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
+          trace_detail_level: max
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
@@ -131,6 +134,7 @@ jobs:
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
+          trace_detail_level: max
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
@@ -158,6 +162,7 @@ jobs:
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
+          trace_detail_level: high
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
@@ -171,6 +176,7 @@ jobs:
     strategy:
       matrix:
         runner: [ubuntu-22.04, ubuntu-24.04, ubuntu-26.04, ubuntu-latest, ubuntu-22.04-arm, ubuntu-24.04-arm, ubuntu-26.04-arm]
+        trace_detail_level: [low, medium, high, max]
     permissions:
       contents: read
       actions: read
@@ -184,6 +190,7 @@ jobs:
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
+          trace_detail_level: ${{ matrix.trace_detail_level }}
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
@@ -252,6 +259,7 @@ jobs:
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
+          trace_detail_level: max
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
@@ -277,6 +285,7 @@ jobs:
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
+          trace_detail_level: max
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
@@ -314,6 +323,7 @@ jobs:
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
+          trace_detail_level: max
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
@@ -345,6 +355,7 @@ jobs:
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
+          trace_detail_level: max
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
@@ -371,6 +382,7 @@ jobs:
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
+          trace_detail_level: max
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
@@ -397,6 +409,7 @@ jobs:
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
+          trace_detail_level: max
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
@@ -422,6 +435,7 @@ jobs:
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
+          trace_detail_level: max
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
@@ -488,6 +502,7 @@ jobs:
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
+          trace_detail_level: high
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
@@ -508,6 +523,7 @@ jobs:
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
+          trace_detail_level: high
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
@@ -651,6 +667,7 @@ jobs:
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
+          trace_detail_level: high
           secrets_to_redact: '{"github.token": "${{ github.token }}", "url": "https://example.com/foo/bar", "regex": "[a-zA-Z]*", "quote": "foo\"bar"}'
         env:
           OTEL_LOGS_EXPORTER: otlp
@@ -708,6 +725,7 @@ jobs:
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
+          trace_detail_level: high
           secrets_to_redact: '{"github.token": "${{ github.token }}", "url": "https://example.com/foo/bar", "regex": "[a-zA-Z]*"}'
         env:
           OTEL_LOGS_EXPORTER: ${{ matrix.exporter_logs }}
@@ -779,6 +797,7 @@ jobs:
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
+          trace_detail_level: high
         env:
           OTEL_LOGS_EXPORTER: deferred
           OTEL_METRICS_EXPORTER: deferred
@@ -911,6 +930,8 @@ jobs:
         with:
           name: packages.deb.${{ inputs.ref }}
       - uses: ./actions/instrument/job
+        with:
+          trace_detail_level: max
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
       - run: echo hello world
