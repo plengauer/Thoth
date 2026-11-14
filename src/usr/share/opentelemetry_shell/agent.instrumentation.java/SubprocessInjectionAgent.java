@@ -15,7 +15,10 @@ import java.lang.NoSuchMethodException;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.Span;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.SpanContext;
 
-public class SubprocessInjectionAgent {
+public final class SubprocessInjectionAgent {
+    private SubprocessInjectionAgent() {
+    }
+
     public static void premain(String args, Instrumentation instrumentation) throws IOException {
         instrumentation.appendToBootstrapClassLoaderSearch(new java.util.jar.JarFile("/usr/share/opentelemetry_shell/agent.instrumentation.java/subprocessinjectionagent.jar"));
         new AgentBuilder.Default()
