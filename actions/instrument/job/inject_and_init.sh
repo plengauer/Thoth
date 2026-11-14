@@ -54,7 +54,7 @@ echo "::endgroup::"
 echo "::group::Validate Configuration"
 export OTEL_SERVICE_NAME="${OTEL_SERVICE_NAME:-"$(echo "$GITHUB_REPOSITORY" | cut -d / -f 2-) CI"}"
 export OTEL_SEMCONV_STABILITY_OPT_IN="${OTEL_SEMCONV_STABILITY_OPT_IN:-http,database,messaging}"
-case "$INPUT_TRACE_DETAIL_LEVEL" in
+case "${INPUT_TRACE_DETAIL_LEVEL:-medium}" in
   low) # only job spans + step spans
     export OTEL_GITHUB_INJECT_STEP="${OTEL_GITHUB_INJECT_STEP:-FALSE}"
     export OTEL_SHELL_CONFIG_MUTE_INTERNALS="${OTEL_SHELL_CONFIG_MUTE_INTERNALS:-TRUE}"
