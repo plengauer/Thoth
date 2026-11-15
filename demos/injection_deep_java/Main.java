@@ -4,6 +4,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+// Making every local variable final is noise without a safety benefit
+@SuppressWarnings("PMD.LocalVariableCouldBeFinal")
 public class Main {
     public static void main(String[] args) {
         try {
