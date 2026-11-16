@@ -11,7 +11,6 @@ on:
       - '!demos/*/README.md'
       - '!demos/*/otlp.json'
       - '!demos/*/output.*'
-  workflow_call:
 jobs:
   prepare:
     if: ${{ github.event_name == 'push' || github.event_name == 'release' }}
