@@ -6,6 +6,7 @@ on:
     - cron: '0 0 * * 1'
   release:
     types: published
+  workflow_call:
 
 concurrency:
   group: renovate
