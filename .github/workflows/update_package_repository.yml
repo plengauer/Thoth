@@ -8,7 +8,7 @@ on:
       - main
     paths:
       - .github/workflows/update_package_repository.yml
-  workflow_call:
+  # TODO TODO TODO how is this triggered if release is triggered by github actions bot
 
 concurrency:
   group: update-package-repository
