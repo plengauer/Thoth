@@ -8,6 +8,7 @@ on:
       - main
     paths:
       - .github/workflows/update_package_repository.yml
+  workflow_call:
 
 concurrency:
   group: update-package-repository
