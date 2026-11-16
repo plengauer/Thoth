@@ -21,7 +21,7 @@ tools:
 safe-outputs:
   noop:
   create-issue:
-    github-token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+    github-token: ${{ secrets.ACTIONS_GITHUB_TOKEN }} # TODO TODO TODO refactor to call the triage workflow
     max: 20
 ---
 
