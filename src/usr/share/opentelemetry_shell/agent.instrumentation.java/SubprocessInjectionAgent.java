@@ -9,8 +9,9 @@ import java.lang.reflect.InvocationTargetException;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.Span;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.SpanContext;
 
+// The agent manifest names this class without a package
 // Making every local variable final is noise without a safety benefit
-@SuppressWarnings("PMD.LocalVariableCouldBeFinal")
+@SuppressWarnings({"PMD.NoPackage", "PMD.LocalVariableCouldBeFinal"})
 public final class SubprocessInjectionAgent {
     private SubprocessInjectionAgent() {
     }

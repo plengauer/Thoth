@@ -19,8 +19,9 @@ import io.opentelemetry.javaagent.shaded.io.opentelemetry.context.Context;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.context.Scope;
 
 // The anonymous Transformer must implement a public method
+// The agent manifest names this class without a package
 // Making every local variable final is noise without a safety benefit
-@SuppressWarnings({"PMD.PublicMemberInNonPublicType", "PMD.LocalVariableCouldBeFinal"})
+@SuppressWarnings({"PMD.PublicMemberInNonPublicType", "PMD.NoPackage", "PMD.LocalVariableCouldBeFinal"})
 public final class GradleHttpPropagationAgent {
     public static final ThreadLocal<Span> CLIENT_SPAN = new ThreadLocal<>();
     public static final ThreadLocal<Scope> CLIENT_SCOPE = new ThreadLocal<>();

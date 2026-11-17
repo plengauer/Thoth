@@ -5,8 +5,9 @@ import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.TraceFlags;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.TraceState;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.context.Context;
 
+// The agent manifest names this class without a package
 // Making every local variable final is noise without a safety benefit
-@SuppressWarnings("PMD.LocalVariableCouldBeFinal")
+@SuppressWarnings({"PMD.NoPackage", "PMD.LocalVariableCouldBeFinal"})
 public final class RootContextAgent {
     private RootContextAgent() {
     }

@@ -4,8 +4,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+// The demo is compiled and started by its plain file name
 // Making every local variable final is noise without a safety benefit
-@SuppressWarnings("PMD.LocalVariableCouldBeFinal")
+@SuppressWarnings({"PMD.NoPackage", "PMD.LocalVariableCouldBeFinal"})
 public final class Main {
     private Main() {
     }
