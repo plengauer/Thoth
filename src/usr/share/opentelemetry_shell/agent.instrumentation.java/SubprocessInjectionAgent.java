@@ -14,7 +14,9 @@ import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.SpanContext;
 // Byte Buddy and the OpenTelemetry API are fluent builders
 // The advice bodies are inlined into the target class
 // and cannot call helper methods
-@SuppressWarnings({"PMD.NoPackage", "PMD.LocalVariableCouldBeFinal", "PMD.LawOfDemeter", "PMD.CognitiveComplexity"})
+// Making every parameter final is noise, and the advice parameters
+// are reassigned on purpose
+@SuppressWarnings({"PMD.NoPackage", "PMD.LocalVariableCouldBeFinal", "PMD.LawOfDemeter", "PMD.CognitiveComplexity", "PMD.MethodArgumentCouldBeFinal"})
 public final class SubprocessInjectionAgent {
     private SubprocessInjectionAgent() {
     }
