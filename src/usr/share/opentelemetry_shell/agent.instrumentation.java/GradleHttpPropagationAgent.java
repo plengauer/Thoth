@@ -22,7 +22,9 @@ import io.opentelemetry.javaagent.shaded.io.opentelemetry.context.Scope;
 // The agent manifest names this class without a package
 // Making every local variable final is noise without a safety benefit
 // Byte Buddy and the OpenTelemetry API are fluent builders
-@SuppressWarnings({"PMD.PublicMemberInNonPublicType", "PMD.NoPackage", "PMD.LocalVariableCouldBeFinal", "PMD.LawOfDemeter"})
+// The advice bodies are inlined into the target class
+// and cannot call helper methods
+@SuppressWarnings({"PMD.PublicMemberInNonPublicType", "PMD.NoPackage", "PMD.LocalVariableCouldBeFinal", "PMD.LawOfDemeter", "PMD.CognitiveComplexity"})
 public final class GradleHttpPropagationAgent {
     public static final ThreadLocal<Span> CLIENT_SPAN = new ThreadLocal<>();
     public static final ThreadLocal<Scope> CLIENT_SCOPE = new ThreadLocal<>();

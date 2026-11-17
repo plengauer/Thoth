@@ -12,7 +12,9 @@ import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.SpanContext;
 // The agent manifest names this class without a package
 // Making every local variable final is noise without a safety benefit
 // Byte Buddy and the OpenTelemetry API are fluent builders
-@SuppressWarnings({"PMD.NoPackage", "PMD.LocalVariableCouldBeFinal", "PMD.LawOfDemeter"})
+// The advice bodies are inlined into the target class
+// and cannot call helper methods
+@SuppressWarnings({"PMD.NoPackage", "PMD.LocalVariableCouldBeFinal", "PMD.LawOfDemeter", "PMD.CognitiveComplexity"})
 public final class SubprocessInjectionAgent {
     private SubprocessInjectionAgent() {
     }
