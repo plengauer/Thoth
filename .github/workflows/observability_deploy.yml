@@ -28,3 +28,29 @@ jobs:
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
+      - name: Add trace context inputs to dispatchable workflows
+        shell: bash
+        run: |
+          echo "::group::Add traceparent and tracestate inputs"
+          for file in .github/workflows/*.yml .github/workflows/*.yaml; do
+            [ -f "$file" ] || continue
+            case "$file" in *.lock.yml) continue;; esac
+            [ "$(yq '.on | has("workflow_dispatch")' "$file" 2>/dev/null)" = true ] || continue
+            for name in traceparent tracestate; do
+              N="$name" yq -i '.on.workflow_dispatch.inputs[strenv(N)] //= {"description": "W3C trace context " + strenv(N), "required": false, "type": "string"}' "$file"
+            done
+          done
+          echo "::endgroup::"
+          [ -n "$(git status --porcelain .github/workflows)" ] || exit 0
+          branch="deploy-otel-dispatch/${GITHUB_REF_NAME}"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git switch -C "$branch"
+          git add .github/workflows
+          git commit -m 'add trace context inputs to dispatchable workflows'
+          git push --force origin "$branch"
+          gh pr create --base "$GITHUB_REF_NAME" --head "$branch" --title 'Add trace context inputs to dispatchable workflows' --body 'This PR adds optional traceparent and tracestate inputs to every workflow with a workflow_dispatch trigger. (this PR is automatically generated)' || true
+          sleep 60
+          gh pr merge --squash --auto "$branch"
+        env:
+          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
