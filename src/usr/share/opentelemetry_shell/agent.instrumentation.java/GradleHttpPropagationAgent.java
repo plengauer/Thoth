@@ -24,7 +24,7 @@ import io.opentelemetry.javaagent.shaded.io.opentelemetry.context.Scope;
 // Byte Buddy and the OpenTelemetry API are fluent builders
 // The advice bodies are inlined into the target class
 // and cannot call helper methods
-@SuppressWarnings({"PMD.PublicMemberInNonPublicType", "PMD.NoPackage", "PMD.LocalVariableCouldBeFinal", "PMD.LawOfDemeter", "PMD.CognitiveComplexity"})
+@SuppressWarnings({"PMD.PublicMemberInNonPublicType", "PMD.NoPackage", "PMD.LocalVariableCouldBeFinal", "PMD.LawOfDemeter", "PMD.CognitiveComplexity", "PMD.AvoidDeeplyNestedIfStmts"})
 public final class GradleHttpPropagationAgent {
     public static final ThreadLocal<Span> CLIENT_SPAN = new ThreadLocal<>();
     public static final ThreadLocal<Scope> CLIENT_SCOPE = new ThreadLocal<>();
