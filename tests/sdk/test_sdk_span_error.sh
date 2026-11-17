@@ -5,9 +5,9 @@
 otel_init
 span_id=$(otel_span_start PRODUCER myspan)
 assert_equals 0 $?
-otel_span_error $span_id
+otel_span_error "$span_id"
 assert_equals 0 $?
-otel_span_end $span_id
+otel_span_end "$span_id"
 assert_equals 0 $?
 otel_shutdown
 

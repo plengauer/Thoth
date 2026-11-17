@@ -30,7 +30,7 @@ _otel_inject $arg"
         no_quote=1 _otel_escape_arg "$(_otel_escape_arg "$normalized_arg")"
       else
         if \[ "$inject_all_args" = 1 ]; then
-          \echo -n "'sh -c '\''. otel.sh
+          \printf '%s' "'sh -c '\''. otel.sh
 _otel_inject $arg'\'' parallel'"
         else
           if \[ "$arg" = "-i" ]; then local explicit_pos=1; fi
@@ -95,7 +95,7 @@ _otel_inject "
 
 _otel_inject_parallel_normalize_argument() {
   local first_char="${1%"${1#?}"}"
-  local last_char="${1#${1%?}}"
+  local last_char="${1#"${1%?}"}"
   if \[ "$first_char" = '"' ] && \[ "$last_char" = '"' ] && \[ "${#1}" -ge 2 ]; then
     local normalized_arg="${1#\"}"
     \printf '%s' "${normalized_arg%\"}"

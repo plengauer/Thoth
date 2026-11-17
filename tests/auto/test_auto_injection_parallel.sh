@@ -35,8 +35,6 @@ if type dpkg && dpkg -s moreutils; then
   assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
 fi
 
-shebang="$(alias parallel | grep -q env && echo /usr/bin/env perl || echo /usr/bin/perl)"
-
 parallel echo ::: c1 c2 c3
 span="$(resolve_span '.name | endswith("/parallel echo ::: c1 c2 c3")')"
 assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
@@ -62,6 +60,7 @@ span="$(resolve_span '.name == "echo d3"')"
 assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
 
 if [ "$TEST_SHELL" = bash ]; then
+  # shellcheck disable=SC2329 # the function is invoked indirectly by the sourced instrumentation library or by the test harness
   my_echo() { echo "$1"; }
   export -f my_echo
   parallel my_echo ::: e1 e2 e3

@@ -8,9 +8,9 @@
 
 # translate legacy config
 if \[ -n "${OTEL_SHELL_TRACES_ENABLE:-}" ] || \[ -n "${OTEL_SHELL_METRICS_ENABLE:-}" ] || \[ -n "${OTEL_SHELL_LOGS_ENABLE:-}" ]; then
-  \[ "${OTEL_SHELL_TRACES_ENABLE:-FALSE}" = TRUE ] && \export OTEL_TRACES_EXPORTER=otlp || \export OTEL_TRACES_EXPORTER=""
-  \[ "${OTEL_SHELL_METRICS_ENABLE:-FALSE}" = TRUE ] && \export OTEL_METRICS_EXPORTER=otlp || \export OTEL_METRICS_EXPORTER=""
-  \[ "${OTEL_SHELL_LOGS_ENABLE:-FALSE}" = TRUE ] && \export OTEL_LOGS_EXPORTER=otlp || \export OTEL_LOGS_EXPORTER=""
+  if \[ "${OTEL_SHELL_TRACES_ENABLE:-FALSE}" = TRUE ]; then \export OTEL_TRACES_EXPORTER=otlp; else \export OTEL_TRACES_EXPORTER=""; fi
+  if \[ "${OTEL_SHELL_METRICS_ENABLE:-FALSE}" = TRUE ]; then \export OTEL_METRICS_EXPORTER=otlp; else \export OTEL_METRICS_EXPORTER=""; fi
+  if \[ "${OTEL_SHELL_LOGS_ENABLE:-FALSE}" = TRUE ]; then \export OTEL_LOGS_EXPORTER=otlp; else \export OTEL_LOGS_EXPORTER=""; fi
   \export OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE="${OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE:-delta}"
 fi
 
@@ -40,7 +40,7 @@ if ! \[ -w "$_otel_remote_sdk_stderr_redirect" ]; then _otel_remote_sdk_stderr_r
 _otel_shell="$(\readlink "/proc/$$/exe")"
 _otel_shell="${_otel_shell##*/}"
 if \[ "$_otel_shell" = busybox ]; then _otel_shell="busybox sh"; fi
-if \[ "${OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE:-}" = 0 ] || \[ "${OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE:-}" = "$PPID" ] || \[ "${PPID:-}" = 0 ] || { \[ -r /proc/$PPID/cmdline ] && \[ -r "/proc/${OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE:-}/cmdline" ] && \[ "$(\tr '\000-\037' ' ' </proc/$PPID/cmdline)" = "$(\tr '\000-\037' ' ' </proc/${OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE:-}/cmdline)" ]; }; then _otel_commandline_override="$OTEL_SHELL_COMMANDLINE_OVERRIDE"; fi
+if \[ "${OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE:-}" = 0 ] || \[ "${OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE:-}" = "$PPID" ] || \[ "${PPID:-}" = 0 ] || { \[ -r /proc/$PPID/cmdline ] && \[ -r "/proc/${OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE:-}/cmdline" ] && \[ "$(\tr '\000-\037' ' ' </proc/$PPID/cmdline)" = "$(\tr '\000-\037' ' ' </proc/"${OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE:-}"/cmdline)" ]; }; then _otel_commandline_override="$OTEL_SHELL_COMMANDLINE_OVERRIDE"; fi
 unset OTEL_SHELL_COMMANDLINE_OVERRIDE
 unset OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE
 unset OTEL_SHELL_COMMAND_TYPE_OVERRIDE
@@ -65,6 +65,7 @@ else
     else
       # several weird things going on in the next line, (1) using '((' fucks up the syntax highlighting in github while '( (' does not, and (2) &> causes weird buffering / late flushing behavior
       if \env --help 2>&1 | \grep -q 'ignore-signal'; then local extra_env_flags='--ignore-signal=INT --ignore-signal=HUP'; fi
+      # shellcheck disable=SC2086 # the extra env flags are an optional list of arguments that must be split into words or vanish when empty
       (\exec \env ${extra_env_flags:-} /opt/opentelemetry_shell/venv/bin/python /usr/share/opentelemetry_shell/sdk.py shell "$(_otel_package_version opentelemetry-shell)" <"$_otel_remote_sdk_pipe" 1>"$_otel_remote_sdk_stdout_redirect" 2>"$_otel_remote_sdk_stderr_redirect" &)
     fi
     \eval "\\exec ${_otel_remote_sdk_fd}> \"$_otel_remote_sdk_pipe\""
@@ -191,6 +192,7 @@ _otel_resolve_package_version() {
 
 otel_span_current() {
   local response_pipe="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.span_handle.pipe.XXXXXXXXXX)"
+  # shellcheck disable=SC2086 # the mkfifo flags are an optional list of arguments that must be split into words or vanish when empty
   \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
   _otel_sdk_communicate "SPAN_HANDLE" "$response_pipe" "${TRACEPARENT:-}"
   local handle
@@ -207,6 +209,7 @@ otel_span_start() {
   local kind="$1"
   local name="$2"
   local response_pipe="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.span_handle.pipe.XXXXXXXXXX)"
+  # shellcheck disable=SC2086 # the mkfifo flags are an optional list of arguments that must be split into words or vanish when empty
   \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
   _otel_sdk_communicate "SPAN_START" "$response_pipe" "${TRACEPARENT:-}" "${TRACESTATE:-}" "$time" "$kind" "$name"
   local handle
@@ -248,6 +251,7 @@ otel_span_attribute_typed() {
 otel_span_traceparent() {
   local span_handle="$1"
   local response_pipe="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.traceparent.pipe.XXXXXXXXXX)"
+  # shellcheck disable=SC2086 # the mkfifo flags are an optional list of arguments that must be split into words or vanish when empty
   \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
   _otel_sdk_communicate "SPAN_TRACEPARENT" "$response_pipe" "$span_handle"
   local traceparent
@@ -282,6 +286,7 @@ otel_span_deactivate() {
 otel_event_create() {
   local event_name="$1"
   local response_pipe="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.event_handle.pipe.XXXXXXXXXX)"
+  # shellcheck disable=SC2086 # the mkfifo flags are an optional list of arguments that must be split into words or vanish when empty
   \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
   _otel_sdk_communicate "EVENT_CREATE" "$response_pipe" "$event_name"
   local handle
@@ -313,6 +318,7 @@ otel_link_create() {
   local traceparent="$1"
   local tracestate="$2"
   local response_pipe="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.link_handle.pipe.XXXXXXXXXX)"
+  # shellcheck disable=SC2086 # the mkfifo flags are an optional list of arguments that must be split into words or vanish when empty
   \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
   _otel_sdk_communicate "LINK_CREATE" "$response_pipe" "$traceparent" "$tracestate" END
   local handle
@@ -345,6 +351,7 @@ otel_counter_create() {
   local name="$2"
   local unit="${3:-1}"
   local response_pipe="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.counter_handle.pipe.XXXXXXXXXX)"
+  # shellcheck disable=SC2086 # the mkfifo flags are an optional list of arguments that must be split into words or vanish when empty
   \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
   if \[ "$type" = histogram ]; then
     local buckets="${4:-}"
@@ -369,6 +376,7 @@ otel_counter_observe() {
 otel_observation_create() {
   local value="$1"
   local response_pipe="$(\mktemp -u -p "$_otel_shell_pipe_dir")_opentelemetry_shell_$$.observation_handle.pipe"
+  # shellcheck disable=SC2086 # the mkfifo flags are an optional list of arguments that must be split into words or vanish when empty
   \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
   _otel_sdk_communicate "OBSERVATION_CREATE" "$response_pipe" "$value"
   local handle
@@ -415,12 +423,12 @@ otel_observe() {
   otel_span_attribute_typed "$span_handle" string shell.command="$command_name"
   otel_span_attribute_typed "$span_handle" string shell.command.type="$command_type"
   if _otel_string_contains "$command_name" /; then
-    otel_span_attribute_typed "$span_handle" string shell.command.name=""${command_name##*/}""
+    otel_span_attribute_typed "$span_handle" string shell.command.name="${command_name##*/}"
   else
     otel_span_attribute_typed "$span_handle" string shell.command.name="$command_name"
   fi
   if \[ "$command_type" = file ]; then
-    local executable_path="$(_otel_string_contains "$command_name" / && \echo "$command_name" || \which "$command_name")"
+    local executable_path="$(if _otel_string_contains "$command_name" /; then \echo "$command_name"; else \which "$command_name"; fi)"
     otel_span_attribute_typed "$span_handle" string subprocess.executable.path="$executable_path"
     otel_span_attribute_typed "$span_handle" string subprocess.executable.name="${executable_path##*/}" # "$(\printf '%s' "$command" | \cut -d' ' -f1 | \rev | \cut -d / -f 1 | \rev)"
   fi
@@ -443,6 +451,7 @@ otel_observe() {
   if \[ -n "$attributes" ]; then
     local OLD_IFS="$IFS"
     local IFS=','
+    # shellcheck disable=SC2086 # the attributes are a whitespace separated list that is deliberately split into positional parameters
     set -- $attributes
     IFS="$OLD_IFS"
     for attribute in "$@"; do
@@ -483,7 +492,7 @@ fi
 _otel_call() {
   local command="$1"
   shift
-  \alias "$command" 1>/dev/null 2>/dev/null && \eval "$(_otel_escape_args "${command#\\}" "$@")" || "${command#\\}" "$@"
+  if \alias "$command" 1>/dev/null 2>/dev/null; then \eval "$(_otel_escape_args "${command#\\}" "$@")"; else "${command#\\}" "$@"; fi
 }
 
 \. /usr/share/opentelemetry_shell/api.observe.logs.sh

@@ -11,3 +11,5 @@ RUN apk add --no-cache --allow-untrusted bash jq curl parallel unzip findutils c
 RUN adduser -D -u 1001 workflow
 USER workflow
 CMD [ "sh", "-c", "exit 1" ]
+
+HEALTHCHECK NONE
