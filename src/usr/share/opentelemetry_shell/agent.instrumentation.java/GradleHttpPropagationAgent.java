@@ -21,11 +21,14 @@ import io.opentelemetry.javaagent.shaded.io.opentelemetry.context.Scope;
 // The anonymous Transformer must implement a public method
 // Making every local variable final is noise without a safety benefit
 @SuppressWarnings({"PMD.PublicMemberInNonPublicType", "PMD.LocalVariableCouldBeFinal"})
-public class GradleHttpPropagationAgent {
+public final class GradleHttpPropagationAgent {
     public static final ThreadLocal<Span> CLIENT_SPAN = new ThreadLocal<>();
     public static final ThreadLocal<Scope> CLIENT_SCOPE = new ThreadLocal<>();
     public static final ThreadLocal<Span> SERVER_SPAN = new ThreadLocal<>();
     public static final ThreadLocal<Scope> SERVER_SCOPE = new ThreadLocal<>();
+
+    private GradleHttpPropagationAgent() {
+    }
 
     public static void premain(String args, Instrumentation instrumentation) throws IOException {
         instrumentation.appendToBootstrapClassLoaderSearch(new java.util.jar.JarFile("/usr/share/opentelemetry_shell/agent.instrumentation.java/gradlehttppropagationagent.jar"));

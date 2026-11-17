@@ -7,7 +7,10 @@ import io.opentelemetry.javaagent.shaded.io.opentelemetry.context.Context;
 
 // Making every local variable final is noise without a safety benefit
 @SuppressWarnings("PMD.LocalVariableCouldBeFinal")
-public class RootContextAgent {
+public final class RootContextAgent {
+    private RootContextAgent() {
+    }
+
     public static void premain(String args, Instrumentation instrumentation) {
         String traceparent = System.getenv("TRACEPARENT");
         if (traceparent == null) {

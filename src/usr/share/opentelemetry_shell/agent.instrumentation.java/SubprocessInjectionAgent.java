@@ -11,7 +11,10 @@ import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.SpanContext;
 
 // Making every local variable final is noise without a safety benefit
 @SuppressWarnings("PMD.LocalVariableCouldBeFinal")
-public class SubprocessInjectionAgent {
+public final class SubprocessInjectionAgent {
+    private SubprocessInjectionAgent() {
+    }
+
     public static void premain(String args, Instrumentation instrumentation) throws IOException {
         instrumentation.appendToBootstrapClassLoaderSearch(new java.util.jar.JarFile("/usr/share/opentelemetry_shell/agent.instrumentation.java/subprocessinjectionagent.jar"));
         new AgentBuilder.Default()

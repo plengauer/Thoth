@@ -6,7 +6,10 @@ import java.net.URL;
 
 // Making every local variable final is noise without a safety benefit
 @SuppressWarnings("PMD.LocalVariableCouldBeFinal")
-public class Main {
+public final class Main {
+    private Main() {
+    }
+
     public static void main(String[] args) {
         try {
             HttpURLConnection connection = (HttpURLConnection) new URL("http://example.com").openConnection();
