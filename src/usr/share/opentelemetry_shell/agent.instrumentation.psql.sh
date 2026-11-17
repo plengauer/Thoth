@@ -262,8 +262,7 @@ _otel_psql_conninfo_get() {
 _otel_psql_service_get() {
   local file
   for file in "${PGSERVICEFILE:-${HOME:-}/.pg_service.conf}" "${PGSYSCONFDIR:-/etc/postgresql-common}/pg_service.conf"; do
-    if \[ -r "$file" ] && \grep -q "^\[$1\]" "$file"; then
-      \sed -n "/^\[$1\]/,/^\[/s/^$2[[:space:]]*=[[:space:]]*//p" "$file" | \tail -n 1
+    if \[ -r "$file" ] && \awk -v service="$1" -v key="$2" -f /usr/share/opentelemetry_shell/agent.instrumentation.psql/service.awk "$file"; then
       return 0
     fi
   done
