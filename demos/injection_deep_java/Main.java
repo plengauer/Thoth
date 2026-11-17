@@ -5,8 +5,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 // The demo is compiled and started by its plain file name
+// Main is the conventional name of the entry point
 // Making every local variable final is noise without a safety benefit
-@SuppressWarnings({"PMD.NoPackage", "PMD.LocalVariableCouldBeFinal"})
+@SuppressWarnings({"PMD.NoPackage", "PMD.LocalVariableCouldBeFinal", "PMD.ShortClassName"})
 public final class Main {
     private Main() {
     }
