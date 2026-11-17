@@ -54,7 +54,10 @@ public final class GradleHttpPropagationAgent {
             .installOn(instrumentation);
     }
 
-    public static class ClientConnectionAdvice {
+    public static final class ClientConnectionAdvice {
+        private ClientConnectionAdvice() {
+        }
+
         @Advice.OnMethodEnter
         public static void onEnter(@Advice.Origin String method, @Advice.AllArguments Object[] args) {
             try {
@@ -112,7 +115,10 @@ public final class GradleHttpPropagationAgent {
         }
     }
 
-    public static class DaemonConnectionAdvice {
+    public static final class DaemonConnectionAdvice {
+        private DaemonConnectionAdvice() {
+        }
+
         @Advice.OnMethodEnter
         public static void onEnter(@Advice.Origin String method, @Advice.AllArguments Object[] args) {
             try {

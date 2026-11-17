@@ -28,7 +28,10 @@ public final class SubprocessInjectionAgent {
             .installOn(instrumentation);
     }
 
-    public static class InjectCommandAdvice {
+    public static final class InjectCommandAdvice {
+        private InjectCommandAdvice() {
+        }
+
         @Advice.OnMethodEnter
         public static void onEnter(@Advice.Argument(value = 0, readOnly = false) String[] cmdarray, @Advice.Argument(value = 1, readOnly = false) Map<String, String> environment) {
             if (environment == null) {
