@@ -14,10 +14,10 @@ public final class Main {
         try {
             HttpURLConnection connection = (HttpURLConnection) new URL("http://example.com").openConnection();
             connection.setRequestMethod("GET");
-            try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
-                String line = in.readLine();
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+                String line = reader.readLine();
                 while (line != null) {
-                    line = in.readLine();
+                    line = reader.readLine();
                 }
             }
             connection.disconnect();
