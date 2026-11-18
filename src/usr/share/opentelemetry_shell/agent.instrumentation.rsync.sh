@@ -8,7 +8,7 @@
 
 _otel_inject_rsync_rsh() {
   case "$1" in
-    otel4sh | 'otel4sh '*) \echo "$1" ;;
+    'otel4sh' | 'otel4sh '*) \echo "$1" ;;
     *) \echo "otel4sh $1" ;;
   esac
 }
