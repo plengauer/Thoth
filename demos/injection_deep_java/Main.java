@@ -4,13 +4,18 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+// Making every local variable final is noise without a safety benefit
+@SuppressWarnings("PMD.LocalVariableCouldBeFinal")
 public class Main {
     public static void main(String[] args) {
         try {
             HttpURLConnection connection = (HttpURLConnection) new URL("http://example.com").openConnection();
             connection.setRequestMethod("GET");
             try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
-                for (String line = in.readLine(); line != null; line = in.readLine());
+                String line = in.readLine();
+                while (line != null) {
+                    line = in.readLine();
+                }
             }
             connection.disconnect();
         } catch (IOException e) {
