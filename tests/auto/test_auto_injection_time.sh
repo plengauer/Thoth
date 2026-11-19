@@ -19,6 +19,7 @@ span="$(resolve_span '.name == "echo hello world 2"')"
 assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
 
 file=$(mktemp)
+# shellcheck disable=SC2023 # the test exercises the time builtin with an option and an assignment
 time -o $file echo hello world 3
 assert_equals 0 $?
 span="$(resolve_span '.name == "'"time -o $file echo hello world 3"'"')"

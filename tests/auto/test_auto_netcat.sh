@@ -50,11 +50,11 @@ assert_equals "200" "$(\echo "$span" | \jq -r '.attributes."http.response.status
 assert_not_equals null "$(\echo "$span" | \jq -r '.attributes."http.response.header.content-type"')"
 assert_not_equals null "$(\echo "$span" | \jq -r '.attributes."network.peer.port"')"
 span_id=$(\echo "$span" | \jq -r '.parent_id')
-span="$(resolve_span '.context.span_id == "'$span_id'"')"
+span="$(resolve_span '.context.span_id == "'"$span_id"'"')"
 assert_equals "SpanKind.PRODUCER" $(\echo "$span" | \jq -r '.kind')
 assert_equals "send/receive" $(\echo "$span" | \jq -r '.name')
 span_id=$(\echo "$span" | \jq -r '.parent_id')
-span="$(resolve_span '.context.span_id == "'$span_id'"')"
+span="$(resolve_span '.context.span_id == "'"$span_id"'"')"
 assert_equals "SpanKind.INTERNAL" $(\echo "$span" | \jq -r '.kind')
 assert_equals "netcat -w 5 www.google.com 80" "$(\echo "$span" | \jq -r '.name')"
 

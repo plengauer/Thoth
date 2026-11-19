@@ -270,7 +270,7 @@ def handle(scope, version, command, arguments):
         value = tokens[1]
         resource[key] = convert_type(type, value)
     elif command == 'INIT':
-        from opentelemetry.sdk.resources import Resource, ResourceDetector, OTELResourceDetector, OsResourceDetector, get_aggregated_resources
+        from opentelemetry.sdk.resources import Resource, OTELResourceDetector, OsResourceDetector, get_aggregated_resources
         from opentelemetry_resourcedetector_docker import DockerResourceDetector
         from opentelemetry_resourcedetector_kubernetes import KubernetesResourceDetector
         final_resources = get_aggregated_resources(guess_cloud_resource_detectors() + [
@@ -367,7 +367,7 @@ def handle(scope, version, command, arguments):
                 response.write('')
                 return
         span_id = tokens[1]
-        if not span_id in spans:
+        if span_id not in spans:
             with open(response_path, 'w') as response:
                 response.write('')
                 return
@@ -583,7 +583,7 @@ def convert_type(type, value, base=None):
         else:
             return convert_type('float', value)
     elif type == 'string[1]':
-        return [ value ];
+        return [ value ]
     elif type == '+string[1]':
         if base:
             return list(base) + convert_type('string[1]', value)

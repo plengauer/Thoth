@@ -160,8 +160,8 @@ _otel_pipe_wget_stderr() {
       otel_span_attribute_typed "$span_handle" string server.address="$host"
       otel_span_attribute_typed "$span_handle" int server.port="$port"
       otel_span_attribute_typed "$span_handle" string url.full="$url"
-      otel_span_attribute_typed "$span_handle" string url.path="$(\printf '%s' "$path_and_query" | \cut -d ? -f 1)"
-      otel_span_attribute_typed "$span_handle" string url.query="$(\printf '%s' "$path_and_query" | \cut -sd ? -f 2-)"
+      otel_span_attribute_typed "$span_handle" string url.path="$(\printf '%s' "$path_and_query" | \cut -d '?' -f 1)"
+      otel_span_attribute_typed "$span_handle" string url.query="$(\printf '%s' "$path_and_query" | \cut -sd '?' -f 2-)"
       otel_span_attribute_typed "$span_handle" string url.scheme="$protocol"
       otel_span_attribute_typed "$span_handle" string user_agent.original=wget
       otel_span_attribute_typed "$span_handle" string http.request.method=GET

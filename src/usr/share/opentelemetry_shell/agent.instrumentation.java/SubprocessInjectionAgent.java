@@ -1,21 +1,18 @@
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.asm.Advice;
 import net.bytebuddy.matcher.ElementMatchers;
-import net.bytebuddy.implementation.bind.annotation.RuntimeType;
-import net.bytebuddy.implementation.bind.annotation.AllArguments;
-import net.bytebuddy.implementation.bind.annotation.Origin;
-import net.bytebuddy.implementation.MethodDelegation;
+import java.io.IOException;
 import java.lang.instrument.Instrumentation;
 import java.util.Map;
-import java.util.HashMap;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.NoSuchMethodException;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.Span;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.SpanContext;
 
+// Making every local variable final is noise without a safety benefit
+@SuppressWarnings("PMD.LocalVariableCouldBeFinal")
 public class SubprocessInjectionAgent {
-    public static void premain(String args, Instrumentation instrumentation) throws Exception {
+    public static void premain(String args, Instrumentation instrumentation) throws IOException {
         instrumentation.appendToBootstrapClassLoaderSearch(new java.util.jar.JarFile("/usr/share/opentelemetry_shell/agent.instrumentation.java/subprocessinjectionagent.jar"));
         new AgentBuilder.Default()
             .with(AgentBuilder.RedefinitionStrategy.RETRANSFORMATION)
@@ -40,13 +37,8 @@ public class SubprocessInjectionAgent {
                     for (String key : rootenvironment.keySet()) {
                         if (!key.startsWith("OTEL_SHELL_COMMANDLINE_OVERRIDE") && !key.equals("OTEL_SHELL_AUTO_INJECTED")) environment.put(key, rootenvironment.get(key));
                     }
-                } catch (ClassNotFoundException e) {
-                    // here be dragons
-                } catch (NoSuchMethodException e) {
-                    // here be dragons
-                } catch (IllegalAccessException e) {
-                    // here be dragons
-                } catch (InvocationTargetException e) {
+                } catch (ClassNotFoundException | NoSuchMethodException
+                    | IllegalAccessException | InvocationTargetException e) {
                     // here be dragons
                 }
             }
