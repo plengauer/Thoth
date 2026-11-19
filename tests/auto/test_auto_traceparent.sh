@@ -2,6 +2,7 @@
 . ./assert.sh
 . /usr/bin/opentelemetry_shell.sh
 
+# shellcheck disable=SC2153 # TRACEPARENT is a different variable than the lowercase local
 traceparent=$TRACEPARENT
 assert_not_equals "" "$TRACEPARENT"
 
