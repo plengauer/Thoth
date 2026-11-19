@@ -53,8 +53,8 @@ run_compared() {
   shift
   "$dir/sqlcmd" "$@" >"$dir/$name.expected.out" 2>"$dir/$name.expected.err" </dev/null || \echo "$?" >"$dir/$name.expected.exit"
   $TEST_SHELL auto/sqlcmd.sh "$@" >"$dir/$name.actual.out" 2>"$dir/$name.actual.err" </dev/null || \echo "$?" >"$dir/$name.actual.exit"
-  \cmp "$dir/$name.expected.out" "$dir/$name.actual.out"
-  \cmp "$dir/$name.expected.err" "$dir/$name.actual.err"
+  assert_equals "$(\od -c "$dir/$name.expected.out")" "$(\od -c "$dir/$name.actual.out")"
+  assert_equals "$(\od -c "$dir/$name.expected.err")" "$(\od -c "$dir/$name.actual.err")"
   assert_equals "$(\cat "$dir/$name.expected.exit" 2>/dev/null || \echo 0)" "$(\cat "$dir/$name.actual.exit" 2>/dev/null || \echo 0)"
 }
 
@@ -119,7 +119,7 @@ assert_equals "1433" "$(\echo "$span" | jq -r '.attributes."server.port"')"
 printf 'SELECT * FROM stdin_table WHERE a = 1\nGO\n' >"$dir/stdin.sql"
 "$dir/sqlcmd" -S h -d stdb <"$dir/stdin.sql" >"$dir/stdin.expected"
 $TEST_SHELL auto/sqlcmd.sh -S h -d stdb <"$dir/stdin.sql" >"$dir/stdin.actual"
-\cmp "$dir/stdin.expected" "$dir/stdin.actual"
+assert_equals "$(\od -c "$dir/stdin.expected")" "$(\od -c "$dir/stdin.actual")"
 span="$(resolve_span '.kind == "SpanKind.CLIENT" and .name == "SELECT stdin_table"')"
 assert_equals "stdb" "$(\echo "$span" | jq -r '.attributes."db.namespace"')"
 assert_equals "SELECT * FROM stdin_table WHERE a = ?" "$(\echo "$span" | jq -r '.attributes."db.query.text"')"

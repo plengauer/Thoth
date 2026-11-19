@@ -13,8 +13,8 @@ query="SELECT * FROM users WHERE id = 5 AND name = 'x'"
 sqlcmd $arguments "$query" >"$dir/expected.out" 2>"$dir/expected.err" </dev/null || expected_exit_code="$?"
 # shellcheck disable=SC2086
 $TEST_SHELL auto/sqlcmd.sh $arguments "$query" >"$dir/actual.out" 2>"$dir/actual.err" </dev/null || actual_exit_code="$?"
-\cmp "$dir/expected.out" "$dir/actual.out"
-\cmp "$dir/expected.err" "$dir/actual.err"
+assert_equals "$(\od -c "$dir/expected.out")" "$(\od -c "$dir/actual.out")"
+assert_equals "$(\od -c "$dir/expected.err")" "$(\od -c "$dir/actual.err")"
 
 command_span="$(resolve_span '.kind == "SpanKind.INTERNAL" and (.name | startswith("sqlcmd -S tcp:127.0.0.1,1 "))')"
 assert_equals "${expected_exit_code:-0}" "$(\echo "$command_span" | jq -r '.attributes."shell.command.exit_code"')"
