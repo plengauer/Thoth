@@ -312,7 +312,6 @@ def handle(scope, version, command, arguments):
         resource[key] = convert_type(type, value)
     elif command == 'INIT':
         final_resources = get_resource_attributes()
-
     elif command == 'DUMP_RESOURCE_ATTRIBUTES':
         dump_resource_attributes(arguments)
     elif command == 'SHUTDOWN':
@@ -620,7 +619,7 @@ def convert_type(type, value, base=None):
         else:
             return convert_type('float', value)
     elif type == 'string[1]':
-        return [ value ];
+        return [ value ]
     elif type == '+string[1]':
         if base:
             return list(base) + convert_type('string[1]', value)
