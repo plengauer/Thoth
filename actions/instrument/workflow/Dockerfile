@@ -1,4 +1,4 @@
-FROM alpine:3.24.3
+FROM alpine:3.24.4
 ARG repository
 LABEL org.opencontainers.image.source=https://github.com/$repository
 COPY ./*.apk /root/
@@ -11,3 +11,5 @@ RUN apk add --no-cache --allow-untrusted bash jq curl parallel unzip findutils c
 RUN adduser -D -u 1001 workflow
 USER workflow
 CMD [ "sh", "-c", "exit 1" ]
+
+HEALTHCHECK NONE

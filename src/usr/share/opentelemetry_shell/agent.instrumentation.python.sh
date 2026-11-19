@@ -130,7 +130,7 @@ with open('$arg', 'r') as file: # SKIP_DEPENDENCY_CHECK
   else: # SKIP_DEPENDENCY_CHECK
     exec('__file__=\"$arg\"\\n' + content) # SKIP_DEPENDENCY_CHECK"
       _otel_python_file="$arg"
-      _otel_python_code_source=file
+      _otel_python_code_source="file"
     else
       _otel_escape_arg "$arg"
     fi

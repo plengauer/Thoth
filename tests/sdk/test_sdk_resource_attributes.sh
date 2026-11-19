@@ -6,7 +6,7 @@ export OTEL_SERVICE_NAME=TEST
 
 otel_init
 span_id=$(otel_span_start INTERNAL myspan)
-otel_span_end $span_id
+otel_span_end "$span_id"
 otel_shutdown
 
 span="$(resolve_span)"

@@ -1,11 +1,12 @@
 import java.lang.instrument.Instrumentation;
-import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.Span;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.SpanContext;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.TraceFlags;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.TraceState;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.context.Context;
 
+// Making every local variable final is noise without a safety benefit
+@SuppressWarnings("PMD.LocalVariableCouldBeFinal")
 public class RootContextAgent {
     public static void premain(String args, Instrumentation instrumentation) {
         String traceparent = System.getenv("TRACEPARENT");

@@ -8,7 +8,7 @@ assert_equals 0 $?
 event_id="$(otel_event_create "myevent")"
 otel_event_attribute "$event_id" foo=bar
 otel_event_add "$event_id" "$span_id"
-otel_span_end $span_id
+otel_span_end "$span_id"
 otel_shutdown
 
 span="$(resolve_span)"
