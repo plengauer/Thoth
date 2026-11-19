@@ -101,7 +101,8 @@ assert_equals "null" "$(\echo "$span" | jq -r '.attributes."db.query.text"')"
 
 $TEST_SHELL auto/redis-cli.sh -h localhost -p 1 DBSIZE >"$dir/stdout" 2>"$dir/stderr" || true
 assert_equals "" "$(\cat "$dir/stdout")"
-assert_equals "Could not connect to Redis at localhost:1: Connection refused" "$(\cat "$dir/stderr")"
+\redis-cli -h localhost -p 1 DBSIZE >/dev/null 2>"$dir/expected_stderr" || true
+assert_equals "$(\cat "$dir/expected_stderr")" "$(\cat "$dir/stderr")"
 
 command_span="$(resolve_span '.kind == "SpanKind.INTERNAL" and (.name | startswith("redis-cli ")) and (.name | contains("DBSIZE"))')"
 assert_equals "1" "$(\echo "$command_span" | jq -r '.attributes."shell.command.exit_code"')"
