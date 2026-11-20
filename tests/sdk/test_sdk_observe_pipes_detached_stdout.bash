@@ -11,10 +11,10 @@ otel_shutdown
 
 span="$(resolve_span '.name == "cat"')"
 if [ -z "${WSL_DISTRO_NAME:-}" ]; then
-  assert_equals "12" $(echo "$span" | jq -r '.attributes."pipe.stdin.bytes"')
-  assert_equals "1" $(echo "$span" | jq -r '.attributes."pipe.stdin.lines"')
+  assert_equals "12" "$(echo "$span" | jq -r '.attributes."pipe.stdin.bytes"')"
+  assert_equals "1" "$(echo "$span" | jq -r '.attributes."pipe.stdin.lines"')"
 fi
-assert_equals "12" $(echo "$span" | jq -r '.attributes."pipe.stdout.bytes"')
-assert_equals "1" $(echo "$span" | jq -r '.attributes."pipe.stdout.lines"')
-assert_equals "0" $(echo "$span" | jq -r '.attributes."pipe.stderr.bytes"')
-assert_equals "0" $(echo "$span" | jq -r '.attributes."pipe.stderr.lines"')
+assert_equals "12" "$(echo "$span" | jq -r '.attributes."pipe.stdout.bytes"')"
+assert_equals "1" "$(echo "$span" | jq -r '.attributes."pipe.stdout.lines"')"
+assert_equals "0" "$(echo "$span" | jq -r '.attributes."pipe.stderr.bytes"')"
+assert_equals "0" "$(echo "$span" | jq -r '.attributes."pipe.stderr.lines"')"

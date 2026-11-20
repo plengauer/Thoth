@@ -22,8 +22,8 @@ os.execl("/bin/echo", "echo", "hello", "world", "0")
 ' | python3
 assert_equals 0 $?
 span="$(resolve_span '.name == "/bin/echo hello world 0"')"
-assert_equals "SpanKind.INTERNAL" $(\echo "$span" | \jq -r '.kind')
-assert_not_equals null $(\echo "$span" | \jq -r '.parent_id')
+assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | \jq -r '.kind')"
+assert_not_equals null "$(\echo "$span" | \jq -r '.parent_id')"
 
 \echo '
 import os
@@ -31,8 +31,8 @@ os.execv("/bin/echo", [ "echo", "hello", "world", "1" ])
 ' | python3
 assert_equals 0 $?
 span="$(resolve_span '.name | endswith("/echo hello world 1")')"
-assert_equals "SpanKind.INTERNAL" $(\echo "$span" | \jq -r '.kind')
-assert_not_equals null $(\echo "$span" | \jq -r '.parent_id')
+assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | \jq -r '.kind')"
+assert_not_equals null "$(\echo "$span" | \jq -r '.parent_id')"
 
 echo '
 import os
@@ -40,8 +40,8 @@ os.spawnl(os.P_WAIT, "/bin/echo", "echo", "hello", "world", "2")
 ' | python3
 assert_equals 0 $?
 span="$(resolve_span '.name | endswith("/echo hello world 2")')"
-assert_equals "SpanKind.INTERNAL" $(\echo "$span" | \jq -r '.kind')
-assert_not_equals null $(\echo "$span" | \jq -r '.parent_id')
+assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | \jq -r '.kind')"
+assert_not_equals null "$(\echo "$span" | \jq -r '.parent_id')"
 
 echo '
 import os
@@ -49,8 +49,8 @@ os.spawnlp(os.P_WAIT, "echo", "echo", "hello", "world", "3")
 ' | python3
 assert_equals 0 $?
 span="$(resolve_span '.name | endswith("/echo hello world 3")')"
-assert_equals "SpanKind.INTERNAL" $(\echo "$span" | \jq -r '.kind')
-assert_not_equals null $(\echo "$span" | \jq -r '.parent_id')
+assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | \jq -r '.kind')"
+assert_not_equals null "$(\echo "$span" | \jq -r '.parent_id')"
 
 echo '
 import os
@@ -58,8 +58,8 @@ os.spawnv(os.P_WAIT, "/bin/echo", ["echo", "hello", "world", "4"])
 ' | python3
 assert_equals 0 $?
 span="$(resolve_span '.name | endswith("/echo hello world 4")')"
-assert_equals "SpanKind.INTERNAL" $(\echo "$span" | \jq -r '.kind')
-assert_not_equals null $(\echo "$span" | \jq -r '.parent_id')
+assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | \jq -r '.kind')"
+assert_not_equals null "$(\echo "$span" | \jq -r '.parent_id')"
 
 echo '
 import os
@@ -67,8 +67,8 @@ os.spawnvp(os.P_WAIT, "echo", ["echo", "hello", "world", "5"])
 ' | python3
 assert_equals 0 $?
 span="$(resolve_span '.name | endswith("/echo hello world 5")')"
-assert_equals "SpanKind.INTERNAL" $(\echo "$span" | \jq -r '.kind')
-assert_not_equals null $(\echo "$span" | \jq -r '.parent_id')
+assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | \jq -r '.kind')"
+assert_not_equals null "$(\echo "$span" | \jq -r '.parent_id')"
 
 printf '%s' '
 import subprocess
@@ -77,8 +77,8 @@ with subprocess.Popen(["/bin/echo", "hello", "world", "6"], stdout=subprocess.DE
 ' | python3
 assert_equals 0 $?
 span="$(resolve_span '.name | endswith("/echo hello world 6")')"
-assert_equals "SpanKind.INTERNAL" $(\echo "$span" | \jq -r '.kind')
-assert_not_equals null $(\echo "$span" | \jq -r '.parent_id')
+assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | \jq -r '.kind')"
+assert_not_equals null "$(\echo "$span" | \jq -r '.parent_id')"
 
 dir=$(mktemp -d)
 python3 -m venv --system-site-packages "$dir"/venv || exit 1
@@ -93,8 +93,8 @@ with subprocess.Popen(["/bin/echo", "hello", "world", "7"], stdout=subprocess.DE
 assert_equals 0 $?
 deactivate
 span="$(resolve_span '.name | endswith("/echo hello world 7")')"
-assert_equals "SpanKind.INTERNAL" $(\echo "$span" | \jq -r '.kind')
-assert_not_equals null $(\echo "$span" | \jq -r '.parent_id')
+assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | \jq -r '.kind')"
+assert_not_equals null "$(\echo "$span" | \jq -r '.parent_id')"
 
 echo '
 import subprocess
@@ -102,8 +102,8 @@ subprocess.run(["/bin/echo", "hello", "world", "8"])
 ' | python3
 assert_equals 0 $?
 span="$(resolve_span '.name | endswith("/echo hello world 8")')"
-assert_equals "SpanKind.INTERNAL" $(\echo "$span" | \jq -r '.kind')
-assert_not_equals null $(\echo "$span" | \jq -r '.parent_id')
+assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | \jq -r '.kind')"
+assert_not_equals null "$(\echo "$span" | \jq -r '.parent_id')"
 
 echo '
 import subprocess
@@ -111,8 +111,8 @@ subprocess.run("echo hello world 9", shell=True)
 ' | python3
 assert_equals 0 $?
 span="$(resolve_span '.name == "echo hello world 9"')"
-assert_equals "SpanKind.INTERNAL" $(\echo "$span" | \jq -r '.kind')
-assert_not_equals null $(\echo "$span" | \jq -r '.parent_id')
+assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | \jq -r '.kind')"
+assert_not_equals null "$(\echo "$span" | \jq -r '.parent_id')"
 
 echo '
 import subprocess
@@ -120,8 +120,8 @@ subprocess.run(["echo", "hello", "world", "10"], shell=True)
 ' | python3
 assert_equals 0 $?
 span="$(resolve_span '.name == "echo hello world 10"')"
-assert_equals "SpanKind.INTERNAL" $(\echo "$span" | \jq -r '.kind')
-assert_not_equals null $(\echo "$span" | \jq -r '.parent_id')
+assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | \jq -r '.kind')"
+assert_not_equals null "$(\echo "$span" | \jq -r '.parent_id')"
 
 export OTEL_SHELL_CONFIG_INJECT_DEEP=TRUE
 echo "$TRACEPARENT"
