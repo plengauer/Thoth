@@ -7,6 +7,12 @@ on:
     branches:
       - main
       - 'release/v*.*'
+  workflow_dispatch:
+    inputs:
+      commit_ids:
+        required: true
+        type: string
+        description: comma separated commit ids
 
 jobs:
 
@@ -26,6 +32,9 @@ jobs:
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
         with:
           secrets_to_redact: '["${{ github.token }}"]'
+      - if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: |
+          echo -n '${{ inputs.commit_ids }}' | tr ',' '\n' | jq '{"id":.}' | jq -s '{"commits":.}' > "$GITHUB_EVENT_PATH"
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
@@ -85,14 +94,13 @@ jobs:
         with:
           secrets_to_redact: |-
             ${{ github.token }}
-            ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ matrix.ref }}
-          token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          token: ${{ github.token }}
       - run: echo "version=$(cat VERSION)" >> "$GITHUB_OUTPUT"
         id: version
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
@@ -145,7 +153,7 @@ jobs:
 
       - uses: softprops/action-gh-release@8a0cd651e5b2365bd640854a3fa5dfc70e4875f3 # v3.0.4
         with:
-          token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          token: ${{ github.token }}
           target_commitish: ${{ matrix.ref }}
           tag_name: v${{ steps.version.outputs.version }}
           name: Release v${{ steps.version.outputs.version }}

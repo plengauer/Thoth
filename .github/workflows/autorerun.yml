@@ -12,17 +12,17 @@ jobs:
     runs-on: ubuntu-slim
     permissions:
       contents: none
-      actions: read
+      actions: write
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@5d34a21816f798c24f19857225b018a7f2af731f # v5.66.0
         with:
-          secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}"]'
+          secrets_to_redact: '["${{ github.token }}"]'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
       - uses: plengauer/autorerun@01cbbd02fa9641d3e243b12190be63c7aa3a13c5 # v0.38.0
         with:
-          github_token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          github_token: ${{ github.token }}
           custom_patterns: |
             fatal: 'v.*' is not a commit and a branch 'release/.*' cannot be created from it
             jq: parse error: invalid string: control characters from .* through .* must be escaped

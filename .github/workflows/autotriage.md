@@ -6,8 +6,9 @@ on:
     types: [opened]
   roles: all
 permissions:
+  copilot-requests: write
   contents: read
-  issues: read
+  issues: write
   actions: read
 tools:
   github:
@@ -20,7 +21,6 @@ safe-outputs:
   add-comment:
   close-issue:
   assign-to-agent:
-    github-token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
     custom-instructions: >-
       Before starting, read the full issue title, body, and all comments. Treat the triage analysis comment as part of the task description and follow its relevant files, root-cause hypothesis, suggested approach, and acceptance criteria alongside the issue description.
 ---
