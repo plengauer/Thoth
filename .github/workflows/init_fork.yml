@@ -14,7 +14,7 @@ jobs:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
         with:
-          secrets_to_redact: '["${{ github.token }}","${{ secrets.COPILOT_GITHUB_TOKEN }}"]'
+          secrets_to_redact: '["${{ github.token }}"]'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - run: |
           tag=v"$(cat VERSION)"
