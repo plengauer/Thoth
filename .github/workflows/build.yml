@@ -348,7 +348,7 @@ jobs:
           ref: ${{ inputs.ref }}
       - uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
         with:
-          java-version: 25.0.5+8.0.LTS
+          java-version: 25.0.5+100000002.0.LTS
           distribution: temurin
       - run: |
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.java
