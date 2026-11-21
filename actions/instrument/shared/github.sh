@@ -2,7 +2,7 @@
 # shellcheck shell=bash
 
 gh_curl() {
-  curl -L --no-progress-meter --fail --retry 16 -H "Authorization: Bearer $INPUT_GITHUB_TOKEN" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_REPOSITORY""$@"
+  curl -L --no-progress-meter --fail --retry 16 -H "Authorization: Bearer $INPUT_GITHUB_TOKEN" "${GITHUB_API_URL:-https://api.github.com}/repos/$GITHUB_REPOSITORY$1" "${@:2}"
 }
 export -f gh_curl
 
@@ -12,7 +12,7 @@ gh_curl_paginated() {
       grep 'rel="last"' | cut -d ';' -f1 | cut -d '?' -f 2- | tr '&' '\n' |
       grep '^page=' | cut -d = -f 2 |
       xargs seq 1 || true
-  } | while read -r page; do echo "$@"'&page='"$page"; done | xargs -r -n 1 bash -ec 'gh_curl "$@"' bash
+  } | while read -r page; do echo "$*"'&page='"$page"; done | xargs -r -n 1 bash -ec 'gh_curl "$@"' bash
 }
 export -f gh_curl_paginated
 

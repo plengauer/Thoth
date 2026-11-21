@@ -4,6 +4,7 @@
 _otel_call_and_record_logs() {
   local call_command="$1"
   shift
+  # shellcheck disable=SC2153 # TRACEPARENT is a different variable than the lowercase local
   local traceparent="$TRACEPARENT"
   local stderr_logs="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.stderr.logs.pipe.XXXXXXXXXX)"
   # shellcheck disable=SC2086 # the mkfifo flags are an optional list of arguments that must be split into words or vanish when empty

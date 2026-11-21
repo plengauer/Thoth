@@ -33,9 +33,11 @@ if false && { [ "$INPUT_SELF_MONITORING" = true ] || { [ "$INPUT_SELF_MONITORING
     export OTEL_EXPORTER_OTLP_ENDPOINT=http://3.73.14.87:4318
     export OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE=delta
     . otelapi.sh
+    # shellcheck disable=SC2329 # the function is invoked indirectly by the sourced instrumentation library or by the test harness
     _otel_resource_attributes_process() {
       :
     }
+    # shellcheck disable=SC2329 # the function is invoked indirectly by the sourced instrumentation library or by the test harness
     _otel_resource_attributes_custom() {
       _otel_resource_attribute string telemetry.sdk.language=github
     }
@@ -78,6 +80,11 @@ while [ "$count" -lt 60 ] && ! (gh_workflow_run_logs "$INPUT_WORKFLOW_RUN_ID" "$
 done
 echo "Logs ... done" >&2
 wait
+if jq -s -e 'any(.[]; .conclusion != "skipped" and (.started_at == null or .started_at == "" or .completed_at == null or .completed_at == ""))' <"$jobs_json" >/dev/null; then
+  echo "::notice::Workflow telemetry not exported because a non-skipped job has missing timestamps."
+  echo "::endgroup::"
+  exit 0
+fi
 if [ -r "$logs_zip" ] && unzip -t "$logs_zip" 1>/dev/null 2>/dev/null; then
   read_log_file() {
     unzip -Z1 "$logs_zip" | grep '.txt$' | grep -E "$(printf '%s' "$1" | sed 's/[.[\(*^$+?{|]/\\\\&/g')" | xargs -d '\n' -r unzip -p "$logs_zip" | sed "s/^$(printf '\xef\xbb\xbf')//"
@@ -93,6 +100,7 @@ echo "::group::Determine Trace ID"
 workflow_run_dir="$(mktemp -d)"
 gh_artifact_download "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" opentelemetry_workflow_run_"$INPUT_WORKFLOW_RUN_ATTEMPT" "$workflow_run_dir" || true
 if [ -r "$workflow_run_dir"/traceparent ]; then export OTEL_ID_GENERATOR_OVERRIDE_TRACEPARENT="$(cat "$workflow_run_dir"/traceparent)"; fi
+if [ -r "$workflow_run_dir"/caller_traceparent ]; then export TRACEPARENT="$(cat "$workflow_run_dir"/caller_traceparent)" TRACESTATE="$(cat "$workflow_run_dir"/caller_tracestate 2>/dev/null || true)"; fi
 echo "::endgroup::"
 
 echo "::group::Export"
@@ -132,7 +140,8 @@ action_duration_counter_handle="$(otel_counter_create counter github.actions.act
 
 link="${GITHUB_SERVER_URL:-https://github.com}"/"$(jq <"$workflow_json" -r .repository.owner.login)"/"$(jq <"$workflow_json" -r .repository.name)"/actions/runs/"$(jq <"$workflow_json" -r .id)"
 workflow_started_at="$(jq <"$workflow_json" -r .run_started_at)"
-workflow_ended_at="$(jq <"$jobs_json" -r .completed_at | sort -r | head -n 1)"
+workflow_ended_at="$(jq <"$jobs_json" -r '.completed_at | select(. != null and . != "")' | sort -r | head -n 1)"
+workflow_ended_at="${workflow_ended_at:-$(jq <"$workflow_json" -r '.updated_at // .run_started_at')}"
 last_log_timestamp="$(read_log_file '.txt' | cut -d ' ' -f 1 | sort | tail -n 1 || true)"
 if [ "$last_log_timestamp" '>' "$workflow_ended_at" ]; then workflow_ended_at="$last_log_timestamp"; fi
 
@@ -190,6 +199,7 @@ otel_span_end "$workflow_span_handle" @"$workflow_ended_at"
 jq <"$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .created_at, .started_at, .completed_at, .name] | @tsv' | while IFS=$'\t' read -r TRACEPARENT job_id job_conclusion job_created_at job_started_at job_completed_at job_name; do
   if [ "$job_conclusion" = skipped ]; then continue; fi
   if jq <"$artifacts_json" -r .name | grep -qE '^opentelemetry_job_'"$job_id"'_signals_.*$'; then
+    # shellcheck disable=SC2329 # the function is invoked indirectly by the sourced instrumentation library or by the test harness
     export_deferred_signal_artifacts() {
       artifact_name="$1"
       dir="$(mktemp -d)"
@@ -198,6 +208,7 @@ jq <"$jobs_json" -r --unbuffered '. | ["'"$TRACEPARENT"'", .id, .conclusion, .cr
       rm -rf "$dir"
     }
     export -f export_deferred_signal_artifacts
+    # shellcheck disable=SC2329 # the function is invoked indirectly by the sourced instrumentation library or by the test harness
     export_deferred_signal_file() {
       file="$1"
       case "$file" in
