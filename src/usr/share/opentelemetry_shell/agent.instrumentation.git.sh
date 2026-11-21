@@ -112,7 +112,6 @@ _otel_pipe_git_trace() {
         local ip="${rest%%)*}"
         local port="${rest#*) port }"
         local port="${port%% *}"
-        local scheme=http
         ;;
       *'== Info: Established connection to '*)
         local rest="${line#*'== Info: Established connection to '}"
@@ -121,7 +120,6 @@ _otel_pipe_git_trace() {
         local ip="${rest%% *}"
         local port="${rest#* port }"
         local port="${port%%)*}"
-        local scheme=http
         ;;
       *'== Info: Establish HTTP proxy tunnel to '*)
         local rest="${line#*'== Info: Establish HTTP proxy tunnel to '}"
