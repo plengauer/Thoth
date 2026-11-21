@@ -12,7 +12,9 @@ _otel_propagate_wget() {
     *) local job_control=0 ;;
   esac
   local file=/usr/share/opentelemetry_shell/agent.instrumentation.http/libinjecthttpheader.so
+  # shellcheck disable=SC2154 # the variable is assigned by the sourced instrumentation library or provided by the environment
   if \[ -f "$file" ] && ! \ldd "$file" 2>/dev/null | \grep -q 'not found' && ! (\[ "$_otel_shell" = 'busybox sh' ] && \help | \tail -n +3 | \grep -q wget); then
+    # shellcheck disable=SC2154 # the variable is assigned by the sourced instrumentation library or provided by the environment
     export OTEL_SHELL_INJECT_HTTP_SDK_PIPE="$_otel_remote_sdk_pipe"
     export OTEL_SHELL_INJECT_HTTP_HANDLE_FILE="$(\mktemp -u)_opentelemetry_shell_$$.wget.handle"
     local OLD_LD_PRELOAD="${LD_PRELOAD:-}"

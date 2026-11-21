@@ -141,6 +141,7 @@ _otel_inject_docker_args() {
       \echo -n ' '
       _otel_escape_args --env "$kvp"
     done
+    # shellcheck disable=SC2154 # the variable is assigned by the sourced instrumentation library or provided by the environment
     \chmod 666 "$_otel_remote_sdk_pipe"
     \echo -n ' '
     _otel_escape_args --mount type=bind,source="$_otel_remote_sdk_pipe",target=/var/opentelemetry_shell"$_otel_remote_sdk_pipe"
