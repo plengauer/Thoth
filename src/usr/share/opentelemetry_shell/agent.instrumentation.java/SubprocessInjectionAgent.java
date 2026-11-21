@@ -9,9 +9,18 @@ import java.lang.reflect.InvocationTargetException;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.Span;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.SpanContext;
 
+// The agent manifest names this class without a package
 // Making every local variable final is noise without a safety benefit
-@SuppressWarnings("PMD.LocalVariableCouldBeFinal")
-public class SubprocessInjectionAgent {
+// Byte Buddy and the OpenTelemetry API are fluent builders
+// The advice bodies are inlined into the target class
+// and cannot call helper methods
+// Making every parameter final is noise, and the advice parameters
+// are reassigned on purpose
+@SuppressWarnings({"PMD.NoPackage", "PMD.LocalVariableCouldBeFinal", "PMD.LawOfDemeter", "PMD.CognitiveComplexity", "PMD.MethodArgumentCouldBeFinal"})
+public final class SubprocessInjectionAgent {
+    private SubprocessInjectionAgent() {
+    }
+
     public static void premain(String args, Instrumentation instrumentation) throws IOException {
         instrumentation.appendToBootstrapClassLoaderSearch(new java.util.jar.JarFile("/usr/share/opentelemetry_shell/agent.instrumentation.java/subprocessinjectionagent.jar"));
         new AgentBuilder.Default()
@@ -25,7 +34,10 @@ public class SubprocessInjectionAgent {
             .installOn(instrumentation);
     }
 
-    public static class InjectCommandAdvice {
+    public static final class InjectCommandAdvice {
+        private InjectCommandAdvice() {
+        }
+
         @Advice.OnMethodEnter
         public static void onEnter(@Advice.Argument(value = 0, readOnly = false) String[] cmdarray, @Advice.Argument(value = 1, readOnly = false) Map<String, String> environment) {
             if (environment == null) {
@@ -33,9 +45,11 @@ public class SubprocessInjectionAgent {
                     Map<String, String> rootenvironment = System.getenv();
                     Method method = Class.forName("java.lang.ProcessEnvironment").getDeclaredMethod("emptyEnvironment", Integer.TYPE);
                     method.setAccessible(true);
-                    environment = (Map<String, String>) method.invoke(null, new Object[] { rootenvironment.size() + 2 });
+                    environment = (Map<String, String>) method.invoke(null, rootenvironment.size() + 2);
                     for (String key : rootenvironment.keySet()) {
-                        if (!key.startsWith("OTEL_SHELL_COMMANDLINE_OVERRIDE") && !key.equals("OTEL_SHELL_AUTO_INJECTED")) environment.put(key, rootenvironment.get(key));
+                        if (!key.startsWith("OTEL_SHELL_COMMANDLINE_OVERRIDE") && !key.equals("OTEL_SHELL_AUTO_INJECTED")) {
+                            environment.put(key, rootenvironment.get(key));
+                        }
                     }
                 } catch (ClassNotFoundException | NoSuchMethodException
                     | IllegalAccessException | InvocationTargetException e) {
