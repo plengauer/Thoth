@@ -1,5 +1,6 @@
 import os
-import subprocess
+# required to re-inject the environment into child processes
+import subprocess  # nosec B404
 
 for _otel_key in ("OTEL_SHELL_COMMANDLINE_OVERRIDE", "OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE", "OTEL_SHELL_AUTO_INJECTED"):
     os.environ.pop(_otel_key, None)
