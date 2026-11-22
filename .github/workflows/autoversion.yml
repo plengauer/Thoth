@@ -23,7 +23,7 @@ jobs:
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - uses: plengauer/autoversion@de18b86671e27145d689f84b43978cf5f1a5d16c # v5.2.0
+      - uses: plengauer/autoversion@bb30f536a55f82db23f8dcd803b57eb6852e58ad # v5.3.0
         with:
           github_token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           path_include: ./meta:./src:./actions

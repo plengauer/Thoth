@@ -9,7 +9,7 @@ _otel_inject_python() {
     _otel_python_inject_args "$@" >/dev/null
     local my_code_source="$_otel_python_code_source"
     local python_path="${PYTHONPATH:-}"
-    if _otel_can_inject_python_otel && \[ -d /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"/site-packages ]; then
+    if _otel_can_inject_python_otel && \[ -d /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"/site-packages ] && _otel_python_site_packages_compatible /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"/site-packages; then
       unset _otel_python_code_source _otel_python_file _otel_python_module _otel_python_command
       \eval "set -- $(_otel_python_inject_args "$@")"
       local python_path=/usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"/site-packages/:"$python_path"
@@ -43,6 +43,20 @@ if __name__ == '__main__':
     _otel_call "$@" || local exit_code="$?"
   fi
   return "${exit_code:-0}"
+}
+
+_otel_python_site_packages_compatible() {
+  local incompatible
+  incompatible="$(
+    \find "$1" \( -type f -o -type l \) -name '*.so' -exec sh -c '
+      for file do
+        output="$(\ldd "$file" 2>&1)" || { \printf "%s\n" "$file"; continue; }
+        \printf "%s\n" "$output" | \grep -qi "not found" && \printf "%s\n" "$file"
+      done
+      exit 0
+    ' sh {} +
+  )" || return 1
+  \[ -z "$incompatible" ]
 }
 
 _otel_can_inject_python_otel() {
