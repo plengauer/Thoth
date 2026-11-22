@@ -66,7 +66,7 @@ assert_equals "update items set name = ? where id IN (?)" "$(\echo "$span" | jq 
 $TEST_SHELL auto/sqlite3.sh -header -csv "$db" 'select id, name from items where id <= 2 order by id' >"$dir/stdout"
 assert_equals "id,name
 1,secret5
-2,secret5" "$(\cat "$dir/stdout")"
+2,secret5" "$(\tr -d '\r' <"$dir/stdout")"
 span="$(resolve_span '.attributes."db.query.text" == "select id, name from items where id <= ? order by id"')"
 assert_equals "SELECT items" "$(\echo "$span" | jq -r '.name')"
 assert_equals "items" "$(\echo "$span" | jq -r '.attributes."db.collection.name"')"
