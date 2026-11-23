@@ -21,6 +21,7 @@ if false && { [ "$INPUT_SELF_MONITORING" = true ] || { [ "$INPUT_SELF_MONITORING
   (
     unset OTEL_EXPORTER_OTLP_METRICS_ENDPOINT OTEL_EXPORTER_OTLP_LOGS_ENDPOINT OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
     export OTEL_SHELL_SDK_OUTPUT_REDIRECT=/dev/null
+    # shellcheck disable=SC2030 # the subshell is intentionally isolated so its environment does not leak into the main script
     export OTEL_SERVICE_NAME="OpenTelemetry GitHub Selfmonitoring"
     export OTEL_TRACES_EXPORTER=none
     export OTEL_LOGS_EXPORTER=none

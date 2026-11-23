@@ -157,25 +157,17 @@ _otel_resolve_command_self() {
   \tr '\000-\037' ' ' <"/proc/$$/cmdline"
 }
 
-if \[ "$_otel_shell" = bash ]; then
-  _otel_package_version() {
-    # dpkg is very expensive, lets cache and be a bit less exact in case packages get updated why children are spawned!
-    local package_name="$1"
-    local varname="OTEL_SHELL_PACKAGE_VERSION_CACHE_$package_name"
-    local varname="${varname//-/_}"
-    \eval "local varvalue=\${$varname:-}"
-    if \[ -n "$varvalue" ]; then
-      \echo "$varvalue"
-      return 0
-    fi
-    \export "$varname=$(_otel_resolve_package_version "$1")"
-    \echo "${!varname}"
-  }
-else
-  _otel_package_version() {
-    _otel_resolve_package_version "$1"
-  }
-fi
+_otel_package_version() {
+  local varname
+  varname="OTEL_SHELL_PACKAGE_VERSION_CACHE_$(\printf '%s' "$1" | LC_ALL=C \tr -c 'a-zA-Z0-9_' '_')"
+  local varvalue
+  \eval "varvalue=\${$varname:-}"
+  if \[ -z "$varvalue" ]; then
+    varvalue="$(_otel_resolve_package_version "$1")"
+    \export "$varname=$varvalue"
+  fi
+  \echo "$varvalue"
+}
 
 _otel_resolve_package_version() {
   ( \dpkg -s "$1" || \rpm -qi "$1" || {
@@ -556,11 +548,13 @@ _otel_escape_arg() {
 
 if \[ "$_otel_shell" = bash ]; then
   _otel_escape_arg_format() {
+    # shellcheck disable=SC2059 # the format string is intentionally composed from variables
     \printf "$1" "${2//\'/\'\\\'\'}"
   }
 else
   _otel_escape_arg_format() {
     local escaped="$(\printf '%s' "$2X" | \sed "s/'/'\\\\''/g")" # need the extra X to preserve trailing linefeeds (yay)
+    # shellcheck disable=SC2059 # the format string is intentionally composed from variables
     \printf "$1" "${escaped%X}"
   }
 fi
