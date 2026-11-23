@@ -76,7 +76,7 @@ artifacts_json="$(mktemp)"
 gh_jobs "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" | jq .jobs[] >"$jobs_json" && echo "Jobs and Steps ... done" >&2 &
 gh_artifacts "$INPUT_WORKFLOW_RUN_ID" | jq -r .artifacts[] >"$artifacts_json" && echo "Artifacts ... done" >&2 &
 count=1
-while [ "$count" -lt 60 ] && ! (gh_workflow_run_logs "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" "$logs_zip" && unzip -t "$logs_zip" 1> /dev/null 2> /dev/null); do # sometimes downloads fail
+while [ "$count" -lt 60 ] && ! (gh_workflow_run_logs "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" "$logs_zip" && { unzip -t "$logs_zip" 1> /dev/null 2> /dev/null || [ "$(wc -c <"$logs_zip")" -eq 22 ]; }); do # sometimes downloads fail; runs without executed jobs yield an empty 22-byte zip that unzip -t rejects
   sleep "$count"
   count=$((count * 2))
 done
@@ -93,8 +93,8 @@ if [ -r "$logs_zip" ] && unzip -t "$logs_zip" 1>/dev/null 2>/dev/null; then
   }
 else
   read_log_file() { true; }
+  if [ "$(wc -c <"$logs_zip")" -ne 22 ]; then echo '::warning::Downloading logs failed, zip file was corrupt!'; fi
   rm -rf "$logs_zip"
-  echo '::warning::Downloading logs failed, zip file was corrupt!'
 fi
 echo "::endgroup::"
 
