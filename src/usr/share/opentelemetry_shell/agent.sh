@@ -25,6 +25,7 @@ unset OTEL_SHELL_CONSERVATIVE_EXEC
 \. /usr/share/opentelemetry_shell/api.sh
 _otel_package_version opentelemetry-shell >/dev/null # to build the cache outside a subshell
 
+# shellcheck disable=SC2154 # the variable is assigned by the sourced instrumentation library or provided by the environment
 if \[ "$_otel_shell" = "bash" ] && \[ -n "${BASHPID:-}" ] && \[ "$$" != "$BASHPID" ]; then
   \echo "WARNING The OpenTelemetry shell file for auto-instrumentation is sourced in a subshell, automatic instrumentation will only be active within that subshell!" >&2
 fi
@@ -50,11 +51,15 @@ else
 fi
 
 if \[ "$_otel_shell" = "bash" ]; then
+  # shellcheck disable=SC2016 # single quotes are intentional, the text is meant to be expanded later by another shell or tool
   _otel_source_file_resolver='${BASH_SOURCE:-}'
 else
+  # shellcheck disable=SC2016 # single quotes are intentional, the text is meant to be expanded later by another shell or tool
   _otel_source_file_resolver='$0'
 fi
+# shellcheck disable=SC2016 # single quotes are intentional, the text is meant to be expanded later by another shell or tool
 _otel_source_line_resolver='${LINENO:-}'
+# shellcheck disable=SC2016 # single quotes are intentional, the text is meant to be expanded later by another shell or tool
 _otel_source_func_resolver='${FUNCNAME:-}'
 
 if \[ "$_otel_shell" = "bash" ]; then
@@ -78,6 +83,7 @@ _otel_auto_instrument() {
   } | \md5sum | \cut -d ' ' -f 1)"
   local cache_file="$TMPDIR/opentelemetry_shell_$(_otel_package_version opentelemetry-shell)_${_otel_shell}_instrumentation_cache_${cache_key}.aliases"
   if \[ -r "$cache_file" ]; then
+    # shellcheck disable=SC2046 # the helper prints a whitespace separated list of file paths that must be split into separate grep arguments
     \eval "$(\grep -vh '_otel_alias_prepend ' $(_otel_list_special_auto_instrument_files))"
     \. "$cache_file" && return 0 || \true
   fi
@@ -106,6 +112,7 @@ _otel_auto_instrument() {
   if \[ "$_otel_shell" = bash ]; then \alias source='_otel_instrument_and_source "$#" "$@" source'; fi
   if \[ "$_otel_shell_conservative_exec" = TRUE ]; then
     if \[ -n "${LINENO:-}" ]; then
+      # shellcheck disable=SC2139 # the alias is intentionally expanded when it is defined
       \alias exec='eval "$(_otel_inject_and_exec_by_location "'"$_otel_source_file_resolver"'" "'"$_otel_source_line_resolver"'")"; exec'
     else
       \alias exec='_otel_record_exec; exec'
@@ -138,7 +145,7 @@ _otel_list_path_commands() {
 }
 
 _otel_list_path_executables() {
-  \echo "$PATH" | \tr ':' '\n' | while \read dir; do
+  \echo "$PATH" | \tr ':' '\n' | while \read -r dir; do
     \find "$dir" -maxdepth 1 -type f -executable 2>/dev/null || \true
     \find "$dir" -maxdepth 1 -type l -executable 2>/dev/null || \true
   done
@@ -213,7 +220,7 @@ _otel_filter_commands_by_mode() {
 _otel_filter_commands_by_special() {
   # we need to exclude all well-known builtins that would change their semantics if they are used in an alias or within a function.
   # for example, set resets options but also arguments of the current script and/or function. since instrumentation is done via functions, instrumenting set would change its behavior
-  \grep -vE '^(break|command|continue|builtin|declare|\.|source|eval|exec|exit|export|hash|local|return|set|shift|trap|:|unalias|unset|alias|read|nohup)$' | \grep -vE '^(OTEL_|_otel_|otel_)'
+  \grep -vE '^(cd|break|command|continue|builtin|declare|\.|source|eval|exec|exit|export|hash|local|return|set|shift|trap|:|unalias|unset|alias|read|nohup)$' | \grep -vE '^(OTEL_|_otel_|otel_)'
 }
 
 _otel_filter_by_validity() {
@@ -225,6 +232,7 @@ _otel_deshebangify() {
   if \[ "$(_otel_command_type "$cmd")" != file ]; then return 1; fi
   local shebang="$(_otel_resolve_shebang "$1")" # e.g., "/bin/bash -x"
   if \[ -z "$shebang" ]; then return 2; fi
+  # shellcheck disable=SC2139 # the alias is intentionally expanded when it is defined
   \alias "$1=OTEL_SHELL_COMMAND_TYPE_OVERRIDE=file $shebang $(\which "$1" 2>/dev/null)" # e.g., alias upgrade='/bin/bash -x /usr/bin/upgrade'
 }
 
@@ -316,6 +324,7 @@ _otel_alias_prepend() {
     local new_command="$overrides $prepend_command $previous_otel_command $previous_alias_command"
   fi
 
+  # shellcheck disable=SC2139 # the alias is intentionally expanded when it is defined
   \alias "$original_command"='OTEL_SHELL_SPAN_ATTRIBUTES_OVERRIDE="code.filepath='"$_otel_source_file_resolver"',code.lineno='"$_otel_source_line_resolver"',code.function='"$_otel_source_func_resolver"'" '"$new_command"
 }
 
@@ -396,7 +405,8 @@ _otel_instrument_and_source() {
   local command="$(eval '\echo ${'"$((n + 1))"'}')"
   local file="$(eval '\echo ${'"$((n + 2))"'}')"
   if \[ -f "$file" ]; then _otel_auto_instrument "$file"; fi
-  \eval "'$command' '$file' $(if \[ $# -gt $((n + 2)) ]; then \seq $((n + 2 + 1)) $#; else \seq 1 "$n"; fi | while \read i; do \echo '"${'"$i"'}"'; done | _otel_line_join)"
+  # shellcheck disable=SC2016 # single quotes are intentional, the text is meant to be expanded later by another shell or tool
+  \eval "'$command' '$file' $(if \[ $# -gt $(($n + 2)) ]; then \seq $(($n + 2 + 1)) $#; else \seq 1 "$n"; fi | while \read -r i; do \echo '"${'"$i"'}"'; done | _otel_line_join)"
 }
 
 _otel_inject_and_exec_directly() { # this function assumes there is no fd fuckery
@@ -429,6 +439,7 @@ _otel_inject_and_exec_directly() { # this function assumes there is no fd fucker
   \export OTEL_SHELL_COMMANDLINE_OVERRIDE="$(_otel_command_self)"
   \export OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE="$PPID"
   shift
+  # shellcheck disable=SC2016 # single quotes are intentional, the text is meant to be expanded later by another shell or tool
   \exec $_otel_shell -c '. otel.sh
 eval _otel_inject "$(_otel_escape_args "$@")"' sh "$@"
 }
@@ -459,6 +470,7 @@ _otel_inject_and_exec_by_location() {
   # shellcheck disable=SC2086 # the shell may be a command with arguments such as busybox sh and must be split into words
   _otel_escape_args $_otel_shell -c '. otel.sh
 _otel_inject '"$command"
+  # shellcheck disable=SC2016 # single quotes are intentional, the text is meant to be expanded later by another shell or tool
   \echo -n ' "$0" "$@"'
 }
 
@@ -482,6 +494,7 @@ _otel_trap() {
       _otel_deferred_exit_command="$command"
       _otel_deferred_exit_command_owner="${BASHPID:-$$}"
     else
+      # shellcheck disable=SC2064 # the command is intentionally expanded when the trap is set
       \trap "$command" "$signal"
     fi
   done

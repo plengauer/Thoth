@@ -10,10 +10,19 @@ WORKDIR /tests
 COPY . ./
 
 # this is a throwaway test image for many distributions, so apt packages are intentionally unpinned
-# hadolint ignore=DL3015,DL3008
+# this is a throwaway test image for many distributions, so the apt lists are intentionally not deleted
+# this is a throwaway test image for many distributions, so the apk cache rule is intentionally not applied
+# this is a throwaway test image for many distributions, so yum caches are intentionally not cleaned
+# this is a throwaway test image for many distributions, so yum packages are intentionally unpinned
+# this is a throwaway test image for many distributions, so zypper packages are intentionally unpinned
+# this is a throwaway test image for many distributions, so dnf caches are intentionally not cleaned
+# this is a throwaway test image for many distributions, so dnf packages are intentionally unpinned
+# this is a throwaway test image for many distributions, so pipefail is intentionally not set
+# this is a throwaway test image for many distributions, so the word splitting of the package lists is intended
+# hadolint ignore=DL3015,DL3008,DL3009,DL3019,DL3032,DL3033,DL3037,DL3040,DL3041,DL4006,SC2086
 RUN <<EOF
   packages_mandatory="jq psmisc wget curl time sudo bash"
-  packages_optional="parallel moreutils ncat wget2 postgresql nodejs npm python3 python3-pip gcc default-jdk-headless jdk"
+  packages_optional="parallel moreutils ncat wget2 postgresql sqlite3 mariadb-server redis-tools redis-server openssh-server nodejs npm python3 python3-pip gcc default-jdk-headless jdk"
   if type apt-get; then
     apt-get update
     [ "$update" = TRUE ] && DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y || true

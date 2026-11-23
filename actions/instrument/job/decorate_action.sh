@@ -107,9 +107,11 @@ record_github_logs() {
 }
 
 . otelapi.sh
+# shellcheck disable=SC2329 # the function is invoked indirectly by the sourced instrumentation library or by the test harness
 _otel_resource_attributes_process() {
   :
 }
+# shellcheck disable=SC2329 # the function is invoked indirectly by the sourced instrumentation library or by the test harness
 _otel_resource_attributes_custom() {
   _otel_resource_attribute string telemetry.sdk.language=github
 }
@@ -141,7 +143,11 @@ record_github_logs_pid="$!"
 cat <"$log_0_pipe" >"$log_1_pipe" &
 redirect_github_logs_pid="$!"
 exit_code=0
-otel_observe "$_OTEL_GITHUB_STEP_AGENT_INJECTION_FUNCTION" "$@" 1>>"$log_0_pipe" 2>>"$log_0_pipe" || exit_code="$?"
+if [ "${OTEL_GITHUB_INJECT_STEP:-TRUE}" = TRUE ]; then
+  otel_observe "$_OTEL_GITHUB_STEP_AGENT_INJECTION_FUNCTION" "$@" 1>>"$log_0_pipe" 2>>"$log_0_pipe" || exit_code="$?"
+else
+  "$@" 1>>"$log_0_pipe" 2>>"$log_0_pipe" || exit_code="$?"
+fi
 
 otel_span_deactivate "$span_handle"
 ! [ -r "$GITHUB_STATE" ] || cat "$GITHUB_STATE" | github_properties_to_kvps | while read -r kvp; do otel_span_attribute_typed "$span_handle" string github.actions.step.state.after."$(variable_name_2_attribute_key "${kvp%%=*}")"="${kvp#*=}"; done

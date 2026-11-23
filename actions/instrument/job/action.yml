@@ -19,6 +19,9 @@ inputs:
   self_monitoring_anonymize:
     description: 'Whether to strip self monitoring data of any identifiable information. Possible values are true, false, and auto (false for public repository on GitHub SaaS, true for private GitHub servers and private repositories).'
     default: 'true'
+  trace_detail_level:
+    description: 'Level of detail of the recorded traces, one of "low" (only job and step spans, no injection into steps), "medium" (additionally commands within steps, but no internal shell commands), "high" (additionally internals), or "max" (additionally all subprocesses).'
+    default: '' # default medium implictly
   debug:
     description: 'Enable debug logging'
     default: '${{ runner.debug }}'
