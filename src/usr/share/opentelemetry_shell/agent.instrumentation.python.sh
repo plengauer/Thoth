@@ -1,6 +1,14 @@
 #!/bin/false
 # shellcheck shell=bash
 
+_otel_python_call() {
+  if \[ "${OTEL_DISABLE_RESOURCE_DETECTION:-FALSE}" = TRUE ]; then
+    OTEL_EXPERIMENTAL_RESOURCE_DETECTORS=process _otel_call "$@"
+  else
+    _otel_call "$@"
+  fi
+}
+
 _otel_inject_python() {
   local version="$(\eval "$1 -V" | \cut -d ' ' -f 2 | \cut -d . -f -2)"
   if _otel_string_starts_with "$version" 3.; then
@@ -9,7 +17,7 @@ _otel_inject_python() {
     _otel_python_inject_args "$@" >/dev/null
     local my_code_source="$_otel_python_code_source"
     local python_path="${PYTHONPATH:-}"
-    if _otel_can_inject_python_otel && \[ -d /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"/site-packages ]; then
+    if _otel_can_inject_python_otel && \[ -d /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"/site-packages ] && _otel_python_site_packages_compatible /usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"/site-packages; then
       unset _otel_python_code_source _otel_python_file _otel_python_module _otel_python_command
       \eval "set -- $(_otel_python_inject_args "$@")"
       local python_path=/usr/share/opentelemetry_shell/agent.instrumentation.python/"$version"/site-packages/:"$python_path"
@@ -34,15 +42,29 @@ if __name__ == '__main__':
       {
         \cat /usr/share/opentelemetry_shell/agent.instrumentation.python/deep.py
         \cat
-      } | OTEL_SHELL_COMMANDLINE_OVERRIDE="$cmdline" OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE="0" OTEL_SHELL_AUTO_INJECTED=TRUE PYTHONPATH="$python_path" OTEL_BSP_MAX_EXPORT_BATCH_SIZE=1 OTEL_PYTHON_SYSTEM_METRICS_EXCLUDED_METRICS="${OTEL_PYTHON_SYSTEM_METRICS_EXCLUDED_METRICS:-system.*}" _otel_call "$@" || local exit_code="$?"
+      } | OTEL_SHELL_COMMANDLINE_OVERRIDE="$cmdline" OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE="0" OTEL_SHELL_AUTO_INJECTED=TRUE PYTHONPATH="$python_path" OTEL_BSP_MAX_EXPORT_BATCH_SIZE=1 OTEL_PYTHON_SYSTEM_METRICS_EXCLUDED_METRICS="${OTEL_PYTHON_SYSTEM_METRICS_EXCLUDED_METRICS:-system.*}" _otel_python_call "$@" || local exit_code="$?"
     else
-      OTEL_SHELL_COMMANDLINE_OVERRIDE="$cmdline" OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE="0" OTEL_SHELL_AUTO_INJECTED=TRUE PYTHONPATH="$python_path" OTEL_BSP_MAX_EXPORT_BATCH_SIZE=1 OTEL_PYTHON_SYSTEM_METRICS_EXCLUDED_METRICS="${OTEL_PYTHON_SYSTEM_METRICS_EXCLUDED_METRICS:-system.*}" _otel_call "$@" || local exit_code="$?"
+      OTEL_SHELL_COMMANDLINE_OVERRIDE="$cmdline" OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE="0" OTEL_SHELL_AUTO_INJECTED=TRUE PYTHONPATH="$python_path" OTEL_BSP_MAX_EXPORT_BATCH_SIZE=1 OTEL_PYTHON_SYSTEM_METRICS_EXCLUDED_METRICS="${OTEL_PYTHON_SYSTEM_METRICS_EXCLUDED_METRICS:-system.*}" _otel_python_call "$@" || local exit_code="$?"
     fi
     unset _otel_python_code_source _otel_python_file _otel_python_module _otel_python_command
   else
     _otel_call "$@" || local exit_code="$?"
   fi
   return "${exit_code:-0}"
+}
+
+_otel_python_site_packages_compatible() {
+  local incompatible
+  incompatible="$(
+    \find "$1" \( -type f -o -type l \) -name '*.so' -exec sh -c '
+      for file do
+        output="$(\ldd "$file" 2>&1)" || { \printf "%s\n" "$file"; continue; }
+        \printf "%s\n" "$output" | \grep -qi "not found" && \printf "%s\n" "$file"
+      done
+      exit 0
+    ' sh {} +
+  )" || return 1
+  \[ -z "$incompatible" ]
 }
 
 _otel_can_inject_python_otel() {
@@ -66,9 +88,9 @@ _otel_inject_opentelemetry_instrument() {
       {
         \cat /usr/share/opentelemetry_shell/agent.instrumentation.python/deep.py
         \cat
-      } | OTEL_SHELL_COMMANDLINE_OVERRIDE="$cmdline" OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE="0" OTEL_SHELL_AUTO_INJECTED=TRUE OTEL_BSP_MAX_EXPORT_BATCH_SIZE=1 OTEL_PYTHON_SYSTEM_METRICS_EXCLUDED_METRICS="${OTEL_PYTHON_SYSTEM_METRICS_EXCLUDED_METRICS:-system.*}" _otel_call "$@"
+      } | OTEL_SHELL_COMMANDLINE_OVERRIDE="$cmdline" OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE="0" OTEL_SHELL_AUTO_INJECTED=TRUE OTEL_BSP_MAX_EXPORT_BATCH_SIZE=1 OTEL_PYTHON_SYSTEM_METRICS_EXCLUDED_METRICS="${OTEL_PYTHON_SYSTEM_METRICS_EXCLUDED_METRICS:-system.*}" _otel_python_call "$@"
     else
-      OTEL_SHELL_COMMANDLINE_OVERRIDE="$cmdline" OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE="0" OTEL_SHELL_AUTO_INJECTED=TRUE OTEL_BSP_MAX_EXPORT_BATCH_SIZE=1 OTEL_PYTHON_SYSTEM_METRICS_EXCLUDED_METRICS="${OTEL_PYTHON_SYSTEM_METRICS_EXCLUDED_METRICS:-system.*}" _otel_call "$@"
+      OTEL_SHELL_COMMANDLINE_OVERRIDE="$cmdline" OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE="0" OTEL_SHELL_AUTO_INJECTED=TRUE OTEL_BSP_MAX_EXPORT_BATCH_SIZE=1 OTEL_PYTHON_SYSTEM_METRICS_EXCLUDED_METRICS="${OTEL_PYTHON_SYSTEM_METRICS_EXCLUDED_METRICS:-system.*}" _otel_python_call "$@"
     fi
   else
     _otel_call "$@"
