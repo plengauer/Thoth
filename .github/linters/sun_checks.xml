@@ -93,15 +93,7 @@
   <!--   <property name="fileExtensions" value="java"/> -->
   <!-- </module> -->
 
-  <!-- Checks that a file begins with a c-style comment that lists the  -->
-  <!-- class name, version information, date and copyright notice.     -->
-  <!-- See https://checkstyle.org/checks/header/multifileregexpheader.html -->
-  <module name="MultiFileRegexpHeader">
-    <property name="fileExtensions" value="java"/>
-    <property name="headerFiles"
-              value="${org.checkstyle.sun.header.files}"
-              default="/com/puppycrawl/tools/checkstyle/any.header"/>
-  </module>
+  <!-- MultiFileRegexpHeader is disabled: its default header file /com/puppycrawl/tools/checkstyle/any.header cannot be read by the Checkstyle bundled with MegaLinter, which made Checkstyle crash at startup (no results uploaded since #4645), and it only enforced an empty "any" header -->
 
   <module name="TreeWalker">
 
@@ -110,7 +102,7 @@
     <module name="InvalidJavadocPosition"/>
     <module name="JavadocMethod"/>
     <module name="JavadocType"/>
-    <module name="JavadocVariable"/>
+    <!-- JavadocVariable is disabled: the agents are internal glue code without a public API to document -->
     <!-- MissingJavadocMethod is disabled: the agents are internal glue code without a public API to document -->
 
     <!-- Checks for Naming Conventions.                  -->
@@ -212,7 +204,7 @@
       <property name="maximumMessage"
                 value="Avoid using more than three variables in the for clause."/>
     </module>
-    <module name="FinalParameters"/>
+    <!-- FinalParameters is disabled: making every parameter final is style noise, and the Byte Buddy advice parameters are reassigned on purpose -->
     <module name="Indentation"/>
     <module name="TodoComment"/>
     <module name="UpperEll"/>

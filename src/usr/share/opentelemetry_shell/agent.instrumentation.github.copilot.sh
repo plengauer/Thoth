@@ -9,11 +9,17 @@ if \[ "${GITHUB_ACTIONS:-false}" = true ] && \[ "${GITHUB_EVENT_NAME:-}" = dynam
       \sed -i 's~#!/bin/bash~#!/bin/bash\n. otel.sh~g' "$script_file"
       \sed -i 's~#!/usr/bin/env sh~#!/usr/bin/env sh\n. otel.sh~g' "$script_file"
       \sed -i 's~#!/usr/bin/env bash~#!/usr/bin/env bash\n. otel.sh~g' "$script_file"
+      # shellcheck disable=SC2016 # single quotes are intentional, the text is meant to be expanded later by another shell or tool
       \sed -i 's~"$RUNNER_PATH/ghcca-node/node/bin/node"~_otel_inject "$RUNNER_PATH/ghcca-node/node/bin/node"~g' "$script_file"
+      # shellcheck disable=SC2016 # single quotes are intentional, the text is meant to be expanded later by another shell or tool
       \sed -i 's~"${RUNNER_PATH}/ghcca-node/node/bin/node"~_otel_inject "${RUNNER_PATH}/ghcca-node/node/bin/node"~g' "$script_file"
+      # shellcheck disable=SC2016 # single quotes are intentional, the text is meant to be expanded later by another shell or tool
       \sed -i 's~"${target_location}/node/bin/node"~_otel_inject "${target_location}/node/bin/node"~g' "$script_file"
+      # shellcheck disable=SC2016 # single quotes are intentional, the text is meant to be expanded later by another shell or tool
       \sed -i 's~^${command_to_execute}$~_otel_inject ${command_to_execute}~g' "$script_file"
+      # shellcheck disable=SC2016 # single quotes are intentional, the text is meant to be expanded later by another shell or tool
       \sed -i 's~^"${command_to_execute}"$~_otel_inject "${command_to_execute}"~g' "$script_file"
+      # shellcheck disable=SC2016 # single quotes are intentional, the text is meant to be expanded later by another shell or tool
       \sed -i 's~eval exec \$command_to_execute~eval _otel_inject $command_to_execute~g' "$script_file"
     done
     # The Copilot CLI does not pick up TRACEPARENT from its environment, it only joins a trace if the embedding SDK hands over a trace context with the session requests.

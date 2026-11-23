@@ -56,6 +56,8 @@ inputs:
   job_level_instrumentation_copilot:
     description: 'Instrument Copilot'
     default: 'true'
+  job_level_trace_detail_level:
+    description: 'Level of detail of the recorded traces, one of "low" (only job and step spans, no injection into steps), "medium" (additionally commands within steps, but no internals), "high" (additionally internals), or "max" (additionally all subprocesses). Deployed to all job-level instrumentations, including already existing ones.'
   action_repository:
     description: 'Override the action repository to deploy from'
     default: ''
@@ -391,6 +393,18 @@ runs:
             esac
           done
         done
+    - name: "Configure job-level instrumentation trace detail level"
+      if: ${{ inputs.job_level_instrumentation == 'true' && inputs.job_level_trace_detail_level != '' }}
+      shell: bash
+      run: |
+        case "${{ inputs.job_level_trace_detail_level }}" in low|medium|high|max) ;; *) echo "::error::Unsupported trace detail level: ${{ inputs.job_level_trace_detail_level }}"; exit 1 ;; esac
+        (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
+          cat "$workflow_file" | yq '.jobs | keys[]' | while read -r job_name; do
+            cat "$workflow_file" | yq ".jobs.$job_name.steps" | grep -qvF null || continue
+            if [ -z "$(cat "$workflow_file" | yq '.jobs.'"$job_name"'.steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*") | .uses')" ]; then continue; fi
+            yq -i '(.jobs.'"$job_name"'.steps[] | select(.uses == "${{ steps.determine-repository.outputs.repository }}/actions/instrument/job@*")).with.trace_detail_level = "${{ inputs.job_level_trace_detail_level }}"' "$workflow_file"
+          done
+        done
     - name: "Modify permissions for job-level instrumentations"
       if: ${{ inputs.job_level_instrumentation == 'true' }}
       shell: bash
@@ -425,7 +439,15 @@ runs:
             yq -i "del(.jobs.$job_name.steps[] | select(.env | length == 0) | .env)" "$workflow_file"
           done
         done
-  
+    - name: "Add trace context inputs to dispatchable workflows"
+      shell: bash
+      run: |
+        (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
+          [ "$(cat "$workflow_file" | yq '.on | has("workflow_dispatch")' 2> /dev/null)" = true ] || continue
+          for input in traceparent tracestate; do
+            yq -i ".on.workflow_dispatch.inputs.$input |= (. // {\"description\": \"W3C trace context $input\", \"required\": false, \"type\": \"string\"})" "$workflow_file"
+          done
+        done
     - name: "Annotate instrumentation action versions"
       if: ${{ steps.determine-instrumentation-version-comment.outputs.comment != '' }}
       shell: bash

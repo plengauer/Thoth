@@ -44,6 +44,7 @@ jobs:
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
+          trace_detail_level: medium
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
@@ -67,6 +68,7 @@ jobs:
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
+          trace_detail_level: medium
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
@@ -103,6 +105,7 @@ jobs:
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
+          trace_detail_level: max
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
@@ -131,10 +134,11 @@ jobs:
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
+          trace_detail_level: max
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
-      - uses: plengauer/autoversion@de18b86671e27145d689f84b43978cf5f1a5d16c # v5.2.0
+      - uses: plengauer/autoversion@bb30f536a55f82db23f8dcd803b57eb6852e58ad # v5.3.0
         with:
           github_token: ${{ github.token }}
           path_exclude: ./
@@ -158,19 +162,22 @@ jobs:
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
+          trace_detail_level: high
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
       - uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
         with:
-          dotnet-version: 10.0.403
+          dotnet-version: 10.0.404
       - run: dotnet --version
   job-image:
+    needs: job-smoke
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 60
     strategy:
       matrix:
         runner: [ubuntu-22.04, ubuntu-24.04, ubuntu-26.04, ubuntu-latest, ubuntu-22.04-arm, ubuntu-24.04-arm, ubuntu-26.04-arm]
+        trace_detail_level: [low, medium, high, max]
     permissions:
       contents: read
       actions: read
@@ -184,6 +191,7 @@ jobs:
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
+          trace_detail_level: ${{ matrix.trace_detail_level }}
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
@@ -252,10 +260,11 @@ jobs:
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
+          trace_detail_level: max
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
-      - uses: renovatebot/github-action@266fef21329c44765ad42f9dea1f01f5d2d91084 # v46.3.13 # node action with call to docker, docker flags that make injection more complicated, then call a node script via exec that already is injected with otel
+      - uses: renovatebot/github-action@acdd6bda8b035c99ce59d5675816af2aa65a1774 # v46.3.14 # node action with call to docker, docker flags that make injection more complicated, then call a node script via exec that already is injected with otel
         env:
           RENOVATE_DRY_RUN: full
           RENOVATE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -277,22 +286,23 @@ jobs:
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
+          trace_detail_level: max
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
-      - uses: github/codeql-action/init@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1 # node action will call java will call node
+      - uses: github/codeql-action/init@1bd86f2fdb4b86187fa4059f16f31a3202acc9ea # v4.39.4 # node action will call java will call node
         with:
           languages: javascript-typescript
           build-mode: none
-      - uses: github/codeql-action/analyze@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1 # node action will call java will call node
+      - uses: github/codeql-action/analyze@1bd86f2fdb4b86187fa4059f16f31a3202acc9ea # v4.39.4 # node action will call java will call node
         with:
           category: "/language:javascript-typescript"
           upload: never
-      - uses: github/codeql-action/init@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1
+      - uses: github/codeql-action/init@1bd86f2fdb4b86187fa4059f16f31a3202acc9ea # v4.39.4
         with:
           languages: python
           build-mode: none
-      - uses: github/codeql-action/analyze@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1 # node action will call java will call python
+      - uses: github/codeql-action/analyze@1bd86f2fdb4b86187fa4059f16f31a3202acc9ea # v4.39.4 # node action will call java will call python
         with:
           category: "/language:python"
           upload: never
@@ -314,6 +324,7 @@ jobs:
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
+          trace_detail_level: max
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
@@ -345,6 +356,7 @@ jobs:
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
+          trace_detail_level: max
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
@@ -371,6 +383,7 @@ jobs:
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
+          trace_detail_level: max
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
@@ -397,6 +410,7 @@ jobs:
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
+          trace_detail_level: max
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
@@ -422,6 +436,7 @@ jobs:
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
+          trace_detail_level: max
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
@@ -488,6 +503,7 @@ jobs:
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
+          trace_detail_level: high
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
@@ -508,6 +524,7 @@ jobs:
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
+          trace_detail_level: high
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
           OTEL_SHELL_SDK_OUTPUT_REDIRECT: /dev/null
@@ -651,6 +668,7 @@ jobs:
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
+          trace_detail_level: high
           secrets_to_redact: '{"github.token": "${{ github.token }}", "url": "https://example.com/foo/bar", "regex": "[a-zA-Z]*", "quote": "foo\"bar"}'
         env:
           OTEL_LOGS_EXPORTER: otlp
@@ -708,6 +726,7 @@ jobs:
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
+          trace_detail_level: high
           secrets_to_redact: '{"github.token": "${{ github.token }}", "url": "https://example.com/foo/bar", "regex": "[a-zA-Z]*"}'
         env:
           OTEL_LOGS_EXPORTER: ${{ matrix.exporter_logs }}
@@ -779,6 +798,7 @@ jobs:
       - uses: ./actions/instrument/job
         with:
           cache: 'false'
+          trace_detail_level: high
         env:
           OTEL_LOGS_EXPORTER: deferred
           OTEL_METRICS_EXPORTER: deferred
@@ -911,6 +931,8 @@ jobs:
         with:
           name: packages.deb.${{ inputs.ref }}
       - uses: ./actions/instrument/job
+        with:
+          trace_detail_level: max
         env:
           OTEL_SHELL_CONFIG_GITHUB_INJECT_ON_MAIN: 'TRUE'
       - run: echo hello world

@@ -54,14 +54,57 @@ echo "::endgroup::"
 echo "::group::Validate Configuration"
 export OTEL_SERVICE_NAME="${OTEL_SERVICE_NAME:-"$(echo "$GITHUB_REPOSITORY" | cut -d / -f 2-) CI"}"
 export OTEL_SEMCONV_STABILITY_OPT_IN="${OTEL_SEMCONV_STABILITY_OPT_IN:-http,database,messaging}"
-export OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT="${OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT:-span_and_event}"
-export OTEL_SHELL_CONFIG_MUTE_BUILTINS="${OTEL_SHELL_CONFIG_MUTE_BUILTINS:-TRUE}"
-export OTEL_SHELL_CONFIG_INJECT_DEEP="${OTEL_SHELL_CONFIG_INJECT_DEEP:-TRUE}"
-export OTEL_SHELL_CONFIG_OBSERVE_STDERR="${OTEL_SHELL_CONFIG_OBSERVE_STDERR:-TRUE}"
-export OTEL_SHELL_CONFIG_OBSERVE_PIPES="${OTEL_SHELL_CONFIG_OBSERVE_PIPES:-TRUE}"
-export OTEL_SHELL_CONFIG_OBSERVE_SUBPROCESSES="${OTEL_SHELL_CONFIG_OBSERVE_SUBPROCESSES:-TRUE}"
-export OTEL_SHELL_CONFIG_OBSERVE_SIGNALS="${OTEL_SHELL_CONFIG_OBSERVE_SIGNALS:-TRUE}"
-export COPILOT_OTEL_ENABLED="${COPILOT_OTEL_ENABLED:-true}"
+case "${INPUT_TRACE_DETAIL_LEVEL:-medium}" in
+  low) # only job spans + step spans
+    export OTEL_GITHUB_INJECT_STEP="${OTEL_GITHUB_INJECT_STEP:-FALSE}"
+    export OTEL_SHELL_CONFIG_MUTE_INTERNALS="${OTEL_SHELL_CONFIG_MUTE_INTERNALS:-TRUE}"
+    export OTEL_SHELL_CONFIG_MUTE_BUILTINS="${OTEL_SHELL_CONFIG_MUTE_BUILTINS:-TRUE}"
+    export OTEL_SHELL_CONFIG_INJECT_DEEP="${OTEL_SHELL_CONFIG_INJECT_DEEP:-FALSE}"
+    export OTEL_SHELL_CONFIG_OBSERVE_STDERR="${OTEL_SHELL_CONFIG_OBSERVE_STDERR:-FALSE}"
+    export OTEL_SHELL_CONFIG_OBSERVE_PIPES="${OTEL_SHELL_CONFIG_OBSERVE_PIPES:-FALSE}"
+    export OTEL_SHELL_CONFIG_OBSERVE_SUBPROCESSES="${OTEL_SHELL_CONFIG_OBSERVE_SUBPROCESSES:-FALSE}"
+    export OTEL_SHELL_CONFIG_OBSERVE_SIGNALS="${OTEL_SHELL_CONFIG_OBSERVE_SIGNALS:-FALSE}"
+    export COPILOT_OTEL_ENABLED="${COPILOT_OTEL_ENABLED:-false}"
+    export OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT="${OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT:-no_content}"
+    ;;
+  medium) # only job spans + step spans + outgoing client/consumer spans
+    export OTEL_GITHUB_INJECT_STEP="${OTEL_GITHUB_INJECT_STEP:-TRUE}"
+    export OTEL_SHELL_CONFIG_MUTE_INTERNALS="${OTEL_SHELL_CONFIG_MUTE_INTERNALS:-TRUE}"
+    export OTEL_SHELL_CONFIG_MUTE_BUILTINS="${OTEL_SHELL_CONFIG_MUTE_BUILTINS:-TRUE}"
+    export OTEL_SHELL_CONFIG_INJECT_DEEP="${OTEL_SHELL_CONFIG_INJECT_DEEP:-TRUE}"
+    export OTEL_SHELL_CONFIG_OBSERVE_STDERR="${OTEL_SHELL_CONFIG_OBSERVE_STDERR:-FALSE}"
+    export OTEL_SHELL_CONFIG_OBSERVE_PIPES="${OTEL_SHELL_CONFIG_OBSERVE_PIPES:-FALSE}"
+    export OTEL_SHELL_CONFIG_OBSERVE_SUBPROCESSES="${OTEL_SHELL_CONFIG_OBSERVE_SUBPROCESSES:-FALSE}"
+    export OTEL_SHELL_CONFIG_OBSERVE_SIGNALS="${OTEL_SHELL_CONFIG_OBSERVE_SIGNALS:-FALSE}"
+    export COPILOT_OTEL_ENABLED="${COPILOT_OTEL_ENABLED:-true}"
+    export OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT="${OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT:-span_only}"
+    ;;
+  high) # full process tree as spans + their stderr as logs
+    export OTEL_GITHUB_INJECT_STEP="${OTEL_GITHUB_INJECT_STEP:-TRUE}"
+    export OTEL_SHELL_CONFIG_MUTE_INTERNALS="${OTEL_SHELL_CONFIG_MUTE_INTERNALS:-FALSE}"
+    export OTEL_SHELL_CONFIG_MUTE_BUILTINS="${OTEL_SHELL_CONFIG_MUTE_BUILTINS:-TRUE}"
+    export OTEL_SHELL_CONFIG_INJECT_DEEP="${OTEL_SHELL_CONFIG_INJECT_DEEP:-TRUE}"
+    export OTEL_SHELL_CONFIG_OBSERVE_STDERR="${OTEL_SHELL_CONFIG_OBSERVE_STDERR:-TRUE}"
+    export OTEL_SHELL_CONFIG_OBSERVE_PIPES="${OTEL_SHELL_CONFIG_OBSERVE_PIPES:-FALSE}"
+    export OTEL_SHELL_CONFIG_OBSERVE_SUBPROCESSES="${OTEL_SHELL_CONFIG_OBSERVE_SUBPROCESSES:-FALSE}"
+    export OTEL_SHELL_CONFIG_OBSERVE_SIGNALS="${OTEL_SHELL_CONFIG_OBSERVE_SIGNALS:-FALSE}"
+    export COPILOT_OTEL_ENABLED="${COPILOT_OTEL_ENABLED:-true}"
+    export OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT="${OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT:-span_and_event}"
+    ;;
+  max) # yolo
+    export OTEL_GITHUB_INJECT_STEP="${OTEL_GITHUB_INJECT_STEP:-TRUE}"
+    export OTEL_SHELL_CONFIG_MUTE_INTERNALS="${OTEL_SHELL_CONFIG_MUTE_INTERNALS:-FALSE}"
+    export OTEL_SHELL_CONFIG_MUTE_BUILTINS="${OTEL_SHELL_CONFIG_MUTE_BUILTINS:-TRUE}"
+    export OTEL_SHELL_CONFIG_INJECT_DEEP="${OTEL_SHELL_CONFIG_INJECT_DEEP:-TRUE}"
+    export OTEL_SHELL_CONFIG_OBSERVE_STDERR="${OTEL_SHELL_CONFIG_OBSERVE_STDERR:-TRUE}"
+    export OTEL_SHELL_CONFIG_OBSERVE_PIPES="${OTEL_SHELL_CONFIG_OBSERVE_PIPES:-TRUE}"
+    export OTEL_SHELL_CONFIG_OBSERVE_SUBPROCESSES="${OTEL_SHELL_CONFIG_OBSERVE_SUBPROCESSES:-TRUE}"
+    export OTEL_SHELL_CONFIG_OBSERVE_SIGNALS="${OTEL_SHELL_CONFIG_OBSERVE_SIGNALS:-TRUE}"
+    export COPILOT_OTEL_ENABLED="${COPILOT_OTEL_ENABLED:-true}"
+    export OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT="${OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT:-span_and_event}"
+    ;;
+  *) echo "::error::Unsupported trace detail level: $INPUT_TRACE_DETAIL_LEVEL" && exit 1 ;;
+esac
 . ../shared/config_validation.sh
 if ! jq . <<<"$INPUT_SECRETS_TO_REDACT" 1>/dev/null 2>/dev/null; then
   export INPUT_SECRETS_TO_REDACT="$(printf '%s' "$INPUT_SECRETS_TO_REDACT" | (grep -v '^$' || true) | jq -R | jq -s)"
@@ -400,25 +443,6 @@ if type docker; then
 fi
 echo "::endgroup::"
 
-echo "::group::Resolve W3C Tracecontext"
-opentelemetry_root_dir="$(mktemp -d)"
-count=0
-while [ "$count" -lt 60 ] && ! ( gh_artifact_download "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_workflow_run_"$GITHUB_RUN_ATTEMPT" "$opentelemetry_root_dir" && [ -r "$opentelemetry_root_dir"/traceparent ] ); do
-  if [ "$count" -gt 0 ]; then sleep $count; fi
-  wait # only join within this loop, because we need to make sure everything is installed properly at this point, in most cases, it is unnecessary though and we can join later
-  . otelapi.sh
-  otel_init
-  otel_span_traceparent "$(otel_span_start INTERNAL dummy)" >"$opentelemetry_root_dir"/traceparent
-  gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_workflow_run_"$GITHUB_RUN_ATTEMPT" "$opentelemetry_root_dir"/traceparent || true
-  rm "$opentelemetry_root_dir"/traceparent
-  otel_shutdown
-  count=$((count + 1))
-done
-[ -r "$opentelemetry_root_dir"/traceparent ] || (echo "::error ::Cannot sync trace id via artifacts. This is most likely a token permission issue, please consult the README." && false)
-export TRACEPARENT="$(cat "$opentelemetry_root_dir"/traceparent)"
-rm -rf "$opentelemetry_root_dir"
-echo "::endgroup::"
-
 echo "::group::Calculate Resource Attributes"
 export OTEL_RESOURCE_ATTRIBUTES=github.repository.id="$GITHUB_REPOSITORY_ID",github.repository.name="${GITHUB_REPOSITORY#*/}",github.repository.owner.id="$GITHUB_REPOSITORY_OWNER_ID",github.repository.owner.name="$GITHUB_REPOSITORY_OWNER",github.actions.workflow.ref="${INPUT___JOB_WORKFLOW_REF:-$GITHUB_WORKFLOW_REF}",github.actions.workflow.sha="${INPUT___JOB_WORKFLOW_SHA:-$GITHUB_WORKFLOW_SHA}",github.actions.workflow.name="$GITHUB_WORKFLOW",github.actions.workflow.caller.ref="$GITHUB_WORKFLOW_REF",github.actions.workflow.caller.sha="$GITHUB_WORKFLOW_SHA",github.actions.workflow.caller.name="$GITHUB_WORKFLOW"${OTEL_RESOURCE_ATTRIBUTES:+,$OTEL_RESOURCE_ATTRIBUTES}
 [ -z "${INPUT___JOB_WORKFLOW_REPOSITORY:-}" ] || OTEL_RESOURCE_ATTRIBUTES="$OTEL_RESOURCE_ATTRIBUTES,github.actions.workflow.repository=$INPUT___JOB_WORKFLOW_REPOSITORY"
@@ -428,6 +452,40 @@ repo_property_attributes="$(gh_repo_properties 2>/dev/null | jq -r '.[] | select
 if [ -n "$repo_property_attributes" ]; then
   export OTEL_RESOURCE_ATTRIBUTES="${OTEL_RESOURCE_ATTRIBUTES},${repo_property_attributes}"
 fi
+wait
+if [ "${OTEL_PRECOMPUTE_RESOURCE_ATTRIBUTES:-TRUE}" = TRUE ]; then
+  resource_attributes_file="$(mktemp)"
+  printf 'INIT\nDUMP_RESOURCE_ATTRIBUTES %s\n' "$resource_attributes_file" | /opt/opentelemetry_shell/venv/bin/python /usr/share/opentelemetry_shell/sdk.py shell "$(cat ../../../VERSION)"
+  detected_resource_attributes="$(cat "$resource_attributes_file")"
+  rm "$resource_attributes_file"
+  [ -z "$detected_resource_attributes" ] || export OTEL_RESOURCE_ATTRIBUTES="${detected_resource_attributes}${OTEL_RESOURCE_ATTRIBUTES:+,$OTEL_RESOURCE_ATTRIBUTES}"
+  export OTEL_DISABLE_RESOURCE_DETECTION=TRUE
+fi
+echo "::endgroup::"
+
+echo "::group::Resolve W3C Tracecontext"
+opentelemetry_root_dir="$(mktemp -d)"
+if [ "$GITHUB_EVENT_NAME" = repository_dispatch ] || [ "$GITHUB_EVENT_NAME" = workflow_dispatch ]; then
+  caller_traceparent="$(jq -r '(.client_payload // .inputs).traceparent // empty' "$GITHUB_EVENT_PATH" 2>/dev/null || true)"
+  caller_tracestate="$(jq -r '(.client_payload // .inputs).tracestate // empty' "$GITHUB_EVENT_PATH" 2>/dev/null || true)"
+fi
+count=0
+while [ "$count" -lt 60 ] && ! ( gh_artifact_download "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_workflow_run_"$GITHUB_RUN_ATTEMPT" "$opentelemetry_root_dir" && [ -r "$opentelemetry_root_dir"/traceparent ] ); do
+  if [ "$count" -gt 0 ]; then sleep $count; fi
+  wait # only join within this loop, because we need to make sure everything is installed properly at this point, in most cases, it is unnecessary though and we can join later
+  . otelapi.sh
+  otel_init
+  otel_span_traceparent "$(TRACEPARENT="${caller_traceparent:-${TRACEPARENT:-}}" TRACESTATE="${caller_tracestate:-${TRACESTATE:-}}" otel_span_start INTERNAL dummy)" >"$opentelemetry_root_dir"/traceparent
+  [ -z "${caller_traceparent:-}" ] || echo "$caller_traceparent" >"$opentelemetry_root_dir"/caller_traceparent
+  [ -z "${caller_tracestate:-}" ] || echo "$caller_tracestate" >"$opentelemetry_root_dir"/caller_tracestate
+  gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_workflow_run_"$GITHUB_RUN_ATTEMPT" "$opentelemetry_root_dir"/traceparent ${caller_traceparent:+"$opentelemetry_root_dir"/caller_traceparent} ${caller_tracestate:+"$opentelemetry_root_dir"/caller_tracestate} || true
+  rm -f "$opentelemetry_root_dir"/*
+  otel_shutdown
+  count=$((count + 1))
+done
+[ -r "$opentelemetry_root_dir"/traceparent ] || (echo "::error ::Cannot sync trace id via artifacts. This is most likely a token permission issue, please consult the README." && false)
+export TRACEPARENT="$(cat "$opentelemetry_root_dir"/traceparent)"
+rm -rf "$opentelemetry_root_dir"
 echo "::endgroup::"
 
 # observe ...
@@ -554,9 +612,11 @@ root4job_end() {
       export OTEL_EXPORTER_OTLP_ENDPOINT=http://3.73.14.87:4318
       export OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE=delta
       . otelapi.sh
+      # shellcheck disable=SC2329 # the function is invoked indirectly by the sourced instrumentation library or by the test harness
       _otel_resource_attributes_process() {
         :
       }
+      # shellcheck disable=SC2329 # the function is invoked indirectly by the sourced instrumentation library or by the test harness
       _otel_resource_attributes_custom() {
         _otel_resource_attribute string telemetry.sdk.language=github
       }
@@ -647,9 +707,11 @@ root4job() {
   rm /tmp/opentelemetry_shell.github.error 2>/dev/null
   traceparent_file="$1"
   . otelapi.sh
+  # shellcheck disable=SC2329 # the function is invoked indirectly by the sourced instrumentation library or by the test harness
   _otel_resource_attributes_process() {
     :
   }
+  # shellcheck disable=SC2329 # the function is invoked indirectly by the sourced instrumentation library or by the test harness
   _otel_resource_attributes_custom() {
     _otel_resource_attribute string telemetry.sdk.language=github
   }
@@ -719,7 +781,7 @@ echo "::endgroup::"
 
 echo "::group::Setting Up SDK Factory"
 mv sdk_factory.py sdk_factory.py.backup
-cat /usr/share/opentelemetry_shell/sdk.py | grep -E 'from|import' | while read -r line; do echo "$line"; done | sort -u >sdk_factory.py
+cat /usr/share/opentelemetry_shell/sdk.py | grep -E 'from|import' | while read -r line; do echo "$line"; done | sort -u >>sdk_factory.py
 cat sdk_factory.py.backup >>sdk_factory.py
 rm sdk_factory.py.backup
 echo "::endgroup::"
@@ -742,4 +804,3 @@ printenv | grep -E '^OTEL_|^TRACEPARENT=|^TRACESTATE=|^COPILOT_OTEL_ENABLED=' >>
 echo "::endgroup::"
 
 echo ::notice title=Observability Information for "${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}"::"Trace ID: $(echo "$TRACEPARENT" | cut -d - -f 2), Span ID: $(echo "$TRACEPARENT" | cut -d - -f 3), Trace Deep Link: $(OTEL_EXPORTER_OTLP_TRACES_ENDPOINT="$backup_otel_exporter_otlp_traces_endpoint" print_trace_link "$(date +%Y-%M-%dT%H:%M:%S.%N%:z | jq -sRr @uri)" || echo unavailable)"
-
