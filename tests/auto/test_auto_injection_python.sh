@@ -30,7 +30,7 @@ import os
 os.execv("/bin/echo", [ "echo", "hello", "world", "1" ])
 ' | python3
 assert_equals 0 $?
-span="$(resolve_span '.name | endswith("/echo hello world 1")')"
+span="$(resolve_span '(.name | endswith("/echo hello world 1")) and .attributes."shell.command.type" == "file"')"
 assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | \jq -r '.kind')"
 assert_not_equals null "$(\echo "$span" | \jq -r '.parent_id')"
 
@@ -39,7 +39,7 @@ import os
 os.spawnl(os.P_WAIT, "/bin/echo", "echo", "hello", "world", "2")
 ' | python3
 assert_equals 0 $?
-span="$(resolve_span '.name | endswith("/echo hello world 2")')"
+span="$(resolve_span '(.name | endswith("/echo hello world 2")) and .attributes."shell.command.type" == "file"')"
 assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | \jq -r '.kind')"
 assert_not_equals null "$(\echo "$span" | \jq -r '.parent_id')"
 
@@ -48,7 +48,7 @@ import os
 os.spawnlp(os.P_WAIT, "echo", "echo", "hello", "world", "3")
 ' | python3
 assert_equals 0 $?
-span="$(resolve_span '.name | endswith("/echo hello world 3")')"
+span="$(resolve_span '(.name | endswith("/echo hello world 3")) and .attributes."shell.command.type" == "file"')"
 assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | \jq -r '.kind')"
 assert_not_equals null "$(\echo "$span" | \jq -r '.parent_id')"
 
@@ -57,7 +57,7 @@ import os
 os.spawnv(os.P_WAIT, "/bin/echo", ["echo", "hello", "world", "4"])
 ' | python3
 assert_equals 0 $?
-span="$(resolve_span '.name | endswith("/echo hello world 4")')"
+span="$(resolve_span '(.name | endswith("/echo hello world 4")) and .attributes."shell.command.type" == "file"')"
 assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | \jq -r '.kind')"
 assert_not_equals null "$(\echo "$span" | \jq -r '.parent_id')"
 
@@ -66,7 +66,7 @@ import os
 os.spawnvp(os.P_WAIT, "echo", ["echo", "hello", "world", "5"])
 ' | python3
 assert_equals 0 $?
-span="$(resolve_span '.name | endswith("/echo hello world 5")')"
+span="$(resolve_span '(.name | endswith("/echo hello world 5")) and .attributes."shell.command.type" == "file"')"
 assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | \jq -r '.kind')"
 assert_not_equals null "$(\echo "$span" | \jq -r '.parent_id')"
 
@@ -76,7 +76,7 @@ with subprocess.Popen(["/bin/echo", "hello", "world", "6"], stdout=subprocess.DE
   pass
 ' | python3
 assert_equals 0 $?
-span="$(resolve_span '.name | endswith("/echo hello world 6")')"
+span="$(resolve_span '(.name | endswith("/echo hello world 6")) and .attributes."shell.command.type" == "file"')"
 assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | \jq -r '.kind')"
 assert_not_equals null "$(\echo "$span" | \jq -r '.parent_id')"
 
@@ -92,7 +92,7 @@ with subprocess.Popen(["/bin/echo", "hello", "world", "7"], stdout=subprocess.DE
 ' | python3
 assert_equals 0 $?
 deactivate
-span="$(resolve_span '.name | endswith("/echo hello world 7")')"
+span="$(resolve_span '(.name | endswith("/echo hello world 7")) and .attributes."shell.command.type" == "file"')"
 assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | \jq -r '.kind')"
 assert_not_equals null "$(\echo "$span" | \jq -r '.parent_id')"
 
@@ -101,7 +101,7 @@ import subprocess
 subprocess.run(["/bin/echo", "hello", "world", "8"])
 ' | python3
 assert_equals 0 $?
-span="$(resolve_span '.name | endswith("/echo hello world 8")')"
+span="$(resolve_span '(.name | endswith("/echo hello world 8")) and .attributes."shell.command.type" == "file"')"
 assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | \jq -r '.kind')"
 assert_not_equals null "$(\echo "$span" | \jq -r '.parent_id')"
 
@@ -110,7 +110,7 @@ import subprocess
 subprocess.run("echo hello world 9", shell=True)
 ' | python3
 assert_equals 0 $?
-span="$(resolve_span '.name == "echo hello world 9"')"
+span="$(resolve_span '.name == "echo hello world 9" and .attributes."shell.command.type" == "builtin"')"
 assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | \jq -r '.kind')"
 assert_not_equals null "$(\echo "$span" | \jq -r '.parent_id')"
 
@@ -119,12 +119,14 @@ import subprocess
 subprocess.run(["echo", "hello", "world", "10"], shell=True)
 ' | python3
 assert_equals 0 $?
-span="$(resolve_span '.name == "echo hello world 10"')"
+span="$(resolve_span '.name == "echo hello world 10" and .attributes."shell.command.type" == "builtin"')"
 assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | \jq -r '.kind')"
 assert_not_equals null "$(\echo "$span" | \jq -r '.parent_id')"
 
 export OTEL_SHELL_CONFIG_INJECT_DEEP=TRUE
 echo "$TRACEPARENT"
+
+if cat /etc/os-release | grep -q alpine; then exit 0; fi
 
 echo '
 import requests

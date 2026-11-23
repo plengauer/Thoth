@@ -53,7 +53,9 @@ RUN <<EOF
     [ "$update" = TRUE ] && apk upgrade
     type "$shell" || apk add "$shell"
     for package in $packages_mandatory; do apk add $package || true; done
-    for package in $packages_optional; do apk add $package || true; done
+    # musl-dev provides crt*.o and libssp_nonshared, without it gcc is installed but cannot link
+    # py3-requests: the python injection tests import requests from the system python, which alpine does not ship by default
+    for package in $packages_optional musl-dev py3-requests; do apk add $package || true; done
     apk add --allow-untrusted ./*.apk
   else
     exit 1

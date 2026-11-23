@@ -24,7 +24,9 @@ ln -s missing "$dir"/broken.so
 assert_equals 1 "$(_otel_python_site_packages_compatible "$dir" && echo 0 || echo 1)"
 rm "$dir"/broken.so
 
-if command -v cc >/dev/null 2>&1; then
+# only run if there is a compiler that can actually link shared libraries (e.g. alpine ships gcc without the libc development files)
+if command -v cc >/dev/null 2>&1 && printf '%s\n' 'void probe(void) {}' | cc -shared -fPIC -x c - -o "$dir"/probe.so 2>/dev/null; then
+  rm -f "$dir"/probe.so
   printf '%s\n' 'void dependency(void) {}' | cc -shared -fPIC -x c - -o "$dir"/libdependency.so
   printf '%s\n' 'void dependency(void); void call_dependency(void) { dependency(); }' | cc -shared -fPIC -x c - -L"$dir" -ldependency -Wl,-rpath,"$dir" -o "$dir"/dependent.so
   assert_equals 0 "$(_otel_python_site_packages_compatible "$dir" && echo 0 || echo 1)"

@@ -33,7 +33,8 @@ assert_equals "127.0.0.1" "$(\echo "$span" | jq -r '.attributes."server.address"
 assert_equals "1" "$(\echo "$span" | jq -r '.attributes."server.port"')"
 assert_equals "0" "$(\echo "$span" | jq -c '[.name, .attributes]' | \grep -c topsecret || true)"
 
-initdb="$(\find /usr/lib/postgresql -name initdb 2>/dev/null | \sort | \tail -n 1)"
+# find fails if the directory does not exist (e.g. alpine), which would abort the whole test silently with set -e and pipefail
+initdb="$(\find /usr/lib/postgresql -name initdb 2>/dev/null | \sort | \tail -n 1 || true)"
 if [ -z "$initdb" ]; then exit 0; fi
 bin="$(\dirname "$initdb")"
 dir="$(\mktemp -d)"
