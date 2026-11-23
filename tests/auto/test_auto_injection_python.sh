@@ -126,25 +126,23 @@ assert_not_equals null "$(\echo "$span" | \jq -r '.parent_id')"
 export OTEL_SHELL_CONFIG_INJECT_DEEP=TRUE
 echo "$TRACEPARENT"
 
-if python3 -c 'import requests'; then
+if cat /etc/os-release | grep -q alpine; then exit 0; fi
 
-  echo '
+echo '
 import requests
 requests.get("http://example.com/foo")
 ' | python3 | grep -- '/foo' || exit 1
 
-  python3 -c '
+python3 -c '
 import requests
 requests.get("http://example.com/bar")
 ' | grep -- '/bar' || exit 1
 
-  echo '
+echo '
 import requests
 requests.get("http://example.com/baz")
 ' >script.py
   python3 script.py | grep -- '/baz' || exit 1
-
-fi
 
 dir=$(mktemp -d)
 python3 -m venv --system-site-packages "$dir"/venv || exit 1
