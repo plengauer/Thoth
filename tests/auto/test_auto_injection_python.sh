@@ -129,19 +129,19 @@ echo "$TRACEPARENT"
 if python3 -c 'import requests'; then
 
   echo '
-  import requests
-  requests.get("http://example.com/foo")
-  ' | python3 | grep -- '/foo' || exit 1
+import requests
+requests.get("http://example.com/foo")
+' | python3 | grep -- '/foo' || exit 1
 
   python3 -c '
-  import requests
-  requests.get("http://example.com/bar")
-  ' | grep -- '/bar' || exit 1
+import requests
+requests.get("http://example.com/bar")
+' | grep -- '/bar' || exit 1
 
   echo '
-  import requests
-  requests.get("http://example.com/baz")
-  ' >script.py
+import requests
+requests.get("http://example.com/baz")
+' >script.py
   python3 script.py | grep -- '/baz' || exit 1
 
 fi
