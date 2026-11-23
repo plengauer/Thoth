@@ -189,7 +189,7 @@ otel_span_current() {
   \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
   _otel_sdk_communicate "SPAN_HANDLE" "$response_pipe" "${TRACEPARENT:-}"
   local handle
-  \read handle <"$response_pipe" || \true
+  \read -r handle <"$response_pipe" || \true
   \echo "$handle"
   \rm "$response_pipe" 1>/dev/null 2>/dev/null
 }
@@ -206,7 +206,7 @@ otel_span_start() {
   \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
   _otel_sdk_communicate "SPAN_START" "$response_pipe" "${TRACEPARENT:-}" "${TRACESTATE:-}" "$time" "$kind" "$name"
   local handle
-  \read handle <"$response_pipe" || \true
+  \read -r handle <"$response_pipe" || \true
   \echo "$handle"
   \rm "$response_pipe" 1>/dev/null 2>/dev/null
 }
@@ -248,7 +248,7 @@ otel_span_traceparent() {
   \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
   _otel_sdk_communicate "SPAN_TRACEPARENT" "$response_pipe" "$span_handle"
   local traceparent
-  \read traceparent <"$response_pipe" || \true
+  \read -r traceparent <"$response_pipe" || \true
   \echo "$traceparent"
   \rm "$response_pipe" 1>/dev/null 2>/dev/null
 }
@@ -283,7 +283,7 @@ otel_event_create() {
   \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
   _otel_sdk_communicate "EVENT_CREATE" "$response_pipe" "$event_name"
   local handle
-  \read handle <"$response_pipe" || \true
+  \read -r handle <"$response_pipe" || \true
   \echo "$handle"
   \rm "$response_pipe" 1>/dev/null 2>/dev/null
 }
@@ -315,7 +315,7 @@ otel_link_create() {
   \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
   _otel_sdk_communicate "LINK_CREATE" "$response_pipe" "$traceparent" "$tracestate" END
   local handle
-  \read handle <"$response_pipe" || \true
+  \read -r handle <"$response_pipe" || \true
   \echo "$handle"
   \rm "$response_pipe" 1>/dev/null 2>/dev/null
 }
@@ -355,7 +355,7 @@ otel_counter_create() {
     _otel_sdk_communicate "COUNTER_CREATE" "$response_pipe" "$type" "$name" "$unit" "$description"
   fi
   local handle
-  \read handle <"$response_pipe" || \true
+  \read -r handle <"$response_pipe" || \true
   \echo "$handle"
   \rm "$response_pipe" 1>/dev/null 2>/dev/null
 }
@@ -373,7 +373,7 @@ otel_observation_create() {
   \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
   _otel_sdk_communicate "OBSERVATION_CREATE" "$response_pipe" "$value"
   local handle
-  \read handle <"$response_pipe" || \true
+  \read -r handle <"$response_pipe" || \true
   \echo "$handle"
   \rm "$response_pipe" 1>/dev/null 2>/dev/null
 }

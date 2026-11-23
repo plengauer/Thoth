@@ -15,9 +15,9 @@ assert_equals 0 $?
 otel_shutdown
 
 span="$(resolve_span)"
-assert_equals "myspan" $(echo "$span" | jq -r '.name')
-assert_equals "SpanKind.SERVER" $(echo "$span" | jq -r '.kind')
-assert_equals "null" $(echo "$span" | jq -r '.parent_id')
-assert_equals "UNSET" $(echo "$span" | jq -r '.status.status_code')
-assert_equals "value" $(echo "$span" | jq -r '.attributes.key')
+assert_equals "myspan" "$(echo "$span" | jq -r '.name')"
+assert_equals "SpanKind.SERVER" "$(echo "$span" | jq -r '.kind')"
+assert_equals "null" "$(echo "$span" | jq -r '.parent_id')"
+assert_equals "UNSET" "$(echo "$span" | jq -r '.status.status_code')"
+assert_equals "value" "$(echo "$span" | jq -r '.attributes.key')"
 assert_equals "bar baz" "$(echo "$span" | jq -r '.attributes.foo')"
