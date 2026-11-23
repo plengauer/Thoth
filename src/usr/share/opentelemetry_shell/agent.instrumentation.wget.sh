@@ -100,7 +100,7 @@ _otel_pipe_wget_stderr() {
       if \[ -n "$span_handle" ]; then
         local time_end="$(\date +%s.%N)"
         local observation_handle="$(otel_observation_create "$(\python3 -c "print(str($time_end - $time_start))")")"
-        otel_observation_attribute_typed "$observation_handle" string network.protocol.name="$protocol"
+        otel_observation_attribute_typed "$observation_handle" string network.protocol.name="${protocol%s}"
         otel_observation_attribute_typed "$observation_handle" string server.address="$host"
         otel_observation_attribute_typed "$observation_handle" int server.port="$port"
         otel_observation_attribute_typed "$observation_handle" string url.scheme="$protocol"
@@ -108,7 +108,7 @@ _otel_pipe_wget_stderr() {
         otel_observation_attribute_typed "$observation_handle" int http.response.status_code="$response_code"
         otel_counter_observe "$http_client_request_duration_handle" "$observation_handle"
         local observation_handle="$(otel_observation_create "$(\python3 -c "print(str($time_end - $time_start))")")"
-        otel_observation_attribute_typed "$observation_handle" string network.protocol.name="$protocol"
+        otel_observation_attribute_typed "$observation_handle" string network.protocol.name="${protocol%s}"
         otel_observation_attribute_typed "$observation_handle" string server.address="$host"
         otel_observation_attribute_typed "$observation_handle" int server.port="$port"
         otel_observation_attribute_typed "$observation_handle" string url.scheme="$protocol"
@@ -120,7 +120,7 @@ _otel_pipe_wget_stderr() {
         otel_observation_attribute_typed "$observation_handle" string http.request.method=GET
         otel_counter_observe "$http_client_active_requests_handle" "$observation_handle"
         local observation_handle="$(otel_observation_create -1)"
-        otel_observation_attribute_typed "$observation_handle" string network.protocol.name="$protocol"
+        otel_observation_attribute_typed "$observation_handle" string network.protocol.name="${protocol%s}"
         otel_observation_attribute_typed "$observation_handle" string network.peer.address="$ip"
         otel_observation_attribute_typed "$observation_handle" string server.address="$host"
         otel_observation_attribute_typed "$observation_handle" int server.port="$port"
@@ -131,7 +131,7 @@ _otel_pipe_wget_stderr() {
         local span_handle=""
       fi
       local observation_handle="$(otel_observation_create 1)"
-      otel_observation_attribute_typed "$observation_handle" string network.protocol.name="$protocol"
+      otel_observation_attribute_typed "$observation_handle" string network.protocol.name="${protocol%s}"
       otel_observation_attribute_typed "$observation_handle" string network.peer.address="$ip"
       otel_observation_attribute_typed "$observation_handle" string server.address="$host"
       otel_observation_attribute_typed "$observation_handle" int server.port="$port"
@@ -155,7 +155,7 @@ _otel_pipe_wget_stderr() {
         otel_span_name "$span_handle" GET
       fi
       local time_start="$(\date +%s.%N)"
-      otel_span_attribute_typed "$span_handle" string network.protocol.name="$protocol"
+      otel_span_attribute_typed "$span_handle" string network.protocol.name="${protocol%s}"
       otel_span_attribute_typed "$span_handle" string network.transport=tcp
       otel_span_attribute_typed "$span_handle" string network.peer.address="$ip"
       otel_span_attribute_typed "$span_handle" int network.peer.port="$port"
@@ -188,7 +188,7 @@ _otel_pipe_wget_stderr() {
         otel_span_attribute_typed "$span_handle" int http.response.body.size="$body_size"
         otel_span_attribute_typed "$span_handle" string[1] http.response.header.content-length="$body_size"
         local observation_handle="$(otel_observation_create "$body_size")"
-        otel_observation_attribute_typed "$observation_handle" string network.protocol.name="$protocol"
+        otel_observation_attribute_typed "$observation_handle" string network.protocol.name="${protocol%s}"
         otel_observation_attribute_typed "$observation_handle" string server.address="$host"
         otel_observation_attribute_typed "$observation_handle" int server.port="$port"
         otel_observation_attribute_typed "$observation_handle" string url.scheme="$protocol"
