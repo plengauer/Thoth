@@ -142,7 +142,7 @@ echo '
 import requests
 requests.get("http://example.com/baz")
 ' >script.py
-  python3 script.py | grep -- '/baz' || exit 1
+python3 script.py | grep -- '/baz' || exit 1
 
 dir=$(mktemp -d)
 python3 -m venv --system-site-packages "$dir"/venv || exit 1
