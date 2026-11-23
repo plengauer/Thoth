@@ -21,6 +21,7 @@ if false && { [ "$INPUT_SELF_MONITORING" = true ] || { [ "$INPUT_SELF_MONITORING
   (
     unset OTEL_EXPORTER_OTLP_METRICS_ENDPOINT OTEL_EXPORTER_OTLP_LOGS_ENDPOINT OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
     export OTEL_SHELL_SDK_OUTPUT_REDIRECT=/dev/null
+    # shellcheck disable=SC2030 # the subshell is intentionally isolated so its environment does not leak into the main script
     export OTEL_SERVICE_NAME="OpenTelemetry GitHub Selfmonitoring"
     export OTEL_TRACES_EXPORTER=none
     export OTEL_LOGS_EXPORTER=none
@@ -137,6 +138,7 @@ otel_span_attribute_typed "$check_suite_span_handle" string github.actions.check
 otel_span_attribute_typed "$check_suite_span_handle" string github.actions.checks.app.name="$(jq <"$check_suite_json" -r .app.name)"
 otel_span_attribute_typed "$check_suite_span_handle" string github.actions.checks.app.slug="$(jq <"$check_suite_json" -r .app.slug)"
 otel_span_activate "$check_suite_span_handle"
+# shellcheck disable=SC2154 # the variable is assigned by the sourced instrumentation library or provided by the environment
 [ -z "${INPUT_DEBUG}" ] || echo "span checksuite $TRACEPARENT $check_suite_name" >&2
 if [ "$(jq <"$check_suite_json" -r .conclusion)" = failure ]; then otel_span_error "$check_suite_span_handle"; fi
 echo ::notice title=Observability Information::"Trace ID: $(echo "$TRACEPARENT" | cut -d - -f 2), Span ID: $(echo "$TRACEPARENT" | cut -d - -f 3), Trace Deep Link: $(print_trace_link "$check_suite_started_at" || echo unavailable)"

@@ -154,7 +154,7 @@ For all commands, attributes of the `shell.*` (describing the command being run)
 
 If the command is a shell or an executable with a shebang (meaning it itself is script rather a than a binary), OpenTelemetry will be automatically injected into it to continue observation. No setup code or configuration is necessary in these children.
 If the command is just a wrapper for another command (e.g., `sudo`, `find`, `xargs`, `parallel`, ...), OpenTelemetry will automatically be injected into the inner command to continue observation as well.
-If the command represents communication to a third party service (like a HTTP request via `curl` or `wget`, or `ssh` and also including other commands that use HTTP or `ssh` underneath like `git`, `scp`, `rsync` and others), relevant attributes from the `http.*`, `server.*`, `url.*`, and `network.*` families are added. Additionally, a W3C traceparent header is injected.
+If the command represents communication to a third party service (like a HTTP request via `curl` or `wget`, or `ssh` and also including other commands that use HTTP or `ssh` underneath like `git`, `scp`, `rsync` and others), relevant attributes from the `http.*`, `server.*`, `url.*`, and `network.*` families are added. Additionally, a W3C traceparent header is injected. or `ssh`, the traceparent is passed as environment variables (`TRACEPARENT`/`TRACESTATE`) which the server only accepts if it is configured with `AcceptEnv TRACEPARENT TRACESTATE`.
 
 Finally, a single root span will be created and activated that represents the script. This span will automatically be deactivated and ended when the script ends.
 
@@ -191,6 +191,7 @@ jobs:
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
         with:
           github_token: '${{ secrets.DEPLOY_OBSERVABILITY_TOKEN }}' # TODO configure a token that has permissions to push contents and open pull requests
+          job_level_trace_detail_level: medium # one of low, medium, high, or max
 ```
 This workflow only deploys workflow-level and job-level instrumentations. It does not keep them up to date, for that we recommend to use <a href="https://docs.renovatebot.com/">renovate</a>.
 

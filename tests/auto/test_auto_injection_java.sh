@@ -43,14 +43,14 @@ public class Main {
 javac "$dir"/Main.java
 (cd "$dir" && java Main)
 span="$(resolve_span '.name == "echo hello world 0"')"
-assert_equals "SpanKind.INTERNAL" $(\echo "$span" | jq -r '.kind')
-assert_not_equals null $(\echo "$span" | jq -r '.parent_id')
+assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
+assert_not_equals null "$(\echo "$span" | jq -r '.parent_id')"
 span="$(resolve_span '.name == "echo hello world 1"')"
-assert_equals "SpanKind.INTERNAL" $(\echo "$span" | jq -r '.kind')
-assert_not_equals null $(\echo "$span" | jq -r '.parent_id')
+assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
+assert_not_equals null "$(\echo "$span" | jq -r '.parent_id')"
 span="$(resolve_span '.name == "echo hello world 2"')"
-assert_equals "SpanKind.INTERNAL" $(\echo "$span" | jq -r '.kind')
-assert_not_equals null $(\echo "$span" | jq -r '.parent_id')
+assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
+assert_not_equals null "$(\echo "$span" | jq -r '.parent_id')"
 span="$(resolve_span '.name == "echo hello world 3"')"
-assert_equals "SpanKind.INTERNAL" $(\echo "$span" | jq -r '.kind')
-assert_not_equals null $(\echo "$span" | jq -r '.parent_id')
+assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | jq -r '.kind')"
+assert_not_equals null "$(\echo "$span" | jq -r '.parent_id')"

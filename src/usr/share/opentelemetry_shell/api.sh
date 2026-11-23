@@ -157,25 +157,17 @@ _otel_resolve_command_self() {
   \tr '\000-\037' ' ' <"/proc/$$/cmdline"
 }
 
-if \[ "$_otel_shell" = bash ]; then
-  _otel_package_version() {
-    # dpkg is very expensive, lets cache and be a bit less exact in case packages get updated why children are spawned!
-    local package_name="$1"
-    local varname="OTEL_SHELL_PACKAGE_VERSION_CACHE_$package_name"
-    local varname="${varname//-/_}"
-    \eval "local varvalue=\${$varname:-}"
-    if \[ -n "$varvalue" ]; then
-      \echo "$varvalue"
-      return 0
-    fi
-    \export "$varname=$(_otel_resolve_package_version "$1")"
-    \echo "${!varname}"
-  }
-else
-  _otel_package_version() {
-    _otel_resolve_package_version "$1"
-  }
-fi
+_otel_package_version() {
+  local varname
+  varname="OTEL_SHELL_PACKAGE_VERSION_CACHE_$(\printf '%s' "$1" | LC_ALL=C \tr -c 'a-zA-Z0-9_' '_')"
+  local varvalue
+  \eval "varvalue=\${$varname:-}"
+  if \[ -z "$varvalue" ]; then
+    varvalue="$(_otel_resolve_package_version "$1")"
+    \export "$varname=$varvalue"
+  fi
+  \echo "$varvalue"
+}
 
 _otel_resolve_package_version() {
   ( \dpkg -s "$1" || \rpm -qi "$1" || {
@@ -197,7 +189,7 @@ otel_span_current() {
   \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
   _otel_sdk_communicate "SPAN_HANDLE" "$response_pipe" "${TRACEPARENT:-}"
   local handle
-  \read handle <"$response_pipe" || \true
+  \read -r handle <"$response_pipe" || \true
   \echo "$handle"
   \rm "$response_pipe" 1>/dev/null 2>/dev/null
 }
@@ -214,7 +206,7 @@ otel_span_start() {
   \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
   _otel_sdk_communicate "SPAN_START" "$response_pipe" "${TRACEPARENT:-}" "${TRACESTATE:-}" "$time" "$kind" "$name"
   local handle
-  \read handle <"$response_pipe" || \true
+  \read -r handle <"$response_pipe" || \true
   \echo "$handle"
   \rm "$response_pipe" 1>/dev/null 2>/dev/null
 }
@@ -256,7 +248,7 @@ otel_span_traceparent() {
   \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
   _otel_sdk_communicate "SPAN_TRACEPARENT" "$response_pipe" "$span_handle"
   local traceparent
-  \read traceparent <"$response_pipe" || \true
+  \read -r traceparent <"$response_pipe" || \true
   \echo "$traceparent"
   \rm "$response_pipe" 1>/dev/null 2>/dev/null
 }
@@ -291,7 +283,7 @@ otel_event_create() {
   \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
   _otel_sdk_communicate "EVENT_CREATE" "$response_pipe" "$event_name"
   local handle
-  \read handle <"$response_pipe" || \true
+  \read -r handle <"$response_pipe" || \true
   \echo "$handle"
   \rm "$response_pipe" 1>/dev/null 2>/dev/null
 }
@@ -323,7 +315,7 @@ otel_link_create() {
   \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
   _otel_sdk_communicate "LINK_CREATE" "$response_pipe" "$traceparent" "$tracestate" END
   local handle
-  \read handle <"$response_pipe" || \true
+  \read -r handle <"$response_pipe" || \true
   \echo "$handle"
   \rm "$response_pipe" 1>/dev/null 2>/dev/null
 }
@@ -363,7 +355,7 @@ otel_counter_create() {
     _otel_sdk_communicate "COUNTER_CREATE" "$response_pipe" "$type" "$name" "$unit" "$description"
   fi
   local handle
-  \read handle <"$response_pipe" || \true
+  \read -r handle <"$response_pipe" || \true
   \echo "$handle"
   \rm "$response_pipe" 1>/dev/null 2>/dev/null
 }
@@ -381,7 +373,7 @@ otel_observation_create() {
   \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
   _otel_sdk_communicate "OBSERVATION_CREATE" "$response_pipe" "$value"
   local handle
-  \read handle <"$response_pipe" || \true
+  \read -r handle <"$response_pipe" || \true
   \echo "$handle"
   \rm "$response_pipe" 1>/dev/null 2>/dev/null
 }
@@ -556,11 +548,13 @@ _otel_escape_arg() {
 
 if \[ "$_otel_shell" = bash ]; then
   _otel_escape_arg_format() {
+    # shellcheck disable=SC2059 # the format string is intentionally composed from variables
     \printf "$1" "${2//\'/\'\\\'\'}"
   }
 else
   _otel_escape_arg_format() {
     local escaped="$(\printf '%s' "$2X" | \sed "s/'/'\\\\''/g")" # need the extra X to preserve trailing linefeeds (yay)
+    # shellcheck disable=SC2059 # the format string is intentionally composed from variables
     \printf "$1" "${escaped%X}"
   }
 fi
