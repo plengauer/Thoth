@@ -38,6 +38,7 @@ _otel_inject_git_arguments() {
   fi
   if \[ "$inject" = 1 ]; then
     \echo -n ' '
+    # shellcheck disable=SC2154 # the variable is assigned by the sourced instrumentation library or provided by the environment
     # shellcheck disable=SC2086 # the shell may be a command with arguments such as busybox sh and must be split into words
     _otel_escape_args $_otel_shell -c '. otel.sh
 '"$1" "$executable"
