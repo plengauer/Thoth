@@ -30,8 +30,7 @@ resolve_span() {
     local selector=' | select('"$selector"')'
   fi
   for i in 1 2 4 8 16 32; do
-    # only return the first match, callers extract single values and quote them (a duplicate/multiple match would otherwise yield multi-line values)
-    local span="$(\cat "$OTEL_EXPORT_LOCATION" | \jq -n "first(inputs | select(.name != null)$selector)")"
+    local span="$(\cat "$OTEL_EXPORT_LOCATION" | \jq ". | select(.name != null)$selector")"
     if [ -n "$span" ]; then
       \echo "$span"
       return 0
