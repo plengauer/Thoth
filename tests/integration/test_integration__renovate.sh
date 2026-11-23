@@ -9,7 +9,7 @@ docker run --rm --env RENOVATE_DRY_RUN=full --env RENOVATE_TOKEN=abc --env RENOV
 assert_not_equals 0 "$?" # because no github token available
 \cat "$log_file"
 span="$(resolve_span '. | select(.name == "/usr/local/renovate/node --use-openssl-ca /usr/local/renovate/dist/renovate.js")')"
-assert_equals "SpanKind.INTERNAL" $(\echo "$span" | \jq -r '.kind')
+assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | \jq -r '.kind')"
 span_id="$(\echo "$span" | \jq -r '.context.span_id')"
 
 \cat "$log_file" | \grep "${span_id:2}" || exit 1

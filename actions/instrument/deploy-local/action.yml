@@ -439,7 +439,15 @@ runs:
             yq -i "del(.jobs.$job_name.steps[] | select(.env | length == 0) | .env)" "$workflow_file"
           done
         done
-  
+    - name: "Add trace context inputs to dispatchable workflows"
+      shell: bash
+      run: |
+        (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
+          [ "$(cat "$workflow_file" | yq '.on | has("workflow_dispatch")' 2> /dev/null)" = true ] || continue
+          for input in traceparent tracestate; do
+            yq -i ".on.workflow_dispatch.inputs.$input |= (. // {\"description\": \"W3C trace context $input\", \"required\": false, \"type\": \"string\"})" "$workflow_file"
+          done
+        done
     - name: "Annotate instrumentation action versions"
       if: ${{ steps.determine-instrumentation-version-comment.outputs.comment != '' }}
       shell: bash

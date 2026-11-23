@@ -47,21 +47,27 @@ const sdk = new opentelemetry_sdk.NodeSDK({
   instrumentations: [
     ["@opentelemetry", "@traceloop"].flatMap(scope => require("fs").readdirSync(require("path").join(__dirname, "node_modules", scope)).filter(name => name.startsWith("instrumentation-")).map(name => require(scope + "/" + name))).flatMap(library => Object.entries(library)).filter(entry => entry[0].endsWith("Instrumentation")).map(entry => entry[1]).map(clazz => new clazz)
   ],
-  resourceDetectors: [
-    // opentelemetry_resources_alibaba_cloud.alibabaCloudEcsDetector, // TODO this one takes a full second to just time out when its not alibaba
-    opentelemetry_resources_azure.azureAppServiceDetector,
-    opentelemetry_resources_azure.azureFunctionsDetector,
-    opentelemetry_resources_azure.azureVmDetector,
-    // opentelemetry_resources_gcp.gcpDetector, // TODO makes noisy spans!
-    opentelemetry_resources_aws.awsBeanstalkDetector,
-    opentelemetry_resources_aws.awsEc2Detector,
-    opentelemetry_resources_aws.awsEcsDetector,
-    opentelemetry_resources_aws.awsEksDetector,
-    opentelemetry_resources_container.containerDetector,
-    opentelemetry_resources_github.gitHubDetector,
-    opentelemetry_resources.processDetector,
-    opentelemetry_resources.envDetector
-  ],
+  resourceDetectors: process.env.OTEL_DISABLE_RESOURCE_DETECTION === 'TRUE'
+    ? [
+      opentelemetry_resources.serviceInstanceIdDetector,
+      opentelemetry_resources.processDetector,
+      opentelemetry_resources.envDetector
+    ]
+    : [
+      // opentelemetry_resources_alibaba_cloud.alibabaCloudEcsDetector, // TODO this one takes a full second to just time out when its not alibaba
+      opentelemetry_resources_azure.azureAppServiceDetector,
+      opentelemetry_resources_azure.azureFunctionsDetector,
+      opentelemetry_resources_azure.azureVmDetector,
+      // opentelemetry_resources_gcp.gcpDetector, // TODO makes noisy spans!
+      opentelemetry_resources_aws.awsBeanstalkDetector,
+      opentelemetry_resources_aws.awsEc2Detector,
+      opentelemetry_resources_aws.awsEcsDetector,
+      opentelemetry_resources_aws.awsEksDetector,
+      opentelemetry_resources_container.containerDetector,
+      opentelemetry_resources_github.gitHubDetector,
+      opentelemetry_resources.processDetector,
+      opentelemetry_resources.envDetector
+    ],
 });
 
 process.on('exit', () => sdk.shutdown());

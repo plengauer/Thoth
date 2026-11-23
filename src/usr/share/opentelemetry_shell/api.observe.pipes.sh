@@ -18,6 +18,7 @@ _otel_call_and_record_pipes() {
   shift
   local call_command="$1"
   shift
+  # shellcheck disable=SC2154 # the variable is assigned by the sourced instrumentation library or provided by the environment
   local stdin_bytes_result="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.stdin.bytes.result.XXXXXXXXXX)"
   local stdin_lines_result="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.stdin.lines.result.XXXXXXXXXX)"
   local stdout_bytes_result="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.stdout.bytes.result.XXXXXXXXXX)"
@@ -113,8 +114,8 @@ _otel_record_pipes() {
     (\[ -b /dev/"$2" ] && otel_span_attribute_typed "$1" string pipe."$2".type=block) ||
     otel_span_attribute_typed "$1" string pipe."$2".type=unknown
   local bytes lines
-  \read bytes <"$4"
-  \read lines <"$5"
+  \read -r bytes <"$4"
+  \read -r lines <"$5"
   otel_span_attribute_typed "$1" int pipe."$2".bytes="$bytes"
   otel_span_attribute_typed "$1" int pipe."$2".lines="$lines"
 }
