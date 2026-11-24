@@ -56,6 +56,12 @@
     <property name="optional" value="true"/>
   </module>
 
+  <!-- The Java agents are started by their plain class name from the class path (-javaagent / -cp), so they live in the default package, which cannot have a package-info.java -->
+  <module name="SuppressionSingleFilter">
+    <property name="checks" value="JavadocPackage"/>
+    <property name="files" value="[\\/]agent\.instrumentation\.java[\\/][^\\/]+\.java$"/>
+  </module>
+
   <!-- Checks that a package-info.java file exists for each package.     -->
   <!-- See https://checkstyle.org/checks/javadoc/javadocpackage.html#JavadocPackage -->
   <module name="JavadocPackage"/>
