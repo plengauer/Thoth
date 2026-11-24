@@ -334,6 +334,9 @@ _otel_pipe_gh_stderr() {
       \echo "$line"
     fi
   done
+  # This block repeats the metric recording of the loop above for the request that is still open when the stream ends, there is no following request line to trigger it.
+  # Sharing it would need a function that takes about ten shell variables by name, which is a refactoring of the gh instrumentation, so until then the copy is accepted.
+  # jscpd:ignore-start
   if \[ -n "$span_handle" ]; then
     local time_end="$(\date +%s.%N)"
     otel_span_end "$span_handle"
@@ -369,6 +372,7 @@ _otel_pipe_gh_stderr() {
     otel_observation_attribute_typed "$observation_handle" string http.connection.state=active
     otel_counter_observe "$http_client_open_connections_handle" "$observation_handle"
   fi
+  # jscpd:ignore-end
 }
 
 _otel_alias_prepend gh _otel_propagate_gh
