@@ -36,7 +36,7 @@ _otel_sqlcmd_parse_arguments() {
 }
 
 _otel_sqlcmd_parse_server() {
-  local backslash='\'
+  local backslash=\\
   local rest="$1"
   protocol=''
   host=''
