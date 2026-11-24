@@ -349,6 +349,7 @@ _otel_inject_sqlcmd() {
   if \[ -n "$transport" ]; then otel_span_attribute_typed "$span_handle" string network.transport="$transport"; fi
   if \[ -n "$namespace" ]; then otel_span_attribute_typed "$span_handle" string db.namespace="$namespace"; fi
   if \[ "$interpose_stdin" = 0 ]; then _otel_sqlcmd_statement_attributes "$span_handle" "$(_otel_sqlcmd_input "$query" "$files" '' | _otel_sqlcmd_analyze "$terminator")"; fi
+  # shellcheck disable=SC2154 # the variable is assigned by the sourced instrumentation library or provided by the environment
   local dir="$(\mktemp -d -p "$_otel_shell_pipe_dir" opentelemetry_shell_$$.sqlcmd.XXXXXXXXXX)"
   local capture_stdout=0 capture_stderr=0
   if \[ "$capture" = 1 ] && ! \[ -t 1 ]; then capture_stdout=1; fi
