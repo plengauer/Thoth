@@ -56,6 +56,7 @@ span="$(resolve_span '.name == "aggregate stats" and .kind == "SpanKind.CLIENT"'
 assert_equals "third" "$(attribute "$span" db.namespace)"
 
 script="$dir/script.js"
+# shellcheck disable=SC2016 # single quotes are intentional, $set is a MongoDB operator that must reach the script file literally
 \echo 'db.fromfile.updateMany({}, {$set: {a: 1}})' >"$script"
 $TEST_SHELL auto/mongosh.sh --quiet "localhost:$closed_port/filedb" "$script" >/dev/null 2>&1 || true
 
