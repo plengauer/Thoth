@@ -25,7 +25,7 @@ jobs:
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
       - id: broker
         env:
-          BROKER_URL: https://github-token-broker-152120470600.europe-west1.run.app
+          BROKER_URL: ${{ vars.TOKEN_BROKER_URL }}
         run: |
           set -e
           oidc_jwt="$(curl -sSf -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=$BROKER_URL" | sed -n 's/.*"value": *"\([^"]*\)".*/\1/p')"
