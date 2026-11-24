@@ -19,7 +19,7 @@ assert_equals 'version $(false)' "$(_otel_package_version package-name)"
 assert_equals 'version $(false)' "$(_otel_package_version package.name.1)"
 assert_equals 2 "$(\wc -l <"$cache_calls" | \tr -d ' ')"
 
-# shellcheck disable=SC2086
+# shellcheck disable=SC2086,SC2016
 ${TEST_SHELL:-sh} -f -u -c '
   . /usr/bin/opentelemetry_shell_api.sh
   _otel_resolve_package_version() { exit 1; }
