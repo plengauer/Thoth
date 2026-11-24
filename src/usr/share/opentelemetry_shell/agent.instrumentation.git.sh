@@ -76,6 +76,7 @@ _otel_inject_git() {
     *) local ssh_assignment="" ;;
   esac
   local exit_code=0
+  # shellcheck disable=SC2086 # the variable is either empty or one already escaped assignment word, it must expand to nothing or to exactly that word inside the eval
   \eval OTEL_SHELL_COMMANDLINE_OVERRIDE="$(_otel_escape_arg "$cmdline")" OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE=0 OTEL_SHELL_AUTO_INJECTED=TRUE $ssh_assignment _otel_call "$(_otel_inject_git_arguments "$@")" || exit_code="$?"
   if \[ -n "${trace_pid:-}" ]; then
     unset GIT_TRACE_CURL
