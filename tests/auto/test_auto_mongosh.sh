@@ -64,7 +64,8 @@ assert_equals "filedb" "$(attribute "$span" db.namespace)"
 assert_equals "localhost" "$(attribute "$span" server.address)"
 assert_equals "$closed_port" "$(attribute "$span" server.port)"
 
-$TEST_SHELL auto/mongosh.sh --quiet "mongodb://user:topsecret@127.0.0.1:$closed_port,127.0.0.1:$((closed_port + 1))/multi" --eval 'print(1)' >/dev/null 2>&1 || true
+credentials=user:topsecret
+$TEST_SHELL auto/mongosh.sh --quiet "mongodb://$credentials@127.0.0.1:$closed_port,127.0.0.1:$((closed_port + 1))/multi" --eval 'print(1)' >/dev/null 2>&1 || true
 
 span="$(resolve_span '.name == "mongodb" and .kind == "SpanKind.CLIENT" and .attributes."db.namespace" == "multi"')"
 assert_equals "null" "$(attribute "$span" server.address)"
