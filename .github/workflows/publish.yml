@@ -7,12 +7,6 @@ on:
     branches:
       - main
       - 'release/v*.*'
-  workflow_dispatch:
-    inputs:
-      commit_ids:
-        required: true
-        type: string
-        description: comma separated commit ids
 
 jobs:
 
