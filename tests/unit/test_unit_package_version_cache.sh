@@ -8,6 +8,7 @@ trap '\rm -f "$cache_calls"' EXIT
 
 _otel_resolve_package_version() {
   \echo "$1" >>"$cache_calls"
+  # shellcheck disable=SC2016 # single quotes are intentional, the text must stay literal and must not be expanded or executed
   \printf '%s\n' 'version $(false)'
 }
 
