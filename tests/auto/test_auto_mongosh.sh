@@ -13,7 +13,8 @@ attribute() {
   \echo "$1" | jq -r ".attributes.\"$2\""
 }
 
-$TEST_SHELL auto/mongosh.sh --quiet "mongodb://user:topsecret@127.0.0.1:$closed_port/shop" --eval 'db.orders.find({status: "open"}); db.getCollection("it-ems").insertOne({a: 1})' >"$dir/stdout" 2>"$dir/stderr" || true
+credentials=user:topsecret
+$TEST_SHELL auto/mongosh.sh --quiet "mongodb://$credentials@127.0.0.1:$closed_port/shop" --eval 'db.orders.find({status: "open"}); db.getCollection("it-ems").insertOne({a: 1})' >"$dir/stdout" 2>"$dir/stderr" || true
 
 command_span="$(resolve_span '.kind == "SpanKind.INTERNAL" and (.name | startswith("mongosh ")) and (.name | contains("it-ems"))')"
 assert_equals "1" "$(\echo "$command_span" | jq -r '.attributes."shell.command.exit_code"')"
