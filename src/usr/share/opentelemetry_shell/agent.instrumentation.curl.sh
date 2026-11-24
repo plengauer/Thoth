@@ -196,6 +196,9 @@ _otel_pipe_curl_stderr() {
       otel_span_attribute_typed "$span_handle" string http.request.method="$method"
       otel_span_attribute_typed "$span_handle" string user_agent.original=curl
     fi
+    # The parsing of the verbose output below is duplicated in agent.instrumentation.gh.sh, because gh prints the same curl-style trace lines.
+    # Sharing it would need a function that takes about ten shell variables by name, which is a refactoring of both instrumentations, so until then the copy is accepted.
+    # jscpd:ignore-start
     if \[ -n "$span_handle" ]; then
       if _otel_string_starts_with "$line" "< HTTP/"; then
         local response_code="$(\printf '%s' "$line" | \cut -d ' ' -f 3)"
@@ -237,6 +240,7 @@ _otel_pipe_curl_stderr() {
         otel_span_attribute_typed "$span_handle" +string[1] http.response.header."$(\printf '%s' "$line" | \cut -d ' ' -f 2 | \tr -d ':' | \tr '[:upper:]' '[:lower:]')"="$(\printf '%s' "$line" | \cut -d ' ' -f 3-)"
       fi
     fi
+    # jscpd:ignore-end
     if _otel_string_starts_with "$line" "< "; then local is_receiving=1; fi
     if \[ "$is_verbose" = 1 ] || ! (_otel_string_starts_with "$line" "* " || _otel_string_starts_with "$line" "> " || _otel_string_starts_with "$line" "< " || _otel_string_starts_with "$line" "{ " || _otel_string_starts_with "$line" "} "); then
       \echo "$line"
