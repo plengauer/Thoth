@@ -16,6 +16,7 @@ unset OTEL_SHELL_PACKAGE_VERSION_CACHE_package_name_1
 _otel_package_version package-name >/dev/null
 _otel_package_version package.name.1 >/dev/null
 assert_equals 'version $(false)' "$(_otel_package_version package-name)"
+# shellcheck disable=SC2016 # single quotes are intentional, the text must stay literal and must not be expanded or executed
 assert_equals 'version $(false)' "$(_otel_package_version package.name.1)"
 assert_equals 2 "$(\wc -l <"$cache_calls" | \tr -d ' ')"
 
