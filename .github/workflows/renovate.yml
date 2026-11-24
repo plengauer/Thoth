@@ -21,6 +21,7 @@ jobs:
       issues: write
       security-events: write
       actions: read
+      id-token: write
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@5d34a21816f798c24f19857225b018a7f2af731f # v5.66.0
         with:
@@ -28,11 +29,22 @@ jobs:
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
+      - id: broker
+        env:
+          BROKER_URL: ${{ vars.TOKEN_BROKER_URL }}
+        run: |
+          set -e
+          oidc_jwt="$(curl -sSf -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=$BROKER_URL" | sed -n 's/.*"value": *"\([^"]*\)".*/\1/p')"
+          echo "::add-mask::$oidc_jwt"
+          token="$(curl -sSf -X POST "$BROKER_URL/token" -H "Authorization: Bearer $oidc_jwt" | sed -n 's/.*"token": *"\([^"]*\)".*/\1/p')"
+          [ -n "$token" ]
+          echo "::add-mask::$token"
+          echo "token=$token" >> "$GITHUB_OUTPUT"
       - uses: renovatebot/github-action@acdd6bda8b035c99ce59d5675816af2aa65a1774 # v46.3.14
         env:
           RENOVATE_REPOSITORIES: ${{ github.repository }}
         with:
-          token: ${{ github.token }}
+          token: ${{ steps.broker.outputs.token }}
 
   renovate-list-instrumentations-python:
     if: ${{ !github.event.repository.fork }}
