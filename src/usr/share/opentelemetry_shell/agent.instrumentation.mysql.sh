@@ -211,7 +211,7 @@ _otel_instrument_mysql() {
 
 _otel_mysql_option() {
   local options=" $1"
-  local rest="${options#* --$2=}"
+  local rest="${options#* --"$2"=}"
   if \[ "$rest" != "$options" ]; then \echo "${rest%% *}"; fi
 }
 
