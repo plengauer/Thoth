@@ -56,6 +56,12 @@
     <property name="optional" value="true"/>
   </module>
 
+  <!-- The Java demo is compiled and started by its plain file name, so it lives in the default package, which cannot have a package-info.java -->
+  <module name="SuppressionSingleFilter">
+    <property name="checks" value="JavadocPackage"/>
+    <property name="files" value="[\\/]demos[\\/]injection_deep_java[\\/]Main\.java$"/>
+  </module>
+
   <!-- Checks that a package-info.java file exists for each package.     -->
   <!-- See https://checkstyle.org/checks/javadoc/javadocpackage.html#JavadocPackage -->
   <module name="JavadocPackage"/>
