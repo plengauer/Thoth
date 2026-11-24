@@ -23,6 +23,7 @@ _otel_trace_mongosh() {
   if \[ -t 2 ]; then
     _otel_call "$command" "$@" || exit_code="$?"
   else
+    # shellcheck disable=SC2154 # the variable is assigned by the sourced instrumentation library or provided by the environment
     stderr_file="$(\mktemp -p "$_otel_shell_pipe_dir" opentelemetry_shell_$$.stderr.mongosh.XXXXXXXXXX)"
     local stderr_pipe="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell_$$.stderr.mongosh.pipe.XXXXXXXXXX)"
     \mkfifo "$stderr_pipe"
