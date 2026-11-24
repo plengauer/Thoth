@@ -80,7 +80,7 @@ assert_equals "0" "$(\cat "$OTEL_EXPORT_LOCATION" | jq -r 'select(.kind == "Span
 if ! type mongod; then exit 0; fi
 
 mongod --dbpath "$dir" --port "$port" --bind_ip 127.0.0.1 --fork --logpath "$dir/mongod.log" --pidfilepath "$dir/mongod.pid" >/dev/null
-for i in 1 2 3 4 5 6 7 8 9 10; do
+for _ in 1 2 3 4 5 6 7 8 9 10; do
   if mongosh --quiet --port "$port" --eval 'db.runCommand({ping: 1}).ok' 2>/dev/null | grep -q 1; then break; fi
   sleep 1
 done
