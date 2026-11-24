@@ -97,10 +97,21 @@ jobs:
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
+      - id: broker
+        env:
+          BROKER_URL: https://github-token-broker-152120470600.europe-west1.run.app
+        run: |
+          set -e
+          oidc_jwt="$(curl -sSf -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=$BROKER_URL" | sed -n 's/.*"value": *"\([^"]*\)".*/\1/p')"
+          echo "::add-mask::$oidc_jwt"
+          token="$(curl -sSf -X POST "$BROKER_URL/token" -H "Authorization: Bearer $oidc_jwt" | sed -n 's/.*"token": *"\([^"]*\)".*/\1/p')"
+          [ -n "$token" ]
+          echo "::add-mask::$token"
+          echo "token=$token" >> "$GITHUB_OUTPUT"
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ matrix.ref }}
-          token: ${{ github.token }}
+          token: ${{ steps.broker.outputs.token }}
       - run: echo "version=$(cat VERSION)" >> "$GITHUB_OUTPUT"
         id: version
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
@@ -153,7 +164,7 @@ jobs:
 
       - uses: softprops/action-gh-release@8a0cd651e5b2365bd640854a3fa5dfc70e4875f3 # v3.0.4
         with:
-          token: ${{ github.token }}
+          token: ${{ steps.broker.outputs.token }}
           target_commitish: ${{ matrix.ref }}
           tag_name: v${{ steps.version.outputs.version }}
           name: Release v${{ steps.version.outputs.version }}
