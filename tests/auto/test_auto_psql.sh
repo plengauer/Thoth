@@ -25,7 +25,8 @@ assert_equals "SELECT" "$(\echo "$span" | jq -r '.attributes."db.operation.name"
 assert_equals "SELECT" "$(\echo "$span" | jq -r '.attributes."db.query.summary"')"
 assert_equals "null" "$(\echo "$span" | jq -r '.attributes."db.response.status_code"')"
 
-$TEST_SHELL auto/psql.sh "postgresql://alice:topsecret@127.0.0.1:1/uridb" -c 'select 2 as uri' || true
+credentials=alice:topsecret
+$TEST_SHELL auto/psql.sh "postgresql://$credentials@127.0.0.1:1/uridb" -c 'select 2 as uri' || true
 
 span="$(resolve_span '.kind == "SpanKind.CLIENT" and .attributes."db.query.text" == "select ? as uri"')"
 assert_equals "uridb" "$(\echo "$span" | jq -r '.attributes."db.namespace"')"
