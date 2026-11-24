@@ -55,7 +55,7 @@ _otel_pipe_ssh_log() {
         local ip="${rest%%\]*}"
         local port="${rest#*\] port }"
         local port="${port%.}"
-        local span_handle="$(otel_span_start CLIENT ssh)"
+        local span_handle="$(otel_span_start CLIENT SSH)"
         otel_span_attribute_typed "$span_handle" string network.transport=tcp
         otel_span_attribute_typed "$span_handle" string network.protocol.name=ssh
         otel_span_attribute_typed "$span_handle" string network.peer.address="$ip"
