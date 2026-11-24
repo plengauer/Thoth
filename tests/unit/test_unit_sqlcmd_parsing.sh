@@ -7,6 +7,7 @@ _otel_alias_prepend() { :; }
 analyze() { \printf '%s\n' "$1" | _otel_sqlcmd_analyze "${2:-GO}" | \tr '\037' '|'; }
 server() {
   _otel_sqlcmd_parse_server "$1"
+  # shellcheck disable=SC2154 # the variables are assigned by _otel_sqlcmd_parse_server, which deliberately returns its result through globals
   \printf '%s|%s|%s|%s' "$protocol" "$host" "$instance" "$port"
 }
 arguments() {
