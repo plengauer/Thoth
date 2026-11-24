@@ -30,16 +30,9 @@ jobs:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
       - id: broker
-        env:
-          BROKER_URL: ${{ vars.TOKEN_BROKER_URL }}
-        run: |
-          set -e
-          oidc_jwt="$(curl -sSf -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=$BROKER_URL" | sed -n 's/.*"value": *"\([^"]*\)".*/\1/p')"
-          echo "::add-mask::$oidc_jwt"
-          token="$(curl -sSf -X POST "$BROKER_URL/token" -H "Authorization: Bearer $oidc_jwt" | sed -n 's/.*"token": *"\([^"]*\)".*/\1/p')"
-          [ -n "$token" ]
-          echo "::add-mask::$token"
-          echo "token=$token" >> "$GITHUB_OUTPUT"
+        uses: plengauer/github-token-broker@9f6c6533753f03df2f7bff0bf3691088a147ec61 # main
+        with:
+          url: ${{ vars.TOKEN_BROKER_URL }}
       - uses: renovatebot/github-action@acdd6bda8b035c99ce59d5675816af2aa65a1774 # v46.3.14
         env:
           RENOVATE_REPOSITORIES: ${{ github.repository }}
