@@ -26,9 +26,6 @@ jobs:
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
         with:
           secrets_to_redact: '["${{ github.token }}"]'
-      - if: ${{ github.event_name == 'workflow_dispatch' }}
-        run: |
-          echo -n '${{ inputs.commit_ids }}' | tr ',' '\n' | jq '{"id":.}' | jq -s '{"commits":.}' > "$GITHUB_EVENT_PATH"
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
