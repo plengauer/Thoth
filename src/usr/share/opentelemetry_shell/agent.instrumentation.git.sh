@@ -62,6 +62,7 @@ _otel_inject_git() {
   local cmdline="$(_otel_dollar_star "$@")"
   local cmdline="${cmdline#\\}"
   if \[ -z "${GIT_TRACE_CURL:-}" ]; then
+    # shellcheck disable=SC2154 # the variable is assigned by the sourced instrumentation library or provided by the environment
     local trace_pipe="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell_$$.trace.git.pipe.XXXXXXXXXX)"
     \mkfifo "$trace_pipe"
     _otel_pipe_git_trace "$trace_pipe" <>"$trace_pipe" &
