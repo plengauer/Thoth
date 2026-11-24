@@ -14,21 +14,16 @@ jobs:
       actions: read
       contents: write
       pull-requests: write
-      id-token: write
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@5d34a21816f798c24f19857225b018a7f2af731f # v5.66.0
         with:
-          secrets_to_redact: '["${{ github.token }}","${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}","${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}"]'
+          secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}","${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}","${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}"]'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
-      - id: broker
-        uses: plengauer/github-token-broker@9f6c6533753f03df2f7bff0bf3691088a147ec61 # main
-        with:
-          url: ${{ vars.TOKEN_BROKER_URL }}
       - uses: plengauer/opentelemetry-github/actions/instrument/deploy@5d34a21816f798c24f19857225b018a7f2af731f # v5.66.0
         with:
-          github_token: ${{ steps.broker.outputs.token }}
+          github_token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           job_level_instrumentation_exclude: 'Refresh Demos,Test Package Repositories,Shell,GitHub,Workflow Example,Experiment'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'

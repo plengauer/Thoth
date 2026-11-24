@@ -19,19 +19,14 @@ jobs:
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@5d34a21816f798c24f19857225b018a7f2af731f # v5.66.0
         with:
-          secrets_to_redact: '["${{ github.token }}"]'
+          secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}"]'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - id: broker
-        uses: plengauer/github-token-broker@9f6c6533753f03df2f7bff0bf3691088a147ec61 # main
-        with:
-          url: ${{ vars.TOKEN_BROKER_URL }}
       - uses: plengauer/autoversion@bb30f536a55f82db23f8dcd803b57eb6852e58ad # v5.3.0
         with:
-          github_token: ${{ steps.broker.outputs.token }}
+          github_token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           path_include: ./meta:./src:./actions
           increments: ${{ github.ref_name == 'main' && 'major;minor' || 'patch' }}
     permissions:
       actions: read
-      id-token: write

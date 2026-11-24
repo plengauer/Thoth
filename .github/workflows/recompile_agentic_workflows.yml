@@ -19,11 +19,12 @@ jobs:
       contents: write
       pull-requests: write
       actions: read
-      id-token: write
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@5d34a21816f798c24f19857225b018a7f2af731f # v5.66.0
         with:
           secrets_to_redact: '${{ github.token }}
+
+            ${{ secrets.ACTIONS_GITHUB_TOKEN }}
 
             ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
 
@@ -31,21 +32,17 @@ jobs:
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
-      - id: broker
-        uses: plengauer/github-token-broker@9f6c6533753f03df2f7bff0bf3691088a147ec61 # main
-        with:
-          url: ${{ vars.TOKEN_BROKER_URL }}
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          token: ${{ steps.broker.outputs.token }}
+          token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
       - env:
-          GH_TOKEN: ${{ steps.broker.outputs.token }}
+          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         run: |
           gh extension install github/gh-aw
           gh aw compile --approve
       - uses: plengauer/opentelemetry-github/actions/instrument/deploy-local@5d34a21816f798c24f19857225b018a7f2af731f # v5.66.0
         with:
-          github_token: ${{ steps.broker.outputs.token }}
+          github_token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           job_level_instrumentation_exclude: 'Refresh Demos,Test Package Repositories,Shell,GitHub,Workflow Example,Experiment'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
@@ -53,13 +50,8 @@ jobs:
       - id: push
         run: |
           if [ -z "$(git status --porcelain)" ]; then exit 0; fi
-          if gh api user --jq .id; then
-            user_id="$(gh api user --jq .id)"
-            user_name="$(gh api user --jq .login)"
-          else
-            user_name="github-actions[bot]"
-            user_id="$(gh api /users/"$user_name" --jq .id)"
-          fi
+          user_name="$(gh api user --jq .login)"
+          user_id="$(gh api user --jq .id)"
           git config user.name "$user_name"
           git config user.email "${user_id}+${user_name}@users.noreply.github.com"
           git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
@@ -67,12 +59,12 @@ jobs:
           git commit -m "recompile agentic workflows"
           git push && echo "pushed=true" >> "$GITHUB_OUTPUT" || echo "pushed=false" >> "$GITHUB_OUTPUT"
         env:
-          GH_TOKEN: ${{ steps.broker.outputs.token }}
+          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
       - if: steps.push.outputs.pushed == 'false'
         id: open-pr
         uses: peter-evans/create-pull-request@15733dbdfeedb4f7fdb73d13c6f5ac83b710fab8 # v8.1.2
         with:
-          token: ${{ steps.broker.outputs.token }}
+          token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           commit-message: "recompile agentic workflows"
           base: ${{ github.ref_name }}
           branch: "recompile-aw/${{ github.ref_name }}"
@@ -86,5 +78,5 @@ jobs:
         shell: bash
         run: gh pr merge --squash --auto ${{ steps.open-pr.outputs.pull-request-number }}
         env:
-          GH_TOKEN: ${{ steps.broker.outputs.token }}
+          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         continue-on-error: true

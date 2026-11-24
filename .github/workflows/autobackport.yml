@@ -49,7 +49,6 @@ jobs:
       pull-requests: read
       issues: read
       actions: read
-      id-token: write
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@5d34a21816f798c24f19857225b018a7f2af731f # v5.66.0
         env:
@@ -58,14 +57,11 @@ jobs:
         with:
           secrets_to_redact: |-
             ${{ github.token }}
-      - id: broker
-        uses: plengauer/github-token-broker@9f6c6533753f03df2f7bff0bf3691088a147ec61 # main
-        with:
-          url: ${{ vars.TOKEN_BROKER_URL }}
+            ${{ secrets.ACTIONS_GITHUB_TOKEN }}
       - id: autoversion
         uses: plengauer/autoversion@bb30f536a55f82db23f8dcd803b57eb6852e58ad # v5.3.0
         with:
-          github_token: ${{ steps.broker.outputs.token }}
+          github_token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           path_include: ./meta:./src:./actions:./tests:./.github
           dry_run: true
           ref: ${{ matrix.ref }}
@@ -111,7 +107,7 @@ jobs:
       - id: prepare_pr
         if: steps.check_patch.outputs.should_backport == 'true'
         env:
-          GH_TOKEN: ${{ steps.broker.outputs.token }}
+          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
         run: |
           set -e
           {
@@ -123,7 +119,7 @@ jobs:
         if: steps.check_patch.outputs.should_backport == 'true'
         uses: peter-evans/create-pull-request@15733dbdfeedb4f7fdb73d13c6f5ac83b710fab8 # v8.1.2
         with:
-          token: ${{ steps.broker.outputs.token }}
+          token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
           commit-message: |
             ${{ steps.prepare_pr.outputs.commit_title }}
             Co-authored-by: ${{ steps.prepare_pr.outputs.author_name }} <${{ steps.prepare_pr.outputs.author_email }}>
@@ -137,4 +133,4 @@ jobs:
       - run: gh pr merge --squash --auto ${{ steps.open-pr.outputs.pull-request-number }}
         if: steps.open-pr.outputs.pull-request-number != null
         env:
-          GH_TOKEN: ${{ steps.broker.outputs.token }}
+          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
