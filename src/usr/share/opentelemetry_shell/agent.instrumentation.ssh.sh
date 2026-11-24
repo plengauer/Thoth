@@ -17,6 +17,7 @@ _otel_propagate_ssh() {
     *VERBOSE | *DEBUG*) local is_verbose=1 ;;
     *) local is_verbose=0 ;;
   esac
+  # shellcheck disable=SC2154 # the variable is assigned by the sourced instrumentation library or provided by the environment
   local log_pipe="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell_$$.log.ssh.pipe.XXXXXXXXXX)"
   \mkfifo "$log_pipe"
   _otel_pipe_ssh_log "$log_pipe" "$is_verbose" <>"$log_pipe" >&2 &
