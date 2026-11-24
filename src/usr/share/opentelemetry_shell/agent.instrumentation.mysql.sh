@@ -131,6 +131,7 @@ _otel_instrument_mysql() {
   fi
   if \[ "$transport" = tcp ] && \[ -n "$port" ] && \[ "$port" != 3306 ]; then local address_port="$port"; else local address_port=""; fi
 
+  # shellcheck disable=SC2154 # the variable is assigned by the sourced instrumentation library or provided by the environment
   local stderr_file="$(\mktemp -p "$_otel_shell_pipe_dir" opentelemetry_shell_$$.stderr.mysql.XXXXXXXXXX)"
   local stdin_file="$(\mktemp -p "$_otel_shell_pipe_dir" opentelemetry_shell_$$.stdin.mysql.XXXXXXXXXX)"
   local stdin_limit=1048576
