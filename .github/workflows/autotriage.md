@@ -8,8 +8,9 @@ on:
 permissions:
   copilot-requests: write
   contents: read
-  issues: write
+  issues: read
   actions: read
+  id-token: write
 tools:
   github:
     toolsets: [context, repos, issues, labels, actions]
