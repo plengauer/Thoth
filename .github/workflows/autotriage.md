@@ -21,7 +21,7 @@ jobs:
   safe_outputs:
     pre-steps:
       - id: broker
-        uses: plengauer/github-token-broker
+        uses: plengauer/github-token-broker@v0.0.0
         with:
           url: ${{ vars.TOKEN_BROKER_URL }}
 safe-outputs:
