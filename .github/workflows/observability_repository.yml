@@ -14,7 +14,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: plengauer/opentelemetry-github/actions/instrument/repository@5d34a21816f798c24f19857225b018a7f2af731f # v5.66.0
+      - uses: plengauer/opentelemetry-github/actions/instrument/repository@af82b8c3e169f06062ac75ffa55f40e221299d36 # v5.67.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
