@@ -28,7 +28,7 @@ safe-outputs:
   add-comment:
   close-issue:
   assign-to-agent:
-    github-token:  ${{ steps.broker.outputs.token }}
+    github-token: ${{ steps.broker.outputs.token }}
     custom-instructions: >-
       Before starting, read the full issue title, body, and all comments. Treat the triage analysis comment as part of the task description and follow its relevant files, root-cause hypothesis, suggested approach, and acceptance criteria alongside the issue description.
 ---
