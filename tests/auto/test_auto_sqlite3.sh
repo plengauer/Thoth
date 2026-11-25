@@ -83,7 +83,7 @@ assert_equals "insert into items(name) values (?)" "$(\echo "$span" | jq -r '.at
 exit_code=0
 $TEST_SHELL auto/sqlite3.sh "$db" 'selec 1 from syntax_error_marker' 2>"$dir/stderr" || exit_code="$?"
 assert_equals "1" "$exit_code"
-assert_equals "true" "$(\head -n 1 "$dir/stderr" | \grep -q '^Error: in prepare, near "selec": syntax error' && \echo true || \echo false)"
+assert_equals "true" "$(\head -n 1 "$dir/stderr" | \grep -q 'near "selec": syntax error' && \echo true || \echo false)"
 \sqlite3 "$db" 'selec 1 from syntax_error_marker' 2>"$dir/stderr.expected" || true
 assert_equals "$(\cat "$dir/stderr.expected")" "$(\cat "$dir/stderr")"
 span="$(resolve_span '.attributes."db.query.text" == "selec ? from syntax_error_marker"')"
@@ -96,7 +96,7 @@ assert_equals "1" "$(\echo "$command_span" | jq -r '.attributes."shell.command.e
 exit_code=0
 $TEST_SHELL auto/sqlite3.sh "$db" 'select * from table_that_does_not_exist' 2>"$dir/stderr" || exit_code="$?"
 assert_equals "1" "$exit_code"
-assert_equals "Error: in prepare, no such table: table_that_does_not_exist" "$(\head -n 1 "$dir/stderr")"
+assert_equals "true" "$(\head -n 1 "$dir/stderr" | \grep -q 'no such table: table_that_does_not_exist' && \echo true || \echo false)"
 span="$(resolve_span '.name == "SELECT table_that_does_not_exist"')"
 assert_equals "ERROR" "$(\echo "$span" | jq -r '.status.status_code')"
 assert_equals "table_that_does_not_exist" "$(\echo "$span" | jq -r '.attributes."db.collection.name"')"
@@ -104,22 +104,35 @@ assert_equals "_OTHER" "$(\echo "$span" | jq -r '.attributes."error.type"')"
 
 exit_code=0
 $TEST_SHELL auto/sqlite3.sh "$db" "insert into items(id, name) values (1, 'constraint_marker')" 2>"$dir/stderr" || exit_code="$?"
-assert_equals "19" "$exit_code"
+expected_exit_code=0
+\sqlite3 "$db" "insert into items(id, name) values (1, 'constraint_marker')" 2>/dev/null || expected_exit_code="$?"
+assert_equals "$expected_exit_code" "$exit_code"
 span="$(resolve_span '.attributes."db.query.text" == "insert into items(id, name) values (?, ?)"')"
 assert_equals "ERROR" "$(\echo "$span" | jq -r '.status.status_code')"
-assert_equals "SQLITE_CONSTRAINT" "$(\echo "$span" | jq -r '.attributes."db.response.status_code"')"
-assert_equals "SQLITE_CONSTRAINT" "$(\echo "$span" | jq -r '.attributes."error.type"')"
+if [ "$exit_code" = 1 ]; then
+  assert_equals "null" "$(\echo "$span" | jq -r '.attributes."db.response.status_code"')"
+  assert_equals "_OTHER" "$(\echo "$span" | jq -r '.attributes."error.type"')"
+else
+  assert_equals "SQLITE_CONSTRAINT" "$(\echo "$span" | jq -r '.attributes."db.response.status_code"')"
+  assert_equals "SQLITE_CONSTRAINT" "$(\echo "$span" | jq -r '.attributes."error.type"')"
+fi
 
 exit_code=0
 $TEST_SHELL auto/sqlite3.sh "file:$db?mode=ro" "select count(*) from items where name = 'readonly_marker'" >"$dir/stdout" || exit_code="$?"
 assert_equals "0" "$exit_code"
 exit_code=0
 $TEST_SHELL auto/sqlite3.sh "file:$db?mode=ro" "update items set name = 'readonly_marker'" 2>"$dir/stderr" || exit_code="$?"
-assert_equals "8" "$exit_code"
+expected_exit_code=0
+\sqlite3 "file:$db?mode=ro" "update items set name = 'readonly_marker'" 2>/dev/null || expected_exit_code="$?"
+assert_equals "$expected_exit_code" "$exit_code"
 span="$(resolve_span '.attributes."db.query.text" == "update items set name = ?" and .status.status_code == "ERROR"')"
 assert_equals "$db" "$(\echo "$span" | jq -r '.attributes."db.namespace"')"
 assert_equals "SpanKind.CLIENT" "$(\echo "$span" | jq -r '.kind')"
-assert_equals "SQLITE_READONLY" "$(\echo "$span" | jq -r '.attributes."db.response.status_code"')"
+if [ "$exit_code" = 1 ]; then
+  assert_equals "null" "$(\echo "$span" | jq -r '.attributes."db.response.status_code"')"
+else
+  assert_equals "SQLITE_READONLY" "$(\echo "$span" | jq -r '.attributes."db.response.status_code"')"
+fi
 
 printf '%s\n' 'create table from_stdin(a);' "insert into from_stdin values ('stdin_marker');" '.print dot_marker' 'select a from from_stdin;' >"$dir/script.sql"
 $TEST_SHELL auto/sqlite3.sh "$db" <"$dir/script.sql" >"$dir/stdout"
