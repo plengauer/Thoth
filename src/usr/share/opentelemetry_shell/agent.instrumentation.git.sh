@@ -62,6 +62,7 @@ _otel_inject_git() {
   local cmdline="$(_otel_dollar_star "$@")"
   local cmdline="${cmdline#\\}"
   if \[ -z "${GIT_TRACE_CURL:-}" ]; then
+    # shellcheck disable=SC2154 # the variable is assigned by the sourced instrumentation library or provided by the environment
     local trace_pipe="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell_$$.trace.git.pipe.XXXXXXXXXX)"
     \mkfifo "$trace_pipe"
     _otel_pipe_git_trace "$trace_pipe" <>"$trace_pipe" &
@@ -76,6 +77,7 @@ _otel_inject_git() {
     *) local ssh_assignment="" ;;
   esac
   local exit_code=0
+  # shellcheck disable=SC2086 # the variable is either empty or one already escaped assignment word, it must expand to nothing or to exactly that word inside the eval
   \eval OTEL_SHELL_COMMANDLINE_OVERRIDE="$(_otel_escape_arg "$cmdline")" OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE=0 OTEL_SHELL_AUTO_INJECTED=TRUE $ssh_assignment _otel_call "$(_otel_inject_git_arguments "$@")" || exit_code="$?"
   if \[ -n "${trace_pid:-}" ]; then
     unset GIT_TRACE_CURL

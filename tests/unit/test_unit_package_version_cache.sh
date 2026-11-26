@@ -8,6 +8,7 @@ trap '\rm -f "$cache_calls"' EXIT
 
 _otel_resolve_package_version() {
   \echo "$1" >>"$cache_calls"
+  # shellcheck disable=SC2016 # single quotes are intentional, the text must stay literal and must not be expanded or executed
   \printf '%s\n' 'version $(false)'
 }
 
@@ -15,11 +16,13 @@ unset OTEL_SHELL_PACKAGE_VERSION_CACHE_package_name
 unset OTEL_SHELL_PACKAGE_VERSION_CACHE_package_name_1
 _otel_package_version package-name >/dev/null
 _otel_package_version package.name.1 >/dev/null
+# shellcheck disable=SC2016 # single quotes are intentional, the text must stay literal and must not be expanded or executed
 assert_equals 'version $(false)' "$(_otel_package_version package-name)"
+# shellcheck disable=SC2016 # single quotes are intentional, the text must stay literal and must not be expanded or executed
 assert_equals 'version $(false)' "$(_otel_package_version package.name.1)"
 assert_equals 2 "$(\wc -l <"$cache_calls" | \tr -d ' ')"
 
-# shellcheck disable=SC2086
+# shellcheck disable=SC2086,SC2016
 ${TEST_SHELL:-sh} -f -u -c '
   . /usr/bin/opentelemetry_shell_api.sh
   _otel_resolve_package_version() { exit 1; }

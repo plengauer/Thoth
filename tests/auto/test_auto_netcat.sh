@@ -54,7 +54,7 @@ span="$(resolve_span '.context.span_id == "'"$span_id"'"')"
 assert_equals "SpanKind.PRODUCER" "$(\echo "$span" | \jq -r '.kind')"
 assert_equals "send/receive" "$(\echo "$span" | \jq -r '.name')"
 span_id="$(\echo "$span" | \jq -r '.parent_id')"
-span="$(resolve_span '.context.span_id == "'$span_id'"')"
+span="$(resolve_span '.context.span_id == "'"$span_id"'"')"
 assert_equals "SpanKind.INTERNAL" "$(\echo "$span" | \jq -r '.kind')"
 assert_equals "netcat -w 5 www.google.com 80" "$(\echo "$span" | \jq -r '.name')"
 

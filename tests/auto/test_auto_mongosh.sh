@@ -13,7 +13,8 @@ attribute() {
   \echo "$1" | jq -r ".attributes.\"$2\""
 }
 
-$TEST_SHELL auto/mongosh.sh --quiet "mongodb://user:topsecret@127.0.0.1:$closed_port/shop" --eval 'db.orders.find({status: "open"}); db.getCollection("it-ems").insertOne({a: 1})' >"$dir/stdout" 2>"$dir/stderr" || true
+credentials=user:topsecret
+$TEST_SHELL auto/mongosh.sh --quiet "mongodb://$credentials@127.0.0.1:$closed_port/shop" --eval 'db.orders.find({status: "open"}); db.getCollection("it-ems").insertOne({a: 1})' >"$dir/stdout" 2>"$dir/stderr" || true
 
 command_span="$(resolve_span '.kind == "SpanKind.INTERNAL" and (.name | startswith("mongosh ")) and (.name | contains("it-ems"))')"
 assert_equals "1" "$(\echo "$command_span" | jq -r '.attributes."shell.command.exit_code"')"
@@ -56,6 +57,7 @@ span="$(resolve_span '.name == "aggregate stats" and .kind == "SpanKind.CLIENT"'
 assert_equals "third" "$(attribute "$span" db.namespace)"
 
 script="$dir/script.js"
+# shellcheck disable=SC2016 # single quotes are intentional, $set is a MongoDB operator that must reach the script file literally
 \echo 'db.fromfile.updateMany({}, {$set: {a: 1}})' >"$script"
 $TEST_SHELL auto/mongosh.sh --quiet "localhost:$closed_port/filedb" "$script" >/dev/null 2>&1 || true
 
@@ -64,7 +66,8 @@ assert_equals "filedb" "$(attribute "$span" db.namespace)"
 assert_equals "localhost" "$(attribute "$span" server.address)"
 assert_equals "$closed_port" "$(attribute "$span" server.port)"
 
-$TEST_SHELL auto/mongosh.sh --quiet "mongodb://user:topsecret@127.0.0.1:$closed_port,127.0.0.1:$((closed_port + 1))/multi" --eval 'print(1)' >/dev/null 2>&1 || true
+credentials=user:topsecret
+$TEST_SHELL auto/mongosh.sh --quiet "mongodb://$credentials@127.0.0.1:$closed_port,127.0.0.1:$((closed_port + 1))/multi" --eval 'print(1)' >/dev/null 2>&1 || true
 
 span="$(resolve_span '.name == "mongodb" and .kind == "SpanKind.CLIENT" and .attributes."db.namespace" == "multi"')"
 assert_equals "null" "$(attribute "$span" server.address)"
@@ -80,7 +83,7 @@ assert_equals "0" "$(\cat "$OTEL_EXPORT_LOCATION" | jq -r 'select(.kind == "Span
 if ! type mongod; then exit 0; fi
 
 mongod --dbpath "$dir" --port "$port" --bind_ip 127.0.0.1 --fork --logpath "$dir/mongod.log" --pidfilepath "$dir/mongod.pid" >/dev/null
-for i in 1 2 3 4 5 6 7 8 9 10; do
+for _ in 1 2 3 4 5 6 7 8 9 10; do
   if mongosh --quiet --port "$port" --eval 'db.runCommand({ping: 1}).ok' 2>/dev/null | grep -q 1; then break; fi
   sleep 1
 done

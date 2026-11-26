@@ -65,6 +65,7 @@ _otel_trace_psql() {
   if \[ "$has_source" = 0 ] || \[ "$dash_file" = 1 ]; then uses_stdin=1; fi
   if \[ "$uses_stdin" = 1 ] && \[ -t 0 ]; then uses_stdin=0; fi
   local analysis_pid=''
+  # shellcheck disable=SC2154 # the variable is assigned by the sourced instrumentation library or provided by the environment
   local analysis_file="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell_$$.analysis.psql.XXXXXXXXXX)"
   if \[ "$has_source" = 1 ] || \[ "$uses_stdin" = 1 ]; then
     local tap_pipe="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell_$$.tap.psql.pipe.XXXXXXXXXX)"
