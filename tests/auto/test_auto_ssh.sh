@@ -13,6 +13,7 @@ trap 'kill "$(\cat "$dir/sshd.pid")" 2>/dev/null || true' EXIT
 port=$((20000 + $$ % 20000))
 /usr/sbin/sshd -f /dev/null -p "$port" -o ListenAddress=127.0.0.1 -o HostKey="$dir/host_key" -o AuthorizedKeysFile="$dir/authorized_keys" -o PidFile="$dir/sshd.pid" -o AcceptEnv='TRACEPARENT TRACESTATE' -o StrictModes=no -o UsePAM=no
 
+# shellcheck disable=SC2016 # single quotes are intentional, the remote shell must expand TRACEPARENT, not the local one
 $TEST_SHELL auto/ssh.sh -i "$dir/id" -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p "$port" 127.0.0.1 'echo "$TRACEPARENT"' >"$dir/stdout"
 
 command_span="$(resolve_span '.kind == "SpanKind.INTERNAL" and (.name | startswith("ssh ")) and (.name | contains("TRACEPARENT"))')"

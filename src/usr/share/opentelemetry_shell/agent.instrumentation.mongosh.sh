@@ -23,6 +23,7 @@ _otel_trace_mongosh() {
   if \[ -t 2 ]; then
     _otel_call "$command" "$@" || exit_code="$?"
   else
+    # shellcheck disable=SC2154 # the variable is assigned by the sourced instrumentation library or provided by the environment
     stderr_file="$(\mktemp -p "$_otel_shell_pipe_dir" opentelemetry_shell_$$.stderr.mongosh.XXXXXXXXXX)"
     local stderr_pipe="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell_$$.stderr.mongosh.pipe.XXXXXXXXXX)"
     \mkfifo "$stderr_pipe"
@@ -62,7 +63,7 @@ _otel_trace_mongosh() {
 }
 
 # mongosh --nodb | --version | --help => no span
-# mongosh 'mongodb://user:secret@h1:27017,h2:27017/shop?replicaSet=rs' => no server.address (multiple endpoints), db.namespace=shop
+# mongosh 'mongodb://<credentials>@h1:27017,h2:27017/shop?replicaSet=rs' => no server.address (multiple endpoints), db.namespace=shop
 # mongosh myhost.example.com:27018/shop => server.address=myhost.example.com, server.port=27018, db.namespace=shop
 # mongosh shop => server.address=127.0.0.1, server.port=27017, db.namespace=shop
 # mongosh --host h --port 1 => server.address=h, server.port=1, db.namespace=test

@@ -98,6 +98,7 @@ _otel_instrument_redis_cli() {
   if \[ -t 1 ] || \[ -z "$operation" ]; then
     _otel_call "$command" "$@" || exit_code="$?"
   else
+    # shellcheck disable=SC2154 # the variable is assigned by the sourced instrumentation library or provided by the environment
     local stdout_pipe="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell_$$.stdout.redis_cli.pipe.XXXXXXXXXX)"
     local sample_pipe="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell_$$.sample.redis_cli.pipe.XXXXXXXXXX)"
     local sample_file="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell_$$.sample.redis_cli.file.XXXXXXXXXX)"
