@@ -73,6 +73,9 @@ jobs:
       images_upgradeable: ${{ steps.dynamic.outputs.images_upgradeable }}
     permissions:
       actions: read
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@af82b8c3e169f06062ac75ffa55f40e221299d36 # v5.67.0
         with:
@@ -96,7 +99,7 @@ jobs:
           merge-multiple: true
       - if: ${{ hashFiles('images.json') == '' }}
         run: |
-          sudo docker login -u '${{ secrets.DOCKERHUB_USERNAME }}' -p '${{ secrets.DOCKERHUB_TOKEN }}'
+          [ -z "$DOCKERHUB_USERNAME" ] || [ -z "$DOCKERHUB_TOKEN" ] || sudo docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_TOKEN"
           cat .github/images.json | jq 'to_entries[] | [ .key, .value.oldest, .value.stable, .value.latest, .value.dev ] | @tsv' -r | sed 's/\t/ /g' | while read -r name oldest stable latest dev; do
             echo "$oldest" "$name" oldest
             echo "$stable" "$name" stable
