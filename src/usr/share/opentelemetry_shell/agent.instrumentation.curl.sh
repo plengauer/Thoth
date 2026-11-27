@@ -34,7 +34,7 @@ _otel_propagate_curl() {
   \mkfifo "$stderr_pipe"
   _otel_pipe_curl_stderr "$is_verbose" "${OTEL_SHELL_INJECT_HTTP_HANDLE_FILE:-}" "${span_handle_forward:-/dev/null}" <"$stderr_pipe" >&2 &
   local stderr_pid="$!"
-  \set -- "$@" -H "traceparent: ${TRACEPARENT:-}" -H "tracestate: ${TRACESTATE:-}"
+  if \[ -n "${TRACEPARENT:-}" ]; then \set -- "$@" -H "traceparent: $TRACEPARENT" -H "tracestate: ${TRACESTATE:-}"; fi
   if \[ -n "${B3:-}" ]; then \set -- "$@" -H "b3: $B3"; fi
   if \[ -n "${BAGGAGE:-}" ]; then \set -- "$@" -H "baggage: $BAGGAGE"; fi
   \set -- "$@" -v --no-progress-meter

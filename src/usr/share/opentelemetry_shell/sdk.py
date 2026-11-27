@@ -179,22 +179,29 @@ def dump_resource_attributes(path):
     with open(path, 'w') as output:
         output.write(attributes)
 
+
 def get_propagators():
-    propagators = list({propagator.strip().lower(): None for propagator in (os.environ.get('OTEL_PROPAGATORS') or 'tracecontext,baggage').split(',') if propagator.strip()})
-    if not {'tracecontext', 'b3'}.intersection(propagators) and set(propagators) - {'none', 'baggage'}:
+    names = (os.environ.get('OTEL_PROPAGATORS') or 'tracecontext,baggage').split(',')
+    propagators = list({name.strip().lower(): None for name in names if name.strip()})
+    has_trace_propagator = {'tracecontext', 'b3'}.intersection(propagators)
+    if not has_trace_propagator and set(propagators) - {'none', 'baggage'}:
         propagators.append('tracecontext')
     return propagators
 
+
 def extract_context(traceparent, tracestate, b3):
-    from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
+    from opentelemetry.trace.propagation import tracecontext
     from opentelemetry.propagators.b3 import B3SingleFormat
     context = None
     for propagator in get_propagators():
         if propagator == 'tracecontext':
-            context = TraceContextTextMapPropagator().extract({'traceparent': traceparent, 'tracestate': tracestate}, context)
+            carrier = {'traceparent': traceparent, 'tracestate': tracestate}
+            propagator = tracecontext.TraceContextTextMapPropagator()
+            context = propagator.extract(carrier, context)
         elif propagator == 'b3':
             context = B3SingleFormat().extract({'b3': b3}, context)
     return context
+
 
 def handle(scope, version, command, arguments):
     global initialized_traces, initialized_metrics, initialized_logs, final_resources
@@ -351,7 +358,13 @@ def handle(scope, version, command, arguments):
         name = tokens[6]
         span_id = next_span_id
         next_span_id = next_span_id + 1
-        span = get_tracer(scope, version).start_span(name, kind=SpanKind[kind.upper()], context=extract_context(traceparent, tracestate, b3), start_time=parse_time(start_time))
+        context = extract_context(traceparent, tracestate, b3)
+        span = get_tracer(scope, version).start_span(
+            name,
+            kind=SpanKind[kind.upper()],
+            context=context,
+            start_time=parse_time(start_time),
+        )
         spans[str(span_id)] = span
         with open(response_path, 'w') as response:
             response.write(str(span_id))
@@ -372,7 +385,8 @@ def handle(scope, version, command, arguments):
         traceparent = tokens[1]
         b3 = tokens[2]
         # third is dummy to not be stripped away
-        context = get_current_span(extract_context(traceparent, '', b3)).get_span_context()
+        context = extract_context(traceparent, '', b3)
+        context = get_current_span(context).get_span_context()
         for span_id, span in spans.items():
             if span.context.span_id == context.span_id:
                 with open(response_path, 'w') as response:
@@ -424,7 +438,10 @@ def handle(scope, version, command, arguments):
                 return
         span : Span = spans[span_id]
         carrier = {}
-        propagator, key = (B3SingleFormat(), 'b3') if command == 'SPAN_B3' else (TraceContextTextMapPropagator(), 'traceparent')
+        if command == 'SPAN_B3':
+            propagator, key = B3SingleFormat(), 'b3'
+        else:
+            propagator, key = TraceContextTextMapPropagator(), 'traceparent'
         propagator.inject(carrier, set_span_in_context(span, None))
         with open(response_path, 'w') as response:
             response.write(carrier.get(key, ''))
@@ -467,7 +484,8 @@ def handle(scope, version, command, arguments):
         tracestate = tokens[2]
         b3 = tokens[3]
         # fourth is dummy to not be stripped away
-        link_context = get_current_span(extract_context(traceparent, tracestate, b3)).get_span_context()
+        link_context = extract_context(traceparent, tracestate, b3)
+        link_context = get_current_span(link_context).get_span_context()
         link_id = str(next_link_id)
         next_link_id = next_link_id + 1
         links[link_id] = { 'context': link_context, 'attributes': {} }
