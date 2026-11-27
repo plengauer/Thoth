@@ -73,7 +73,7 @@ public final class SubprocessInjectionAgent {
                     }
                 }
                 SpanContext spanContext = Span.current().getSpanContext();
-                for (String propagator : System.getenv().getOrDefault("OTEL_PROPAGATORS", "tracecontext,baggage").split(",")) {
+                for (String propagator : System.getenv().getOrDefault("OTEL_PROPAGATORS", "tracecontext,baggage").replaceFirst("(?i)^(?!(.*,)?\\s*(tracecontext|b3)\\s*(,|$))(?!(\\s*(none|baggage)?\\s*(,|$))*$).+$", "$0,tracecontext").split(",")) {
                         if ("tracecontext".equalsIgnoreCase(propagator.trim())) {
                         environment.put("TRACEPARENT", String.format("%s-%s-%s-%s", "00", spanContext.getTraceId(), spanContext.getSpanId(), spanContext.getTraceFlags().asHex()));
                         } else if ("b3".equalsIgnoreCase(propagator.trim())) {

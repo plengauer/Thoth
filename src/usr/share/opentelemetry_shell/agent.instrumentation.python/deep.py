@@ -15,8 +15,17 @@ def inject_env_minimal(env, file, args):
 
 
 try:
-    from opentelemetry import propagate
+    from opentelemetry.baggage.propagation import W3CBaggagePropagator
     from opentelemetry.context import attach
+    from opentelemetry.propagators.b3 import B3SingleFormat
+    from opentelemetry.propagators.composite import CompositePropagator
+    from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
+
+    names = list({name.strip().lower(): None for name in (os.getenv("OTEL_PROPAGATORS") or "tracecontext,baggage").split(",") if name.strip()})
+    if not {"tracecontext", "b3"}.intersection(names) and set(names) - {"none", "baggage"}:
+        names.append("tracecontext")
+    propagators = {"tracecontext": TraceContextTextMapPropagator, "b3": B3SingleFormat, "baggage": W3CBaggagePropagator}
+    propagate = CompositePropagator([propagators[name]() for name in names if name in propagators])
 
     carrier = {
         key.lower(): os.environ[key]
@@ -34,7 +43,7 @@ try:
                 env[key.upper()] = carrier[key]
         return inject_env_minimal(env, file, args)
 
-except (ModuleNotFoundError, ValueError):
+except ModuleNotFoundError:
 
     def inject_env(env, file, args):
         return inject_env_minimal(env, file, args)

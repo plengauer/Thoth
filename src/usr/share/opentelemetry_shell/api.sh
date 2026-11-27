@@ -31,7 +31,8 @@ fi
 _otel_propagator_enabled() {
   case ",$(\printf '%s' "${OTEL_PROPAGATORS:-tracecontext,baggage}" | \tr -d ' ' | \tr '[:upper:]' '[:lower:]')," in
     *,"$1",*) \return 0 ;;
-    *) \return 1 ;;
+    *,tracecontext,* | *,b3,* | ,none, | ,baggage, | ,none,baggage, | ,baggage,none,) \return 1 ;;
+    *) \[ "$1" = tracecontext ] ;;
   esac
 }
 

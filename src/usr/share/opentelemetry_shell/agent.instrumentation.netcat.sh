@@ -106,7 +106,7 @@ _otel_netcat_parse_request() {
       if \[ "$key" = 'content-length' ]; then local content_length="$value"; fi
     fi
   done
-  if \[ -n "$in_traceparent$in_b3" ]; then
+  if { \[ -n "$in_traceparent" ] && _otel_propagator_enabled tracecontext; } || { \[ -n "$in_b3" ] && _otel_propagator_enabled b3; }; then
     if _otel_propagator_enabled tracecontext; then export TRACEPARENT="$in_traceparent" TRACESTATE="$in_tracestate"; fi
     if _otel_propagator_enabled b3; then export B3="$in_b3"; fi
   fi

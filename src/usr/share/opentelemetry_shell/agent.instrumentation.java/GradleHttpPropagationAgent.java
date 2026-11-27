@@ -95,7 +95,7 @@ public final class GradleHttpPropagationAgent {
                             }
                         }
                         if (addHeader != null) {
-                            for (String propagator : System.getenv().getOrDefault("OTEL_PROPAGATORS", "tracecontext,baggage").split(",")) {
+                            for (String propagator : System.getenv().getOrDefault("OTEL_PROPAGATORS", "tracecontext,baggage").replaceFirst("(?i)^(?!(.*,)?\\s*(tracecontext|b3)\\s*(,|$))(?!(\\s*(none|baggage)?\\s*(,|$))*$).+$", "$0,tracecontext").split(",")) {
                                 if ("tracecontext".equalsIgnoreCase(propagator.trim())) {
                                     addHeader.invoke(args[0], "traceparent", traceparent);
                                 } else if ("b3".equalsIgnoreCase(propagator.trim())) {
@@ -165,7 +165,7 @@ public final class GradleHttpPropagationAgent {
                             }
                         }
                         if (getHeader != null) {
-                            for (String propagator : System.getenv().getOrDefault("OTEL_PROPAGATORS", "tracecontext,baggage").split(",")) {
+                            for (String propagator : System.getenv().getOrDefault("OTEL_PROPAGATORS", "tracecontext,baggage").replaceFirst("(?i)^(?!(.*,)?\\s*(tracecontext|b3)\\s*(,|$))(?!(\\s*(none|baggage)?\\s*(,|$))*$).+$", "$0,tracecontext").split(",")) {
                                 if ("tracecontext".equalsIgnoreCase(propagator.trim())) {
                                     Object headerValue = getHeader.invoke(args[0], "traceparent");
                                     if (headerValue != null) {

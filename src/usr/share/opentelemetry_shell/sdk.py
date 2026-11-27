@@ -180,7 +180,10 @@ def dump_resource_attributes(path):
         output.write(attributes)
 
 def get_propagators():
-    return list(dict.fromkeys(propagator.strip().lower() for propagator in (os.environ.get('OTEL_PROPAGATORS') or 'tracecontext,baggage').split(',') if propagator.strip()))
+    propagators = list({propagator.strip().lower(): None for propagator in (os.environ.get('OTEL_PROPAGATORS') or 'tracecontext,baggage').split(',') if propagator.strip()})
+    if not {'tracecontext', 'b3'}.intersection(propagators) and set(propagators) - {'none', 'baggage'}:
+        propagators.append('tracecontext')
+    return propagators
 
 def extract_context(traceparent, tracestate, b3):
     from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
