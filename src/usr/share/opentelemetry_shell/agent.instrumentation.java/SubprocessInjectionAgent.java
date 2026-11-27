@@ -74,13 +74,13 @@ public final class SubprocessInjectionAgent {
                 }
                 SpanContext spanContext = Span.current().getSpanContext();
                 for (String propagator : System.getenv().getOrDefault("OTEL_PROPAGATORS", "tracecontext,baggage").replaceFirst("(?i)^(?!(.*,)?\\s*(tracecontext|b3)\\s*(,|$))(?!(\\s*(none|baggage)?\\s*(,|$))*$).+$", "$0,tracecontext").split(",")) {
-                        if ("tracecontext".equalsIgnoreCase(propagator.trim())) {
+                    if ("tracecontext".equalsIgnoreCase(propagator.trim())) {
                         environment.put("TRACEPARENT", String.format("%s-%s-%s-%s", "00", spanContext.getTraceId(), spanContext.getSpanId(), spanContext.getTraceFlags().asHex()));
-                        } else if ("b3".equalsIgnoreCase(propagator.trim())) {
-                            environment.put("B3", String.format("%s-%s-%s", spanContext.getTraceId(), spanContext.getSpanId(), spanContext.isSampled() ? "1" : "0"));
-                        } else if ("baggage".equalsIgnoreCase(propagator.trim())) {
-                            W3CBaggagePropagator.getInstance().inject(Context.current(), environment, new BaggageSetter());
-                        }
+                    } else if ("b3".equalsIgnoreCase(propagator.trim())) {
+                        environment.put("B3", String.format("%s-%s-%s", spanContext.getTraceId(), spanContext.getSpanId(), spanContext.isSampled() ? "1" : "0"));
+                    } else if ("baggage".equalsIgnoreCase(propagator.trim())) {
+                        W3CBaggagePropagator.getInstance().inject(Context.current(), environment, new BaggageSetter());
+                    }
                 }
                 environment.put("OTEL_SHELL_AUTO_INSTRUMENTATION_HINT", cmdarray[0]);
                 environment.put("OTEL_SHELL_AUTO_INJECTED", "TRUE");

@@ -17,15 +17,46 @@ def inject_env_minimal(env, file, args):
 try:
     from opentelemetry.baggage.propagation import W3CBaggagePropagator
     from opentelemetry.context import attach
-    from opentelemetry.propagators.b3 import B3SingleFormat
     from opentelemetry.propagators.composite import CompositePropagator
-    from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
+    from opentelemetry.trace.propagation.tracecontext import (
+        TraceContextTextMapPropagator,
+    )
 
-    names = list({name.strip().lower(): None for name in (os.getenv("OTEL_PROPAGATORS") or "tracecontext,baggage").split(",") if name.strip()})
-    if not {"tracecontext", "b3"}.intersection(names) and set(names) - {"none", "baggage"}:
+    def _otel_b3_propagator():
+        # the b3 propagator is a separate package,
+        # the environment of the instrumented process may not have it
+        try:
+            from opentelemetry.propagators.b3 import B3SingleFormat
+
+            return B3SingleFormat()
+        except ModuleNotFoundError:
+            return None
+
+    _otel_propagator_names = (
+        os.getenv("OTEL_PROPAGATORS") or "tracecontext,baggage"
+    ).split(",")
+    names = list(
+        {name.strip().lower(): None for name in _otel_propagator_names if name.strip()}
+    )
+    if not {"tracecontext", "b3"}.intersection(names) and set(names) - {
+        "none",
+        "baggage",
+    }:
         names.append("tracecontext")
-    propagators = {"tracecontext": TraceContextTextMapPropagator, "b3": B3SingleFormat, "baggage": W3CBaggagePropagator}
-    propagate = CompositePropagator([propagators[name]() for name in names if name in propagators])
+    propagators = {
+        "tracecontext": TraceContextTextMapPropagator,
+        "b3": _otel_b3_propagator,
+        "baggage": W3CBaggagePropagator,
+    }
+    propagate = CompositePropagator(
+        [
+            propagator
+            for propagator in (
+                propagators[name]() for name in names if name in propagators
+            )
+            if propagator is not None
+        ]
+    )
 
     carrier = {
         key.lower(): os.environ[key]

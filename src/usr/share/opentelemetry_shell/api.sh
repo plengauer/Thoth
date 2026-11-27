@@ -29,11 +29,22 @@ if \[ -n "${BASH_VERSION:-}" ] && \[ "${OTEL_SHELL_CONFIG_LOADABLE_BUILTINS:-TRU
 fi
 
 _otel_propagator_enabled() {
-  case ",$(\printf '%s' "${OTEL_PROPAGATORS:-tracecontext,baggage}" | \tr -d ' ' | \tr '[:upper:]' '[:lower:]')," in
-    *,"$1",*) \return 0 ;;
-    *,tracecontext,* | *,b3,* | ,none, | ,baggage, | ,none,baggage, | ,baggage,none,) \return 1 ;;
-    *) \[ "$1" = tracecontext ] ;;
-  esac
+  # same selection as sdk.py: empty entries and duplicates are ignored, tracecontext is the fallback if only unsupported trace propagators are configured
+  local propagators="$(\printf '%s' "${OTEL_PROPAGATORS:-tracecontext,baggage}" | \tr -d '[:space:]' | \tr '[:upper:]' '[:lower:]'),"
+  local propagator
+  local has_trace_propagator=0
+  local has_unsupported_propagator=0
+  while \[ -n "$propagators" ]; do
+    propagator="${propagators%%,*}"
+    propagators="${propagators#*,}"
+    case "$propagator" in
+      "$1") \return 0 ;;
+      tracecontext | b3) has_trace_propagator=1 ;;
+      '' | none | baggage) ;;
+      *) has_unsupported_propagator=1 ;;
+    esac
+  done
+  \[ "$1" = tracecontext ] && \[ "$has_trace_propagator" = 0 ] && \[ "$has_unsupported_propagator" = 1 ]
 }
 
 _otel_propagator_enabled tracecontext || unset TRACEPARENT TRACESTATE

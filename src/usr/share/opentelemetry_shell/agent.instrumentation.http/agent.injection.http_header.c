@@ -23,9 +23,9 @@ int otel_span_start(FILE *sdk, const char *type, const char *name) {
   }
 
   memset(buffer, 0, buffer_size);
-  snprintf(buffer, buffer_size, "SPAN_START %s %s %s %s %s %s %s\n", sdk_response,
-           traceparent ? traceparent : "", tracestate ? tracestate : "",
-           b3 ? b3 : "", "auto", type, name);
+  snprintf(buffer, buffer_size, "SPAN_START %s %s %s %s %s %s %s\n",
+           sdk_response, traceparent ? traceparent : "",
+           tracestate ? tracestate : "", b3 ? b3 : "", "auto", type, name);
   fwrite(buffer, sizeof(char), strlen(buffer), sdk);
   fflush(sdk);
 

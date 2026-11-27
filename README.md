@@ -242,7 +242,9 @@ When using automatic deployment, permissions are adjusted automatically.
 
 In addition to propagating trace context over HTTP, this project propagates it via environment variables, following the OpenTelemetry specification for <a href="https://opentelemetry.io/docs/specs/otel/context/env-carriers/">Environment Variables as Context Propagation Carriers</a>. This makes it interoperable with any other tool that reads or writes the same variables, for example <a href="https://github.com/tobert/otel-cli">otel-cli</a>.
 
-The propagators are selected with `OTEL_PROPAGATORS`. Supported values are `tracecontext`, `b3` (single header), `baggage`, and `none`. The default is `tracecontext,baggage`. If both `tracecontext` and `b3` are configured, both are written, and on extraction the last one with a valid context wins.
+The propagators are selected with `OTEL_PROPAGATORS`. Supported values are `tracecontext`, `b3` (single header), `baggage`, and `none`. The default is `tracecontext,baggage`. If both `tracecontext` and `b3` are configured, both are written, and on extraction the last one with a valid context wins. Empty entries and duplicates are ignored. If only unsupported trace propagators are configured (for example `b3multi`, `jaeger`, or `xray`), `tracecontext` is used instead.
+
+Note that `none` (or only `baggage`) disables trace context propagation entirely, including between processes that are both instrumented by this project. Every child script, `sudo`, `xargs`, or other injected subprocess then starts a new trace instead of continuing the trace of its parent, so a single script run is split into many disconnected traces.
 
 | Variable | Direction | Behavior |
 | --- | --- | --- |
