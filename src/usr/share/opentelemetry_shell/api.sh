@@ -278,28 +278,32 @@ otel_span_b3() {
 
 otel_span_activate() {
   local span_handle="$1"
-  \export TRACEPARENT_STACK="${TRACEPARENT:-}/${TRACEPARENT_STACK:-}"
-  \export B3_STACK="${B3:-}/${B3_STACK:-}"
   if _otel_propagator_enabled tracecontext; then
+    TRACEPARENT_STACK="${TRACEPARENT:-}/${TRACEPARENT_STACK:-}"
     local traceparent="$(otel_span_traceparent "$span_handle")"
     if \[ -n "$traceparent" ]; then \export TRACEPARENT="$traceparent"; fi
     if \[ -z "${TRACESTATE:-}" ]; then \export TRACESTATE=""; fi
   fi
   if _otel_propagator_enabled b3; then
+    B3_STACK="${B3:-}/${B3_STACK:-}"
     local b3="$(otel_span_b3 "$span_handle")"
     if \[ -n "$b3" ]; then \export B3="$b3"; fi
   fi
 }
 
 otel_span_deactivate() {
-  \export B3="${B3_STACK%%/*}"
-  \export B3_STACK="${B3_STACK#*/}"
-  if \[ -z "$B3" ]; then unset B3; fi
-  if \[ -z "$B3_STACK" ]; then unset B3_STACK; fi
-  \export TRACEPARENT="${TRACEPARENT_STACK%%/*}"
-  \export TRACEPARENT_STACK="${TRACEPARENT_STACK#*/}"
-  if \[ -z "$TRACEPARENT" ]; then unset TRACEPARENT TRACESTATE; fi
-  if \[ -z "$TRACEPARENT_STACK" ]; then unset TRACEPARENT_STACK; fi
+  if _otel_propagator_enabled tracecontext; then
+    \export TRACEPARENT="${TRACEPARENT_STACK%%/*}"
+    TRACEPARENT_STACK="${TRACEPARENT_STACK#*/}"
+    if \[ -z "$TRACEPARENT" ]; then unset TRACEPARENT TRACESTATE; fi
+    if \[ -z "$TRACEPARENT_STACK" ]; then unset TRACEPARENT_STACK; fi
+  fi
+  if _otel_propagator_enabled b3; then
+    \export B3="${B3_STACK%%/*}"
+    B3_STACK="${B3_STACK#*/}"
+    if \[ -z "$B3" ]; then unset B3; fi
+    if \[ -z "$B3_STACK" ]; then unset B3_STACK; fi
+  fi
 }
 
 otel_event_create() {
