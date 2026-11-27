@@ -17,7 +17,7 @@ public final class RootContextAgent {
     }
 
     public static void premain(String args, Instrumentation instrumentation) {
-        for (String propagator : System.getenv().getOrDefault("OTEL_PROPAGATORS", "tracecontext,baggage").replaceFirst("(?i)^(?!(.*,)?\\s*(tracecontext|b3)\\s*(,|$))(?!(\\s*(none|baggage)?\\s*(,|$))*$).+$", "$0,tracecontext").split(",")) {
+        for (String propagator : System.getenv().getOrDefault("OTEL_PROPAGATORS", "tracecontext,baggage").split(",")) {
             String name = propagator.trim();
             String traceparent = System.getenv("TRACEPARENT");
             String b3 = System.getenv("B3");
