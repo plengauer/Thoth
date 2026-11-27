@@ -17,23 +17,23 @@ public final class RootContextAgent {
     }
 
     public static void premain(String args, Instrumentation instrumentation) {
-        for (String propagator : System.getenv().getOrDefault("OTEL_PROPAGATORS", "tracecontext,baggage").split(",")) {
-            String name = propagator.trim();
+        String propagators = System.getenv("OTEL_PROPAGATORS");
+        for (String propagator : (propagators == null || propagators.isEmpty() ? "tracecontext,baggage" : propagators).split(",")) {
             String traceparent = System.getenv("TRACEPARENT");
             String b3 = System.getenv("B3");
-            if ("tracecontext".equalsIgnoreCase(name) && traceparent != null) {
+            if ("tracecontext".equals(propagator) && traceparent != null) {
                 String[] parts = traceparent.split("-");
                 if (parts.length >= 4) {
                     attach(parts[1], parts[2], TraceFlags.fromHex(parts[3], 0));
                 }
-            } else if ("b3".equalsIgnoreCase(name) && b3 != null) {
+            } else if ("b3".equals(propagator) && b3 != null) {
                 String[] parts = b3.split("-");
                 if (parts.length >= 2) {
                     String traceId = parts[0].length() == 16 ? "0000000000000000" + parts[0] : parts[0];
                     boolean sampled = parts.length < 3 || "1".equals(parts[2]) || "d".equals(parts[2]);
                     attach(traceId, parts[1], sampled ? TraceFlags.getSampled() : TraceFlags.getDefault());
                 }
-            } else if ("baggage".equalsIgnoreCase(name)) {
+            } else if ("baggage".equals(propagator)) {
                 W3CBaggagePropagator.getInstance().extract(Context.current(), System.getenv(), new EnvironmentGetter()).makeCurrent();
             }
         }

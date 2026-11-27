@@ -35,9 +35,7 @@ try:
     _otel_propagator_names = (
         os.getenv("OTEL_PROPAGATORS") or "tracecontext,baggage"
     ).split(",")
-    names = list(
-        {name.strip().lower(): None for name in _otel_propagator_names if name.strip()}
-    )
+    names = list({name: None for name in _otel_propagator_names if name})
     propagators = {
         "tracecontext": TraceContextTextMapPropagator,
         "b3": _otel_b3_propagator,

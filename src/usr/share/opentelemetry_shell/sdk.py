@@ -182,7 +182,7 @@ def dump_resource_attributes(path):
 
 def get_propagators():
     names = (os.environ.get('OTEL_PROPAGATORS') or 'tracecontext,baggage').split(',')
-    return list({name.strip().lower(): None for name in names if name.strip()})
+    return list({name: None for name in names if name})
 
 
 def extract_context(traceparent, tracestate, b3):
