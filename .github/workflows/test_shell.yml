@@ -79,7 +79,7 @@ jobs:
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@af82b8c3e169f06062ac75ffa55f40e221299d36 # v5.67.0
         with:
-          secrets_to_redact: '["${{ github.token }}","${{ secrets.DOCKERHUB_TOKEN }}","${{ secrets.DOCKERHUB_USERNAME }}"]'
+          secrets_to_redact: '${{ github.token }}'
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: '${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}'
           OTEL_EXPORTER_OTLP_HEADERS: '${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}'
