@@ -13,7 +13,7 @@ if ! type otel.sh 2>/dev/null; then
   arch="$(arch | sed s/x86_64/amd64/g | sed s/aarch64/arm64/g | sed 's/le$/el/g')"
   if [ "$GITHUB_REPOSITORY" = "$GITHUB_ACTION_REPOSITORY" ] && [ -f "$GITHUB_WORKSPACE"/opentelemetry-shell_"$version"_"$arch".deb ]; then
     echo "::debug::Installing local debian ..."
-    install_deb install -y "$GITHUB_WORKSPACE"/opentelemetry-shell_"$version"_"$arch".deb
+    install_deb install -y "$GITHUB_WORKSPACE"/opentelemetry-shell_"$version"_"$arch".deb || exit 1
   else
     echo "::debug::Downloading debian and installing ..."
     debian_file=/var/cache/apt/archives/opentelemetry-shell_"$version"_"$arch".deb
@@ -24,6 +24,5 @@ if ! type otel.sh 2>/dev/null; then
     echo ::warning::'Cannot find release for specified tag, falling back to latest. This may be due to tags that haven'\''t finished building yet (like in a fresh fork), in which case this will resolve automatically.' >&2
     curl --fail -L -s -H "Authorization: Bearer $INPUT_GITHUB_TOKEN" "${GITHUB_API_URL:-https://api.github.com}"/repos/"$GITHUB_ACTION_REPOSITORY"/releases/latest | jq '.assets[] | select(.name | endswith("_all.deb")) | .url' -r | head -n 1 | xargs -0 -I '{}' wget --header "Authorization: Bearer $INPUT_GITHUB_TOKEN" --header 'Accept: application/octet-stream' -O /tmp/package.deb '{}'
     install_deb install -y /tmp/package.deb
-    rm /tmp/package.deb
   ) || (echo ::warning::'Cannot find any release in repository, falling back to root repository' >&2 && wget -O - https://raw.githubusercontent.com/plengauer/Thoth/main/INSTALL.sh | sh -e)
 fi
