@@ -1,7 +1,7 @@
 #!/bin/false
 # shellcheck shell=bash
 
-# ssh user@host.example.com uptime => ssh -E /tmp/pipe -v -o SetEnv=TRACEPARENT=00-XXXXXX-01 -o 'SetEnv=TRACESTATE=""' user@host.example.com uptime
+# ssh user@host.example.com uptime => ssh -E /tmp/pipe -v -o 'SetEnv=TRACEPARENT=00-XXXXXX-01 TRACESTATE=""' user@host.example.com uptime
 
 _otel_propagate_ssh() {
   case "$-" in
@@ -23,7 +23,7 @@ _otel_propagate_ssh() {
   _otel_pipe_ssh_log "$log_pipe" "$is_verbose" <>"$log_pipe" >&2 &
   local log_pid="$!"
   local exit_code=0
-  _otel_call "$command" -E "$log_pipe" -v -o "SetEnv=TRACEPARENT=$TRACEPARENT" -o "SetEnv=TRACESTATE=\"$TRACESTATE\"" "$@" || exit_code="$?"
+  _otel_call "$command" -E "$log_pipe" -v -o "SetEnv=TRACEPARENT=${TRACEPARENT:-} TRACESTATE=\"${TRACESTATE:-}\"${B3:+ B3=$B3}${BAGGAGE:+ BAGGAGE=\"$BAGGAGE\"}" "$@" || exit_code="$?"
   \echo "$log_pipe" >"$log_pipe"
   \wait "$log_pid" || true
   \rm -f "$log_pipe"

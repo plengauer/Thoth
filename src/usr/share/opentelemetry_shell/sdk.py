@@ -179,6 +179,20 @@ def dump_resource_attributes(path):
     with open(path, 'w') as output:
         output.write(attributes)
 
+def get_propagators():
+    return list(dict.fromkeys(propagator.strip().lower() for propagator in (os.environ.get('OTEL_PROPAGATORS') or 'tracecontext,baggage').split(',') if propagator.strip()))
+
+def extract_context(traceparent, tracestate, b3):
+    from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
+    from opentelemetry.propagators.b3 import B3SingleFormat
+    context = None
+    for propagator in get_propagators():
+        if propagator == 'tracecontext':
+            context = TraceContextTextMapPropagator().extract({'traceparent': traceparent, 'tracestate': tracestate}, context)
+        elif propagator == 'b3':
+            context = B3SingleFormat().extract({'b3': b3}, context)
+    return context
+
 def handle(scope, version, command, arguments):
     global initialized_traces, initialized_metrics, initialized_logs, final_resources
 
@@ -191,17 +205,11 @@ def handle(scope, version, command, arguments):
         from opentelemetry.sdk.trace.export import SimpleSpanProcessor, BatchSpanProcessor, ConsoleSpanExporter
         from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
         traces_exporters = os.environ.get('OTEL_TRACES_EXPORTER', 'otlp')
-        propagators = os.environ.get('OTEL_PROPAGATORS', 'tracecontext')
         sampling_strategy = os.environ.get('OTEL_TRACES_SAMPLER', 'parentbased_always_on')
         sampling_strategy_arg = os.environ.get('OTEL_TRACES_SAMPLER_ARG', '1.0')
         # careful: actions/instrument/job/inject_and_init.sh greps this file for module-loading keywords to pre-warm its SDK factory, so those substrings must not appear in ordinary statements
-        seen_propagators = []
-        for propagator in propagators.split(','):
-            propagator = propagator.strip().lower()
-            if not propagator or propagator in seen_propagators:
-                continue
-            seen_propagators.append(propagator)
-            if propagator not in ('tracecontext', 'none'):
+        for propagator in get_propagators():
+            if propagator not in ('tracecontext', 'b3', 'baggage', 'none'):
                 print('Unsupported propagator, ignoring: ' + propagator, file=sys.stderr)
         if traces_exporters:
             sampler = None
@@ -329,18 +337,18 @@ def handle(scope, version, command, arguments):
         raise EOFError
     elif command == 'SPAN_START':
         from opentelemetry.trace import get_tracer, SpanKind
-        from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
         global next_span_id
-        tokens = arguments.split(' ', 5)
+        tokens = arguments.split(' ', 6)
         response_path = tokens[0]
         traceparent = tokens[1]
         tracestate = tokens[2]
-        start_time = tokens[3]
-        kind = tokens[4]
-        name = tokens[5]
+        b3 = tokens[3]
+        start_time = tokens[4]
+        kind = tokens[5]
+        name = tokens[6]
         span_id = next_span_id
         next_span_id = next_span_id + 1
-        span = get_tracer(scope, version).start_span(name, kind=SpanKind[kind.upper()], context=TraceContextTextMapPropagator().extract({'traceparent': traceparent, 'tracestate': tracestate}), start_time=parse_time(start_time))
+        span = get_tracer(scope, version).start_span(name, kind=SpanKind[kind.upper()], context=extract_context(traceparent, tracestate, b3), start_time=parse_time(start_time))
         spans[str(span_id)] = span
         with open(response_path, 'w') as response:
             response.write(str(span_id))
@@ -356,16 +364,19 @@ def handle(scope, version, command, arguments):
     elif command == 'SPAN_HANDLE':
         from opentelemetry.trace import get_current_span
         from opentelemetry.sdk.trace import Span
-        from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
-        tokens = arguments.split(' ', 1)
+        tokens = arguments.split(' ', 3)
         response_path = tokens[0]
         traceparent = tokens[1]
-        context = get_current_span(TraceContextTextMapPropagator().extract({'traceparent': traceparent})).get_span_context()
+        b3 = tokens[2]
+        # third is dummy to not be stripped away
+        context = get_current_span(extract_context(traceparent, '', b3)).get_span_context()
         for span_id, span in spans.items():
             if span.context.span_id == context.span_id:
                 with open(response_path, 'w') as response:
                     response.write(str(span_id))
                     return
+        with open(response_path, 'w') as response:
+            response.write('')
     elif command == 'SPAN_AUTO_END':
         auto_end = True
     elif command == 'SPAN_NAME':
@@ -392,10 +403,11 @@ def handle(scope, version, command, arguments):
             return
         span : Span = spans[span_id]
         span.set_attribute(key, convert_type(type, value, span.attributes.get(key)))
-    elif command == 'SPAN_TRACEPARENT':
+    elif command == 'SPAN_TRACEPARENT' or command == 'SPAN_B3':
         from opentelemetry.sdk.trace import Span
         from opentelemetry.trace import set_span_in_context
         from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
+        from opentelemetry.propagators.b3 import B3SingleFormat
         tokens = arguments.split(' ', 1)
         response_path = tokens[0]
         if len(tokens) == 1:
@@ -409,9 +421,10 @@ def handle(scope, version, command, arguments):
                 return
         span : Span = spans[span_id]
         carrier = {}
-        TraceContextTextMapPropagator().inject(carrier, set_span_in_context(span, None))
+        propagator, key = (B3SingleFormat(), 'b3') if command == 'SPAN_B3' else (TraceContextTextMapPropagator(), 'traceparent')
+        propagator.inject(carrier, set_span_in_context(span, None))
         with open(response_path, 'w') as response:
-            response.write(carrier.get('traceparent', ''))
+            response.write(carrier.get(key, ''))
     elif command == 'EVENT_CREATE':
         global next_event_id
         tokens = arguments.split(' ', 1)
@@ -444,14 +457,14 @@ def handle(scope, version, command, arguments):
     elif command == 'LINK_CREATE':
         from opentelemetry.sdk.trace import Span
         from opentelemetry.trace import get_current_span
-        from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
         global next_link_id
-        tokens = arguments.split(' ', 3)
+        tokens = arguments.split(' ', 4)
         response_path = tokens[0]
         traceparent = tokens[1]
         tracestate = tokens[2]
-        # third is dummy to not be stripped away
-        link_context = get_current_span(TraceContextTextMapPropagator().extract({'traceparent': traceparent, 'tracestate': tracestate})).get_span_context()
+        b3 = tokens[3]
+        # fourth is dummy to not be stripped away
+        link_context = get_current_span(extract_context(traceparent, tracestate, b3)).get_span_context()
         link_id = str(next_link_id)
         next_link_id = next_link_id + 1
         links[link_id] = { 'context': link_context, 'attributes': {} }
@@ -559,15 +572,15 @@ def handle(scope, version, command, arguments):
     elif command == 'LOG_RECORD':
         from opentelemetry._logs import get_logger
         from opentelemetry.sdk._logs._internal import SeverityNumber
-        from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
-        tokens = arguments.split(' ', 3)
+        tokens = arguments.split(' ', 4)
         traceparent = tokens[0]
-        log_time = tokens[1]
-        log_severity = tokens[2]
-        line = tokens[3] if len(tokens) > 3 else ""
+        b3 = tokens[1]
+        log_time = tokens[2]
+        log_severity = tokens[3]
+        line = tokens[4] if len(tokens) > 4 else ""
         if len(line) == 0:
             return
-        context = TraceContextTextMapPropagator().extract({'traceparent': traceparent})
+        context = extract_context(traceparent, '', b3)
         logger = get_logger(scope, version)
         logger.emit(
             timestamp=parse_time(log_time),

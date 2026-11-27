@@ -80,20 +80,19 @@ child_process.execFile = function(file, args, options, callback) {
 */
 
 function shell_propagator_inject(env) {
+  let carrier = {};
   try {
     let opentelemetry_api = require('@opentelemetry/api');
-    let opentelemetry_core = require('@opentelemetry/core');
-    let carrier = {};
-    new opentelemetry_core.W3CTraceContextPropagator().inject(opentelemetry_api.context.active(), carrier, opentelemetry_api.defaultTextMapSetter);
-    env.TRACEPARENT = carrier.traceparent ? carrier.traceparent : (process.env.TRACEPARENT ? process.env.TRACEPARENT : '');
-    env.TRACESTATE = carrier.tracestate ? carrier.tracestate : (process.env.TRACESTATE ? process.env.TRACESTATE : '');
+    require('./deep.propagator.js').inject(opentelemetry_api.context.active(), carrier, opentelemetry_api.defaultTextMapSetter);
   } catch (err) {
     if (err.code != 'MODULE_NOT_FOUND') {
       throw err;
     }
-    env.TRACEPARENT = process.env.TRACEPARENT ? process.env.TRACEPARENT : '';
-    env.TRACESTATE = process.env.TRACESTATE ? process.env.TRACESTATE : '';
   }
+  env.TRACEPARENT = carrier.traceparent || process.env.TRACEPARENT || '';
+  env.TRACESTATE = carrier.tracestate || process.env.TRACESTATE || '';
+  if (carrier.b3 || process.env.B3) env.B3 = carrier.b3 || process.env.B3;
+  if (carrier.baggage || process.env.BAGGAGE) env.BAGGAGE = carrier.baggage || process.env.BAGGAGE;
   Object.entries(process.env).filter(([key]) => key.startsWith('OTEL_')).forEach(([key, value]) => env[key] = value);
 }
 

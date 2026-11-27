@@ -28,7 +28,10 @@ _otel_propagate_wget() {
   _otel_pipe_wget_stderr "${OTEL_SHELL_INJECT_HTTP_HANDLE_FILE:-}" <"$stderr_pipe" >&2 &
   local stderr_pid="$!"
   local exit_code=0
-  _otel_call "$@" --header="traceparent: $TRACEPARENT" --header="tracestate: $TRACESTATE" 2>"$stderr_pipe" || exit_code="$?"
+  if \[ -n "${TRACEPARENT:-}" ]; then \set -- "$@" --header="traceparent: $TRACEPARENT" --header="tracestate: ${TRACESTATE:-}"; fi
+  if \[ -n "${B3:-}" ]; then \set -- "$@" --header="b3: $B3"; fi
+  if \[ -n "${BAGGAGE:-}" ]; then \set -- "$@" --header="baggage: $BAGGAGE"; fi
+  _otel_call "$@" 2>"$stderr_pipe" || exit_code="$?"
   if \[ -f "$file" ]; then
     if \[ -n "${OLD_LD_PRELOAD:-}" ]; then
       export LD_PRELOAD="$OLD_LD_PRELOAD"

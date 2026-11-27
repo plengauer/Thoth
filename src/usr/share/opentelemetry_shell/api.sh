@@ -28,6 +28,17 @@ if \[ -n "${BASH_VERSION:-}" ] && \[ "${OTEL_SHELL_CONFIG_LOADABLE_BUILTINS:-TRU
   \enable -f /usr/lib/bash/mkfifo mkfifo 2> /dev/null || \true
 fi
 
+_otel_propagator_enabled() {
+  case ",$(\printf '%s' "${OTEL_PROPAGATORS:-tracecontext,baggage}" | \tr -d ' ' | \tr '[:upper:]' '[:lower:]')," in
+    *,"$1",*) \return 0 ;;
+    *) \return 1 ;;
+  esac
+}
+
+_otel_propagator_enabled tracecontext || unset TRACEPARENT TRACESTATE
+_otel_propagator_enabled b3 || unset B3
+_otel_propagator_enabled baggage || unset BAGGAGE
+
 # basic setup
 if \[ -z "${TMPDIR:-}" ]; then TMPDIR=/tmp; fi
 _otel_shell_pipe_dir="${OTEL_SHELL_PIPE_DIR:-$TMPDIR}"
@@ -187,7 +198,7 @@ otel_span_current() {
   local response_pipe="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.span_handle.pipe.XXXXXXXXXX)"
   # shellcheck disable=SC2086 # the mkfifo flags are an optional list of arguments that must be split into words or vanish when empty
   \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
-  _otel_sdk_communicate "SPAN_HANDLE" "$response_pipe" "${TRACEPARENT:-}"
+  _otel_sdk_communicate "SPAN_HANDLE" "$response_pipe" "${TRACEPARENT:-}" "${B3:-}" END
   local handle
   \read -r handle <"$response_pipe" || \true
   \echo "$handle"
@@ -204,7 +215,7 @@ otel_span_start() {
   local response_pipe="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.span_handle.pipe.XXXXXXXXXX)"
   # shellcheck disable=SC2086 # the mkfifo flags are an optional list of arguments that must be split into words or vanish when empty
   \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
-  _otel_sdk_communicate "SPAN_START" "$response_pipe" "${TRACEPARENT:-}" "${TRACESTATE:-}" "$time" "$kind" "$name"
+  _otel_sdk_communicate "SPAN_START" "$response_pipe" "${TRACEPARENT:-}" "${TRACESTATE:-}" "${B3:-}" "$time" "$kind" "$name"
   local handle
   \read -r handle <"$response_pipe" || \true
   \echo "$handle"
@@ -253,27 +264,42 @@ otel_span_traceparent() {
   \rm "$response_pipe" 1>/dev/null 2>/dev/null
 }
 
+otel_span_b3() {
+  local span_handle="$1"
+  local response_pipe="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.b3.pipe.XXXXXXXXXX)"
+  # shellcheck disable=SC2086 # the mkfifo flags are an optional list of arguments that must be split into words or vanish when empty
+  \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
+  _otel_sdk_communicate "SPAN_B3" "$response_pipe" "$span_handle"
+  local b3
+  \read -r b3 <"$response_pipe" || \true
+  \echo "$b3"
+  \rm "$response_pipe" 1>/dev/null 2>/dev/null
+}
+
 otel_span_activate() {
   local span_handle="$1"
-  local traceparent="$(otel_span_traceparent "$span_handle")"
   \export TRACEPARENT_STACK="${TRACEPARENT:-}/${TRACEPARENT_STACK:-}"
-  if \[ -n "$traceparent" ]; then \export TRACEPARENT="$traceparent"; fi
-  if \[ -z "${TRACESTATE:-}" ]; then \export TRACESTATE=""; fi
+  \export B3_STACK="${B3:-}/${B3_STACK:-}"
+  if _otel_propagator_enabled tracecontext; then
+    local traceparent="$(otel_span_traceparent "$span_handle")"
+    if \[ -n "$traceparent" ]; then \export TRACEPARENT="$traceparent"; fi
+    if \[ -z "${TRACESTATE:-}" ]; then \export TRACESTATE=""; fi
+  fi
+  if _otel_propagator_enabled b3; then
+    local b3="$(otel_span_b3 "$span_handle")"
+    if \[ -n "$b3" ]; then \export B3="$b3"; fi
+  fi
 }
 
 otel_span_deactivate() {
-  if _otel_string_contains "$TRACEPARENT_STACK" /; then
-    \export TRACEPARENT="${TRACEPARENT_STACK%%/*}"
-    \export TRACEPARENT_STACK="${TRACEPARENT_STACK#*/}"
-  else
-    \export TRACEPARENT="$TRACEPARENT_STACK"
-    \export TRACEPARENT_STACK=""
-  fi
-  if \[ -z "$TRACEPARENT" ]; then
-    unset TRACEPARENT_STACK
-    unset TRACEPARENT
-    unset TRACESTATE
-  fi
+  \export B3="${B3_STACK%%/*}"
+  \export B3_STACK="${B3_STACK#*/}"
+  if \[ -z "$B3" ]; then unset B3; fi
+  if \[ -z "$B3_STACK" ]; then unset B3_STACK; fi
+  \export TRACEPARENT="${TRACEPARENT_STACK%%/*}"
+  \export TRACEPARENT_STACK="${TRACEPARENT_STACK#*/}"
+  if \[ -z "$TRACEPARENT" ]; then unset TRACEPARENT TRACESTATE; fi
+  if \[ -z "$TRACEPARENT_STACK" ]; then unset TRACEPARENT_STACK; fi
 }
 
 otel_event_create() {
@@ -310,10 +336,11 @@ otel_event_add() {
 otel_link_create() {
   local traceparent="$1"
   local tracestate="$2"
+  local b3="${3:-}"
   local response_pipe="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.link_handle.pipe.XXXXXXXXXX)"
   # shellcheck disable=SC2086 # the mkfifo flags are an optional list of arguments that must be split into words or vanish when empty
   \mkfifo ${_otel_mkfifo_flags:-} "$response_pipe"
-  _otel_sdk_communicate "LINK_CREATE" "$response_pipe" "$traceparent" "$tracestate" END
+  _otel_sdk_communicate "LINK_CREATE" "$response_pipe" "$traceparent" "$tracestate" "$b3" END
   local handle
   \read -r handle <"$response_pipe" || \true
   \echo "$handle"

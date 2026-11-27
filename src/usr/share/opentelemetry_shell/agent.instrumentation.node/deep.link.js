@@ -1,5 +1,4 @@
 const opentelemetry_api = require('@opentelemetry/api');
-const opentelemetry_core = require('@opentelemetry/core');
 const context_async_hooks = require("@opentelemetry/context-async-hooks");
 const semver = require("semver");
 
@@ -32,7 +31,7 @@ class CustomRootContextManager {
 }
 
 function wrapAndSetGlobalContextManager(setGlobalContextManager, context_manager) {
-  const MY_ROOT_CONTEXT = new opentelemetry_core.W3CTraceContextPropagator().extract(opentelemetry_api.ROOT_CONTEXT, { traceparent: process.env.TRACEPARENT, tracestate: process.env.TRACESTATE }, opentelemetry_api.defaultTextMapGetter);
+  const MY_ROOT_CONTEXT = require('./deep.propagator.js').extract(opentelemetry_api.ROOT_CONTEXT, { traceparent: process.env.TRACEPARENT, tracestate: process.env.TRACESTATE, b3: process.env.B3, baggage: process.env.BAGGAGE }, opentelemetry_api.defaultTextMapGetter);
   return setGlobalContextManager(new CustomRootContextManager(context_manager, MY_ROOT_CONTEXT));
 }
 

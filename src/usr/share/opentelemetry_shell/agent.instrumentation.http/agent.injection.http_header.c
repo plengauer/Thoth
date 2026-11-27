@@ -15,6 +15,7 @@ int otel_span_start(FILE *sdk, const char *type, const char *name) {
 
   char *traceparent = getenv("TRACEPARENT");
   char *tracestate = getenv("TRACESTATE");
+  char *b3 = getenv("B3");
   char *sdk_response = tmpnam(NULL); // this is unsafe, i know
   if (mkfifo(sdk_response, 0666) != 0) {
     free(buffer);
@@ -22,9 +23,9 @@ int otel_span_start(FILE *sdk, const char *type, const char *name) {
   }
 
   memset(buffer, 0, buffer_size);
-  snprintf(buffer, buffer_size, "SPAN_START %s %s %s %s %s %s\n", sdk_response,
-           traceparent ? traceparent : "", tracestate ? tracestate : "", "auto",
-           type, name);
+  snprintf(buffer, buffer_size, "SPAN_START %s %s %s %s %s %s %s\n", sdk_response,
+           traceparent ? traceparent : "", tracestate ? tracestate : "",
+           b3 ? b3 : "", "auto", type, name);
   fwrite(buffer, sizeof(char), strlen(buffer), sdk);
   fflush(sdk);
 
@@ -39,7 +40,7 @@ int otel_span_start(FILE *sdk, const char *type, const char *name) {
   return span_handle;
 }
 
-char *otel_traceparent(FILE *sdk, int span_handle) {
+char *otel_context(FILE *sdk, const char *command, int span_handle) {
   size_t buffer_size = 1024 * 4;
   char *buffer = (char *)calloc(buffer_size, sizeof(char));
   if (!buffer)
@@ -52,7 +53,7 @@ char *otel_traceparent(FILE *sdk, int span_handle) {
   }
 
   memset(buffer, 0, buffer_size);
-  snprintf(buffer, buffer_size, "SPAN_TRACEPARENT %s %d\n", sdk_response,
+  snprintf(buffer, buffer_size, "%s %s %d\n", command, sdk_response,
            span_handle);
   fwrite(buffer, sizeof(char), strlen(buffer), sdk);
   fflush(sdk);
@@ -68,7 +69,8 @@ char *otel_traceparent(FILE *sdk, int span_handle) {
 
 int inject(char *buffer, size_t length) {
   char *traceparent = getenv("TRACEPARENT");
-  if (!traceparent)
+  char *b3 = getenv("B3");
+  if (!traceparent && !b3)
     return 10;
   if (length == 24 && strcmp(buffer, "PRI * HTTP/2.0\r\n\r\nSM\r\n") == 0) {
     return 1;
@@ -86,23 +88,37 @@ int inject(char *buffer, size_t length) {
 
   buffer = line_end + 1;
   line_end = strchr(buffer, '\n');
+  FILE *sdk = NULL;
+  int span_handle = -1;
+  int result = 9;
   while (!!line_end && line_end - buffer > 1) {
     *line_end = '\0';
-    if (strstr(buffer, "traceparent: ") == buffer &&
+    const char *name = NULL;
+    const char *command = NULL;
+    if (traceparent && *traceparent &&
+        strstr(buffer, "traceparent: ") == buffer &&
         !!strstr(buffer, traceparent)) {
-      char *sdk_pipe = getenv("OTEL_SHELL_INJECT_HTTP_SDK_PIPE");
-      char *handle_file = getenv("OTEL_SHELL_INJECT_HTTP_HANDLE_FILE");
-      if (!sdk_pipe || !handle_file)
-        return 4;
-      FILE *sdk = fopen(sdk_pipe, "a+");
-      if (!sdk)
-        return 4;
-      int span_handle = otel_span_start(sdk, "CLIENT", "HTTP");
-      if (span_handle < 0)
-        return 5;
-      for (int i = 0; i < 1000 && access(handle_file, F_OK) == 0; i++)
-        usleep(10 * 1000);
-      {
+      name = "traceparent: ";
+      command = "SPAN_TRACEPARENT";
+    } else if (b3 && *b3 && strstr(buffer, "b3: ") == buffer &&
+               !!strstr(buffer, b3)) {
+      name = "b3: ";
+      command = "SPAN_B3";
+    }
+    if (name) {
+      if (!sdk) {
+        char *sdk_pipe = getenv("OTEL_SHELL_INJECT_HTTP_SDK_PIPE");
+        char *handle_file = getenv("OTEL_SHELL_INJECT_HTTP_HANDLE_FILE");
+        if (!sdk_pipe || !handle_file)
+          return 4;
+        sdk = fopen(sdk_pipe, "a+");
+        if (!sdk)
+          return 4;
+        span_handle = otel_span_start(sdk, "CLIENT", "HTTP");
+        if (span_handle < 0)
+          return 5;
+        for (int i = 0; i < 1000 && access(handle_file, F_OK) == 0; i++)
+          usleep(10 * 1000);
         char span_handle_string[16];
         memset(span_handle_string, 0, 16);
         snprintf(span_handle_string, sizeof(span_handle_string), "%d",
@@ -114,26 +130,24 @@ int inject(char *buffer, size_t length) {
                storage); // TODO this could fail, what then?
         fclose(storage);
       }
-      char *traceparent = otel_traceparent(sdk, span_handle);
-      if (!traceparent)
+      char *value = otel_context(sdk, command, span_handle);
+      if (!value)
         return 7;
-      if (strlen("traceparent: ") + strlen(traceparent) + 1 != strlen(buffer)) {
-        free(traceparent);
-        return 8;
+      if (strlen(name) + strlen(value) + 1 == strlen(buffer)) {
+        snprintf(buffer, strlen(buffer) + 1, "%s%s\r", name, value);
+        result = 0;
       }
-      snprintf(buffer, strlen(buffer) + 1, "traceparent: %s\r", traceparent);
-      free(traceparent);
-      fclose(sdk); // this will leak on some early aborts, process terminate
-                   // will clean it up
-      *line_end = '\n';
-      return 0;
+      free(value);
     }
     *line_end = '\n';
     buffer = line_end + 1;
     line_end = strchr(buffer, '\n');
   }
 
-  return 9;
+  if (sdk)
+    fclose(sdk); // this will leak on some early aborts, process terminate
+                 // will clean it up
+  return result;
 }
 
 int inject_safely(char *buffer, size_t length) {
@@ -268,6 +282,8 @@ int nghttp2_submit_request(void *session, void *pri_spec, void *nva,
   if (!sdk_pipe || !handle_file)
     return original_nghttp2_submit_request(session, pri_spec, nva, nvlen,
                                            data_prd, stream_user_data);
+  FILE *sdk = NULL;
+  int span_handle = -1;
   for (size_t index = 0; index < nvlen; index++) {
     void *nv =
         nva + (sizeof(void *) * 2 + sizeof(size_t) * 2 + 8) *
@@ -291,16 +307,16 @@ int nghttp2_submit_request(void *session, void *pri_spec, void *nva,
     memcpy(my_value, value, valuelen);
     my_key[keylen] = '\0';
     my_value[valuelen] = '\0';
-    if (strcmp(my_key, "traceparent") == 0) {
-      FILE *sdk = fopen(sdk_pipe, "a+");
-      if (!sdk)
-        break;
-      int span_handle = otel_span_start(sdk, "CLIENT", "HTTP");
-      if (span_handle < 0)
-        break;
-      for (int i = 0; i < 1000 && access(handle_file, F_OK) == 0; i++)
-        usleep(10 * 1000);
-      {
+    if (strcmp(my_key, "traceparent") == 0 || strcmp(my_key, "b3") == 0) {
+      if (!sdk) {
+        sdk = fopen(sdk_pipe, "a+");
+        if (!sdk)
+          break;
+        span_handle = otel_span_start(sdk, "CLIENT", "HTTP");
+        if (span_handle < 0)
+          break;
+        for (int i = 0; i < 1000 && access(handle_file, F_OK) == 0; i++)
+          usleep(10 * 1000);
         char span_handle_string[16];
         memset(span_handle_string, 0, 16);
         snprintf(span_handle_string, sizeof(span_handle_string), "%d",
@@ -312,20 +328,20 @@ int nghttp2_submit_request(void *session, void *pri_spec, void *nva,
                storage);
         fclose(storage);
       }
-      char *traceparent = otel_traceparent(sdk, span_handle);
-      if (!traceparent)
+      char *context = otel_context(
+          sdk, strcmp(my_key, "b3") == 0 ? "SPAN_B3" : "SPAN_TRACEPARENT",
+          span_handle);
+      if (!context)
         break;
-      if (strlen(traceparent) != valuelen) {
-        free(traceparent);
-        break;
-      }
-      memcpy(value, traceparent, valuelen);
-      free(traceparent);
-      fclose(sdk);
+      if (strlen(context) == valuelen)
+        memcpy(value, context, valuelen);
+      free(context);
     }
     free(my_key);
     free(my_value);
   }
+  if (sdk)
+    fclose(sdk);
   return original_nghttp2_submit_request(session, pri_spec, nva, nvlen,
                                          data_prd, stream_user_data);
 }

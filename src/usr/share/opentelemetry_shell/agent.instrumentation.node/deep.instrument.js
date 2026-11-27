@@ -1,5 +1,4 @@
 const opentelemetry_api = require('@opentelemetry/api');
-const opentelemetry_core = require('@opentelemetry/core');
 const opentelemetry_sdk = require('@opentelemetry/sdk-node');
 const opentelemetry_resources = require('@opentelemetry/resources');
 const opentelemetry_resources_github = require('@opentelemetry/resource-detector-github');
@@ -34,7 +33,7 @@ class CustomRootContextManager {
     return context;
   }
 }
-const MY_ROOT_CONTEXT = new opentelemetry_core.W3CTraceContextPropagator().extract(opentelemetry_api.ROOT_CONTEXT, { traceparent: process.env.TRACEPARENT, tracestate: process.env.TRACESTATE }, opentelemetry_api.defaultTextMapGetter);
+const MY_ROOT_CONTEXT = require('./deep.propagator.js').extract(opentelemetry_api.ROOT_CONTEXT, { traceparent: process.env.TRACEPARENT, tracestate: process.env.TRACESTATE, b3: process.env.B3, baggage: process.env.BAGGAGE }, opentelemetry_api.defaultTextMapGetter);
 const context_manager = new CustomRootContextManager(semver.gte(process.version, '14.8.0') ? new context_async_hooks.AsyncLocalStorageContextManager() : new context_async_hooks.AsyncHooksContextManager(), MY_ROOT_CONTEXT);
 
 // node.js terminates when event loop is empty and flushing the SDK (below) is unfortunately async.

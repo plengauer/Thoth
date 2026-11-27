@@ -102,7 +102,7 @@ record_github_logs() {
       error) severity=17 ;;
       *) continue ;;
     esac
-    _otel_log_record "$TRACEPARENT" auto "$severity" "$line"
+    _otel_log_record "${TRACEPARENT:-}" "${B3:-}" auto "$severity" "$line"
   done
 }
 
@@ -153,7 +153,7 @@ otel_span_deactivate "$span_handle"
 ! [ -r "$GITHUB_STATE" ] || cat "$GITHUB_STATE" | github_properties_to_kvps | while read -r kvp; do otel_span_attribute_typed "$span_handle" string github.actions.step.state.after."$(variable_name_2_attribute_key "${kvp%%=*}")"="${kvp#*=}"; done
 ! [ -r "$GITHUB_OUTPUT" ] || cat "$GITHUB_OUTPUT" | github_properties_to_kvps | while read -r kvp; do otel_span_attribute_typed "$span_handle" string github.actions.step.output."$(variable_name_2_attribute_key "${kvp%%=*}")"="${kvp#*=}"; done
 if [ "$exit_code" != 0 ]; then
-  _otel_log_record "$TRACEPARENT" auto 17 "Process completed with exit code $exit_code."
+  _otel_log_record "${TRACEPARENT:-}" "${B3:-}" auto 17 "Process completed with exit code $exit_code."
   conclusion=failure
 else
   conclusion=success

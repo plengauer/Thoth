@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 import java.security.ProtectionDomain;
+import java.util.Collections;
+import java.util.Map;
+import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.baggage.propagation.W3CBaggagePropagator;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.Span;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.SpanKind;
@@ -17,6 +20,7 @@ import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.TraceFlags;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.TraceState;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.context.Context;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.context.Scope;
+import io.opentelemetry.javaagent.shaded.io.opentelemetry.context.propagation.TextMapGetter;
 
 // The anonymous Transformer must implement a public method
 // The agent manifest names this class without a package
@@ -91,7 +95,15 @@ public final class GradleHttpPropagationAgent {
                             }
                         }
                         if (addHeader != null) {
-                            addHeader.invoke(args[0], "traceparent", traceparent);
+                            for (String propagator : System.getenv().getOrDefault("OTEL_PROPAGATORS", "tracecontext,baggage").split(",")) {
+                                if ("tracecontext".equalsIgnoreCase(propagator.trim())) {
+                                    addHeader.invoke(args[0], "traceparent", traceparent);
+                                } else if ("b3".equalsIgnoreCase(propagator.trim())) {
+                                    addHeader.invoke(args[0], "b3", String.format("%s-%s-%s", span.getSpanContext().getTraceId(), span.getSpanContext().getSpanId(), span.getSpanContext().isSampled() ? "1" : "0"));
+                                } else if ("baggage".equalsIgnoreCase(propagator.trim()) && System.getenv("BAGGAGE") != null) {
+                                    addHeader.invoke(args[0], "baggage", System.getenv("BAGGAGE"));
+                                }
+                            }
                         }
                     } catch (Exception e) {
                     }
@@ -121,6 +133,18 @@ public final class GradleHttpPropagationAgent {
         }
     }
 
+    public static final class HeaderGetter implements TextMapGetter<Map<String, String>> {
+        @Override
+        public Iterable<String> keys(Map<String, String> headers) {
+            return headers.keySet();
+        }
+
+        @Override
+        public String get(Map<String, String> headers, String key) {
+            return headers.get(key);
+        }
+    }
+
     public static final class DaemonConnectionAdvice {
         private DaemonConnectionAdvice() {
         }
@@ -129,6 +153,7 @@ public final class GradleHttpPropagationAgent {
         public static void onEnter(@Advice.Origin String method, @Advice.AllArguments Object[] args) {
             try {
                 String traceparent = System.getProperty("otel.gradle.client.traceparent");
+                Map<String, String> baggage = Collections.emptyMap();
                 if (traceparent == null && args != null && args.length > 0 && args[0] != null) {
                     try {
                         Class<?> clazz = args[0].getClass();
@@ -140,9 +165,26 @@ public final class GradleHttpPropagationAgent {
                             }
                         }
                         if (getHeader != null) {
-                            Object headerValue = getHeader.invoke(args[0], "traceparent");
-                            if (headerValue != null) {
-                                traceparent = headerValue.toString();
+                            for (String propagator : System.getenv().getOrDefault("OTEL_PROPAGATORS", "tracecontext,baggage").split(",")) {
+                                if ("tracecontext".equalsIgnoreCase(propagator.trim())) {
+                                    Object headerValue = getHeader.invoke(args[0], "traceparent");
+                                    if (headerValue != null) {
+                                        traceparent = headerValue.toString();
+                                    }
+                                } else if ("b3".equalsIgnoreCase(propagator.trim())) {
+                                    Object headerValue = getHeader.invoke(args[0], "b3");
+                                    String[] b3 = headerValue == null ? new String[0] : headerValue.toString().split("-");
+                                    if (b3.length >= 2) {
+                                        String traceId = b3[0].length() == 16 ? "0000000000000000" + b3[0] : b3[0];
+                                        boolean sampled = b3.length < 3 || "1".equals(b3[2]) || "d".equals(b3[2]);
+                                        traceparent = String.format("00-%s-%s-%s", traceId, b3[1], sampled ? "01" : "00");
+                                    }
+                                } else if ("baggage".equalsIgnoreCase(propagator.trim())) {
+                                    Object headerValue = getHeader.invoke(args[0], "baggage");
+                                    if (headerValue != null) {
+                                        baggage = Collections.singletonMap("baggage", headerValue.toString());
+                                    }
+                                }
                             }
                         }
                     } catch (Exception e) {
@@ -164,7 +206,7 @@ public final class GradleHttpPropagationAgent {
                             .setAttribute("rpc.system", "gradle")
                             .setAttribute("rpc.service", "daemon")
                             .startSpan();
-                        Scope scope = span.makeCurrent();
+                        Scope scope = W3CBaggagePropagator.getInstance().extract(Context.current(), baggage, new HeaderGetter()).with(span).makeCurrent();
                         SERVER_SPAN.set(span);
                         SERVER_SCOPE.set(scope);
                     }

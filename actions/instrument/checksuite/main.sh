@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+export OTEL_PROPAGATORS=tracecontext
 
 . ../shared/github.sh
 . ../shared/id_printer.sh

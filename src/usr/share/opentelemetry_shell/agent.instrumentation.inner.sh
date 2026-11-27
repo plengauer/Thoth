@@ -82,7 +82,7 @@ _otel_inject_xargs() {
 # sudo apt-get update => sudo sh -c '. /otel.sh; apt-get update' 'sudo'
 
 _otel_inject_sudo() {
-  OTEL_SHELL_INJECT_INNER_COMMAND_MORE_ARGS="--preserve-env=$(\printenv | \grep '^OTEL_' | \cut -d= -f1 | \sort -u | \tr '\n' ','),OTEL_SHELL_COMMANDLINE_OVERRIDE,OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE,OTEL_SHELL_AUTO_INJECTED,TRACEPARENT,TRACESTATE" _otel_inject_inner_command "$@"
+  OTEL_SHELL_INJECT_INNER_COMMAND_MORE_ARGS="--preserve-env=$(\printenv | \grep '^OTEL_' | \cut -d= -f1 | \sort -u | \tr '\n' ','),OTEL_SHELL_COMMANDLINE_OVERRIDE,OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE,OTEL_SHELL_AUTO_INJECTED,TRACEPARENT,TRACESTATE,B3,BAGGAGE" _otel_inject_inner_command "$@"
 }
 
 _otel_alias_prepend sudo _otel_inject_sudo

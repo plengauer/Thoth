@@ -4,10 +4,13 @@ import net.bytebuddy.matcher.ElementMatchers;
 import java.io.IOException;
 import java.lang.instrument.Instrumentation;
 import java.util.Map;
+import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.baggage.propagation.W3CBaggagePropagator;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.Span;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.SpanContext;
+import io.opentelemetry.javaagent.shaded.io.opentelemetry.context.Context;
+import io.opentelemetry.javaagent.shaded.io.opentelemetry.context.propagation.TextMapSetter;
 
 // The agent manifest names this class without a package
 // Making every local variable final is noise without a safety benefit
@@ -32,6 +35,13 @@ public final class SubprocessInjectionAgent {
             .type(ElementMatchers.named("java.lang.ProcessImpl"))
             .transform((builder, typeDescription, classLoader, module, protectionDomain) -> builder.visit(Advice.to(InjectCommandAdvice.class).on(ElementMatchers.named("start"))))
             .installOn(instrumentation);
+    }
+
+    public static final class BaggageSetter implements TextMapSetter<Map<String, String>> {
+        @Override
+        public void set(Map<String, String> environment, String key, String value) {
+            environment.put("BAGGAGE", value);
+        }
     }
 
     public static final class InjectCommandAdvice {
@@ -63,7 +73,15 @@ public final class SubprocessInjectionAgent {
                     }
                 }
                 SpanContext spanContext = Span.current().getSpanContext();
-                environment.put("TRACEPARENT", String.format("%s-%s-%s-%s", "00", spanContext.getTraceId(), spanContext.getSpanId(), spanContext.getTraceFlags().asHex()));
+                for (String propagator : System.getenv().getOrDefault("OTEL_PROPAGATORS", "tracecontext,baggage").split(",")) {
+                        if ("tracecontext".equalsIgnoreCase(propagator.trim())) {
+                        environment.put("TRACEPARENT", String.format("%s-%s-%s-%s", "00", spanContext.getTraceId(), spanContext.getSpanId(), spanContext.getTraceFlags().asHex()));
+                        } else if ("b3".equalsIgnoreCase(propagator.trim())) {
+                            environment.put("B3", String.format("%s-%s-%s", spanContext.getTraceId(), spanContext.getSpanId(), spanContext.isSampled() ? "1" : "0"));
+                        } else if ("baggage".equalsIgnoreCase(propagator.trim())) {
+                            W3CBaggagePropagator.getInstance().inject(Context.current(), environment, new BaggageSetter());
+                        }
+                }
                 environment.put("OTEL_SHELL_AUTO_INSTRUMENTATION_HINT", cmdarray[0]);
                 environment.put("OTEL_SHELL_AUTO_INJECTED", "TRUE");
                 environment.put("OTEL_SHELL_COMMANDLINE_OVERRIDE", String.join(" ", cmdarray));

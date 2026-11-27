@@ -34,9 +34,10 @@ if \[ "${GITHUB_ACTIONS:-false}" = true ]; then
       fi
     fi
   fi
-  if \[ -n "${TRACEPARENT:-}" ]; then
-    traceparent_stripped="$TRACEPARENT"
+  if \[ -n "${TRACEPARENT:-}${B3:-}" ]; then
+    traceparent_stripped="${TRACEPARENT:-}"
     traceparent_stripped="${traceparent_stripped#*-}"
+    traceparent_stripped="${traceparent_stripped:-${B3:-}}"
     traceparent_stripped="${traceparent_stripped%-*}"
     trace_id="${traceparent_stripped%%-*}"
     span_id="${traceparent_stripped#*-}"

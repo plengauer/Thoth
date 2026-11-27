@@ -8,3 +8,10 @@ print_trace_link() {
     *) false ;;
   esac
 }
+
+import_trace_context() {
+  local key value
+  while IFS='=' read -r key value; do
+    case "$key" in TRACEPARENT|TRACESTATE|B3) export "$key=$value" ;; esac
+  done <"$1"
+}

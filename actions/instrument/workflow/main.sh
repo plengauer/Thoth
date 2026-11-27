@@ -101,13 +101,13 @@ echo "::endgroup::"
 echo "::group::Determine Trace ID"
 workflow_run_dir="$(mktemp -d)"
 gh_artifact_download "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" opentelemetry_workflow_run_"$INPUT_WORKFLOW_RUN_ATTEMPT" "$workflow_run_dir" || true
-if [ -r "$workflow_run_dir"/traceparent ]; then export OTEL_ID_GENERATOR_OVERRIDE_TRACEPARENT="$(cat "$workflow_run_dir"/traceparent)"; fi
-if [ -r "$workflow_run_dir"/caller_traceparent ]; then export TRACEPARENT="$(cat "$workflow_run_dir"/caller_traceparent)" TRACESTATE="$(cat "$workflow_run_dir"/caller_tracestate 2>/dev/null || true)"; fi
+if [ -r "$workflow_run_dir"/otel_propagation ]; then export OTEL_ID_GENERATOR_OVERRIDE_TRACEPARENT="$(sed -n -e 's/^TRACEPARENT=//p' -e 's/^B3=\([^-]*-[^-]*\).*/00-\1-01/p' "$workflow_run_dir"/otel_propagation | head -n 1)"; fi
 echo "::endgroup::"
 
 echo "::group::Export"
 times_dir="$(mktemp -d)"
 
+export OTEL_PROPAGATORS="${OTEL_PROPAGATORS:-tracecontext,baggage},tracecontext"
 . otelapi.sh
 export OTEL_DISABLE_RESOURCE_DETECTION=TRUE
 repo_properties="$(gh_repo_properties 2>/dev/null || echo '[]')"
@@ -129,6 +129,11 @@ _otel_resource_attributes_custom() {
 }
 
 otel_init
+export OTEL_PROPAGATORS=tracecontext
+if [ -r "$workflow_run_dir"/caller_otel_propagation ]; then
+  unset TRACEPARENT TRACESTATE B3
+  import_trace_context "$workflow_run_dir"/caller_otel_propagation
+fi
 cicd_pipeline_run_duration_handle="$(otel_counter_create counter cicd.pipeline.run.duration s 'Duration of a pipeline run grouped by pipeline, state and result')"
 cicd_pipeline_run_errors_handle="$(otel_counter_create counter cicd.pipeline.run.errors '{error}' 'The number of errors encountered in pipeline runs')"
 workflow_run_counter_handle="$(otel_counter_create counter github.actions.workflows 1 'Number of workflow runs')"
@@ -172,6 +177,7 @@ otel_observation_attribute_typed "$observation_handle" string github.actions.eve
 otel_counter_observe "$workflow_duration_counter_handle" "$observation_handle"
 
 workflow_span_handle="$(otel_span_start @"$workflow_started_at" CONSUMER "$(jq <"$workflow_json" -r .name)")"
+unset B3
 otel_span_attribute_typed "$workflow_span_handle" string github.actions.type=workflow
 otel_span_attribute_typed "$workflow_span_handle" string github.actions.url.full="$link"/attempts/"$(jq <"$workflow_json" -r .run_attempt)"
 otel_span_attribute_typed "$workflow_span_handle" string github.actions.workflow.id="$(jq <"$workflow_json" -r .workflow_id)"
@@ -190,7 +196,7 @@ workflow_triggering_actor="$(jq <"$workflow_json" -r '.triggering_actor.login //
 [ -z "$workflow_triggering_actor" ] || [ "$workflow_triggering_actor" = "$(jq <"$workflow_json" -r .actor.login)" ] || otel_span_attribute_typed "$workflow_span_handle" string github.actions.triggering_actor.name="$workflow_triggering_actor"
 jq <"$workflow_json" -r '.pull_requests[]?.number | tostring' 2>/dev/null | while read -r pr_number; do otel_span_attribute_typed "$workflow_span_handle" +string[1] github.actions.pull_request.numbers="$pr_number"; done
 if [ "$INPUT_WORKFLOW_RUN_ATTEMPT" -gt 1 ] && gh_artifact_download "$INPUT_WORKFLOW_RUN_ID" "$((INPUT_WORKFLOW_RUN_ATTEMPT - 1))" opentelemetry_workflow_run_"$((INPUT_WORKFLOW_RUN_ATTEMPT - 1))" opentelemetry_workflow_run_prev; then
-  otel_link_add "$(otel_link_create "$(cat opentelemetry_workflow_run_prev/traceparent)" "")" "$workflow_span_handle"
+  otel_link_add "$(otel_link_create "$(sed -n 's/^TRACEPARENT=//p' opentelemetry_workflow_run_prev/otel_propagation)" "" "$(sed -n 's/^B3=//p' opentelemetry_workflow_run_prev/otel_propagation)")" "$workflow_span_handle"
 fi
 otel_span_activate "$workflow_span_handle"
 [ -z "${INPUT_DEBUG}" ] || echo "span workflow $TRACEPARENT $(jq <"$workflow_json" -r .name)" >&2
@@ -481,7 +487,7 @@ done | while IFS=$'\t' read -r TRACEPARENT job_id step_number step_conclusion st
       *) severity=0 ;;
     esac
     [ -z "${INPUT_DEBUG}" ] || echo "log $TRACEPARENT $job_name $timestamp $severity $line" >&2
-    _otel_log_record "$TRACEPARENT" "$timestamp" "$severity" "$line"
+    _otel_log_record "$TRACEPARENT" "" "$timestamp" "$severity" "$line"
   done
   [ -z "${INPUT_DEBUG}" ] || echo "span step $TRACEPARENT $step_name" >&2
   otel_span_deactivate "$step_span_handle"

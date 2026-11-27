@@ -15,33 +15,26 @@ def inject_env_minimal(env, file, args):
 
 
 try:
-    import opentelemetry
+    from opentelemetry import propagate
     from opentelemetry.context import attach
-    from opentelemetry.trace.propagation import tracecontext
 
-    traceparent = os.getenv("TRACEPARENT")
-    if traceparent:
-        attach(
-            tracecontext.TraceContextTextMapPropagator().extract(
-                carrier={"traceparent": traceparent}
-            )
-        )
+    carrier = {
+        key.lower(): os.environ[key]
+        for key in ("TRACEPARENT", "TRACESTATE", "B3", "BAGGAGE")
+        if os.environ.get(key)
+    }
+    if carrier:
+        attach(propagate.extract(carrier))
 
     def inject_env(env, file, args):
         carrier = {}
-        tracecontext.TraceContextTextMapPropagator().inject(
-            carrier,
-            opentelemetry.trace.set_span_in_context(
-                opentelemetry.trace.get_current_span(), None
-            ),
-        )
-        if "traceparent" in carrier:
-            env["TRACEPARENT"] = carrier["traceparent"]
-        if "tracestate" in carrier:
-            env["TRACESTATE"] = carrier["tracestate"]
+        propagate.inject(carrier)
+        for key in ("traceparent", "tracestate", "b3", "baggage"):
+            if key in carrier:
+                env[key.upper()] = carrier[key]
         return inject_env_minimal(env, file, args)
 
-except ModuleNotFoundError:
+except (ModuleNotFoundError, ValueError):
 
     def inject_env(env, file, args):
         return inject_env_minimal(env, file, args)
