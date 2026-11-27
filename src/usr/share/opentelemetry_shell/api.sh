@@ -29,21 +29,10 @@ if \[ -n "${BASH_VERSION:-}" ] && \[ "${OTEL_SHELL_CONFIG_LOADABLE_BUILTINS:-TRU
 fi
 
 _otel_propagator_enabled() {
-  # same selection as sdk.py, but values must be lowercase without whitespace
-  local propagators="${OTEL_PROPAGATORS:-tracecontext,baggage},"
-  local propagator
-  local fallback=0
-  while \[ -n "$propagators" ]; do
-    propagator="${propagators%%,*}"
-    propagators="${propagators#*,}"
-    case "$propagator" in
-      "$1") \return 0 ;;
-      tracecontext | b3) fallback=2 ;;
-      '' | none | baggage) ;;
-      *) if \[ "$fallback" = 0 ]; then fallback=1; fi ;;
-    esac
-  done
-  \[ "$1" = tracecontext ] && \[ "$fallback" = 1 ]
+  case ",${OTEL_PROPAGATORS:-tracecontext,baggage}," in
+    *,"$1",*) \return 0 ;;
+    *) \return 1 ;;
+  esac
 }
 
 _otel_propagator_enabled tracecontext || unset TRACEPARENT TRACESTATE

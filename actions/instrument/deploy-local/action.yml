@@ -443,25 +443,12 @@ runs:
       shell: bash
       run: |
         # only the inputs of the configured propagators, same selection as the SDK (see README)
-        inputs=""
-        fallback=0
-        propagators="${OTEL_PROPAGATORS:-tracecontext,baggage},"
-        while [ -n "$propagators" ]; do
-          propagator="${propagators%%,*}"
-          propagators="${propagators#*,}"
-          case "$propagator" in
-            tracecontext) fallback=2; inputs="$inputs traceparent tracestate" ;;
-            b3) fallback=2; inputs="$inputs b3" ;;
-            baggage) inputs="$inputs baggage" ;;
-            '' | none) ;;
-            *) if [ "$fallback" = 0 ]; then fallback=1; fi ;;
-          esac
-        done
-        if [ "$fallback" = 1 ]; then inputs="$inputs traceparent tracestate"; fi
+        propagators=",${OTEL_PROPAGATORS:-tracecontext,baggage},"
         (ls "${{ inputs.workflows_directory }}"/*.yaml "${{ inputs.workflows_directory }}"/*.yml 2> /dev/null || true) | while read -r workflow_file; do
           [ "$(cat "$workflow_file" | yq '.on | has("workflow_dispatch")' 2> /dev/null)" = true ] || continue
           for input in traceparent tracestate b3 baggage; do
-            case "$inputs " in *" $input "*) ;; *) continue ;; esac
+            case "$input" in traceparent | tracestate) propagator=tracecontext ;; *) propagator="$input" ;; esac
+            case "$propagators" in *,"$propagator",*) ;; *) continue ;; esac
             yq -i ".on.workflow_dispatch.inputs.$input |= (. // {\"description\": \"Trace context $input\", \"required\": false, \"type\": \"string\"})" "$workflow_file"
           done
         done

@@ -38,11 +38,6 @@ try:
     names = list(
         {name.strip().lower(): None for name in _otel_propagator_names if name.strip()}
     )
-    if not {"tracecontext", "b3"}.intersection(names) and set(names) - {
-        "none",
-        "baggage",
-    }:
-        names.append("tracecontext")
     propagators = {
         "tracecontext": TraceContextTextMapPropagator,
         "b3": _otel_b3_propagator,
