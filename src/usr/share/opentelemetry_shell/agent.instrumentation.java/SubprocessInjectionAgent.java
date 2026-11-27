@@ -73,12 +73,13 @@ public final class SubprocessInjectionAgent {
                     }
                 }
                 SpanContext spanContext = Span.current().getSpanContext();
-                for (String propagator : System.getenv().getOrDefault("OTEL_PROPAGATORS", "tracecontext,baggage").split(",")) {
-                    if ("tracecontext".equalsIgnoreCase(propagator.trim())) {
+                String propagators = System.getenv("OTEL_PROPAGATORS");
+                for (String propagator : (propagators == null || propagators.isEmpty() ? "tracecontext,baggage" : propagators).split(",")) {
+                    if ("tracecontext".equals(propagator)) {
                         environment.put("TRACEPARENT", String.format("%s-%s-%s-%s", "00", spanContext.getTraceId(), spanContext.getSpanId(), spanContext.getTraceFlags().asHex()));
-                    } else if ("b3".equalsIgnoreCase(propagator.trim())) {
+                    } else if ("b3".equals(propagator)) {
                         environment.put("B3", String.format("%s-%s-%s", spanContext.getTraceId(), spanContext.getSpanId(), spanContext.isSampled() ? "1" : "0"));
-                    } else if ("baggage".equalsIgnoreCase(propagator.trim())) {
+                    } else if ("baggage".equals(propagator)) {
                         W3CBaggagePropagator.getInstance().inject(Context.current(), environment, new BaggageSetter());
                     }
                 }
