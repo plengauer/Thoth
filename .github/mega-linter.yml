@@ -28,6 +28,18 @@ DISABLE_LINTERS:
   # small number of genuinely useful catches (unused vars, camelCase, etc.)
   # that this trades away.
   - JAVASCRIPT_STANDARD
+  # Why: pyright ran without any configuration over 4 Python files that use the
+  # dynamically typed OpenTelemetry API and reported 28 errors, 26 of them in
+  # sdk.py (13 findings, doubled because opentelemetry_shell_sdk.py is a symlink
+  # to it). Most are false positives of the same two kinds: Optional access on
+  # module level state that the init commands always set (`final_resources`,
+  # `span.context`, `span.attributes`) and API types without the SDK methods
+  # (`shutdown` on the providers). The 3 real findings (a private import of
+  # SeverityNumber, StatusCode imported from a module that does not export it,
+  # and an implicit submodule import in deep.py) were fixed. mypy is configured
+  # and already type checks the same files, so a second type checker only adds
+  # noise.
+  - PYTHON_PYRIGHT
   # Why (#4355): devskim reported ~21k untriaged findings (errors) in the last
   # completed `quality` run (#7477) and took ~7 of its ~12 minutes (see also
   # #3848). It is disabled outright instead of filtered out of the SARIF, so it

@@ -376,7 +376,8 @@ def handle(scope, version, command, arguments):
         span : Span = spans[span_id]
         span.update_name(name)
     elif command == 'SPAN_ERROR':
-        from opentelemetry.sdk.trace import Span, StatusCode
+        from opentelemetry.sdk.trace import Span
+        from opentelemetry.trace import StatusCode
         span : Span = spans[arguments]
         span.set_status(StatusCode.ERROR)
     elif command == 'SPAN_ATTRIBUTE':
@@ -558,7 +559,7 @@ def handle(scope, version, command, arguments):
         observations[str(observation_id)]['attributes'][key] = convert_type(type, value)
     elif command == 'LOG_RECORD':
         from opentelemetry._logs import get_logger
-        from opentelemetry.sdk._logs._internal import SeverityNumber
+        from opentelemetry._logs import SeverityNumber
         from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
         tokens = arguments.split(' ', 3)
         traceparent = tokens[0]
