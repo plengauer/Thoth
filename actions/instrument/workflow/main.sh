@@ -101,6 +101,9 @@ echo "::endgroup::"
 echo "::group::Determine Trace ID"
 workflow_run_dir="$(mktemp -d)"
 gh_artifact_download "$INPUT_WORKFLOW_RUN_ID" "$INPUT_WORKFLOW_RUN_ATTEMPT" opentelemetry_workflow_run_"$INPUT_WORKFLOW_RUN_ATTEMPT" "$workflow_run_dir" || true
+# artifacts of older job actions
+if [ ! -r "$workflow_run_dir"/otel_propagation ] && [ -r "$workflow_run_dir"/traceparent ]; then echo "TRACEPARENT=$(cat "$workflow_run_dir"/traceparent)" >"$workflow_run_dir"/otel_propagation; fi
+if [ ! -r "$workflow_run_dir"/caller_otel_propagation ] && [ -r "$workflow_run_dir"/caller_traceparent ]; then printf 'TRACEPARENT=%s\nTRACESTATE=%s\n' "$(cat "$workflow_run_dir"/caller_traceparent)" "$(cat "$workflow_run_dir"/caller_tracestate 2>/dev/null || true)" >"$workflow_run_dir"/caller_otel_propagation; fi
 if [ -r "$workflow_run_dir"/otel_propagation ]; then export OTEL_ID_GENERATOR_OVERRIDE_TRACEPARENT="$(sed -n -e 's/^TRACEPARENT=//p' -e 's/^B3=\([^-]*-[^-]*\).*/00-\1-01/p' "$workflow_run_dir"/otel_propagation | head -n 1)"; fi
 echo "::endgroup::"
 
@@ -196,6 +199,7 @@ workflow_triggering_actor="$(jq <"$workflow_json" -r '.triggering_actor.login //
 [ -z "$workflow_triggering_actor" ] || [ "$workflow_triggering_actor" = "$(jq <"$workflow_json" -r .actor.login)" ] || otel_span_attribute_typed "$workflow_span_handle" string github.actions.triggering_actor.name="$workflow_triggering_actor"
 jq <"$workflow_json" -r '.pull_requests[]?.number | tostring' 2>/dev/null | while read -r pr_number; do otel_span_attribute_typed "$workflow_span_handle" +string[1] github.actions.pull_request.numbers="$pr_number"; done
 if [ "$INPUT_WORKFLOW_RUN_ATTEMPT" -gt 1 ] && gh_artifact_download "$INPUT_WORKFLOW_RUN_ID" "$((INPUT_WORKFLOW_RUN_ATTEMPT - 1))" opentelemetry_workflow_run_"$((INPUT_WORKFLOW_RUN_ATTEMPT - 1))" opentelemetry_workflow_run_prev; then
+  if [ ! -r opentelemetry_workflow_run_prev/otel_propagation ]; then echo "TRACEPARENT=$(cat opentelemetry_workflow_run_prev/traceparent 2>/dev/null || true)" >opentelemetry_workflow_run_prev/otel_propagation; fi
   otel_link_add "$(otel_link_create "$(sed -n 's/^TRACEPARENT=//p' opentelemetry_workflow_run_prev/otel_propagation)" "" "$(sed -n 's/^B3=//p' opentelemetry_workflow_run_prev/otel_propagation)")" "$workflow_span_handle"
 fi
 otel_span_activate "$workflow_span_handle"
