@@ -3,6 +3,10 @@
 # MEGALINTER_CONFIG in analyze.yml and in test_github.yml
 # (job-integration-megalinter). The per-linter configs are in .github/linters.
 # Added following a full triage of the 2026-07-24 Analyze workflow run (#3833).
+# Extended following a triage of the 2026-11-27 Analyze run: the findings of the
+# `quality` job whose linters produce no SARIF output (and are therefore not in
+# code scanning) were each fixed or muted, in the pull requests that target this
+# one.
 # Every entry is preceded by why it exists. "#1234" refers to the pull request
 # of this repository that introduced the entry (or the issue it fixed).
 # All options: https://megalinter.io/latest/configuration/
