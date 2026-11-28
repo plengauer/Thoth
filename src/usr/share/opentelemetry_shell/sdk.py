@@ -329,7 +329,8 @@ def handle(scope, version, command, arguments):
         raise EOFError
     elif command == 'SPAN_START':
         from opentelemetry.trace import get_tracer, SpanKind
-        from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
+        # F811: the import in the initialization block above only runs for the first command of a kind, so this branch has to import the name itself.
+        from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator  # noqa: F811
         global next_span_id
         tokens = arguments.split(' ', 5)
         response_path = tokens[0]
@@ -354,7 +355,8 @@ def handle(scope, version, command, arguments):
         span.end(end_time=parse_time(end_time))
         del spans[span_id]
     elif command == 'SPAN_HANDLE':
-        from opentelemetry.trace import get_current_span
+        # F811: the import in the initialization block above only runs for the first command of a kind, so this branch has to import the name itself.
+        from opentelemetry.trace import get_current_span  # noqa: F811
         from opentelemetry.sdk.trace import Span
         from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
         tokens = arguments.split(' ', 1)
