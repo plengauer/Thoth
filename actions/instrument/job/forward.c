@@ -23,10 +23,12 @@ int main(int argc, char **argv) {
     return 1;
   }
   original_command[0] = '\0';
+  // strcat is bounded: the buffer holds all arguments, one separator after each
+  // of them and the terminator (see total_length above).
   for (int j = 0; j < argc; j++) {
-    strcat(original_command, argv[j]);  // NOLINT(runtime/printf): the buffer is sized for all arguments and separators above
+    strcat(original_command, argv[j]);  // NOLINT(runtime/printf)
     if (j < argc - 1) {
-      strcat(original_command, " ");  // NOLINT(runtime/printf): the buffer is sized for all arguments and separators above
+      strcat(original_command, " ");  // NOLINT(runtime/printf)
     }
   }
   setenv("OTEL_SHELL_COMMAND_OVERRIDE", original_command, 1);
