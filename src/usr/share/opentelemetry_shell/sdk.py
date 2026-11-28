@@ -7,7 +7,7 @@ initialized_traces = False
 initialized_metrics = False
 initialized_logs = False
 
-resource = {}
+resource: dict = {}
 final_resources = None
 detected_resources = None
 default_resources = None
