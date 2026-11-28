@@ -11,3 +11,18 @@
 # with links for a reader to click, so it is excluded from the dead-link
 # checker specifically (JSON/YAML/other linters still cover these files).
 exclude_path = ['\.github/workflows/']
+
+# Why: lychee reports `https://x-access-token/` in actions/instrument/deploy/
+# action.yml. It is the credential placeholder of the git remote URL
+# `https://x-access-token:${token}@github.com/...`, not a link. The workflows
+# are already excluded above for the same placeholder, but action.yml files are
+# not.
+exclude = ['^https://x-access-token/']
+
+# Why: the other 4 findings were `504 Gateway Timeout` answers of github.com for
+# links into this repository (README.md, CONTRIBUTING.md) and into
+# tobert/otel-cli. These are transient and the links are valid. Retrying
+# treats a temporary outage as what it is, whereas accepting 504 would also
+# hide a real outage of a link.
+max_retries = 5
+retry_wait_time = 5
