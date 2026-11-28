@@ -98,6 +98,12 @@ ACTION_ZIZMOR_UNSECURED_ENV_VARIABLES:
 REPOSITORY_TRIVY_ARGUMENTS:
   - --ignorefile
   - .github/linters/.trivyignore.yaml
+# Why: prettier reformatted 4 JSON files. renovate.json (trailing whitespace
+# and expanded short arrays) and demos/injection_inner_xargs_parallel/meta.json
+# (a leading blank line) were reformatted. The two Dynatrace dashboards in
+# dashboards/dynatrace are excluded: they are exported from Dynatrace as is, so
+# any re-export brings the original formatting back.
+JSON_PRETTIER_FILTER_REGEX_EXCLUDE: "(^|/)dashboards/"
 
 # --- Reasons for entries in the per-linter configs that cannot hold comments ---
 # MegaLinter picks up the per-linter configs in .github/linters by their
