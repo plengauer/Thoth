@@ -1,0 +1,14 @@
+# flake8 config for MegaLinter's PYTHON_FLAKE8. MegaLinter finds it in
+# .github/linters under its default name .flake8. "#1234" refers to the pull
+# request of this repository that introduced the entry.
+[flake8]
+# Why: flake8 reported 638 findings in 4 Python files (110 per copy of sdk.py,
+# because opentelemetry_shell_sdk.py is a symlink to it) and all of them were
+# formatting codes: E501 line length (111), E201/E202 spaces inside brackets,
+# E302/E305/E306 blank lines, E111 indentation that is not a multiple of 4,
+# E251 spaces around keyword equals and W293 whitespace on blank lines. The
+# codebase does not follow that style (sdk.py would change in about 650 lines
+# if formatted), and PYTHON_BLACK and PYTHON_ISORT are disabled for the same
+# reason. Everything else stays active, in particular the F codes (undefined
+# or unused names) and the E9 codes (syntax errors).
+extend-ignore = E1,E2,E3,E5,W
