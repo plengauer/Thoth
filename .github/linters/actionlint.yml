@@ -12,6 +12,16 @@ self-hosted-runner:
     - ubuntu-26.04
     - ubuntu-26.04-arm
 paths:
+  # Why: GitHub's `concurrency` accepts a `queue` key (`queue: max`) that the
+  # schema of actionlint 1.7.12 does not know yet, so ci.yml and publish.yml
+  # are reported with `unexpected key "queue" for "concurrency" section`. The
+  # key is valid: workflows using it run, and the compiled autotriage.lock.yml
+  # emits it as well. Applies to all workflows, because every new workflow of
+  # the templates uses it. Remove this entry once the actionlint bundled in
+  # MegaLinter knows the key.
+  .github/workflows/**/*.yml:
+    ignore:
+      - 'unexpected key "queue" for "concurrency" section'
   .github/workflows/agentics-maintenance.yml:
     # Why (#3860, fixes #3839): the file is auto-generated (DO NOT EDIT) and its
     # `''` choice option is intentional (inputs.operation == '' guards are used
