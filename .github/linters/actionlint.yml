@@ -29,3 +29,12 @@ paths:
     # Scoped to this one file.
     ignore:
       - 'string should not be empty'
+  .github/workflows/test_github.yml:
+    # Why: GitHub's workflow/job `cache-mode` setting (documented in README.md
+    # for the job instrumentation's `cache` input) is not in the schema of
+    # actionlint 1.7.12 yet, so the job-cache-mode-* jobs are reported with
+    # `unexpected key "cache-mode" for "job" section`. They exist to test that
+    # setting. Ignored for this file only. Remove this entry once the actionlint
+    # bundled in MegaLinter knows the key.
+    ignore:
+      - 'unexpected key "cache-mode" for "job" section'
