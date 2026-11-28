@@ -19,9 +19,17 @@ tools:
   bash: ["curl", "wget", "echo", "printf", "ls", "pwd", "cat", "head", "tail", "grep", "wc", "sort", "uniq", "date", "yq"]
   github:
     toolsets: [context, issues]
+jobs:
+  safe_outputs:
+    pre-steps:
+      - id: broker
+        uses: plengauer/github-token-broker@v0.0.0
+        with:
+          url: ${{ vars.TOKEN_BROKER_URL }}
 safe-outputs:
   noop:
   create-issue:
+    github-token: ${{ steps.broker.outputs.token }}
     max: 20
 ---
 
