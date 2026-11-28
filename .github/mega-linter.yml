@@ -34,6 +34,15 @@ DISABLE_LINTERS:
   # neither runs nor buries the findings of the other linters, and everything
   # MegaLinter still produces is uploaded to code scanning unfiltered.
   - REPOSITORY_DEVSKIM
+  # Why: YAML_PRETTIER only checks formatting, and no single setting makes the
+  # files pass. The workflows mix single and double quotes (`singleQuote: true`
+  # still leaves 16 of the 28 reported files), and prettier puts one space
+  # before an inline comment where yamllint's `comments` rule asks for two,
+  # which is also what Renovate writes in the `@<sha> # v1.2.3` pins. Some of
+  # the reported files are generated (agentics-maintenance.yml). yamllint covers
+  # the structural checks of YAML files. The analyze template of
+  # plengauer.github.io disables it for the same reasons.
+  - YAML_PRETTIER
 
 # --- Files excluded from all linters that receive a file list ---
 # Why (#3833, #3863, fixes #3845): MegaLinter flagged lint errors in generated
