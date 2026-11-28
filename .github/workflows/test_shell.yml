@@ -98,6 +98,9 @@ jobs:
           pattern: packages.*.${{ inputs.ref }}
           merge-multiple: true
       - if: ${{ hashFiles('images.json') == '' }}
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
         run: |
           [ -z "$DOCKERHUB_USERNAME" ] || [ -z "$DOCKERHUB_TOKEN" ] || sudo docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_TOKEN"
           cat .github/images.json | jq 'to_entries[] | [ .key, .value.oldest, .value.stable, .value.latest, .value.dev ] | @tsv' -r | sed 's/\t/ /g' | while read -r name oldest stable latest dev; do

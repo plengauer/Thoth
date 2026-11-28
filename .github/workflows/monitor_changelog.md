@@ -5,8 +5,9 @@ on:
   schedule:
     - cron: '0 6 1 * *'
 permissions:
+  copilot-requests: write
   contents: read
-  issues: read
+  issues: write
 engine:
   id: copilot
   args: ["--allow-all-urls"]
@@ -18,10 +19,17 @@ tools:
   bash: ["curl", "wget", "echo", "printf", "ls", "pwd", "cat", "head", "tail", "grep", "wc", "sort", "uniq", "date", "yq"]
   github:
     toolsets: [context, issues]
+jobs:
+  safe_outputs:
+    pre-steps:
+      - id: broker
+        uses: plengauer/github-token-broker@v0.0.0
+        with:
+          url: ${{ vars.TOKEN_BROKER_URL }}
 safe-outputs:
   noop:
   create-issue:
-    github-token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+    github-token: ${{ steps.broker.outputs.token }}
     max: 20
 ---
 

@@ -6,21 +6,30 @@ on:
     types: [opened]
   roles: all
 permissions:
+  copilot-requests: write
   contents: read
   issues: read
   actions: read
+  id-token: write
 tools:
   github:
     toolsets: [context, repos, issues, labels, actions]
 user-rate-limit:
   max-runs-per-window: 3
   window: 60
+jobs:
+  safe_outputs:
+    pre-steps:
+      - id: broker
+        uses: plengauer/github-token-broker@v0.0.0
+        with:
+          url: ${{ vars.TOKEN_BROKER_URL }}
 safe-outputs:
   add-labels:
   add-comment:
   close-issue:
   assign-to-agent:
-    github-token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+    github-token: ${{ steps.broker.outputs.token }}
     custom-instructions: >-
       Before starting, read the full issue title, body, and all comments. Treat the triage analysis comment as part of the task description and follow its relevant files, root-cause hypothesis, suggested approach, and acceptance criteria alongside the issue description.
 ---

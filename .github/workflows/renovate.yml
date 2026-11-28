@@ -43,6 +43,7 @@ jobs:
       issues: write
       security-events: write
       actions: read
+      id-token: write
     env:
       OTEL_KILL_SWITCH: 1
     steps:
@@ -53,7 +54,11 @@ jobs:
         with:
           secrets_to_redact: |-
             ${{ github.token }}
-            ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+            ${{ github.token }}
+      - id: broker
+        uses: plengauer/github-token-broker@9f6c6533753f03df2f7bff0bf3691088a147ec61 # main
+        with:
+          url: ${{ vars.TOKEN_BROKER_URL }}
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - run: |
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.python
@@ -78,7 +83,7 @@ jobs:
       - id: open-pr
         uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1 # v8.1.3
         with:
-          token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          token: ${{ steps.broker.outputs.token }}
           commit-message: "Renovate python instrumentation list"
           base: main
           branch: "renovate-manual/python-list-instrumentations"
@@ -92,7 +97,7 @@ jobs:
         shell: bash
         run: gh pr merge --squash --auto ${{ steps.open-pr.outputs.pull-request-number }}
         env:
-          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          GH_TOKEN: ${{ steps.broker.outputs.token }}
         continue-on-error: true
 
   renovate-list-instrumentations-node:
@@ -104,6 +109,7 @@ jobs:
       issues: write
       security-events: write
       actions: read
+      id-token: write
     env:
       OTEL_KILL_SWITCH: 1
     steps:
@@ -114,7 +120,11 @@ jobs:
         with:
           secrets_to_redact: |-
             ${{ github.token }}
-            ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+            ${{ github.token }}
+      - id: broker
+        uses: plengauer/github-token-broker@9f6c6533753f03df2f7bff0bf3691088a147ec61 # main
+        with:
+          url: ${{ vars.TOKEN_BROKER_URL }}
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - run: |
           cd src/usr/share/opentelemetry_shell/agent.instrumentation.node
@@ -126,7 +136,7 @@ jobs:
       - id: open-pr
         uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1 # v8.1.3
         with:
-          token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          token: ${{ steps.broker.outputs.token }}
           commit-message: "Renovate node instrumentation list"
           base: main
           branch: "renovate-manual/node-list-instrumentations"
@@ -140,7 +150,7 @@ jobs:
         shell: bash
         run: gh pr merge --squash --auto ${{ steps.open-pr.outputs.pull-request-number }}
         env:
-          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          GH_TOKEN: ${{ steps.broker.outputs.token }}
         continue-on-error: true
 
   renovate-package-dependency-python:
@@ -149,13 +159,18 @@ jobs:
     permissions:
       contents: read
       actions: read
+      id-token: write
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@af82b8c3e169f06062ac75ffa55f40e221299d36 # v5.67.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
         with:
-          secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}"]'
+          secrets_to_redact: '["${{ github.token }}","${{ github.token }}"]'
+      - id: broker
+        uses: plengauer/github-token-broker@9f6c6533753f03df2f7bff0bf3691088a147ec61 # main
+        with:
+          url: ${{ vars.TOKEN_BROKER_URL }}
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - run: |
           python3 -m venv venv
@@ -171,7 +186,7 @@ jobs:
       - id: open-pr
         uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1 # v8.1.3
         with:
-          token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          token: ${{ steps.broker.outputs.token }}
           commit-message: "Renovate python dependency"
           base: main
           branch: "renovate-manual/debian-python"
@@ -185,7 +200,7 @@ jobs:
         shell: bash
         run: gh pr merge --squash --auto ${{ steps.open-pr.outputs.pull-request-number }}
         env:
-          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          GH_TOKEN: ${{ steps.broker.outputs.token }}
         continue-on-error: true
 
   renovate-test-images:
@@ -194,13 +209,18 @@ jobs:
     permissions:
       contents: read
       actions: read
+      id-token: write
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@af82b8c3e169f06062ac75ffa55f40e221299d36 # v5.67.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
         with:
-          secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}"]'
+          secrets_to_redact: '["${{ github.token }}","${{ github.token }}"]'
+      - id: broker
+        uses: plengauer/github-token-broker@9f6c6533753f03df2f7bff0bf3691088a147ec61 # main
+        with:
+          url: ${{ vars.TOKEN_BROKER_URL }}
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - run: |
           curl -s --fail https://api.launchpad.net/devel/debian/series > /tmp/launchpad.debian.json
@@ -249,7 +269,7 @@ jobs:
       - id: open-pr
         uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1 # v8.1.3
         with:
-          token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          token: ${{ steps.broker.outputs.token }}
           commit-message: "Update test images"
           base: main
           branch: "renovate-manual/test-images"
@@ -263,7 +283,7 @@ jobs:
         shell: bash
         run: gh pr merge --squash --auto ${{ steps.open-pr.outputs.pull-request-number }}
         env:
-          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          GH_TOKEN: ${{ steps.broker.outputs.token }}
         continue-on-error: true
 
   renovate-license:
@@ -272,20 +292,25 @@ jobs:
     permissions:
       contents: read
       actions: read
+      id-token: write
     steps:
       - uses: plengauer/opentelemetry-github/actions/instrument/job@af82b8c3e169f06062ac75ffa55f40e221299d36 # v5.67.0
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           OTEL_EXPORTER_OTLP_HEADERS: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
         with:
-          secrets_to_redact: '["${{ github.token }}","${{ secrets.ACTIONS_GITHUB_TOKEN }}"]'
+          secrets_to_redact: '["${{ github.token }}"]'
+      - id: broker
+        uses: plengauer/github-token-broker@9f6c6533753f03df2f7bff0bf3691088a147ec61 # main
+        with:
+          url: ${{ vars.TOKEN_BROKER_URL }}
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - run: |
           sed -i "s/$(($(date +%Y) - 1))/$(date +%Y)/g" LICENSE
       - id: open-pr
         uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1 # v8.1.3
         with:
-          token: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          token: ${{ steps.broker.outputs.token }}
           commit-message: "Renovate license date"
           base: main
           branch: "renovate-manual/license"
@@ -299,7 +324,7 @@ jobs:
         shell: bash
         run: gh pr merge --squash --auto ${{ steps.open-pr.outputs.pull-request-number }}
         env:
-          GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+          GH_TOKEN: ${{ steps.broker.outputs.token }}
         continue-on-error: true
 
   renovate-job-level-instrumentation:
