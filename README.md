@@ -154,7 +154,7 @@ For all commands, attributes of the `shell.*` (describing the command being run)
 
 If the command is a shell or an executable with a shebang (meaning it itself is script rather a than a binary), OpenTelemetry will be automatically injected into it to continue observation. No setup code or configuration is necessary in these children.
 If the command is just a wrapper for another command (e.g., `sudo`, `find`, `xargs`, `parallel`, ...), OpenTelemetry will automatically be injected into the inner command to continue observation as well.
-If the command represents communication to a third party service (like a HTTP request via `curl` or `wget`, or `ssh` and also including other commands that use HTTP or `ssh` underneath like `git`, `scp`, `rsync` and others), relevant attributes from the `http.*`, `server.*`, `url.*`, and `network.*` families are added. Additionally, a W3C traceparent header is injected. or `ssh`, the traceparent is passed as environment variables (`TRACEPARENT`/`TRACESTATE`) which the server only accepts if it is configured with `AcceptEnv TRACEPARENT TRACESTATE`.
+If the command represents communication to a third party service (like a HTTP request via `curl` or `wget`, or `ssh` and also including other commands that use HTTP or `ssh` underneath like `git`, `scp`, `rsync` and others), relevant attributes from the `http.*`, `server.*`, `url.*`, and `network.*` families are added. Additionally, a W3C `traceparent` header, a `b3` header, or both are injected, depending on `OTEL_PROPAGATORS`, and a `baggage` header if `BAGGAGE` is set. or `ssh`, the trace context is passed as environment variables (`TRACEPARENT`/`TRACESTATE`/`B3`/`BAGGAGE`) which the server only accepts if it is configured with `AcceptEnv TRACEPARENT TRACESTATE B3 BAGGAGE`.
 
 Finally, a single root span will be created and activated that represents the script. This span will automatically be deactivated and ended when the script ends.
 
@@ -242,14 +242,19 @@ When using automatic deployment, permissions are adjusted automatically.
 
 In addition to propagating trace context over HTTP, this project propagates it via environment variables, following the OpenTelemetry specification for <a href="https://opentelemetry.io/docs/specs/otel/context/env-carriers/">Environment Variables as Context Propagation Carriers</a>. This makes it interoperable with any other tool that reads or writes the same variables, for example <a href="https://github.com/tobert/otel-cli">otel-cli</a>.
 
+The propagators are selected with `OTEL_PROPAGATORS`. Supported values are `tracecontext`, `b3` (single header), `baggage`, and `none`. The default is `tracecontext,baggage`. If both `tracecontext` and `b3` are configured, both are written, and on extraction the last one with a valid context wins. Empty entries and duplicates are ignored, and so are unsupported propagators.
+
+Note that `none` (or only `baggage`) disables trace context propagation entirely, including between processes that are both instrumented by this project. Every child script, `sudo`, `xargs`, or other injected subprocess then starts a new trace instead of continuing the trace of its parent, so a single script run is split into many disconnected traces.
+
 | Variable | Direction | Behavior |
 | --- | --- | --- |
-| `TRACEPARENT` | read and written | Extracted once at startup. Rewritten whenever a span is activated, so every child process sees the innermost enclosing span as its parent. |
-| `TRACESTATE` | read, passed through | Propagated unchanged. This project never adds, removes, or modifies entries. |
-| `BAGGAGE` | not supported | Neither read nor written, see Configuration above. |
-| `TRACEPARENT_STACK` | internal | An implementation detail used to restore the previous span on deactivation. It is not part of any specification, and other tools should ignore it. |
+| `TRACEPARENT` | read and written with `tracecontext` | Extracted once at startup. Rewritten whenever a span is activated, so every child process sees the innermost enclosing span as its parent. |
+| `TRACESTATE` | read with `tracecontext`, passed through | Propagated unchanged. This project never adds, removes, or modifies entries. |
+| `B3` | read and written with `b3` | Same behavior as `TRACEPARENT`, in the single header B3 format. |
+| `BAGGAGE` | passed through with `baggage` | This project never creates or modifies entries. If set, it is passed on to child processes and as a `baggage` header on outgoing requests. |
+| `TRACEPARENT_STACK`, `B3_STACK` | internal | An implementation detail used to restore the previous span on deactivation. It is not part of any specification, and other tools should ignore it. |
 
-Context is extracted from the environment when a script starts. If `TRACEPARENT` is already set, the root span of the script becomes a child of the incoming span. If it is not set, the script starts a new trace. Context is injected whenever a span is activated, which for automatic instrumentation means once per observed command. A tool invoked by an instrumented script therefore becomes a child of the span for the command that invoked it, not of the script as a whole. If traces are disabled, no trace context is written and any incoming `TRACEPARENT` is left untouched.
+Context is extracted from the environment when a script starts. If `TRACEPARENT` or `B3` is already set, the root span of the script becomes a child of the incoming span. If it is not set, the script starts a new trace. Context is injected whenever a span is activated, which for automatic instrumentation means once per observed command. A tool invoked by an instrumented script therefore becomes a child of the span for the command that invoked it, not of the script as a whole. If traces are disabled, no trace context is written and any incoming `TRACEPARENT` or `B3` is left untouched. Variables belonging to propagators that are not configured are unset when the API is loaded.
 
 In GitHub actions, job-level instrumentation writes the trace context of the job into `$GITHUB_ENV` before any other step runs, so all subsequent steps inherit it. Steps are additionally wrapped so that each step sees the trace context of its own step span, and each command within a step sees the trace context of its own command span. On runners where the wrapping cannot be installed, steps fall back to the trace context of the job.
 
@@ -362,7 +367,7 @@ otel_event_add "$event_handle" "$span_handle"
 ### Span Links
 Customize your spans by manually adding span links to other spans. This is only possible between `otel_span_start` and `otel_span_end` for the respective span handle. Valid types for link attributes `string`, `int`, `float`, and `auto`. The `auto` type will try to guess the type based on the value.
 ```bash
-link_handle="$(otel_link_create "$foreign_traceparent" "$foreign_tracestate")"
+link_handle="$(otel_link_create "$foreign_traceparent" "$foreign_tracestate" "$foreign_b3")" # the third argument is optional
 otel_link_attribute "$link_handle" key=value
 otel_link_attribute_typed "$link_handle" string foo=bar
 otel_link_add "$link_handle" "$span_handle"
@@ -380,6 +385,12 @@ Customize your spans by marking them as failed. This is only possible between `o
 otel_span_activate "$span_handle"
 # ... all spans created here will be children of the activated span
 otel_span_deactivate
+```
+
+The trace context of a span can be retrieved from its handle in either format.
+```bash
+traceparent="$(otel_span_traceparent "$span_handle")"
+b3="$(otel_span_b3 "$span_handle")"
 ```
 
 ### Semi-automatic Spans

@@ -19,8 +19,10 @@ if \[ "${GITHUB_ACTIONS:-false}" = true ] && \[ "${GITHUB_AW:-false}" = true ] &
     } | while \read -r otel_file; do
       OTEL_BIND_FILE="$otel_file" \yq -i '.services[].volumes += [{"type": "bind", "source": strenv(OTEL_BIND_FILE), "target": strenv(OTEL_BIND_FILE), "read_only": true}]' "$compose_file" # SKIP_DEPENDENCY_CHECK
     done
-    TRACEPARENT="$TRACEPARENT" \yq -i '.services[].environment.TRACEPARENT = strenv(TRACEPARENT)' "$compose_file" # SKIP_DEPENDENCY_CHECK
-    TRACESTATE="$TRACESTATE" \yq -i '.services[].environment.TRACESTATE = strenv(TRACESTATE)' "$compose_file"     # SKIP_DEPENDENCY_CHECK
+    TRACEPARENT="${TRACEPARENT:-}" \yq -i '.services[].environment.TRACEPARENT = strenv(TRACEPARENT)' "$compose_file" # SKIP_DEPENDENCY_CHECK
+    TRACESTATE="${TRACESTATE:-}" \yq -i '.services[].environment.TRACESTATE = strenv(TRACESTATE)' "$compose_file"     # SKIP_DEPENDENCY_CHECK
+    if \[ -n "${B3:-}" ]; then B3="$B3" \yq -i '.services[].environment.B3 = strenv(B3)' "$compose_file"; fi # SKIP_DEPENDENCY_CHECK
+    if \[ -n "${BAGGAGE:-}" ]; then BAGGAGE="$BAGGAGE" \yq -i '.services[].environment.BAGGAGE = strenv(BAGGAGE)' "$compose_file"; fi # SKIP_DEPENDENCY_CHECK
     \printenv | \grep '^OTEL_' | \cut -d= -f1 | while \read -r otel_var; do
       OTEL_VAR_KEY="$otel_var" OTEL_VAR_VAL="$(\printenv "$otel_var")" \yq -i '.services[].environment[strenv(OTEL_VAR_KEY)] = strenv(OTEL_VAR_VAL)' "$compose_file" # SKIP_DEPENDENCY_CHECK
     done

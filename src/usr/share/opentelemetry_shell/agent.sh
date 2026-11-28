@@ -426,7 +426,8 @@ _otel_inject_and_exec_directly() { # this function assumes there is no fd fucker
 
   local span_id="$(otel_span_start INTERNAL "$@")"
   otel_span_activate "$span_id"
-  local my_traceparent="$TRACEPARENT"
+  local my_traceparent="${TRACEPARENT:-}"
+  local my_b3="${B3:-}"
   otel_span_deactivate "$span_id"
   otel_span_end "$span_id"
   if \[ -n "${_root_span_handle:-}" ]; then
@@ -434,7 +435,8 @@ _otel_inject_and_exec_directly() { # this function assumes there is no fd fucker
   fi
   otel_shutdown
 
-  \export TRACEPARENT="$my_traceparent"
+  if \[ -n "$my_traceparent" ]; then \export TRACEPARENT="$my_traceparent"; fi
+  if \[ -n "$my_b3" ]; then \export B3="$my_b3"; fi
   \export OTEL_SHELL_AUTO_INJECTED=TRUE
   \export OTEL_SHELL_COMMANDLINE_OVERRIDE="$(_otel_command_self)"
   \export OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE="$PPID"
@@ -454,7 +456,8 @@ _otel_inject_and_exec_by_location() {
 
   local span_id="$(otel_span_start INTERNAL exec)"
   otel_span_activate "$span_id"
-  local my_traceparent="$TRACEPARENT"
+  local my_traceparent="${TRACEPARENT:-}"
+  local my_b3="${B3:-}"
   otel_span_deactivate "$span_id"
   otel_span_end "$span_id"
   if \[ -n "${_root_span_handle:-}" ]; then
@@ -462,7 +465,8 @@ _otel_inject_and_exec_by_location() {
   fi
   otel_shutdown
 
-  \printf '%s\n' "$(_otel_escape_args export TRACEPARENT="$my_traceparent")"
+  if \[ -n "$my_traceparent" ]; then \printf '%s\n' "$(_otel_escape_args export TRACEPARENT="$my_traceparent")"; fi
+  if \[ -n "$my_b3" ]; then \printf '%s\n' "$(_otel_escape_args export B3="$my_b3")"; fi
   \printf '%s\n' "$(_otel_escape_args export OTEL_SHELL_AUTO_INJECTED=TRUE)"
   \printf '%s\n' "$(_otel_escape_args export OTEL_SHELL_COMMANDLINE_OVERRIDE="$(_otel_command_self)")"
   \printf '%s\n' "$(_otel_escape_args export OTEL_SHELL_COMMANDLINE_OVERRIDE_SIGNATURE="$PPID")"
@@ -477,11 +481,13 @@ _otel_inject '"$command"
 _otel_record_exec() {
   local span_id="$(otel_span_start INTERNAL exec)"
   otel_span_activate "$span_id"
-  local my_traceparent="$TRACEPARENT"
+  local my_traceparent="${TRACEPARENT:-}"
+  local my_b3="${B3:-}"
   otel_span_deactivate "$span_id"
   otel_span_end "$span_id"
   _otel_sdk_communicate 'SPAN_AUTO_END'
-  \export TRACEPARENT="$my_traceparent"
+  if \[ -n "$my_traceparent" ]; then \export TRACEPARENT="$my_traceparent"; fi
+  if \[ -n "$my_b3" ]; then \export B3="$my_b3"; fi
 }
 
 _otel_trap() {
@@ -554,9 +560,9 @@ _otel_start_script() {
     _root_span_handle="$(otel_span_start SERVER "$(\echo "$cmdline" | \cut -d . -f 2- | \cut -d ' ' -f 1)")"
     otel_span_attribute_typed "$_root_span_handle" string debian.package.name="$(\echo "$cmdline" | _otel_path_2_name | \cut -d . -f 1)"
     otel_span_attribute_typed "$_root_span_handle" string debian.package.operation="$(\echo "$cmdline" | \cut -d . -f 2-)"
-  elif ! \[ "${OTEL_SHELL_AUTO_INJECTED:-FALSE}" = TRUE ] && \[ -z "${TRACEPARENT:-}" ]; then
+  elif ! \[ "${OTEL_SHELL_AUTO_INJECTED:-FALSE}" = TRUE ] && \[ -z "${TRACEPARENT:-}${B3:-}" ]; then
     _root_span_handle="$(otel_span_start SERVER "$(_otel_command_self)")"
-  elif ! \[ "${OTEL_SHELL_AUTO_INJECTED:-FALSE}" = TRUE ] && \[ -n "${TRACEPARENT:-}" ]; then
+  elif ! \[ "${OTEL_SHELL_AUTO_INJECTED:-FALSE}" = TRUE ] && \[ -n "${TRACEPARENT:-}${B3:-}" ]; then
     _root_span_handle="$(otel_span_start INTERNAL "$(_otel_command_self)")"
   fi
   if \[ -n "${_root_span_handle:-}" ]; then otel_span_activate "$_root_span_handle"; fi

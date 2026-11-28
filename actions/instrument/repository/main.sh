@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+export OTEL_PROPAGATORS=tracecontext
 if [ -n "${INPUT_DEBUG:-}" ]; then cat "$GITHUB_EVENT_PATH" >&2; fi
 
 . ../shared/github.sh

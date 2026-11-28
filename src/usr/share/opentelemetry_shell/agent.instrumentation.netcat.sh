@@ -26,7 +26,7 @@ _otel_inject_netcat() {
       otel_span_deactivate "$span_handle"
       otel_span_end "$span_handle"
       local exit_code="$(\cat "$exit_code_file")"
-      \rm "$span_handle_file" "$exit_code_file" 2>/dev/null
+      \rm "$span_handle_file" "$span_handle_file".baggage "$exit_code_file" 2>/dev/null
       return "$exit_code"
     fi
   else
@@ -80,8 +80,13 @@ _otel_netcat_parse_request() {
     return 0
   fi
   local nc_span_handle="$(otel_span_current)"
-  local nc_traceparent="$TRACEPARENT"
-  local nc_tracestate="$TRACESTATE"
+  local nc_traceparent="${TRACEPARENT:-}"
+  local nc_tracestate="${TRACESTATE:-}"
+  local nc_b3="${B3:-}"
+  local in_traceparent=""
+  local in_tracestate=""
+  local in_b3=""
+  local in_baggage=""
   local line="$(\printf '%s' "$line" | _otel_binary_write | \tr -d '\r')"
   local protocol="$(\printf '%s' "$line" | \cut -sd ' ' -f 3)"
   local method="$(\printf '%s' "$line" | \cut -sd ' ' -f 1)"
@@ -94,17 +99,24 @@ _otel_netcat_parse_request() {
     if \[ "$is_server_side" = 1 ]; then
       local key="$(\printf '%s' "$line" | \cut -d ' ' -f 1 | \tr -d : | \tr '[:upper:]' '[:lower:]')"
       local value="$(\printf '%s' "$line" | \cut -d ' ' -f 2-)"
-      if \[ "$key" = traceparent ]; then export TRACEPARENT="$value"; fi
-      if \[ "$key" = tracestate ]; then export TRACESTATE="$value"; fi
+      if \[ "$key" = traceparent ]; then local in_traceparent="$value"; fi
+      if \[ "$key" = tracestate ]; then local in_tracestate="$value"; fi
+      if \[ "$key" = b3 ]; then local in_b3="$value"; fi
+      if \[ "$key" = baggage ]; then local in_baggage="${in_baggage:+$in_baggage,}$value"; fi
       if \[ "$key" = 'content-length' ]; then local content_length="$value"; fi
     fi
   done
+  if { \[ -n "$in_traceparent" ] && _otel_propagator_enabled tracecontext; } || { \[ -n "$in_b3" ] && _otel_propagator_enabled b3; }; then
+    if _otel_propagator_enabled tracecontext; then export TRACEPARENT="$in_traceparent" TRACESTATE="$in_tracestate"; fi
+    if _otel_propagator_enabled b3; then export B3="$in_b3"; fi
+  fi
+  if \[ -n "$in_baggage" ] && _otel_propagator_enabled baggage; then \printf '%s' "$in_baggage" >"$span_handle_file".baggage; fi
   if \[ "$is_server_side" = 1 ]; then local span_handle="$(otel_span_start SERVER "$method")"; else local span_handle="$(otel_span_start CLIENT "$method")"; fi
   \echo "$span_handle" >"$span_handle_file"
-  if \[ "$TRACEPARENT" != "$nc_traceparent" ] || \[ "$TRACESTATE" != "$nc_tracestate" ]; then
+  if \[ "${TRACEPARENT:-}" != "$nc_traceparent" ] || \[ "${TRACESTATE:-}" != "$nc_tracestate" ] || \[ "${B3:-}" != "$nc_b3" ]; then
     otel_span_activate "$span_handle"
-    otel_link_add "$(otel_link_create "$TRACEPARENT" "$TRACESTATE")" "$nc_span_handle"
-    otel_link_add "$(otel_link_create "$nc_traceparent" "$nc_tracestate")" "$span_handle"
+    otel_link_add "$(otel_link_create "${TRACEPARENT:-}" "${TRACESTATE:-}" "${B3:-}")" "$nc_span_handle"
+    otel_link_add "$(otel_link_create "$nc_traceparent" "$nc_tracestate" "$nc_b3")" "$span_handle"
     otel_span_deactivate
   fi
   local host_and_port="$(_otel_netcat_parse_args "$is_server_side" "$span_handle" "$@")"
@@ -120,8 +132,12 @@ _otel_netcat_parse_request() {
   \printf '%s\r\n' "$method $path_and_query $protocol"
   if \[ "$is_server_side" = 0 ]; then
     otel_span_activate "$span_handle"
-    \printf '%s\r\n' "traceparent: $TRACEPARENT"
-    \printf '%s\r\n' "tracestate: $TRACESTATE"
+    if \[ -n "${TRACEPARENT:-}" ]; then
+      \printf '%s\r\n' "traceparent: $TRACEPARENT"
+      \printf '%s\r\n' "tracestate: ${TRACESTATE:-}"
+    fi
+    if \[ -n "${B3:-}" ]; then \printf '%s\r\n' "b3: $B3"; fi
+    if \[ -n "${BAGGAGE:-}" ]; then \printf '%s\r\n' "baggage: $BAGGAGE"; fi
     otel_span_deactivate "$span_handle"
   fi
   while \read -r line; do

@@ -1001,7 +1001,7 @@ jobs:
       - env:
           OTLP_JSON: '${{ steps.filename.outputs.otlp }}'
         run: |
-          [ "$(cat "$OTLP_JSON" | jq -r .context.trace_id | grep -v '^null$' | sort -u | cut -d x -f 2 | tee /dev/stderr)" = "$(cat traceparent | cut -d - -f 2 | tee /dev/stderr)" ]
+          [ "$(cat "$OTLP_JSON" | jq -r .context.trace_id | grep -v '^null$' | sort -u | cut -d x -f 2 | tee /dev/stderr)" = "$({ sed -n 's/^TRACEPARENT=//p' otel_propagation 2>/dev/null || cat traceparent; } | cut -d - -f 2 | tee /dev/stderr)" ]
           cat "$OTLP_JSON" | jq -r .name | grep -v '^null$' | sort -u | grep -F 'test (foo)'
           cat "$OTLP_JSON" | jq -r .name | grep -v '^null$' | sort -u | grep -F 'test (bar)'
           cat "$OTLP_JSON" | jq -r .name | grep -v '^null$' | sort -u | grep -F 'test (baz)'

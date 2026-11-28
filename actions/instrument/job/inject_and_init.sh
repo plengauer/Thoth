@@ -463,28 +463,39 @@ if [ "${OTEL_PRECOMPUTE_RESOURCE_ATTRIBUTES:-TRUE}" = TRUE ]; then
 fi
 echo "::endgroup::"
 
-echo "::group::Resolve W3C Tracecontext"
+echo "::group::Resolve Trace Context"
 opentelemetry_root_dir="$(mktemp -d)"
 if [ "$GITHUB_EVENT_NAME" = repository_dispatch ] || [ "$GITHUB_EVENT_NAME" = workflow_dispatch ]; then
   caller_traceparent="$(jq -r '(.client_payload // .inputs).traceparent // empty' "$GITHUB_EVENT_PATH" 2>/dev/null || true)"
   caller_tracestate="$(jq -r '(.client_payload // .inputs).tracestate // empty' "$GITHUB_EVENT_PATH" 2>/dev/null || true)"
+  caller_b3="$(jq -r '(.client_payload // .inputs).b3 // empty' "$GITHUB_EVENT_PATH" 2>/dev/null || true)"
+  caller_baggage="$(jq -r '(.client_payload // .inputs).baggage // empty' "$GITHUB_EVENT_PATH" 2>/dev/null | tr -d '\r\n' || true)"
 fi
 count=0
-while [ "$count" -lt 60 ] && ! ( gh_artifact_download "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_workflow_run_"$GITHUB_RUN_ATTEMPT" "$opentelemetry_root_dir" && [ -r "$opentelemetry_root_dir"/traceparent ] ); do
+while [ "$count" -lt 60 ] && ! ( gh_artifact_download "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_workflow_run_"$GITHUB_RUN_ATTEMPT" "$opentelemetry_root_dir" && [ -r "$opentelemetry_root_dir"/otel_propagation ] ); do
   if [ "$count" -gt 0 ]; then sleep $count; fi
   wait # only join within this loop, because we need to make sure everything is installed properly at this point, in most cases, it is unnecessary though and we can join later
   . otelapi.sh
   otel_init
-  otel_span_traceparent "$(TRACEPARENT="${caller_traceparent:-${TRACEPARENT:-}}" TRACESTATE="${caller_tracestate:-${TRACESTATE:-}}" otel_span_start INTERNAL dummy)" >"$opentelemetry_root_dir"/traceparent
-  [ -z "${caller_traceparent:-}" ] || echo "$caller_traceparent" >"$opentelemetry_root_dir"/caller_traceparent
-  [ -z "${caller_tracestate:-}" ] || echo "$caller_tracestate" >"$opentelemetry_root_dir"/caller_tracestate
-  gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_workflow_run_"$GITHUB_RUN_ATTEMPT" "$opentelemetry_root_dir"/traceparent ${caller_traceparent:+"$opentelemetry_root_dir"/caller_traceparent} ${caller_tracestate:+"$opentelemetry_root_dir"/caller_tracestate} || true
+  _otel_propagator_enabled tracecontext || unset caller_traceparent caller_tracestate
+  _otel_propagator_enabled b3 || unset caller_b3
+  dummy_span_handle="$(TRACEPARENT="${caller_traceparent:-${TRACEPARENT:-}}" TRACESTATE="${caller_tracestate:-${TRACESTATE:-}}" B3="${caller_b3:-${B3:-}}" otel_span_start INTERNAL dummy)"
+  otel_span_activate "$dummy_span_handle"
+  printenv | grep -E '^TRACEPARENT=|^TRACESTATE=|^B3=' >"$opentelemetry_root_dir"/otel_propagation || true
+  otel_span_deactivate "$dummy_span_handle"
+  {
+    [ -z "${caller_traceparent:-}" ] || echo "TRACEPARENT=$caller_traceparent"
+    [ -z "${caller_tracestate:-}" ] || echo "TRACESTATE=$caller_tracestate"
+    [ -z "${caller_b3:-}" ] || echo "B3=$caller_b3"
+  } >"$opentelemetry_root_dir"/caller_otel_propagation
+  [ -s "$opentelemetry_root_dir"/caller_otel_propagation ] || rm "$opentelemetry_root_dir"/caller_otel_propagation
+  gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_workflow_run_"$GITHUB_RUN_ATTEMPT" "$opentelemetry_root_dir"/* || true
   rm -f "$opentelemetry_root_dir"/*
   otel_shutdown
   count=$((count + 1))
 done
-[ -r "$opentelemetry_root_dir"/traceparent ] || (echo "::error ::Cannot sync trace id via artifacts. This is most likely a token permission issue, please consult the README." && false)
-export TRACEPARENT="$(cat "$opentelemetry_root_dir"/traceparent)"
+[ -r "$opentelemetry_root_dir"/otel_propagation ] || (echo "::error ::Cannot sync trace id via artifacts. This is most likely a token permission issue, please consult the README." && false)
+import_trace_context "$opentelemetry_root_dir"/otel_propagation
 rm -rf "$opentelemetry_root_dir"
 echo "::endgroup::"
 
@@ -749,7 +760,7 @@ root4job() {
   otel_span_attribute_typed "$span_handle" string github.actions.runner.arch="$RUNNER_ARCH"
   otel_span_attribute_typed "$span_handle" string github.actions.runner.environment="$RUNNER_ENVIRONMENT"
   otel_span_activate "$span_handle"
-  echo "$TRACEPARENT" >"$traceparent_file"
+  printenv | grep -E '^TRACEPARENT=|^TRACESTATE=|^B3=' >"$traceparent_file"
   if [ -n "${GITHUB_JOB_ID:-}" ]; then
     job_json="$(gh_job "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" "$GITHUB_JOB_ID" 2>/dev/null || true)"
     if [ -n "$job_json" ]; then
@@ -764,8 +775,8 @@ root4job() {
       fi
     fi
     opentelemetry_job_dir="$(mktemp -d)"
-    echo "$TRACEPARENT" >"$opentelemetry_job_dir"/traceparent
-    (gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_job_"$GITHUB_JOB_ID" "$opentelemetry_job_dir"/traceparent && rm -rf "$opentelemetry_job_dir") &>/dev/null &
+    cp "$traceparent_file" "$opentelemetry_job_dir"/otel_propagation
+    (gh_artifact_upload "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" opentelemetry_job_"$GITHUB_JOB_ID" "$opentelemetry_job_dir"/otel_propagation && rm -rf "$opentelemetry_job_dir") &>/dev/null &
   fi
   otel_span_deactivate "$span_handle"
   trap root4job_end SIGUSR1
@@ -797,10 +808,12 @@ echo "pid=$!" >>"$GITHUB_STATE"
 cat /tmp/opentelemetry_shell.github.debug.log
 echo "::endgroup::"
 
-echo "::group::Propagate W3C Tracecontext to Steps"
-export TRACEPARENT="$(cat "$traceparent_file")"
+echo "::group::Propagate Trace Context to Steps"
+import_trace_context "$traceparent_file"
 rm "$traceparent_file"
-printenv | grep -E '^OTEL_|^TRACEPARENT=|^TRACESTATE=|^COPILOT_OTEL_ENABLED=' >>"$GITHUB_ENV"
+[ -z "${caller_baggage:-}" ] || ! (. otelapi.sh && _otel_propagator_enabled baggage) || export BAGGAGE="$caller_baggage"
+printenv | grep -E '^OTEL_|^TRACEPARENT=|^TRACESTATE=|^B3=|^BAGGAGE=|^COPILOT_OTEL_ENABLED=' >>"$GITHUB_ENV"
 echo "::endgroup::"
 
+[ -n "${TRACEPARENT:-}" ] || TRACEPARENT="00-$(echo "${B3:-}" | cut -d - -f 1,2)-01"
 echo "::notice title=Observability Information for ${OTEL_SHELL_GITHUB_JOB:-$GITHUB_JOB}::Trace ID: $(echo "$TRACEPARENT" | cut -d - -f 2), Span ID: $(echo "$TRACEPARENT" | cut -d - -f 3), Trace Deep Link: $(OTEL_EXPORTER_OTLP_TRACES_ENDPOINT="$backup_otel_exporter_otlp_traces_endpoint" print_trace_link "$(date +%Y-%M-%dT%H:%M:%S.%N%:z | jq -sRr @uri)" || echo unavailable)"

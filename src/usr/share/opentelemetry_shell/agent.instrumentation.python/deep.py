@@ -15,30 +15,56 @@ def inject_env_minimal(env, file, args):
 
 
 try:
-    import opentelemetry
+    from opentelemetry.baggage.propagation import W3CBaggagePropagator
     from opentelemetry.context import attach
-    from opentelemetry.trace.propagation import tracecontext
+    from opentelemetry.propagators.composite import CompositePropagator
+    from opentelemetry.trace.propagation.tracecontext import (
+        TraceContextTextMapPropagator,
+    )
 
-    traceparent = os.getenv("TRACEPARENT")
-    if traceparent:
-        attach(
-            tracecontext.TraceContextTextMapPropagator().extract(
-                carrier={"traceparent": traceparent}
+    def _otel_b3_propagator():
+        # the b3 propagator is a separate package,
+        # the environment of the instrumented process may not have it
+        try:
+            from opentelemetry.propagators.b3 import B3SingleFormat
+
+            return B3SingleFormat()
+        except ModuleNotFoundError:
+            return None
+
+    _otel_propagator_names = (
+        os.getenv("OTEL_PROPAGATORS") or "tracecontext,baggage"
+    ).split(",")
+    names = list({name: None for name in _otel_propagator_names if name})
+    propagators = {
+        "tracecontext": TraceContextTextMapPropagator,
+        "b3": _otel_b3_propagator,
+        "baggage": W3CBaggagePropagator,
+    }
+    propagate = CompositePropagator(
+        [
+            propagator
+            for propagator in (
+                propagators[name]() for name in names if name in propagators
             )
-        )
+            if propagator is not None
+        ]
+    )
+
+    carrier = {
+        key.lower(): os.environ[key]
+        for key in ("TRACEPARENT", "TRACESTATE", "B3", "BAGGAGE")
+        if os.environ.get(key)
+    }
+    if carrier:
+        attach(propagate.extract(carrier))
 
     def inject_env(env, file, args):
         carrier = {}
-        tracecontext.TraceContextTextMapPropagator().inject(
-            carrier,
-            opentelemetry.trace.set_span_in_context(
-                opentelemetry.trace.get_current_span(), None
-            ),
-        )
-        if "traceparent" in carrier:
-            env["TRACEPARENT"] = carrier["traceparent"]
-        if "tracestate" in carrier:
-            env["TRACESTATE"] = carrier["tracestate"]
+        propagate.inject(carrier)
+        for key in ("traceparent", "tracestate", "b3", "baggage"):
+            if key in carrier:
+                env[key.upper()] = carrier[key]
         return inject_env_minimal(env, file, args)
 
 except ModuleNotFoundError:

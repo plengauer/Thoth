@@ -70,6 +70,14 @@ _otel_propagate_gh() {
         local key="${arg#*client_payload\[}"
         local keys="$keys/${key%%]*}"
         ;;
+      --field=* | --raw-field=*)
+        local key="${arg#*=}"
+        local run_keys="$run_keys/${key%%=*}"
+        ;;
+      -f?* | -F?*)
+        local key="${arg#-?}"
+        local run_keys="$run_keys/${key%%=*}"
+        ;;
     esac
     if \[ "$previous" = --input ]; then local input="$arg"; fi
     case "$previous" in
@@ -79,24 +87,32 @@ _otel_propagate_gh() {
     esac
     local previous="$arg"
   done
-  if \[ "${2:-}" = api ] && \[ "$is_dispatch" = 1 ] && \[ -n "${TRACEPARENT:-}" ]; then
+  if \[ "${2:-}" = api ] && \[ "$is_dispatch" = 1 ] && \[ -n "${TRACEPARENT:-}${B3:-}${BAGGAGE:-}" ]; then
     if \[ -n "$input" ]; then
       local input_file="$(\mktemp)"
       if \[ "$input" = - ]; then
-        \jq --arg traceparent "$TRACEPARENT" --arg tracestate "${TRACESTATE:-}" '(.client_payload // {} | length) as $count | if $count < 9 then .client_payload.traceparent = $traceparent | .client_payload.tracestate = $tracestate elif $count == 9 then .client_payload.traceparent = $traceparent else . end' >"$input_file"
+        \jq --arg traceparent "${TRACEPARENT:-}" --arg tracestate "${TRACESTATE:-}" --arg b3 "${B3:-}" --arg baggage "${BAGGAGE:-}" '(.client_payload // {} | has("traceparent") or has("tracestate")) as $has_tracecontext | [if $traceparent != "" and ($has_tracecontext | not) then ["traceparent", $traceparent] else empty end, if $b3 != "" then ["b3", $b3] else empty end, if $traceparent != "" and ($has_tracecontext | not) then ["tracestate", $tracestate] else empty end, if $baggage != "" then ["baggage", $baggage] else empty end] as $context | reduce $context[] as $entry (.; if (.client_payload // {} | has($entry[0])) or (.client_payload // {} | length) >= 10 then . else .client_payload[$entry[0]] = $entry[1] end)' >"$input_file"
       else
-        \jq --arg traceparent "$TRACEPARENT" --arg tracestate "${TRACESTATE:-}" '(.client_payload // {} | length) as $count | if $count < 9 then .client_payload.traceparent = $traceparent | .client_payload.tracestate = $tracestate elif $count == 9 then .client_payload.traceparent = $traceparent else . end' <"$input" >"$input_file"
+        \jq --arg traceparent "${TRACEPARENT:-}" --arg tracestate "${TRACESTATE:-}" --arg b3 "${B3:-}" --arg baggage "${BAGGAGE:-}" '(.client_payload // {} | has("traceparent") or has("tracestate")) as $has_tracecontext | [if $traceparent != "" and ($has_tracecontext | not) then ["traceparent", $traceparent] else empty end, if $b3 != "" then ["b3", $b3] else empty end, if $traceparent != "" and ($has_tracecontext | not) then ["tracestate", $tracestate] else empty end, if $baggage != "" then ["baggage", $baggage] else empty end] as $context | reduce $context[] as $entry (.; if (.client_payload // {} | has($entry[0])) or (.client_payload // {} | length) >= 10 then . else .client_payload[$entry[0]] = $entry[1] end)' <"$input" >"$input_file"
       fi && \set -- "$@" --input "$input_file"
     else
       local count="$(\printf '%s' "$keys" | \tr '/' '\n' | \sort -u | \grep -c . || \true)"
-      if \[ "$count" -lt 9 ]; then
-        \set -- "$@" -f "client_payload[traceparent]=$TRACEPARENT" -f "client_payload[tracestate]=${TRACESTATE:-}"
-      elif \[ "$count" = 9 ]; then
+      if \[ -n "${TRACEPARENT:-}" ] && ! _otel_string_contains "$keys/" /traceparent/ && \[ "$count" -lt 10 ]; then
         \set -- "$@" -f "client_payload[traceparent]=$TRACEPARENT"
+        local count="$((count + 1))"
       fi
+      if \[ -n "${B3:-}" ] && ! _otel_string_contains "$keys/" /b3/ && \[ "$count" -lt 10 ]; then
+        \set -- "$@" -f "client_payload[b3]=$B3"
+        local count="$((count + 1))"
+      fi
+      if \[ -n "${TRACEPARENT:-}" ] && ! _otel_string_contains "$keys/" /traceparent/ && ! _otel_string_contains "$keys/" /tracestate/ && \[ "$count" -lt 10 ]; then
+        \set -- "$@" -f "client_payload[tracestate]=${TRACESTATE:-}"
+        local count="$((count + 1))"
+      fi
+      if \[ -n "${BAGGAGE:-}" ] && ! _otel_string_contains "$keys/" /baggage/ && \[ "$count" -lt 10 ]; then \set -- "$@" -f "client_payload[baggage]=$BAGGAGE"; fi
     fi
   fi
-  if \[ -n "${TRACEPARENT:-}" ] && { { \[ "${2:-}" = workflow ] && \[ "${3:-}" = run ] && ! _otel_string_starts_with "${4:--}" - && ! { \[ -t 0 ] && \[ -z "$run_keys" ] && \[ "$is_json" = 0 ]; }; } || { \[ "${2:-}" = api ] && \[ -n "$workflow_path" ]; }; }; then
+  if \[ -n "${TRACEPARENT:-}${B3:-}${BAGGAGE:-}" ] && { { \[ "${2:-}" = workflow ] && \[ "${3:-}" = run ] && ! _otel_string_starts_with "${4:--}" - && ! { \[ -t 0 ] && \[ -z "$run_keys" ] && \[ "$is_json" = 0 ]; }; } || { \[ "${2:-}" = api ] && \[ -n "$workflow_path" ]; }; }; then
     if \[ "$2" = api ]; then
       local workflow_repo="$(\printf '%s' "$workflow_path" | \cut -d / -f 2-3)"
       local workflow="$(\printf '%s' "$workflow_path" | \cut -d / -f 6)"
@@ -123,21 +139,36 @@ _otel_propagate_gh() {
       local count="$(\printf '%s' "$keys" | \tr '/' '\n' | \sort -u | \grep -c . || \true)"
     fi
     local add_traceparent=false
+    local add_b3=false
     local add_tracestate=false
+    local add_baggage=false
     local workflow_file="$(\mktemp)"
-    if _otel_gh_workflow_file "$workflow_repo" "$workflow" "$workflow_ref" >"$workflow_file" && _otel_workflow_has_input "$workflow_file" traceparent && \[ "$count" -lt 25 ]; then
-      local add_traceparent=true
-      if _otel_workflow_has_input "$workflow_file" tracestate && \[ "$count" -lt 24 ]; then local add_tracestate=true; fi
+    if _otel_gh_workflow_file "$workflow_repo" "$workflow" "$workflow_ref" >"$workflow_file"; then
+      if \[ -n "${TRACEPARENT:-}" ] && ! { \[ "$2" = api ] && _otel_string_contains "$keys/" /traceparent/; } && _otel_workflow_has_input "$workflow_file" traceparent && \[ "$count" -lt 25 ]; then
+        local add_traceparent=true
+        local count="$((count + 1))"
+      fi
+      if \[ -n "${B3:-}" ] && ! _otel_string_contains "$keys/" /b3/ && _otel_workflow_has_input "$workflow_file" b3 && \[ "$count" -lt 25 ]; then
+        local add_b3=true
+        local count="$((count + 1))"
+      fi
+      if \[ "$add_traceparent" = true ] && ! { \[ "$2" = api ] && _otel_string_contains "$keys/" /tracestate/; } && _otel_workflow_has_input "$workflow_file" tracestate && \[ "$count" -lt 25 ]; then
+        local add_tracestate=true
+        local count="$((count + 1))"
+      fi
+      if \[ -n "${BAGGAGE:-}" ] && ! _otel_string_contains "$keys/" /baggage/ && _otel_workflow_has_input "$workflow_file" baggage && \[ "$count" -lt 25 ]; then local add_baggage=true; fi
     fi
     \rm -f "$workflow_file"
     if \[ -n "$input_file" ]; then
       if \[ "$is_json" = 1 ]; then local inputs_path=''; else local inputs_path='.inputs'; fi
-      \jq --argjson add_traceparent "$add_traceparent" --argjson add_tracestate "$add_tracestate" --arg traceparent "$TRACEPARENT" --arg tracestate "${TRACESTATE:-}" "if \$add_traceparent then $inputs_path.traceparent = \$traceparent else . end | if \$add_tracestate then $inputs_path.tracestate = \$tracestate else . end" "$input_file" >"$input_file".tmp && \mv "$input_file".tmp "$input_file"
+      \jq --argjson add_traceparent "$add_traceparent" --argjson add_b3 "$add_b3" --argjson add_tracestate "$add_tracestate" --argjson add_baggage "$add_baggage" --arg baggage "${BAGGAGE:-}" --arg traceparent "${TRACEPARENT:-}" --arg b3 "${B3:-}" --arg tracestate "${TRACESTATE:-}" "(${inputs_path:-.} // {} | has(\"traceparent\") or has(\"tracestate\")) as \$has_tracecontext | if \$add_traceparent and (\$has_tracecontext | not) then $inputs_path.traceparent = \$traceparent else . end | if \$add_b3 then $inputs_path.b3 //= \$b3 else . end | if \$add_tracestate and (\$has_tracecontext | not) then $inputs_path.tracestate = \$tracestate else . end | if \$add_baggage then $inputs_path.baggage //= \$baggage else . end" "$input_file" >"$input_file".tmp && \mv "$input_file".tmp "$input_file"
       if \[ "$is_json" = 1 ]; then local stdin_file="$input_file"; else \set -- "$@" --input "$input_file"; fi
     else
       if \[ "$2" = api ]; then local prefix='inputs['; local suffix=']'; else local prefix=''; local suffix=''; fi
       if \[ "$add_traceparent" = true ]; then \set -- "$@" -f "${prefix}traceparent${suffix}=$TRACEPARENT"; fi
+      if \[ "$add_b3" = true ]; then \set -- "$@" -f "${prefix}b3${suffix}=$B3"; fi
       if \[ "$add_tracestate" = true ]; then \set -- "$@" -f "${prefix}tracestate${suffix}=${TRACESTATE:-}"; fi
+      if \[ "$add_baggage" = true ]; then \set -- "$@" -f "${prefix}baggage${suffix}=$BAGGAGE"; fi
     fi
   fi
   local exit_code=0

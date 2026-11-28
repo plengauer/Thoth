@@ -125,7 +125,7 @@ _otel_inject_docker_args() {
   local image="$1"
   if \[ "${docker_detached:-}" != true ] && _otel_is_docker_image_injectable "$executable" "$image" && ! _otel_is_docker_image_injected "$executable" "$image" && _otel_is_docker_image_github_input_injectable "$executable" "$image"; then
     \echo -n ' '
-    _otel_escape_args --env TRACEPARENT="$TRACEPARENT" --env TRACESTATE="$TRACESTATE"
+    _otel_escape_args --env TRACEPARENT="${TRACEPARENT:-}" --env TRACESTATE="${TRACESTATE:-}" ${B3:+--env} ${B3:+"B3=$B3"} ${BAGGAGE:+--env} ${BAGGAGE:+"BAGGAGE=$BAGGAGE"}
     {
       find /usr/bin -executable -iname 'otel*.sh'
       find /usr/bin -executable -iname 'opentelemetry_shell*.sh'
@@ -177,7 +177,7 @@ eval _otel_inject "$(_otel_escape_args "$@")"' sh
     fi
   else
     \echo -n ' '
-    _otel_escape_args --env TRACEPARENT="$TRACEPARENT" --env TRACESTATE="$TRACESTATE"
+    _otel_escape_args --env TRACEPARENT="${TRACEPARENT:-}" --env TRACESTATE="${TRACESTATE:-}" ${B3:+--env} ${B3:+"B3=$B3"} ${BAGGAGE:+--env} ${BAGGAGE:+"BAGGAGE=$BAGGAGE"}
     \echo -n ' '
     _otel_escape_arg "$1"
     shift

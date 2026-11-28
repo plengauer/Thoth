@@ -5,13 +5,14 @@ _otel_call_and_record_logs() {
   local call_command="$1"
   shift
   # shellcheck disable=SC2153 # TRACEPARENT is a different variable than the lowercase local
-  local traceparent="$TRACEPARENT"
+  local traceparent="${TRACEPARENT:-}"
+  local b3="${B3:-}"
   # shellcheck disable=SC2154 # the variable is assigned by the sourced instrumentation library or provided by the environment
   local stderr_logs="$(\mktemp -u -p "$_otel_shell_pipe_dir" opentelemetry_shell.$$.stderr.logs.pipe.XXXXXXXXXX)"
   # shellcheck disable=SC2086 # the mkfifo flags are an optional list of arguments that must be split into words or vanish when empty
   \mkfifo ${_otel_mkfifo_flags:-} "$stderr_logs"
   while IFS=$'\n' \read -r line; do
-    _otel_log_record "$traceparent" auto 0 "$line"
+    _otel_log_record "$traceparent" "$b3" auto 0 "$line"
     \printf '%s\n' "$line" >&2
   done <"$stderr_logs" 1>/dev/null &
   local exit_code=0
@@ -26,10 +27,12 @@ _otel_call_and_record_logs() {
 _otel_log_record() {
   local traceparent="$1"
   shift
+  local b3="$1"
+  shift
   local time="$1"
   shift
   local severity="$1"
   shift
   local line="$(_otel_dollar_star "$@")"
-  _otel_sdk_communicate "LOG_RECORD" "$traceparent" "$time" "$severity" "$line"
+  _otel_sdk_communicate "LOG_RECORD" "$traceparent" "$b3" "$time" "$severity" "$line"
 }
