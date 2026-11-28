@@ -24,9 +24,9 @@ int main(int argc, char **argv) {
   }
   original_command[0] = '\0';
   for (int j = 0; j < argc; j++) {
-    strcat(original_command, argv[j]);
+    strcat(original_command, argv[j]);  // NOLINT(runtime/printf): the buffer is sized for all arguments and separators above
     if (j < argc - 1) {
-      strcat(original_command, " ");
+      strcat(original_command, " ");  // NOLINT(runtime/printf): the buffer is sized for all arguments and separators above
     }
   }
   setenv("OTEL_SHELL_COMMAND_OVERRIDE", original_command, 1);

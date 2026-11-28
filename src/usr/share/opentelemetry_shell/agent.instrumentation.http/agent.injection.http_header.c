@@ -15,7 +15,7 @@ int otel_span_start(FILE *sdk, const char *type, const char *name) {
 
   char *traceparent = getenv("TRACEPARENT");
   char *tracestate = getenv("TRACESTATE");
-  char *sdk_response = tmpnam(NULL); // this is unsafe, i know
+  char *sdk_response = tmpnam(NULL);  // this is unsafe, i know
   if (mkfifo(sdk_response, 0666) != 0) {
     free(buffer);
     return -1;
@@ -45,7 +45,7 @@ char *otel_traceparent(FILE *sdk, int span_handle) {
   if (!buffer)
     return NULL;
 
-  char *sdk_response = tmpnam(NULL); // this is unsafe, i know
+  char *sdk_response = tmpnam(NULL);  // this is unsafe, i know
   if (mkfifo(sdk_response, 0666) != 0) {
     free(buffer);
     return NULL;
@@ -111,7 +111,7 @@ int inject(char *buffer, size_t length) {
         if (!storage)
           return 6;
         fwrite(span_handle_string, sizeof(char), strlen(span_handle_string),
-               storage); // TODO this could fail, what then?
+               storage);
         fclose(storage);
       }
       char *traceparent = otel_traceparent(sdk, span_handle);
@@ -123,7 +123,7 @@ int inject(char *buffer, size_t length) {
       }
       snprintf(buffer, strlen(buffer) + 1, "traceparent: %s\r", traceparent);
       free(traceparent);
-      fclose(sdk); // this will leak on some early aborts, process terminate
+      fclose(sdk);  // this will leak on some early aborts, process terminate
                    // will clean it up
       *line_end = '\n';
       return 0;
@@ -271,7 +271,7 @@ int nghttp2_submit_request(void *session, void *pri_spec, void *nva,
   for (size_t index = 0; index < nvlen; index++) {
     void *nv =
         nva + (sizeof(void *) * 2 + sizeof(size_t) * 2 + 8) *
-                  index; // we are guessing struct layouts here, hella scary!
+                  index;  // we are guessing struct layouts here, hella scary!
     char *key = *(char **)nv;
     nv += sizeof(char *);
     char *value = *(char **)nv;
