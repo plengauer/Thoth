@@ -120,12 +120,16 @@ BASH_SHELLCHECK_FILTER_REGEX_EXCLUDE: "(^|/)demos/[^/]+/[^/]+\\.sh$"
 # `-ci` indents `case` bodies. #4128 renamed the key from SHELL_SHFMT_ARGUMENTS,
 # which #4128 describes as deprecated/unsupported.
 BASH_SHFMT_ARGUMENTS: "-i 2 -ci"
-# Why: cpplint (Google C++ style) requires a copyright line in every file
-# (legal/copyright, 1 per C file). This repository has its license in LICENSE
-# and no copyright header in any source file. The other cpplint rules stay
-# active. Config files are not an option here: cpplint is only identified by
-# MegaLinter, it has no config file that is picked up from .github/linters.
-C_CPPLINT_ARGUMENTS: "--filter=-legal/copyright"
+# Why: cpplint follows the Google C++ style, which this repository does not.
+# - legal/copyright (1 per C file): it requires a copyright line in every file,
+#   but the license is in LICENSE and no source file has a header.
+# - whitespace/comments: it requires two spaces before a trailing comment,
+#   whereas clang-format (LLVM style, which the C files pass) requires exactly
+#   one, so the two checks contradict each other.
+# The other cpplint rules stay active. Config files are not an option here:
+# cpplint is only identified by MegaLinter, it has no config file that is
+# picked up from .github/linters.
+C_CPPLINT_ARGUMENTS: "--filter=-legal/copyright,-whitespace/comments"
 # Why (#3854, fixes #3844): without this, zizmor makes unauthenticated GitHub
 # API calls that fail with 401 Unauthorized (seen in the `artipacked` audit)
 # instead of producing audit results. analyze.yml already provides the token.
