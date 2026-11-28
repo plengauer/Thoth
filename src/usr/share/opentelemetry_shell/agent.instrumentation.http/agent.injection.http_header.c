@@ -111,7 +111,7 @@ int inject(char *buffer, size_t length) {
         if (!storage)
           return 6;
         fwrite(span_handle_string, sizeof(char), strlen(span_handle_string),
-               storage); // TODO this could fail, what then?
+               storage);
         fclose(storage);
       }
       char *traceparent = otel_traceparent(sdk, span_handle);

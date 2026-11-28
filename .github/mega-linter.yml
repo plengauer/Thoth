@@ -3,6 +3,10 @@
 # MEGALINTER_CONFIG in analyze.yml and in test_github.yml
 # (job-integration-megalinter). The per-linter configs are in .github/linters.
 # Added following a full triage of the 2026-07-24 Analyze workflow run (#3833).
+# Extended following a triage of the 2026-11-27 Analyze run: the findings of the
+# `quality` job whose linters produce no SARIF output (and are therefore not in
+# code scanning) were each fixed or muted, in the pull requests that target this
+# one.
 # Every entry is preceded by why it exists. "#1234" refers to the pull request
 # of this repository that introduced the entry (or the issue it fixed).
 # All options: https://megalinter.io/latest/configuration/
@@ -16,6 +20,14 @@ DISABLE_LINTERS:
   # composite actions and test harnesses, or spawned from main.js via a Node
   # child process - never `./script.sh` directly, so this check doesn't apply.
   - BASH_EXEC
+  # Why: black and isort only check formatting. The Python code does not follow
+  # their style: sdk.py would change in about 650 lines and sdk_factory.py in
+  # about 40 (only deep.py is close, with 8), and the repository mixes quote and
+  # indentation styles between files. A reformat of the core SDK file would
+  # touch nearly every line without changing behavior and would make every open
+  # change conflict. Same reasoning as for JAVASCRIPT_STANDARD below.
+  - PYTHON_BLACK
+  - PYTHON_ISORT
   # Why (#3833): "standard" (JavaScript Standard Style) is a zero-config,
   # semicolon-free style guide. This codebase consistently uses semicolons, so
   # the large majority of findings were just "Extra semicolon" from that
@@ -24,12 +36,33 @@ DISABLE_LINTERS:
   # small number of genuinely useful catches (unused vars, camelCase, etc.)
   # that this trades away.
   - JAVASCRIPT_STANDARD
+  # Why: pyright ran without any configuration over 4 Python files that use the
+  # dynamically typed OpenTelemetry API and reported 28 errors, 26 of them in
+  # sdk.py (13 findings, doubled because opentelemetry_shell_sdk.py is a symlink
+  # to it). Most are false positives of the same two kinds: Optional access on
+  # module level state that the init commands always set (`final_resources`,
+  # `span.context`, `span.attributes`) and API types without the SDK methods
+  # (`shutdown` on the providers). The 3 real findings (a private import of
+  # SeverityNumber, StatusCode imported from a module that does not export it,
+  # and an implicit submodule import in deep.py) were fixed. mypy is configured
+  # and already type checks the same files, so a second type checker only adds
+  # noise.
+  - PYTHON_PYRIGHT
   # Why (#4355): devskim reported ~21k untriaged findings (errors) in the last
   # completed `quality` run (#7477) and took ~7 of its ~12 minutes (see also
   # #3848). It is disabled outright instead of filtered out of the SARIF, so it
   # neither runs nor buries the findings of the other linters, and everything
   # MegaLinter still produces is uploaded to code scanning unfiltered.
   - REPOSITORY_DEVSKIM
+  # Why: YAML_PRETTIER only checks formatting, and no single setting makes the
+  # files pass. The workflows mix single and double quotes (`singleQuote: true`
+  # still leaves 16 of the 28 reported files), and prettier puts one space
+  # before an inline comment where yamllint's `comments` rule asks for two,
+  # which is also what Renovate writes in the `@<sha> # v1.2.3` pins. Some of
+  # the reported files are generated (agentics-maintenance.yml). yamllint covers
+  # the structural checks of YAML files. The analyze template of
+  # plengauer.github.io disables it for the same reasons.
+  - YAML_PRETTIER
 
 # --- Files excluded from all linters that receive a file list ---
 # Why (#3833, #3863, fixes #3845): MegaLinter flagged lint errors in generated
@@ -64,6 +97,14 @@ FILTER_REGEX_EXCLUDE: "(\\.lock\\.yml|/otlp\\.json|/gradlew|/package-lock\\.json
 # not care about. Excluding workflows from v8r avoids quoting `on:` in every
 # workflow, while actionlint and zizmor keep validating them.
 YAML_V8R_FILTER_REGEX_EXCLUDE: "\\.github/workflows/"
+# Why: cspell reported 1170 unknown words in 336 files (440 distinct ones). 334
+# are in the generated demos/*/README.md (ignored in .cspell.json), and most of
+# the rest are identifiers, commands and options in shell scripts, workflows
+# and tests (`endswith`, `mktemp`, `zstd`, `execdir`, ...). Spelling is worth
+# checking in the documentation, where it found 8 real typos (fixed), but not
+# worth keeping hundreds of code identifiers in the word list. So cspell only
+# receives the markdown files.
+SPELL_CSPELL_FILTER_REGEX_INCLUDE: "\\.md$"
 # Why: demos/*/demo.sh (and child.sh) are documentation snippets without a
 # shebang, because refresh_demos.yml runs them with `bash -e demo.sh` and pastes
 # them verbatim into the README of each demo. ShellCheck can't tell their dialect
@@ -79,11 +120,34 @@ BASH_SHELLCHECK_FILTER_REGEX_EXCLUDE: "(^|/)demos/[^/]+/[^/]+\\.sh$"
 # `-ci` indents `case` bodies. #4128 renamed the key from SHELL_SHFMT_ARGUMENTS,
 # which #4128 describes as deprecated/unsupported.
 BASH_SHFMT_ARGUMENTS: "-i 2 -ci"
+# Why: cpplint follows the Google C++ style, which this repository does not.
+# - legal/copyright (1 per C file): it requires a copyright line in every file,
+#   but the license is in LICENSE and no source file has a header.
+# - whitespace/comments: it requires two spaces before a trailing comment,
+#   whereas clang-format (LLVM style, which the C files pass) requires exactly
+#   one, so the two checks contradict each other.
+# The other cpplint rules stay active. Config files are not an option here:
+# cpplint is only identified by MegaLinter, it has no config file that is
+# picked up from .github/linters.
+C_CPPLINT_ARGUMENTS: "--filter=-legal/copyright,-whitespace/comments"
 # Why (#3854, fixes #3844): without this, zizmor makes unauthenticated GitHub
 # API calls that fail with 401 Unauthorized (seen in the `artipacked` audit)
 # instead of producing audit results. analyze.yml already provides the token.
 ACTION_ZIZMOR_UNSECURED_ENV_VARIABLES:
   - GITHUB_TOKEN
+# Why: markdownlint reported 18 findings (MD013 line length 10x, MD010 hard tabs
+# 8x) and all but one are in files that are not hand-written documentation.
+# - demos/*/README.md are generated by refresh_demos.yml from demo.sh, meta.json
+#   and the captured output. Their long lines are embedded JSON and the tabs
+#   come from the output of `printf %s:<TAB>%s`, so neither can be fixed at the
+#   source. demos/README.md is hand-written and stays checked.
+# - .github/workflows/*.md (autotriage.md, monitor_changelog.md) are the
+#   sources of agentic workflows, so their body is the prompt of an AI agent,
+#   one long line per instruction, not documentation. The analyze template of
+#   plengauer.github.io excludes them for the same reason.
+# The remaining finding (a 439 character line in copilot-instructions.md) was
+# wrapped.
+MARKDOWN_MARKDOWNLINT_FILTER_REGEX_EXCLUDE: "(^|/)demos/[^/]+/README\\.md$|\\.github/workflows/[^/]*\\.md$"
 # Why: trivy (REPOSITORY_TRIVY) does not read the checkov or hadolint
 # suppression comments in the Dockerfiles, so their DS-0002 and DS-0029
 # findings were uploaded to code scanning anyway. Its inline `trivy:ignore`
@@ -94,6 +158,12 @@ ACTION_ZIZMOR_UNSECURED_ENV_VARIABLES:
 REPOSITORY_TRIVY_ARGUMENTS:
   - --ignorefile
   - .github/linters/.trivyignore.yaml
+# Why: prettier reformatted 4 JSON files. renovate.json (trailing whitespace
+# and expanded short arrays) and demos/injection_inner_xargs_parallel/meta.json
+# (a leading blank line) were reformatted. The two Dynatrace dashboards in
+# dashboards/dynatrace are excluded: they are exported from Dynatrace as is, so
+# any re-export brings the original formatting back.
+JSON_PRETTIER_FILTER_REGEX_EXCLUDE: "(^|/)dashboards/"
 
 # --- Reasons for entries in the per-linter configs that cannot hold comments ---
 # MegaLinter picks up the per-linter configs in .github/linters by their
@@ -150,12 +220,22 @@ REPOSITORY_TRIVY_ARGUMENTS:
 #   #3857 groups them as OpenTelemetry, shell, Azure, TLS and certificate
 #   authorities, tooling, project names, Debian packaging, dev and CI tools,
 #   networking, plus further terms without a category.
-# - ignorePaths: none. #3857 had *.lock and .git/**. No *.lock files are
-#   tracked, the generated *.lock.yml files are kept away by FILTER_REGEX_EXCLUDE
-#   above, and MegaLinter never hands cspell files from .git because it excludes
-#   .git and node_modules from its file lists by default.
+# - ignorePaths: **/demos/*/README.md. These files are generated by
+#   refresh_demos.yml and embed captured output (334 unknown words). demos/README.md
+#   is hand-written and stays checked. #3857 had *.lock and .git/**. No *.lock
+#   files are tracked, the generated *.lock.yml files are kept away by
+#   FILTER_REGEX_EXCLUDE above, and MegaLinter never hands cspell files from
+#   .git because it excludes .git and node_modules from its file lists by
+#   default.
 # - words added in this pull request: shfmt, sarif, devskim, artipacked,
 #   untriaged (used in the comments of this file), agentics (a path in
 #   actionlint.yml), rcfile and scriptdir (used in .shellcheckrc).
 # - words trivy, trivyignore and ignorefile: used in the REPOSITORY_TRIVY
 #   comments of this file and in .trivyignore.yaml.
+# - words added with the markdown-only restriction (the 8 typos found in the
+#   documentation were fixed instead): packaging terms used in the skills and
+#   contributor docs (abuild, apkbuild, deinstall, libc, mawk, procps, postrm,
+#   preinst, rpmbuild), placeholders in examples (mycommand, myspan, numberkey,
+#   yourfeature), `toolsets` (a key of the agentic workflow front matter),
+#   `recompiles`, `sameorigin` (a cookie attribute) and `olwcn` (a fragment of
+#   the sample cookie value in README.md).

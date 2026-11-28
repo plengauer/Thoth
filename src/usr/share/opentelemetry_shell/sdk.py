@@ -7,7 +7,7 @@ initialized_traces = False
 initialized_metrics = False
 initialized_logs = False
 
-resource = {}
+resource: dict = {}
 final_resources = None
 detected_resources = None
 default_resources = None
@@ -329,7 +329,8 @@ def handle(scope, version, command, arguments):
         raise EOFError
     elif command == 'SPAN_START':
         from opentelemetry.trace import get_tracer, SpanKind
-        from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
+        # F811: the import in the initialization block above only runs for the first command of a kind, so this branch has to import the name itself.
+        from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator  # noqa: F811
         global next_span_id
         tokens = arguments.split(' ', 5)
         response_path = tokens[0]
@@ -354,7 +355,8 @@ def handle(scope, version, command, arguments):
         span.end(end_time=parse_time(end_time))
         del spans[span_id]
     elif command == 'SPAN_HANDLE':
-        from opentelemetry.trace import get_current_span
+        # F811: the import in the initialization block above only runs for the first command of a kind, so this branch has to import the name itself.
+        from opentelemetry.trace import get_current_span  # noqa: F811
         from opentelemetry.sdk.trace import Span
         from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
         tokens = arguments.split(' ', 1)
@@ -376,7 +378,8 @@ def handle(scope, version, command, arguments):
         span : Span = spans[span_id]
         span.update_name(name)
     elif command == 'SPAN_ERROR':
-        from opentelemetry.sdk.trace import Span, StatusCode
+        from opentelemetry.sdk.trace import Span
+        from opentelemetry.trace import StatusCode
         span : Span = spans[arguments]
         span.set_status(StatusCode.ERROR)
     elif command == 'SPAN_ATTRIBUTE':
@@ -558,7 +561,7 @@ def handle(scope, version, command, arguments):
         observations[str(observation_id)]['attributes'][key] = convert_type(type, value)
     elif command == 'LOG_RECORD':
         from opentelemetry._logs import get_logger
-        from opentelemetry.sdk._logs._internal import SeverityNumber
+        from opentelemetry._logs import SeverityNumber
         from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
         tokens = arguments.split(' ', 3)
         traceparent = tokens[0]

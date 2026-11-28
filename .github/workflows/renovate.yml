@@ -369,7 +369,7 @@ jobs:
             Find the latest run of the workflow.
             If the workflow run you select has been instrumented with any version but the latest, abort and do nothing.
             Before deep analysis or starting to fix, analyze if a fix has already been merged to main and it has not been released yet or if a related issue has been filed.
-            If so, do nothing.            
+            If so, do nothing.
             If the custom evaluation criteria below are not met, analyze by looking at the workflow code, the logs, as well as the instrumentation code and the traces, and find the root cause.
             File a detailed issue in the repository with all information, and relevant data like log snippets, suspected root causes and traces including links for all.
             If the issue affects the copilot coding agent or the autriage workflow, filing an issue will not work because it may not be picked up and implemented.

@@ -124,7 +124,8 @@ cd tests && bash run_tests.sh bash
 - **Multi-language**: Shell (function wrapping), Python (`opentelemetry-instrumentation`), Node.js (`@opentelemetry/instrumentation-*`), Java (OpenTelemetry agent), C (HTTP header injection)
 - **GitHub Actions**: Workflow-level (GitHub API, post-completion) + job-level (injected first step) can coexist without duplication
 - **Shell compatibility**: All code MUST work on bash, dash, ash, busybox with POSIX compliance.
-- **Instrumentation**: Instrumentation is done via aliasing commands. Aliases will redirect to a function that starts/stops spans and then forwards to the original command. To avoid endless recursion, internal commands are always used with a backslash in front to avoid alias resolution. We must make sure, that all code that runs in the observed shell script (but not, for example, in package install scripts) is not triggering the alias.
+- **Instrumentation**: Instrumentation is done via aliasing commands. Aliases will redirect to a function that starts/stops spans and then forwards to the original command. To avoid endless recursion, internal commands are always used with a backslash in front to avoid alias resolution.
+  We must make sure, that all code that runs in the observed shell script (but not, for example, in package install scripts) is not triggering the alias.
 - **Internal naming**: `_otel_` prefix for internal functions, `otel_` prefix for public API functions; variables use lowercase with underscores.
 - **Alias injection pattern**: In `_otel_inject_*` functions, `$*` includes the backslash-prefixed command name (e.g., `\tar`) as `$1`. Strip with `cmdline="${cmdline#\\}"` before string-comparing to patterns.
 

@@ -16,6 +16,7 @@ def inject_env_minimal(env, file, args):
 
 try:
     import opentelemetry
+    import opentelemetry.trace
     from opentelemetry.context import attach
     from opentelemetry.trace.propagation import tracecontext
 
