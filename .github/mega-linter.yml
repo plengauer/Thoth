@@ -20,6 +20,14 @@ DISABLE_LINTERS:
   # composite actions and test harnesses, or spawned from main.js via a Node
   # child process - never `./script.sh` directly, so this check doesn't apply.
   - BASH_EXEC
+  # Why: black and isort only check formatting. The Python code does not follow
+  # their style: sdk.py would change in about 650 lines and sdk_factory.py in
+  # about 40 (only deep.py is close, with 8), and the repository mixes quote and
+  # indentation styles between files. A reformat of the core SDK file would
+  # touch nearly every line without changing behavior and would make every open
+  # change conflict. Same reasoning as for JAVASCRIPT_STANDARD below.
+  - PYTHON_BLACK
+  - PYTHON_ISORT
   # Why (#3833): "standard" (JavaScript Standard Style) is a zero-config,
   # semicolon-free style guide. This codebase consistently uses semicolons, so
   # the large majority of findings were just "Extra semicolon" from that
