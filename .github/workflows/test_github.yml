@@ -1335,6 +1335,7 @@ jobs:
         run: |
           nohup node -e "require('http').createServer(function (req, res) { console.log(req.method, req.url); res.writeHead(200); res.end(); }).listen(8080);" 1> /tmp/http.log 2> /dev/null &
       - run: |
+          # shellcheck disable=SC2016 -- the backticks are literal markdown code fences
           printf '%s' '${{ secrets.TEST_GITHUB_TOKEN }}' | GH_TOKEN='${{ secrets.TEST_GITHUB_TOKEN }}' gh secret set DEPLOY_OBSERVABILITY_TOKEN --repo ${{ steps.config.outputs.user }}/${{ steps.config.outputs.repository }}
           wget --header "Authorization: Bearer ${{ github.token }}" https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/README.md -O - | sed -n '/```yaml/,/```/p' | grep -v '```yaml' | sed '/```/,$d' > .github/workflows/deploy_otel.yml
           cat .github/workflows/deploy_otel.yml | yq .jobs.deploy.steps[0].uses | grep -q '/actions/instrument/deploy@'
