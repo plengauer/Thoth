@@ -242,12 +242,12 @@ When using automatic deployment, permissions are adjusted automatically.
 
 In addition to propagating trace context over HTTP, this project propagates it via environment variables, following the OpenTelemetry specification for <a href="https://opentelemetry.io/docs/specs/otel/context/env-carriers/">Environment Variables as Context Propagation Carriers</a>. This makes it interoperable with any other tool that reads or writes the same variables, for example <a href="https://github.com/tobert/otel-cli">otel-cli</a>.
 
-| Variable | Direction | Behavior |
-| --- | --- | --- |
-| `TRACEPARENT` | read and written | Extracted once at startup. Rewritten whenever a span is activated, so every child process sees the innermost enclosing span as its parent. |
-| `TRACESTATE` | read, passed through | Propagated unchanged. This project never adds, removes, or modifies entries. |
-| `BAGGAGE` | not supported | Neither read nor written, see Configuration above. |
-| `TRACEPARENT_STACK` | internal | An implementation detail used to restore the previous span on deactivation. It is not part of any specification, and other tools should ignore it. |
+| Variable            | Direction            | Behavior                                                                                                                                           |
+|---------------------|----------------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
+| `TRACEPARENT`       | read and written     | Extracted once at startup. Rewritten whenever a span is activated, so every child process sees the innermost enclosing span as its parent.         |
+| `TRACESTATE`        | read, passed through | Propagated unchanged. This project never adds, removes, or modifies entries.                                                                       |
+| `BAGGAGE`           | not supported        | Neither read nor written, see Configuration above.                                                                                                 |
+| `TRACEPARENT_STACK` | internal             | An implementation detail used to restore the previous span on deactivation. It is not part of any specification, and other tools should ignore it. |
 
 Context is extracted from the environment when a script starts. If `TRACEPARENT` is already set, the root span of the script becomes a child of the incoming span. If it is not set, the script starts a new trace. Context is injected whenever a span is activated, which for automatic instrumentation means once per observed command. A tool invoked by an instrumented script therefore becomes a child of the span for the command that invoked it, not of the script as a whole. If traces are disabled, no trace context is written and any incoming `TRACEPARENT` is left untouched.
 
